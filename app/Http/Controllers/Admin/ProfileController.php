@@ -21,22 +21,13 @@ class ProfileController extends Controller
         $request->validate([
             'name'     => 'required',
             'email'    => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix|unique:users,email,'.Auth::user()->id,
+            'phone_number' => 'required|unique:users,phone,'.Auth::user()->id,
         ]);
 
         $data = User::find(Auth::user()->id);
         $data->name = $request->name;
         $data->email = $request->email;
-
-        if ($request->hasFile('profile_picture')) {
-            $request->validate([
-                'profile_picture' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            ]);
-            
-            $file= $request->file('profile_picture');
-            $filename= date('YmdHi').$file->getClientOriginalName();
-            $image_path = $request->file('profile_picture')->store('admin', 'public');
-            $data->profile_picture = $image_path;
-        }
+        $data->phone = $request->phone_number;
         $data->save();
         return redirect()->back()->with('message', 'Profile updated successfully.');
     }
@@ -48,12 +39,12 @@ class ProfileController extends Controller
 
     public function passwordUpdate(Request $request)
     {
-        
+
         $request->validate([
             'old_password' => 'required|min:8|password',
             'new_password' => 'required|min:8|different:old_password',
-            'confirm_password' => 'required|min:8|same:new_password', 
-        
+            'confirm_password' => 'required|min:8|same:new_password',
+
         ],[
             'old_password.password'=> 'Old password is not correct',
         ]);

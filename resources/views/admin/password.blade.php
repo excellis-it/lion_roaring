@@ -1,75 +1,74 @@
 @extends('admin.layouts.master')
 @section('title')
-Demo | Profile
+    {{ env('APP_NAME') }} | Profile
 @endsection
 @push('styles')
 @endpush
+@section('head')
+    Change Password
+@endsection
 
 @section('content')
-<div class="page-wrapper">
-    <!--page-content-wrapper-->
-    <div class="content container-fluid">
-
-        <div class="page-header">
-            <div class="row align-items-center">
-                <div class="col">
-                    <h3 class="page-title">Change Password</h3>
-                    <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.profile') }}">Profile</a></li>
-                        <li class="breadcrumb-item active">Password</li>
-                    </ul>
-                </div>
-                
-            </div>
-        </div>
-            
-            <!--end breadcrumb-->
-            <div class="card">
-                <div class="card-body">
-                    <div class="form-body">
-                        <div class="row">
-                            <div class="col-12 col-lg-5 border-right">
-                                <form class="row g-3" action="{{route('admin.password.update')}}" method="post" enctype="multipart/form-data">
-                                    @csrf
-                                   
-                                    <div class="col-12">
-                                        <label class="form-label">Old Password</label>
-                                        <input type="password"  name="old_password" class="form-control">
-                                        @if($errors->has('old_password'))
-                                            <div class="error" style="color:red;">{{ $errors->first('old_password') }}</div>
-                                        @endif
+    <div class="main-content">
+        <div class="inner_page">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card search_bar sales-report-card">
+                        <form action="{{ route('admin.password.update') }}" method="post">
+                            @csrf
+                            <div class="row justify-content-between">
+                                <div class="col-xl-12">
+                                    <div class="form-group-div">
+                                        <div class="form-group">
+                                            <label for="floatingInputValue">Old Password*</label>
+                                            <input type="text" class="form-control" id="floatingInputValue"
+                                                name="old_password" placeholder="Old Password*">
+                                            @if ($errors->has('old_password'))
+                                                <div class="error" style="color:red;">{{ $errors->first('old_password') }}
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
-                                    <div class="col-12">
-                                        <label class="form-label">New Password</label>
-                                        <input type="password"  name="new_password" class="form-control">
-                                        @if($errors->has('new_password'))
-                                            <div class="error" style="color:red;">{{ $errors->first('new_password') }}</div>
-                                        @endif
+                                </div>
+                                <div class="col-xl-12">
+                                    <div class="form-group-div">
+                                        <div class="form-group">
+                                            <label for="floatingInputValue">New Password*</label>
+                                            <input type="text" class="form-control" id="floatingInputValue"
+                                                name="new_password" placeholder="New Password*">
+                                            @if ($errors->has('new_password'))
+                                                <div class="error" style="color:red;">{{ $errors->first('new_password') }}
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
-                                    <div class="col-12">
-                                        <label class="form-label">Confirm Password</label>
-                                        <input type="password"  name="confirm_password" class="form-control">
-                                        @if($errors->has('confirm_password'))
-                                            <div class="error" style="color:red;">{{ $errors->first('confirm_password') }}</div>
-                                        @endif
+                                </div>
+                                <div class="col-xl-12">
+                                    <div class="form-group-div">
+                                        <div class="form-group">
+                                            <label for="floatingInputValue">Confirm Password*</label>
+                                            <input type="text" class="form-control" id="floatingInputValue"
+                                                name="confirm_password" placeholder="Confirm Password*">
+                                            @if ($errors->has('confirm_password'))
+                                                <div class="error" style="color:red;">
+                                                    {{ $errors->first('confirm_password') }}</div>
+                                            @endif
+                                        </div>
                                     </div>
-                                    
-                                    <div class="col-6">
-                                        <button type="submit" class="btn btn-primary">Update</button>
+                                </div>
+                                <div class="col-xl-12 text-center">
+                                    <div class="btn-1">
+                                        <button type="submit">Change password</button>
                                     </div>
-
-                                </form>
+                                </div>
                             </div>
-
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
-    <!--end page-content-wrapper-->
-</div>
 @endsection
 
 @push('scripts')
