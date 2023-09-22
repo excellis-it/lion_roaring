@@ -2,31 +2,27 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta content="width=device-width,  initial-scale=1,  maximum-scale=1,  shrink-to-fit=no" name="viewport" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>Forgot Password - {{ env('APP_NAME') }} Admin Panel</title>
+    <link rel="stylesheet" href="{{ asset('admin_assets/bootstrap-5.3/css/bootstrap.min.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/phosphor-icons"></script>
+    <!-- <link rel="stylesheet" href="css/bootstrap.min.css" /> -->
+    <link rel="stylesheet" href="{{ asset('admin_assets/css/app.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('admin_assets/css/custom.css') }}" />
+    <link rel="stylesheet" href="{{ asset('admin_assets/css/style.css') }}" />
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('admin_assets/img/favicon.png') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/bootstrap.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/plugins/fontawesome/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin_assets/plugins/fontawesome/css/all.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/line-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/material.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/font-awesome.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/line-awesome.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/font-awesome.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/style.css') }}">
-
+    <link rel="stylesheet" href="{{ asset('admin_assets/css/morris.css') }}">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
+
+
     <style>
         .form-gap {
             padding-top: 70px;
@@ -66,8 +62,7 @@
                                     </div>
                                     <div class="form-group">
                                         <input name="recover-submit"
-                                            style="background: linear-gradient(to right, #10acff 0%, #1f1f1f 100%); border:white;"
-                                            class="btn btn-lg btn-primary btn-block" value="Reset Password"
+                                            class="btn btn-primary" value="Reset Password"
                                             type="submit">
                                     </div>
                                 </form>
@@ -80,16 +75,23 @@
         </div>
     </div>
 </body>
-<script src="{{ asset('admin_assets/js/jquery-3.6.0.min.js') }}"></script>
-
-<script src="{{ asset('admin_assets/js/bootstrap.bundle.min.js') }}"></script>
-
-<script src="{{ asset('admin_assets/js/layout.js') }}"></script>
-<script src="{{ asset('admin_assets/js/theme-settings.js') }}"></script>
-<script src="{{ asset('admin_assets/js/greedynav.js') }}"></script>
-
+<script src="{{ asset('admin_assets/js/jquery-3.4.1.min.js') }}"></script>
+<!-- <script src="js/jquery.min.js"></script> -->
+<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> -->
+<!-- <script src="js/bootstrap.min.js" async=""></script> -->
+<script src="{{ asset('admin_assets/bootstrap-5.3/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('admin_assets/js/raphael-min.js') }}"></script>
+<script src="{{ asset('admin_assets/js/morris.min.js') }}"></script>
+<script src="{{ asset('admin_assets/js/Chart.min.js') }}"></script>
+<script src="{{ asset('admin_assets/js/custom.js') }}" async=""></script>
+<script src="{{ asset('admin_assets/js/app.min.js') }}"></script>
+<script src="{{ asset('admin_assets/js/scripts.js') }}" async=""></script>
+<script src="{{ asset('admin_assets/js/jquery-ui.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
 <script>
     @if (Session::has('message'))
         toastr.options = {
@@ -123,7 +125,5 @@
         toastr.warning("{{ session('warning') }}");
     @endif
 </script>
-
-<script src="{{ asset('admin_assets/js/app.js') }}"></script>
 
 </html>

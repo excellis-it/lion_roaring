@@ -11786,3 +11786,300 @@ a.dt-button {
 .sales-report-card-wrap{
 
 }
+
+/* loader */
+
+.loading {
+    z-index: 99999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+.loading-content {
+    position: absolute;
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #e51d2a;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    top: 40%;
+    left: 50%;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* end loader */
+/* Start Toogle */
+
+.button-switch {
+    font-size: 1.5em;
+    height: 1.875em;
+    margin-bottom: 0.625em;
+    position: relative;
+    width: 4.5em;
+}
+.button-switch .lbl-off,
+.button-switch .lbl-on {
+    cursor: pointer;
+    display: block;
+    font-size: 0.9em;
+    font-weight: bold;
+    line-height: 1em;
+    position: absolute;
+    top: 0.5em;
+    transition: opacity 0.25s ease-out 0.1s;
+    text-transform: uppercase;
+}
+.button-switch .lbl-off {
+    right: 0.4375em;
+}
+.button-switch .lbl-on {
+    color: #fefefe;
+    opacity: 0;
+    left: 0.4375em;
+}
+.button-switch .switch {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    height: 0;
+    font-size: 1em;
+    left: 0;
+    line-height: 0;
+    outline: none;
+    position: absolute;
+    top: 0;
+    width: 0;
+    margin-top: 21px;
+}
+.button-switch .switch:before,
+.button-switch .switch:after {
+    content: "";
+    font-size: 1em;
+    position: absolute;
+}
+.button-switch .switch:before {
+    border-radius: 1.25em;
+    background: #bdc3c7;
+    height: 1.1em;
+    left: -0.25em;
+    top: -0.1875em;
+    transition: background-color 0.25s ease-out 0.1s;
+    width: 2.6em;
+}
+.button-switch .switch:after {
+    box-shadow: 0 0.0625em 0.375em 0 #666;
+    border-radius: 50%;
+    background: #fefefe;
+    height: 0.7em;
+    transform: translate(0, 0);
+    transition: transform 0.25s ease-out 0.1s;
+    width: 0.7em;
+}
+.button-switch .switch:checked:after {
+    transform: translate(1.3em, 0);
+}
+.button-switch .switch:checked ~ .lbl-off {
+    opacity: 0;
+}
+.button-switch .switch:checked ~ .lbl-on {
+    opacity: 1;
+}
+.button-switch .switch#switch-orange:checked:before {
+    background: #10358d;
+}
+.button-switch .switch#switch-blue:checked:before {
+    background: #3498db;
+}
+
+/* End Toogle   */
+
+.account-page .main-wrapper .account-content .account-box {
+    background-color: #fff;
+    border: 1px solid #ededed;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+    overflow: hidden;
+    width: 480px;
+    border-radius: 4px;
+}
+
+@media (max-width: 991px) {
+    .account-page .main-wrapper .account-content .account-box {
+        width: 100%;
+        margin: 0 0 20px;
+    }
+}
+
+.account-page .main-wrapper .account-content .account-box .form-group {
+    margin-bottom: 25px;
+}
+
+.account-page .main-wrapper .account-content .account-box label {
+    color: #1f1f1f;
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 5px;
+}
+
+.account-page .main-wrapper .account-content .account-box .form-control {
+    background-color: #fbfbfb;
+    border: 1px solid #e3e3e3;
+    height: 46px;
+    border-radius: 4px;
+}
+
+.account-page .main-wrapper .account-content .account-box #toggle-password {
+    cursor: pointer;
+    margin-right: 1px;
+    position: absolute;
+    top: 15px;
+    right: 10px;
+}
+
+.account-page .main-wrapper .account-content .account-box .account-btn {
+    border: 0;
+    display: block;
+    font-size: 22px;
+    width: 100%;
+    border-radius: 4px;
+    padding: 10px 26px;
+}
+
+.account-page .main-wrapper .account-content .account-box .account-wrapper {
+    padding: 30px;
+}
+
+.account-page
+    .main-wrapper
+    .account-content
+    .account-box
+    .account-wrapper
+    .account-footer {
+    text-align: center;
+}
+
+.account-page
+    .main-wrapper
+    .account-content
+    .account-box
+    .account-wrapper
+    .account-title {
+    font-size: 26px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.account-page
+    .main-wrapper
+    .account-content
+    .account-box
+    .account-wrapper
+    .account-subtitle {
+    color: #888;
+    font-size: 18px;
+    text-align: center;
+    margin: 0 0 30px;
+}
+
+.account-page
+    .main-wrapper
+    .account-content
+    .account-box
+    .account-wrapper
+    .account-box
+    .form-group {
+    margin: 0 0 25px;
+}
+
+.account-page
+    .main-wrapper
+    .account-content
+    .account-box
+    .account-wrapper
+    .account-box
+    .form-group
+    label {
+    color: #1f1f1f;
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 5px;
+}
+
+.account-page
+    .main-wrapper
+    .account-content
+    .account-box
+    .account-wrapper
+    .account-box
+    .form-group
+    .form-control {
+    background-color: #fbfbfb;
+    border: 1px solid #e3e3e3;
+    height: 46px;
+    border-radius: 4px;
+}
+
+.account-page .main-wrapper .account-content .account-box .otp-wrap {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.account-page .main-wrapper .account-content .account-box .otp-wrap .otp-input {
+    background-color: #fff;
+    border: 1px solid #e3e3e3;
+    display: inline-block;
+    font-size: 24px;
+    font-weight: 500;
+    height: 70px;
+    line-height: 29px;
+    margin-right: 15px;
+    text-align: center;
+    width: 70px;
+    border-radius: 4px;
+}
+
+@media (max-width: 575px) {
+    .account-page
+        .main-wrapper
+        .account-content
+        .account-box
+        .otp-wrap
+        .otp-input {
+        height: 50px;
+        width: 52px;
+        margin: 10px;
+    }
+}
+
+.account-page .main-wrapper .account-content .account-box .lock-user {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.account-page .main-wrapper .account-content .account-box .lock-user img {
+    margin-bottom: 15px;
+    width: 100px;
+}
+
+.account-page .main-wrapper .account-content .account-logo {
+    margin-bottom: 30px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.account-page .main-wrapper .account-content .account-logo img {
+    width: 100px;
+}

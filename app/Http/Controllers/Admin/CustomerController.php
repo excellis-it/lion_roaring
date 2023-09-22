@@ -53,9 +53,7 @@ class CustomerController extends Controller
             'confirm_password' => 'required|min:8|same:password',
             'address' => 'required',
             'phone' => 'required',
-            'profile_picture' => 'required|image|mimes:jpg,png,jpeg,gif,svg',
             'status' => 'required',
-            'pincode' => 'required',
         ]);
 
         $data = new User();
@@ -68,7 +66,6 @@ class CustomerController extends Controller
         $data->city = $request->city;
         $data->country = $request->country;
         $data->pincode = $request->pincode;
-        $data->profile_picture = $this->imageUpload($request->file('profile_picture'), 'customer');
         $data->save();
         $data->assignRole('CUSTOMER');
         $maildata = [
@@ -119,7 +116,6 @@ class CustomerController extends Controller
             'address' => 'required',
             'phone' => 'required',
             'status' => 'required',
-            'pincode' => 'required',
         ]);
         $data = User::findOrFail($id);
         $data->name = $request->name;
@@ -137,16 +133,7 @@ class CustomerController extends Controller
             ]);
             $data->password = bcrypt($request->password);
         }
-        if ($request->hasFile('profile_picture')) {
-            $request->validate([
-                'profile_picture' => 'image|mimes:jpg,png,jpeg,gif,svg',
-            ]);
-            if ($data->profile_picture) {
-                $currentImageFilename = $data->profile_picture; // get current image name
-                Storage::delete('app/'.$currentImageFilename);
-            }
-            $data->profile_picture = $this->imageUpload($request->file('profile_picture'), 'customer');
-        }
+
         $data->save();
         return redirect()->route('customers.index')->with('message', 'Customer updated successfully.');
     }

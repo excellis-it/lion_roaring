@@ -3,33 +3,25 @@
     data-sidebar-image="none">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-    <meta name="description" content="Smarthr - Bootstrap Admin Template">
-    <meta name="keywords"
-        content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
-    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
-    <meta name="robots" content="noindex, nofollow">
-    <title>Login - {{env('APP_NAME')}} Admin Panel</title>
+    <meta content="width=device-width,  initial-scale=1,  maximum-scale=1,  shrink-to-fit=no" name="viewport" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="{{ asset('admin_assets/bootstrap-5.3/css/bootstrap.min.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/phosphor-icons"></script>
+    <!-- <link rel="stylesheet" href="css/bootstrap.min.css" /> -->
+    <link rel="stylesheet" href="{{ asset('admin_assets/css/app.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('admin_assets/css/custom.css') }}" />
+    <link rel="stylesheet" href="{{ asset('admin_assets/css/style.css') }}" />
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('admin_assets/img/favicon.png') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/bootstrap.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/plugins/fontawesome/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin_assets/plugins/fontawesome/css/all.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/line-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/material.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/font-awesome.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/line-awesome.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/font-awesome.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/style.css') }}">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="{{ asset('admin_assets/css/morris.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
 </head>
 
 <body class="account-page">
@@ -39,7 +31,7 @@
             <div class="container">
 
                 <div class="account-logo">
-                    <a href="admin-dashboard.html"><img src="{{ asset('admin_assets/img/logo2.png') }}"
+                    <a href="admin-dashboard.html"><img src="{{ asset('admin_assets/img/logo.png') }}"
                             alt="Dreamguy's Technologies"></a>
                 </div>
 
@@ -64,18 +56,20 @@
                                         <label>Password</label>
                                     </div>
                                     {{-- <div class="col-auto">
-                                        <a class="text-muted" href="forgot-password.html">
-                                            Forgot password?
-                                        </a>
-                                    </div> --}}
+                                                <a class="text-muted" href="forgot-password.html">
+                                                    Forgot password?
+                                                </a>
+                                            </div> --}}
                                 </div>
                                 <div class="position-relative" id="show_hide_password">
                                     <input type="password" class="form-control border-end-0" name="password"
                                         id="inputChoosePassword" placeholder="Enter Password">
-                                    <a href="javascript:;" class=""><span class="fa fa-eye-slash" id="toggle-password"></span></a>
+                                    <a href="javascript:;" class=""><span class="fa fa-eye-slash"
+                                            id="toggle-password"></span></a>
                                 </div>
                                 @if ($errors->has('password'))
-                                    <div class="error" style="color:red;">{{ $errors->first('password') }}</div>
+                                    <div class="error" style="color:red;">{{ $errors->first('password') }}
+                                    </div>
                                 @endif
                             </div>
                             <div class="form-group text-center">
@@ -90,56 +84,62 @@
                 </div>
             </div>
         </div>
+
     </div>
 
 
 </body>
 
-<script src="{{ asset('admin_assets/js/jquery-3.6.0.min.js') }}"></script>
-
-<script src="{{ asset('admin_assets/js/bootstrap.bundle.min.js') }}"></script>
-
-<script src="{{ asset('admin_assets/js/layout.js') }}"></script>
-<script src="{{ asset('admin_assets/js/theme-settings.js') }}"></script>
-<script src="{{ asset('admin_assets/js/greedynav.js') }}"></script>
-
+<script src="{{ asset('admin_assets/js/jquery-3.4.1.min.js') }}"></script>
+<!-- <script src="js/jquery.min.js"></script> -->
+<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> -->
+<!-- <script src="js/bootstrap.min.js" async=""></script> -->
+<script src="{{ asset('admin_assets/bootstrap-5.3/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('admin_assets/js/raphael-min.js') }}"></script>
+<script src="{{ asset('admin_assets/js/morris.min.js') }}"></script>
+<script src="{{ asset('admin_assets/js/Chart.min.js') }}"></script>
+<script src="{{ asset('admin_assets/js/custom.js') }}" async=""></script>
+<script src="{{ asset('admin_assets/js/app.min.js') }}"></script>
+<script src="{{ asset('admin_assets/js/scripts.js') }}" async=""></script>
+<script src="{{ asset('admin_assets/js/jquery-ui.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
 <script>
-    @if(Session::has('message'))
-    toastr.options = {
-        "closeButton": true,
-        "progressBar": true
-    }
-    toastr.success("{{ session('message') }}");
+    @if (Session::has('message'))
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true
+        }
+        toastr.success("{{ session('message') }}");
     @endif
 
-    @if(Session::has('error'))
-    toastr.options = {
-        "closeButton": true,
-        "progressBar": true
-    }
-    toastr.error("{{ session('error') }}");
+    @if (Session::has('error'))
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true
+        }
+        toastr.error("{{ session('error') }}");
     @endif
 
-    @if(Session::has('info'))
-    toastr.options = {
-        "closeButton": true,
-        "progressBar": true
-    }
-    toastr.info("{{ session('info') }}");
+    @if (Session::has('info'))
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true
+        }
+        toastr.info("{{ session('info') }}");
     @endif
 
-    @if(Session::has('warning'))
-    toastr.options = {
-        "closeButton": true,
-        "progressBar": true
-    }
-    toastr.warning("{{ session('warning') }}");
+    @if (Session::has('warning'))
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true
+        }
+        toastr.warning("{{ session('warning') }}");
     @endif
 </script>
-
-<script src="{{ asset('admin_assets/js/app.js') }}"></script>
 <script>
     $(document).ready(function() {
         $("#show_hide_password a").on('click', function(event) {

@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-    Dashboard - Demo admin
+    Dashboard - {{env('APP_NAME')}} admin
 @endsection
 @push('styles')
 @endpush

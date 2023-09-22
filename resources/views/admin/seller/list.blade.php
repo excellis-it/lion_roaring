@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-    All Seller Details - {{ env('APP_NAME') }}
+    All B2B User Details - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
     <style>
@@ -9,94 +9,67 @@
         }
     </style>
 @endpush
-
+@section('head')
+    All B2B User Details
+@endsection
 @section('content')
     <section id="loading">
         <div id="loading-content"></div>
     </section>
-    <div class="page-wrapper">
+    <div class="main-content">
+        <div class="inner_page">
 
-        <div class="content container-fluid">
-
-            <div class="page-header">
-                <div class="row align-items-center">
-                    <div class="col">
-                        <h3 class="page-title">Sellers Information</h3>
-                        <ul class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('sellers.index') }}">Sellers</a></li>
-                            <li class="breadcrumb-item active">List</li>
-                        </ul>
-                    </div>
-                    <div class="col-auto float-end ms-auto">
-                        <a href="{{ route('sellers.create') }}" class="btn add-btn"><i class="fa fa-plus"></i> Add a
-                            Seller</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-title">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h4 class="mb-0">Sellers Details</h4>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <hr />
-                    <div class="table-responsive">
-                        <table id="myTable" class="dd table table-striped table-bordered" style="width:100%">
-                            <thead>
+            <div class="card table_sec stuff-list-table">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="myTable" class="display">
+                        <thead>
+                            <tr>
+                                <th> Name</th>
+                                <th> Email</th>
+                                <th> Phone</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Address</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($sellers as $key => $seller)
                                 <tr>
-                                    <th> Name</th>
-                                    <th> Email</th>
-                                    <th> Phone</th>
-                                    <th>City</th>
-                                    <th>State</th>
-                                    <th>Address</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($sellers as $key => $seller)
-                                    <tr>
-                                        <td>{{ $seller->name }}</td>
-                                        <td>{{ $seller->email }}</td>
-                                        <td>{{ $seller->phone }}</td>
-                                        <td>{{ $seller->city }}</td>
-                                        <td>{{ $seller->country }}</td>
-                                        <td>{{ $seller->address }}</td>
-                                        <td>
-                                            <div class="button-switch">
-                                                <input type="checkbox" id="switch-orange" class="switch toggle-class"
-                                                    data-id="{{ $seller['id'] }}"
-                                                    {{ $seller['status'] ? 'checked' : '' }} />
-                                                <label for="switch-orange" class="lbl-off"></label>
-                                                <label for="switch-orange" class="lbl-on"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a title="Edit Seller" data-route=""
-                                                href="{{ route('sellers.edit', $seller->id) }}"><i
-                                                    class="fas fa-edit"></i></a> &nbsp;&nbsp;
-
-                                            <a title="Delete Seller"
+                                    <td>{{ $seller->name }}</td>
+                                    <td>{{ $seller->email }}</td>
+                                    <td>{{ $seller->phone }}</td>
+                                    <td>{{ $seller->city }}</td>
+                                    <td>{{ $seller->country }}</td>
+                                    <td>{{ $seller->address }}</td>
+                                    <td>
+                                        <div class="button-switch">
+                                            <input type="checkbox" id="switch-orange" class="switch toggle-class"
+                                                data-id="{{ $seller['id'] }}"
+                                                {{ $seller['status'] ? 'checked' : '' }} />
+                                            <label for="switch-orange" class="lbl-off"></label>
+                                            <label for="switch-orange" class="lbl-on"></label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="edit-1 d-flex align-items-center justify-content-center">
+                                            <a title="Edit B2B User" href="{{ route('sellers.edit', $seller->id) }}">
+                                                <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span></a>
+                                            <a title="Delete B2B User"
                                                 data-route="{{ route('sellers.delete', $seller->id) }}"
-                                                href="javascipt:void(0);" id="delete"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                                                href="javascipt:void(0);" id="delete"> <span class="trash-icon"><i
+                                                        class="ph ph-trash"></i></span></a>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
         </div>
-
     </div>
 @endsection
 

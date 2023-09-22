@@ -93,24 +93,26 @@
                 <ul class="dropdown-menu">
                     <li class="{{ Request::is('admin/profile*') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('admin.profile') }}">My Profile</a></li>
                     <li class="{{ Request::is('admin/password*') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('admin.password') }}">Change Password</a></li>
-                    <li class="{{ Request::is('admin/customers*') ? 'active' : ' ' }}"><a class="nav-link " href="{{ route('customers.index') }}">Staff List</a></li>
                 </ul>
             </li>
             <li class="dropdown">
-                <a href="">
-                    <i class="ph-timer"></i>
-                    <span>Booking Details</span>
+                <a href="javascript:void(0);" class="menu-toggle nav-link has-dropdown {{ Request::is('admin/customers*') ? 'active' : ' ' }}">
+                    <i class="ph ph-user-list"></i>
+                    <span> User Management</span>
                 </a>
+                <ul class="dropdown-menu">
+                    <li class="{{ Request::is('admin/customers/create') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('customers.create') }}">Create  User</a></li>
+                    <li class="{{ Request::is('admin/customers') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('customers.index') }}"> User List</a></li>
+                </ul>
             </li>
             <li class="dropdown">
-                <a href="" class="menu-toggle nav-link has-dropdown">
-                    <i class="ph-clipboard-text"></i>
+                <a href="javascript:void(0);" class="menu-toggle nav-link has-dropdown {{ Request::is('admin/customers*') ? 'active' : ' ' }}">
+                    <i class="ph ph-users-three"></i>
                     <span>B2B User Management</span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a class="nav-link" href="create-b2b-user.html">Create B2B User</a></li>
-                    <li><a class="nav-link" href="b2b-user-list.html">B2B User List</a></li>
-                    <li><a class="nav-link" href="">New Request</a></li>
+                    <li class="{{ Request::is('admin/sellers/create') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('sellers.create') }}"> Create B2B User</a></li>
+                    <li class="{{ Request::is('admin/sellers') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('sellers.index') }}">B2B User List</a></li>
                 </ul>
             </li>
             {{-- <li class="dropdown">

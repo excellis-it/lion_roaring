@@ -2,38 +2,34 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Forgot Password - {{ env('APP_NAME') }} Admin Panel</title>
+    <meta content="width=device-width,  initial-scale=1,  maximum-scale=1,  shrink-to-fit=no" name="viewport" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <title>Reset Password - {{ env('APP_NAME') }} Admin Panel</title>
+    <link rel="stylesheet" href="{{ asset('admin_assets/bootstrap-5.3/css/bootstrap.min.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/phosphor-icons"></script>
+    <!-- <link rel="stylesheet" href="css/bootstrap.min.css" /> -->
+    <link rel="stylesheet" href="{{ asset('admin_assets/css/app.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('admin_assets/css/custom.css') }}" />
+    <link rel="stylesheet" href="{{ asset('admin_assets/css/style.css') }}" />
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('admin_assets/img/favicon.png') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/bootstrap.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/plugins/fontawesome/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin_assets/plugins/fontawesome/css/all.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/line-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/material.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/font-awesome.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/line-awesome.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/font-awesome.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('admin_assets/css/style.css') }}">
-
+    <link rel="stylesheet" href="{{ asset('admin_assets/css/morris.css') }}">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <style>
         .mainDiv {
             display: flex;
             min-height: 100%;
             align-items: center;
             justify-content: center;
-            background-color: #f9f9f9;
+            /* background-color: #f9f9f9; */
         }
 
         .cardStyle {
@@ -167,13 +163,13 @@
             <form action="{{ route('admin.change.password') }}" method="post" name="signupForm" id="signupForm">
                 @csrf
 
-                <img src="{{ asset('admin_assets/img/logo2.png') }}" id="signupLogo" />
+                <img src="{{ asset('admin_assets/img/logo.png') }}" id="signupLogo" />
 
                 <h2 class="formTitle">
                     Reset Password
                 </h2>
                 <input type="hidden" name="id" value="{{ $id }}">
-                <div class="form-wrap" style="padding: 0px 30px">
+                <div class="form-wrap" >
                     <div class="form-group">
                         <label class="col-md-4 control-label">Password</label>
                         <div class="col-md-12">
@@ -203,8 +199,7 @@
                 </div>
                 <div class="buttonWrapper">
                     <button type="submit" id="submitButton" onclick="validateSignupForm()"
-                        class="submitButton pure-button pure-button-primary"
-                        style="background: linear-gradient(to right, #10acff 0%, #1f1f1f 100%); border-color:white;">
+                        class="submitButton btn btn-primary">
                         <span>Continue</span>
                         {{-- <span id="loader"></span> --}}
                     </button>
@@ -216,16 +211,23 @@
 </body>
 
 
-<script src="{{ asset('admin_assets/js/jquery-3.6.0.min.js') }}"></script>
-
-<script src="{{ asset('admin_assets/js/bootstrap.bundle.min.js') }}"></script>
-
-<script src="{{ asset('admin_assets/js/layout.js') }}"></script>
-<script src="{{ asset('admin_assets/js/theme-settings.js') }}"></script>
-<script src="{{ asset('admin_assets/js/greedynav.js') }}"></script>
-
+<script src="{{ asset('admin_assets/js/jquery-3.4.1.min.js') }}"></script>
+<!-- <script src="js/jquery.min.js"></script> -->
+<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> -->
+<!-- <script src="js/bootstrap.min.js" async=""></script> -->
+<script src="{{ asset('admin_assets/bootstrap-5.3/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('admin_assets/js/raphael-min.js') }}"></script>
+<script src="{{ asset('admin_assets/js/morris.min.js') }}"></script>
+<script src="{{ asset('admin_assets/js/Chart.min.js') }}"></script>
+<script src="{{ asset('admin_assets/js/custom.js') }}" async=""></script>
+<script src="{{ asset('admin_assets/js/app.min.js') }}"></script>
+<script src="{{ asset('admin_assets/js/scripts.js') }}" async=""></script>
+<script src="{{ asset('admin_assets/js/jquery-ui.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
 <script>
     @if (Session::has('message'))
         toastr.options = {

@@ -50,9 +50,7 @@ class SellerController extends Controller
             'confirm_password' => 'required|min:8|same:password',
             'address' => 'required',
             'phone' => 'required',
-            'profile_picture' => 'required|image|mimes:jpg,png,jpeg,gif,svg',
             'status' => 'required',
-            'pincode' => 'required',
         ]);
 
         $data = new User();
@@ -65,7 +63,6 @@ class SellerController extends Controller
         $data->city = $request->city;
         $data->country = $request->country;
         $data->pincode = $request->pincode;
-        $data->profile_picture = $this->imageUpload($request->file('profile_picture'), 'seller');
         $data->save();
         $data->assignRole('SELLER');
         $maildata = [
@@ -76,7 +73,7 @@ class SellerController extends Controller
         ];
 
         Mail::to($request->email)->send(new RegistrationMail($maildata));
-        return redirect()->route('sellers.index')->with('message', 'Seller created successfully.');
+        return redirect()->route('sellers.index')->with('message', 'B2B user created successfully.');
     }
 
     /**
@@ -117,7 +114,6 @@ class SellerController extends Controller
             'address' => 'required',
             'phone' => 'required',
             'status' => 'required',
-            'pincode' => 'required',
         ]);
         $data = User::findOrFail($id);
         $data->name = $request->name;
@@ -135,18 +131,9 @@ class SellerController extends Controller
             ]);
             $data->password = bcrypt($request->password);
         }
-        if ($request->hasFile('profile_picture')) {
-            $request->validate([
-                'profile_picture' => 'image|mimes:jpg,png,jpeg,gif,svg',
-            ]);
-            if ($data->profile_picture) {
-                $currentImageFilename = $data->profile_picture; // get current image name
-                Storage::delete('app/'.$currentImageFilename);
-            }
-            $data->profile_picture = $this->imageUpload($request->file('profile_picture'), 'seller');
-        }
+
         $data->save();
-        return redirect()->route('sellers.index')->with('message', 'Seller updated successfully.');
+        return redirect()->route('sellers.index')->with('message', 'B2B user updated successfully.');
     }
 
     /**
@@ -172,6 +159,6 @@ class SellerController extends Controller
     {
         $user = User::findOrFail($id);
         $user->delete();
-        return redirect()->route('sellers.index')->with('error', 'Seller has been deleted successfully.');
+        return redirect()->route('sellers.index')->with('error', 'B2B user has been deleted successfully.');
     }
 }
