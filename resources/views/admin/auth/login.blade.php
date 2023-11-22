@@ -64,7 +64,7 @@
                                 <div class="position-relative" id="show_hide_password">
                                     <input type="password" class="form-control border-end-0" name="password"
                                         id="inputChoosePassword" placeholder="Enter Password">
-                                    <a href="javascript:;" class=""><span class="fa fa-eye-slash"
+                                    <a href="javascript:;" class=""><span class="ph ph-eye-slash"
                                             id="toggle-password"></span></a>
                                 </div>
                                 @if ($errors->has('password'))
@@ -141,20 +141,7 @@
     @endif
 </script>
 <script>
-    $(document).ready(function() {
-        $("#show_hide_password a").on('click', function(event) {
-            event.preventDefault();
-            if ($('#show_hide_password input').attr("type") == "text") {
-                $('#show_hide_password input').attr('type', 'password');
-                $('#show_hide_password i').addClass("bx-hide");
-                $('#show_hide_password i').removeClass("bx-show");
-            } else if ($('#show_hide_password input').attr("type") == "password") {
-                $('#show_hide_password input').attr('type', 'text');
-                $('#show_hide_password i').removeClass("bx-hide");
-                $('#show_hide_password i').addClass("bx-show");
-            }
-        });
-    });
+    // 
 </script>
 
 </html>

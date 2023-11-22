@@ -69,7 +69,7 @@
                 <div class="dropdown-title">Hello {{Auth::user()->name}}</div>
                 <div class="dropdown-divider"></div>
                 <button type="submit" class="dropdown-item has-icon text-danger">
-                    <i class="fas fa-sign-out-alt"></i>
+                    <i class="ph ph-sign-out"></i>
                     <a href="{{route('admin.logout')}}" class="has-icon text-danger">
                         Logout
                     </a>
