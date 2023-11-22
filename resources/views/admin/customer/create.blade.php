@@ -47,8 +47,11 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Password*</label>
-                                        <input type="text" class="form-control" id="floatingInputValue" name="password"
+                                        <input type="password" class="form-control" id="password" name="password"
                                             value="{{ old('password') }}" placeholder="Password*">
+                                            <span class="eye-btn-1" id="eye-button-1">
+                                                <i class="ph ph-eye-slash" aria-hidden="true" id="togglePassword"></i>
+                                            </span>
                                         @if ($errors->has('password'))
                                             <div class="error" style="color:red;">{{ $errors->first('password') }}</div>
                                         @endif
@@ -59,9 +62,12 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Confirm Password*</label>
-                                        <input type="text" class="form-control" id="floatingInputValue"
+                                        <input type="password" class="form-control" id="confirm_password"
                                             name="confirm_password" value="{{ old('confirm_password') }}"
                                             placeholder="Confirm Password*">
+                                            <span class="eye-btn-1" id="eye-button-2">
+                                                <i class="ph ph-eye-slash" aria-hidden="true" id="togglePassword"></i>
+                                            </span>
                                         @if ($errors->has('confirm_password'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('confirm_password') }}</div>
@@ -156,7 +162,7 @@
                         </div>
                         <div class="col-xl-12">
                             <div class="btn-1">
-                                <button type="submit">Create B2B User</button>
+                                <button type="submit">Create</button>
                             </div>
                         </div>
                     </div>
@@ -169,4 +175,16 @@
 @endsection
 
 @push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#eye-button-1').click(function() {
+                $('#password').attr('type', $('#password').is(':password') ? 'text' : 'password');
+                $(this).find('i').toggleClass('ph-eye-slash ph-eye');
+            });
+            $('#eye-button-2').click(function() {
+                $('#confirm_password').attr('type', $('#confirm_password').is(':password') ? 'text' : 'password');
+                $(this).find('i').toggleClass('ph-eye-slash ph-eye');
+            });
+        });
+    </script>
 @endpush

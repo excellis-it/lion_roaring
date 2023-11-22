@@ -24,7 +24,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = User::Role('CUSTOMER')->get();
+        $customers = User::Role('CUSTOMER')->orderBy('name', 'desc')->paginate(15);
         return view('admin.customer.list')->with(compact('customers'));
     }
 
@@ -163,4 +163,28 @@ class CustomerController extends Controller
         $user->delete();
         return redirect()->route('customers.index')->with('error', 'Customer has been deleted successfully.');
     }
+
+    public function fetchData(Request $request)
+    {
+        if ($request->ajax()) {
+            $sort_by = $request->get('sortby');
+            $sort_type = $request->get('sorttype');
+            $query = $request->get('query');
+            $query = str_replace(" ", "%", $query);
+            $customers = User::where('id', 'like', '%' . $query . '%')
+                ->orWhere('name', 'like', '%' . $query . '%')
+                ->orWhere('email', 'like', '%' . $query . '%')
+                ->orWhere('phone', 'like', '%' . $query . '%')
+                ->orWhere('address', 'like', '%' . $query . '%')
+                ->orWhere('city', 'like', '%' . $query . '%')
+                ->orWhere('country', 'like', '%' . $query . '%')
+                ->orWhere('pincode', 'like', '%' . $query . '%')
+                ->orderBy($sort_by, $sort_type)
+                ->Role('CUSTOMER')
+                ->paginate(15);
+
+            return response()->json(['data' => view('admin.customer.table', compact('customers'))->render()]);
+        }
+    }
+
 }
