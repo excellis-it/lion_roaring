@@ -34,6 +34,7 @@
                 {!! $customers->links() !!}
             </div>
         </td>
+    </tr>
     @else
     <tr>
         <td colspan="8" class="text-center">No Data Found</td>
