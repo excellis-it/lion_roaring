@@ -18,11 +18,23 @@
                     <div class="col-xl-3 col-md-6">
                         <div class="form-group-div">
                             <div class="form-group">
-                                <label for="floatingInputValue">Name</label>
-                                <input type="text" class="form-control" id="floatingInputValue" name="name" value="{{ Auth::user()->name }}"
-                                    placeholder="Full Name" >
-                                @if ($errors->has('name'))
-                                    <div class="error" style="color:red;">{{ $errors->first('name') }}</div>
+                                <label for="floatingInputValue">First Name</label>
+                                <input type="text" class="form-control" id="floatingInputValue" name="first_name" value="{{ Auth::user()->first_name }}"
+                                    placeholder="First Name" >
+                                @if ($errors->has('first_name'))
+                                    <div class="error" style="color:red;">{{ $errors->first('first_name') }}</div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="form-group-div">
+                            <div class="form-group">
+                                <label for="floatingInputValue">Last Name</label>
+                                <input type="text" class="form-control" id="floatingInputValue" name="last_name" value="{{ Auth::user()->last_name }}"
+                                    placeholder="Last Name" >
+                                @if ($errors->has('last_name'))
+                                    <div class="error" style="color:red;">{{ $errors->first('last_name') }}</div>
                                 @endif
                             </div>
                         </div>

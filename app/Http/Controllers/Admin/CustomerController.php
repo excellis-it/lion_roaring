@@ -10,6 +10,7 @@ use App\Mail\RegistrationMail;
 use App\Traits\ImageTrait;
 use Illuminate\Support\Facades\Storage;
 use File;
+use Illuminate\Support\Facades\DB;
 
 use function PHPUnit\Framework\fileExists;
 
@@ -24,7 +25,8 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = User::Role('CUSTOMER')->orderBy('name', 'desc')->paginate(15);
+        // first middle and last name
+        $customers = User::Role('CUSTOMER')->orderBy(DB::raw('CONCAT(first_name, " ", middle_name, " ", last_name)'))->paginate(15);
         return view('admin.customer.list')->with(compact('customers'));
     }
 
@@ -47,7 +49,10 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
+            'user_name' => 'required|unique:users',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'middle_name' => 'nullable',
             'email' => 'required|unique:users|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
             'password' => 'required|min:8',
             'confirm_password' => 'required|min:8|same:password',
@@ -57,19 +62,19 @@ class CustomerController extends Controller
         ]);
 
         $data = new User();
-        $data->name = $request->name;
+        $data->user_name = $request->user_name;
+        $data->first_name = $request->first_name;
+        $data->last_name = $request->last_name;
+        $data->middle_name = $request->middle_name;
         $data->email = $request->email;
         $data->password = bcrypt($request->password);
         $data->address = $request->address;
         $data->phone = $request->phone;
         $data->status = $request->status;
-        $data->city = $request->city;
-        $data->country = $request->country;
-        $data->pincode = $request->pincode;
         $data->save();
         $data->assignRole('CUSTOMER');
         $maildata = [
-            'name' => $request->name,
+            'name' => $request->full_name,
             'email' => $request->email,
             'password' => $request->password,
             'type' => 'Customer',
@@ -111,21 +116,24 @@ class CustomerController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required',
+            'user_name' => 'required|unique:users,user_name,' . $id, // ignore the unique rule for this id
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'middle_name' => 'nullable',
             'email' => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
             'address' => 'required',
             'phone' => 'required',
             'status' => 'required',
         ]);
         $data = User::findOrFail($id);
-        $data->name = $request->name;
+        $data->user_name = $request->user_name;
+        $data->first_name = $request->first_name;
+        $data->last_name = $request->last_name;
+        $data->middle_name = $request->middle_name;
         $data->email = $request->email;
         $data->address = $request->address;
         $data->phone = $request->phone;
         $data->status = $request->status;
-        $data->city = $request->city;
-        $data->country = $request->country;
-        $data->pincode = $request->pincode;
         if ($request->password != null) {
             $request->validate([
                 'password' => 'min:8',
@@ -172,19 +180,18 @@ class CustomerController extends Controller
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
             $customers = User::where('id', 'like', '%' . $query . '%')
-                ->orWhere('name', 'like', '%' . $query . '%')
+                ->orWhereRaw('CONCAT(first_name, " ", middle_name, " ", last_name) like ?', '%' . $query . '%')
                 ->orWhere('email', 'like', '%' . $query . '%')
                 ->orWhere('phone', 'like', '%' . $query . '%')
-                ->orWhere('address', 'like', '%' . $query . '%')
-                ->orWhere('city', 'like', '%' . $query . '%')
-                ->orWhere('country', 'like', '%' . $query . '%')
-                ->orWhere('pincode', 'like', '%' . $query . '%')
-                ->orderBy($sort_by, $sort_type)
-                ->Role('CUSTOMER')
-                ->paginate(15);
+                ->orWhere('address', 'like', '%' . $query . '%');
+            if ($sort_by == 'name') {
+                $customers->orderBy(DB::raw('CONCAT(first_name, " ", middle_name, " ", last_name)'), $sort_type);
+            } else {
+                $customers->orderBy($sort_by, $sort_type);
+            }
+            $customers = $customers->Role('CUSTOMER')->paginate(15);
 
             return response()->json(['data' => view('admin.customer.table', compact('customers'))->render()]);
         }
     }
-
 }

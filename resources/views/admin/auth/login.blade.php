@@ -31,7 +31,7 @@
             <div class="container">
 
                 <div class="account-logo">
-                    <a href="admin-dashboard.html"><img src="{{ asset('admin_assets/img/logo.png') }}"
+                    <a href="{{route('home')}}"><img src="{{ asset('admin_assets/img/logo.png') }}"
                             alt="Dreamguy's Technologies"></a>
                 </div>
 
@@ -141,7 +141,7 @@
     @endif
 </script>
 <script>
-    // 
+    //
 </script>
 
 </html>

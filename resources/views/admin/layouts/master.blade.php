@@ -5,6 +5,7 @@
     <meta content="width=device-width,  initial-scale=1,  maximum-scale=1,  shrink-to-fit=no" name="viewport" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>@yield('title')</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset('frontend_assets/images/icons/favicon.ico')}}" />
     <link rel="stylesheet" href="{{asset('admin_assets/bootstrap-5.3/css/bootstrap.min.css')}}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,6 +22,10 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
     @stack('styles')
     <style>
         .error {
@@ -35,10 +40,14 @@
             <div class="navbar-bg"></div>
             <!--header-->
             @include('admin.includes.header')
-            <section class="section_breadcrumb d-block d-sm-flex justify-content-between">
-                <div class="">
-                    <h4 class="page-title m-b-0">@yield('head')</h4>
-                    <!-- <h5 class="page">Hello Evano 👋🏼,</h5> -->
+            <section class="section_breadcrumb bred-des by-me">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="page-title m-b-0">@yield('head')</h4>
+                    </div>
+                    <div class="col-md-6 create-button">
+                        @yield('create_button')
+                    </div>
                 </div>
 
             </section>
@@ -73,6 +82,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
      {{-- trippy cdn link --}}
  <script src="https://unpkg.com/popper.js@1"></script>
  <script src="https://unpkg.com/tippy.js@5"></script>

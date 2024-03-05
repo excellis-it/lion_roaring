@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,13 +19,15 @@ class ProfileController extends Controller
     public function profileUpdate(Request $request)
     {
         $request->validate([
-            'name'     => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
             'email'    => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix|unique:users,email,'.Auth::user()->id,
             'phone_number' => 'required|unique:users,phone,'.Auth::user()->id,
         ]);
 
         $data = User::find(Auth::user()->id);
-        $data->name = $request->name;
+        $data->first_name = $request->first_name;
+        $data->last_name = $request->last_name;
         $data->email = $request->email;
         $data->phone = $request->phone_number;
         $data->save();

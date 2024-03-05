@@ -16,7 +16,7 @@
             <div class="">
 
                 <div class="left_right">
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-md-12">
                             <!-- <h2 class="flight_titel">Flight</h2> -->
                             <div class="row">
@@ -178,7 +178,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                 </div>
             </div>

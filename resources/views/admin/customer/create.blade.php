@@ -83,45 +83,59 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-xl-4 col-md-6">
+                        {{-- user Name --}}
+                        <div class="col-xl-12 col-md-12">
                             <div class="form-group-div">
                                 <div class="form-group">
-                                    <label for="floatingInputValue">Full Name*</label>
-                                    <input type="text" class="form-control" id="floatingInputValue" name="name"
-                                        value="{{ old('name') }}" placeholder="Full Name*">
-                                    @if ($errors->has('name'))
-                                        <div class="error" style="color:red;">{{ $errors->first('name') }}</div>
+                                    <label for="floatingInputValue">User Name*</label>
+                                    <input type="text" class="form-control" id="floatingInputValue" name="user_name"
+                                        value="{{ old('user_name') }}" placeholder="User Name*">
+                                    @if ($errors->has('user_name'))
+                                        <div class="error" style="color:red;">{{ $errors->first('user_name') }}</div>
                                     @endif
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-4 col-md-6">
+                        <div class="col-xl-4 col-md-4">
                             <div class="form-group-div">
                                 <div class="form-group">
-                                    <label for="floatingInputValue">City</label>
-                                    <input type="text" class="form-control" id="floatingInputValue" name="city"
-                                        value="{{ old('city') }}" placeholder="City">
-                                    @if ($errors->has('city'))
-                                        <div class="error" style="color:red;">{{ $errors->first('city') }}</div>
+                                    <label for="floatingInputValue">First Name*</label>
+                                    <input type="text" class="form-control" id="floatingInputValue" name="first_name"
+                                        value="{{ old('first_name') }}" placeholder="First Name*">
+                                    @if ($errors->has('first_name'))
+                                        <div class="error" style="color:red;">{{ $errors->first('first_name') }}</div>
                                     @endif
                                 </div>
                             </div>
                         </div>
-                        {{-- country --}}
-                        <div class="col-xl-4 col-md-6">
+                        {{-- middle Name --}}
+                        <div class="col-xl-4 col-md-4">
                             <div class="form-group-div">
                                 <div class="form-group">
-                                    <label for="floatingInputValue">Country</label>
-                                    <input type="text" class="form-control" id="floatingInputValue" name="country"
-                                        value="{{ old('country') }}" placeholder="Country">
-                                    @if ($errors->has('country'))
-                                        <div class="error" style="color:red;">{{ $errors->first('country') }}</div>
+                                    <label for="floatingInputValue">Middle Name</label>
+                                    <input type="text" class="form-control" id="floatingInputValue" name="middle_name"
+                                        value="{{ old('middle_name') }}" placeholder="Middle Name">
+                                    @if ($errors->has('middle_name'))
+                                        <div class="error" style="color:red;">{{ $errors->first('middle_name') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        {{-- last Name --}}
+                        <div class="col-xl-4 col-md-4">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    <label for="floatingInputValue">Last Name*</label>
+                                    <input type="text" class="form-control" id="floatingInputValue" name="last_name"
+                                        value="{{ old('last_name') }}" placeholder="Last Name*">
+                                    @if ($errors->has('last_name'))
+                                        <div class="error" style="color:red;">{{ $errors->first('last_name') }}</div>
                                     @endif
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Address*</label>
@@ -136,23 +150,11 @@
                         <div class="col-xl-6 col-md-6">
                             <div class="form-group-div">
                                 <div class="form-group">
-                                    <label for="floatingInputValue">Pin Code</label>
-                                    <input type="text" class="form-control" id="floatingInputValue" name="pincode"
-                                        value="{{ old('pincode') }}" placeholder="Pin Code">
-                                    @if ($errors->has('pincode'))
-                                        <div class="error" style="color:red;">{{ $errors->first('pincode') }}</div>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-6 col-md-6">
-                            <div class="form-group-div">
-                                <div class="form-group">
                                     <label for="floatingInputValue">Status*</label>
                                     <select name="status" id="status" class="form-control">
                                         <option value="">Select Status</option>
-                                        <option value="1">Active</option>
-                                        <option value="0">Inactive</option>
+                                        <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Active</option>
+                                        <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Inactive</option>
                                     </select>
                                     @if ($errors->has('status'))
                                         <div class="error" style="color:red;">{{ $errors->first('status') }}</div>

@@ -17,7 +17,12 @@ class AuthController extends Controller
             return view('admin.auth.login');
         }
     }
-    
+
+    public function redirectAdminLogin()
+    {
+        return redirect()->route('admin.login');
+    }
+
     public function loginCheck(Request $request)
     {
         $request->validate([

@@ -44,14 +44,12 @@
                             <tr>
                                 <th class="sorting" data-tippy-content="Sort by Name" data-sorting_type="desc"
                                 data-column_name="name" style="cursor: pointer"> Name<span id="name_icon"><i class="ph ph-caret-down"></i></span></th>
+                                <th class="sorting" data-tippy-content="Sort by User Name" data-sorting_type="desc"
+                                data-column_name="user_name" style="cursor: pointer">User Name<span id="user_name_icon"></span></th>
                                 <th class="sorting" data-tippy-content="Sort by Email" data-sorting_type="desc"
                                     data-column_name="email" style="cursor: pointer"> Email <span id="email_icon"></span></th>
                                 <th class="sorting" data-tippy-content="Sort by Phone" data-sorting_type="desc"
                                     data-column_name="phone" style="cursor: pointer"> Phone <span id="phone_icon"></span></th>
-                                <th class="sorting" data-tippy-content="Sort by City" data-sorting_type="desc"
-                                    data-column_name="city" style="cursor: pointer"> City <span id="city_icon"></span></th>
-                                <th class="sorting" data-tippy-content="Sort by Country" data-sorting_type="desc"
-                                    data-column_name="country" style="cursor: pointer"> Country <span id="country_icon"></span></th>
                                 <th class="sorting" data-tippy-content="Sort by Address" data-sorting_type="desc"
                                     data-column_name="address" style="cursor: pointer"> Address <span id="address_icon"></span></th>
                                 <th>Status</th>
@@ -121,9 +119,8 @@
                 $('#name_icon').html('');
                 $('#email_icon').html('');
                 $('#phone_icon').html('');
-                $('#city_icon').html('');
-                $('#country_icon').html('');
                 $('#address_icon').html('');
+                $('#user_name_icon').html('');
             }
 
             function fetch_data(page, sort_type, sort_by, query) {

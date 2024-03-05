@@ -7,7 +7,10 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\SellerController;
+use App\Http\Controllers\Frontend\CmsController;
 use Illuminate\Support\Facades\Artisan;
 
 /*
@@ -27,7 +30,8 @@ Route::get('clear', function () {
     return "Optimize clear has been successfully";
 });
 
-Route::get('/', [AuthController::class, 'login'])->name('admin.login');
+Route::get('/admin', [AuthController::class, 'redirectAdminLogin']);
+Route::get('/admin/login', [AuthController::class, 'login'])->name('admin.login');
 Route::post('/login-check', [AuthController::class, 'loginCheck'])->name('admin.login.check');  //login check
 Route::post('forget-password', [ForgetPasswordController::class, 'forgetPassword'])->name('admin.forget.password');
 Route::post('change-password', [ForgetPasswordController::class, 'changePassword'])->name('admin.change.password');
@@ -48,7 +52,19 @@ Route::group(['middleware' => ['admin'], 'prefix'=>'admin'], function () {
 
     Route::resources([
         'customers' => CustomerController::class,
+        'faq' => FaqController::class,
+        'gallery' => GalleryController::class,
     ]);
+
+    Route::prefix('faq')->group(function () {
+        Route::get('/faq-delete/{id}', [FaqController::class, 'delete'])->name('faq.delete');
+    });
+    Route::get('/faq-fetch-data', [FaqController::class, 'fetchData'])->name('faq.fetch-data');
+
+    Route::prefix('gallery')->group(function () {
+        Route::get('/gallery-delete/{id}', [GalleryController::class, 'delete'])->name('gallery.delete');
+    });
+    
     //  Customer Routes
     Route::prefix('customers')->group(function () {
         Route::get('/customer-delete/{id}', [CustomerController::class, 'delete'])->name('customers.delete');
@@ -57,3 +73,6 @@ Route::group(['middleware' => ['admin'], 'prefix'=>'admin'], function () {
     Route::get('/customer-fetch-data', [CustomerController::class, 'fetchData'])->name('customers.fetch-data');
 
 });
+
+
+Route::get('/', [CmsController::class, 'index'])->name('home');

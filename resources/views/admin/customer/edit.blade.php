@@ -82,45 +82,58 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-xl-4 col-md-6">
+                        <div class="col-xl-12 col-md-12">
                             <div class="form-group-div">
                                 <div class="form-group">
-                                    <label for="floatingInputValue">Full Name*</label>
-                                    <input type="text" class="form-control" id="floatingInputValue" name="name"
-                                        value="{{ $customer->name }}" placeholder="Full Name*">
-                                    @if ($errors->has('name'))
-                                        <div class="error" style="color:red;">{{ $errors->first('name') }}</div>
+                                    <label for="floatingInputValue">User Name*</label>
+                                    <input type="text" class="form-control" id="floatingInputValue" name="user_name"
+                                        value="{{ ($customer->user_name) ? $customer->user_name : old('user_name') }}" placeholder="User Name*">
+                                    @if ($errors->has('user_name'))
+                                        <div class="error" style="color:red;">{{ $errors->first('user_name') }}</div>
                                     @endif
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-4 col-md-6">
+                        <div class="col-xl-4 col-md-4">
                             <div class="form-group-div">
                                 <div class="form-group">
-                                    <label for="floatingInputValue">City</label>
-                                    <input type="text" class="form-control" id="floatingInputValue" name="city"
-                                        value="{{ $customer->city }}" placeholder="City">
-                                    @if ($errors->has('city'))
-                                        <div class="error" style="color:red;">{{ $errors->first('city') }}</div>
+                                    <label for="floatingInputValue">First Name*</label>
+                                    <input type="text" class="form-control" id="floatingInputValue" name="first_name"
+                                        value="{{($customer->first_name) ? $customer->first_name : old('first_name') }}" placeholder="First Name*" >
+                                    @if ($errors->has('first_name'))
+                                        <div class="error" style="color:red;">{{ $errors->first('first_name') }}</div>
                                     @endif
                                 </div>
                             </div>
                         </div>
-                        {{-- country --}}
-                        <div class="col-xl-4 col-md-6">
+                        {{-- middle Name --}}
+                        <div class="col-xl-4 col-md-4">
                             <div class="form-group-div">
                                 <div class="form-group">
-                                    <label for="floatingInputValue">Country</label>
-                                    <input type="text" class="form-control" id="floatingInputValue" name="country"
-                                        value="{{ $customer->country }}" placeholder="Country">
-                                    @if ($errors->has('country'))
-                                        <div class="error" style="color:red;">{{ $errors->first('country') }}</div>
+                                    <label for="floatingInputValue">Middle Name</label>
+                                    <input type="text" class="form-control" id="floatingInputValue" name="middle_name"
+                                        value="{{ ($customer->middle_name) ? $customer->middle_name : old('middle_name') }}" placeholder="Middle Name">
+                                    @if ($errors->has('middle_name'))
+                                        <div class="error" style="color:red;">{{ $errors->first('middle_name') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        {{-- last Name --}}
+                        <div class="col-xl-4 col-md-4">
+                            <div class="form-group-div">
+                                <div class="form-group">
+                                    <label for="floatingInputValue">Last Name*</label>
+                                    <input type="text" class="form-control" id="floatingInputValue" name="last_name"
+                                        value="{{ ($customer->last_name) ? $customer->last_name : old('last_name') }}" placeholder="Last Name*">
+                                    @if ($errors->has('last_name'))
+                                        <div class="error" style="color:red;">{{ $errors->first('last_name') }}</div>
                                     @endif
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group-div">
                                 <div class="form-group">
                                     <label for="floatingInputValue">Address*</label>
@@ -128,18 +141,6 @@
                                         value="{{ $customer->address }}" placeholder="Address*">
                                     @if ($errors->has('address'))
                                         <div class="error" style="color:red;">{{ $errors->first('address') }}</div>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-6 col-md-6">
-                            <div class="form-group-div">
-                                <div class="form-group">
-                                    <label for="floatingInputValue">Pin Code</label>
-                                    <input type="text" class="form-control" id="floatingInputValue" name="pincode"
-                                        value="{{ $customer->pincode }}" placeholder="Pin Code">
-                                    @if ($errors->has('pincode'))
-                                        <div class="error" style="color:red;">{{ $errors->first('pincode') }}</div>
                                     @endif
                                 </div>
                             </div>
