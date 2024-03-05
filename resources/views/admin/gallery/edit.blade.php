@@ -18,7 +18,7 @@
                     <div class="sales-report-card-wrap">
                         <div class="form-head">
                             {{-- <h4>Gallery Details</h4> --}}
-                        </div>
+                        </div> 
 
                         <div class="row justify-content-between">
                             <div class="col-md-6">
