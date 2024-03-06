@@ -10715,19 +10715,19 @@ body:not(.sidebar-mini) .sidebar-style-2 .sidebar-menu li.active ul.dropdown-men
 }
 
 .theme-white .btn-primary:focus {
-    background-color: #4f5ece !important;
+    background-color: #da6f32 !important;
 }
 
 .theme-white .btn-primary:focus:active {
-    background-color: #4f5ece !important;
+    background-color: #da6f32 !important;
 }
 
 .theme-white .btn-primary:active {
-    background-color: #4f5ece !important;
+    background-color: #da6f32 !important;
 }
 
 .theme-white .btn-primary:hover {
-    background-color: #4f5ece !important;
+    background-color: #da6f32 !important;
     color: #fff;
 }
 
@@ -10749,12 +10749,12 @@ body:not(.sidebar-mini) .sidebar-style-2 .sidebar-menu li.active ul.dropdown-men
 }
 
 .theme-white .btn-outline-primary:focus {
-    background-color: #4f5ece !important;
+    background-color: #da6f32 !important;
     color: #fff;
 }
 
 .theme-white .btn-outline-primary:focus:active {
-    background-color: #4f5ece !important;
+    background-color: #da6f32 !important;
     color: #fff;
 }
 

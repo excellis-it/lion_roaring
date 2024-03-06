@@ -16,9 +16,9 @@
             </td>
             <td>
                 <div class="edit-1 d-flex align-items-center justify-content-center">
-                    <a title="Edit Customer" href="{{ route('customers.edit', $customer->id) }}">
+                    <a title="Edit " href="{{ route('customers.edit', $customer->id) }}">
                         <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span></a>
-                    <a title="Delete Customer" data-route="{{ route('customers.delete', $customer->id) }}"
+                    <a title="Delete " data-route="{{ route('customers.delete', $customer->id) }}"
                         href="javascipt:void(0);" id="delete"> <span class="trash-icon"><i
                                 class="ph ph-trash"></i></span></a>
                 </div>

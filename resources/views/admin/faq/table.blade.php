@@ -6,10 +6,10 @@
         <td>{{ $faq->answer }}</td>
         <td>
             <div class="edit-1 d-flex align-items-center justify-content-center">
-                <a title="Edit Customer" href="{{ route('faq.edit', $faq->id) }}">
+                <a title="Edit" href="{{ route('faq.edit', $faq->id) }}">
                     <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span>
                 </a>
-                <a title="Delete Customer" data-route="{{ route('faq.delete', $faq->id) }}"
+                <a title="Delete" data-route="{{ route('faq.delete', $faq->id) }}"
                     href="javascript:void(0);" id="delete">
                     <span class="trash-icon"><i class="ph ph-trash"></i></span>
                 </a>

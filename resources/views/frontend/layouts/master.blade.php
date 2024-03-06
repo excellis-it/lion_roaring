@@ -40,7 +40,7 @@
         .view_all_button {
             padding: 10px 40px;
             border-radius: 5px;
-            background-color: #0B7EAE;
+            background-color: #da6f32;
             color: white;
             width: max-content;
         }

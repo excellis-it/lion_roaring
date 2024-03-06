@@ -33,85 +33,59 @@
                 </ul>
             </li>
             <li class="dropdown">
-                <a href="javascript:void(0);" class="menu-toggle nav-link has-dropdown {{ Request::is('admin/faq*') ? 'active' : ' ' }}">
-                    <i class="ph ph-question"></i>
-                    <span> FAQS</span>
+                <a href="javascript:void(0);" class="menu-toggle nav-link has-dropdown {{ Request::is('admin/testimonials*') ? 'active' : ' ' }}">
+                    <i class="ph ph-hand-fist"></i>
+                    <span> Testimonials</span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li class="{{ Request::is('admin/faq') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('faq.index') }}"> FAQS List</a></li>
-                    <li class="{{ Request::is('admin/faq/create') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('faq.create') }}">FAQS Create</a></li>
+                    <li class="{{ Request::is('admin/testimonials') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('testimonials.index') }}"> Testimonials List</a></li>
+                    <li class="{{ Request::is('admin/testimonials/create') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('testimonials.create') }}">Testimonials Create</a></li>
                 </ul>
             </li>
             <li class="dropdown">
-                <a href="javascript:void(0);" class="menu-toggle nav-link has-dropdown {{ Request::is('admin/faq*') ? 'active' : ' ' }}">
-                    <i class="ph ph-image"></i>
-                    <span> Gallery</span>
+                <a href="javascript:void(0);" class="menu-toggle nav-link has-dropdown {{ Request::is('admin/our-governances*') ? 'active' : ' ' }}">
+                    <i class="ph ph-scales"></i>
+                    <span> Our Governance</span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li class="{{ Request::is('admin/gallery') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('gallery.index') }}"> Gallery List</a></li>
-                    <li class="{{ Request::is('admin/gallery/create') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('gallery.create') }}">Gallery Create</a></li>
-                </ul>
-            </li>
-            {{-- <li class="dropdown">
-                <a href="" class="menu-toggle nav-link has-dropdown">
-                    <i class="ph-file"></i>
-                    <span>B2B Markup Management</span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="nav-link" href="admin-markup.html">Admin Markup</a></li>
+                    <li class="{{ Request::is('admin/our-governances') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('our-governances.index') }}"> Our Governance List</a></li>
+                    <li class="{{ Request::is('admin/our-governances/create') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('our-governances.create') }}">Our Governance Create</a></li>
                 </ul>
             </li>
             <li class="dropdown">
-                <a href="" class="menu-toggle nav-link has-dropdown">
-                    <i class="ph-wallet"></i>
-                    <span>B2B Deposits</span>
+                <a href="javascript:void(0);" class="menu-toggle nav-link has-dropdown {{ Request::is('admin/our-organizations*') ? 'active' : ' ' }}">
+                    <i class="ph ph-graduation-cap"></i>
+                    <span> Our Organizations</span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a class="nav-link" href="">Manage / Add Deposits</a></li>
-                    <li><a class="nav-link" href="">Manage New Deposits
-                            Request</a></li>
-                    <li><a class="nav-link" href="">Approved Deposits Request</a>
-                    </li>
-                    <li><a class="nav-link" href="">Deposit History</a></li>
-                    <li><a class="nav-link" href="">Refund Deposit</a></li>
+                    <li class="{{ Request::is('admin/our-organizations') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('our-organizations.index') }}"> Our Organizations List</a></li>
+                    <li class="{{ Request::is('admin/our-organizations/create') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('our-organizations.create') }}">Our Organizations Create</a></li>
                 </ul>
             </li>
             <li class="dropdown">
-                <a href="">
-                    <i class="ph-ticket"></i>
-                    <span>All Cancel Ticket</span>
+                <a href="javascript:void(0);" class="menu-toggle nav-link has-dropdown {{ Request::is('admin/organization-centers*') ? 'active' : ' ' }}">
+                    <i class="ph ph-chalkboard-teacher"></i>
+                    <span> Organization Center</span>
                 </a>
+                <ul class="dropdown-menu">
+                    <li class="{{ Request::is('admin/organization-centers') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('organization-centers.index') }}"> Organization Center List</a></li>
+                    <li class="{{ Request::is('admin/organization-centers/create') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('organization-centers.create') }}">Organization Center Create</a></li>
+                </ul>
             </li>
             <li class="dropdown">
-                <a href="">
-                    <i class="ph-user-circle"></i>
-                    <span>Regional Manager</span>
+                <a href="javascript:void(0);" class="menu-toggle nav-link has-dropdown {{ Request::is('admin/pages*') ? 'active' : ' ' }}">
+                    <i class="ph ph-newspaper"></i>
+                    <span> Pages </span>
                 </a>
+                <ul class="dropdown-menu">
+                    <li class="{{ Request::is('admin/faq') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('faq.index') }}"> FAQS</a></li>
+                    <li class="{{ Request::is('admin/gallery') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('gallery.index') }}"> GALLERY </a></li>
+                    <li class="{{ Request::is('admin/ecclesia-associations') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('ecclesia-associations.index') }}"> ECCLESIA ASSOCIATION</a></li>
+                    <li class="{{ Request::is('admin/principle-and-business') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('principle-and-business.index') }}">PRINCIPLE AND BUSINESS MODEL
+                    </a></li>
+                    <li class="{{ Request::is('admin/contact-us-cms') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('contact-us-cms.index') }}">CONTACT US</a></li>
+                </ul>
             </li>
-            <li class="dropdown">
-                <a href="">
-                    <i class="ph-fingerprint"></i>
-                    <span>Itinerary</span>
-                </a>
-            </li>
-            <li class="dropdown">
-                <a href="">
-                    <i class="ph-fingerprint"></i>
-                    <span>Upload Ticket</span>
-                </a>
-            </li>
-            <li class="dropdown">
-                <a href="">
-                    <i class="ph-fingerprint"></i>
-                    <span>Customer Database</span>
-                </a>
-            </li>
-            <li class="dropdown">
-                <a href="">
-                    <i class="ph-fingerprint"></i>
-                    <span>My Operator Log Details</span>
-                </a>
-            </li> --}}
         </ul>
     </aside>
 </div>
