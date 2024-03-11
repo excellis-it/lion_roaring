@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AboutUsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\ForgetPasswordController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Admin\EcclesiaAssociationController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\OrganizationCenterController;
+use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\OurGovernanceController;
 use App\Http\Controllers\Admin\OurOrganizationController;
 use App\Http\Controllers\Admin\PrincipleAndBusinessController;
@@ -99,7 +101,11 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
             'ecclesia-associations' => EcclesiaAssociationController::class,
             'principle-and-business' => PrincipleAndBusinessController::class,
             'contact-us-cms' => ContactUsCmsController::class,
+            'organizations' => OrganizationController::class,
+            'about-us' => AboutUsController::class,
         ]);
+
+        Route::get('/organizations-image-delete', [OrganizationController::class, 'imageDelete'])->name('organization.image.delete');
 
         Route::prefix('faq')->group(function () {
             Route::get('/faq-delete/{id}', [FaqController::class, 'delete'])->name('faq.delete');

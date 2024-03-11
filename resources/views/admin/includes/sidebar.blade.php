@@ -78,10 +78,28 @@
                     <span> Pages </span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li class="{{ Request::is('admin/faq') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('faq.index') }}"> FAQS</a></li>
-                    <li class="{{ Request::is('admin/gallery') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('gallery.index') }}"> GALLERY </a></li>
-                    <li class="{{ Request::is('admin/ecclesia-associations') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('ecclesia-associations.index') }}"> ECCLESIA ASSOCIATION</a></li>
-                    <li class="{{ Request::is('admin/principle-and-business') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('principle-and-business.index') }}">PRINCIPLE AND BUSINESS MODEL
+                    {{-- <li class="dropdown {{ Request::is('admin/pages/organizations*') ? 'active' : ' ' }}">
+                        <a href="javascript:void(0);" class="menu-toggle nav-link has-dropdown">
+                            <span> Organization</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="{{ Request::is('admin/pages/organizations') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('organizations.index') }}"> Organization CMS</a></li>
+                        </ul>
+                    </li> --}}
+
+                    <li class="dropdown {{ Request::is('admin/pages/organizations*') ? 'active' : ' ' }}">
+                        <a href="javascript:void(0);" class="menu-toggle nav-link has-dropdown">
+                            <span> Organization</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="{{ Request::is('admin/pages/organizations') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('organizations.index') }}"> Organization CMS</a></li>
+                        </ul>
+                    </li>
+                    <li class="{{ Request::is('admin/pages/about-us') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('about-us.index') }}"> About Us</a></li>
+                    <li class="{{ Request::is('admin/pages/faq') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('faq.index') }}"> FAQS</a></li>
+                    <li class="{{ Request::is('admin/pages/gallery') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('gallery.index') }}"> GALLERY </a></li>
+                    <li class="{{ Request::is('admin/pages/ecclesia-associations') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('ecclesia-associations.index') }}"> ECCLESIA ASSOCIATION</a></li>
+                    <li class="{{ Request::is('admin/pages/principle-and-business') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('principle-and-business.index') }}">PRINCIPLE AND BUSINESS MODEL
                     </a></li>
                     <li class="{{ Request::is('admin/contact-us-cms') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('contact-us-cms.index') }}">CONTACT US</a></li>
                 </ul>

@@ -1186,7 +1186,6 @@ li.slick-active button{
 }
 .ftr_logo_sec p{
   color: var(--white-color);
-  margin-bottom: 0;
 }
 .ftr_logo_sec ul{
   display: flex;
@@ -1450,7 +1449,7 @@ margin: 20px 0px;
 padding: 0px 60px 0px 0px;
 }
 .contact-us .form-group-wrap{
-margin: 14px 0px;
+margin: 0 0 14px 0px;
 }
 .contact-us .contact-form .form-control{
 padding: 15px 10px;
@@ -1638,14 +1637,14 @@ padding: 100px 0;
   overflow-y: scroll;
   padding-right: 10px;
 }
-#srlt_1::-webkit-scrollbar
+.srlt::-webkit-scrollbar
 {
 	width: 5px;
   border-radius: 10px;
 	background-color: #ccc;
 }
 
-#srlt_1::-webkit-scrollbar-thumb
+.srlt::-webkit-scrollbar-thumb
 {
 	border-radius: 10px;
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
