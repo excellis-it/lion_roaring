@@ -65,14 +65,14 @@
                     <div class="quick_links_ul">
                         <ul class="menu">
                             <li class="active">
-                                <a href="" aria-current="page">Home</a>
+                                <a href="{{route('home')}}" aria-current="page">Home</a>
                             </li>
                             <li>
                                 <a href="uploads/2024/01/Articles-of-Association-1.pdf">Articles of
                                     Association</a>
                             </li>
                             <li>
-                                <a href="">Contact Us</a>
+                                <a href="{{route('contact-us')}}">Contact Us</a>
                             </li>
                         </ul>
                     </div>

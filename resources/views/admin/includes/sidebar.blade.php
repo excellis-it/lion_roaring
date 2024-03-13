@@ -86,7 +86,8 @@
                             <li class="{{ Request::is('admin/pages/organizations') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('organizations.index') }}"> Organization CMS</a></li>
                         </ul>
                     </li> --}}
-
+                    <li class="{{ Request::is('admin/pages/home-cms') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('home-cms.index') }}"> Home </a></li>
+                    {{-- <li class="{{ Request::is('admin/pages/details') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('details.index') }}"> Details </a></li> --}}
                     <li class="dropdown {{ Request::is('admin/pages/organizations*') ? 'active' : ' ' }}">
                         <a href="javascript:void(0);" class="menu-toggle nav-link has-dropdown">
                             <span> Organization</span>

@@ -4,7 +4,7 @@
             <div class="navigation navbar">
                 <div class="left_top">
                     <div class="logo">
-                        <a href="" class="">
+                        <a href="{{route('home')}}" class="">
 
                         </a>
                     </div>
@@ -20,25 +20,25 @@
                             <nav class="overlay-menu">
                                 <ul id="menu-header-menu" class="menu">
                                     <li class="active">
-                                        <a href="index.html">Home</a>
+                                        <a href="{{route('home')}}">Home</a>
                                     </li>
                                     <li>
-                                        <a href="our-organization.html">Organization</a>
+                                        <a href="{{route('organization')}}">Organization</a>
                                     </li>
                                     <li>
-                                        <a href="our-partners.html">Ecclesia Association</a>
+                                        <a href="{{route('ecclesia-associations')}}">Ecclesia Association</a>
                                     </li>
                                     <li>
-                                        <a href="our-principle.html">Principle and Business Model</a>
+                                        <a href="{{route('principle-and-business')}}">Principle and Business Model</a>
                                     </li>
                                     <li>
-                                        <a href="gallery.html">Gallery</a>
+                                        <a href="{{route('gallery')}}">Gallery</a>
                                     </li>
                                     <li>
-                                        <a href="faq.html">FAQ</a>
+                                        <a href="{{route('faq')}}">FAQ</a>
                                     </li>
                                     <li>
-                                        <a href="contact-us.html">Contact Us</a>
+                                        <a href="{{route('contact-us')}}">Contact Us</a>
                                     </li>
                                 </ul>
                             </nav>

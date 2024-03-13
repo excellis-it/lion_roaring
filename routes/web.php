@@ -9,9 +9,11 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ContactUsCmsController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\DetailsController;
 use App\Http\Controllers\Admin\EcclesiaAssociationController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\GalleryController;
+use App\Http\Controllers\Admin\HomeCmsController;
 use App\Http\Controllers\Admin\OrganizationCenterController;
 use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\OurGovernanceController;
@@ -103,6 +105,8 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
             'contact-us-cms' => ContactUsCmsController::class,
             'organizations' => OrganizationController::class,
             'about-us' => AboutUsController::class,
+            'home-cms' => HomeCmsController::class,
+            'details' => DetailsController::class,
         ]);
 
         Route::get('/organizations-image-delete', [OrganizationController::class, 'imageDelete'])->name('organization.image.delete');
@@ -118,5 +122,17 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     });
 });
 
-
+/*************************************************************** Frontend ************************************************************************/
 Route::get('/', [CmsController::class, 'index'])->name('home');
+Route::get('/gallery', [CmsController::class, 'gallery'])->name('gallery');
+Route::get('/faq', [CmsController::class, 'faq'])->name('faq');
+Route::get('/contact-us', [CmsController::class, 'contactUs'])->name('contact-us');
+Route::get('/principle-and-business', [CmsController::class, 'principleAndBusiness'])->name('principle-and-business');
+Route::get('/ecclesia-associations', [CmsController::class, 'ecclesiaAssociations'])->name('ecclesia-associations');
+Route::get('/organization', [CmsController::class, 'organization'])->name('organization');
+Route::get('/service/{slug}', [CmsController::class, 'service'])->name('service');
+Route::get('/our-organization/{slug}', [CmsController::class, 'ourOrganization'])->name('our-organization');
+Route::get('/features/{slug}', [CmsController::class, 'features'])->name('features');
+// our_governance
+Route::get('/our-governance/{slug}', [CmsController::class, 'ourGovernance'])->name('our-governance');
+Route::get('/about-us', [CmsController::class, 'aboutUs'])->name('about-us');

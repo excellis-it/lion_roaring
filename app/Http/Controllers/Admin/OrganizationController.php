@@ -68,6 +68,12 @@ class OrganizationController extends Controller
         $organization->project_section_title = $request->project_section_title;
         $organization->project_section_sub_title = $request->project_section_sub_title;
         $organization->project_section_description = $request->project_section_description;
+        if ($request->hasFile('banner_image')) {
+            if (!empty($organization->banner_image) && Storage::exists($organization->banner_image)) {
+                Storage::delete($organization->banner_image);
+            }
+            $organization->banner_image = $this->imageUpload($request->banner_image, 'organization');
+        }
         $organization->save();
 
         if ($request->image) {
