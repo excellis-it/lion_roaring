@@ -14,7 +14,7 @@
     <section class="banner__slider banner_sec">
         <div class="slider">
             <div class="slide">
-                <a href="" tabindex="0">
+                <a href="{{route('details')}}" tabindex="0">
                     <div class="slide__img">
                         <video autoplay="" muted="" loop="" class="video_part">
                             <source src="{{ Storage::url($home['banner_video']) ?? 'https://via.placeholder.com/150' }}"

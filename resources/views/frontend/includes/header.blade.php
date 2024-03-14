@@ -44,7 +44,8 @@
                             </nav>
                         </div>
                     </div>
-                    <div class="right_tran ms-2">
+                    <div class="right_tran ms-2" >
+                        <div id="google_translate_element"></div>
                     </div>
                     <div class="login_prf">
                         <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal"> Login</a>

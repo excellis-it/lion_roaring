@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ForgetPasswordController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ContactUsCmsController;
+use App\Http\Controllers\Admin\ContactusController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DetailsController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\Admin\EcclesiaAssociationController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\HomeCmsController;
+use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\OrganizationCenterController;
 use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\OurGovernanceController;
@@ -107,7 +109,12 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
             'about-us' => AboutUsController::class,
             'home-cms' => HomeCmsController::class,
             'details' => DetailsController::class,
+            'contact-us' => ContactusController::class,
+            'newsletters' => NewsletterController::class,
         ]);
+
+        Route::get('/newsletter-fetch-data', [NewsletterController::class, 'fetchData'])->name('newsletters.fetch-data');
+        Route::get('/contact-us-fetch-data', [ContactusController::class, 'fetchData'])->name('contact-us.fetch-data');
 
         Route::get('/organizations-image-delete', [OrganizationController::class, 'imageDelete'])->name('organization.image.delete');
 
@@ -136,3 +143,7 @@ Route::get('/features/{slug}', [CmsController::class, 'features'])->name('featur
 // our_governance
 Route::get('/our-governance/{slug}', [CmsController::class, 'ourGovernance'])->name('our-governance');
 Route::get('/about-us', [CmsController::class, 'aboutUs'])->name('about-us');
+Route::get('/details', [CmsController::class, 'details'])->name('details');
+
+Route::post('/newsletter', [CmsController::class, 'newsletter'])->name('newsletter');
+Route::post('/contact-us', [CmsController::class, 'contactUsForm'])->name('contact-us.form');

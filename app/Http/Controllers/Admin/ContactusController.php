@@ -3,13 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Detail;
-use App\Traits\ImageTrait;
+use App\Models\ContactUs;
 use Illuminate\Http\Request;
 
-class DetailsController extends Controller
+class ContactusController extends Controller
 {
-    use ImageTrait;
     /**
      * Display a listing of the resource.
      *
@@ -17,9 +15,31 @@ class DetailsController extends Controller
      */
     public function index()
     {
-        $details = Detail::orderBy('id', 'asc')->get();
-        return view('admin.details.update')->with('details', $details);
+        $contacts = ContactUs::orderBy('id', 'desc')->paginate(10);
+        return view('admin.contact-us.list')->with('contacts', $contacts);
     }
+
+
+    public function fetchData(Request $request)
+    {
+        if ($request->ajax()) {
+
+            $sort_by = $request->get('sortby');
+            $sort_type = $request->get('sorttype');
+            $query = $request->get('query');
+            $query = str_replace(" ", "%", $query);
+            $contacts = ContactUs::where('id', 'like', '%' . $query . '%')
+                ->orWhereRaw('CONCAT(first_name, " ", last_name) like ?', '%' . $query . '%') // 'CONCAT(first_name, " ", last_name) like ?', '%' . $query . '%
+                ->orWhere('email', 'like', '%' . $query . '%')
+                ->orWhere('phone', 'like', '%' . $query . '%')
+                ->orWhere('message', 'like', '%' . $query . '%')
+                ->orderBy($sort_by, $sort_type)
+                ->paginate(10);
+
+            return response()->json(['data' => view('admin.contact-us.table', compact('contacts'))->render()]);
+        }
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -39,22 +59,7 @@ class DetailsController extends Controller
      */
     public function store(Request $request)
     {
-        foreach ($request->description as $key => $value) {
-            if (isset($request->image_id[$key])) {
-                $detail = Detail::find($request->image_id[$key]);
-            } else {
-                $detail = new Detail();
-            }
-
-            $detail->description = $value;
-            if (isset($request->file('image')[$key]) && $request->hasFile('image') && $request->file('image')[$key]) {
-                $detail->image = $this->imageUpload($request->file('image')[$key], 'details');
-            }
-
-            $detail->save();
-        }
-
-        return redirect()->back()->with('message', 'Details updated successfully');
+        //
     }
 
     /**

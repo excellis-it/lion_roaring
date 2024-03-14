@@ -15,9 +15,6 @@
                 <form action="{{ route('details.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="sales-report-card-wrap mt-5">
-                        <div class="form-head">
-                            <h4>Project Section</h4>
-                        </div>
                         <div class="row count-class" id="add-more">
                             @if (isset($details) && count($details) > 0)
                                 @foreach ($details as $key => $item)
@@ -27,8 +24,9 @@
                                                 {{-- meta title --}}
                                                 <label for="floatingInputValue">Image</label>
                                                 <input type="file" class="form-control" id="floatingInputValue"
-                                                    accept="image/*" required name="image[]" value="{{ $item->image }}"
+                                                    accept="image/*" name="image[]" value="{{ $item->image }}"
                                                     placeholder="Image">
+                                                    <input type="hidden" name="image_id[]" value="{{ $item->id }}">
                                             </div>
                                         </div>
                                     </div>
@@ -67,7 +65,7 @@
                                             <label for="floatingInputValue"> Image*</label>
                                             <input type="file" class="form-control" id="floatingInputValue" required accept="image/*"
                                                 name="image[]" value="" placeholder=" Title">
-                                            <span class="text-danger" id="job_opportunity_title_0"></span>
+                                                <input type="hidden" name="image_id[]" value="">
                                         </div>
                                     </div>
                                 </div>
@@ -139,6 +137,7 @@
                                 <label for="floatingInputValue"> Title*</label>
                                 <input type="file" class="form-control" id="floatingInputValue" required name="image[]" value="" required accept="image/*" placeholder=" Title">
                                 <span class="text-danger" id="job_opportunity_title_${count}"></span>
+                                <input type="hidden" name="image_id[]" value="">
                             </div>
                         </div>
                     </div>

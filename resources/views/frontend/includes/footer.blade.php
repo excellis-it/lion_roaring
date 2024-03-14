@@ -29,20 +29,24 @@
                                     <p role="status" aria-live="polite" aria-atomic="true"></p>
                                     <ul></ul>
                                 </div>
-                                <form action="" method="post" class="wpcf7-form init"
-                                    aria-label="Contact form" novalidate="novalidate" data-status="init">
+                                <form action="{{route('newsletter')}}" method="post"  id="submit-newsletter">
+                                    @csrf
                                     <div class="row">
                                         <div class="form-group col-lg-6 col-md-12">
-                                            <input size="40" class="form-control"
+                                            <input size="40" class="form-control" id="newsletter_name"
                                                 placeholder="Full Name" value="" type="text"
-                                                name="frist_name">
+                                                name="newsletter_name">
+                                                <span class="text-danger" id="newsletter_name_error"></span>
                                         </div>
                                         <div class="form-group col-lg-6 col-md-12">
-                                            <input class="form-control" placeholder="Email ADDRESS"
-                                                value="" type="email" name="email_id">
+                                            <input class="form-control" placeholder="Email ADDRESS" id="newsletter_email"
+                                                value="" type="email" name="newsletter_email">
+                                                <span class="text-danger" id="newsletter_email_error"></span>
                                         </div>
                                         <div class="form-group col-12">
-                                            <textarea cols="40" rows="10" class="form-control" placeholder="YOUR MESSAGE" name="textarea"></textarea>
+                                            <textarea cols="40" rows="10" class="form-control" id="newsletter_message"
+                                                placeholder="Message" name="newsletter_message"></textarea>
+                                                <span class="text-danger" id="newsletter_message_error"></span>
                                         </div>
                                     </div>
                                     <div class="main-btn">
@@ -78,7 +82,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <p>Copyright © 2024 Daud Santosa. All Rights Reserved.</p>
+                    <p>Copyright © {{date('Y')}} Daud Santosa. All Rights Reserved.</p>
                 </div>
             </div>
         </div>

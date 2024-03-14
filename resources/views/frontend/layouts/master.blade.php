@@ -29,7 +29,21 @@
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        .goog-te-banner-frame.skiptranslate {
+            display: none !important;
+        }
+        body {
+            top: 0px !important;
+        }
+        .goog-logo-link {
+            display:none !important;
+        }
+        .trans-section {
+            margin: 100px;
+        }
+    </style>
     @stack('styles')
 </head>
 
@@ -333,6 +347,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+        }
+        </script>
+
+        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <script>
         @if (Session::has('message'))
@@ -369,21 +390,22 @@
     </script>
     <script>
         $(document).ready(function() {
-            $('.submit-newsletter').click(function() {
-                var email = $('#newsletter_email').val();
-                if (email === '') {
-                    toastr.error('Please enter an email address');
-                    return false;
-                }
+            $(document).on('submit', '#submit-newsletter',function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
                 $.ajax({
                     type: "POST",
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        email: email,
-                    },
+                    url: url,
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
                     success: function(response) {
                         if (response.status === true) {
+                            $('.text-danger').html('');
                             $('#newsletter_email').val('');
+                            $('#newsletter_name').val('');
+                            $('#newsletter_message').val('');
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Success',
@@ -400,6 +422,21 @@
                                 timer: 3000
                             });
                         }
+                    },
+                    error: function(xhr) {
+                        $('.text-danger').html('');
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                            if (key.includes('.')) {
+                                var fieldName = key.split('.')[0];
+                                // Display errors for array fields
+                                var num = key.match(/\d+/)[0];
+                                $('#' + fieldName + '_'+num).html(value[0]);
+                            } else {
+                                // after text danger span
+                                $('#' + key + '_error').html(value[0]);
+                            }
+                        });
                     }
                 });
             });

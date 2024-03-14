@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\AboutUs;
+use App\Models\ContactUs;
 use App\Models\ContactUsCms;
+use App\Models\Detail;
 use App\Models\EcclesiaAssociation;
 use App\Models\Faq;
 use App\Models\Gallery;
 use App\Models\HomeCms;
+use App\Models\Newsletter;
 use App\Models\Organization;
 use App\Models\OrganizationCenter;
 use App\Models\OurGovernance;
@@ -95,5 +98,52 @@ class CmsController extends Controller
     {
         $about_us = AboutUs::orderBy('id', 'desc')->first();
         return view('frontend.about-us')->with('about_us', $about_us);
+    }
+
+    public function details()
+    {
+        $details = Detail::orderBy('id', 'asc')->get();
+        return view('frontend.details')->with('details', $details);
+    }
+
+    public function newsletter(Request $request)
+    {
+        $request->validate([
+            'newsletter_name' => 'required',
+            'newsletter_email' => 'required|email|unique:newsletters,email',
+            'newsletter_message' => 'required',
+        ]);
+
+        if ($request->ajax()) {
+            $newsletter = new Newsletter();
+            $newsletter->full_name = $request->newsletter_name;
+            $newsletter->email = $request->newsletter_email;
+            $newsletter->message = $request->newsletter_message;
+            $newsletter->save();
+            return response()->json(['message' => 'Thank you for subscribing to our newsletter', 'status' => true]);
+        }
+    }
+
+    public function contactUsForm(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'message' => 'required',
+        ]);
+
+        if ($request->ajax()) {
+            $contact = new ContactUs();
+            $contact->first_name = $request->first_name;
+            $contact->last_name = $request->last_name;
+            $contact->email = $request->email;
+            $contact->phone = $request->phone;
+            $contact->message = $request->message;
+            $contact->save();
+            session()->flash('message', 'Thank you for contacting us');
+            return response()->json(['message' => 'Thank you for contacting us', 'status' => true]);
+        }
     }
 }
