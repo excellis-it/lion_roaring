@@ -107,6 +107,8 @@
                     <li class="{{ Request::is('admin/pages/principle-and-business') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('principle-and-business.index') }}">PRINCIPLE AND BUSINESS MODEL
                     </a></li>
                     <li class="{{ Request::is('admin/contact-us-cms') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('contact-us-cms.index') }}">CONTACT US</a></li>
+                    <li class="{{ Request::is('admin/pages/articles-of-association') ? 'active' : ' ' }}"><a class="nav-link" href="{{ route('articles-of-association.index') }}">
+                        ARTICLES OF ASSOCIATION</a></li>
                 </ul>
             </li>
         </ul>

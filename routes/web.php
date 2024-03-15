@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\ForgetPasswordController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ArticleOfAssociationController;
 use App\Http\Controllers\Admin\ContactUsCmsController;
 use App\Http\Controllers\Admin\ContactusController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -111,6 +112,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
             'details' => DetailsController::class,
             'contact-us' => ContactusController::class,
             'newsletters' => NewsletterController::class,
+            'articles-of-association' => ArticleOfAssociationController::class,
         ]);
 
         Route::get('/newsletter-fetch-data', [NewsletterController::class, 'fetchData'])->name('newsletters.fetch-data');

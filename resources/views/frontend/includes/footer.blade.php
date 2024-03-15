@@ -1,3 +1,6 @@
+@php
+    use App\Helpers\Helper;
+@endphp
 <footer class="footer_sec">
     <div class="container">
         <div class="copyright">
@@ -72,7 +75,7 @@
                                 <a href="{{route('home')}}" aria-current="page">Home</a>
                             </li>
                             <li>
-                                <a href="uploads/2024/01/Articles-of-Association-1.pdf">Articles of
+                                <a href="{{Helper::getPDFAttribute() ?? 'javascript:void(0);'}}"  target="_blank">Article of
                                     Association</a>
                             </li>
                             <li>
