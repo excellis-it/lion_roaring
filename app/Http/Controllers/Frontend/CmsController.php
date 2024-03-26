@@ -19,6 +19,7 @@ use App\Models\OurOrganization;
 use App\Models\PrincipalAndBusiness;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class CmsController extends Controller
 {
@@ -29,7 +30,7 @@ class CmsController extends Controller
         $testimonials = Testimonial::orderBy('id', 'desc')->get();
         $our_organizations = OurOrganization::orderBy('id', 'desc')->get();
         $our_governances = OurGovernance::orderBy('id', 'desc')->get();
-        return view('frontend.home')->with(compact('galleries','testimonials','our_organizations','our_governances','home'));
+        return view('frontend.home')->with(compact('galleries', 'testimonials', 'our_organizations', 'our_governances', 'home'));
     }
 
     public function gallery()
@@ -71,8 +72,9 @@ class CmsController extends Controller
 
     public function service($slug)
     {
-        $service = OurOrganization::where('slug', $slug)->first();
-        return view('frontend.service')->with('service', $service);
+        $our_organization = OurOrganization::where('slug', $slug)->first();
+        $services  = $our_organization->services;
+        return view('frontend.service')->with(compact('our_organization', 'services'));
     }
 
     public function ourOrganization($slug)
@@ -144,6 +146,19 @@ class CmsController extends Controller
             $contact->save();
             session()->flash('message', 'Thank you for contacting us');
             return response()->json(['message' => 'Thank you for contacting us', 'status' => true]);
+        }
+    }
+
+    public function session(Request $request)
+    {
+        // return $request->all();
+        if ($request->is_checked) {
+            Session::put('agree', 'true');
+            session()->flash('message', 'You have agreed to the terms and conditions');
+            return redirect()->back();
+        } else {
+            session()->flash('error', 'Please agree to the terms and conditions');
+            return redirect()->back();
         }
     }
 }

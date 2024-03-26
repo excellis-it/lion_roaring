@@ -29,17 +29,21 @@
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+        type="text/css" />
     <style>
         .goog-te-banner-frame.skiptranslate {
             display: none !important;
         }
+
         body {
             top: 0px !important;
         }
+
         .goog-logo-link {
-            display:none !important;
+            display: none !important;
         }
+
         .trans-section {
             margin: 100px;
         }
@@ -81,8 +85,8 @@
                                 <p class="login-password">
                                     <label for="user_password">Password</label>
                                     <input type="password" name="pwd" id="user_password"
-                                        autocomplete="current-password" spellcheck="false" class="input"
-                                        value="" size="20">
+                                        autocomplete="current-password" spellcheck="false" class="input" value=""
+                                        size="20">
                                 </p>
                                 <p class="login-submit">
                                     <input type="submit" name="wp-submit" id="login-submit"
@@ -282,52 +286,55 @@
                         <!--         <button type="button" class="close" data-bs-dismiss="modal">&times;</button> -->
                         <h4 class="modal-title">LION ROARING PRIVATE MEMBERS ASSOCIATION (PMA)</h4>
                     </div>
-                    <div class="modal-body text-center">
-                        <h3>DISCLAIMER</h3>
-                        <p>Lion Roaring PMA is a private members association of the participants for educational and
-                            informational purposes only. None of the postings of education and information materials
-                            can
-                            be construed as advice, directive, opinion or recommendation for the members to initiate
-                            actions. The contents of the Lion Roaring (LR) website reflects the mission, vision,
-                            strategies, and partners’ testimonies of LR PMA. The educational teaching modules are
-                            based
-                            on our belief and faith in Jesus Christ, biblical foundation and personal experiences
-                            which
-                            we choose to share for education purposes and spiritual journeys of our faith.</p>
-                        <p>
-                            In order to protect all members from any adverse interference or action brought on by
-                            local,
-                            county, state, or federal regulatory, administrative or licensing agencies, and to
-                            receive
-                            full benefits from participation in Lion Roaring Private Member Association, (hereafter
-                            referred to as PMA) all visitors accessing the Lion Roaring website consent to the
-                            following:
-                        </p>
-                        <ul>
-                            <li>
-                                All member’s information and postings displayed in the website are privileged
-                                information for the members’ benefit and access only. Any unauthorized use,
-                                collection,
-                                storing or sharing of the content or information from the website is prohibited</li>
-                            <li>Visitors will not hold Lion Roaring PMA liable for any materials or contents posted
-                                in
-                                the website</li>
-                            <li>Any disclosure, reproduction, distribution, forwarding or other use of the LR PMA
-                                website content or any attachments to an individual or entity other than the
-                                intended
-                                recipient is prohibited</li>
-                        </ul>
-                        <div class="modal_checkbox">
-                            <div class="form-group">
-                                <input type="checkbox" id="pma_check">
-                                <label for="pma_check">I have read and agreed to the above requirements to access
-                                    Lion
-                                    Roaring PMA website.</label>
+                    <form action="{{ route('session.store') }}" method="POST">
+                        @csrf
+                        <div class="modal-body text-center">
+                            <h3>DISCLAIMER</h3>
+                            <p>Lion Roaring PMA is a private members association of the participants for educational and
+                                informational purposes only. None of the postings of education and information materials
+                                can
+                                be construed as advice, directive, opinion or recommendation for the members to initiate
+                                actions. The contents of the Lion Roaring (LR) website reflects the mission, vision,
+                                strategies, and partners’ testimonies of LR PMA. The educational teaching modules are
+                                based
+                                on our belief and faith in Jesus Christ, biblical foundation and personal experiences
+                                which
+                                we choose to share for education purposes and spiritual journeys of our faith.</p>
+                            <p>
+                                In order to protect all members from any adverse interference or action brought on by
+                                local,
+                                county, state, or federal regulatory, administrative or licensing agencies, and to
+                                receive
+                                full benefits from participation in Lion Roaring Private Member Association, (hereafter
+                                referred to as PMA) all visitors accessing the Lion Roaring website consent to the
+                                following:
+                            </p>
+                            <ul>
+                                <li>
+                                    All member’s information and postings displayed in the website are privileged
+                                    information for the members’ benefit and access only. Any unauthorized use,
+                                    collection,
+                                    storing or sharing of the content or information from the website is prohibited</li>
+                                <li>Visitors will not hold Lion Roaring PMA liable for any materials or contents posted
+                                    in
+                                    the website</li>
+                                <li>Any disclosure, reproduction, distribution, forwarding or other use of the LR PMA
+                                    website content or any attachments to an individual or entity other than the
+                                    intended
+                                    recipient is prohibited</li>
+                            </ul>
+                            <div class="modal_checkbox">
+                                <div class="form-group">
+                                    <input type="checkbox" id="pma_check" name="is_checked">
+                                    <label for="pma_check">I have read and agreed to the above requirements to access
+                                        Lion
+                                        Roaring PMA website.</label>
+                                </div>
                             </div>
+                            <button type="submit" class="continue-btn changed" data-bs-dismiss="modal"
+                                id="myButton">Continue</button>
                         </div>
-                        <button type="button" class="continue-btn changed" data-bs-dismiss="modal"
-                            id="myButton">Continue</button>
-                    </div>
+                    </form>
                 </div>
 
             </div>
@@ -349,11 +356,14 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <script type="text/javascript">
         function googleTranslateElementInit() {
-          new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+            new google.translate.TranslateElement({
+                pageLanguage: 'en'
+            }, 'google_translate_element');
         }
-        </script>
+    </script>
 
-        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+    </script>
 
     <script>
         @if (Session::has('message'))
@@ -390,7 +400,7 @@
     </script>
     <script>
         $(document).ready(function() {
-            $(document).on('submit', '#submit-newsletter',function(e) {
+            $(document).on('submit', '#submit-newsletter', function(e) {
                 e.preventDefault();
                 var form = $(this);
                 var url = form.attr('action');
@@ -431,7 +441,7 @@
                                 var fieldName = key.split('.')[0];
                                 // Display errors for array fields
                                 var num = key.match(/\d+/)[0];
-                                $('#' + fieldName + '_'+num).html(value[0]);
+                                $('#' + fieldName + '_' + num).html(value[0]);
                             } else {
                                 // after text danger span
                                 $('#' + key + '_error').html(value[0]);
@@ -440,6 +450,14 @@
                     }
                 });
             });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            @if (Session::has('agree'))
+            @else
+                $('#onload_popup').modal('show');
+            @endif
         });
     </script>
     @stack('scripts')

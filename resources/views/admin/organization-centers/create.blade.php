@@ -98,7 +98,7 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- meta description --}}
-                                        <label for="floatingInputValue">Description*</label>
+                                        <label for="floatingInputValue">Description</label>
                                         <textarea name="description" id="description" cols="30" rows="10" placeholder="Description"
                                             class="form-control">{{ old('description') }}</textarea>
                                         @if ($errors->has('description'))

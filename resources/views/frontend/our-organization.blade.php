@@ -35,10 +35,10 @@
             </div>
             <div class="slid_bh">
                 @if (count($organization_centers) > 0)
-                    @foreach ($organization_centers as $organization_center)
+                    @foreach ($organization_centers as $key => $organization_center)
                     <div class="padding_k">
-                        <div class="bounce_1">
-                            <div class="one_cli">
+                        <div class="{{($key % 2 == 0 ) ? 'bounce_1' : 'bounce_2' }}">
+                            <div class="{{($key % 2 == 0 ) ? 'one_cli' : 'one_cli1' }}">
                                 <div class="one_cli_nh">
                                     <img src="{{ asset('frontend_assets/images/before_n.png') }}" alt="">
                                 </div>

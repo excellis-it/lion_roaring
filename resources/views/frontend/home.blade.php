@@ -141,10 +141,10 @@
                 </div>
                 <div class="slid_bh">
                     @if (count($our_governances) > 0)
-                        @foreach ($our_governances as $our_governance)
+                        @foreach ($our_governances as $key => $our_governance)
                             <div class="padding_k">
-                                <div class="bounce_1">
-                                    <div class="one_cli">
+                                <div class="{{($key % 2 == 0 ) ? 'bounce_1' : 'bounce_2' }}">
+                                    <div class="{{($key % 2 == 0 ) ? 'one_cli' : 'one_cli1' }}">
                                         <div class="one_cli_nh">
                                             <img src="{{ asset('frontend_assets/images/before_n.png') }}" alt="">
                                         </div>
@@ -236,7 +236,7 @@
                         <div class="testimonial_slider">
                             @foreach ($testimonials as $key => $item)
                                 <div class="client">
-                                    <div class="testimonial_box {{ $key % 2 == 0 ? 'testimonial_box_2' : '' }}">
+                                    <div class="testimonial_box {{ $key % 2 == 0 ? '' : 'testimonial_box_2' }}">
                                         <div class="client_img">
                                             <img src="{{ Storage::url($item->image) }}" alt="">
                                         </div>

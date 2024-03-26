@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ContactUsCms;
+use App\Models\OurOrganization;
+use App\Models\Service;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 
-class ContactUsCmsController extends Controller
+class ServiceContoller extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,10 +16,13 @@ class ContactUsCmsController extends Controller
      * @return \Illuminate\Http\Response
      */
     use ImageTrait;
-    public function index()
+
+    public function index(Request $request)
     {
-        $contact_us = ContactUsCms::orderBy('id', 'desc')->first();
-        return view('admin.contact-us-cms.update')->with(compact('contact_us'));
+        $our_organization = OurOrganization::where('slug', $request->slug)->first();
+        $our_organization_id = $our_organization->id;
+        $services = Service::where('our_organization_id', $our_organization_id)->get();
+        return view('admin.service.update')->with(compact('services','our_organization_id'));
     }
 
     /**
@@ -39,33 +43,25 @@ class ContactUsCmsController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'banner_title' => 'required',
-            'email' => 'required|email',
-            'phone' => 'required',
-            'address' => 'required',
-            'title' => 'required',
-            'description' => 'required',
-        ]);
+        for($key = 0; $key < $request->column_count; $key++) {
+            if (isset($request->image_id[$key])) {
+                $service = Service::find($request->image_id[$key]);
+                // delete old image
+                Service::whereNotIn('id', $request->image_id)->delete();
+            } else {
+                $service = new Service();
+            }
 
-        if ($request->id != '') {
-            $contact_us = ContactUsCms::find($request->id);
-        } else {
-            $contact_us = new ContactUsCms();
+            $service->content = $request->content[$key] ?? '';
+            $service->our_organization_id = $request->our_organization_id;
+            if (isset($request->file('image')[$key]) && $request->hasFile('image') && $request->file('image')[$key]) {
+                $service->image = $this->imageUpload($request->file('image')[$key], 'details');
+            }
+
+            $service->save();
         }
 
-        $contact_us->banner_title = $request->banner_title;
-        $contact_us->email = $request->email;
-        $contact_us->phone = $request->phone;
-        $contact_us->address = $request->address;
-        $contact_us->title = $request->title;
-        $contact_us->description = $request->description;
-        if ($request->hasFile('banner_image')) {
-            $contact_us->banner_image = $this->imageUpload($request->file('banner_image'), 'contact-us-cms');
-        }
-        $contact_us->save();
-
-        return redirect()->route('contact-us-cms.index')->with('message', 'Contact Us created successfully.');
+        return redirect()->back()->with('message', 'Services updated successfully');
     }
 
     /**

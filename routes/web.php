@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\OurGovernanceController;
 use App\Http\Controllers\Admin\OurOrganizationController;
 use App\Http\Controllers\Admin\PrincipleAndBusinessController;
 use App\Http\Controllers\Admin\SellerController;
+use App\Http\Controllers\Admin\ServiceContoller;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Frontend\CmsController;
 use Illuminate\Support\Facades\Artisan;
@@ -70,6 +71,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         'our-governances' => OurGovernanceController::class,
         'our-organizations' => OurOrganizationController::class,
         'organization-centers' => OrganizationCenterController::class,
+        'services' => ServiceContoller::class,
     ]);
 
     Route::prefix('organization-centers')->group(function () {
@@ -129,6 +131,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
             Route::get('/gallery-delete/{id}', [GalleryController::class, 'delete'])->name('gallery.delete');
         });
     });
+
 });
 
 /*************************************************************** Frontend ************************************************************************/
@@ -149,3 +152,4 @@ Route::get('/details', [CmsController::class, 'details'])->name('details');
 
 Route::post('/newsletter', [CmsController::class, 'newsletter'])->name('newsletter');
 Route::post('/contact-us', [CmsController::class, 'contactUsForm'])->name('contact-us.form');
+Route::Post('/session', [CmsController::class, 'session'])->name('session.store');

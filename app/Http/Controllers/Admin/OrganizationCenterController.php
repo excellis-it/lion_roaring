@@ -37,9 +37,9 @@ class OrganizationCenterController extends Controller
                 ->orWhere('slug', 'like', '%' . $query . '%')
                 ->orWhereHas('ourOrganization', function ($q) use ($query) {
                     $q->where('name', 'like', '%' . $query . '%');
-                });
-            $organization_centers->orderBy($sort_by, $sort_type);
-            $organization_centers->paginate(10);
+                })
+                ->orderBy($sort_by, $sort_type)
+                ->paginate(10);
 
             return response()->json(['data' => view('admin.organization-centers.table', compact('organization_centers'))->render()]);
         }

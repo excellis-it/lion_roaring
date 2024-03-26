@@ -8,7 +8,7 @@
                 <div class="col-lg-5">
                     <div class="ftr_logo_sec">
                         <a href="" class="ftr_logo">
-                            <img src="uploads/2024/02/Group-2029.png" alt="">
+                            <img src="{{asset('frontend_assets/uploads/2024/02/Group-2029.png')}}" alt="">
                         </a>
                         <p>Our main focus is to restore our various communities, villages, cities, states,
                             and
@@ -16,9 +16,9 @@
                             physical.</p>
                         <div class="col-lg-12">
                             <div class="d-flex align-items-center">
-                                <a href="#" class="me-2"><img src="uploads/2024/01/playstore.png"
+                                <a href="#" class="me-2"><img src="{{asset('frontend_assets/uploads/2024/01/playstore.png')}}"
                                         alt=""></a>
-                                <a href="#"><img src="uploads/2024/01/appstore.png" alt=""></a>
+                                <a href="#"><img src="{{asset('frontend_assets/uploads/2024/01/appstore.png')}}" alt=""></a>
                             </div>
                         </div>
                     </div>

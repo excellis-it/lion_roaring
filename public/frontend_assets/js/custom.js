@@ -6,9 +6,7 @@ $('#toggle').click(function() {
 
 
 
-$(document).ready(function(){       
-   $('#onload_popup').modal('show');
-}); 
+
 
 
 /*----- slier --------*/
@@ -26,7 +24,7 @@ $('.slider').slick({
 	prevArrow: '<div class="slick-nav prev-arrow"><i></i><svg><use xlink:href="#circle"></svg></div>',
 	nextArrow: '<div class="slick-nav next-arrow"><i></i><svg><use xlink:href="#circle"></svg></div>',
   responsive: [
-   
+
     {
       breakpoint: 768,
       settings: {
@@ -148,7 +146,7 @@ $('.gallery_slider').slick({
 	prevArrow: '<div class="slick-nav prev-arrow"><i></i><svg><use xlink:href="#circle"></svg></div>',
 	nextArrow: '<div class="slick-nav next-arrow"><i></i><svg><use xlink:href="#circle"></svg></div>',
   responsive: [
-   
+
     {
       breakpoint: 1025,
       settings: {

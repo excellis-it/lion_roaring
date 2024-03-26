@@ -42,6 +42,8 @@ class DetailsController extends Controller
         foreach ($request->description as $key => $value) {
             if (isset($request->image_id[$key])) {
                 $detail = Detail::find($request->image_id[$key]);
+                // delete old image
+                Detail::whereNotIn('id', $request->image_id)->delete();
             } else {
                 $detail = new Detail();
             }

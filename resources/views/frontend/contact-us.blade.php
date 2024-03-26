@@ -89,7 +89,7 @@
                                     <h3>WRITE US</h3>
                                     <p>
                                     </p>
-                                    <p>{{$contact['address'] ?? 'address'}}</p>
+                                    <p>{!! nl2br($contact['address']) !!}</p>
                                     <p></p>
                                 </div>
                             </div>

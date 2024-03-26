@@ -17,7 +17,7 @@
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="inner_banner_ontent text-center">
-                        <h1>{{ $organization_center['name'] ?? 'title' }}</h1>
+                        <h1>{{ $organization_center['name'] ?? '' }}</h1>
                     </div>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                     <div class="about_text heading_hp text_white">
                         <h6>{{ $organization_center['name'] ?? 'title' }}</h6>
                         <p style="font-weight: 400;">
-                            <strong>{{ $organization_center['description'] ?? 'description' }}</strong></p>
+                            <strong>{{ $organization_center['description'] ?? '' }}</strong></p>
                     </div>
                 </div>
             </div>
