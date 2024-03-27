@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ContactusController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DetailsController;
+use App\Http\Controllers\Admin\DonationController as AdminDonationController;
 use App\Http\Controllers\Admin\EcclesiaAssociationController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\GalleryController;
@@ -26,6 +27,7 @@ use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\ServiceContoller;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Frontend\CmsController;
+use App\Http\Controllers\Frontend\DonationController;
 use Illuminate\Support\Facades\Artisan;
 
 /*
@@ -72,7 +74,10 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         'our-organizations' => OurOrganizationController::class,
         'organization-centers' => OrganizationCenterController::class,
         'services' => ServiceContoller::class,
+        'donations' => AdminDonationController::class,
     ]);
+
+    Route::get('/donations-fetch-data', [AdminDonationController::class, 'fetchData'])->name('donations.fetch-data');
 
     Route::prefix('organization-centers')->group(function () {
         Route::get('/organization-center-delete/{id}', [OrganizationCenterController::class, 'delete'])->name('organization-centers.delete');
@@ -153,3 +158,5 @@ Route::get('/details', [CmsController::class, 'details'])->name('details');
 Route::post('/newsletter', [CmsController::class, 'newsletter'])->name('newsletter');
 Route::post('/contact-us', [CmsController::class, 'contactUsForm'])->name('contact-us.form');
 Route::Post('/session', [CmsController::class, 'session'])->name('session.store');
+Route::post('/donation', [DonationController::class, 'donation'])->name('donation');
+Route::get('/thankyou', [DonationController::class, 'thankyou'])->name('thankyou');

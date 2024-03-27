@@ -43,6 +43,12 @@
                             href="{{ route('customers.index') }}"> User List</a></li>
                 </ul>
             </li>
+            <li class="dropdown {{ Request::is('admin/donations*') ? 'active' : ' ' }}">
+                <a href="{{ route('donations.index') }}">
+                    <i class="ph ph-coins"></i>
+                    <span>Donations</span>
+                </a>
+            </li>
             <li class="dropdown {{ Request::is('admin/contact-us*') ? 'active' : ' ' }}">
                 <a href="{{ route('contact-us.index') }}">
                     <i class="ph ph-phone"></i>

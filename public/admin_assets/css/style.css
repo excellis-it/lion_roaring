@@ -12309,3 +12309,7 @@ a.dt-button {
 }
 
 
+.toxic {
+    margin-top: 5px;
+    box-shadow: none !important;
+}

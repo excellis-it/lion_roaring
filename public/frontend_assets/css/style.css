@@ -105,17 +105,18 @@ p {
     background: var(--main-color);
 }
 
-.pure-button {
+.pure-button{
     color: var(--sec-color) !important;
     background: var(--main-color);
-    padding: 5px 25px !important;
+    padding: 7px 25px !important;
     border-radius: 30px;
-    font-size: 15px !important;
+    font-size: 16px !important;
     border: none;
     box-shadow: none;
     text-shadow: none;
-    font-weight: 400;
-}
+    font-weight: 500;
+    text-transform: uppercase;
+  }
 
 .banner_sec {
     width: 100%;
@@ -2380,22 +2381,23 @@ li.slick-active button {
     max-width: 685px;
 }
 
-.donate_bg_sec .asp_product_buy_btn.blue {
-    color: var(--sec-color) !important;
+.donate_bg_sec .asp_product_buy_btn.blue{
+	color: var(--sec-color) !important;
     background: var(--main-color);
-    padding: 5px 25px !important;
+    padding: 7px 25px !important;
     border-radius: 30px;
-    font-size: 15px !important;
+    font-size: 16px !important;
     border: none;
     box-shadow: none;
     text-shadow: none;
-    font-weight: 400;
+    font-weight: 500;
+    text-transform: uppercase
 }
 
-.donate_bg_sec .asp_product_buy_btn.blue:hover {
-    color: var(--main-color) !important;
-    background: var(--sec-color);
-    text-shadow: none !important;
+.donate_bg_sec .asp_product_buy_btn.blue:hover{
+	color: var(--main-color) !important;
+	background: var(--sec-color);
+	text-shadow:none !important;
 }
 
 #pmpro_user_fields .pmpro_checkout-h2-msg a {

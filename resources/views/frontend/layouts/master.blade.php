@@ -7,6 +7,8 @@
     <meta name="description" content="">
     <meta name="author" content="Swarnadwip Nath">
     <meta name="generator" content="Hugo 0.84.0">
+    {{-- favicon --}}
+    <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}" sizes="32x32" />
     @yield('meta_title')
     <title>@yield('title')</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
@@ -53,6 +55,10 @@
 
 <body>
     <main>
+        @php
+            use App\Helpers\Helper;
+        @endphp
+
         @include('frontend.includes.header')
 
         <!--=====================================-->
@@ -66,7 +72,123 @@
         <!--=====================================-->
         <!-- Start Footer Area  -->
         @include('frontend.includes.footer')
+        {{-- payment --}}
+        <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
+            tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalToggleLabel2">Lion Roaring Donate</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form" action="{{ route('donation') }}" method="post" class="require-validation"
+                            data-cc-on-file="false" data-stripe-publishable-key="{{ env('STRIPE_KEY') }}"
+                            id="payment-form">
+                            @csrf
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <label for="amount">Enter amount</label>
+                                    <input class="form-control" id="amount" name="amount" inputmode="decimal"
+                                        value="">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="billing_name">First Name</label>
+                                    <input class="form-control has-icon" type="text" id="billing-fname"
+                                        name="first_name" value="">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="billing_name">Last Name</label>
+                                    <input class="form-control has-icon" type="text" id="billing-lname"
+                                        name="last_name" value="">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="email">Email</label>
+                                    <input class="form-control has-icon" type="text" id="email" name="email"
+                                        value="">
+                                </div>
+                                <div class="pure-u-1">
+                                    <legend>Billing info</legend>
+                                </div>
+                                <hr />
+                                <div class="col-lg-6 mb-3">
+                                    <label for="address">Address</label>
+                                    <input class="form-control has-icon" type="text" id="address" name="address">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="city">City</label>
+                                    <input class="form-control" type="text" id="city" name="city">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="country">Country</label>
+                                    <select class="form-control" name="country_id" id="country">
+                                        <option value="">—</option>
+                                        @foreach (Helper::getCountries() as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="state">State</label>
+                                    <input class="form-control" type="text" id="state" name="state">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="postcode">Postcode</label>
+                                    <input class="form-control" type="text" name="postcode" id="postcode">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="card-element">Credit or debit card</label>
+                                </div>
+                                <hr />
+                                <div class="col-md-12">
+                                    <label for="card-element">Card Number</label>
+                                    <input class="form-control card-number" aria-hidden="true" aria-label=" " name="card_number"
+                                        id="card-number" autocomplete="false">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="card-element">Month</label>
+                                    <select class="form-control form-control--sm card-expiry-month valid card-expiry-month"
+                                        name="card_expiry_month" id="card-expiry-month" aria-invalid="false">
+                                        <option selected="" value="1">January</option>
+                                        <option value="2">February</option>
+                                        <option value="3">March</option>
+                                        <option value="4">April</option>
+                                        <option value="5">May</option>
+                                        <option value="6">June</option>
+                                        <option value="7">July</option>
+                                        <option value="8">August</option>
+                                        <option value="9">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="card-element">Year</label>
+                                    <input class="form-control" aria-hidden="true" aria-label=" " id="card-expiry-year"
+                                        name="card_expiry_year" autocomplete="false" maxlength="5">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="card-element">CVC</label>
+                                    <input class="form-control" aria-hidden="true" aria-label=" " name="card_cvc" id="card-cvc"
+                                        autocomplete="false" maxlength="3">
+                                </div>
 
+                            </div>
+
+                            <div class="mt-4">
+                                <div class="pure-u-5-5 centered">
+                                    <button type="submit" id="submit-btn"
+                                        class="pure-button pure-button-primary">Pay $0.00</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Custom styles for this template -->
         <div class="modal fade modal_code" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
@@ -85,8 +207,8 @@
                                 <p class="login-password">
                                     <label for="user_password">Password</label>
                                     <input type="password" name="pwd" id="user_password"
-                                        autocomplete="current-password" spellcheck="false" class="input" value=""
-                                        size="20">
+                                        autocomplete="current-password" spellcheck="false" class="input"
+                                        value="" size="20">
                                 </p>
                                 <p class="login-submit">
                                     <input type="submit" name="wp-submit" id="login-submit"
@@ -354,6 +476,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
@@ -459,6 +583,263 @@
                 $('#onload_popup').modal('show');
             @endif
         });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#asp_ng_button_065e81241e506b').click(function() {
+                $('#exampleModal1').modal('hide');
+                $('#exampleModalToggle2').modal('show');
+            });
+
+            $('#amount').on('keyup', function() {
+                var amount = $(this).val();
+                if (amount == '') {
+                    $('#submit-btn').text('Pay $0.00');
+                } else {
+                    $('#submit-btn').text('Pay $' + amount);
+
+                }
+            });
+        });
+    </script>
+    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+
+    <script type="text/javascript">
+        // $(function() {
+
+        //     /*------------------------------------------
+        //     --------------------------------------------
+        //     Stripe Payment Code
+        //     --------------------------------------------
+        //     --------------------------------------------*/
+
+        //     var $form = $(".require-validation");
+
+        //     $('form.require-validation').bind('submit', function(e) {
+        //         var $form = $(".require-validation"),
+        //         inputSelector = ['input[type=email]', 'input[type=password]',
+        //                          'input[type=text]', 'input[type=file]',
+        //                          'textarea'].join(', '),
+        //         $inputs = $form.find('.required').find(inputSelector),
+        //         $errorMessage = $form.find('div.error'),
+        //         valid = true;
+        //         $errorMessage.addClass('hide');
+
+        //         $('.has-error').removeClass('has-error');
+        //         $inputs.each(function(i, el) {
+        //           var $input = $(el);
+        //           if ($input.val() === '') {
+        //             $input.parent().addClass('has-error');
+        //             $errorMessage.removeClass('hide');
+        //             e.preventDefault();
+        //           }
+        //         });
+
+        //         if (!$form.data('cc-on-file')) {
+        //           e.preventDefault();
+        //           Stripe.setPublishableKey($form.data('stripe-publishable-key'));
+        //           Stripe.createToken({
+        //             number: $('.card-number').val(),
+        //             cvc: $('.card-cvc').val(),
+        //             exp_month: $('.card-expiry-month').val(),
+        //             exp_year: $('.card-expiry-year').val()
+        //           }, stripeResponseHandler);
+        //         }
+
+        //     });
+
+        //     /*------------------------------------------
+        //     --------------------------------------------
+        //     Stripe Response Handler
+        //     --------------------------------------------
+        //     --------------------------------------------*/
+        //     function stripeResponseHandler(status, response) {
+        //         if (response.error) {
+        //             $('.error')
+        //                 .removeClass('hide')
+        //                 .find('.alert')
+        //                 .text(response.error.message);
+        //         } else {
+        //             /* token contains id, last4, and card type */
+        //             var token = response['id'];
+
+        //             $form.find('input[type=text]').empty();
+        //             $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
+        //             $form.get(0).submit();
+        //         }
+        //     }
+
+        // });
+        $(document).ready(function() {
+            var $form = $(".require-validation");
+            $('.require-validation').validate({
+                rules: {
+                    amount: {
+                        required: true
+                    },
+                    first_name: {
+                        required: true
+                    },
+                    last_name: {
+                        required: true
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    address: {
+                        required: true
+                    },
+                    city: {
+                        required: true
+                    },
+                    country_id: {
+                        required: true
+                    },
+                    state: {
+                        required: true
+                    },
+                    postcode: {
+                        required: true
+                    },
+                    card_number: {
+                        required: true
+                    },
+                    card_expiry_month: {
+                        required: true,
+                        number: true
+                    },
+                    card_expiry_year: {
+                        required: true
+                    },
+                    card_cvc: {
+                        required: true
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function(error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                },
+                // messages: {
+                //     first_name: {
+                //         required: "First name is required"
+                //     },
+                //     last_name: {
+                //         required: "Last name is required"
+                //     },
+                //     email: {
+                //         required: "Email is required",
+                //         email: "Please enter a valid email address"
+                //     },
+                //     address: {
+                //         required: "Address is required"
+                //     },
+                //     city: {
+                //         required: "City is required"
+                //     },
+                //     country_id: {
+                //         required: "Country is required"
+                //     },
+                //     state: {
+                //         required: "State is required"
+                //     },
+                //     postcode: {
+                //         required: "Postcode is required"
+                //     },
+                //     card_number: {
+                //         required: "Card number is required"
+                //     },
+                //     card_expiry_month: {
+                //         required: "Card expiry month is required",
+                //         number: "Please enter a valid number"
+                //     },
+                //     card_expiry_year: {
+                //         required: "Card expiry year is required"
+                //     },
+                //     card_cvc: {
+                //         required: "Card cvc is required"
+                //     }
+                // },
+                submitHandler: function(form) {
+                    var $form = $(form),
+                        inputSelector = ['input[type=email]', 'input[type=password]',
+                            'input[type=text]', 'input[type=file]',
+                            'textarea'
+                        ].join(', '),
+                        $inputs = $form.find('.required').find(inputSelector),
+                        $errorMessage = $form.find('div.error');
+
+                    $errorMessage.addClass('hide');
+                    $('.has-error').removeClass('has-error');
+
+                    $inputs.each(function(i, el) {
+                        var $input = $(el);
+                        if ($input.val() === '') {
+                            $input.parent().addClass('has-error');
+                            $errorMessage.removeClass('hide');
+                            return false; // Stop processing on the first validation error
+                        }
+                    });
+
+                    if (!$form.data('cc-on-file')) {
+                        // e is not defined here, so remove it
+                        Stripe.setPublishableKey($form.data('stripe-publishable-key'));
+                        Stripe.createToken({
+                            number: $('.card-number').val(),
+                            cvc: $('#card-cvc').val(),
+                            exp_month: $('#card-expiry-month').val(),
+                            exp_year: $('#card-expiry-year').val()
+                        }, stripeResponseHandler);
+                    }
+                }
+            });
+
+            function stripeResponseHandler(status, response) {
+                if (response.error) {
+                    toastr.error(response.error.message);
+                } else {
+                    var token = response['id'];
+                    $form.find('input[type=text]').empty();
+                    $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
+                    $form.get(0).submit();
+                }
+            }
+        });
+    </script>
+    <script>
+        $('#card-number').on('input propertychange paste', function() {
+            var value = $('#card-number').val();
+            var formattedValue = formatCardNumber(value);
+            $('#card-number').val(formattedValue);
+        });
+
+        function formatCardNumber(value) {
+            var value = value.replace(/\D/g, '');
+            var formattedValue;
+            var maxLength;
+            // american express, 15 digits
+            if ((/^3[47]\d{0,13}$/).test(value)) {
+                formattedValue = value.replace(/(\d{4})/, '$1 ').replace(/(\d{4}) (\d{6})/, '$1 $2 ');
+                maxLength = 17;
+            } else if ((/^3(?:0[0-5]|[68]\d)\d{0,11}$/).test(value)) { // diner's club, 14 digits
+                formattedValue = value.replace(/(\d{4})/, '$1 ').replace(/(\d{4}) (\d{6})/, '$1 $2 ');
+                maxLength = 16;
+            } else if ((/^\d{0,16}$/).test(value)) { // regular cc number, 16 digits
+                formattedValue = value.replace(/(\d{4})/, '$1 ').replace(/(\d{4}) (\d{4})/, '$1 $2 ').replace(
+                    /(\d{4}) (\d{4}) (\d{4})/, '$1 $2 $3 ');
+                maxLength = 19;
+            }
+
+            $('#card-number').attr('maxlength', maxLength);
+            return formattedValue;
+        }
     </script>
     @stack('scripts')
 </body>

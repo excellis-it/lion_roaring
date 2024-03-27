@@ -4,6 +4,7 @@
 <head>
     <meta content="width=device-width,  initial-scale=1,  maximum-scale=1,  shrink-to-fit=no" name="viewport" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}" sizes="32x32" />
     <title>@yield('title')</title>
     <link rel="shortcut icon" type="image/x-icon" href="{{asset('frontend_assets/images/icons/favicon.ico')}}" />
     <link rel="stylesheet" href="{{asset('admin_assets/bootstrap-5.3/css/bootstrap.min.css')}}">
@@ -12,7 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap"
         rel="stylesheet">
     <script src="https://unpkg.com/phosphor-icons"></script>
-    <!-- <link rel="stylesheet" href="css/bootstrap.min.css" /> -->
     <link rel="stylesheet" href="{{asset('admin_assets/css/app.min.css')}}" />
     <link rel="stylesheet" href="{{asset('admin_assets/css/custom.css')}}" />
     <link rel="stylesheet" href="{{asset('admin_assets/css/style.css')}}" />
@@ -24,8 +24,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-
     @stack('styles')
     <style>
         .error {
@@ -66,9 +64,6 @@
         </div>
     </div>
     <script src="{{asset('admin_assets/js/jquery-3.4.1.min.js')}}"></script>
-    <!-- <script src="js/jquery.min.js"></script> -->
-    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> -->
-    <!-- <script src="js/bootstrap.min.js" async=""></script> -->
     <script src="{{asset('admin_assets/bootstrap-5.3/js/bootstrap.min.js')}}"></script>
     <script src="{{asset('admin_assets/js/raphael-min.js')}}"></script>
     <script src="{{asset('admin_assets/js/morris.min.js')}}"></script>

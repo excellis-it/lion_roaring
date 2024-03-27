@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-    All Contact Us Details - {{ env('APP_NAME') }}
+    All Donations Details - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
     <style>
@@ -10,7 +10,7 @@
     </style>
 @endpush
 @section('head')
-    All Contact Us Details
+    All Donations Details
 @endsection
 @section('create_button')
 @endsection
@@ -45,24 +45,54 @@
                         <thead>
                             <tr>
                                 <th>Id </th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="first_name" style="cursor: pointer"
-                                    data-tippy-content="Sort by Name">
-                                    Name<span id="first_name_icon"></span></th>
-                                    {{-- phone --}}
-                                <th class="sorting" data-sorting_type="asc" data-column_name="phone"
-                                    style="cursor: pointer" data-tippy-content="Sort by phone">
-                                    Phone<span id="phone_icon"></span></th>
+                                {{-- transaction_id --}}
+                                <th class="sorting" data-sorting_type="asc" data-column_name="transaction_id"
+                                    style="cursor: pointer" data-tippy-content="Sort by transaction_id">Transaction ID<span
+                                        id="transaction_id_icon"></span></th>
+                                        {{-- amount --}}
+                                <th class="sorting" data-sorting_type="asc" data-column_name="donation_amount"
+                                style="cursor: pointer" data-tippy-content="Sort by donation amount">Donation Amount<span
+                                    id="amount_icon"></span></th>
 
-                                <th class="sorting" data-sorting_type="asc" data-column_name="email"
-                                    style="cursor: pointer" data-tippy-content="Sort by email">
+                                <th class="sorting" data-sorting_type="asc" data-column_name="first_name"
+                                    style="cursor: pointer" data-tippy-content="Sort by Name">
+                                    Name<span id="first_name_icon"></span></th>
+
+                                <th class="sorting" data-sorting_type="asc" data-column_name="email" style="cursor: pointer"
+                                    data-tippy-content="Sort by email">
                                     Email<span id="email_icon"></span></th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="message"
-                                    style="cursor: pointer" data-tippy-content="Sort by message">Message<span
-                                    id="message_icon"></span></th>
+                                <th class="sorting" data-sorting_type="asc" data-column_name="address"
+                                    style="cursor: pointer" data-tippy-content="Sort by address">Address<span
+                                        id="address_icon"></span></th>
+                                {{-- city --}}
+                                <th class="sorting" data-sorting_type="asc" data-column_name="city" style="cursor: pointer"
+                                    data-tippy-content="Sort by city">City<span id="city_icon"></span></th>
+                                {{-- state --}}
+
+                                <th class="sorting" data-sorting_type="asc" data-column_name="state" style="cursor: pointer"
+                                    data-tippy-content="Sort by state">State<span id="state_icon"></span></th>
+                                {{-- postcode --}}
+                                <th class="sorting" data-sorting_type="asc" data-column_name="postcode"
+                                    style="cursor: pointer" data-tippy-content="Sort by postcode">Postcode<span
+                                        id="postcode_icon"></span></th>
+                                {{-- country --}}
+                                <th class="sorting" data-sorting_type="asc" data-column_name="country"
+                                    style="cursor: pointer" data-tippy-content="Sort by country">Country<span
+                                        id="country_icon"></span></th>
+
+
+                                {{-- payment_status --}}
+                                <th class="sorting" data-sorting_type="asc" data-column_name="payment_status"
+                                    style="cursor: pointer" data-tippy-content="Sort by payment_status">Payment Status<span
+                                        id="payment_status_icon"></span></th>
+                                {{-- created_at --}}
+                                <th class="sorting" data-sorting_type="asc" data-column_name="created_at"
+                                    style="cursor: pointer" data-tippy-content="Sort by created_at">Created At<span
+                                        id="created_at_icon"></span></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @include('admin.contact-us.table')
+                            @include('admin.donations.table')
 
                         </tbody>
                     </table>
@@ -108,12 +138,20 @@
                 $('#first_name_icon').html('');
                 $('#phone_icon').html('');
                 $('#email_icon').html('');
-                $('#message_icon').html('');
+                $('#address_icon').html('');
+                $('#city_icon').html('');
+                $('#state_icon').html('');
+                $('#postcode_icon').html('');
+                $('#country_icon').html('');
+                $('#amount_icon').html('');
+                $('#transaction_id_icon').html('');
+                $('#payment_status_icon').html('');
+                $('#created_at_icon').html('');
             }
 
             function fetch_data(page, sort_type, sort_by, query) {
                 $.ajax({
-                    url: "{{ route('contact-us.fetch-data') }}",
+                    url: "{{ route('donations.fetch-data') }}",
                     data: {
                         page: page,
                         sortby: sort_by,
