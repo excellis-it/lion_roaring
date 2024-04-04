@@ -3,6 +3,7 @@
 namespace App\Helpers;
 use App\Models\Article;
 use App\Models\Country;
+use App\Models\Footer;
 use App\Models\Organization;
 use App\Models\OurOrganization;
 use Illuminate\Support\Facades\Storage;
@@ -30,5 +31,11 @@ class Helper
     {
         $countries = Country::orderBy('name', 'asc')->get();
         return $countries;
+    }
+
+    public static function getFooter()
+    {
+        $footer = Footer::orderBy('id', 'desc')->first();
+        return $footer;
     }
 }

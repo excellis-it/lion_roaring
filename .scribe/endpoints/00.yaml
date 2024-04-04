@@ -1,0 +1,93 @@
+name: 'Contact Us'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/contact-us
+    metadata:
+      groupName: 'Contact Us'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Store Contact Us'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      first_name:
+        name: first_name
+        description: 'First Name of the user.'
+        required: true
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      last_name:
+        name: last_name
+        description: 'Last Name of the user.'
+        required: true
+        example: Doe
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      email:
+        name: email
+        description: 'Email of the user. Example:'
+        required: true
+        example: anjali.olson@example.org
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      phone:
+        name: phone
+        description: 'Phone of the user.'
+        required: true
+        example: '1234567890'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      message:
+        name: message
+        description: 'Message of the user.'
+        required: true
+        example: Hello
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      first_name: John
+      last_name: Doe
+      email: anjali.olson@example.org
+      phone: '1234567890'
+      message: Hello
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Thank you for contacting us",
+          "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

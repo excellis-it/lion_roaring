@@ -1,0 +1,277 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "http:\/\/127.0.0.1:8000"
+        }
+    ],
+    "info": {
+        "name": "Lion Roaring",
+        "_postman_id": "5eea9206-8692-4b96-8826-b4a4171e2a86",
+        "description": "",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "CMS Management",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get gallery",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/cms\/gallery",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/cms\/gallery"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Gallery\",\n\"status\": true,\n\"gallery\": [\n    {\n      \"image_url\": \"http:\/\/127.0.0.1:8000\/storage\/gallery\/kg4vGiEpej4HXuc50ZVKQC2Agjvn6wj3rMygAOxu.jpg\"\n    },\n  ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n\"message\": \"No gallery found\",\n\"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get FAQ",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/cms\/faq",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/cms\/faq"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"FAQ\",\n\"status\": true,\n\"faq\": [\n   {\n     \"title\": \"Are there any transport facilities available for the staff members?\",\n     \"content\": \"This is the second item's accordion body. It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the .accordion-body, though the transition does limit overflow.\"\n  },\n]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n\"message\": \"No FAQ found\",\n\"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Principal and Business Model",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/cms\/principle-and-business",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/cms\/principle-and-business"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Principal and Business\",\n\"status\": true,\n\"principleAndBusiness\": {\n  \"banner_image_url\": \"http:\/\/127.0.0.1:8000\/storage\/principle-and-business\/iJt84RS9xLxfytBLynRBg4huIy9HfhfHWwJXEftc.jpg\",\n  \"banner_title\": \"OUR PRINCIPLE AND BUSINESS MODEL\",\n  \"image_url\": \"http:\/\/127.0.0.1:8000\/storage\/principle-and-business\/CzFIynj2rOY7JSYtOVt1KtIKMFxFrP2A38J7Hwpz.png\",\n  \"title\": \"OUR PRINCIPLE AND BUSINESS MODEL\",\n  \"content\": \"<p><strong>These seven primodial spirits in God is the Core principle that Lion Roaring has adopted in order to pursue perfected love in our soul and become like Christ. And the ultimate goal in Lion Roaring is to be able to bring Heaven on Earth.<\/strong>\n}\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n\"message\": \"No Principal and Business found\",\n\"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Ecclesia Associations",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/cms\/ecclesia-associations",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/cms\/ecclesia-associations"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Ecclesia Associations\",\n\"status\": true,\n\"ecclesiaAssociations\": {\n  \"banner_image_url\": \"http:\/\/127.0.0.1:8000\/storage\/principle-and-business\/iJt84RS9xLxfytBLynRBg4huIy9HfhfHWwJXEftc.jpg\",\n  \"banner_title\": \"OUR ECCLESIA ASSOCIATION\",\n  \"title\": \"OUR ECCLESIA ASSOCIATION\",\n  \"content\": \"<p><strong>These seven primodial spirits in God is the Core principle that Lion Roaring has adopted in order to pursue perfected love in our soul and become like Christ. And the ultimate goal in Lion Roaring is to be able to bring Heaven on Earth.<\/strong>\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n\"message\": \"No Ecclesia Associations found\",\n\"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Organization",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/cms\/our-organization",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/cms\/our-organization"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Organization\",\n\"status\": true,\n\"organization\": {\n\"banner_section\": {\n\"banner_image_url\": \"http:\/\/127.0.0.1:8000\/storage\/organization\/paSVDc0EoYdGYGzvDpbK3akKyGkpEQII5SXIKt9c.jpg\",\n\"banner_title\": \"OUR ORGANIZATION\"\n},\n\"about_section\": {\n\"about_section_image_1\": \"http:\/\/127.0.0.1:8000\/storage\/organization\/ygqFzHisBYM8pAoWIWf4WJuK0QIP6KjGTEHGfpgy.png\",\n\"about_section_image_2\": \"http:\/\/127.0.0.1:8000\/storage\/organization\/WqrUEHEAP8nsL4kRC0Qr2zo4tyI9cKVSjcQeWUG5.png\",\n\"about_section_image_3\": \"http:\/\/127.0.0.1:8000\/storage\/organization\/gNMs84RgkxLAcYAFlAq06YE3BHexYN0IeOZHADIO.png\",\n\"about_section_image_4\": \"http:\/\/127.0.0.1:8000\/storage\/organization\/UvaKMc7pcWKDGxTN20MF1aTK8wmfZPRH2LA1XLbE.png\",\n\"about_section_image_5\": \"http:\/\/127.0.0.1:8000\/storage\/organization\/Btj1lC8MDyDrn5oVwoJRfZarYsYQefTin5wIJlyl.png\"\n},\n\"project_section\": {\n\"project_section_title\": \"LION ROARING INNOVATION CENTERS OVERVIEW\",\n\"project_section_sub_title\": \"KINGSHIP AUTHORITY\",\n\"project_section_description\": \"Lion Roaring Innovation Centers\"\n},\n\"project_section_details\": [\n{\n   \"title\": \"Science & Technology Innovation Center\",\n   \"details\": \"<ul><li>Digital Transformation<\/li><li>Quantum Technology<\/li><li>BioTech<\/li><li>Telecommunication<\/li><\/ul><p><br>&nbsp;<\/p>\"\n},\n{\n   \"title\": \"Healthcare & Medicine Innovation Center\",\n   \"details\": \"<ul><li>Miracle Healing<\/li><li>Oil &amp; Herb Medicine<\/li><li>Natural Nutrition Intake<\/li><\/ul><p><br>&nbsp;<\/p>\"\n},\n{\n   \"title\": \"Farming, Food & Nutrition Innovation Center\",\n   \"details\": \"<ul><li>Agriculture<\/li><li>Distribution<\/li><li>Preserve &amp; Packaging<\/li><li>Farming<\/li><\/ul><p><br>&nbsp;<\/p>\"\n},\n{\n   \"title\": \"Lion Roaring Foundation\",\n   \"details\": \"<ul><li>US National Status<\/li><li>Change our Status<\/li><li>Training &amp; mentorship<\/li><li>Restoration of cities &amp; State via Education<\/li><li>Private Bank, Trust, 1099a, W4, etc.<\/li><\/ul><p><br>&nbsp;<\/p>\"\n},\n{\n   \"title\": \"Animal Shelter & Training Innovation Center\",\n   \"details\": \"<ul><li>Training<\/li><li>Rescue\/Safari<\/li><li>Boarding<\/li><\/ul><p><br>&nbsp;<\/p>\"\n},\n{\n   \"title\": \"Music, Media, Innovation Center\",\n   \"details\": \"<ul><li>Music\/Worship &amp; Arts<\/li><li>Harp &amp; Shofar, others<\/li><li>Dancing &amp; Painting<\/li><\/ul><p><br>&nbsp;<\/p>\"\n},\n{\n   \"title\": \"Entertainment & Arts Innovation Center\",\n   \"details\": \"<ul><li>Video &amp; Photo<\/li><li>Media &amp; Entertainment<\/li><li>Marketing &amp; Publisher<\/li><\/ul><p><br>&nbsp;<\/p>\"\n}\n]\n}\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n\"message\": \"No Organization found\",\n\"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Contact Us",
+            "description": "",
+            "item": [
+                {
+                    "name": "Store Contact Us",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/contact-us",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/contact-us"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"anjali.olson@example.org\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Thank you for contacting us\",\n\"status\": true\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "noauth"
+    }
+}

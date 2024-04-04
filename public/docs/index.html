@@ -1,0 +1,1051 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Lion Roaring Documentation</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../docs/css/theme-default.style.css" media="screen">
+    <link rel="stylesheet" href="../docs/css/theme-default.print.css" media="print">
+
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/@highlightjs/cdn-assets@11.6.0/styles/obsidian.min.css">
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.6.0/highlight.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jets/0.14.1/jets.min.js"></script>
+
+    <style id="language-style">
+        /* starts out as display none and is replaced with js later  */
+                    body .content .bash-example code { display: none; }
+                    body .content .javascript-example code { display: none; }
+            </style>
+
+    <script>
+        var tryItOutBaseUrl = "http://127.0.0.1:8000";
+        var useCsrf = Boolean();
+        var csrfUrl = "/sanctum/csrf-cookie";
+    </script>
+    <script src="../docs/js/tryitout-4.35.0.js"></script>
+
+    <script src="../docs/js/theme-default-4.35.0.js"></script>
+
+</head>
+
+<body data-languages="[&quot;bash&quot;,&quot;javascript&quot;]">
+
+<a href="#" id="nav-button">
+    <span>
+        MENU
+        <img src="../docs/images/navbar.png" alt="navbar-image"/>
+    </span>
+</a>
+<div class="tocify-wrapper">
+    
+            <div class="lang-selector">
+                                            <button type="button" class="lang-button" data-language-name="bash">bash</button>
+                                            <button type="button" class="lang-button" data-language-name="javascript">javascript</button>
+                    </div>
+    
+    <div class="search">
+        <input type="text" class="search" id="input-search" placeholder="Search">
+    </div>
+
+    <div id="toc">
+                    <ul id="tocify-header-introduction" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="introduction">
+                    <a href="#introduction">Introduction</a>
+                </li>
+                            </ul>
+                    <ul id="tocify-header-authenticating-requests" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="authenticating-requests">
+                    <a href="#authenticating-requests">Authenticating requests</a>
+                </li>
+                            </ul>
+                    <ul id="tocify-header-cms-management" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="cms-management">
+                    <a href="#cms-management">CMS Management</a>
+                </li>
+                                    <ul id="tocify-subheader-cms-management" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="cms-management-POSTapi-v1-cms-gallery">
+                                <a href="#cms-management-POSTapi-v1-cms-gallery">Get gallery</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="cms-management-POSTapi-v1-cms-faq">
+                                <a href="#cms-management-POSTapi-v1-cms-faq">Get FAQ</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="cms-management-POSTapi-v1-cms-principle-and-business">
+                                <a href="#cms-management-POSTapi-v1-cms-principle-and-business">Get Principal and Business Model</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="cms-management-POSTapi-v1-cms-ecclesia-associations">
+                                <a href="#cms-management-POSTapi-v1-cms-ecclesia-associations">Get Ecclesia Associations</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="cms-management-POSTapi-v1-cms-our-organization">
+                                <a href="#cms-management-POSTapi-v1-cms-our-organization">Get Organization</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
+                    <ul id="tocify-header-contact-us" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="contact-us">
+                    <a href="#contact-us">Contact Us</a>
+                </li>
+                                    <ul id="tocify-subheader-contact-us" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="contact-us-POSTapi-v1-contact-us">
+                                <a href="#contact-us-POSTapi-v1-contact-us">Store Contact Us</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
+            </div>
+
+    <ul class="toc-footer" id="toc-footer">
+                    <li style="padding-bottom: 5px;"><a href="../docs/collection.json">View Postman collection</a></li>
+                            <li style="padding-bottom: 5px;"><a href="../docs/openapi.yaml">View OpenAPI spec</a></li>
+                <li><a href="http://github.com/knuckleswtf/scribe">Documentation powered by Scribe ✍</a></li>
+    </ul>
+
+    <ul class="toc-footer" id="last-updated">
+        <li>Last updated: April 4, 2024</li>
+    </ul>
+</div>
+
+<div class="page-wrapper">
+    <div class="dark-box"></div>
+    <div class="content">
+        <h1 id="introduction">Introduction</h1>
+<aside>
+    <strong>Base URL</strong>: <code>http://127.0.0.1:8000</code>
+</aside>
+<p>This documentation aims to provide all the information you need to work with our API.</p>
+<aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
+You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).</aside>
+
+        <h1 id="authenticating-requests">Authenticating requests</h1>
+<p>This API is not authenticated.</p>
+
+        <h1 id="cms-management">CMS Management</h1>
+
+    
+
+                                <h2 id="cms-management-POSTapi-v1-cms-gallery">Get gallery</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-cms-gallery">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v1/cms/gallery" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v1/cms/gallery"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-cms-gallery">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;message&quot;: &quot;Gallery&quot;,
+&quot;status&quot;: true,
+&quot;gallery&quot;: [
+    {
+      &quot;image_url&quot;: &quot;http://127.0.0.1:8000/storage/gallery/kg4vGiEpej4HXuc50ZVKQC2Agjvn6wj3rMygAOxu.jpg&quot;
+    },
+  ]
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;No gallery found&quot;,
+    &quot;status&quot;: false
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-cms-gallery" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-cms-gallery"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-cms-gallery"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-cms-gallery" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-cms-gallery">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-cms-gallery" data-method="POST"
+      data-path="api/v1/cms/gallery"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-cms-gallery', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-cms-gallery"
+                    onclick="tryItOut('POSTapi-v1-cms-gallery');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-cms-gallery"
+                    onclick="cancelTryOut('POSTapi-v1-cms-gallery');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-cms-gallery"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/cms/gallery</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-cms-gallery"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-cms-gallery"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="cms-management-POSTapi-v1-cms-faq">Get FAQ</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-cms-faq">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v1/cms/faq" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v1/cms/faq"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-cms-faq">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;message&quot;: &quot;FAQ&quot;,
+&quot;status&quot;: true,
+&quot;faq&quot;: [
+   {
+     &quot;title&quot;: &quot;Are there any transport facilities available for the staff members?&quot;,
+     &quot;content&quot;: &quot;This is the second item&#039;s accordion body. It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It&#039;s also worth noting that just about any HTML can go within the .accordion-body, though the transition does limit overflow.&quot;
+  },
+]
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;No FAQ found&quot;,
+    &quot;status&quot;: false
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-cms-faq" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-cms-faq"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-cms-faq"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-cms-faq" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-cms-faq">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-cms-faq" data-method="POST"
+      data-path="api/v1/cms/faq"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-cms-faq', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-cms-faq"
+                    onclick="tryItOut('POSTapi-v1-cms-faq');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-cms-faq"
+                    onclick="cancelTryOut('POSTapi-v1-cms-faq');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-cms-faq"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/cms/faq</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-cms-faq"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-cms-faq"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="cms-management-POSTapi-v1-cms-principle-and-business">Get Principal and Business Model</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-cms-principle-and-business">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v1/cms/principle-and-business" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v1/cms/principle-and-business"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-cms-principle-and-business">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;message&quot;: &quot;Principal and Business&quot;,
+&quot;status&quot;: true,
+&quot;principleAndBusiness&quot;: {
+  &quot;banner_image_url&quot;: &quot;http://127.0.0.1:8000/storage/principle-and-business/iJt84RS9xLxfytBLynRBg4huIy9HfhfHWwJXEftc.jpg&quot;,
+  &quot;banner_title&quot;: &quot;OUR PRINCIPLE AND BUSINESS MODEL&quot;,
+  &quot;image_url&quot;: &quot;http://127.0.0.1:8000/storage/principle-and-business/CzFIynj2rOY7JSYtOVt1KtIKMFxFrP2A38J7Hwpz.png&quot;,
+  &quot;title&quot;: &quot;OUR PRINCIPLE AND BUSINESS MODEL&quot;,
+  &quot;content&quot;: &quot;&lt;p&gt;&lt;strong&gt;These seven primodial spirits in God is the Core principle that Lion Roaring has adopted in order to pursue perfected love in our soul and become like Christ. And the ultimate goal in Lion Roaring is to be able to bring Heaven on Earth.&lt;/strong&gt;
+}
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;No Principal and Business found&quot;,
+    &quot;status&quot;: false
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-cms-principle-and-business" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-cms-principle-and-business"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-cms-principle-and-business"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-cms-principle-and-business" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-cms-principle-and-business">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-cms-principle-and-business" data-method="POST"
+      data-path="api/v1/cms/principle-and-business"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-cms-principle-and-business', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-cms-principle-and-business"
+                    onclick="tryItOut('POSTapi-v1-cms-principle-and-business');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-cms-principle-and-business"
+                    onclick="cancelTryOut('POSTapi-v1-cms-principle-and-business');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-cms-principle-and-business"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/cms/principle-and-business</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-cms-principle-and-business"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-cms-principle-and-business"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="cms-management-POSTapi-v1-cms-ecclesia-associations">Get Ecclesia Associations</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-cms-ecclesia-associations">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v1/cms/ecclesia-associations" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v1/cms/ecclesia-associations"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-cms-ecclesia-associations">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;message&quot;: &quot;Ecclesia Associations&quot;,
+&quot;status&quot;: true,
+&quot;ecclesiaAssociations&quot;: {
+  &quot;banner_image_url&quot;: &quot;http://127.0.0.1:8000/storage/principle-and-business/iJt84RS9xLxfytBLynRBg4huIy9HfhfHWwJXEftc.jpg&quot;,
+  &quot;banner_title&quot;: &quot;OUR ECCLESIA ASSOCIATION&quot;,
+  &quot;title&quot;: &quot;OUR ECCLESIA ASSOCIATION&quot;,
+  &quot;content&quot;: &quot;&lt;p&gt;&lt;strong&gt;These seven primodial spirits in God is the Core principle that Lion Roaring has adopted in order to pursue perfected love in our soul and become like Christ. And the ultimate goal in Lion Roaring is to be able to bring Heaven on Earth.&lt;/strong&gt;
+  }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;No Ecclesia Associations found&quot;,
+    &quot;status&quot;: false
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-cms-ecclesia-associations" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-cms-ecclesia-associations"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-cms-ecclesia-associations"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-cms-ecclesia-associations" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-cms-ecclesia-associations">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-cms-ecclesia-associations" data-method="POST"
+      data-path="api/v1/cms/ecclesia-associations"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-cms-ecclesia-associations', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-cms-ecclesia-associations"
+                    onclick="tryItOut('POSTapi-v1-cms-ecclesia-associations');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-cms-ecclesia-associations"
+                    onclick="cancelTryOut('POSTapi-v1-cms-ecclesia-associations');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-cms-ecclesia-associations"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/cms/ecclesia-associations</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-cms-ecclesia-associations"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-cms-ecclesia-associations"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="cms-management-POSTapi-v1-cms-our-organization">Get Organization</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-cms-our-organization">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v1/cms/our-organization" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v1/cms/our-organization"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-cms-our-organization">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Organization&quot;,
+    &quot;status&quot;: true,
+    &quot;organization&quot;: {
+        &quot;banner_section&quot;: {
+            &quot;banner_image_url&quot;: &quot;http://127.0.0.1:8000/storage/organization/paSVDc0EoYdGYGzvDpbK3akKyGkpEQII5SXIKt9c.jpg&quot;,
+            &quot;banner_title&quot;: &quot;OUR ORGANIZATION&quot;
+        },
+        &quot;about_section&quot;: {
+            &quot;about_section_image_1&quot;: &quot;http://127.0.0.1:8000/storage/organization/ygqFzHisBYM8pAoWIWf4WJuK0QIP6KjGTEHGfpgy.png&quot;,
+            &quot;about_section_image_2&quot;: &quot;http://127.0.0.1:8000/storage/organization/WqrUEHEAP8nsL4kRC0Qr2zo4tyI9cKVSjcQeWUG5.png&quot;,
+            &quot;about_section_image_3&quot;: &quot;http://127.0.0.1:8000/storage/organization/gNMs84RgkxLAcYAFlAq06YE3BHexYN0IeOZHADIO.png&quot;,
+            &quot;about_section_image_4&quot;: &quot;http://127.0.0.1:8000/storage/organization/UvaKMc7pcWKDGxTN20MF1aTK8wmfZPRH2LA1XLbE.png&quot;,
+            &quot;about_section_image_5&quot;: &quot;http://127.0.0.1:8000/storage/organization/Btj1lC8MDyDrn5oVwoJRfZarYsYQefTin5wIJlyl.png&quot;
+        },
+        &quot;project_section&quot;: {
+            &quot;project_section_title&quot;: &quot;LION ROARING INNOVATION CENTERS OVERVIEW&quot;,
+            &quot;project_section_sub_title&quot;: &quot;KINGSHIP AUTHORITY&quot;,
+            &quot;project_section_description&quot;: &quot;Lion Roaring Innovation Centers&quot;
+        },
+        &quot;project_section_details&quot;: [
+            {
+                &quot;title&quot;: &quot;Science &amp; Technology Innovation Center&quot;,
+                &quot;details&quot;: &quot;&lt;ul&gt;&lt;li&gt;Digital Transformation&lt;/li&gt;&lt;li&gt;Quantum Technology&lt;/li&gt;&lt;li&gt;BioTech&lt;/li&gt;&lt;li&gt;Telecommunication&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;/p&gt;&quot;
+            },
+            {
+                &quot;title&quot;: &quot;Healthcare &amp; Medicine Innovation Center&quot;,
+                &quot;details&quot;: &quot;&lt;ul&gt;&lt;li&gt;Miracle Healing&lt;/li&gt;&lt;li&gt;Oil &amp;amp; Herb Medicine&lt;/li&gt;&lt;li&gt;Natural Nutrition Intake&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;/p&gt;&quot;
+            },
+            {
+                &quot;title&quot;: &quot;Farming, Food &amp; Nutrition Innovation Center&quot;,
+                &quot;details&quot;: &quot;&lt;ul&gt;&lt;li&gt;Agriculture&lt;/li&gt;&lt;li&gt;Distribution&lt;/li&gt;&lt;li&gt;Preserve &amp;amp; Packaging&lt;/li&gt;&lt;li&gt;Farming&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;/p&gt;&quot;
+            },
+            {
+                &quot;title&quot;: &quot;Lion Roaring Foundation&quot;,
+                &quot;details&quot;: &quot;&lt;ul&gt;&lt;li&gt;US National Status&lt;/li&gt;&lt;li&gt;Change our Status&lt;/li&gt;&lt;li&gt;Training &amp;amp; mentorship&lt;/li&gt;&lt;li&gt;Restoration of cities &amp;amp; State via Education&lt;/li&gt;&lt;li&gt;Private Bank, Trust, 1099a, W4, etc.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;/p&gt;&quot;
+            },
+            {
+                &quot;title&quot;: &quot;Animal Shelter &amp; Training Innovation Center&quot;,
+                &quot;details&quot;: &quot;&lt;ul&gt;&lt;li&gt;Training&lt;/li&gt;&lt;li&gt;Rescue/Safari&lt;/li&gt;&lt;li&gt;Boarding&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;/p&gt;&quot;
+            },
+            {
+                &quot;title&quot;: &quot;Music, Media, Innovation Center&quot;,
+                &quot;details&quot;: &quot;&lt;ul&gt;&lt;li&gt;Music/Worship &amp;amp; Arts&lt;/li&gt;&lt;li&gt;Harp &amp;amp; Shofar, others&lt;/li&gt;&lt;li&gt;Dancing &amp;amp; Painting&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;/p&gt;&quot;
+            },
+            {
+                &quot;title&quot;: &quot;Entertainment &amp; Arts Innovation Center&quot;,
+                &quot;details&quot;: &quot;&lt;ul&gt;&lt;li&gt;Video &amp;amp; Photo&lt;/li&gt;&lt;li&gt;Media &amp;amp; Entertainment&lt;/li&gt;&lt;li&gt;Marketing &amp;amp; Publisher&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;/p&gt;&quot;
+            }
+        ]
+    }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;No Organization found&quot;,
+    &quot;status&quot;: false
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-cms-our-organization" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-cms-our-organization"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-cms-our-organization"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-cms-our-organization" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-cms-our-organization">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-cms-our-organization" data-method="POST"
+      data-path="api/v1/cms/our-organization"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-cms-our-organization', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-cms-our-organization"
+                    onclick="tryItOut('POSTapi-v1-cms-our-organization');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-cms-our-organization"
+                    onclick="cancelTryOut('POSTapi-v1-cms-our-organization');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-cms-our-organization"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/cms/our-organization</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-cms-our-organization"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-cms-our-organization"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                <h1 id="contact-us">Contact Us</h1>
+
+    
+
+                                <h2 id="contact-us-POSTapi-v1-contact-us">Store Contact Us</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-contact-us">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v1/contact-us" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"first_name\": \"John\",
+    \"last_name\": \"Doe\",
+    \"email\": \"anjali.olson@example.org\",
+    \"phone\": \"1234567890\",
+    \"message\": \"Hello\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v1/contact-us"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "anjali.olson@example.org",
+    "phone": "1234567890",
+    "message": "Hello"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-contact-us">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Thank you for contacting us&quot;,
+    &quot;status&quot;: true
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-contact-us" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-contact-us"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-contact-us"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-contact-us" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-contact-us">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-contact-us" data-method="POST"
+      data-path="api/v1/contact-us"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-contact-us', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-contact-us"
+                    onclick="tryItOut('POSTapi-v1-contact-us');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-contact-us"
+                    onclick="cancelTryOut('POSTapi-v1-contact-us');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-contact-us"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/contact-us</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-contact-us"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-contact-us"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>first_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="first_name"                data-endpoint="POSTapi-v1-contact-us"
+               value="John"
+               data-component="body">
+    <br>
+<p>First Name of the user. Example: <code>John</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>last_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="last_name"                data-endpoint="POSTapi-v1-contact-us"
+               value="Doe"
+               data-component="body">
+    <br>
+<p>Last Name of the user. Example: <code>Doe</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="email"                data-endpoint="POSTapi-v1-contact-us"
+               value="anjali.olson@example.org"
+               data-component="body">
+    <br>
+<p>Email of the user. Example: Example: <code>anjali.olson@example.org</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="phone"                data-endpoint="POSTapi-v1-contact-us"
+               value="1234567890"
+               data-component="body">
+    <br>
+<p>Phone of the user. Example: <code>1234567890</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>message</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="message"                data-endpoint="POSTapi-v1-contact-us"
+               value="Hello"
+               data-component="body">
+    <br>
+<p>Message of the user. Example: <code>Hello</code></p>
+        </div>
+        </form>
+
+            
+
+        
+    </div>
+    <div class="dark-box">
+                    <div class="lang-selector">
+                                                        <button type="button" class="lang-button" data-language-name="bash">bash</button>
+                                                        <button type="button" class="lang-button" data-language-name="javascript">javascript</button>
+                            </div>
+            </div>
+</div>
+</body>
+</html>

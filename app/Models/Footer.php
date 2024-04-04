@@ -5,12 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Faq extends Model
+class Footer extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'question',
-        'answer',
+        'footer_logo',
+        'footer_title',
+        'footer_playstore_link',
+        'footer_appstore_link',
+        'footer_newsletter_title',
     ];
 }

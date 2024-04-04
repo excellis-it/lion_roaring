@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\DetailsController;
 use App\Http\Controllers\Admin\DonationController as AdminDonationController;
 use App\Http\Controllers\Admin\EcclesiaAssociationController;
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\FooterController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\HomeCmsController;
 use App\Http\Controllers\Admin\NewsletterController;
@@ -135,8 +136,12 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::prefix('gallery')->group(function () {
             Route::get('/gallery-delete/{id}', [GalleryController::class, 'delete'])->name('gallery.delete');
         });
-    });
 
+        Route::prefix('footer')->name('footer.')->group(function () {
+            Route::get('/', [FooterController::class, 'index'])->name('index');
+            Route::post('/update', [FooterController::class, 'update'])->name('update');
+        });
+    });
 });
 
 /*************************************************************** Frontend ************************************************************************/

@@ -8,24 +8,30 @@
                 <div class="col-lg-5">
                     <div class="ftr_logo_sec">
                         <a href="" class="ftr_logo">
+                            @if (Helper::getFooter()['footer_logo'])
+                                <img src="{{Storage::url(Helper::getFooter()['footer_logo'])}}" alt="">
+                            @else
                             <img src="{{asset('frontend_assets/uploads/2024/02/Group-2029.png')}}" alt="">
+                            @endif
                         </a>
-                        <p>Our main focus is to restore our various communities, villages, cities, states,
+                        <p>
+                            {{Helper::getFooter()['footer_title'] ?? 'Our main focus is to restore our various communities, villages, cities, states,
                             and
                             our nation by restoring the condition of a person in both the spiritual and the
-                            physical.</p>
+                            physical.'}}
+                            </p>
                         <div class="col-lg-12">
                             <div class="d-flex align-items-center">
-                                <a href="#" class="me-2"><img src="{{asset('frontend_assets/uploads/2024/01/playstore.png')}}"
+                                <a href="{{Helper::getFooter()['footer_playstore_link'] ?? 'javascript:void(0);'}}" class="me-2"><img src="{{asset('frontend_assets/uploads/2024/01/playstore.png')}}"
                                         alt=""></a>
-                                <a href="#"><img src="{{asset('frontend_assets/uploads/2024/01/appstore.png')}}" alt=""></a>
+                                <a href="{{Helper::getFooter()['footer_appstore_link'] ?? 'javascript:void(0);'}}"><img src="{{asset('frontend_assets/uploads/2024/01/appstore.png')}}" alt=""></a>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="find-us">
-                        <h4>Don’t miss our newsletter! Get in touch today!</h4>
+                        <h4>{{Helper::getFooter()['footer_newsletter_title'] ?? 'Don’t miss our newsletter! Get in touch today!'}}</h4>
                         <div class="ftr-frm">
                             <div class="wpcf7 js" id="wpcf7-f52-o1" lang="en-US" dir="ltr">
                                 <div class="screen-reader-response">

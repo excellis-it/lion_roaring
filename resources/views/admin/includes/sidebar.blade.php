@@ -125,7 +125,8 @@
                     @if (count(Helper::getOrganzations()) > 0)
                         @foreach (Helper::getOrganzations() as $key => $organization)
                             <li class="{{ Request::is('admin/services/' . $organization->slug) ? 'active' : ' ' }}"><a
-                                    class="nav-link" href="{{ route('services.index',['slug' => $organization->slug]) }}">
+                                    class="nav-link"
+                                    href="{{ route('services.index', ['slug' => $organization->slug]) }}">
                                     {{ $organization->name }} </a></li>
                         @endforeach
                     @endif
@@ -170,6 +171,9 @@
                     <li class="{{ Request::is('admin/pages/articles-of-association') ? 'active' : ' ' }}"><a
                             class="nav-link" href="{{ route('articles-of-association.index') }}">
                             ARTICLES OF ASSOCIATION</a></li>
+                    <li class="{{ Request::is('admin/pages/footer') ? 'active' : ' ' }}"><a class="nav-link"
+                            href="{{ route('footer.index') }}">
+                            Footer</a></li>
                 </ul>
             </li>
         </ul>
