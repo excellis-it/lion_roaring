@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Transformers;
+
+use App\Models\Gallery;
+use App\Models\HomeCms;
+use App\Models\OurGovernance;
+use App\Models\OurOrganization;
+use App\Models\Testimonial;
+use Illuminate\Support\Facades\Storage;
+use League\Fractal\TransformerAbstract;
+
+class HomeTransformers extends TransformerAbstract
+{
+
+    public function transform(HomeCms $home)
+    {
+        return [
+            'banner_title' => $home->banner_title ?? null,
+            'banner_image' => env('APP_URL') . Storage::url($home->banner_image) ?? null,
+            'section_1_title' => $home->section_1_title ?? null,
+            'section_1_sub_title' => $home->section_1_sub_title ?? null,
+            'section_1_description' => $home->section_1_description ?? null,
+            'section_1_video' => $home->section_1_video ?? null,
+            'section_2_title_1' => $home->section_2_left_title ?? null,
+            'section_2_description_1' => $home->section_2_left_description ?? null,
+            'section_2_image_1' => env('APP_URL') . Storage::url($home->section_2_left_image) ?? null,
+            'section_2_title_2' => $home->section_2_right_title ?? null,
+            'section_2_description_2' => $home->section_2_right_description ?? null,
+            'section_2_image_2' => env('APP_URL') . Storage::url($home->section_2_right_image) ?? null,
+            'section_3_title' => $home->section_3_title ?? null,
+            'section_3_description' => $home->section_3_description ?? null,
+            'section_3_image' => env('APP_URL') . Storage::url($home->section_3_image) ?? null,
+            'section_4_title' => $home->section_4_title ?? null,
+            'section_4_description' => $home->section_4_description ?? null,
+            'section_5_title' => $home->section_5_title ?? null,
+            'our_governance' => OurGovernance::all()->map(function ($governance) {
+                return [
+                    'slug' => $governance->slug,
+                    'name' => $governance->name,
+                    'image' => env('APP_URL') . Storage::url($governance->image)
+                ];
+            }),
+
+            'our_organization' => OurOrganization::all()->map(function ($organization) {
+                return [
+                    'slug' => $organization->slug,
+                    'name' => $organization->name,
+                    'image' => env('APP_URL') . Storage::url($organization->image),
+                    'description' => $organization->description,
+                ];
+            }),
+
+            'testimonial' => Testimonial::all()->map(function ($testimonial) {
+                return [
+                    'image' => env('APP_URL') . Storage::url($testimonial->image),
+                    'description' => $testimonial->description,
+                ];
+            }),
+
+            'gallery' => Gallery::all()->map(function ($gallery) {
+                return [
+                    'image' => env('APP_URL') . Storage::url($gallery->image),
+                ];
+            }),
+        ];
+    }
+}

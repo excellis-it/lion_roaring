@@ -5,15 +5,22 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\EcclesiaAssociation;
 use App\Models\Faq;
+use App\Models\Footer;
 use App\Models\Gallery;
+use App\Models\HomeCms;
 use App\Models\Organization;
+use App\Models\OurGovernance;
 use App\Models\PrincipalAndBusiness;
 use App\Transformers\EcclesiaAssociationTransformers;
 use App\Transformers\FaqTransformers;
+use App\Transformers\FooterTransformers;
 use App\Transformers\GalleryTransformers;
+use App\Transformers\HomeTransformers;
 use App\Transformers\OrganizationTransformers;
+use App\Transformers\OurGovernanceTransformers;
 use App\Transformers\PrincipalTransformers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Spatie\Fractalistic\Fractal;
 
 /**
@@ -225,6 +232,163 @@ class CmsController extends Controller
                 return response()->json(['message' => 'Organization', 'status' => true, 'organization' => $organization], $this->successStatus);
             } else {
                 return response()->json(['message' => 'No Organization found', 'status' => false], 201);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+        }
+    }
+
+    /**
+     * Get Common
+     * @response 200{
+     * "message": "Footer",
+     * "status": true,
+     * "footer": {
+     * "Footer_logo": "http://127.0.0.1:8000/storage/footer/N7wWVhVjwtVyLl3uEDZZcAgCIqCsS3IZ4yaUl2tC.png",
+     *    "Footer_description": "Our main focus is to restore our various communities, villages, cities, states, and our nation by restoring the condition of a person in both the spiritual and the physical.",
+     *    "Footer_social_section": {
+     *        "fa-brands fa-facebook-f": "https://facebook.com/login/",
+     *        "fa-brands fa-instagram": "https://www.instagram.com/accounts/login/",
+     *        "fa-brands fa-twitter": "https://twitter.com/i/flow/login?redirect_after_login=%2Flogin%3Flang%3Den",
+     *        "fa-solid fa-envelope": "https://www.sealedenvelope.com/help/access/access/"
+     *    },
+     *    "Footer_address": "Lion Roaring",
+     *    "Footer_address_details": "1070 20906 Frederick Rd STE A\r\n\r\nGermantown, MD 20876",
+     *    "Footer_phoneno": "+1 (240)-982-0054",
+     *    "Footer_Emailid": "info@localhost",
+     *    "Footer_form_title": "Don’t miss our newsletter! Get in touch today!",
+     *    "Footer_copywrite_text": "Copyright © 2024 Daud Santosa. All Rights Reserved"
+     *   }
+     * }
+     * @response 201 {
+     * "message": "No Footer found",
+     * "status": false
+     * }
+     */
+
+    public function common(Request $request)
+    {
+        try {
+            $footer = Footer::orderBy('id', 'desc')->first();
+            if ($footer) {
+                $footer = fractal($footer, new FooterTransformers())->toArray()['data'];
+                return response()->json(['message' => 'Footer', 'status' => true, 'footer' => $footer], $this->successStatus);
+            } else {
+                return response()->json(['message' => 'No Footer found', 'status' => false], 201);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+        }
+    }
+
+    /**
+     * Get Home Page
+     *
+     * @response 200{
+     * "message": "Home",
+     * "status": true,
+     *  "home": {
+     *      "banner_title": "A habitation where supernatural and solution intersects",
+     *      "banner_image": "http://127.0.0.1:8000/storage/home/rO06dZNGSicDTKgVPTGNc0DD6IDsliLBkuiu7cAm.png",
+     *      "section_1_title": "ABOUT",
+     *      "section_1_sub_title": "LION ROARING, PMA",
+     *       "section_1_description": "Lion Roaring Private Members Association’s (PMA) main focus is to bring Heaven’s cultures on earth and to restore nations (communities, cities, states, and countries) through each soul whom the Lord has transformed and chosen. This soul will be given the opportunity to work for the Lion Roaring Innovation Centers and its partners being fully educated through Lion Roaring Foundation as God’s king and priest. The goal for each soul is to create inspired ideas and become self-sufficient to perform good works and bring heaven’s attributes into its environment.",
+     *       "section_1_video": "home/P0aOPJfaUKa2ffn1bgaQxWZ6ij2NY2p8lBtylezK.mp4",
+     *       "section_2_title_1": "Daud Santosa",
+     *       "section_2_description_1": "Daud Santosa has over 35 years of experience as a transformation leader in the IT industry for establishing the corporate technology vision and leading all the aspects of the corporate technology deployment and development in both Government and Industry sectors. Responsibilites included transforming organization, people, and technologies to create new products and services. These new products and services, including modernization of infrastructures, helped establish new business services in the digital world, create new IT organizations which helped develop new cost models for Enterprise Data Inventory Strategy, Shared Services Centers, Cloud Computing services, and IT methodology. This led to a balance of score cards, performance metrics/Service Level Agreements, and business processes automation in areas of Financial, Human Resources, Acquisition, Law Enforcement, Telecommunications, Research Survey, and IT Hosting Services. Daud has held many different roles ranging from software engineer, Certified Chief IT Lead, IT Executive, and Chief Technology Officer. He has managed and had oversight over the IT budget within the range of $75,000,000 up to $2,000,000,000.\r\nThe Lord transformed Daud in 2016 after undergoing and surviving his third brain surgery at the end of 2015. He began seeking the Lord in 2016 by waiting on God every day from 3:00 to 4:30 AM. He had many spiritual encounters through dreams and visions in 2016-2017. He saw Jesus’s face in the 3rd Dimension when he was on Mt. Sinai. He also attended the Open Heaven Prophetic Conference with Prophet Sadhu Selvaraj in 2017. Since then, his life has changed as he regularly walkiswith God. He continues to experience many visions, dreams, and revelations. The Lord has taught him over the past two years as a leader under JMK Maryland (a branch of Jesus My King Church, Shelby, North Carolina) to prepare his congregation to become a wise Sower with Kingship and Priesthood anointing.\r\nAlos, during this time, he received the strategy of Lion Roaring (Kingship Authority) and established JMK Maryland (Priesthood authority) through divine intervention of the Holy Spirit as he connected with Pastor Michael Widjaya and Dr. Steven Francis. This is God’s destiny as revealed to Daud and his wife; that is to establish Kingship and Priesthood authority where Heaven is brought on earth with the office of Christ, which is the office of the everlasting Kingdom of Light.\r\nCurrently, he is the elder of JMK Maryland that helps that facilitate Lion Roaring teachings on Spiritual and Leadership Development by helping to restore one person, group, community, and nation at the time as the Lord directs him.",
+     *       "section_2_image_1": "http://127.0.0.1:8000/storage/home/9A3tUlCktNEqIeXMUpU2014sZQXBsSeaiQFKigqG.jpg",
+     *       "section_2_title_2": "Lystia Santosa",
+     *       "section_2_description_2": "Lystia Santosa has over 35 years of experience working in the financial and accounting field for International Non-profit Organizations. She has held various positions during her career such as an auditor for a CPA Firm auditing the Federal Government Grant Programs, a Field Office Project Accountant and Senior Accountant, Accounting Manager, Controller, and then a Director of Finance position. Although Lystia obtained her CPA (Certified Public Accountant) early in her career, she decided not to pursue a career in the Public Accounting but to devote her career working for an international non-profit organization working with the third world countries. It was her passion to work in an organization in which the primary mission and the vision were to help people in Third World countries to improve their standard of living.\r\nPrior to her retirement in 2019, she held a position as the Director of Finance (CFO) working for the largest U.S. based international worker rights organization. She helped facilitate the organization’s mission of helping workers attain safe and healthy workplaces, while promoting worker’s equality. She also helped improve workers’ standard of living with education and collective agreement, and by helping fight discrimination, and by pr eventing the exploitation of systems that entrench poverty. Her 30 plus years’ experience working with this organization gave her solid and broad mastery in all areas in financial management, financial affairs, budgeting, human resources and personnel policy and procedures. Furthermore, she developed expertise to ensure compliance with U.S. Federal Rules & regulations on grant awards, and how to effectively deal with the the organization’s funders (U.S. Government, foundation and international donors). She was responsible for the organization’s annual budget of about $32,000,000.00 and directed staff in the finance and accounting departments at the company’s headquarters, and approximately 30 filed offices. Additionally, she was a member of the Executive Team, and she worked closely with the CEO, COO and other Directors in the implementation of the organization’s vision and mission.\r\nSince retiring in 2019, Lystia has been volunteering her time in helping JMK Shelby, North Carolina church with their accounting and financial matters. She is also the elder for JMK Maryland church alongside her husband, Daud Santosa.\r\nDuring the pandemic, the Lord brought her into a more intimate relationship with Him and helped train her to study His words on a deeper level. This helped shift her priorities from working from a worldly employer to working for God’s Kingdom. She gave up her consulting work and completely devoted her time to studying and working alongside with husband, Daud Santosa in serving the JMK Maryland church.",
+     *       "section_2_image_2": "http://127.0.0.1:8000/storage/home/7lAhy6PtApuL5YXfPFjtrjpCyvejIh9VadgqBJHY.jpg",
+     *       "section_3_title": "OUR GOVERNANCE BOARD",
+     *       "section_3_description": "THIS BOARD PROVIDES DIRECTION AND OVERSIGHT FOR DAY-TO-DAY OPERATION OF LION ROARING, PMA.",
+     *       "section_3_image": "http://127.0.0.1:8000/storage/",
+     *       "section_4_title": "OUR ORGANIZATION",
+     *       "section_4_description": "A habitation where supernatural and solution intersects",
+     *       "section_5_title": "TESTIMONIES",
+     *       "our_governance": [
+     *           {
+     *               "slug": "robert-hyde",
+     *               "name": "ROBERT HYDE",
+     *               "image": "http://127.0.0.1:8000/storage/our_governances/D4RVbxeNVJensk62eVAffWqIKE0hm57GxwzztEhy.jpg"
+     *           },
+     *           {
+     *               "slug": "daud-santosa",
+     *               "name": "DAUD SANTOSA",
+     *               "image": "http://127.0.0.1:8000/storage/our_governances/f2rEvSGf6P47ASO8jQJIWu5PefAMd8FI1GfWaK6x.png"
+     *           }
+     *       ],
+     *       "our_organization": [
+     *           {
+     *               "slug": "lion-roaring-innovation-center",
+     *               "name": "Lion Roaring Innovation Center",
+     *               "image": "http://127.0.0.1:8000/storage/our_organizations/RoFGvUKvvRXGbbpMmlp9xUt00pICuBwVYHlFMOVN.jpg",
+     *               "description": "The mission of Lion Roaring innovation center is building the future of innovation technologies to support the vision of Lion Roaring and to support natural habitation that follows Psalm 104:14-18, 24-25 – “God cause grass to grow for the cattle, herb for the service of man: bring forth food out of the earth; and wine that makes glad the heart of man, and oil to make his face to shine, and bread which strengthens mean’s heart. In wisdom God made them all: the earth full of your riches”. This innovation will be leveraged to help restore villages, cities, states, and nations through Lion Roaring Education Centers."
+     *           },
+     *           {
+     *               "slug": "lion-roaring-education-center-1709707179",
+     *               "name": "Lion Roaring Education Center",
+     *               "image": "http://127.0.0.1:8000/storage/our_organizations/Vuqu2PVoVJkJJB03Aq9UcE9Kd9XPGsZNRFeH186f.jpg",
+     *               "description": "The mission of Lion Roaring Education Centers (LREC) is to educate each person to embrace the kingdom of God by restoring the soul through the salvation of the Lord Jesus. In doing so, LREC will also help develop spiritual maturity through spiritual growth and transformation. And to nurture those skills according to that person’s giftedness within the circle of the Lion Roaring Community of interest groups and within the Lion Roaring Habitation and partnership around the world."
+     *           }
+     *       ],
+     *       "testimonial": [
+     *           {
+     *               "image": "http://127.0.0.1:8000/storage/testimonials/czmnEq1ldlivCk3oDi6GU9PX09etwMMJhScEziDA.jpg",
+     *               "description": "Praise the Lord,\r\nGreeting to you in the name of loving Lord Savior Jesus!\r\nThe Lord has chosen you for His royal work anointed you and filled you with abundant grace. God the Father has anointed you with a special anointing of word of understanding and word of wisdom, word of knowledge and the Holy Spirit. He has anointed you to know the truth of the word quickly and has given many spiritual gifts, and God has laid on your hands a fivefold ministry.\r\nI thank God for you and the ministry, God has sent and burdened you to help us both physically and spiritually. The villa of Orissa has benefited from many donations we have received from you and your ministry.\r\n1. Monthly donation for Pastors. With your help, the Lord’s work is going on in Orissa today. The Gospel is being preached, and today 15 pastors/ preachers have received benefit from your monthly donation. They are preaching the gospel in the sparsely populated areas and able to minister to the villages through Sunday service or visitation."
+     *           },
+     *           {
+     *               "image": "http://127.0.0.1:8000/storage/testimonials/2lb6NeSg91X92iHhVAnvHBNjIHTCmzpdtrcZNiP8.jpg",
+     *               "description": "I thank the Lord for the partnership with the Lion Roaring for 3 years ago, I have been doing outreaches and bible study that time when servant of God Brother Daud Santosa and Family help me in my financial needs, it almost lasted for 3 years. The Santosa Family and ministry partners supported me that leads to formation of planting. I have been an independent worker that time and with the help of our ministry partners I was able to in large our border. Thank God for the Santosa Family and friends."
+     *           }
+     *       ],
+     *       "gallery": [
+     *           {
+     *               "image": "http://127.0.0.1:8000/storage/gallery/evLHH1jyrA0QMAf8zTFT0ySjA1M7UDWjd15swPr9.jpg"
+     *           },
+     *           {
+     *               "image": "http://127.0.0.1:8000/storage/gallery/lkkpoCQcQy6wEcl9kppNZFqHEwpQklQU0ck87BcC.jpg"
+     *           }
+     *       ]
+     *   }
+     */
+
+    public function home(Request $request)
+    {
+        try {
+            $home = HomeCms::orderBy('id', 'desc')->first();
+            if ($home) {
+                $home = fractal($home, new HomeTransformers())->toArray()['data'];
+                return response()->json(['message' => 'Home', 'status' => true, 'home' => $home], $this->successStatus);
+            } else {
+                return response()->json(['message' => 'No Home found', 'status' => false], 201);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+        }
+    }
+
+    /**
+     * Get Our Governance
+     */
+
+    public function ourGovernance(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'slug' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
+        }
+
+        try {
+            $governance = OurGovernance::where('slug', $request->slug)->first();
+            if ($governance) {
+                $governance = fractal($governance, new OurGovernanceTransformers())->toArray()['data'];
+                return response()->json(['message' => 'Our Governance', 'status' => true, 'governance' => $governance], $this->successStatus);
+            } else {
+                return response()->json(['message' => 'No Governance found', 'status' => false], 201);
             }
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);

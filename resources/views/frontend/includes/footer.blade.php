@@ -8,7 +8,7 @@
                 <div class="col-lg-5">
                     <div class="ftr_logo_sec">
                         <a href="" class="ftr_logo">
-                            @if (Helper::getFooter()['footer_logo'])
+                            @if (isset(Helper::getFooter()['footer_logo']))
                                 <img src="{{Storage::url(Helper::getFooter()['footer_logo'])}}" alt="">
                             @else
                             <img src="{{asset('frontend_assets/uploads/2024/02/Group-2029.png')}}" alt="">
@@ -22,9 +22,21 @@
                             </p>
                         <div class="col-lg-12">
                             <div class="d-flex align-items-center">
-                                <a href="{{Helper::getFooter()['footer_playstore_link'] ?? 'javascript:void(0);'}}" class="me-2"><img src="{{asset('frontend_assets/uploads/2024/01/playstore.png')}}"
-                                        alt=""></a>
-                                <a href="{{Helper::getFooter()['footer_appstore_link'] ?? 'javascript:void(0);'}}"><img src="{{asset('frontend_assets/uploads/2024/01/appstore.png')}}" alt=""></a>
+                                <a href="{{Helper::getFooter()['footer_playstore_link'] ?? 'javascript:void(0);'}}" class="me-2">
+                                    @if (isset(Helper::getFooter()['footer_playstore_link']))
+                                        <img src="{{Storage::url(Helper::getFooter()['footer_playstore_image'])}}" alt="">
+                                    @else
+                                    <img src="{{asset('frontend_assets/uploads/2024/01/playstore.png')}}"
+                                        alt="">
+                                    @endif
+                                    </a>
+                                <a href="{{Helper::getFooter()['footer_appstore_link'] ?? 'javascript:void(0);'}}">
+                                    @if (isset(Helper::getFooter()['footer_appstore_link']))
+                                        <img src="{{Storage::url(Helper::getFooter()['footer_appstore_image'])}}" alt="">
+                                    @else
+                                    <img src="{{asset('frontend_assets/uploads/2024/01/appstore.png')}}" alt="">
+                                    @endif
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -91,7 +103,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <p>Copyright © {{date('Y')}} Daud Santosa. All Rights Reserved.</p>
+                    <p>{{Helper::getFooter()['footer_playstore_link'] ?? 'Copyright © '. date('Y') .' Daud Santosa. All Rights Reserved'}}</p>
                 </div>
             </div>
         </div>

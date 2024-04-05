@@ -18,8 +18,15 @@ class CreateFootersTable extends Migration
             $table->string('footer_logo')->nullable();
             $table->text('footer_title')->nullable();
             $table->text('footer_playstore_link')->nullable();
+            $table->string('footer_playstore_icon')->nullable();
             $table->text('footer_appstore_link')->nullable();
+            $table->string('footer_appstore_icon')->nullable();
             $table->text('footer_newsletter_title')->nullable();
+            $table->text('footer_address_title')->nullable();
+            $table->text('footer_address')->nullable();
+            $table->string('footer_phone_number')->nullable();
+            $table->string('footer_email')->nullable();
+            $table->text('footer_copywrite_text')->nullable();
             $table->timestamps();
         });
     }

@@ -24,12 +24,14 @@ Route::prefix('v1')->group(function () {
     Route::post('contact-us', [ContactUsController::class, 'store']);
 
     Route::prefix('cms')->group(function () {
-        Route::post('home', [CmsController::class, 'index']);
+        Route::post('home', [CmsController::class, 'home']);
         Route::post('gallery', [CmsController::class, 'gallery']);
         Route::post('contact-us', [CmsController::class, 'contactUs']);
         Route::post('faq', [CmsController::class, 'faq']);
         Route::post('principle-and-business', [CmsController::class, 'principleAndBusiness']);
         Route::post('ecclesia-associations', [CmsController::class, 'ecclesiaAssociations']);
         Route::post('our-organization', [CmsController::class, 'ourOrganization']);
+        Route::post('common', [CmsController::class, 'common']);
+        Route::post('our-governance', [CmsController::class, 'ourGovernance']);
     });
 });
