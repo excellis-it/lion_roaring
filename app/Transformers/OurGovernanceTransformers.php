@@ -13,10 +13,10 @@ class OurGovernanceTransformers extends TransformerAbstract
     {
         return [
             'banner_title' => $ourGovernance->name, // 'banner_title' => 'Our Governance
-            'banner_image' => env('APP_URL') . Storage::url($ourGovernance->banner_image), // 'banner_image' => env('APP_URL') . Storage::url($ourGovernance->banner_image),
+            'banner_image' => Storage::url($ourGovernance->banner_image), // 'banner_image' => Storage::url($ourGovernance->banner_image),
             'name' => $ourGovernance->name,
             'description' => $ourGovernance->description,
-            'image_url' => env('APP_URL') . Storage::url($ourGovernance->image),
+            'image_url' => Storage::url($ourGovernance->image),
         ];
     }
 }

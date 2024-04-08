@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Lion Roaring",
-        "_postman_id": "5b6188f7-bce7-435e-8a6f-e4cec2d93969",
+        "_postman_id": "d639332b-9e21-4b2c-a077-76b33c460b24",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -299,6 +299,82 @@
                             "name": ""
                         }
                     ]
+                },
+                {
+                    "name": "Get Our Governance",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/cms\/our-governance",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/cms\/our-governance"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"slug\":\"robert-hyde\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Our Governance\",\n\"status\": true,\n\"governance\": {\n    \"banner_title\": \"ROBERT HYDE\",\n    \"banner_image\": \"http:\/\/127.0.0.1:8000\/storage\/our_governances\/8VC1259WpyYkRPUjfqYVBjiD85vvGpNuLcR0fiRG.jpg\",\n    \"name\": \"ROBERT HYDE\",\n    \"description\": \"Bob Hyde spent 16 years\u2019 working in the education field as a middle school teacher for subjects of United States and world history. A love of history and the joy of working with children made this a good fit for his career change. Putting aside the content teaching aspect of this profession, most importantly, he learned the importance of relationship building with his students. Without the relationships in place, no teaching will be effective. He also learned the value of cooperative learning and \u201chands on\u201d or learning by doing, while striving to make learning fun as key components for student engagement and learning. Bob used these strategies as his focus in his teaching and programs like Peer Tutoring, Homework Club, and the National Junior Honor Society that he led throughout his career.\\r\\nPrior to working in the education field, Bob spent over 20 years in the business world working as a team manager in the insurance industry. Responsibilities included overseeing high dollar claims settlements, personnel management, and customer service. One key takeaway from this profession was the ability to successfully communicate with various stakeholders (superiors, peers, subordinates, customers). Learning skills like compassion and simply listening to others\u2019 needs and desires went a long way to him being able to establish rapport and successful working relationships with all stakeholders.\\r\\nBob retired from teaching in 2022 and has since concentrated on learning America\u2019s \u201ctrue history,\u201d his rightful status as a united States citizen, loving on and assisting family members through trying circumstances, and by learning and relying on God to become more intimate with his Creator. Individual study and prayer, and teachings from JMK Maryland and Lion Roaring have all helped with Bob\u2019s spiritual growth. While assisting other leaders as a Board Member of Lion Roaring, Bob is looking forward to his next journey with Lion Roaring and direction from the Lord how best to use him.\",\n    \"image_url\": \"http:\/\/127.0.0.1:8000\/storage\/our_governances\/D4RVbxeNVJensk62eVAffWqIKE0hm57GxwzztEhy.jpg\"\n   }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Our organization center",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/cms\/organization-center",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/cms\/organization-center"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"slug\":\"lion-roaring-innovation-center, lion-roaring-education-center-1709707179.\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Our Governance\",\n\"status\": true,\n\"our_organization_centers\": [\n   {\n       \"id\": 4,\n       \"our_organization_id\": 1,\n       \"name\": \"LION ROARING FOUNDATION\",\n       \"slug\": \"lion-roaring-foundation\",\n       \"description\": \"LION ROARING FOUNDATION\",\n       \"banner_image\": \"organization_centers\/ItTjpXfo45xddk8eWYgcmCO4mlzj1ZlVCSf9wWDq.jpg\",\n       \"image\": \"organization_centers\/9Fxa0aHJcLSvAdzdSQ7tKb5vfgW4JxXfB44r7Czf.jpg\",\n       \"meta_title\": \"LION ROARING FOUNDATION\",\n       \"meta_description\": \"LION ROARING FOUNDATION\",\n       \"meta_keywords\": \"LION ROARING FOUNDATION\",\n       \"created_at\": \"2024-03-06T10:37:18.000000Z\",\n       \"updated_at\": \"2024-03-06T10:37:18.000000Z\"\n   }\n}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -328,7 +404,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"adolfo61@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"koelpin.emely@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {

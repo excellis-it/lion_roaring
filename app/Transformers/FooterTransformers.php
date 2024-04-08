@@ -13,7 +13,7 @@ class FooterTransformers extends TransformerAbstract
     public function transform(Footer $footer)
     {
         return [
-            'Footer_logo' => env('APP_URL') . Storage::url($footer->footer_logo),
+            'Footer_logo' => Storage::url($footer->footer_logo),
             'Footer_description' => $footer->footer_title,
             'Footer_social_section' => FooterSocialLink::pluck('url', 'class'),
             'Footer_address' => $footer->footer_address_title,

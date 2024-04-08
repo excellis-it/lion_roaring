@@ -1,17 +1,37 @@
 <?php
 
-namespace App\Http\Controllers\Frontend;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Stripe;
 
+/**
+ * @group Donation
+ */
 class DonationController extends Controller
 {
+    protected $successStatus = 200;
+
+    /**
+     * Donation Api
+     * @bodyParam first_name string required. Example: Robert Hyde
+     * @bodyParam last_name string required. Example: Hyde
+     * @bodyParam email string required. Example: hyde@yopmail.com
+     * @bodyParam address string required. Example: New york
+     * @bodyParam city string required. Example: New york
+     * @bodyParam state string required. Example: London
+     * @bodyParam postcode string required. Example: ZP74857
+     * @bodyParam amount integer required. Example: 150
+     * @bodyParam country_id integer required. The country_id of the country. Example: 2
+     * @bodyParam stripeToken string required.
+     */
+
     public function donation(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email',
@@ -19,10 +39,14 @@ class DonationController extends Controller
             'city' => 'required',
             'state' => 'required',
             'postcode' => 'required',
-            'amount' => 'required',
+            'amount' => 'required|integer',
             'country_id' => 'required',
             'stripeToken' => 'required',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
+        }
 
         try {
             Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
@@ -33,7 +57,6 @@ class DonationController extends Controller
                 'description' => 'Donation',
             ]);
 
-            // return $charge;
             if ($charge->status == 'succeeded') {
                 $donation = new Donation();
                 $donation->country_id = $request->country_id;
@@ -52,19 +75,13 @@ class DonationController extends Controller
                 $donation->payment_method = 'Stripe';
                 $donation->payment_status = 'Success';
                 $donation->save();
-                session()->put('donation_amount', $request->amount);
-                session()->put('transaction_id', $charge->id);
-                return redirect()->route('thankyou')->with('success', 'Donation successful');
+
+                return response()->json(['message'=> 'Payment success.', 'status' => true], 200);
             } else {
-                return redirect()->back()->with('error', 'Payment failed!!');
+                return response()->json(['message'=> 'Payment failed!', 'status' => false], 201);
             }
         } catch (\Throwable $th) {
-            return back()->with('error', 'Payment failed!!');
+            return response()->json(['message' =>  $th->getMessage(), 'status' => false], 401);
         }
-    }
-
-    public function thankyou()
-    {
-        return view('frontend.thankyou');
     }
 }

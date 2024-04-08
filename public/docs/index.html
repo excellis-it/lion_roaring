@@ -92,6 +92,12 @@
                                                                                 <li class="tocify-item level-2" data-unique="cms-management-POSTapi-v1-cms-common">
                                 <a href="#cms-management-POSTapi-v1-cms-common">Get Common</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="cms-management-POSTapi-v1-cms-our-governance">
+                                <a href="#cms-management-POSTapi-v1-cms-our-governance">Get Our Governance</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="cms-management-POSTapi-v1-cms-organization-center">
+                                <a href="#cms-management-POSTapi-v1-cms-organization-center">Our organization center</a>
+                            </li>
                                                                         </ul>
                             </ul>
                     <ul id="tocify-header-contact-us" class="tocify-header">
@@ -113,7 +119,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: April 5, 2024</li>
+        <li>Last updated: April 8, 2024</li>
     </ul>
 </div>
 
@@ -1172,6 +1178,306 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
+                    <h2 id="cms-management-POSTapi-v1-cms-our-governance">Get Our Governance</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-cms-our-governance">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v1/cms/our-governance" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"slug\": \"robert-hyde\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v1/cms/our-governance"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "slug": "robert-hyde"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-cms-our-governance">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Our Governance&quot;,
+    &quot;status&quot;: true,
+    &quot;governance&quot;: {
+        &quot;banner_title&quot;: &quot;ROBERT HYDE&quot;,
+        &quot;banner_image&quot;: &quot;http://127.0.0.1:8000/storage/our_governances/8VC1259WpyYkRPUjfqYVBjiD85vvGpNuLcR0fiRG.jpg&quot;,
+        &quot;name&quot;: &quot;ROBERT HYDE&quot;,
+        &quot;description&quot;: &quot;Bob Hyde spent 16 years&rsquo; working in the education field as a middle school teacher for subjects of United States and world history. A love of history and the joy of working with children made this a good fit for his career change. Putting aside the content teaching aspect of this profession, most importantly, he learned the importance of relationship building with his students. Without the relationships in place, no teaching will be effective. He also learned the value of cooperative learning and &ldquo;hands on&rdquo; or learning by doing, while striving to make learning fun as key components for student engagement and learning. Bob used these strategies as his focus in his teaching and programs like Peer Tutoring, Homework Club, and the National Junior Honor Society that he led throughout his career.\r\nPrior to working in the education field, Bob spent over 20 years in the business world working as a team manager in the insurance industry. Responsibilities included overseeing high dollar claims settlements, personnel management, and customer service. One key takeaway from this profession was the ability to successfully communicate with various stakeholders (superiors, peers, subordinates, customers). Learning skills like compassion and simply listening to others&rsquo; needs and desires went a long way to him being able to establish rapport and successful working relationships with all stakeholders.\r\nBob retired from teaching in 2022 and has since concentrated on learning America&rsquo;s &ldquo;true history,&rdquo; his rightful status as a united States citizen, loving on and assisting family members through trying circumstances, and by learning and relying on God to become more intimate with his Creator. Individual study and prayer, and teachings from JMK Maryland and Lion Roaring have all helped with Bob&rsquo;s spiritual growth. While assisting other leaders as a Board Member of Lion Roaring, Bob is looking forward to his next journey with Lion Roaring and direction from the Lord how best to use him.&quot;,
+        &quot;image_url&quot;: &quot;http://127.0.0.1:8000/storage/our_governances/D4RVbxeNVJensk62eVAffWqIKE0hm57GxwzztEhy.jpg&quot;
+    }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-cms-our-governance" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-cms-our-governance"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-cms-our-governance"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-cms-our-governance" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-cms-our-governance">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-cms-our-governance" data-method="POST"
+      data-path="api/v1/cms/our-governance"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-cms-our-governance', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-cms-our-governance"
+                    onclick="tryItOut('POSTapi-v1-cms-our-governance');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-cms-our-governance"
+                    onclick="cancelTryOut('POSTapi-v1-cms-our-governance');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-cms-our-governance"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/cms/our-governance</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-cms-our-governance"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-cms-our-governance"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>slug</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="slug"                data-endpoint="POSTapi-v1-cms-our-governance"
+               value="robert-hyde"
+               data-component="body">
+    <br>
+<p>The slug of the our governance. Example: <code>robert-hyde</code></p>
+        </div>
+        </form>
+
+                    <h2 id="cms-management-POSTapi-v1-cms-organization-center">Our organization center</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-cms-organization-center">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v1/cms/organization-center" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"slug\": \"lion-roaring-innovation-center, lion-roaring-education-center-1709707179.\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v1/cms/organization-center"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "slug": "lion-roaring-innovation-center, lion-roaring-education-center-1709707179."
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-cms-organization-center">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;message&quot;: &quot;Our Governance&quot;,
+&quot;status&quot;: true,
+&quot;our_organization_centers&quot;: [
+   {
+       &quot;id&quot;: 4,
+       &quot;our_organization_id&quot;: 1,
+       &quot;name&quot;: &quot;LION ROARING FOUNDATION&quot;,
+       &quot;slug&quot;: &quot;lion-roaring-foundation&quot;,
+       &quot;description&quot;: &quot;LION ROARING FOUNDATION&quot;,
+       &quot;banner_image&quot;: &quot;organization_centers/ItTjpXfo45xddk8eWYgcmCO4mlzj1ZlVCSf9wWDq.jpg&quot;,
+       &quot;image&quot;: &quot;organization_centers/9Fxa0aHJcLSvAdzdSQ7tKb5vfgW4JxXfB44r7Czf.jpg&quot;,
+       &quot;meta_title&quot;: &quot;LION ROARING FOUNDATION&quot;,
+       &quot;meta_description&quot;: &quot;LION ROARING FOUNDATION&quot;,
+       &quot;meta_keywords&quot;: &quot;LION ROARING FOUNDATION&quot;,
+       &quot;created_at&quot;: &quot;2024-03-06T10:37:18.000000Z&quot;,
+       &quot;updated_at&quot;: &quot;2024-03-06T10:37:18.000000Z&quot;
+   }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-cms-organization-center" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-cms-organization-center"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-cms-organization-center"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-cms-organization-center" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-cms-organization-center">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-cms-organization-center" data-method="POST"
+      data-path="api/v1/cms/organization-center"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-cms-organization-center', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-cms-organization-center"
+                    onclick="tryItOut('POSTapi-v1-cms-organization-center');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-cms-organization-center"
+                    onclick="cancelTryOut('POSTapi-v1-cms-organization-center');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-cms-organization-center"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/cms/organization-center</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-cms-organization-center"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-cms-organization-center"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>slug</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="slug"                data-endpoint="POSTapi-v1-cms-organization-center"
+               value="lion-roaring-innovation-center, lion-roaring-education-center-1709707179."
+               data-component="body">
+    <br>
+<p>The slug of the our governance. Example: <code>lion-roaring-innovation-center, lion-roaring-education-center-1709707179.</code></p>
+        </div>
+        </form>
+
                 <h1 id="contact-us">Contact Us</h1>
 
     
@@ -1195,7 +1501,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
-    \"email\": \"adolfo61@example.net\",
+    \"email\": \"koelpin.emely@example.net\",
     \"phone\": \"1234567890\",
     \"message\": \"Hello\"
 }"
@@ -1215,7 +1521,7 @@ const headers = {
 let body = {
     "first_name": "John",
     "last_name": "Doe",
-    "email": "adolfo61@example.net",
+    "email": "koelpin.emely@example.net",
     "phone": "1234567890",
     "message": "Hello"
 };
@@ -1338,10 +1644,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v1-contact-us"
-               value="adolfo61@example.net"
+               value="koelpin.emely@example.net"
                data-component="body">
     <br>
-<p>Email of the user. Example: Example: <code>adolfo61@example.net</code></p>
+<p>Email of the user. Example: Example: <code>koelpin.emely@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;

@@ -33,5 +33,7 @@ Route::prefix('v1')->group(function () {
         Route::post('our-organization', [CmsController::class, 'ourOrganization']);
         Route::post('common', [CmsController::class, 'common']);
         Route::post('our-governance', [CmsController::class, 'ourGovernance']);
+        Route::post('organization-center',[CmsController::class, 'organizationCenter']);
+        Route::post('organization-center-details',[CmsController::class, 'organizationCenterDetails']);
     });
 });

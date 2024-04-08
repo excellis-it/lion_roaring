@@ -9,13 +9,16 @@ use App\Models\Footer;
 use App\Models\Gallery;
 use App\Models\HomeCms;
 use App\Models\Organization;
+use App\Models\OrganizationCenter;
 use App\Models\OurGovernance;
+use App\Models\OurOrganization;
 use App\Models\PrincipalAndBusiness;
 use App\Transformers\EcclesiaAssociationTransformers;
 use App\Transformers\FaqTransformers;
 use App\Transformers\FooterTransformers;
 use App\Transformers\GalleryTransformers;
 use App\Transformers\HomeTransformers;
+use App\Transformers\OrganizationCenterTransformers;
 use App\Transformers\OrganizationTransformers;
 use App\Transformers\OurGovernanceTransformers;
 use App\Transformers\PrincipalTransformers;
@@ -231,7 +234,7 @@ class CmsController extends Controller
                 $organization = fractal($organization, new OrganizationTransformers())->toArray()['data'];
                 return response()->json(['message' => 'Organization', 'status' => true, 'organization' => $organization], $this->successStatus);
             } else {
-                return response()->json(['message' => 'No Organization found', 'status' => false], 201);
+                return response()->json(['message' => 'No organization details found', 'status' => false], 201);
             }
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
@@ -272,9 +275,9 @@ class CmsController extends Controller
             $footer = Footer::orderBy('id', 'desc')->first();
             if ($footer) {
                 $footer = fractal($footer, new FooterTransformers())->toArray()['data'];
-                return response()->json(['message' => 'Footer', 'status' => true, 'footer' => $footer], $this->successStatus);
+                return response()->json(['message' => 'Footer details', 'status' => true, 'footer' => $footer], $this->successStatus);
             } else {
-                return response()->json(['message' => 'No Footer found', 'status' => false], 201);
+                return response()->json(['message' => 'No footer details found', 'status' => false], 201);
             }
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
@@ -302,7 +305,6 @@ class CmsController extends Controller
      *       "section_2_image_2": "http://127.0.0.1:8000/storage/home/7lAhy6PtApuL5YXfPFjtrjpCyvejIh9VadgqBJHY.jpg",
      *       "section_3_title": "OUR GOVERNANCE BOARD",
      *       "section_3_description": "THIS BOARD PROVIDES DIRECTION AND OVERSIGHT FOR DAY-TO-DAY OPERATION OF LION ROARING, PMA.",
-     *       "section_3_image": "http://127.0.0.1:8000/storage/",
      *       "section_4_title": "OUR ORGANIZATION",
      *       "section_4_description": "A habitation where supernatural and solution intersects",
      *       "section_5_title": "TESTIMONIES",
@@ -359,9 +361,9 @@ class CmsController extends Controller
             $home = HomeCms::orderBy('id', 'desc')->first();
             if ($home) {
                 $home = fractal($home, new HomeTransformers())->toArray()['data'];
-                return response()->json(['message' => 'Home', 'status' => true, 'home' => $home], $this->successStatus);
+                return response()->json(['message' => 'home', 'status' => true, 'home' => $home], $this->successStatus);
             } else {
-                return response()->json(['message' => 'No Home found', 'status' => false], 201);
+                return response()->json(['message' => 'No home deatils found', 'status' => false], 201);
             }
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
@@ -370,12 +372,24 @@ class CmsController extends Controller
 
     /**
      * Get Our Governance
+     * @bodyParam slug string required The slug of the our governance. Example: robert-hyde
+     * @response 200{
+     * "message": "Our Governance",
+     * "status": true,
+     * "governance": {
+     *     "banner_title": "ROBERT HYDE",
+     *     "banner_image": "http://127.0.0.1:8000/storage/our_governances/8VC1259WpyYkRPUjfqYVBjiD85vvGpNuLcR0fiRG.jpg",
+     *     "name": "ROBERT HYDE",
+     *     "description": "Bob Hyde spent 16 years’ working in the education field as a middle school teacher for subjects of United States and world history. A love of history and the joy of working with children made this a good fit for his career change. Putting aside the content teaching aspect of this profession, most importantly, he learned the importance of relationship building with his students. Without the relationships in place, no teaching will be effective. He also learned the value of cooperative learning and “hands on” or learning by doing, while striving to make learning fun as key components for student engagement and learning. Bob used these strategies as his focus in his teaching and programs like Peer Tutoring, Homework Club, and the National Junior Honor Society that he led throughout his career.\r\nPrior to working in the education field, Bob spent over 20 years in the business world working as a team manager in the insurance industry. Responsibilities included overseeing high dollar claims settlements, personnel management, and customer service. One key takeaway from this profession was the ability to successfully communicate with various stakeholders (superiors, peers, subordinates, customers). Learning skills like compassion and simply listening to others’ needs and desires went a long way to him being able to establish rapport and successful working relationships with all stakeholders.\r\nBob retired from teaching in 2022 and has since concentrated on learning America’s “true history,” his rightful status as a united States citizen, loving on and assisting family members through trying circumstances, and by learning and relying on God to become more intimate with his Creator. Individual study and prayer, and teachings from JMK Maryland and Lion Roaring have all helped with Bob’s spiritual growth. While assisting other leaders as a Board Member of Lion Roaring, Bob is looking forward to his next journey with Lion Roaring and direction from the Lord how best to use him.",
+     *     "image_url": "http://127.0.0.1:8000/storage/our_governances/D4RVbxeNVJensk62eVAffWqIKE0hm57GxwzztEhy.jpg"
+     *    }
+     * }
      */
 
     public function ourGovernance(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'slug' => 'required',
+            'slug' => 'required|exists:our_governances,slug',
         ]);
 
         if ($validator->fails()) {
@@ -386,9 +400,94 @@ class CmsController extends Controller
             $governance = OurGovernance::where('slug', $request->slug)->first();
             if ($governance) {
                 $governance = fractal($governance, new OurGovernanceTransformers())->toArray()['data'];
-                return response()->json(['message' => 'Our Governance', 'status' => true, 'governance' => $governance], $this->successStatus);
+                return response()->json(['message' => 'Our governance', 'status' => true, 'governance' => $governance], $this->successStatus);
             } else {
-                return response()->json(['message' => 'No Governance found', 'status' => false], 201);
+                return response()->json(['message' => 'No governance found', 'status' => false], 201);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+        }
+    }
+
+    /**
+     * Our organization center
+     * @bodyParam slug string required The slug of the our governance. Example: lion-roaring-innovation-center, lion-roaring-education-center-1709707179.
+     * @response 200{
+     * "message": "Organization Center",
+     * "status": true,
+     * "our_organization_centers": [
+     *    {
+     *        "id": 4,
+     *        "our_organization_id": 1,
+     *        "name": "LION ROARING FOUNDATION",
+     *        "slug": "lion-roaring-foundation",
+     *        "description": "LION ROARING FOUNDATION",
+     *        "banner_image": "organization_centers/ItTjpXfo45xddk8eWYgcmCO4mlzj1ZlVCSf9wWDq.jpg",
+     *        "image": "organization_centers/9Fxa0aHJcLSvAdzdSQ7tKb5vfgW4JxXfB44r7Czf.jpg",
+     *        "meta_title": "LION ROARING FOUNDATION",
+     *        "meta_description": "LION ROARING FOUNDATION",
+     *        "meta_keywords": "LION ROARING FOUNDATION",
+     *        "created_at": "2024-03-06T10:37:18.000000Z",
+     *        "updated_at": "2024-03-06T10:37:18.000000Z"
+     *    }
+     * }
+     */
+
+    public function organizationCenter(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'slug' => 'required|exists:our_organizations,slug'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
+        }
+
+        try {
+            $our_organizatiion = OurOrganization::where('slug', $request->slug)->first();
+            $our_organization_centers = OrganizationCenter::where('our_organization_id', $our_organizatiion->id)->get();
+
+            if ($our_organization_centers) {
+                return response()->json(['message' => 'Organization center', 'status' => true, 'our_organization_centers' => $our_organization_centers], $this->successStatus);
+            } else {
+                return response()->json(['message' => 'No organization center found', 'status' => false], 201);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+        }
+    }
+
+    /**
+     * Organization center details
+     * @bodyParam slug string required The slug of the organization center. Example: lion-roaring-foundation.
+     * @response 200{
+     *  "message": "Organization center details",
+     *   "status": true,
+     *   "details": {
+     *       "banner_title": "LION ROARING FOUNDATION",
+     *       "banner_image": "http://127.0.0.1:8000/storage/organization_centers/ItTjpXfo45xddk8eWYgcmCO4mlzj1ZlVCSf9wWDq.jpg",
+     *       "name": "LION ROARING FOUNDATION",
+     *       "description": "LION ROARING FOUNDATION",
+     *       "image_url": "http://127.0.0.1:8000/storage/organization_centers/9Fxa0aHJcLSvAdzdSQ7tKb5vfgW4JxXfB44r7Czf.jpg"
+     *   }
+     * }
+     */
+
+    public function organizationCenterDetails(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'slug' => 'required|exists:organization_centers,slug'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
+        }
+
+        try {
+            $details = OrganizationCenter::where('slug', $request->slug)->first();
+            if ($details) {
+                $details = fractal($details, new OrganizationCenterTransformers())->toArray()['data'];
+                return response()->json(['message' => 'Organization center details', 'status' => true, 'details' => $details], $this->successStatus);
             }
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);

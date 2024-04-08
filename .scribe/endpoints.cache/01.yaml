@@ -494,3 +494,125 @@ endpoints:
     method: null
     route: null
     custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/cms/our-governance
+    metadata:
+      groupName: 'CMS Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Our Governance'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      slug:
+        name: slug
+        description: 'The slug of the our governance.'
+        required: true
+        example: robert-hyde
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      slug: robert-hyde
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Our Governance",
+          "status": true,
+          "governance": {
+              "banner_title": "ROBERT HYDE",
+              "banner_image": "http://127.0.0.1:8000/storage/our_governances/8VC1259WpyYkRPUjfqYVBjiD85vvGpNuLcR0fiRG.jpg",
+              "name": "ROBERT HYDE",
+              "description": "Bob Hyde spent 16 years’ working in the education field as a middle school teacher for subjects of United States and world history. A love of history and the joy of working with children made this a good fit for his career change. Putting aside the content teaching aspect of this profession, most importantly, he learned the importance of relationship building with his students. Without the relationships in place, no teaching will be effective. He also learned the value of cooperative learning and “hands on” or learning by doing, while striving to make learning fun as key components for student engagement and learning. Bob used these strategies as his focus in his teaching and programs like Peer Tutoring, Homework Club, and the National Junior Honor Society that he led throughout his career.\r\nPrior to working in the education field, Bob spent over 20 years in the business world working as a team manager in the insurance industry. Responsibilities included overseeing high dollar claims settlements, personnel management, and customer service. One key takeaway from this profession was the ability to successfully communicate with various stakeholders (superiors, peers, subordinates, customers). Learning skills like compassion and simply listening to others’ needs and desires went a long way to him being able to establish rapport and successful working relationships with all stakeholders.\r\nBob retired from teaching in 2022 and has since concentrated on learning America’s “true history,” his rightful status as a united States citizen, loving on and assisting family members through trying circumstances, and by learning and relying on God to become more intimate with his Creator. Individual study and prayer, and teachings from JMK Maryland and Lion Roaring have all helped with Bob’s spiritual growth. While assisting other leaders as a Board Member of Lion Roaring, Bob is looking forward to his next journey with Lion Roaring and direction from the Lord how best to use him.",
+              "image_url": "http://127.0.0.1:8000/storage/our_governances/D4RVbxeNVJensk62eVAffWqIKE0hm57GxwzztEhy.jpg"
+             }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/cms/organization-center
+    metadata:
+      groupName: 'CMS Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Our organization center'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      slug:
+        name: slug
+        description: 'The slug of the our governance.'
+        required: true
+        example: 'lion-roaring-innovation-center, lion-roaring-education-center-1709707179.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      slug: 'lion-roaring-innovation-center, lion-roaring-education-center-1709707179.'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Our Governance",
+          "status": true,
+          "our_organization_centers": [
+             {
+                 "id": 4,
+                 "our_organization_id": 1,
+                 "name": "LION ROARING FOUNDATION",
+                 "slug": "lion-roaring-foundation",
+                 "description": "LION ROARING FOUNDATION",
+                 "banner_image": "organization_centers/ItTjpXfo45xddk8eWYgcmCO4mlzj1ZlVCSf9wWDq.jpg",
+                 "image": "organization_centers/9Fxa0aHJcLSvAdzdSQ7tKb5vfgW4JxXfB44r7Czf.jpg",
+                 "meta_title": "LION ROARING FOUNDATION",
+                 "meta_description": "LION ROARING FOUNDATION",
+                 "meta_keywords": "LION ROARING FOUNDATION",
+                 "created_at": "2024-03-06T10:37:18.000000Z",
+                 "updated_at": "2024-03-06T10:37:18.000000Z"
+             }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

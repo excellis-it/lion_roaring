@@ -12,11 +12,11 @@ class OrganizationTransformers extends TransformerAbstract
     public function transform(Organization $organization)
     {
         $banner_section = [
-            'banner_image_url' => env('APP_URL') . Storage::url($organization->banner_image), // 'http://localhost:8000/storage/imagename.jpg
+            'banner_image_url' => Storage::url($organization->banner_image), // 'http://localhost:8000/storage/imagename.jpg
             'banner_title' => $organization->banner_title];
         $about_section = [];
         foreach ($organization->images as $key => $value) {
-            $about_section['about_section_image_' . $key+1] = env('APP_URL') . Storage::url($value->image);
+            $about_section['about_section_image_' . $key+1] = Storage::url($value->image);
         }
         $project_section = [
             'project_section_title' => $organization->project_section_title,

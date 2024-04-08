@@ -12,7 +12,7 @@ class GalleryTransformers extends TransformerAbstract
     public function transform(Gallery $gallery)
     {
         return [
-            'image_url' => env('APP_URL') . Storage::url($gallery->image),
+            'image_url' => Storage::url($gallery->image),
         ];
     }
 }
