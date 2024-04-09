@@ -13,7 +13,10 @@ class OrganizationTransformers extends TransformerAbstract
     {
         $banner_section = [
             'banner_image_url' => Storage::url($organization->banner_image), // 'http://localhost:8000/storage/imagename.jpg
-            'banner_title' => $organization->banner_title];
+            'banner_title' => $organization->banner_title,
+            'banner_description' => $organization->banner_description,
+        ];
+
         $about_section = [];
         foreach ($organization->images as $key => $value) {
             $about_section['about_section_image_' . $key+1] = Storage::url($value->image);
