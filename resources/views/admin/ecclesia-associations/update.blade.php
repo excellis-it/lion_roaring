@@ -75,7 +75,20 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="col-xl-12 col-md-12">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        {{-- meta description --}}
+                                        <label for="floatingInputValue">Partner page content*</label>
+                                        <textarea name="description1" id="description1" cols="30" rows="10" placeholder="Content"
+                                            class="form-control">{{ isset($ecclesia_association->description1) ? $ecclesia_association->description1 : old('description1') }}</textarea>
+                                        @if ($errors->has('description1'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('description1') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="sales-report-card-wrap mt-5">
@@ -148,5 +161,6 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
 <script>
     ClassicEditor.create(document.querySelector("#description"));
+    ClassicEditor.create(document.querySelector("#description1"));
 </script>
 @endpush

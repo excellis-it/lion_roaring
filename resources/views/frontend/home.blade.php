@@ -17,12 +17,12 @@
                 <a href="{{route('details')}}" tabindex="0">
                     <div class="slide__img">
                         <video autoplay="" muted="" loop="" class="video_part">
-                            <source src="{{ Storage::url($home['banner_video']) ?? 'https://via.placeholder.com/150' }}"
+                            <source src="{{ isset($home['banner_video']) ? Storage::url($home['banner_video']) : 'https://via.placeholder.com/150' }}"
                                 type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                         <!-- <img src="" alt="" class="full-image d-block d-md-none" /> -->
-                        <img src="{{ Storage::url($home['banner_image']) ?? 'https://via.placeholder.com/150' }}"
+                        <img src="{{ isset($home['banner_image']) ? Storage::url($home['banner_image']) : 'https://via.placeholder.com/150' }}"
                             class="full-image overlay-image">
                     </div>
                 </a>
@@ -46,7 +46,7 @@
                         <div class="img1">
                             <video controls="" style="width: 100%; height: 100%;">
                                 <source
-                                    src="{{ Storage::url($home['section_1_video']) ?? 'https://via.placeholder.com/150' }}"
+                                    src="{{ isset($home['section_1_video']) ? Storage::url($home['section_1_video']) : 'https://via.placeholder.com/150' }}"
                                     type="video/mp4">
                             </video>
                         </div>
@@ -77,7 +77,7 @@
                                     <div class="row align-items-center justify-content-center flex-column">
                                         <div class="col-md-4">
                                             <div class="img_abt flex-fixed">
-                                                <img src="{{ Storage::url($home['section_2_left_image']) ?? 'https://via.placeholder.com/150' }}"
+                                                <img src="{{ isset($home['section_2_left_image']) ? Storage::url($home['section_2_left_image']) : 'https://via.placeholder.com/150' }}"
                                                     alt="">
                                             </div>
                                         </div>
@@ -100,7 +100,7 @@
                                     <div class="row align-items-center justify-content-center flex-column">
                                         <div class="col-md-4">
                                             <div class="img_abt flex-fixed">
-                                                <img src="{{ Storage::url($home['section_2_right_image']) ?? 'https://via.placeholder.com/150' }}"
+                                                <img src="{{ isset($home['section_2_right_image']) ? Storage::url($home['section_2_right_image']) : 'https://via.placeholder.com/150' }}"
                                                     alt="">
                                             </div>
                                         </div>

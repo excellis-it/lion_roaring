@@ -43,6 +43,10 @@ class PrincipleAndBusinessController extends Controller
         $request->validate([
             'banner_title' => 'required',
             'description' => 'required',
+            'description1' => 'required',
+            'description2' => 'required',
+            'description3' => 'required',
+            'description4' => 'required',
         ]);
 
         if ($request->id != '') {
@@ -53,6 +57,10 @@ class PrincipleAndBusinessController extends Controller
 
         $business->banner_title = $request->banner_title;
         $business->description = $request->description;
+        $business->description1 = $request->description1;
+        $business->description2 = $request->description2;
+        $business->description3 = $request->description3;
+        $business->description4 = $request->description4;
         $business->meta_title = $request->meta_title;
         $business->meta_description = $request->meta_description;
         $business->meta_keywords = $request->meta_keywords;

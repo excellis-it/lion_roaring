@@ -43,6 +43,19 @@
                             href="{{ route('customers.index') }}"> User List</a></li>
                 </ul>
             </li>
+            <li class="dropdown">
+                <a href="javascript:void(0);"
+                    class="menu-toggle nav-link has-dropdown {{ Request::is('admin/plans*') ? 'active' : ' ' }}">
+                    <i class="ph ph-cards"></i>
+                    <span> Plan Management</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="{{ Request::is('admin/plans/create') ? 'active' : ' ' }}"><a class="nav-link"
+                            href="{{ route('plans.create') }}">Create Plan</a></li>
+                    <li class="{{ Request::is('admin/plans') ? 'active' : ' ' }}"><a class="nav-link"
+                            href="{{ route('plans.index') }}"> Plan List</a></li>
+                </ul>
+            </li>
             <li class="dropdown {{ Request::is('admin/donations*') ? 'active' : ' ' }}">
                 <a href="{{ route('donations.index') }}">
                     <i class="ph ph-coins"></i>

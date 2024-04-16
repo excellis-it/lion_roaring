@@ -92,6 +92,66 @@
                                 </div>
                             </div>
 
+                            <div class="col-xl-12 col-md-12">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        {{-- meta description --}}
+                                        <label for="floatingInputValue">Description1*</label>
+                                        <textarea name="description1" id="description1" cols="30" rows="10" placeholder="Description1"
+                                            class="form-control">{{ isset($business->description1) ? $business->description1 : old('description1') }}</textarea>
+                                        @if ($errors->has('description1'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('description1') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-12 col-md-12">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        {{-- meta description --}}
+                                        <label for="floatingInputValue">Description2*</label>
+                                        <textarea name="description2" id="description2" cols="30" rows="10" placeholder="Description2"
+                                            class="form-control">{{ isset($business->description2) ? $business->description2 : old('description2') }}</textarea>
+                                        @if ($errors->has('description2'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('description2') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-12 col-md-12">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        {{-- meta description --}}
+                                        <label for="floatingInputValue">Description 3*</label>
+                                        <textarea name="description3" id="description3" cols="30" rows="10" placeholder="Description"
+                                            class="form-control">{{ isset($business->description3) ? $business->description3 : old('description3') }}</textarea>
+                                        @if ($errors->has('description3'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('description3') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-12 col-md-12">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        {{-- meta description --}}
+                                        <label for="floatingInputValue">Description 4*</label>
+                                        <textarea name="description4" id="description4" cols="30" rows="10" placeholder="Description"
+                                            class="form-control">{{ isset($business->description4) ? $business->description4 : old('description4') }}</textarea>
+                                        @if ($errors->has('description4'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('description4') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     <div class="sales-report-card-wrap mt-5">
@@ -164,5 +224,9 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
 <script>
     ClassicEditor.create(document.querySelector("#description"));
+    ClassicEditor.create(document.querySelector("#description1"));
+    ClassicEditor.create(document.querySelector("#description2"));
+    ClassicEditor.create(document.querySelector("#description3"));
+    ClassicEditor.create(document.querySelector("#description4"));
 </script>
 @endpush

@@ -42,6 +42,9 @@ class EcclesiaAssociationController extends Controller
         $request->validate([
             'banner_title' => 'required',
             'description' => 'required',
+            'description1' => 'required',
+        ],[
+            'description1.required' => 'The partner page content is required.'
         ]);
 
         if ($request->id != '') {
@@ -52,6 +55,7 @@ class EcclesiaAssociationController extends Controller
 
         $ecclesia_association->banner_title = $request->banner_title;
         $ecclesia_association->description = $request->description;
+        $ecclesia_association->description1 = $request->description1;
         $ecclesia_association->meta_title = $request->meta_title;
         $ecclesia_association->meta_description = $request->meta_description;
         $ecclesia_association->meta_keywords = $request->meta_keywords;

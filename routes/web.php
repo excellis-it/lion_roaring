@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\OrganizationCenterController;
 use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\OurGovernanceController;
 use App\Http\Controllers\Admin\OurOrganizationController;
+use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\PrincipleAndBusinessController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\ServiceContoller;
@@ -76,7 +77,14 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         'organization-centers' => OrganizationCenterController::class,
         'services' => ServiceContoller::class,
         'donations' => AdminDonationController::class,
+        'plans' => PlanController::class
     ]);
+
+    Route::prefix('plans')->group(function () {
+        Route::get('/plan-delete/{id}', [PlanController::class, 'delete'])->name('plans.delete');
+    });
+    Route::get('/changePlanStatus', [PlanController::class, 'changePlansStatus'])->name('plans.change-status');
+    Route::get('/plan-fetch-data', [PlanController::class, 'fetchData'])->name('plans.fetch-data');
 
     Route::get('/donations-fetch-data', [AdminDonationController::class, 'fetchData'])->name('donations.fetch-data');
 
