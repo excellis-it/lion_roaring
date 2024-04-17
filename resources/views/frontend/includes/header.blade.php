@@ -48,7 +48,7 @@
                         <div id="google_translate_element"></div>
                     </div>
                     <div class="login_prf">
-                        <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal"> Login</a>
+                        <a href="{{route('login')}}"> Login</a>
                     </div>
                     <div class="login_prf">
                         <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal1">Donate</a>

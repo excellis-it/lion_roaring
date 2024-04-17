@@ -35,6 +35,7 @@ class OrganizationTransformers extends TransformerAbstract
             ];
         }
 
+
         return [
             'banner_section' => $banner_section,
             'about_section' => $about_section,

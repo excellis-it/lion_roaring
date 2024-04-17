@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\ServiceContoller;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Frontend\CmsController;
 use App\Http\Controllers\Frontend\DonationController;
+use App\Http\Controllers\User\AuthController as UserAuthController;
 use Illuminate\Support\Facades\Artisan;
 
 /*
@@ -51,7 +52,7 @@ Route::get('clear', function () {
 
 Route::get('/admin', [AuthController::class, 'redirectAdminLogin']);
 Route::get('/admin/login', [AuthController::class, 'login'])->name('admin.login');
-Route::post('/login-check', [AuthController::class, 'loginCheck'])->name('admin.login.check');  //login check
+Route::post('/admin-login-check', [AuthController::class, 'loginCheck'])->name('admin.login.check');  //login check
 Route::post('forget-password', [ForgetPasswordController::class, 'forgetPassword'])->name('admin.forget.password');
 Route::post('change-password', [ForgetPasswordController::class, 'changePassword'])->name('admin.change.password');
 Route::get('forget-password/show', [ForgetPasswordController::class, 'forgetPasswordShow'])->name('admin.forget.password.show');
@@ -173,3 +174,13 @@ Route::post('/contact-us', [CmsController::class, 'contactUsForm'])->name('conta
 Route::Post('/session', [CmsController::class, 'session'])->name('session.store');
 Route::post('/donation', [DonationController::class, 'donation'])->name('donation');
 Route::get('/thankyou', [DonationController::class, 'thankyou'])->name('thankyou');
+
+// login
+Route::get('/login', [UserAuthController::class, 'login'])->name('login');
+Route::post('/login-check', [UserAuthController::class, 'loginCheck'])->name('login.check');  //login check
+Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
+
+// register
+Route::get('/register', [UserAuthController::class, 'register'])->name('register');
+Route::post('/register-check', [UserAuthController::class, 'registerCheck'])->name('register.check');  //register check
+
