@@ -114,7 +114,7 @@ font-weight: 500;
 position: relative;
 font-family: var(--button-font);
 letter-spacing: 2px;
-color: var(--white-color); 
+color: var(--white-color);
 }
 .red_btn:before {
 content: "";
@@ -134,7 +134,7 @@ transition: all ease-in 0.3s;
 height: 100%;
 }
 .red_btn:hover span{
-color: var(--white-color);  
+color: var(--white-color);
 }
 .red_btn.white_bg{
 color: var(--black-color);
@@ -672,7 +672,7 @@ color:#643271;
 
 
 .ftr-frm .main-btn .red_btn:hover{
-	background: var(--sec-color);	
+	background: var(--sec-color);
 }
 
 
@@ -757,7 +757,7 @@ color:#643271;
 .logo-admin{
   width: 150px;
   height: 150px;
-  margin: 0 auto 20px; 
+  margin: 0 auto 20px;
 }
 .logo-admin img{
   width: 100%;
@@ -770,20 +770,20 @@ color:#643271;
 }
 .member-text p{
   font-size: 15px;
-  line-height: 22px; 
+  line-height: 22px;
   font-weight: 300;
 }
 .member-text p a{
   font-size: 15px;
-  line-height: 22px; 
+  line-height: 22px;
   font-weight: 700;
   color: var(--text-color);
 }
 .member-text h4{
   font-size: 24px;
-  line-height: 28px; 
+  line-height: 28px;
   font-weight: 700;
-  color: var(--text-color);  
+  color: var(--text-color);
 }
 .member-text ul{
   padding: 0;
@@ -791,7 +791,7 @@ color:#643271;
 }
 .member-text ul li{
   font-size: 15px;
-  line-height: 22px; 
+  line-height: 22px;
   font-weight: 400;
   color: var(--text-color);
   list-style: none;
@@ -829,4 +829,16 @@ color:#643271;
 	border-radius: 10px;
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
 	background-color: var(--main-color);
+}
+
+.error {
+    color: red;
+}
+
+.eye-btn-1{
+    position: absolute;
+    top: 6px;
+    right: 15px;
+    transform: translate(0px, 0px);
+    font-size: 20px;
 }

@@ -187,6 +187,9 @@
                     <li class="{{ Request::is('admin/pages/footer') ? 'active' : ' ' }}"><a class="nav-link"
                             href="{{ route('footer.index') }}">
                             Footer</a></li>
+                    <li class="{{ Request::is('admin/pages/register-agreements') ? 'active' : ' ' }}"><a class="nav-link"
+                            href="{{ route('register-agreements.index') }}">
+                            REGISTER PAGE AGREEMENTS</a></li>
                 </ul>
             </li>
         </ul>

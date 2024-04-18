@@ -25,12 +25,14 @@ use App\Http\Controllers\Admin\OurGovernanceController;
 use App\Http\Controllers\Admin\OurOrganizationController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\PrincipleAndBusinessController;
+use App\Http\Controllers\Admin\RegisterAgreementController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\ServiceContoller;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Frontend\CmsController;
 use App\Http\Controllers\Frontend\DonationController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
+use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use Illuminate\Support\Facades\Artisan;
 
 /*
@@ -130,6 +132,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
             'contact-us' => ContactusController::class,
             'newsletters' => NewsletterController::class,
             'articles-of-association' => ArticleOfAssociationController::class,
+            'register-agreements' => RegisterAgreementController::class,
         ]);
 
         Route::get('/newsletter-fetch-data', [NewsletterController::class, 'fetchData'])->name('newsletters.fetch-data');
@@ -175,6 +178,8 @@ Route::Post('/session', [CmsController::class, 'session'])->name('session.store'
 Route::post('/donation', [DonationController::class, 'donation'])->name('donation');
 Route::get('/thankyou', [DonationController::class, 'thankyou'])->name('thankyou');
 
+
+/*********************************************************** USER ********************************************************************************************* */
 // login
 Route::get('/login', [UserAuthController::class, 'login'])->name('login');
 Route::post('/login-check', [UserAuthController::class, 'loginCheck'])->name('login.check');  //login check
@@ -184,3 +189,10 @@ Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
 Route::get('/register', [UserAuthController::class, 'register'])->name('register');
 Route::post('/register-check', [UserAuthController::class, 'registerCheck'])->name('register.check');  //register check
 
+Route::prefix('user')->middleware('user')->group(function () {
+    Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
+    Route::get('/profile', [UserDashboardController::class, 'profile'])->name('user.profile');
+    Route::post('/profile-update', [UserDashboardController::class, 'profileUpdate'])->name('user.profile.update');
+    Route::get('/change-password', [UserDashboardController::class, 'password'])->name('user.change.password');
+    Route::post('/change-password-update', [UserDashboardController::class, 'passwordUpdate'])->name('user.password.update');
+});
