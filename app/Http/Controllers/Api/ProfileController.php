@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 
 /**
@@ -11,7 +12,7 @@ use Illuminate\Http\Request;
 class ProfileController extends Controller
 {
     protected $successStatus = 200;
-
+    use ImageTrait;
     /**
      * Profile Details
      * @authenticated
@@ -119,5 +120,36 @@ class ProfileController extends Controller
         } else {
             return response()->json(['status' => false, 'message' => 'Old password is incorrect'], 201);
         }
+    }
+
+    /**
+     * Update Profile Picture
+     * @authenticated
+     * @bodyParam profile_picture file required The profile picture of the user. Example: profile_picture.jpg
+     * @response 200 {
+     * "status": true,
+     * "message": "Profile picture updated successfully"
+     * }
+     * @response 201 {
+     * "status": false,
+     * "message": "The profile picture must be an image."
+     * }
+     */
+
+    public function profilePictureUpdate(Request $request)
+    {
+        $validator = validator($request->all(), [
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
+        }
+
+        $user = $request->user();
+        $user->profile_picture = $this->imageUpload($request->file('profile_picture'), 'profile_picture');
+        $user->save();
+
+        return response()->json(['status' => true, 'message' => 'Profile picture updated successfully'], $this->successStatus);
     }
 }

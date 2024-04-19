@@ -51,6 +51,7 @@ Route::prefix('v1')->group(function () {
     Route::group(['middleware' => 'auth:api', 'prefix'=>'user'], function () {
         Route::post('profile', [ProfileController::class, 'profile']);
         Route::post('update-profile', [ProfileController::class, 'updateProfile']);
+        Route::post('profile-picture-update', [ProfileController::class, 'profilePictureUpdate']);
         Route::post('change-password', [ProfileController::class, 'changePassword']);
     });
 });
