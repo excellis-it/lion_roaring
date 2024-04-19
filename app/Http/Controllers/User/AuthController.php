@@ -31,7 +31,7 @@ class AuthController extends Controller
         $fieldType = filter_var($request->user_name, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
         if (auth()->attempt($request->only($fieldType, 'password'))) {
             if (auth()->user()->status == 1) {
-                return redirect()->route('user.dashboard');
+                return redirect()->route('user.profile');
             } else {
                 auth()->logout();
                 return redirect()->back()->with('error', 'Your account is not active!');

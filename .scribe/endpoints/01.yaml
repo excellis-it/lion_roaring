@@ -46,7 +46,6 @@ endpoints:
                 "section_2_image_2": "http://127.0.0.1:8000/storage/home/7lAhy6PtApuL5YXfPFjtrjpCyvejIh9VadgqBJHY.jpg",
                 "section_3_title": "OUR GOVERNANCE BOARD",
                 "section_3_description": "THIS BOARD PROVIDES DIRECTION AND OVERSIGHT FOR DAY-TO-DAY OPERATION OF LION ROARING, PMA.",
-                "section_3_image": "http://127.0.0.1:8000/storage/",
                 "section_4_title": "OUR ORGANIZATION",
                 "section_4_description": "A habitation where supernatural and solution intersects",
                 "section_5_title": "TESTIMONIES",
@@ -587,7 +586,7 @@ endpoints:
         status: 200
         content: |-
           {
-          "message": "Our Governance",
+          "message": "Organization Center",
           "status": true,
           "our_organization_centers": [
              {
@@ -604,6 +603,63 @@ endpoints:
                  "created_at": "2024-03-06T10:37:18.000000Z",
                  "updated_at": "2024-03-06T10:37:18.000000Z"
              }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/cms/organization-center-details
+    metadata:
+      groupName: 'CMS Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Organization center details'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      slug:
+        name: slug
+        description: 'The slug of the organization center.'
+        required: true
+        example: lion-roaring-foundation.
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      slug: lion-roaring-foundation.
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "message": "Organization center details",
+            "status": true,
+            "details": {
+                "banner_title": "LION ROARING FOUNDATION",
+                "banner_image": "http://127.0.0.1:8000/storage/organization_centers/ItTjpXfo45xddk8eWYgcmCO4mlzj1ZlVCSf9wWDq.jpg",
+                "name": "LION ROARING FOUNDATION",
+                "description": "LION ROARING FOUNDATION",
+                "image_url": "http://127.0.0.1:8000/storage/organization_centers/9Fxa0aHJcLSvAdzdSQ7tKb5vfgW4JxXfB44r7Czf.jpg"
+            }
           }
         headers: []
         description: ''

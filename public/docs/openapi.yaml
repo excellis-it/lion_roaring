@@ -7,6 +7,138 @@ servers:
   -
     url: 'http://127.0.0.1:8000'
 paths:
+  /api/v1/login:
+    post:
+      summary: Login
+      operationId: login
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"token\": \"dsdsdsd\"\n\"status\": true\n\"message\": \"Login successful\"\n}"
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_name:
+                  type: string
+                  description: 'The username or email of the user.'
+                  example: john_doe
+                password:
+                  type: string
+                  description: 'The password of the user.'
+                  example: password
+              required:
+                - user_name
+                - password
+      security: []
+  /api/v1/register:
+    post:
+      summary: Register
+      operationId: register
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"token\": \"dsdsdsd\"\n\"status\": true\n\"message\": \"Registration successful\"\n}"
+        201:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"The user name has already been taken.\"\n\"status\": false\n}"
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_name:
+                  type: string
+                  description: 'The username of the user.'
+                  example: john_doe
+                email:
+                  type: string
+                  description: 'The email of the user. Example:'
+                  example: stacey93@example.org
+                first_name:
+                  type: string
+                  description: 'The first name of the user.'
+                  example: John
+                last_name:
+                  type: string
+                  description: 'The last name of the user.'
+                  example: Doe
+                middle_name:
+                  type: string
+                  description: 'The middle name of the user.'
+                  example: Doe
+                address:
+                  type: string
+                  description: 'The address of the user.'
+                  example: '123, New York'
+                phone_number:
+                  type: numeric
+                  description: 'The phone number of the user.'
+                  example: '1234567890'
+                email_confirmation:
+                  type: string
+                  description: 'The email confirmation of the user. Example:'
+                  example: beatae
+                password:
+                  type: string
+                  description: 'The password of the user.'
+                  example: password
+                password_confirmation:
+                  type: string
+                  description: 'The password confirmation of the user.'
+                  example: password
+              required:
+                - user_name
+                - email
+                - first_name
+                - last_name
+                - address
+                - email_confirmation
+                - password
+                - password_confirmation
+      security: []
+  /api/v1/register-agreement:
+    post:
+      summary: 'Register Agreement Details'
+      operationId: registerAgreementDetails
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"status\": true\n\"message\": \"Data found\"\n \"data\": {\n   \"id\": 1,\n   \"agreement_title\": \"LION ROARING PMA (PRIVATE MEMBERS ASSOCIATION) AGREEMENT\",\n   \"agreement_description\": \"<p>It is the responsibility of the members to read and review the Articles of Association of Lion Roaring PMA in its entirety and agree to adopt and comply to its belief, foundation and purpose of the Lion Roaring PMA. <a href=\\\"http://127.0.0.1:8001/login\\\"><strong>Click here to read the full document XXXXXXXX</strong></a></p><h4><strong>Each member agrees to the following excerpt taken from the Articles of Association of PMA:</strong></h4><ul><li>1. Lion Roaring PMA is a Private Members Association protected under the Constitution of the United States of America and the original constitution for these united States of America and the Maryland Constitution</li><li>2. Member agrees and is supportive to the mission and vision of the Lion Roaring</li><li>3. Member strives to contribute to the purpose of the PMA to fulfill the God given call to the founding members as it is written in Section 4 through 15 in the Article of Association</li><li>4. Member will not hold Lion Roaring PMA liable for any materials or contents posted in the website or any paperwork, written articles, education materials or others created within the PMA for its members’ benefits and private usage</li><li>5. Member’s agreement does not entitle a member to any financial or other interest in the Private Members Association or management thereof</li><li>6. Information regarding details of the association, any materials produced or created by Lion Roaring PMA including all paperwork, agreements, articles, PowerPoints presentations, word parchments, coaching, and education materials are private intellectual property of the PMA and will not be shared, replicated, dispersed or distributed with anyone outside the PMA without explicit written permission from the founder</li><li>7. Member’s due diligence is expected and member will hold harmless any member or founder of Lion Roaring PMA and any dispute shall be handled by the founder(s) with final decision for remedy made by the founder(s) and shall be accepted as a settled matter. (Article III for disputes resolution &amp; Article IV for Sovereignty in the Private)</li><li>8. As a private member of the Lion Roaring PMA, member is invoking its united States constitutional rights specifically the 1st, 4th, 5th, 9th and 10th and the Maryland Constitutional rights included in the Maryland Declaration of Rights Sections 1, 2, 6, 10, 24, 26, 36, 40 and 45 and as such take full responsibility for his or her behavior, such that his or her actions shall never constitute anything that can be determined to be of a “clear and present danger of a substantial evil.”</li><li>9. Any actions by the member which are not consistent with the values of the PMA can result in the founder’s decision to ask the member to leave the PMA</li><li>10. Member is connected with each other and the actions affect one another, therefore, the Lion Roaring PMA encourages and supports one another as a family and community</li><li>11. Member and those who are included in this member’s agreement and contract are solely responsible for member’s own outcome or results from participating or receiving any education materials, counsel, coaching, training, mentoring or other services provided by Lion Roaring PMA through its websites or any other resources made available to the members</li><li>12. The terminology used in these articles of organization and member’s agreement is used solely for clarification of the various usages for Private Members Association under universal contract law by and between free, spiritually free men and women, creations of nature and Natures God, whose lives and rights derive from God Almighty and unique Covenant of the man and/or woman with the Creator</li><li>13. Any reference within the Articles of Association to the man shall also include the woman and any reference to one people may include many people. This PMA shall be construed and interpreted in the private and all decisions or disputes will be final as settled by the founders in accordance with Article III</li><li>14. Member agrees that the elimination of one Item or segment of this Agreement does not eliminate the entirety of the Agreement but the Agreement will remain as Agreed</li></ul><p><br>&nbsp;</p>\",\n   \"created_at\": \"2024-04-18T08:40:32.000000Z\",\n   \"updated_at\": \"2024-04-18T08:40:32.000000Z\"\n}"
+      tags:
+        - Authentication
+      security: []
   /api/v1/cms/home:
     post:
       summary: 'Get Home Page'
@@ -20,7 +152,7 @@ paths:
             text/plain:
               schema:
                 type: string
-                example: "{\n\"message\": \"Home\",\n\"status\": true,\n \"home\": {\n     \"banner_title\": \"A habitation where supernatural and solution intersects\",\n     \"banner_image\": \"http://127.0.0.1:8000/storage/home/rO06dZNGSicDTKgVPTGNc0DD6IDsliLBkuiu7cAm.png\",\n     \"section_1_title\": \"ABOUT\",\n     \"section_1_sub_title\": \"LION ROARING, PMA\",\n      \"section_1_description\": \"Lion Roaring Private Members Association’s (PMA) main focus is to bring Heaven’s cultures on earth and to restore nations (communities, cities, states, and countries) through each soul whom the Lord has transformed and chosen. This soul will be given the opportunity to work for the Lion Roaring Innovation Centers and its partners being fully educated through Lion Roaring Foundation as God’s king and priest. The goal for each soul is to create inspired ideas and become self-sufficient to perform good works and bring heaven’s attributes into its environment.\",\n      \"section_1_video\": \"home/P0aOPJfaUKa2ffn1bgaQxWZ6ij2NY2p8lBtylezK.mp4\",\n      \"section_2_title_1\": \"Daud Santosa\",\n      \"section_2_description_1\": \"Daud Santosa has over 35 years of experience as a transformation leader in the IT industry for establishing the corporate technology vision and leading all the aspects of the corporate technology deployment and development in both Government and Industry sectors. Responsibilites included transforming organization, people, and technologies to create new products and services. These new products and services, including modernization of infrastructures, helped establish new business services in the digital world, create new IT organizations which helped develop new cost models for Enterprise Data Inventory Strategy, Shared Services Centers, Cloud Computing services, and IT methodology. This led to a balance of score cards, performance metrics/Service Level Agreements, and business processes automation in areas of Financial, Human Resources, Acquisition, Law Enforcement, Telecommunications, Research Survey, and IT Hosting Services. Daud has held many different roles ranging from software engineer, Certified Chief IT Lead, IT Executive, and Chief Technology Officer. He has managed and had oversight over the IT budget within the range of $75,000,000 up to $2,000,000,000.\\r\\nThe Lord transformed Daud in 2016 after undergoing and surviving his third brain surgery at the end of 2015. He began seeking the Lord in 2016 by waiting on God every day from 3:00 to 4:30 AM. He had many spiritual encounters through dreams and visions in 2016-2017. He saw Jesus’s face in the 3rd Dimension when he was on Mt. Sinai. He also attended the Open Heaven Prophetic Conference with Prophet Sadhu Selvaraj in 2017. Since then, his life has changed as he regularly walkiswith God. He continues to experience many visions, dreams, and revelations. The Lord has taught him over the past two years as a leader under JMK Maryland (a branch of Jesus My King Church, Shelby, North Carolina) to prepare his congregation to become a wise Sower with Kingship and Priesthood anointing.\\r\\nAlos, during this time, he received the strategy of Lion Roaring (Kingship Authority) and established JMK Maryland (Priesthood authority) through divine intervention of the Holy Spirit as he connected with Pastor Michael Widjaya and Dr. Steven Francis. This is God’s destiny as revealed to Daud and his wife; that is to establish Kingship and Priesthood authority where Heaven is brought on earth with the office of Christ, which is the office of the everlasting Kingdom of Light.\\r\\nCurrently, he is the elder of JMK Maryland that helps that facilitate Lion Roaring teachings on Spiritual and Leadership Development by helping to restore one person, group, community, and nation at the time as the Lord directs him.\",\n      \"section_2_image_1\": \"http://127.0.0.1:8000/storage/home/9A3tUlCktNEqIeXMUpU2014sZQXBsSeaiQFKigqG.jpg\",\n      \"section_2_title_2\": \"Lystia Santosa\",\n      \"section_2_description_2\": \"Lystia Santosa has over 35 years of experience working in the financial and accounting field for International Non-profit Organizations. She has held various positions during her career such as an auditor for a CPA Firm auditing the Federal Government Grant Programs, a Field Office Project Accountant and Senior Accountant, Accounting Manager, Controller, and then a Director of Finance position. Although Lystia obtained her CPA (Certified Public Accountant) early in her career, she decided not to pursue a career in the Public Accounting but to devote her career working for an international non-profit organization working with the third world countries. It was her passion to work in an organization in which the primary mission and the vision were to help people in Third World countries to improve their standard of living.\\r\\nPrior to her retirement in 2019, she held a position as the Director of Finance (CFO) working for the largest U.S. based international worker rights organization. She helped facilitate the organization’s mission of helping workers attain safe and healthy workplaces, while promoting worker’s equality. She also helped improve workers’ standard of living with education and collective agreement, and by helping fight discrimination, and by pr eventing the exploitation of systems that entrench poverty. Her 30 plus years’ experience working with this organization gave her solid and broad mastery in all areas in financial management, financial affairs, budgeting, human resources and personnel policy and procedures. Furthermore, she developed expertise to ensure compliance with U.S. Federal Rules & regulations on grant awards, and how to effectively deal with the the organization’s funders (U.S. Government, foundation and international donors). She was responsible for the organization’s annual budget of about $32,000,000.00 and directed staff in the finance and accounting departments at the company’s headquarters, and approximately 30 filed offices. Additionally, she was a member of the Executive Team, and she worked closely with the CEO, COO and other Directors in the implementation of the organization’s vision and mission.\\r\\nSince retiring in 2019, Lystia has been volunteering her time in helping JMK Shelby, North Carolina church with their accounting and financial matters. She is also the elder for JMK Maryland church alongside her husband, Daud Santosa.\\r\\nDuring the pandemic, the Lord brought her into a more intimate relationship with Him and helped train her to study His words on a deeper level. This helped shift her priorities from working from a worldly employer to working for God’s Kingdom. She gave up her consulting work and completely devoted her time to studying and working alongside with husband, Daud Santosa in serving the JMK Maryland church.\",\n      \"section_2_image_2\": \"http://127.0.0.1:8000/storage/home/7lAhy6PtApuL5YXfPFjtrjpCyvejIh9VadgqBJHY.jpg\",\n      \"section_3_title\": \"OUR GOVERNANCE BOARD\",\n      \"section_3_description\": \"THIS BOARD PROVIDES DIRECTION AND OVERSIGHT FOR DAY-TO-DAY OPERATION OF LION ROARING, PMA.\",\n      \"section_3_image\": \"http://127.0.0.1:8000/storage/\",\n      \"section_4_title\": \"OUR ORGANIZATION\",\n      \"section_4_description\": \"A habitation where supernatural and solution intersects\",\n      \"section_5_title\": \"TESTIMONIES\",\n      \"our_governance\": [\n          {\n              \"slug\": \"robert-hyde\",\n              \"name\": \"ROBERT HYDE\",\n              \"image\": \"http://127.0.0.1:8000/storage/our_governances/D4RVbxeNVJensk62eVAffWqIKE0hm57GxwzztEhy.jpg\"\n          },\n          {\n              \"slug\": \"daud-santosa\",\n              \"name\": \"DAUD SANTOSA\",\n              \"image\": \"http://127.0.0.1:8000/storage/our_governances/f2rEvSGf6P47ASO8jQJIWu5PefAMd8FI1GfWaK6x.png\"\n          }\n      ],\n      \"our_organization\": [\n          {\n              \"slug\": \"lion-roaring-innovation-center\",\n              \"name\": \"Lion Roaring Innovation Center\",\n              \"image\": \"http://127.0.0.1:8000/storage/our_organizations/RoFGvUKvvRXGbbpMmlp9xUt00pICuBwVYHlFMOVN.jpg\",\n              \"description\": \"The mission of Lion Roaring innovation center is building the future of innovation technologies to support the vision of Lion Roaring and to support natural habitation that follows Psalm 104:14-18, 24-25 – “God cause grass to grow for the cattle, herb for the service of man: bring forth food out of the earth; and wine that makes glad the heart of man, and oil to make his face to shine, and bread which strengthens mean’s heart. In wisdom God made them all: the earth full of your riches”. This innovation will be leveraged to help restore villages, cities, states, and nations through Lion Roaring Education Centers.\"\n          },\n          {\n              \"slug\": \"lion-roaring-education-center-1709707179\",\n              \"name\": \"Lion Roaring Education Center\",\n              \"image\": \"http://127.0.0.1:8000/storage/our_organizations/Vuqu2PVoVJkJJB03Aq9UcE9Kd9XPGsZNRFeH186f.jpg\",\n              \"description\": \"The mission of Lion Roaring Education Centers (LREC) is to educate each person to embrace the kingdom of God by restoring the soul through the salvation of the Lord Jesus. In doing so, LREC will also help develop spiritual maturity through spiritual growth and transformation. And to nurture those skills according to that person’s giftedness within the circle of the Lion Roaring Community of interest groups and within the Lion Roaring Habitation and partnership around the world.\"\n          }\n      ],\n      \"testimonial\": [\n          {\n              \"image\": \"http://127.0.0.1:8000/storage/testimonials/czmnEq1ldlivCk3oDi6GU9PX09etwMMJhScEziDA.jpg\",\n              \"description\": \"Praise the Lord,\\r\\nGreeting to you in the name of loving Lord Savior Jesus!\\r\\nThe Lord has chosen you for His royal work anointed you and filled you with abundant grace. God the Father has anointed you with a special anointing of word of understanding and word of wisdom, word of knowledge and the Holy Spirit. He has anointed you to know the truth of the word quickly and has given many spiritual gifts, and God has laid on your hands a fivefold ministry.\\r\\nI thank God for you and the ministry, God has sent and burdened you to help us both physically and spiritually. The villa of Orissa has benefited from many donations we have received from you and your ministry.\\r\\n1. Monthly donation for Pastors. With your help, the Lord’s work is going on in Orissa today. The Gospel is being preached, and today 15 pastors/ preachers have received benefit from your monthly donation. They are preaching the gospel in the sparsely populated areas and able to minister to the villages through Sunday service or visitation.\"\n          },\n          {\n              \"image\": \"http://127.0.0.1:8000/storage/testimonials/2lb6NeSg91X92iHhVAnvHBNjIHTCmzpdtrcZNiP8.jpg\",\n              \"description\": \"I thank the Lord for the partnership with the Lion Roaring for 3 years ago, I have been doing outreaches and bible study that time when servant of God Brother Daud Santosa and Family help me in my financial needs, it almost lasted for 3 years. The Santosa Family and ministry partners supported me that leads to formation of planting. I have been an independent worker that time and with the help of our ministry partners I was able to in large our border. Thank God for the Santosa Family and friends.\"\n          }\n      ],\n      \"gallery\": [\n          {\n              \"image\": \"http://127.0.0.1:8000/storage/gallery/evLHH1jyrA0QMAf8zTFT0ySjA1M7UDWjd15swPr9.jpg\"\n          },\n          {\n              \"image\": \"http://127.0.0.1:8000/storage/gallery/lkkpoCQcQy6wEcl9kppNZFqHEwpQklQU0ck87BcC.jpg\"\n          }\n      ]\n  }"
+                example: "{\n\"message\": \"Home\",\n\"status\": true,\n \"home\": {\n     \"banner_title\": \"A habitation where supernatural and solution intersects\",\n     \"banner_image\": \"http://127.0.0.1:8000/storage/home/rO06dZNGSicDTKgVPTGNc0DD6IDsliLBkuiu7cAm.png\",\n     \"section_1_title\": \"ABOUT\",\n     \"section_1_sub_title\": \"LION ROARING, PMA\",\n      \"section_1_description\": \"Lion Roaring Private Members Association’s (PMA) main focus is to bring Heaven’s cultures on earth and to restore nations (communities, cities, states, and countries) through each soul whom the Lord has transformed and chosen. This soul will be given the opportunity to work for the Lion Roaring Innovation Centers and its partners being fully educated through Lion Roaring Foundation as God’s king and priest. The goal for each soul is to create inspired ideas and become self-sufficient to perform good works and bring heaven’s attributes into its environment.\",\n      \"section_1_video\": \"home/P0aOPJfaUKa2ffn1bgaQxWZ6ij2NY2p8lBtylezK.mp4\",\n      \"section_2_title_1\": \"Daud Santosa\",\n      \"section_2_description_1\": \"Daud Santosa has over 35 years of experience as a transformation leader in the IT industry for establishing the corporate technology vision and leading all the aspects of the corporate technology deployment and development in both Government and Industry sectors. Responsibilites included transforming organization, people, and technologies to create new products and services. These new products and services, including modernization of infrastructures, helped establish new business services in the digital world, create new IT organizations which helped develop new cost models for Enterprise Data Inventory Strategy, Shared Services Centers, Cloud Computing services, and IT methodology. This led to a balance of score cards, performance metrics/Service Level Agreements, and business processes automation in areas of Financial, Human Resources, Acquisition, Law Enforcement, Telecommunications, Research Survey, and IT Hosting Services. Daud has held many different roles ranging from software engineer, Certified Chief IT Lead, IT Executive, and Chief Technology Officer. He has managed and had oversight over the IT budget within the range of $75,000,000 up to $2,000,000,000.\\r\\nThe Lord transformed Daud in 2016 after undergoing and surviving his third brain surgery at the end of 2015. He began seeking the Lord in 2016 by waiting on God every day from 3:00 to 4:30 AM. He had many spiritual encounters through dreams and visions in 2016-2017. He saw Jesus’s face in the 3rd Dimension when he was on Mt. Sinai. He also attended the Open Heaven Prophetic Conference with Prophet Sadhu Selvaraj in 2017. Since then, his life has changed as he regularly walkiswith God. He continues to experience many visions, dreams, and revelations. The Lord has taught him over the past two years as a leader under JMK Maryland (a branch of Jesus My King Church, Shelby, North Carolina) to prepare his congregation to become a wise Sower with Kingship and Priesthood anointing.\\r\\nAlos, during this time, he received the strategy of Lion Roaring (Kingship Authority) and established JMK Maryland (Priesthood authority) through divine intervention of the Holy Spirit as he connected with Pastor Michael Widjaya and Dr. Steven Francis. This is God’s destiny as revealed to Daud and his wife; that is to establish Kingship and Priesthood authority where Heaven is brought on earth with the office of Christ, which is the office of the everlasting Kingdom of Light.\\r\\nCurrently, he is the elder of JMK Maryland that helps that facilitate Lion Roaring teachings on Spiritual and Leadership Development by helping to restore one person, group, community, and nation at the time as the Lord directs him.\",\n      \"section_2_image_1\": \"http://127.0.0.1:8000/storage/home/9A3tUlCktNEqIeXMUpU2014sZQXBsSeaiQFKigqG.jpg\",\n      \"section_2_title_2\": \"Lystia Santosa\",\n      \"section_2_description_2\": \"Lystia Santosa has over 35 years of experience working in the financial and accounting field for International Non-profit Organizations. She has held various positions during her career such as an auditor for a CPA Firm auditing the Federal Government Grant Programs, a Field Office Project Accountant and Senior Accountant, Accounting Manager, Controller, and then a Director of Finance position. Although Lystia obtained her CPA (Certified Public Accountant) early in her career, she decided not to pursue a career in the Public Accounting but to devote her career working for an international non-profit organization working with the third world countries. It was her passion to work in an organization in which the primary mission and the vision were to help people in Third World countries to improve their standard of living.\\r\\nPrior to her retirement in 2019, she held a position as the Director of Finance (CFO) working for the largest U.S. based international worker rights organization. She helped facilitate the organization’s mission of helping workers attain safe and healthy workplaces, while promoting worker’s equality. She also helped improve workers’ standard of living with education and collective agreement, and by helping fight discrimination, and by pr eventing the exploitation of systems that entrench poverty. Her 30 plus years’ experience working with this organization gave her solid and broad mastery in all areas in financial management, financial affairs, budgeting, human resources and personnel policy and procedures. Furthermore, she developed expertise to ensure compliance with U.S. Federal Rules & regulations on grant awards, and how to effectively deal with the the organization’s funders (U.S. Government, foundation and international donors). She was responsible for the organization’s annual budget of about $32,000,000.00 and directed staff in the finance and accounting departments at the company’s headquarters, and approximately 30 filed offices. Additionally, she was a member of the Executive Team, and she worked closely with the CEO, COO and other Directors in the implementation of the organization’s vision and mission.\\r\\nSince retiring in 2019, Lystia has been volunteering her time in helping JMK Shelby, North Carolina church with their accounting and financial matters. She is also the elder for JMK Maryland church alongside her husband, Daud Santosa.\\r\\nDuring the pandemic, the Lord brought her into a more intimate relationship with Him and helped train her to study His words on a deeper level. This helped shift her priorities from working from a worldly employer to working for God’s Kingdom. She gave up her consulting work and completely devoted her time to studying and working alongside with husband, Daud Santosa in serving the JMK Maryland church.\",\n      \"section_2_image_2\": \"http://127.0.0.1:8000/storage/home/7lAhy6PtApuL5YXfPFjtrjpCyvejIh9VadgqBJHY.jpg\",\n      \"section_3_title\": \"OUR GOVERNANCE BOARD\",\n      \"section_3_description\": \"THIS BOARD PROVIDES DIRECTION AND OVERSIGHT FOR DAY-TO-DAY OPERATION OF LION ROARING, PMA.\",\n      \"section_4_title\": \"OUR ORGANIZATION\",\n      \"section_4_description\": \"A habitation where supernatural and solution intersects\",\n      \"section_5_title\": \"TESTIMONIES\",\n      \"our_governance\": [\n          {\n              \"slug\": \"robert-hyde\",\n              \"name\": \"ROBERT HYDE\",\n              \"image\": \"http://127.0.0.1:8000/storage/our_governances/D4RVbxeNVJensk62eVAffWqIKE0hm57GxwzztEhy.jpg\"\n          },\n          {\n              \"slug\": \"daud-santosa\",\n              \"name\": \"DAUD SANTOSA\",\n              \"image\": \"http://127.0.0.1:8000/storage/our_governances/f2rEvSGf6P47ASO8jQJIWu5PefAMd8FI1GfWaK6x.png\"\n          }\n      ],\n      \"our_organization\": [\n          {\n              \"slug\": \"lion-roaring-innovation-center\",\n              \"name\": \"Lion Roaring Innovation Center\",\n              \"image\": \"http://127.0.0.1:8000/storage/our_organizations/RoFGvUKvvRXGbbpMmlp9xUt00pICuBwVYHlFMOVN.jpg\",\n              \"description\": \"The mission of Lion Roaring innovation center is building the future of innovation technologies to support the vision of Lion Roaring and to support natural habitation that follows Psalm 104:14-18, 24-25 – “God cause grass to grow for the cattle, herb for the service of man: bring forth food out of the earth; and wine that makes glad the heart of man, and oil to make his face to shine, and bread which strengthens mean’s heart. In wisdom God made them all: the earth full of your riches”. This innovation will be leveraged to help restore villages, cities, states, and nations through Lion Roaring Education Centers.\"\n          },\n          {\n              \"slug\": \"lion-roaring-education-center-1709707179\",\n              \"name\": \"Lion Roaring Education Center\",\n              \"image\": \"http://127.0.0.1:8000/storage/our_organizations/Vuqu2PVoVJkJJB03Aq9UcE9Kd9XPGsZNRFeH186f.jpg\",\n              \"description\": \"The mission of Lion Roaring Education Centers (LREC) is to educate each person to embrace the kingdom of God by restoring the soul through the salvation of the Lord Jesus. In doing so, LREC will also help develop spiritual maturity through spiritual growth and transformation. And to nurture those skills according to that person’s giftedness within the circle of the Lion Roaring Community of interest groups and within the Lion Roaring Habitation and partnership around the world.\"\n          }\n      ],\n      \"testimonial\": [\n          {\n              \"image\": \"http://127.0.0.1:8000/storage/testimonials/czmnEq1ldlivCk3oDi6GU9PX09etwMMJhScEziDA.jpg\",\n              \"description\": \"Praise the Lord,\\r\\nGreeting to you in the name of loving Lord Savior Jesus!\\r\\nThe Lord has chosen you for His royal work anointed you and filled you with abundant grace. God the Father has anointed you with a special anointing of word of understanding and word of wisdom, word of knowledge and the Holy Spirit. He has anointed you to know the truth of the word quickly and has given many spiritual gifts, and God has laid on your hands a fivefold ministry.\\r\\nI thank God for you and the ministry, God has sent and burdened you to help us both physically and spiritually. The villa of Orissa has benefited from many donations we have received from you and your ministry.\\r\\n1. Monthly donation for Pastors. With your help, the Lord’s work is going on in Orissa today. The Gospel is being preached, and today 15 pastors/ preachers have received benefit from your monthly donation. They are preaching the gospel in the sparsely populated areas and able to minister to the villages through Sunday service or visitation.\"\n          },\n          {\n              \"image\": \"http://127.0.0.1:8000/storage/testimonials/2lb6NeSg91X92iHhVAnvHBNjIHTCmzpdtrcZNiP8.jpg\",\n              \"description\": \"I thank the Lord for the partnership with the Lion Roaring for 3 years ago, I have been doing outreaches and bible study that time when servant of God Brother Daud Santosa and Family help me in my financial needs, it almost lasted for 3 years. The Santosa Family and ministry partners supported me that leads to formation of planting. I have been an independent worker that time and with the help of our ministry partners I was able to in large our border. Thank God for the Santosa Family and friends.\"\n          }\n      ],\n      \"gallery\": [\n          {\n              \"image\": \"http://127.0.0.1:8000/storage/gallery/evLHH1jyrA0QMAf8zTFT0ySjA1M7UDWjd15swPr9.jpg\"\n          },\n          {\n              \"image\": \"http://127.0.0.1:8000/storage/gallery/lkkpoCQcQy6wEcl9kppNZFqHEwpQklQU0ck87BcC.jpg\"\n          }\n      ]\n  }"
       tags:
         - 'CMS Management'
       security: []
@@ -483,7 +615,7 @@ paths:
             text/plain:
               schema:
                 type: string
-                example: "{\n\"message\": \"Our Governance\",\n\"status\": true,\n\"our_organization_centers\": [\n   {\n       \"id\": 4,\n       \"our_organization_id\": 1,\n       \"name\": \"LION ROARING FOUNDATION\",\n       \"slug\": \"lion-roaring-foundation\",\n       \"description\": \"LION ROARING FOUNDATION\",\n       \"banner_image\": \"organization_centers/ItTjpXfo45xddk8eWYgcmCO4mlzj1ZlVCSf9wWDq.jpg\",\n       \"image\": \"organization_centers/9Fxa0aHJcLSvAdzdSQ7tKb5vfgW4JxXfB44r7Czf.jpg\",\n       \"meta_title\": \"LION ROARING FOUNDATION\",\n       \"meta_description\": \"LION ROARING FOUNDATION\",\n       \"meta_keywords\": \"LION ROARING FOUNDATION\",\n       \"created_at\": \"2024-03-06T10:37:18.000000Z\",\n       \"updated_at\": \"2024-03-06T10:37:18.000000Z\"\n   }\n}"
+                example: "{\n\"message\": \"Organization Center\",\n\"status\": true,\n\"our_organization_centers\": [\n   {\n       \"id\": 4,\n       \"our_organization_id\": 1,\n       \"name\": \"LION ROARING FOUNDATION\",\n       \"slug\": \"lion-roaring-foundation\",\n       \"description\": \"LION ROARING FOUNDATION\",\n       \"banner_image\": \"organization_centers/ItTjpXfo45xddk8eWYgcmCO4mlzj1ZlVCSf9wWDq.jpg\",\n       \"image\": \"organization_centers/9Fxa0aHJcLSvAdzdSQ7tKb5vfgW4JxXfB44r7Czf.jpg\",\n       \"meta_title\": \"LION ROARING FOUNDATION\",\n       \"meta_description\": \"LION ROARING FOUNDATION\",\n       \"meta_keywords\": \"LION ROARING FOUNDATION\",\n       \"created_at\": \"2024-03-06T10:37:18.000000Z\",\n       \"updated_at\": \"2024-03-06T10:37:18.000000Z\"\n   }\n}"
       tags:
         - 'CMS Management'
       requestBody:
@@ -497,6 +629,69 @@ paths:
                   type: string
                   description: 'The slug of the our governance.'
                   example: 'lion-roaring-innovation-center, lion-roaring-education-center-1709707179.'
+              required:
+                - slug
+      security: []
+  /api/v1/cms/organization-center-details:
+    post:
+      summary: 'Organization center details'
+      operationId: organizationCenterDetails
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Organization center details'
+                  status: true
+                  details:
+                    banner_title: 'LION ROARING FOUNDATION'
+                    banner_image: 'http://127.0.0.1:8000/storage/organization_centers/ItTjpXfo45xddk8eWYgcmCO4mlzj1ZlVCSf9wWDq.jpg'
+                    name: 'LION ROARING FOUNDATION'
+                    description: 'LION ROARING FOUNDATION'
+                    image_url: 'http://127.0.0.1:8000/storage/organization_centers/9Fxa0aHJcLSvAdzdSQ7tKb5vfgW4JxXfB44r7Czf.jpg'
+                properties:
+                  message:
+                    type: string
+                    example: 'Organization center details'
+                  status:
+                    type: boolean
+                    example: true
+                  details:
+                    type: object
+                    properties:
+                      banner_title:
+                        type: string
+                        example: 'LION ROARING FOUNDATION'
+                      banner_image:
+                        type: string
+                        example: 'http://127.0.0.1:8000/storage/organization_centers/ItTjpXfo45xddk8eWYgcmCO4mlzj1ZlVCSf9wWDq.jpg'
+                      name:
+                        type: string
+                        example: 'LION ROARING FOUNDATION'
+                      description:
+                        type: string
+                        example: 'LION ROARING FOUNDATION'
+                      image_url:
+                        type: string
+                        example: 'http://127.0.0.1:8000/storage/organization_centers/9Fxa0aHJcLSvAdzdSQ7tKb5vfgW4JxXfB44r7Czf.jpg'
+      tags:
+        - 'CMS Management'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                slug:
+                  type: string
+                  description: 'The slug of the organization center.'
+                  example: lion-roaring-foundation.
               required:
                 - slug
       security: []
@@ -543,7 +738,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: koelpin.emely@example.net
+                  example: skohler@example.com
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -559,10 +754,291 @@ paths:
                 - phone
                 - message
       security: []
+  /api/v1/plan/details:
+    post:
+      summary: 'Plan List'
+      operationId: planList
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  plan_status: true
+                  message: 'Plan list'
+                  data:
+                    -
+                      id: 1
+                      plan_name: Basic
+                      plan_price: 100
+                      plan_validity: 30
+                      plan_status: 1
+                      created_at: '2024-03-05T10:58:13.000000Z'
+                      updated_at: '2024-04-18T12:27:38.000000Z'
+                    -
+                      id: 2
+                      plan_name: Standard
+                      plan_price: 200
+                      plan_validity: 60
+                      plan_status: 1
+                      created_at: '2024-03-05T10:58:13.000000Z'
+                      updated_at: '2024-04-18T12:27:38.000000Z'
+                properties:
+                  plan_status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Plan list'
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        plan_name: Basic
+                        plan_price: 100
+                        plan_validity: 30
+                        plan_status: 1
+                        created_at: '2024-03-05T10:58:13.000000Z'
+                        updated_at: '2024-04-18T12:27:38.000000Z'
+                      -
+                        id: 2
+                        plan_name: Standard
+                        plan_price: 200
+                        plan_validity: 60
+                        plan_status: 1
+                        created_at: '2024-03-05T10:58:13.000000Z'
+                        updated_at: '2024-04-18T12:27:38.000000Z'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        plan_name:
+                          type: string
+                          example: Basic
+                        plan_price:
+                          type: integer
+                          example: 100
+                        plan_validity:
+                          type: integer
+                          example: 30
+                        plan_status:
+                          type: integer
+                          example: 1
+                        created_at:
+                          type: string
+                          example: '2024-03-05T10:58:13.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-04-18T12:27:38.000000Z'
+      tags:
+        - 'Plan Management'
+      security: []
+  /api/v1/user/profile:
+    post:
+      summary: 'Profile Details'
+      operationId: profileDetails
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'Profile details'
+                  data:
+                    id: 2
+                    user_name: john_doe
+                    first_name: John
+                    middle_name: null
+                    last_name: Doe
+                    email: john@yopmail.com
+                    phone: '7415236986'
+                    email_verified_at: null
+                    profile_picture: profile_picture/1h5ihHDrrOf3Fp4O0Fg1EnLLkhuXn7vW4C1CAUZY.jpg
+                    address: '51 DN Block Merlin Infinite Building, 9th Floor, Unit, 907, Sector V, Bidhannagar, Kolkata, West Bengal 700091'
+                    status: 1
+                    created_at: '2024-03-05T10:58:13.000000Z'
+                    updated_at: '2024-04-18T12:27:38.000000Z'
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Profile details'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 2
+                      user_name:
+                        type: string
+                        example: john_doe
+                      first_name:
+                        type: string
+                        example: John
+                      middle_name:
+                        type: string
+                        example: null
+                      last_name:
+                        type: string
+                        example: Doe
+                      email:
+                        type: string
+                        example: john@yopmail.com
+                      phone:
+                        type: string
+                        example: '7415236986'
+                      email_verified_at:
+                        type: string
+                        example: null
+                      profile_picture:
+                        type: string
+                        example: profile_picture/1h5ihHDrrOf3Fp4O0Fg1EnLLkhuXn7vW4C1CAUZY.jpg
+                      address:
+                        type: string
+                        example: '51 DN Block Merlin Infinite Building, 9th Floor, Unit, 907, Sector V, Bidhannagar, Kolkata, West Bengal 700091'
+                      status:
+                        type: integer
+                        example: 1
+                      created_at:
+                        type: string
+                        example: '2024-03-05T10:58:13.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-04-18T12:27:38.000000Z'
+      tags:
+        - Profile
+  /api/v1/user/update-profile:
+    post:
+      summary: 'Update Profile'
+      operationId: updateProfile
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'Profile updated successfully'
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Profile updated successfully'
+      tags:
+        - Profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: 'The first name of the user.'
+                  example: John
+                middle_name:
+                  type: string
+                  description: 'optional The middle name of the user.'
+                  example: Doe
+                last_name:
+                  type: string
+                  description: 'The last name of the user.'
+                  example: Doe
+                phone:
+                  type: string
+                  description: 'The phone number of the user.'
+                  example: '7415236986'
+                address:
+                  type: string
+                  description: 'The address of the user.'
+                  example: '51 DN Block Merlin Infinite Building, 9th Floor, Unit, 907, Sector V, Bidhannagar, Kolkata, West Bengal 700091'
+              required:
+                - first_name
+                - last_name
+                - phone
+                - address
+  /api/v1/user/change-password:
+    post:
+      summary: 'Change Password'
+      operationId: changePassword
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'Password changed successfully'
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Password changed successfully'
+      tags:
+        - Profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                  description: 'The old password of the user.'
+                  example: password
+                new_password:
+                  type: string
+                  description: 'The new password of the user.'
+                  example: password123
+                confirm_password:
+                  type: string
+                  description: 'The confirm password of the user.'
+                  example: password123
+              required:
+                - old_password
+                - new_password
+                - confirm_password
 tags:
+  -
+    name: Authentication
+    description: ''
   -
     name: 'CMS Management'
     description: ''
   -
     name: 'Contact Us'
+    description: ''
+  -
+    name: 'Plan Management'
+    description: ''
+  -
+    name: Profile
     description: ''

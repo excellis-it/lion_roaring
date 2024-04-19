@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.84.0">
-    <title>{{ env('APP_NAME') }} - Login</title>
+    <title>{{ env('APP_NAME') }} - Change Password</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -42,53 +42,44 @@
                     <div class="col-lg-5">
                         <div class="login_bg_sec border-top-0">
                             <div class="heading_hp">
-                                <h2 id="greeting">Good Afternoon</h2>
-                                <h4>Sign on to enter Lion Roaring PMA Private Member area.</h4>
+                                <h2 id="greeting">Change Password</h2>
+                                <h4>Enter your new password</h4>
                                 <div class="admin-form">
-                                    <form name="login-form" id="login-form" action="{{ route('login.check') }}"
+                                    <form name="login-form" id="login-form" action="{{ route('user.password-change') }}"
                                         method="post">
                                         @csrf
+                                        <input type="hidden" name="id" value="{{ $id }}">
+                                        {{-- new password --}}
                                         <p class="login-username">
-                                            <label for="user_login">Username or Email Address</label>
-                                            <input type="text" name="user_name" id="user_name" class="input"
-                                                value="{{ old('user_name') }}">
-                                            @if ($errors->has('user_name'))
-                                                @foreach ($errors->get('user_name') as $error)
-                                                    <p class="error" style="color:red;">{{ $error }}</p>
-                                                @endforeach
-                                            @endif
-                                        </p>
-                                        <p class="login-password">
-                                            <label for="user_password">Password</label>
-                                            <input type="password" name="password" id="user_password" class="input"
-                                                value="">
+                                            <label for="user_login">New Password</label>
+                                            <input type="password" name="password" id="password" class="input"
+                                                value="{{ old('password') }}">
                                             @if ($errors->has('password'))
                                                 @foreach ($errors->get('password') as $error)
                                                     <p class="error" style="color:red;">{{ $error }}</p>
                                                 @endforeach
                                             @endif
                                         </p>
-                                        {{-- <div class="check-main">
-                                            <div class="form-group">
-                                                <input type="checkbox" id="pma_check">
-                                                <label for="pma_check">Remember Me</label>
-                                            </div>
-                                        </div> --}}
+
+                                            {{-- confirm password --}}
+                                        <p class="login-username">
+                                            <label for="user_login">Confirm Password</label>
+                                            <input type="password" name="confirm_password" id="confirm_password" class="input"
+                                                value="{{ old('confirm_password') }}">
+                                            @if ($errors->has('confirm_password'))
+                                                @foreach ($errors->get('confirm_password') as $error)
+                                                    <p class="error" style="color:red;">{{ $error }}</p>
+                                                @endforeach
+                                            @endif
+                                        </p>
                                         <p class="login-submit mt-lg-4 mt-2">
                                             <input type="submit" name="wp-submit" id="login-submit"
-                                                class="button button-primary w-100" value="Log In">
+                                                class="button button-primary w-100" value="Send">
                                         </p>
                                     </form>
                                 </div>
-                                <div class="join-text">
-                                    <a href="javascrip:void(0);" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop">Join Lion
-                                        Roaring Member</a> | <a href="{{route('user.forget.password.show')}}">Forgot username or password
-                                    </a>
-                                </div>
                                 <div class="join-text join-text-1">
-                                    <a href="">Privacy,
-                                        Cookies, and Legal </a>
+                                    <a href="{{route('login')}}"> Back to Login</a>
                                 </div>
                             </div>
                         </div>

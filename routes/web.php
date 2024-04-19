@@ -33,6 +33,7 @@ use App\Http\Controllers\Frontend\CmsController;
 use App\Http\Controllers\Frontend\DonationController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
+use App\Http\Controllers\User\ForgetPasswordController as UserForgetPasswordController;
 use Illuminate\Support\Facades\Artisan;
 
 /*
@@ -188,6 +189,10 @@ Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
 // register
 Route::get('/register', [UserAuthController::class, 'register'])->name('register');
 Route::post('/register-check', [UserAuthController::class, 'registerCheck'])->name('register.check');  //register check
+Route::post('forget-password', [UserForgetPasswordController::class, 'forgetPassword'])->name('user.forget.password');
+Route::post('password-change', [UserForgetPasswordController::class, 'changePassword'])->name('user.password-change');
+Route::get('forget-password/show', [UserForgetPasswordController::class, 'forgetPasswordShow'])->name('user.forget.password.show');
+Route::get('reset-password/{id}/{token}', [UserForgetPasswordController::class, 'resetPassword'])->name('user.reset.password');
 
 Route::prefix('user')->middleware('user')->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
