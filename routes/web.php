@@ -56,11 +56,11 @@ Route::get('clear', function () {
 Route::get('/admin', [AuthController::class, 'redirectAdminLogin']);
 Route::get('/admin/login', [AuthController::class, 'login'])->name('admin.login');
 Route::post('/admin-login-check', [AuthController::class, 'loginCheck'])->name('admin.login.check');  //login check
-Route::post('forget-password', [ForgetPasswordController::class, 'forgetPassword'])->name('admin.forget.password');
-Route::post('change-password', [ForgetPasswordController::class, 'changePassword'])->name('admin.change.password');
-Route::get('forget-password/show', [ForgetPasswordController::class, 'forgetPasswordShow'])->name('admin.forget.password.show');
-Route::get('reset-password/{id}/{token}', [ForgetPasswordController::class, 'resetPassword'])->name('admin.reset.password');
-Route::post('change-password', [ForgetPasswordController::class, 'changePassword'])->name('admin.change.password');
+Route::post('admin-forget-password', [ForgetPasswordController::class, 'forgetPassword'])->name('admin.forget.password');
+Route::post('admin-change-password', [ForgetPasswordController::class, 'changePassword'])->name('admin.change.password');
+Route::get('admin-forget-password/show', [ForgetPasswordController::class, 'forgetPasswordShow'])->name('admin.forget.password.show');
+Route::get('admin-reset-password/{id}/{token}', [ForgetPasswordController::class, 'resetPassword'])->name('admin.reset.password');
+Route::post('admin-change-password', [ForgetPasswordController::class, 'changePassword'])->name('admin.change.password');
 
 Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');

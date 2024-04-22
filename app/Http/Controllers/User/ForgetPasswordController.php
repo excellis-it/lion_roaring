@@ -56,14 +56,12 @@ class ForgetPasswordController extends Controller
         $resetPassword = PasswordReset::where('email', $user->email)->first();
         $newTime =  date('h:i A', strtotime( $resetPassword->created_at->addHour()));
 
-        if ($newTime > date('h:i A')) {
-
+        if ($resetPassword->token == $token && $resetPassword->created_at->addHour() > Carbon::now()) {
             $id = $id;
             return view('user.auth.reset-password')->with(compact('id'));
         } else {
-            abort(404);
+            return redirect()->route('login')->with('error', 'Link has been expired!');
         }
-
 
     }
 

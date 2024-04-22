@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\RegisterAgreement;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -29,8 +30,10 @@ class AuthController extends Controller
 
         // login by user_name or email
         $fieldType = filter_var($request->user_name, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
+        $request->merge([$fieldType => $request->user_name]);
+        // return $fieldType;
         if (auth()->attempt($request->only($fieldType, 'password'))) {
-            if (auth()->user()->status == 1) {
+            if (auth()->user()->status == 1 && auth()->user()->hasRole('CUSTOMER')) {
                 return redirect()->route('user.profile');
             } else {
                 auth()->logout();

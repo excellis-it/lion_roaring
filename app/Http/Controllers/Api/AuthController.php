@@ -41,8 +41,9 @@ class AuthController extends Controller
 
         try {
             $fieldType = filter_var($request->user_name, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
-
-            if (Auth::attempt([$fieldType => $request->user_name, 'password' => $request->password])) {
+            $request->merge([$fieldType => $request->user_name]);
+            // return $fieldType;
+            if (auth()->attempt($request->only($fieldType, 'password'))) {
                 $user = User::where($fieldType, $request->user_name)->first();
                 if ($user->status == 1) {
                     $token = $user->createToken('authToken')->accessToken;
