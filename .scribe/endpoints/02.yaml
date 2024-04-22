@@ -96,7 +96,7 @@ endpoints:
         name: email
         description: 'The email of the user. Example:'
         required: true
-        example: stacey93@example.org
+        example: ohara.calista@example.org
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -150,7 +150,7 @@ endpoints:
         name: email_confirmation
         description: 'The email confirmation of the user. Example:'
         required: true
-        example: beatae
+        example: ut
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -175,13 +175,13 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_name: john_doe
-      email: stacey93@example.org
+      email: ohara.calista@example.org
       first_name: John
       last_name: Doe
       middle_name: Doe
       address: '123, New York'
       phone_number: '1234567890'
-      email_confirmation: beatae
+      email_confirmation: ut
       password: password
       password_confirmation: password
     fileParameters: []

@@ -46,7 +46,7 @@ endpoints:
         name: email
         description: 'Email of the user. Example:'
         required: true
-        example: skohler@example.com
+        example: rosemarie48@example.com
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -72,7 +72,7 @@ endpoints:
     cleanBodyParameters:
       first_name: John
       last_name: Doe
-      email: skohler@example.com
+      email: rosemarie48@example.com
       phone: '1234567890'
       message: Hello
     fileParameters: []

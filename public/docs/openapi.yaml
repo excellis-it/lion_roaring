@@ -79,7 +79,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: stacey93@example.org
+                  example: ohara.calista@example.org
                 first_name:
                   type: string
                   description: 'The first name of the user.'
@@ -103,7 +103,7 @@ paths:
                 email_confirmation:
                   type: string
                   description: 'The email confirmation of the user. Example:'
-                  example: beatae
+                  example: ut
                 password:
                   type: string
                   description: 'The password of the user.'
@@ -738,7 +738,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: skohler@example.com
+                  example: rosemarie48@example.com
                 phone:
                   type: string
                   description: 'Phone of the user.'
