@@ -149,6 +149,66 @@ endpoints:
   -
     httpMethods:
       - POST
+    uri: api/v1/user/profile-picture-update
+    metadata:
+      groupName: Profile
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update Profile Picture'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      profile_picture:
+        name: profile_picture
+        description: 'The profile picture of the user.'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanBodyParameters: []
+    fileParameters:
+      profile_picture: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "status": true,
+          "message": "Profile picture updated successfully"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+          "status": false,
+          "message": "The profile picture must be an image."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
     uri: api/v1/user/change-password
     metadata:
       groupName: Profile

@@ -125,7 +125,7 @@ class ProfileController extends Controller
     /**
      * Update Profile Picture
      * @authenticated
-     * @bodyParam profile_picture file required The profile picture of the user. Example: profile_picture.jpg
+     * @bodyParam profile_picture file required The profile picture of the user.
      * @response 200 {
      * "status": true,
      * "message": "Profile picture updated successfully"

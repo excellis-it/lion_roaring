@@ -79,7 +79,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: ohara.calista@example.org
+                  example: odubuque@example.net
                 first_name:
                   type: string
                   description: 'The first name of the user.'
@@ -738,7 +738,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: rosemarie48@example.com
+                  example: eichmann.agustina@example.net
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -978,6 +978,60 @@ paths:
                 - last_name
                 - phone
                 - address
+  /api/v1/user/profile-picture-update:
+    post:
+      summary: 'Update Profile Picture'
+      operationId: updateProfilePicture
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'Profile picture updated successfully'
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Profile picture updated successfully'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'The profile picture must be an image.'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'The profile picture must be an image.'
+      tags:
+        - Profile
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                profile_picture:
+                  type: string
+                  format: binary
+                  description: 'The profile picture of the user.'
+              required:
+                - profile_picture
   /api/v1/user/change-password:
     post:
       summary: 'Change Password'

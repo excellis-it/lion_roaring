@@ -150,6 +150,9 @@
                                                                                 <li class="tocify-item level-2" data-unique="profile-POSTapi-v1-user-update-profile">
                                 <a href="#profile-POSTapi-v1-user-update-profile">Update Profile</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="profile-POSTapi-v1-user-profile-picture-update">
+                                <a href="#profile-POSTapi-v1-user-profile-picture-update">Update Profile Picture</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="profile-POSTapi-v1-user-change-password">
                                 <a href="#profile-POSTapi-v1-user-change-password">Change Password</a>
                             </li>
@@ -164,7 +167,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: April 22, 2024</li>
+        <li>Last updated: April 23, 2024</li>
     </ul>
 </div>
 
@@ -357,7 +360,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"user_name\": \"john_doe\",
-    \"email\": \"ohara.calista@example.org\",
+    \"email\": \"odubuque@example.net\",
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
     \"middle_name\": \"Doe\",
@@ -382,7 +385,7 @@ const headers = {
 
 let body = {
     "user_name": "john_doe",
-    "email": "ohara.calista@example.org",
+    "email": "odubuque@example.net",
     "first_name": "John",
     "last_name": "Doe",
     "middle_name": "Doe",
@@ -511,10 +514,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v1-register"
-               value="ohara.calista@example.org"
+               value="odubuque@example.net"
                data-component="body">
     <br>
-<p>The email of the user. Example: Example: <code>ohara.calista@example.org</code></p>
+<p>The email of the user. Example: Example: <code>odubuque@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>first_name</code></b>&nbsp;&nbsp;
@@ -2239,7 +2242,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
-    \"email\": \"rosemarie48@example.com\",
+    \"email\": \"eichmann.agustina@example.net\",
     \"phone\": \"1234567890\",
     \"message\": \"Hello\"
 }"
@@ -2259,7 +2262,7 @@ const headers = {
 let body = {
     "first_name": "John",
     "last_name": "Doe",
-    "email": "rosemarie48@example.com",
+    "email": "eichmann.agustina@example.net",
     "phone": "1234567890",
     "message": "Hello"
 };
@@ -2382,10 +2385,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v1-contact-us"
-               value="rosemarie48@example.com"
+               value="eichmann.agustina@example.net"
                data-component="body">
     <br>
-<p>Email of the user. Example: Example: <code>rosemarie48@example.com</code></p>
+<p>Email of the user. Example: Example: <code>eichmann.agustina@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -2880,6 +2883,152 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="body">
     <br>
 <p>The address of the user. Example: <code>51 DN Block Merlin Infinite Building, 9th Floor, Unit, 907, Sector V, Bidhannagar, Kolkata, West Bengal 700091</code></p>
+        </div>
+        </form>
+
+                    <h2 id="profile-POSTapi-v1-user-profile-picture-update">Update Profile Picture</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-user-profile-picture-update">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v1/user/profile-picture-update" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "profile_picture=@C:\Users\Swarnadwip\AppData\Local\Temp\phpBBB0.tmp" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v1/user/profile-picture-update"
+);
+
+const headers = {
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('profile_picture', document.querySelector('input[name="profile_picture"]').files[0]);
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-user-profile-picture-update">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: true,
+    &quot;message&quot;: &quot;Profile picture updated successfully&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: false,
+    &quot;message&quot;: &quot;The profile picture must be an image.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-user-profile-picture-update" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-user-profile-picture-update"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-profile-picture-update"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-user-profile-picture-update" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-user-profile-picture-update">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-user-profile-picture-update" data-method="POST"
+      data-path="api/v1/user/profile-picture-update"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-user-profile-picture-update', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-user-profile-picture-update"
+                    onclick="tryItOut('POSTapi-v1-user-profile-picture-update');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-user-profile-picture-update"
+                    onclick="cancelTryOut('POSTapi-v1-user-profile-picture-update');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-user-profile-picture-update"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/user/profile-picture-update</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-user-profile-picture-update"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-user-profile-picture-update"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>profile_picture</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="profile_picture"                data-endpoint="POSTapi-v1-user-profile-picture-update"
+               value=""
+               data-component="body">
+    <br>
+<p>The profile picture of the user. Example: <code>C:\Users\Swarnadwip\AppData\Local\Temp\phpBBB0.tmp</code></p>
         </div>
         </form>
 
