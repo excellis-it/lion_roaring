@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FooterController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\HomeCmsController;
+use App\Http\Controllers\Admin\MemberPrivacyPolicyContoller;
 use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\OrganizationCenterController;
 use App\Http\Controllers\Admin\OrganizationController;
@@ -32,6 +33,7 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Frontend\CmsController;
 use App\Http\Controllers\Frontend\DonationController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
+use App\Http\Controllers\User\CmsController as UserCmsController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\ForgetPasswordController as UserForgetPasswordController;
 use Illuminate\Support\Facades\Artisan;
@@ -134,6 +136,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
             'newsletters' => NewsletterController::class,
             'articles-of-association' => ArticleOfAssociationController::class,
             'register-agreements' => RegisterAgreementController::class,
+            'members-privacy-policies' => MemberPrivacyPolicyContoller::class,
         ]);
 
         Route::get('/newsletter-fetch-data', [NewsletterController::class, 'fetchData'])->name('newsletters.fetch-data');
@@ -193,6 +196,8 @@ Route::post('forget-password', [UserForgetPasswordController::class, 'forgetPass
 Route::post('password-change', [UserForgetPasswordController::class, 'changePassword'])->name('user.password-change');
 Route::get('forget-password/show', [UserForgetPasswordController::class, 'forgetPasswordShow'])->name('user.forget.password.show');
 Route::get('reset-password/{id}/{token}', [UserForgetPasswordController::class, 'resetPassword'])->name('user.reset.password');
+// member privacy policy
+Route::get('/member-privacy-policy', [UserCmsController::class, 'memberPrivacyPolicy'])->name('member-privacy-policy');
 
 Route::prefix('user')->middleware('user')->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
