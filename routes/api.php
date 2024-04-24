@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CmsController;
 use App\Http\Controllers\Api\ContactUsController;
+use App\Http\Controllers\Api\ForgetPasswordController;
 use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Http\Request;
@@ -43,6 +44,7 @@ Route::prefix('v1')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('register-agreement', [AuthController::class, 'registerAgreement']);
+    Route::post('forget-password', [ForgetPasswordController::class, 'forgetPassword']);
 
     Route::prefix('plan')->group(function () {
         Route::post('details', [PlanController::class, 'planDetails']);

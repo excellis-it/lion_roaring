@@ -79,7 +79,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: odubuque@example.net
+                  example: ullrich.addison@example.org
                 first_name:
                   type: string
                   description: 'The first name of the user.'
@@ -738,7 +738,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: eichmann.agustina@example.net
+                  example: ehoeger@example.com
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -753,6 +753,45 @@ paths:
                 - email
                 - phone
                 - message
+      security: []
+  /api/v1/forget-password:
+    post:
+      summary: 'Forget Password'
+      operationId: forgetPassword
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'Password reset link sent to your email'
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Password reset link sent to your email'
+      tags:
+        - 'Forget Password'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'The email of the user. Example:'
+                  example: qbartoletti@example.org
+              required:
+                - email
       security: []
   /api/v1/plan/details:
     post:
@@ -1089,6 +1128,9 @@ tags:
     description: ''
   -
     name: 'Contact Us'
+    description: ''
+  -
+    name: 'Forget Password'
     description: ''
   -
     name: 'Plan Management'

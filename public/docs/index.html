@@ -129,6 +129,16 @@
                             </li>
                                                                         </ul>
                             </ul>
+                    <ul id="tocify-header-forget-password" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="forget-password">
+                    <a href="#forget-password">Forget Password</a>
+                </li>
+                                    <ul id="tocify-subheader-forget-password" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="forget-password-POSTapi-v1-forget-password">
+                                <a href="#forget-password-POSTapi-v1-forget-password">Forget Password</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
                     <ul id="tocify-header-plan-management" class="tocify-header">
                 <li class="tocify-item level-1" data-unique="plan-management">
                     <a href="#plan-management">Plan Management</a>
@@ -167,7 +177,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: April 23, 2024</li>
+        <li>Last updated: April 24, 2024</li>
     </ul>
 </div>
 
@@ -360,7 +370,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"user_name\": \"john_doe\",
-    \"email\": \"odubuque@example.net\",
+    \"email\": \"ullrich.addison@example.org\",
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
     \"middle_name\": \"Doe\",
@@ -385,7 +395,7 @@ const headers = {
 
 let body = {
     "user_name": "john_doe",
-    "email": "odubuque@example.net",
+    "email": "ullrich.addison@example.org",
     "first_name": "John",
     "last_name": "Doe",
     "middle_name": "Doe",
@@ -514,10 +524,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v1-register"
-               value="odubuque@example.net"
+               value="ullrich.addison@example.org"
                data-component="body">
     <br>
-<p>The email of the user. Example: Example: <code>odubuque@example.net</code></p>
+<p>The email of the user. Example: Example: <code>ullrich.addison@example.org</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>first_name</code></b>&nbsp;&nbsp;
@@ -2242,7 +2252,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
-    \"email\": \"eichmann.agustina@example.net\",
+    \"email\": \"ehoeger@example.com\",
     \"phone\": \"1234567890\",
     \"message\": \"Hello\"
 }"
@@ -2262,7 +2272,7 @@ const headers = {
 let body = {
     "first_name": "John",
     "last_name": "Doe",
-    "email": "eichmann.agustina@example.net",
+    "email": "ehoeger@example.com",
     "phone": "1234567890",
     "message": "Hello"
 };
@@ -2385,10 +2395,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v1-contact-us"
-               value="eichmann.agustina@example.net"
+               value="ehoeger@example.com"
                data-component="body">
     <br>
-<p>Email of the user. Example: Example: <code>eichmann.agustina@example.net</code></p>
+<p>Email of the user. Example: Example: <code>ehoeger@example.com</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -2411,6 +2421,149 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="body">
     <br>
 <p>Message of the user. Example: <code>Hello</code></p>
+        </div>
+        </form>
+
+                <h1 id="forget-password">Forget Password</h1>
+
+    
+
+                                <h2 id="forget-password-POSTapi-v1-forget-password">Forget Password</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-forget-password">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v1/forget-password" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"email\": \"qbartoletti@example.org\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v1/forget-password"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "email": "qbartoletti@example.org"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-forget-password">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: true,
+    &quot;message&quot;: &quot;Password reset link sent to your email&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-forget-password" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-forget-password"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-forget-password"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-forget-password" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-forget-password">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-forget-password" data-method="POST"
+      data-path="api/v1/forget-password"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-forget-password', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-forget-password"
+                    onclick="tryItOut('POSTapi-v1-forget-password');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-forget-password"
+                    onclick="cancelTryOut('POSTapi-v1-forget-password');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-forget-password"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/forget-password</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-forget-password"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-forget-password"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="email"                data-endpoint="POSTapi-v1-forget-password"
+               value="qbartoletti@example.org"
+               data-component="body">
+    <br>
+<p>The email of the user. Example: Example: <code>qbartoletti@example.org</code></p>
         </div>
         </form>
 
@@ -2903,7 +3056,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     "http://127.0.0.1:8000/api/v1/user/profile-picture-update" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "profile_picture=@C:\Users\Swarnadwip\AppData\Local\Temp\phpBBB0.tmp" </code></pre></div>
+    --form "profile_picture=@C:\Users\Swarnadwip\AppData\Local\Temp\phpCF39.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -3028,7 +3181,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The profile picture of the user. Example: <code>C:\Users\Swarnadwip\AppData\Local\Temp\phpBBB0.tmp</code></p>
+<p>The profile picture of the user. Example: <code>C:\Users\Swarnadwip\AppData\Local\Temp\phpCF39.tmp</code></p>
         </div>
         </form>
 
