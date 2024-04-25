@@ -39,8 +39,9 @@ Route::prefix('v1')->group(function () {
         Route::post('our-governance', [CmsController::class, 'ourGovernance']);
         Route::post('organization-center',[CmsController::class, 'organizationCenter']);
         Route::post('organization-center-details',[CmsController::class, 'organizationCenterDetails']);
+        Route::post('members-privacy-policy',[CmsController::class, 'membersPrivacyPolicy']);
     });
-
+    
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('register-agreement', [AuthController::class, 'registerAgreement']);

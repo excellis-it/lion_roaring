@@ -53,7 +53,7 @@ class AuthController extends Controller
                     return response()->json(['message' => 'Your account is not active!', 'status' => false], 201);
                 }
             } else {
-                return response()->json(['message' => 'Unauthorised', 'status' => false], 201);
+                return response()->json(['message' => 'Email or password is invalid!', 'status' => false], 201);
             }
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);

@@ -13,4 +13,6 @@ class CmsController extends Controller
         $policy = MemberPrivacyPolicy::orderBy('id', 'desc')->first();
         return view('user.cms.member_privacy_policy')->with('policy', $policy);
     }
+
+    
 }

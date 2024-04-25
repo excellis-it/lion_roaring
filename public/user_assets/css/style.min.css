@@ -23322,6 +23322,7 @@ select:disabled {
     border-radius: 6px;
     padding: 25px;
     min-height: 89vh;
+    position: relative;
 }
 .box_label{
     margin-bottom: 10px;
@@ -36917,7 +36918,7 @@ fieldset:disabled .btn {
 #main-wrapper[data-layout=vertical] .app-header.fixed-header {
     transition: .2s ease-in
 }
-/* 
+/*
 #main-wrapper[data-layout=vertical] .app-header.fixed-header .notification {
     top: 20px
 } */
@@ -37350,7 +37351,7 @@ fieldset:disabled .btn {
     }
     #main-wrapper[data-layout=vertical][data-sidebartype=full] .body-wrapper {
         margin-left: 270px;
-        
+
     }
     #main-wrapper[data-layout=vertical][data-sidebartype=mini-sidebar] .body-wrapper {
         margin-left: 50px
@@ -44971,7 +44972,7 @@ ul {
   }.todo-links{
     padding:10px;
     border-bottom:1px solid #ccc;
-  
+
   }
   .todo-links a i{
     margin-right:5px;
@@ -44993,12 +44994,12 @@ ul {
     border-radius: 50%;
   }
     .profile_eidd input{
-      display: none;  
+      display: none;
     }
 .profile_eidd{
     position: absolute;
     right: 8px;
-    bottom: 15px;    
+    bottom: 15px;
 }
 .profile_eidd label{
     background: #fff;

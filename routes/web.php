@@ -36,6 +36,7 @@ use App\Http\Controllers\User\AuthController as UserAuthController;
 use App\Http\Controllers\User\CmsController as UserCmsController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\ForgetPasswordController as UserForgetPasswordController;
+use App\Http\Controllers\User\SubscriptionController;
 use Illuminate\Support\Facades\Artisan;
 
 /*
@@ -187,7 +188,6 @@ Route::get('/thankyou', [DonationController::class, 'thankyou'])->name('thankyou
 // login
 Route::get('/login', [UserAuthController::class, 'login'])->name('login');
 Route::post('/login-check', [UserAuthController::class, 'loginCheck'])->name('login.check');  //login check
-Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
 
 // register
 Route::get('/register', [UserAuthController::class, 'register'])->name('register');
@@ -199,10 +199,17 @@ Route::get('reset-password/{id}/{token}', [UserForgetPasswordController::class, 
 // member privacy policy
 Route::get('/member-privacy-policy', [UserCmsController::class, 'memberPrivacyPolicy'])->name('member-privacy-policy');
 
-Route::prefix('user')->middleware('user')->group(function () {
-    Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
-    Route::get('/profile', [UserDashboardController::class, 'profile'])->name('user.profile');
-    Route::post('/profile-update', [UserDashboardController::class, 'profileUpdate'])->name('user.profile.update');
-    Route::get('/change-password', [UserDashboardController::class, 'password'])->name('user.change.password');
-    Route::post('/change-password-update', [UserDashboardController::class, 'passwordUpdate'])->name('user.password.update');
+Route::prefix('user')->middleware(['user'])->group(function () {
+    Route::get('/subscription', [SubscriptionController::class, 'subscription'])->name('user.subscription');
+    Route::get('/subscription-payment/{id}', [SubscriptionController::class, 'payment'])->name('user.subscription.payment');
+    Route::get('/stripe-checkout-success', [SubscriptionController::class, 'stripeCheckoutSuccess'])->name('stripe.checkout.success');
+
+    Route::middleware(['member.access'])->group(function () {
+        Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
+        Route::get('/profile', [UserDashboardController::class, 'profile'])->name('user.profile');
+        Route::post('/profile-update', [UserDashboardController::class, 'profileUpdate'])->name('user.profile.update');
+        Route::get('/change-password', [UserDashboardController::class, 'password'])->name('user.change.password');
+        Route::post('/change-password-update', [UserDashboardController::class, 'passwordUpdate'])->name('user.password.update');
+        Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
+    });
 });

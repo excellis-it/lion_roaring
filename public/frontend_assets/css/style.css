@@ -2527,3 +2527,96 @@ li.slick-active button {
 }
 
 
+/* Suscription */
+.pricing-div-box {
+    text-align: center;
+    padding: 30px 30px;
+    background: rgb(251 234 255);
+    position: relative;
+    border-radius: 0px 0px 30px 30px;
+    overflow: hidden;
+    border: 2px solid #633170;
+}
+.pricing-div-box::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 140px;
+    background: linear-gradient(153deg, #643271 35%, rgb(37 0 47) 90%);
+    z-index: 0;
+    border-radius: 0px 0px 30px 30px;
+}
+.pricing-div-box h4 {
+    position: relative;
+    font-size: 35px;
+    font-weight: 700;
+    color: var(--white-color);
+    margin-bottom: 40px;
+}
+.pricing-div-box p {
+    position: relative;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e1e1e;
+    min-height: 190px;
+}
+.pricing-rate h3 {
+    font-weight: 600;
+    color: #000;
+    width: 125px;
+    height: 125px;
+    border-radius: 50%;
+    background: #fff;
+    margin-top: -85px;
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    padding: 20px 0;
+    font-size: 35px;
+}
+/* .active-plan-div {
+    background: var(--main-color);
+    padding: 50px 30px;
+    position: relative;
+    overflow: hidden;
+}
+.active-plan-div h4{
+  color: var(--white-color);
+  font-size: 35px;
+  line-height: 40px;
+  text-align: center;
+  font-weight: 600;
+} */
+.active-g {
+    padding: 10px;
+    transform: rotate(330deg);
+    position: absolute;
+    top: 3px;
+    left: 3px;
+}
+.active-g::before {
+    position: absolute;
+    content: "";
+    background: #e6e9ff;
+    width: 238px;
+    height: 28px;
+    top: 6px;
+    left: -65px;
+    z-index: -1;
+    overflow: hidden;
+}
+.active-g h3 {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--main-color);
+    margin-bottom: 0;
+}
+.pricing-rate h5{
+    font-size: 26px;
+    font-weight: 600;
+    color: #000;
+    margin-top: 10px;
+}
+/*---- Profile -----*/

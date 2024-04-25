@@ -87,7 +87,7 @@
                                     </a>
                                 </div>
                                 <div class="join-text join-text-1">
-                                    <a href="">Privacy,
+                                    <a href="{{route('member-privacy-policy')}}">Privacy,
                                         Cookies, and Legal </a>
                                 </div>
                             </div>

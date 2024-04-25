@@ -8,6 +8,7 @@ use App\Models\Faq;
 use App\Models\Footer;
 use App\Models\Gallery;
 use App\Models\HomeCms;
+use App\Models\MemberPrivacyPolicy;
 use App\Models\Organization;
 use App\Models\OrganizationCenter;
 use App\Models\OurGovernance;
@@ -488,6 +489,40 @@ class CmsController extends Controller
             if ($details) {
                 $details = fractal($details, new OrganizationCenterTransformers())->toArray()['data'];
                 return response()->json(['message' => 'Organization center details', 'status' => true, 'details' => $details], $this->successStatus);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+        }
+    }
+
+    /**
+     * Member Privacy Policy
+     * @response 200{
+     * "message": "Privacy Policy",
+     * "status": true,
+     * "privacy_policy": {
+     *    "id": 1,
+     *    "description": "<p><strong>Privacy Policy for Member Accounts on My Lion Roaring Website</strong></p><p>At My Lion Roaring, we are committed to protecting the privacy and security of our members' personal information. This Privacy Policy outlines how we collect, use, disclose, and protect your information when you create and use an account on our website. By becoming a member, you agree to the terms outlined in this policy.</p><p><strong>Information We Collect:</strong></p><p><strong>Account Information:</strong> When you create an account, we collect your name, email address, username, password, and any other information you choose to provide, such as profile pictures or biographical details.</p><p><strong>Usage Data:</strong> We automatically collect information about how you interact with our website, including your IP address, browser type, device information, pages visited, and timestamps of your visits.</p><p><strong>Communication Data:</strong> If you contact us through our website or via email, we may keep a record of that communication, including the content and metadata.</p><p><strong>How We Use Your Information:</strong></p><p><strong>Account Management:</strong> We use your account information to manage your membership, provide access to our services, and personalize your experience on our website.</p><p><strong>Communication:</strong> We may use your contact information to send you important updates, newsletters, promotional offers, and other communications related to our services. You can opt out of these communications at any time.</p><p><strong>Analytics and Improvements:</strong> We analyze usage data to improve our website, enhance user experience, and optimize our services.</p><p><strong>Information Sharing and Disclosure:</strong></p><p><strong>Service Providers:</strong> We may share your information with third-party service providers who assist us in operating our website, conducting business, or providing services to you. These providers are contractually obligated to protect your information and use it only for authorized purposes.</p><p><strong>Legal Compliance:</strong> We may disclose your information if required to do so by law, regulation, or legal process, or if we believe that disclosure is necessary to protect our rights, property, or safety, or the rights, property, or safety of others.</p><p><strong>Data Security:</strong></p><p>We take appropriate measures to protect your information from unauthorized access, alteration, disclosure, or destruction. However, please note that no method of transmission over the internet or electronic storage is 100% secure, and we cannot guarantee absolute security.</p><p><strong>Your Choices and Rights:</strong></p><p><strong>Access and Update:</strong> You can access and update your account information at any time by logging into your account settings.</p><p><strong>Data Removal:</strong> You can request the deletion of your account and associated information by contacting us. However, please note that some information may be retained as necessary for legal or legitimate business purposes.</p><p><strong>Marketing Preferences:</strong> You can manage your communication preferences and opt out of marketing communications through your account settings or by contacting us.</p><p><strong>Changes to This Policy:</strong></p><p>We reserve the right to update or modify this Privacy Policy at any time. We will notify you of any significant changes by posting the updated policy on our website or by other means of communication.</p><p><strong>Contact Us:</strong></p><p>If you have any questions, concerns, or requests regarding your privacy or this Privacy Policy, please contact us at <a href=\"http://127.0.0.1:8000/contact-us\">Click</a>.</p><p><br>&nbsp;</p>",
+     *    "created_at": "2024-04-24T13:15:57.000000Z",
+     *    "updated_at": "2024-04-25T05:27:23.000000Z"
+     * }
+     * }
+     *
+     * @response 201 {
+     * "message": "No privacy policy found",
+     * "status": false
+     * }
+     *
+     */
+
+    public function membersPrivacyPolicy(Request $request)
+    {
+        try {
+            $privacy_policy = MemberPrivacyPolicy::orderBy('id', 'desc')->first();
+            if ($privacy_policy) {
+                return response()->json(['message' => 'Privacy Policy', 'status' => true, 'privacy_policy' => $privacy_policy], $this->successStatus);
+            } else {
+                return response()->json(['message' => 'No privacy policy found', 'status' => false], 201);
             }
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);

@@ -38,4 +38,14 @@ class Helper
         $footer = Footer::orderBy('id', 'desc')->first();
         return $footer;
     }
+
+    public static function expireTo($date)
+    {
+        // how many day left to expire
+        $now = time();
+        $your_date = strtotime($date);
+        $datediff = $your_date - $now;
+        $days = floor($datediff / (60 * 60 * 24));
+        return $days;
+    }
 }

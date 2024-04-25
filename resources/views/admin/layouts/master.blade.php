@@ -47,7 +47,6 @@
                         @yield('create_button')
                     </div>
                 </div>
-
             </section>
             <!--end header-->
             <!--sidebar-wrapper-->
@@ -72,7 +71,6 @@
     <script src="{{asset('admin_assets/js/app.min.js')}}"></script>
     <script src="{{asset('admin_assets/js/scripts.js')}}" async=""></script>
     <script src="{{asset('admin_assets/js/jquery-ui.min.js')}}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
