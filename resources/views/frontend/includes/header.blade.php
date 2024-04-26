@@ -4,7 +4,7 @@
             <div class="navigation navbar">
                 <div class="left_top">
                     <div class="logo">
-                        <a href="{{route('home')}}" class="">
+                        <a href="{{ route('home') }}" class="">
 
                         </a>
                     </div>
@@ -20,38 +20,42 @@
                             <nav class="overlay-menu">
                                 <ul id="menu-header-menu" class="menu">
                                     <li class="active">
-                                        <a href="{{route('home')}}">Home</a>
+                                        <a href="{{ route('home') }}">Home</a>
                                     </li>
                                     <li>
-                                        <a href="{{route('organization')}}">Organization</a>
+                                        <a href="{{ route('organization') }}">Organization</a>
                                     </li>
                                     <li>
-                                        <a href="{{route('ecclesia-associations')}}">Ecclesia Association</a>
+                                        <a href="{{ route('ecclesia-associations') }}">Ecclesia Association</a>
                                     </li>
                                     <li>
-                                        <a href="{{route('principle-and-business')}}">Principle and Business Model</a>
+                                        <a href="{{ route('principle-and-business') }}">Principle and Business Model</a>
                                     </li>
                                     <li>
-                                        <a href="{{route('gallery')}}">Gallery</a>
+                                        <a href="{{ route('gallery') }}">Gallery</a>
                                     </li>
                                     <li>
-                                        <a href="{{route('faq')}}">FAQ</a>
+                                        <a href="{{ route('faq') }}">FAQ</a>
                                     </li>
                                     <li>
-                                        <a href="{{route('contact-us')}}">Contact Us</a>
+                                        <a href="{{ route('contact-us') }}">Contact Us</a>
                                     </li>
                                 </ul>
                             </nav>
                         </div>
                     </div>
-                    <div class="right_tran ms-2" >
+                    <div class="right_tran ms-2">
                         <div id="google_translate_element"></div>
                     </div>
                     <div class="login_prf">
-                        <a href="{{route('login')}}"> Login</a>
+                        @if (auth()->check() && auth()->user()->hasRole('CUSTOMER'))
+                            <a href="{{ route('user.profile') }}">Profile</a>
+                        @else
+                            <a href="{{ route('login') }}">Login</a>
+                        @endif
                     </div>
                     <div class="login_prf">
-                        <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal1">Donate</a>
+                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal1">Donate</a>
                     </div>
                 </div>
             </div>
