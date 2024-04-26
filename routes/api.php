@@ -3,9 +3,11 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CmsController;
 use App\Http\Controllers\Api\ContactUsController;
+use App\Http\Controllers\Api\DonationController;
 use App\Http\Controllers\Api\ForgetPasswordController;
 use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\SubscriptionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,24 +39,29 @@ Route::prefix('v1')->group(function () {
         Route::post('our-organization', [CmsController::class, 'ourOrganization']);
         Route::post('common', [CmsController::class, 'common']);
         Route::post('our-governance', [CmsController::class, 'ourGovernance']);
-        Route::post('organization-center',[CmsController::class, 'organizationCenter']);
-        Route::post('organization-center-details',[CmsController::class, 'organizationCenterDetails']);
-        Route::post('members-privacy-policy',[CmsController::class, 'membersPrivacyPolicy']);
+        Route::post('organization-center', [CmsController::class, 'organizationCenter']);
+        Route::post('organization-center-details', [CmsController::class, 'organizationCenterDetails']);
+        Route::post('members-privacy-policy', [CmsController::class, 'membersPrivacyPolicy']);
     });
-    
+    // donation
+    Route::post('donation', [DonationController::class, 'donation']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('register-agreement', [AuthController::class, 'registerAgreement']);
     Route::post('forget-password', [ForgetPasswordController::class, 'forgetPassword']);
 
-    Route::prefix('plan')->group(function () {
-        Route::post('details', [PlanController::class, 'planDetails']);
-    });
-
-    Route::group(['middleware' => 'auth:api', 'prefix'=>'user'], function () {
-        Route::post('profile', [ProfileController::class, 'profile']);
-        Route::post('update-profile', [ProfileController::class, 'updateProfile']);
-        Route::post('profile-picture-update', [ProfileController::class, 'profilePictureUpdate']);
-        Route::post('change-password', [ProfileController::class, 'changePassword']);
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'user'], function () {
+        Route::prefix('subscription')->group(function () {
+        Route::post('details', [SubscriptionController::class, 'details']);
+        Route::post('subscribe', [SubscriptionController::class, 'subscribe']);
+        // api.stripe.checkout.success
+        Route::get('stripe-checkout-success', [SubscriptionController::class, 'stripeCheckoutSuccess'])->name('api.stripe.checkout.success');
+        });
+        Route::middleware(['api.member.access'])->group(function () {
+            Route::post('profile', [ProfileController::class, 'profile']);
+            Route::post('update-profile', [ProfileController::class, 'updateProfile']);
+            Route::post('profile-picture-update', [ProfileController::class, 'profilePictureUpdate']);
+            Route::post('change-password', [ProfileController::class, 'changePassword']);
+        });
     });
 });

@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Lion Roaring",
-        "_postman_id": "f906f9ae-d4b9-4fe4-b526-35dc1ceedf0e",
+        "_postman_id": "aa2237a2-01c5-4d14-bdbf-64078907d71e",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -79,7 +79,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"john_doe\",\"email\":\"ullrich.addison@example.org\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"Doe\",\"address\":\"123, New York\",\"phone_number\":\"1234567890\",\"email_confirmation\":\"ut\",\"password\":\"password\",\"password_confirmation\":\"password\"}"
+                            "raw": "{\"user_name\":\"john_doe\",\"email\":\"moore.ruben@example.org\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"Doe\",\"address\":\"123, New York\",\"phone_number\":\"1234567890\",\"email_confirmation\":\"voluptatem\",\"password\":\"password\",\"password_confirmation\":\"password\"}"
                         },
                         "description": "",
                         "auth": {
@@ -536,6 +536,47 @@
                             "name": ""
                         }
                     ]
+                },
+                {
+                    "name": "Member Privacy Policy",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/cms\/members-privacy-policy",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/cms\/members-privacy-policy"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Privacy Policy\",\n\"status\": true,\n\"privacy_policy\": {\n   \"id\": 1,\n   \"description\": \"<p><strong>Privacy Policy for Member Accounts on My Lion Roaring Website<\/strong><\/p><p>At My Lion Roaring, we are committed to protecting the privacy and security of our members' personal information. This Privacy Policy outlines how we collect, use, disclose, and protect your information when you create and use an account on our website. By becoming a member, you agree to the terms outlined in this policy.<\/p><p><strong>Information We Collect:<\/strong><\/p><p><strong>Account Information:<\/strong> When you create an account, we collect your name, email address, username, password, and any other information you choose to provide, such as profile pictures or biographical details.<\/p><p><strong>Usage Data:<\/strong> We automatically collect information about how you interact with our website, including your IP address, browser type, device information, pages visited, and timestamps of your visits.<\/p><p><strong>Communication Data:<\/strong> If you contact us through our website or via email, we may keep a record of that communication, including the content and metadata.<\/p><p><strong>How We Use Your Information:<\/strong><\/p><p><strong>Account Management:<\/strong> We use your account information to manage your membership, provide access to our services, and personalize your experience on our website.<\/p><p><strong>Communication:<\/strong> We may use your contact information to send you important updates, newsletters, promotional offers, and other communications related to our services. You can opt out of these communications at any time.<\/p><p><strong>Analytics and Improvements:<\/strong> We analyze usage data to improve our website, enhance user experience, and optimize our services.<\/p><p><strong>Information Sharing and Disclosure:<\/strong><\/p><p><strong>Service Providers:<\/strong> We may share your information with third-party service providers who assist us in operating our website, conducting business, or providing services to you. These providers are contractually obligated to protect your information and use it only for authorized purposes.<\/p><p><strong>Legal Compliance:<\/strong> We may disclose your information if required to do so by law, regulation, or legal process, or if we believe that disclosure is necessary to protect our rights, property, or safety, or the rights, property, or safety of others.<\/p><p><strong>Data Security:<\/strong><\/p><p>We take appropriate measures to protect your information from unauthorized access, alteration, disclosure, or destruction. However, please note that no method of transmission over the internet or electronic storage is 100% secure, and we cannot guarantee absolute security.<\/p><p><strong>Your Choices and Rights:<\/strong><\/p><p><strong>Access and Update:<\/strong> You can access and update your account information at any time by logging into your account settings.<\/p><p><strong>Data Removal:<\/strong> You can request the deletion of your account and associated information by contacting us. However, please note that some information may be retained as necessary for legal or legitimate business purposes.<\/p><p><strong>Marketing Preferences:<\/strong> You can manage your communication preferences and opt out of marketing communications through your account settings or by contacting us.<\/p><p><strong>Changes to This Policy:<\/strong><\/p><p>We reserve the right to update or modify this Privacy Policy at any time. We will notify you of any significant changes by posting the updated policy on our website or by other means of communication.<\/p><p><strong>Contact Us:<\/strong><\/p><p>If you have any questions, concerns, or requests regarding your privacy or this Privacy Policy, please contact us at <a href=\\\"http:\/\/127.0.0.1:8000\/contact-us\\\">Click<\/a>.<\/p><p><br>&nbsp;<\/p>\",\n   \"created_at\": \"2024-04-24T13:15:57.000000Z\",\n   \"updated_at\": \"2024-04-25T05:27:23.000000Z\"\n}\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n\"message\": \"No privacy policy found\",\n\"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -565,7 +606,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"ehoeger@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"norbert.mosciski@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -580,6 +621,43 @@
                             "name": ""
                         }
                     ]
+                }
+            ]
+        },
+        {
+            "name": "Donation",
+            "description": "",
+            "item": [
+                {
+                    "name": "Donation Api",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/donation",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/donation"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"exercitationem\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
                 }
             ]
         },
@@ -609,7 +687,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"qbartoletti@example.org\"}"
+                            "raw": "{\"email\":\"sconroy@example.net\"}"
                         },
                         "description": "",
                         "auth": {
@@ -621,47 +699,6 @@
                             "header": [],
                             "code": 200,
                             "body": "{\n\"status\": true,\n\"message\": \"Password reset link sent to your email\"\n}",
-                            "name": ""
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "name": "Plan Management",
-            "description": "",
-            "item": [
-                {
-                    "name": "Plan List",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v1\/plan\/details",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/plan\/details"
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\n\"plan_status\": true,\n\"message\": \"Plan list\",\n\"data\": [\n{\n\"id\": 1,\n\"plan_name\": \"Basic\",\n\"plan_price\": 100,\n\"plan_validity\": 30,\n\"plan_status\": 1,\n\"created_at\": \"2024-03-05T10:58:13.000000Z\",\n\"updated_at\": \"2024-04-18T12:27:38.000000Z\"\n},\n{\n\"id\": 2,\n\"plan_name\": \"Standard\",\n\"plan_price\": 200,\n\"plan_validity\": 60,\n\"plan_status\": 1,\n\"created_at\": \"2024-03-05T10:58:13.000000Z\",\n\"updated_at\": \"2024-04-18T12:27:38.000000Z\"\n}\n]\n}",
                             "name": ""
                         }
                     ]
@@ -817,6 +854,120 @@
                             "header": [],
                             "code": 200,
                             "body": "{\n\"status\": true,\n\"message\": \"Password changed successfully\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Subscription",
+            "description": "",
+            "item": [
+                {
+                    "name": "Subscription Details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/subscription\/details",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/subscription\/details"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Subscription details.\",\n   \"status\": true,\n   \"data\": [\n       {\n           \"id\": 3,\n           \"plan_name\": \"Gold\",\n           \"plan_price\": \"299\",\n           \"plan_validity\": \"3\",\n           \"plan_description\": \"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.\",\n           \"plan_status\": 1,\n           \"created_at\": \"2024-04-25T10:49:46.000000Z\",\n           \"updated_at\": \"2024-04-25T10:49:46.000000Z\"\n       },\n       {\n           \"id\": 2,\n           \"plan_name\": \"Platinum\",\n           \"plan_price\": \"399\",\n           \"plan_validity\": \"6\",\n           \"plan_description\": \"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.\",\n           \"plan_status\": 1,\n           \"created_at\": \"2024-04-25T10:49:11.000000Z\",\n           \"updated_at\": \"2024-04-25T10:49:11.000000Z\"\n       },\n       {\n           \"id\": 1,\n           \"plan_name\": \"Diamond\",\n           \"plan_price\": \"499\",\n           \"plan_validity\": \"12\",\n           \"plan_description\": \"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.\",\n           \"plan_status\": 1,\n           \"created_at\": \"2024-04-24T09:01:31.000000Z\",\n           \"updated_at\": \"2024-04-25T10:49:28.000000Z\"\n       }\n   ]\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Subscribe to a Plan",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/subscription\/subscribe",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/subscription\/subscribe"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"plan_id\":1}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Subscription payment initiated.\",\n   \"status\": true,\n   \"url\": \"https:\/\/checkout.stripe.com\/c\/pay\/cs_test_b17uTN8wYWPUnh2q54aOSdBYOqCYaIFAFxCpTT5kf8jkyvQLo5He9ScAkM#fidkdWxOYHwnPyd1blpxYHZxWjA0SnxdZzdMXHU8MU5vZm8wPVZqSEpwQDRUXGNcXW5dT2kwREhjRlQ1RGZyTXxEVVU0UF01XFd0YUpmNE9hVjMyblxSSH9tcFR3aDx3XHY0VjBff3JIVXUyNTVdfTc3PGhSbicpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPydocGlxbFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n \"message\": \"The plan id field is required.\",\n \"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Plan Subscription Success",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/subscription\/stripe-checkout-success",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/subscription\/stripe-checkout-success"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"plan_id\":1,\"session_id\":\"cs_test_b17uTN8wYWPUnh2q54aOSdBYOqCYaIFAFxCpTT5kf8jkyvQLo5He9ScAkM\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Subscription success.\",\n   \"status\": true",
                             "name": ""
                         }
                     ]

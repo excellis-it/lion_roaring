@@ -35,7 +35,7 @@ class SubscriptionController extends Controller
 
         $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
 
-        $redirectUrl = route('stripe.checkout.success') . '?session_id={CHECKOUT_SESSION_ID}';
+        $redirectUrl = route('stripe.checkout.success') . '?session_id={CHECKOUT_SESSION_ID}'. '&subscription_id=' . $subscription_id;
         $response =  $stripe->checkout->sessions->create([
             'success_url' => $redirectUrl,
             'customer_email' => auth()->user()->email,
@@ -55,7 +55,7 @@ class SubscriptionController extends Controller
             'mode' => 'payment',
             'allow_promotion_codes' => true
         ]);
-        session()->put('subscription_id', $subscription_id);
+        // session()->put('subscription_id', $subscription_id);
         return redirect($response['url']);
     }
 
@@ -67,7 +67,7 @@ class SubscriptionController extends Controller
         $session = $stripe->checkout->sessions->retrieve($request->session_id);
         info($session);
 
-        $subscription = Plan::find(session()->get('subscription_id'));
+        $subscription = Plan::find($request->subscription_id);
 
         $user_subscription = new UserSubscription();
         $user_subscription->user_id = auth()->id();
@@ -89,7 +89,7 @@ class SubscriptionController extends Controller
         $payment->payment_status = 'Success';
         $payment->save();
 
-        session()->forget('subscription_id');
+        // session()->forget('subscription_id');
         return redirect()->route('user.profile')
             ->with('message', 'Payment successful.');
     }

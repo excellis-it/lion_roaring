@@ -1,16 +1,16 @@
-name: 'Plan Management'
+name: 'Forget Password'
 description: ''
 endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/plan/details
+    uri: api/v1/forget-password
     metadata:
-      groupName: 'Plan Management'
+      groupName: 'Forget Password'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Plan List'
+      title: 'Forget Password'
       description: ''
       authenticated: false
       custom: []
@@ -21,36 +21,26 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      email:
+        name: email
+        description: 'The email of the user. Example:'
+        required: true
+        example: sconroy@example.net
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanBodyParameters:
+      email: sconroy@example.net
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "plan_status": true,
-          "message": "Plan list",
-          "data": [
-          {
-          "id": 1,
-          "plan_name": "Basic",
-          "plan_price": 100,
-          "plan_validity": 30,
-          "plan_status": 1,
-          "created_at": "2024-03-05T10:58:13.000000Z",
-          "updated_at": "2024-04-18T12:27:38.000000Z"
-          },
-          {
-          "id": 2,
-          "plan_name": "Standard",
-          "plan_price": 200,
-          "plan_validity": 60,
-          "plan_status": 1,
-          "created_at": "2024-03-05T10:58:13.000000Z",
-          "updated_at": "2024-04-18T12:27:38.000000Z"
-          }
-          ]
+          "status": true,
+          "message": "Password reset link sent to your email"
           }
         headers: []
         description: ''
