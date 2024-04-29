@@ -100,8 +100,8 @@ class SubscriptionController extends Controller
         }
 
         try {
-            $subscription_id = $request->plan_id;
-            $subscription = Plan::find($subscription_id);
+            $plan_id = $request->plan_id;
+            $subscription = Plan::find($plan_id);
             //  check subscription expire or not
             $user_subscription = UserSubscription::where('user_id', auth()->id())
                 ->where('subscription_expire_date', '>', now())
@@ -134,7 +134,6 @@ class SubscriptionController extends Controller
                 'mode' => 'payment',
                 'allow_promotion_codes' => true
             ]);
-            session()->put('subscription_id', $subscription_id);
             return response()->json(['message' => 'Subscription payment initiated.', 'status' => true, 'url' => $response['url']], $this->successStatus);
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => false], 500);

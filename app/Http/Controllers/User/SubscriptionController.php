@@ -19,9 +19,9 @@ class SubscriptionController extends Controller
     }
 
 
-    public function payment($subscription_id)
+    public function payment($plan_id)
     {
-        $subscription = Plan::find($subscription_id);
+        $subscription = Plan::find($plan_id);
         //  check subscription expire or not
         $user_subscription = UserSubscription::where('user_id', auth()->id())
             ->where('subscription_expire_date', '>', now())
@@ -35,7 +35,7 @@ class SubscriptionController extends Controller
 
         $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
 
-        $redirectUrl = route('stripe.checkout.success') . '?session_id={CHECKOUT_SESSION_ID}'. '&subscription_id=' . $subscription_id;
+        $redirectUrl = route('stripe.checkout.success') . '?session_id={CHECKOUT_SESSION_ID}'. '&plan_id=' . $plan_id;
         $response =  $stripe->checkout->sessions->create([
             'success_url' => $redirectUrl,
             'customer_email' => auth()->user()->email,
@@ -55,7 +55,7 @@ class SubscriptionController extends Controller
             'mode' => 'payment',
             'allow_promotion_codes' => true
         ]);
-        // session()->put('subscription_id', $subscription_id);
+        // session()->put('plan_id', $plan_id);
         return redirect($response['url']);
     }
 
@@ -67,11 +67,11 @@ class SubscriptionController extends Controller
         $session = $stripe->checkout->sessions->retrieve($request->session_id);
         info($session);
 
-        $subscription = Plan::find($request->subscription_id);
+        $subscription = Plan::find($request->plan_id);
 
         $user_subscription = new UserSubscription();
         $user_subscription->user_id = auth()->id();
-        $user_subscription->subscription_id = $subscription->id;
+        $user_subscription->plan_id = $subscription->id;
         $user_subscription->subscription_name = $subscription->plan_name;
         $user_subscription->subscription_price = $subscription->plan_price;
         $user_subscription->subscription_validity = $subscription->plan_validity;
@@ -89,7 +89,7 @@ class SubscriptionController extends Controller
         $payment->payment_status = 'Success';
         $payment->save();
 
-        // session()->forget('subscription_id');
+        // session()->forget('plan_id');
         return redirect()->route('user.profile')
             ->with('message', 'Payment successful.');
     }
