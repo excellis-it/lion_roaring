@@ -45,6 +45,7 @@ Route::prefix('v1')->group(function () {
     });
     // donation
     Route::post('donation', [DonationController::class, 'donation']);
+    Route::post('country-list', [DonationController::class, 'countryList']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('register-agreement', [AuthController::class, 'registerAgreement']);

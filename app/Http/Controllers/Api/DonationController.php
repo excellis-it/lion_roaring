@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Donation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -82,6 +83,44 @@ class DonationController extends Controller
             }
         } catch (\Throwable $th) {
             return response()->json(['message' =>  $th->getMessage(), 'status' => false], 401);
+        }
+    }
+
+    /**
+     * Country List
+     * @response 200{
+     *"message": "Country list.",
+     *"status": true,
+     *"data": [
+     *    {
+     *        "id": 1,
+     *        "code": "AF",
+     *        "name": "Afghanistan",
+     *        "created_at": null,
+     *        "updated_at": null
+     *    },
+     *    {
+     *        "id": 2,
+     *        "code": "AX",
+     *        "name": "Åland Islands",
+     *        "created_at": null,
+     *        "updated_at": null
+     *    }
+     * ]
+     * }
+     * @response 201{
+     * "message": "Country not found.",
+     * "status": false
+     * }
+     */
+
+    public function countryList()
+    {
+        $countries = Country::orderBy('name', 'asc')->get();
+        if ($countries) {
+            return response()->json(['message' => 'Country list.', 'status' => true, 'data' => $countries], $this->successStatus);
+        } else {
+            return response()->json(['message' => 'Country not found.', 'status' => false], 201);
         }
     }
 }
