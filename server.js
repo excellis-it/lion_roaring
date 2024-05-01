@@ -13,9 +13,8 @@ const io = require('socket.io')(server, {
 io.on('connection', (socket) => {
     console.log('a user connected');
 
-    socket.on('message', (msg) => {
-        console.log('message: ' + msg);
-        io.emit('message', msg);
+    socket.on('chat', (msg) => {
+        io.emit('chat', msg);
     });
 
     socket.on('disconnect', () => {
@@ -23,7 +22,7 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(3001, () => {
+server.listen(3000, () => {
     console.log('listening on *:3000');
 });
 

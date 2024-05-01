@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 use App\Models\Article;
+use App\Models\Chat;
 use App\Models\Country;
 use App\Models\Footer;
 use App\Models\Organization;
@@ -47,5 +48,20 @@ class Helper
         $datediff = $your_date - $now;
         $days = floor($datediff / (60 * 60 * 24));
         return $days;
+    }
+
+    public static function showTheLastChat($sender_id, $reciver_id)
+    {
+        $chats = Chat::where(function ($query) use ($sender_id, $reciver_id) {
+            $query->where('sender_id', $sender_id)
+                ->where('reciver_id', $reciver_id);
+        })
+            ->orWhere(function ($query) use ($sender_id, $reciver_id) {
+                $query->where('sender_id', $reciver_id)
+                    ->where('reciver_id', $sender_id);
+            })
+            ->orderBy('created_at', 'desc')
+            ->first();
+        return $chats;
     }
 }

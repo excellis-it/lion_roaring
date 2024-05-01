@@ -61,4 +61,16 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserSubscription::class)->latest();
     }
+
+    // chat relation
+    public function chatSender()
+    {
+        return $this->hasMany(Chat::class, 'sender_id');
+    }
+
+    public function chatReciver()
+    {
+        return $this->hasMany(Chat::class, 'reciver_id');
+    }
+
 }

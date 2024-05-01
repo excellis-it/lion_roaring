@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Frontend\CmsController;
 use App\Http\Controllers\Frontend\DonationController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
+use App\Http\Controllers\User\ChatController;
 use App\Http\Controllers\User\CmsController as UserCmsController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\ForgetPasswordController as UserForgetPasswordController;
@@ -211,5 +212,11 @@ Route::prefix('user')->middleware(['user'])->group(function () {
         Route::get('/change-password', [UserDashboardController::class, 'password'])->name('user.change.password');
         Route::post('/change-password-update', [UserDashboardController::class, 'passwordUpdate'])->name('user.password.update');
         Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
+
+        Route::prefix('chats')->name('chats.')->group(function () {
+            Route::get('/', [ChatController::class, 'chats'])->name('index');
+            Route::post('/load', [ChatController::class, 'load'])->name('load');
+            Route::post('/send', [ChatController::class, 'send'])->name('send');
+        });
     });
 });

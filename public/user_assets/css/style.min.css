@@ -23322,7 +23322,6 @@ select:disabled {
     border-radius: 6px;
     padding: 25px;
     min-height: 89vh;
-    position: relative;
 }
 .box_label{
     margin-bottom: 10px;

@@ -1,8 +1,8 @@
 <aside class="left-sidebar">
     <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
-            <a href="{{route('home')}}" class="text-nowrap logo-img">
-                <img src="{{asset('user_assets/images/logo.png')}}" class="dark-logo" alt="">
+            <a href="{{ route('home') }}" class="text-nowrap logo-img">
+                <img src="{{ asset('user_assets/images/logo.png') }}" class="dark-logo" alt="">
             </a>
             <div class="close-btn d-lg-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                 <i class="ti ti-x fs-8 text-muted"></i>
@@ -22,7 +22,8 @@
         </a>
       </li> -->
                 <li class="sidebar-item">
-                    <a class="sidebar-link {{Request::is('user/dashboard') ? 'active' : ''}}" href="" aria-expanded="false">
+                    <a class="sidebar-link {{ Request::is('user/dashboard') ? 'active' : '' }}" href=""
+                        aria-expanded="false">
                         <span>
                             <i class="ti ti-user"></i>
                         </span>
@@ -37,25 +38,6 @@
                         <span class="hide-menu">Activity</span>
                     </a>
                 </li>
-
-                <!-- <li class="sidebar-item">
-        <a class="sidebar-link has-arrow" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" aria-expanded="false">
-          <span>
-            <i class="ti ti-shopping-cart"></i>
-          </span>
-          <span class="hide-menu">Attendance</span>
-        </a>
-        <ul class="collapse" id="collapseExample">
-          <li class="sidebar-item">
-            <a class="sidebar-link" href="" aria-expanded="false">
-              <span>
-                <i class="ti ti-shopping-cart"></i>
-              </span>
-              <span class="hide-menu">Add Person</span>
-            </a>
-          </li>
-        </ul>
-      </li> -->
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="" aria-expanded="false">
                         <span>
@@ -73,7 +55,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="" aria-expanded="false">
+                    <a class="sidebar-link {{ Request::is('user/chats') ? 'active' : '' }}" href="{{route('chats.index')}}" aria-expanded="false">
                         <span>
                             <i class="ti ti-checkup-list"></i>
                         </span>
