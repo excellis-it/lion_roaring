@@ -96,6 +96,8 @@
                     success: function(resp) {
                         if (resp.status == true) {
                             $(".chat-module").html(resp.view);
+                            // seen message
+                            
                             if (resp.chat_count > 0) {
                                 scrollChatToBottom(receiver_id);
                             }
@@ -143,15 +145,14 @@
                             let time_format_12 = moment(created_at, "YYYY-MM-DD HH:mm:ss")
                                 .format("hh:mm A");
 
-                            let html = `
-                    <div class="message me">
-                        <p class="messageContent">${chat}</p>
-                        <div class="messageDetails">
-                            <div class="messageTime">${time_format_12}</div>
-                            <i class="fas fa-check"></i>
-                        </div>
-                    </div>
-                `;
+                            let html = ` <div class="message me">
+                                            <p class="messageContent">${chat}</p>
+                                            <div class="messageDetails">
+                                                <div class="messageTime">${time_format_12}</div>
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                        </div>
+                                    `;
                             $('#message-app-' + receiver_id).html(chat);
                             if (res.chat_count > 0) {
                                 $("#chat-container-" + receiver_id).append(html);
@@ -168,8 +169,8 @@
                                         .created_at, "YYYY-MM-DD HH:mm:ss")
                                     .format("hh:mm A");
                                 new_html += `
-    <li class="group user-list ${user.id == receiver_id ? 'active' : ''}" data-id="${user.id}">
-        <div class="avatar">`;
+                                            <li class="group user-list ${user.id == receiver_id ? 'active' : ''}" data-id="${user.id}">
+                                                <div class="avatar">`;
                                 if (user.profile_picture) {
                                     new_html +=
                                         `<img src="{{ Storage::url('${user.profile_picture}') }}" alt="">`;
@@ -178,12 +179,12 @@
                                         `<img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">`;
                                 }
                                 new_html += `</div>
-        <p class="GroupName">${user.first_name} ${user.middle_name ?? ''} ${user.last_name ?? ''}</p>
-        <p class="GroupDescrp">${user.last_message.message}</p>
-        <div class="time_online">
-            <p>${time_format_13}</p>
-        </div>
-    </li>`;
+                                        <p class="GroupName">${user.first_name} ${user.middle_name ?? ''} ${user.last_name ?? ''}</p>
+                                        <p class="GroupDescrp">${user.last_message.message}</p>
+                                        <div class="time_online">
+                                            <p>${time_format_13}</p>
+                                        </div>
+                                    </li>`;
                             });
                             $('#group-manage-' + sender_id).append(new_html);
 
@@ -204,13 +205,13 @@
             // Listen for incoming chat messages from the server
             socket.on("chat", function(data) {
                 html = `
-        <div class="message you">
-            <p class="messageContent">${data.message}</p>
-            <div class="messageDetails">
-                <div class="messageTime">${moment().format("hh:mm A")}</div>
-            </div>
-        </div>
-    `;
+                        <div class="message you">
+                            <p class="messageContent">${data.message}</p>
+                            <div class="messageDetails">
+                                <div class="messageTime">${moment().format("hh:mm A")}</div>
+                            </div>
+                        </div>
+                    `;
                 if (data.receiver_id == sender_id) {
                     if ($(".chat-module").length > 0) {
                         if ($("#chat-container-" + data.sender_id).length > 0) {
@@ -227,7 +228,7 @@
                                 "YYYY-MM-DD HH:mm:ss")
                             .format("hh:mm A");
                         new_html += ` <li class="group user-list ${user.id == data.sender_id ? 'active' : ''}" data-id="${user.id}">
-        <div class="avatar">`;
+                                             <div class="avatar">`;
                         if (user.profile_picture) {
                             new_html +=
                                 `<img src="{{ Storage::url('${user.profile_picture}') }}" alt="">`;
@@ -236,17 +237,20 @@
                                 `<img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">`;
                         }
                         new_html += `</div>
-        <p class="GroupName">${user.first_name} ${user.middle_name ?? ''} ${user.last_name ?? ''}</p>
-        <p class="GroupDescrp">${user.last_message.message}</p>
-        <div class="time_online">
-            <p>${time_format_13}</p>
-        </div>
-    </li>`;
+                                        <p class="GroupName">${user.first_name} ${user.middle_name ?? ''} ${user.last_name ?? ''}</p>
+                                        <p class="GroupDescrp">${user.last_message.message}</p>
+                                        <div class="time_online">
+                                            <p>${time_format_13}</p>
+                                        </div>
+                                    </li>`;
                     });
                     $('#group-manage-' + sender_id).append(new_html);
 
                 }
             });
+
+            // seen message
+
         });
     </script>
 @endpush

@@ -14,7 +14,15 @@ io.on('connection', (socket) => {
     console.log('a user connected');
 
     socket.on('chat', (msg) => {
-        io.emit('chat', msg);
+        console.log('message: ' + msg);
+        io.sockets.emit('chat', msg);
+    });
+
+
+    // seen event
+    socket.on('seen', (msg) => {
+        console.log('seen: ' + msg);
+        io.sockets.emit('seen', msg);
     });
 
     socket.on('disconnect', () => {
