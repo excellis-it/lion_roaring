@@ -187,12 +187,16 @@
                     <li class="{{ Request::is('admin/pages/footer') ? 'active' : ' ' }}"><a class="nav-link"
                             href="{{ route('footer.index') }}">
                             Footer</a></li>
-                    <li class="{{ Request::is('admin/pages/register-agreements') ? 'active' : ' ' }}"><a class="nav-link"
-                            href="{{ route('register-agreements.index') }}">
+                    <li class="{{ Request::is('admin/pages/register-agreements') ? 'active' : ' ' }}"><a
+                            class="nav-link" href="{{ route('register-agreements.index') }}">
                             REGISTER PAGE AGREEMENTS</a></li>
-                            <li class="{{ Request::is('admin/pages/members-privacy-policies') ? 'active' : ' ' }}"><a class="nav-link"
-                                href="{{ route('members-privacy-policies.index') }}">
-                                MEMBERS PRIVACY POLICIES</a></li>
+                    <li class="{{ Request::is('admin/pages/members-privacy-policies') ? 'active' : ' ' }}"><a
+                            class="nav-link" href="{{ route('members-privacy-policies.index') }}">
+                            MEMBERS PRIVACY POLICIES</a></li>
+                            {{-- PMA Terms --}}
+                    <li class="{{ Request::is('admin/pages/pma-terms') ? 'active' : ' ' }}"><a
+                        class="nav-link" href="{{ route('pma-terms.index') }}">
+                        PMA Terms</a></li>
                 </ul>
             </li>
         </ul>

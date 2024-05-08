@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\OurGovernanceController;
 use App\Http\Controllers\Admin\OurOrganizationController;
 use App\Http\Controllers\Admin\PlanController;
+use App\Http\Controllers\Admin\PmaDisclaimerController;
 use App\Http\Controllers\Admin\PrincipleAndBusinessController;
 use App\Http\Controllers\Admin\RegisterAgreementController;
 use App\Http\Controllers\Admin\SellerController;
@@ -139,6 +140,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
             'articles-of-association' => ArticleOfAssociationController::class,
             'register-agreements' => RegisterAgreementController::class,
             'members-privacy-policies' => MemberPrivacyPolicyContoller::class,
+            'pma-terms' => PmaDisclaimerController::class,
         ]);
 
         Route::get('/newsletter-fetch-data', [NewsletterController::class, 'fetchData'])->name('newsletters.fetch-data');

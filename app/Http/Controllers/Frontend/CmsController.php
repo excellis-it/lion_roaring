@@ -135,16 +135,19 @@ class CmsController extends Controller
             'phone' => 'required',
             'message' => 'required',
         ]);
-
         if ($request->ajax()) {
             $contact = new ContactUs();
             $contact->first_name = $request->first_name;
             $contact->last_name = $request->last_name;
             $contact->email = $request->email;
-            $contact->phone = $request->phone;
+            if ($request->phone_code) {
+                $contact->phone = '+'. $request->phone_code . $request->phone;
+            } else {
+                $contact->phone = $request->phone;
+            }
             $contact->message = $request->message;
             $contact->save();
-            session()->flash('message', 'Thank you for contacting us');
+            session()->flash('success', 'Thank you for contacting us');
             return response()->json(['message' => 'Thank you for contacting us', 'status' => true]);
         }
     }

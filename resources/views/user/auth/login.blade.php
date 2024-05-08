@@ -76,7 +76,7 @@
                                         </div> --}}
                                         <p class="login-submit mt-lg-4 mt-2">
                                             <input type="submit" name="wp-submit" id="login-submit"
-                                                class="button button-primary w-100" value="Log In">
+                                                class="button button-primary w-100" value="Login">
                                         </p>
                                     </form>
                                 </div>

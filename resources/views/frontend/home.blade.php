@@ -174,7 +174,7 @@
 
     @if (count($our_organizations) > 0)
         <section class="real_solution_sec">
-            <div class="v_text left_v">Services</div>
+            <div class="v_text left_v">Service</div>
             <div class="container">
                 <div class="row align-items-center justify-content-center mb-5">
                     <div class="col-lg-6">

@@ -22,7 +22,7 @@
 
                         <div class="row justify-content-between">
                             {{-- courses --}}
-                            <div class="col-md-6">
+                            <div class="@if(isset($home->banner_image)) col-md-6 @else col-md-12 @endif">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
@@ -37,8 +37,18 @@
                                     </div>
                                 </div>
                             </div>
+                            @if (isset($home->banner_image))
+                                <div class="col-md-6">
+                                    <div class="form-group-div">
+                                        <div class="form-group">
+                                            <img src="{{ Storage::url($home->banner_image) }}" alt="Banner Image"
+                                                style="width: 100px; height: 100px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                             {{-- banner_video --}}
-                            <div class="col-md-6">
+                            <div class="@if(isset($home->banner_video)) col-md-6 @else col-md-12 @endif">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Banner Video</label>
@@ -52,6 +62,18 @@
                                     </div>
                                 </div>
                             </div>
+                            @if (isset($home->banner_video))
+                                <div class="col-md-6">
+                                    <div class="form-group-div">
+                                        <div class="form-group">
+                                            <video  controls style="width: 200px; height:100px;">
+                                                <source src="{{ Storage::url($home->banner_video) }}" type="video/mp4" >
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                             {{-- our_organization_id --}}
                             <div class="col-md-12">
                                 <div class="form-group-div">
@@ -109,7 +131,7 @@
                                 </div>
                             </div>
                             {{-- section_1_video --}}
-                            <div class="col-md-6">
+                            <div class="@if(isset($home->section_1_video)) col-md-6 @else col-md-12 @endif">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Section 1 Video</label>
@@ -123,6 +145,18 @@
                                     </div>
                                 </div>
                             </div>
+                            @if (isset($home->section_1_video))
+                                <div class="col-md-6">
+                                    <div class="form-group-div">
+                                        <div class="form-group">
+                                            <video  controls style="width: 200px; height:100px;">
+                                                <source src="{{ Storage::url($home->section_1_video) }}" type="video/mp4" >
+                                                Your browser does not support the video tag.
+                                             </video>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                             {{-- section_1_description --}}
                             <div class="col-md-12">
                                 <div class="form-group-div">
@@ -146,7 +180,7 @@
 
                         <div class="row">
                             {{-- section_2_left_title --}}
-                            <div class="col-md-6">
+                            <div class="@if(isset($home->section_2_left_image)) col-md-12 @else col-md-6 @endif">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Section 2 Left Title*</label>
@@ -176,6 +210,16 @@
                                     </div>
                                 </div>
                             </div>
+                            @if(isset($home->section_2_left_image))
+                                <div class="col-md-6">
+                                    <div class="form-group-div">
+                                        <div class="form-group">
+                                            <img src="{{ Storage::url($home->section_2_left_image) }}" alt="Section 2 Left Image"
+                                                style="width: 100px; height: 100px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                             {{-- section_2_left_description --}}
                             <div class="col-md-12">
                                 <div class="form-group-div">
@@ -191,7 +235,7 @@
                                 </div>
                             </div>
                             {{-- section_2_right_title --}}
-                            <div class="col-md-6">
+                            <div class="@if(isset($home->section_2_right_image)) col-md-12 @else col-md-6 @endif">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Section 2 Right Title*</label>
@@ -221,6 +265,16 @@
                                     </div>
                                 </div>
                             </div>
+                            @if(isset($home->section_2_right_image))
+                            <div class="col-md-6">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        <img src="{{ Storage::url($home->section_2_right_image) }}" alt="Section 2 Left Image"
+                                            style="width: 100px; height: 100px;">
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                             {{-- section_2_right_description --}}
                             <div class="col-md-12">
                                 <div class="form-group-div">

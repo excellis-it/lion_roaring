@@ -30,7 +30,7 @@
                                 <p class="asp-thank-you-page-msg1">Thank you for your payment.</p>
                                 <hr>
                                 <div class="asp-thank-you-page-total-amount">Total Amount: ${{Session::get('donation_amount')}}</div><br>
-                                <div class="asp-thank-you-page-txn-id">Transaction ID: {{Session::get('transaction_id')}}</div>
+                                {{-- <div class="asp-thank-you-page-txn-id">Transaction ID: {{Session::get('transaction_id')}}</div> --}}
                                 <style>
                                     .asp-thank-you-page-msg-wrap {
                                         background: #dff0d8;

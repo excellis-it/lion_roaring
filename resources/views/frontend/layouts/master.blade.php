@@ -181,7 +181,7 @@
                             <div class="mt-4">
                                 <div class="pure-u-5-5 centered">
                                     <button type="submit" id="submit-btn"
-                                        class="pure-button pure-button-primary">Pay $0.00</button>
+                                        class="pure-button pure-button-primary">Donate US$0.00</button>
                                 </div>
                             </div>
                         </form>
@@ -406,46 +406,13 @@
                 <div class="modal-content">
                     <div class="modal-header text-center justify-content-center">
                         <!--         <button type="button" class="close" data-bs-dismiss="modal">&times;</button> -->
-                        <h4 class="modal-title">LION ROARING PRIVATE MEMBERS ASSOCIATION (PMA)</h4>
+                        <h4 class="modal-title">{{(Helper::getPmaTerm()) ? Helper::getPmaTerm()->title : 'Lion Roaring PMA (Private Members Association) Agreement'}}</h4>
                     </div>
                     <form action="{{ route('session.store') }}" method="POST">
                         @csrf
-                        <div class="modal-body text-center">
-                            <h3>DISCLAIMER</h3>
-                            <p>Lion Roaring PMA is a private members association of the participants for educational and
-                                informational purposes only. None of the postings of education and information materials
-                                can
-                                be construed as advice, directive, opinion or recommendation for the members to initiate
-                                actions. The contents of the Lion Roaring (LR) website reflects the mission, vision,
-                                strategies, and partners’ testimonies of LR PMA. The educational teaching modules are
-                                based
-                                on our belief and faith in Jesus Christ, biblical foundation and personal experiences
-                                which
-                                we choose to share for education purposes and spiritual journeys of our faith.</p>
-                            <p>
-                                In order to protect all members from any adverse interference or action brought on by
-                                local,
-                                county, state, or federal regulatory, administrative or licensing agencies, and to
-                                receive
-                                full benefits from participation in Lion Roaring Private Member Association, (hereafter
-                                referred to as PMA) all visitors accessing the Lion Roaring website consent to the
-                                following:
-                            </p>
-                            <ul>
-                                <li>
-                                    All member’s information and postings displayed in the website are privileged
-                                    information for the members’ benefit and access only. Any unauthorized use,
-                                    collection,
-                                    storing or sharing of the content or information from the website is prohibited</li>
-                                <li>Visitors will not hold Lion Roaring PMA liable for any materials or contents posted
-                                    in
-                                    the website</li>
-                                <li>Any disclosure, reproduction, distribution, forwarding or other use of the LR PMA
-                                    website content or any attachments to an individual or entity other than the
-                                    intended
-                                    recipient is prohibited</li>
-                            </ul>
-                            <div class="modal_checkbox">
+                        <div class="modal-body ">
+                            {!! (Helper::getPmaTerm()) ? Helper::getPmaTerm()->description : 'It is the responsibility of the members to read and review the Articles of Association of Lion Roaring PMA in its entirety and agree to adopt and comply to its belief, foundation and purpose of the Lion Roaring PMA.' !!}
+                            <div class="modal_checkbox text-center">
                                 <div class="form-group">
                                     <input type="checkbox" id="pma_check" name="is_checked">
                                     <label for="pma_check">I have read and agreed to the above requirements to access
@@ -453,8 +420,11 @@
                                         Roaring PMA website.</label>
                                 </div>
                             </div>
-                            <button type="submit" class="continue-btn changed" data-bs-dismiss="modal"
+                            <div class="text-center">
+                                <button type="submit" class="continue-btn changed " data-bs-dismiss="modal"
                                 id="myButton">Continue</button>
+                            </div>
+
                         </div>
                     </form>
                 </div>
@@ -593,9 +563,9 @@
             $('#amount').on('keyup', function() {
                 var amount = $(this).val();
                 if (amount == '') {
-                    $('#submit-btn').text('Pay $0.00');
+                    $('#submit-btn').text('Donate US$ 0.00');
                 } else {
-                    $('#submit-btn').text('Pay $' + amount);
+                    $('#submit-btn').text('Donate US$ ' + amount);
 
                 }
             });

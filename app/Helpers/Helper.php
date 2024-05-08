@@ -7,6 +7,7 @@ use App\Models\Country;
 use App\Models\Footer;
 use App\Models\Organization;
 use App\Models\OurOrganization;
+use App\Models\PmaTerm;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Count;
 
@@ -63,5 +64,11 @@ class Helper
             ->orderBy('created_at', 'desc')
             ->first();
         return $chats;
+    }
+
+    public static function getPmaTerm()
+    {
+        $term = PmaTerm::orderBy('id', 'desc')->first();
+        return $term;
     }
 }
