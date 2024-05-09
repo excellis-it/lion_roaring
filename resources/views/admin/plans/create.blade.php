@@ -76,7 +76,7 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Plan Description*</label>
-                                        <textarea type="text" class="form-control" id="floatingInputValue"
+                                        <textarea type="text" class="form-control" id="plan_description"
                                             name="plan_description"
                                             placeholder="Plan Description*">{{ old('plan_description') }} </textarea>
                                         @if ($errors->has('plan_description'))
@@ -101,6 +101,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
     <script>
         $(document).ready(function() {
             $('#eye-button-1').click(function() {
@@ -114,4 +115,10 @@
             });
         });
     </script>
+
+<script>
+    $(document).ready(function() {
+        ClassicEditor.create(document.querySelector("#plan_description"));
+    });
+</script>
 @endpush

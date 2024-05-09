@@ -35,7 +35,7 @@
                                             <div class="form-group">
                                                 {{-- banner_title --}}
                                                 <label for="floatingInputValue">Description*</label>
-                                                <textarea name="description[]" cols="30" rows="10" required placeholder="Description"
+                                                <textarea name="description[]" id="content_{{$key}}"  cols="30" rows="10" required placeholder="Description"
                                                     class="form-control description">{{ $item->description }}</textarea>
                                                 <span class="text-danger" id="job_opportunity_description_0"></span>
                                             </div>
@@ -101,6 +101,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
     <script>
         $(document).ready(function() {
             $('.remove-image').click(function() {
@@ -128,6 +129,7 @@
     </script>
     <script>
         $(document).ready(function() {
+         
             $(document).on("click", ".add-more", function() {
                 var count = $("#add-more .col-xl-5").length;
                 var html = `
@@ -145,7 +147,7 @@
                         <div class="form-group-div">
                             <div class="form-group">
                                 <label for="floatingInputValue"> Description*</label>
-                                <textarea name="description[]" cols="30" rows="10" placeholder=" Description" required class="form-control description"></textarea>
+                                <textarea name="description[]" cols="30" rows="10" placeholder="Description" required class="form-control description"></textarea>
                                 <span class="text-danger" id="job_opportunity_description_${count}"></span>
                             </div>
                         </div>
@@ -156,6 +158,9 @@
                                 </div>
                             </div>`;
                 $("#add-more").append(html);
+                
+                ClassicEditor.create(document.querySelectorAll('.description')[count]);
+
             });
 
             $(document).on("click", ".remove", function() {
@@ -165,4 +170,11 @@
             });
         });
     </script>
+
+ 
+        <script>
+        ClassicEditor.create(document.querySelector(".description"));
+        </script>
+
+
 @endpush

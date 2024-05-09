@@ -4,7 +4,7 @@
         <td> {{ ($testimonials->currentPage()-1) * $testimonials->perPage() + $loop->index + 1 }}</td>
         <td>{{ $testimonial->name }}</td>
         <td>{{ $testimonial->address }}</td>
-        <td>{{ Str::words($testimonial->description, $words = 20, $end = '...') }}
+        <td>{!! Str::words($testimonial->description, $words = 20, $end = '...') !!}
         </td>
         <td>
             <div class="edit-1 d-flex align-items-center justify-content-center">

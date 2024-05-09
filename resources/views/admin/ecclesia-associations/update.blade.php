@@ -162,5 +162,6 @@
 <script>
     ClassicEditor.create(document.querySelector("#description"));
     ClassicEditor.create(document.querySelector("#description1"));
+   
 </script>
 @endpush

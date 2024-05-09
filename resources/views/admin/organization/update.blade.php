@@ -102,8 +102,8 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Banner Description*</label>
-                                        <textarea name="banner_description" id="banner_description" cols="30" rows="10"
-                                            placeholder="Banner Description" class="form-control">{{ isset($organization->banner_description) ? $organization->banner_description : old('banner_description') }}</textarea>
+                                        <textarea name="banner_description" id="banner_description" 
+                                            placeholder="Banner Description" class="form-control banner_desc_">{{ isset($organization->banner_description) ? $organization->banner_description : old('banner_description') }}</textarea>
                                         @if ($errors->has('banner_description'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('banner_description') }}</div>
@@ -122,7 +122,6 @@
                             <div class="col-xl-12 col-md-12">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                        {{-- meta description --}}
                                         <label for="floatingInputValue">Image (Multiple Image Upload)</label>
                                         <input type="file" class="form-control dropzone" id="floatingInputValue"
                                             name="image[]" value="{{ old('image') }}" placeholder="Image" multiple>
@@ -416,4 +415,12 @@
             });
         });
     </script>
+
+<script>
+    $(document).ready(function() {
+        ClassicEditor.create(document.querySelector("#banner_description"));
+        ClassicEditor.create(document.querySelector("#project_section_description"));
+    
+    });
+</script>
 @endpush

@@ -176,10 +176,19 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
     <script>
          $(".select2").select2({
             placeholder: "Select a Course",
             allowClear: true,
         });
     </script>
+
+<script>
+    $(document).ready(function() {
+       
+        ClassicEditor.create(document.querySelector("#description"));
+    
+    });
+</script>
 @endpush

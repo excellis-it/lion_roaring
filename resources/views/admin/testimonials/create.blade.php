@@ -53,12 +53,20 @@
                                     <div class="form-group">
                                         {{-- image --}}
                                         <label for="floatingInputValue">Image*</label>
-                                        <input type="file" class="form-control" id="floatingInputValue" name="image"
-                                            value="{{ old('image') }}" placeholder="Image*">
+                                        <input type="file" class="form-control" id="image" name="image"
+                                            value="{{ old('image') }}" placeholder="Image*" onchange="readURL(this);">
                                         @if ($errors->has('image'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('image') }}</div>
                                         @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- image preview -->
+                            <div class="col-md-6">
+                                    <div class="form-group">
+                                        <img src="" id="image_preview" style="width: 100px; height: 100px; display:none;" >
                                     </div>
                                 </div>
                             </div>
@@ -91,4 +99,22 @@
 
 @push('scripts')
 
+<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+<script>
+    $(document).ready(function() {
+        ClassicEditor.create(document.querySelector("#description"));
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('#image').change(function() {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#image_preview').show();
+                $('#image_preview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+    });
+    </script>
 @endpush

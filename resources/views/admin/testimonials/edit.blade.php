@@ -54,7 +54,7 @@
                                     <div class="form-group">
                                         {{-- image --}}
                                         <label for="floatingInputValue">Image</label>
-                                        <input type="file" class="form-control" id="floatingInputValue" name="image"
+                                        <input type="file" class="form-control" id="image" name="image"
                                             value="{{ old('image') }}" placeholder="Image*">
                                         @if ($errors->has('image'))
                                             <div class="error" style="color:red;">
@@ -63,6 +63,18 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- image preview -->
+                            <div class="col-md-6">
+                                    <div class="form-group">
+                                        @if($testimonial->image)
+                                        <img src="{{ Storage::url($testimonial->image) }}"  id="image_preview"  style="width: 100px; height: 100px;" >
+                                       
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-md-12">
                                 <div class="form-group-div">
                                     <div class="form-group">
@@ -92,4 +104,26 @@
 @endsection
 
 @push('scripts')
+
+
+<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+<script>
+    $(document).ready(function() {
+        ClassicEditor.create(document.querySelector("#description"));
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#image').change(function() {
+           
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#image_preview').show();
+                $('#image_preview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+    });
+    </script>
 @endpush

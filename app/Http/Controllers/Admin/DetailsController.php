@@ -39,6 +39,7 @@ class DetailsController extends Controller
      */
     public function store(Request $request)
     {
+        
         foreach ($request->description as $key => $value) {
             if (isset($request->image_id[$key])) {
                 $detail = Detail::find($request->image_id[$key]);

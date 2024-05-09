@@ -26,7 +26,7 @@
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Banner Image*</label>
-                                        <input type="file" class="form-control" id="floatingInputValue"
+                                        <input type="file" class="form-control" id="banner-image"
                                             name="banner_image"
                                             value="{{ old('banner_image') }}"
                                             placeholder="Banner Image">
@@ -34,6 +34,13 @@
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('banner_image') }}</div>
                                         @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                    <img src="" id="banner_image_preview" style="width: 200px; height: 100px; display:none;" >
                                     </div>
                                 </div>
                             </div>
@@ -65,12 +72,21 @@
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Image*</label>
-                                        <input type="file" class="form-control" id="floatingInputValue"
+                                        <input type="file" class="form-control" id="image"
                                             name="image">
                                         @if ($errors->has('image'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('image') }}</div>
                                         @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                    <img src="" id="image_preview" style="width: 200px; height: 100px; display:none;" >
                                     </div>
                                 </div>
                             </div>
@@ -156,10 +172,42 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
     <script>
          $(".select2").select2({
             placeholder: "Select a Course",
             allowClear: true,
         });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            ClassicEditor.create(document.querySelector("#description"));
+        });
+    </script>
+
+<script>
+    $(document).ready(function() {
+        $('#banner-image').change(function() {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#banner_image_preview').show();
+                $('#banner_image_preview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+    });
+    </script>
+    <script>
+    $(document).ready(function() {
+        $('#image').change(function() {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#image_preview').show();
+                $('#image_preview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+    });
     </script>
 @endpush

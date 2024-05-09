@@ -116,7 +116,7 @@
                                     <div class="form-group">
                                         {{-- meta title --}}
                                         <label for="floatingInputValue">Write Us*</label>
-                                        <textarea type="text" class="form-control" id="floatingInputValue"
+                                        <textarea type="text" class="form-control" id="write-us"
                                             name="address"
                                             placeholder="Write Us">{{ isset($contact_us->address) ? $contact_us->address : old('address') }}</textarea>
                                         @if ($errors->has('address'))
@@ -155,4 +155,11 @@
 @endsection
 
 @push('scripts')
+
+<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor.create(document.querySelector("#write-us"));
+    ClassicEditor.create(document.querySelector("#description"));
+   
+</script>
 @endpush

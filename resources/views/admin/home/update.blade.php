@@ -162,7 +162,7 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Section 1 Description*</label>
-                                        <textarea name="section_1_description"  cols="30" rows="10"
+                                        <textarea name="section_1_description" id="section1_des"  cols="30" rows="10"
                                             placeholder="Section 1 Description" class="form-control">{{ isset($home->section_1_description) ? $home->section_1_description : old('section_1_description') }}</textarea>
                                         @if ($errors->has('section_1_description'))
                                             <div class="error" style="color:red;">
@@ -226,7 +226,7 @@
                                     <div class="form-group">
                                         <label for="floatingInputValue">Section 2 Left Description*</label>
                                         <textarea name="section_2_left_description"  cols="30" rows="10"
-                                            placeholder="Section 2 Left Description" class="form-control">{{ isset($home->section_2_left_description) ? $home->section_2_left_description : old('section_2_left_description') }}</textarea>
+                                            placeholder="Section 2 Left Description" id="section2_left_des" class="form-control">{{ isset($home->section_2_left_description) ? $home->section_2_left_description : old('section_2_left_description') }}</textarea>
                                         @if ($errors->has('section_2_left_description'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('section_2_left_description') }}</div>
@@ -281,7 +281,7 @@
                                     <div class="form-group">
                                         <label for="floatingInputValue">Section 2 Right Description*</label>
                                         <textarea name="section_2_right_description"  cols="30" rows="10"
-                                            placeholder="Section 2 Right Description" class="form-control">{{ isset($home->section_2_right_description) ? $home->section_2_right_description : old('section_2_right_description') }}</textarea>
+                                            placeholder="Section 2 Right Description"  id="section2_right_des" class="form-control">{{ isset($home->section_2_right_description) ? $home->section_2_right_description : old('section_2_right_description') }}</textarea>
                                         @if ($errors->has('section_2_right_description'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('section_2_right_description') }}</div>
@@ -318,7 +318,7 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Section 3 Description*</label>
-                                        <textarea name="section_3_description"  cols="30" rows="10"
+                                        <textarea name="section_3_description" id="section3_des"  cols="30" rows="10"
                                             placeholder="Section 3 Description" class="form-control">{{ isset($home->section_3_description) ? $home->section_3_description : old('section_3_description') }}</textarea>
                                         @if ($errors->has('section_3_description'))
                                             <div class="error" style="color:red;">
@@ -357,7 +357,7 @@
                                     <div class="form-group">
                                         <label for="floatingInputValue">Section 4 Description*</label>
                                         <textarea name="section_4_description"  cols="30" rows="10"
-                                            placeholder="Section 4 Description" class="form-control">{{ isset($home->section_4_description) ? $home->section_4_description : old('section_4_description') }}</textarea>
+                                            placeholder="Section 4 Description" id="section4_des" class="form-control">{{ isset($home->section_4_description) ? $home->section_4_description : old('section_4_description') }}</textarea>
                                         @if ($errors->has('section_4_description'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('section_4_description') }}</div>
@@ -460,5 +460,16 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+<script>
+    $(document).ready(function() {
+        ClassicEditor.create(document.querySelector("#section1_des"));
+        ClassicEditor.create(document.querySelector("#section2_left_des"));
+        ClassicEditor.create(document.querySelector("#section2_right_des"));
+        ClassicEditor.create(document.querySelector("#section3_des"));
+        ClassicEditor.create(document.querySelector("#section4_des"));
+        
+    });
+</script>
 
 @endpush
