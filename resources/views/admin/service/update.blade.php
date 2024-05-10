@@ -36,7 +36,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xl-5 col-md-5 mt-4">
+                                    <div class="col-md-5 mt-4">
                                         <div class="form-group-div">
                                             <div class="form-group">
                                                 {{-- banner_title --}}
@@ -74,7 +74,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xl-5 col-md-5 mt-4">
+                                <div class="col-md-5 mt-4">
                                     <div class="form-group-div">
                                         <div class="form-group">
                                             {{-- banner_title --}}
@@ -165,10 +165,10 @@
                         </div>
                     </div>
                     <div class="col-xl-2 mt-4">
-                        <div class="btn-1">
-                            <button type="button" class="remove"><i class="ph ph-minus"></i> </button>
-                        </div>
-                    </div>`;
+                                <div class="btn-1">
+                                    <button type="button" class="remove"><i class="ph ph-minus"></i> </button>
+                                </div>
+                            </div>`;
                 $("#add-more").append(html);
                 ClassicEditor.create(document.querySelectorAll('.content')[count]);
             });
