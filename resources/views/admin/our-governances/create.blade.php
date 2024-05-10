@@ -21,7 +21,7 @@
 
                         <div class="row justify-content-between">
                             {{-- courses --}}
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
@@ -37,10 +37,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                    <img src="" id="banner_image_preview" style="width: 200px; height: 100px; display:none;" >
+                                    <img src="" id="banner_image_preview" style="width: 250px; height: 80px; display:none;" >
                                     </div>
                                 </div>
                             </div>
@@ -67,7 +67,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
@@ -81,12 +81,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                            </div>
-                            <div class="col-md-6">
+                           
+                            <div class="col-md-2">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                    <img src="" id="image_preview" style="width: 200px; height: 100px; display:none;" >
+                                    <img src="" id="image_preview" style="width: 150px; height: 80px; display:none;" >
                                     </div>
                                 </div>
                             </div>

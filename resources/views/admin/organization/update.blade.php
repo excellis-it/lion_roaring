@@ -66,12 +66,12 @@
 
                         <div class="row justify-content-between">
                             {{-- courses --}}
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Banner Image</label>
-                                        <input type="file" class="form-control" id="floatingInputValue"
+                                        <input type="file" class="form-control" id="banner_image"
                                             name="banner_image" value="{{ old('banner_image') }}"
                                             placeholder="Banner Image">
                                         @if ($errors->has('banner_image'))
@@ -81,6 +81,19 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-2">
+                                    <div class="form-group-div">
+                                        <div class="form-group">
+                                        @if (isset($organization->banner_image))
+                                            <img src="{{ Storage::url($organization->banner_image) }}" id="banner_image_preview" alt="Footer Logo"
+                                                style="width: 180px; height: 100px;">
+                                        @else    
+                                        <img src="" id="banner_image_preview" alt="Footer Logo"
+                                                style="width: 180px; height: 100px; display:none;">    
+                                        @endif
+                                        </div>
+                                    </div>
+                                </div>
                             {{-- our_organization_id --}}
                             <div class="col-md-6">
                                 <div class="form-group-div">
@@ -423,4 +436,17 @@
     
     });
 </script>
+
+<script>
+        $(document).ready(function() {
+            $('#banner_image').change(function() {
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    $('#banner_image_preview').show();
+                    $('#banner_image_preview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            });
+        });
+    </script>
 @endpush

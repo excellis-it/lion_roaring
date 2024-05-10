@@ -23,17 +23,28 @@
 
                         <div class="row justify-content-between">
                             {{-- courses --}}
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Banner Image</label>
-                                        <input type="file" class="form-control" id="floatingInputValue"
+                                        <input type="file" class="form-control" id="banner_image"
                                             name="banner_image" value="{{ old('banner_image') }}"
                                             placeholder="Banner Image">
                                         @if ($errors->has('banner_image'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('banner_image') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        @if(isset($ecclesia_association->banner_image))
+                                        <img src="{{ Storage::url($ecclesia_association->banner_image) }}" alt="banner_image" id="preview_banner_image" style="width: 180px; height: 100px;">
+                                        @else
+                                        <img src="" alt="banner_image" id="preview_banner_image" style="width: 180px; height: 100px;display:none;">
                                         @endif
                                     </div>
                                 </div>
@@ -61,7 +72,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-xl-12 col-md-12">
+                            <div class="col-xl-6 col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- meta description --}}
@@ -75,7 +86,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xl-12 col-md-12">
+                            <div class="col-xl-6 col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- meta description --}}
@@ -164,4 +175,17 @@
     ClassicEditor.create(document.querySelector("#description1"));
    
 </script>
+
+<script>
+    $(document).ready(function() {
+        $('#banner_image').change(function() {
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    $('#preview_banner_image').show();
+                    $('#preview_banner_image').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            });
+    });
+    </script>
 @endpush

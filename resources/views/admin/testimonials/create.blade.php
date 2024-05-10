@@ -48,7 +48,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- image --}}
@@ -64,13 +64,14 @@
                             </div>
 
                             <!-- image preview -->
-                            <div class="col-md-6">
+                            <div class="col-md-2">
+                                <div class="form-group-div">
                                     <div class="form-group">
-                                        <img src="" id="image_preview" style="width: 100px; height: 100px; display:none;" >
+                                        <img src="" id="image_preview" style="width: 150px; height: 100px; display:none;" >
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- description --}}

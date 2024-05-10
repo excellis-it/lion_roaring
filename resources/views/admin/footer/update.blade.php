@@ -21,12 +21,12 @@
                         </div>
                         <div class="row justify-content-between">
                             {{-- courses --}}
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Footer logo</label>
-                                        <input type="file" class="form-control" id="floatingInputValue"
+                                        <input type="file" class="form-control" id="footer_logo"
                                             name="footer_logo" value="{{ old('footer_logo') }}" placeholder="Footer Logo">
                                         @if ($errors->has('footer_logo'))
                                             <div class="error" style="color:red;">
@@ -36,18 +36,23 @@
                                 </div>
                             </div>
                             {{-- view footer logo --}}
-                            @if (isset($footer->footer_logo))
-                                <div class="col-md-6">
+                           
+                                <div class="col-md-2">
                                     <div class="form-group-div">
                                         <div class="form-group">
-                                            <img src="{{ Storage::url($footer->footer_logo) }}" alt="Footer Logo"
-                                                style="width: 100px; height: 100px;">
+                                        @if (isset($footer->footer_logo))
+                                            <img src="{{ Storage::url($footer->footer_logo) }}" id="footer_logo_preview" alt="Footer Logo"
+                                                style="width: 180px; height: 100px;">
+                                        @else    
+                                        <img src="" id="footer_logo_preview" alt="Footer Logo"
+                                                style="width: 180px; height: 100px; display:none;">    
+                                        @endif
                                         </div>
                                     </div>
                                 </div>
-                            @endif
+                            
                             {{-- our_organization_id --}}
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Footer Title*</label>
@@ -60,7 +65,7 @@
                                 </div>
                             </div>
                             {{-- footer_address_title --}}
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Footer Address Title*</label>
@@ -76,7 +81,7 @@
                                 </div>
                             </div>
                             {{-- footer_address --}}
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Footer Address*</label>
@@ -90,7 +95,7 @@
                                 </div>
                             </div>
                             {{-- footer_phone_number --}}
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Footer Phone Number*</label>
@@ -106,7 +111,7 @@
                                 </div>
                             </div>
                             {{-- footer_email --}}
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Footer Email*</label>
@@ -123,7 +128,7 @@
                             </div>
 
                             {{-- footer_newsletter_title --}}
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Footer Newsletter Title*</label>
@@ -139,7 +144,7 @@
                                 </div>
                             </div>
                             {{-- footer_copywrite_text --}}
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Footer Copywrite Text*</label>
@@ -155,12 +160,12 @@
                                 </div>
                             </div>
                             {{-- footer_playstore_icon --}}
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Footer Playstore Icon</label>
-                                        <input type="file" class="form-control" id="floatingInputValue"
+                                        <input type="file" class="form-control" id="footer_play_icon"
                                             name="footer_playstore_icon" value="{{ old('footer_playstore_icon') }}"
                                             placeholder="Footer Playstore Icon">
                                         @if ($errors->has('footer_playstore_icon'))
@@ -171,18 +176,23 @@
                                 </div>
                             </div>
                             {{-- view footer playstore icon --}}
-                            @if (isset($footer->footer_playstore_icon))
-                                <div class="col-md-6">
+                           
+                                <div class="col-md-2">
                                     <div class="form-group-div">
                                         <div class="form-group">
+                                        @if (isset($footer->footer_playstore_icon))
                                             <img src="{{ Storage::url($footer->footer_playstore_icon) }}"
-                                                alt="Footer Playstore Icon" style="width: 100px; height: 100px;">
+                                                alt="Footer Playstore Icon" id="prev_footer_play_icon" style="width: 180px; height: 100px;">
+                                        @else
+                                        <img src=""
+                                                alt="Footer Playstore Icon" id="prev_footer_play_icon" style="width: 180px; height: 100px; display:none;">
+                                        @endif
                                         </div>
                                     </div>
                                 </div>
-                            @endif
+                            
                             {{-- footer_playstore_link --}}
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Footer Playstore Link</label>
@@ -198,12 +208,12 @@
                                 </div>
                             </div>
                             {{-- footer_appstore_icon --}}
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Footer Appstore Icon</label>
-                                        <input type="file" class="form-control" id="floatingInputValue"
+                                        <input type="file" class="form-control" id="footer_app_icon"
                                             name="footer_appstore_icon" value="{{ old('footer_appstore_icon') }}"
                                             placeholder="Footer Appstore Icon">
                                         @if ($errors->has('footer_appstore_icon'))
@@ -214,18 +224,23 @@
                                 </div>
                             </div>
                             {{-- view footer appstore icon --}}
-                            @if (isset($footer->footer_appstore_icon))
-                                <div class="col-md-6">
-                                    <div class="form-group-div">
-                                        <div class="form-group">
-                                            <img src="{{ Storage::url($footer->footer_appstore_icon) }}"
-                                                alt="Footer Appstore Icon" style="width: 100px; height: 100px;">
-                                        </div>
+                           
+                            <div class="col-md-2">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                    @if (isset($footer->footer_appstore_icon))
+                                        <img src="{{ Storage::url($footer->footer_appstore_icon) }}"
+                                            alt="Footer Playstore Icon" id="prev_footer_app_icon" style="width: 180px; height: 100px;">
+                                    @else
+                                    <img src=""
+                                            alt="Footer Playstore Icon" id="prev_footer_app_icon" style="width: 180px; height: 100px; display:none;">
+                                    @endif
                                     </div>
                                 </div>
-                            @endif
+                            </div>
+
                             {{-- footer_appstore_link --}}
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Footer Appstore Link</label>
@@ -373,4 +388,35 @@
             $('#column_count').val(column_count - 1);
         });
     </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#footer_logo').change(function() {
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    $('#footer_logo_preview').show();
+                    $('#footer_logo_preview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            });
+
+            $('#footer_play_icon').change(function() {
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    $('#prev_footer_play_icon').show();
+                    $('#prev_footer_play_icon').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            });
+
+            $('#footer_app_icon').change(function() {
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    $('#prev_footer_app_icon').show();
+                    $('#prev_footer_app_icon').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            });
+        });
+        </script>
 @endpush

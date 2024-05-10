@@ -23,18 +23,27 @@
 
                         <div class="row justify-content-between">
                             {{-- courses --}}
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Banner Image</label>
-                                        <input type="file" class="form-control" id="floatingInputValue"
+                                        <input type="file" class="form-control" id="banner_image"
                                             name="banner_image" value="{{ old('banner_image') }}"
                                             placeholder="Banner Image">
                                         @if ($errors->has('banner_image'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('banner_image') }}</div>
                                         @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                    @if($organization_center->banner_image)
+                                        <img src="{{ Storage::url($organization_center->banner_image) }}"  id="banner_image_preview"  style="width: 180px; height: 100px;" >
+                                    @endif
                                     </div>
                                 </div>
                             </div>
@@ -82,15 +91,25 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Image</label>
-                                        <input type="file" class="form-control" id="floatingInputValue" name="image">
+                                        <input type="file" class="form-control" id="image" name="image">
                                         @if ($errors->has('image'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('image') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        @if($organization_center->image)
+                                            <img src="{{ Storage::url($organization_center->image) }}"  id="image_preview"  style="width: 180px; height: 100px;" >
                                         @endif
                                     </div>
                                 </div>
@@ -194,4 +213,27 @@
     
     });
 </script>
+<script>
+    $(document).ready(function() {
+        $('#banner_image').change(function() {
+           
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                $('#banner_image_preview').show();
+                $('#banner_image_preview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+
+        $('#image').change(function() {
+           
+           let reader = new FileReader();
+           reader.onload = (e) => {
+               $('#image_preview').show();
+               $('#image_preview').attr('src', e.target.result);
+           }
+           reader.readAsDataURL(this.files[0]);
+       });
+    });
+    </script>
 @endpush

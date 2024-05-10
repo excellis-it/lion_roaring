@@ -1,11 +1,11 @@
 @extends('admin.layouts.master')
 @section('title')
-    {{ env('APP_NAME') }} | Update Our Governance Page
+    {{ env('APP_NAME') }} | Update Our Organization Page
 @endsection
 @push('styles')
 @endpush
 @section('head')
-    Update Our Governance Page
+    Update Our Organization Page
 @endsection
 
 @section('content')
@@ -36,16 +36,26 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Image</label>
-                                        <input type="file" class="form-control" id="floatingInputValue"
+                                        <input type="file" class="form-control" id="image"
                                             name="image">
                                         @if ($errors->has('image'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('image') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                           
+                            <div class="col-md-2">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        @if($our_organization->image)
+                                            <img src="{{ Storage::url($our_organization->image) }}"  id="image_preview"  style="width: 150px; height: 80px;" >
                                         @endif
                                     </div>
                                 </div>
@@ -82,8 +92,20 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
 
 <script>
-        $(document).ready(function() {
-            ClassicEditor.create(document.querySelector("#description"));
-        });
-    </script>
+    $(document).ready(function() {
+        ClassicEditor.create(document.querySelector("#description"));
+    });
+</script>
+<script>
+$(document).ready(function() {
+    $('#image').change(function() {
+        let reader = new FileReader();
+        reader.onload = (e) => {
+            $('#image_preview').show();
+            $('#image_preview').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(this.files[0]);
+    });
+});
+</script>
 @endpush
