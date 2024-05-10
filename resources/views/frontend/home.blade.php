@@ -57,7 +57,7 @@
                         <h6>{{ $home['section_1_title'] ?? 'title' }}</h6>
                         <h2> {{ $home['section_1_sub_title'] ?? 'title' }}</h2>
                         <p style="font-weight: 400;">
-                            <strong>{{ $home['section_1_description'] ?? 'description' }}</strong>
+                            <strong>{!! $home['section_1_description'] ?? 'description' !!}</strong>
                         </p>
                     </div>
                     <a class="red_btn" data-animation-in="fadeInUp" href="{{ route('about-us') }}"><span>read
@@ -135,7 +135,7 @@
                     <div class="col-lg-8">
                         <div class="about_text heading_hp text-center">
                             <h2>{{ $home['section_3_title'] ?? 'title' }}</h2>
-                            <h6> {{ $home['section_3_description'] ?? 'descripiton' }} </h6>
+                            <h6> {!! $home['section_3_description'] ?? 'descripiton' !!} </h6>
                         </div>
                     </div>
                 </div>
@@ -182,7 +182,7 @@
                             <h6></h6>
                             <h2>{{ $home['section_4_title'] ?? 'title' }}</h2>
 
-                            <h4>  {{ $home['section_4_description'] ?? 'description' }}</h4>
+                            <h4>  {!! $home['section_4_description'] ?? 'description' !!}</h4>
                         </div>
                     </div>
                 </div>
@@ -204,7 +204,7 @@
                                                     href="{{ route('service', $our_organization->slug) }}">{{ $our_organization->name }}</a>
                                             </h4>
                                             <p class="word-litmit" style="font-weight: 400;">
-                                                <strong>{{ $our_organization->description }}</strong>
+                                                <strong>{!! $our_organization->description !!}</strong>
                                             </p>
                                             <a href="{{ route('our-organization', $our_organization->slug) }}"
                                                 class="ellipss"><i class="fa-solid fa-ellipsis"></i></a>

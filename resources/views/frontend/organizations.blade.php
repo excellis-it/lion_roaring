@@ -18,7 +18,7 @@
                 <div class="col-md-8">
                     <div class="inner_banner_ontent text-center">
                         <h1>{{$organization['banner_title'] ?? 'title'}}</h1>
-                        <p><strong><em>{{$organization['banner_description'] ?? 'banner description'}}</em></strong></p>
+                        <p><strong><em>{!! $organization['banner_description'] ?? 'banner description' !!}</em></strong></p>
                     </div>
                 </div>
             </div>
@@ -55,7 +55,7 @@
             <div class="heading_hp text-center">
                 <h6>{{$organization['project_section_title'] ?? 'title'}}</h6>
                 <h2>{{$organization['project_section_sub_title'] ?? 'sub title'}}</h2>
-                <p>{{$organization['project_section_description'] ?? 'description'}}</p>
+                <p>{!! $organization['project_section_description'] ?? 'description' !!}</p>
             </div>
             <div
                 class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 align-items-center justify-content-center">

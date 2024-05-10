@@ -39,7 +39,7 @@
                     <div class="about_text heading_hp text_white">
                         <h6>{{ $organization_center['name'] ?? 'title' }}</h6>
                         <p style="font-weight: 400;">
-                            <strong>{{ $organization_center['description'] ?? '' }}</strong></p>
+                            <strong>{!! $organization_center['description'] ?? '' !!}</strong></p>
                     </div>
                 </div>
             </div>

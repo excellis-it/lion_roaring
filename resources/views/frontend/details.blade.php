@@ -31,7 +31,7 @@
                         <div class="col-xl-7 col-lg-7 {{ $count % 2 == 0 ? 'order-2 order-lg-1' : '' }}" data-aos="fade-up"
                             data-aos-duration="500">
                             <div class="about_text heading_hp text_white">
-                                <p>{{ $item->description }}
+                                <p>{!! $item->description !!}
 
                                 </p>
                             </div>

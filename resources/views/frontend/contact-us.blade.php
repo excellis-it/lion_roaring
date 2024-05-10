@@ -28,7 +28,7 @@
                     <div class="col-xl-6 col-md-12">
                         <div class="contact-left heading_hp">
                             <h2>{{ $contact['title'] ?? 'title' }}</h2>
-                            <p>{{ $contact['description'] ?? 'description' }}</p>
+                            <p>{!! $contact['description'] ?? 'description' !!}</p>
                             <form action="{{ route('contact-us.form') }}" id="contact-us" method="POST">
                                 @csrf
                                 <div class="contact-form">
