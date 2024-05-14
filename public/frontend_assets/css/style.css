@@ -1320,8 +1320,8 @@ p {
 .testimonial_slider .slick-nav.prev-arrow.slick-arrow {
     position: absolute;
     top: 50%;
-    left: -4%;
-    transform: translate(-48%, 0);
+    left: -5%;
+    /*transform: translate(-48%, 0);*/
 }
 
 .testimonial_slider .slick-nav.next-arrow.slick-arrow {

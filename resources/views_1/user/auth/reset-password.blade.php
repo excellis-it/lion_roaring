@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.84.0">
-    <title>{{ env('APP_NAME') }} - Login</title>
+    <title>{{ env('APP_NAME') }} - Change Password</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -42,74 +42,44 @@
                     <div class="col-lg-5">
                         <div class="login_bg_sec border-top-0">
                             <div class="heading_hp">
-                                <h2 id="greeting"><?php
-    /* This sets the $time variable to the current hour in the 24 hour clock format */
-    $time = date("H");
-    /* Set the $timezone variable to become the current timezone */
-    $timezone = date("e");
-    /* If the time is less than 1200 hours, show good morning */
-    if ($time < "12") {
-        echo "Good morning";
-    } else
-    /* If the time is grater than or equal to 1200 hours, but less than 1700 hours, so good afternoon */
-    if ($time >= "12" && $time < "17") {
-        echo "Good afternoon";
-    } else
-    /* Should the time be between or equal to 1700 and 1900 hours, show good evening */
-    if ($time >= "17" && $time < "19") {
-        echo "Good evening";
-    } else
-    /* Finally, show good night if the time is greater than or equal to 1900 hours */
-    if ($time >= "19") {
-        echo "Good night";
-    }
-    ?></h2>
-                                <h4>Sign on to enter Lion Roaring PMA Private Member area.</h4>
+                                <h2 id="greeting">Change Password</h2>
+                                <h4>Enter your new password</h4>
                                 <div class="admin-form">
-                                    <form name="login-form" id="login-form" action="{{ route('login.check') }}"
+                                    <form name="login-form" id="login-form" action="{{ route('user.password-change') }}"
                                         method="post">
                                         @csrf
+                                        <input type="hidden" name="id" value="{{ $id }}">
+                                        {{-- new password --}}
                                         <p class="login-username">
-                                            <label for="user_login">Username or Email Address</label>
-                                            <input type="text" name="user_name" id="user_name" class="input"
-                                                value="{{ old('user_name') }}">
-                                            @if ($errors->has('user_name'))
-                                                @foreach ($errors->get('user_name') as $error)
-                                                    <p class="error" style="color:red;">{{ $error }}</p>
-                                                @endforeach
-                                            @endif
-                                        </p>
-                                        <p class="login-password">
-                                            <label for="user_password">Password</label>
-                                            <input type="password" name="password" id="user_password" class="input"
-                                                value="">
+                                            <label for="user_login">New Password</label>
+                                            <input type="password" name="password" id="password" class="input"
+                                                value="{{ old('password') }}">
                                             @if ($errors->has('password'))
                                                 @foreach ($errors->get('password') as $error)
                                                     <p class="error" style="color:red;">{{ $error }}</p>
                                                 @endforeach
                                             @endif
                                         </p>
-                                        {{-- <div class="check-main">
-                                            <div class="form-group">
-                                                <input type="checkbox" id="pma_check">
-                                                <label for="pma_check">Remember Me</label>
-                                            </div>
-                                        </div> --}}
+
+                                            {{-- confirm password --}}
+                                        <p class="login-username">
+                                            <label for="user_login">Confirm Password</label>
+                                            <input type="password" name="confirm_password" id="confirm_password" class="input"
+                                                value="{{ old('confirm_password') }}">
+                                            @if ($errors->has('confirm_password'))
+                                                @foreach ($errors->get('confirm_password') as $error)
+                                                    <p class="error" style="color:red;">{{ $error }}</p>
+                                                @endforeach
+                                            @endif
+                                        </p>
                                         <p class="login-submit mt-lg-4 mt-2">
                                             <input type="submit" name="wp-submit" id="login-submit"
-                                                class="button button-primary w-100" value="Login">
+                                                class="button button-primary w-100" value="Send">
                                         </p>
                                     </form>
                                 </div>
-                                <div class="join-text">
-                                    <a href="javascrip:void(0);" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop">Join Lion
-                                        Roaring Member</a> | <a href="{{route('user.forget.password.show')}}">Forgot username or password
-                                    </a>
-                                </div>
                                 <div class="join-text join-text-1">
-                                    <a href="{{route('member-privacy-policy')}}">Privacy,
-                                        Cookies, and Legal </a>
+                                    <a href="{{route('login')}}"> Back to Login</a>
                                 </div>
                             </div>
                         </div>

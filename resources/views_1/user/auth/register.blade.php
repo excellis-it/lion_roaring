@@ -32,7 +32,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
         type="text/css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
 </head>
 
 <body style="background: #643271">
@@ -105,7 +104,7 @@
                                             <div class="col-lg-4 mb-3">
                                                 <div class="login-username">
                                                     <label for="user_login">Phone Number (Optional)</label>
-                                                    <input type="text" name="phone_number" id="mobile_code"
+                                                    <input type="text" name="phone_number" id="user_login"
                                                         class="input" value="{{ old('phone_number') }}">
                                                     @if ($errors->has('phone_number'))
                                                         <div class="error" style="color:red;">
@@ -234,19 +233,6 @@
     <script>
         $('#back-login').click(function() {
             window.location.href = "{{ route('login') }}";
-        });
-    </script>
-     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput-jquery.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $("#mobile_code").intlTelInput({
-                // insizlized usa country code
-                initialCountry: "US",
-                separateDialCode: true,
-                // utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/11.0.4/js/utils.js"
-            });
-           
         });
     </script>
 </body>

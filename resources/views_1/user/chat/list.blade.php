@@ -1,0 +1,256 @@
+@extends('user.layouts.master')
+@section('title')
+    {{ env('APP_NAME') }} - User Chat
+@endsection
+@push('styles')
+@endpush
+@section('content')
+    @php
+        use App\Helpers\Helper;
+    @endphp
+    <div class="container-fluid">
+        <div class="bg_white_border">
+
+            <div class="messaging_sec">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="heading_hp">
+                        <h2>Messaging</h2>
+                    </div>
+                </div>
+                <div class="SideNavhead">
+                    <h2>Chat</h2>
+                </div>
+                <div class="main">
+                    <div>
+                        <div class="sideNav2" id="group-manage-{{ Auth::user()->id }}">
+                            @if (count($users) > 0)
+                                @foreach ($users as $user)
+                                    <li class="group user-list" data-id="{{ $user['id'] }}">
+                                        <div class="avatar">
+                                            @if ($user['profile_picture'])
+                                                <img src="{{ Storage::url($user['profile_picture']) }}" alt="">
+                                            @else
+                                                <img src="{{ asset('user_assets/images/profile_dummy.png') }}"
+                                                    alt="">
+                                            @endif
+                                        </div>
+                                        <p class="GroupName">{{ $user['first_name'] }} {{ $user['middle_name'] ?? '' }}
+                                            {{ $user['last_name'] ?? '' }}</p>
+                                        <p class="GroupDescrp" id="message-app-{{ $user['id'] }}">
+                                            @if (isset($user['last_message']['message']))
+                                                {{ $user['last_message']['message'] }}
+                                            @endif
+                                        </p>
+                                        <div class="time_online">
+                                            @if (isset($user['last_message']['created_at']))
+                                                <p>{{ $user['last_message']['created_at']->format('h:i A') }}</p>
+                                            @endif
+                                        </div>
+                                    </li>
+                                @endforeach
+                            @else
+                                <p>No users found</p>
+                            @endif
+                        </div>
+                    </div>
+                    <section class="Chat chat-module">
+                        @include('user.chat.chat_body')
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var sender_id = "{{ Auth::user()->id }}";
+            $.ajaxSetup({
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                },
+            });
+            let ip_address = '127.0.0.1';
+            let socket_port = '3000';
+            let socket = io(ip_address + ':' + socket_port);
+
+            $(document).on("click", ".user-list", function(e) {
+                var getUserID = $(this).attr("data-id");
+                receiver_id = getUserID;
+                loadChats();
+                $(this).addClass("active").siblings().removeClass("active");
+            });
+
+            function loadChats() {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('chats.load') }}",
+                    data: {
+                        _token: $("input[name=_token]").val(),
+                        reciver_id: receiver_id,
+                        sender_id: sender_id,
+                    },
+                    success: function(resp) {
+                        if (resp.status == true) {
+                            $(".chat-module").html(resp.view);
+                            // seen message
+                            
+                            if (resp.chat_count > 0) {
+                                scrollChatToBottom(receiver_id);
+                            }
+                        } else {
+                            console.log(resp.msg);
+                        }
+                    },
+                });
+            }
+
+            function scrollChatToBottom(receiver_id) {
+                var messages = document.getElementById("chat-container-" + receiver_id);
+                messages.scrollTop = messages.scrollHeight;
+            }
+
+            $(document).on("submit", "#MessageForm", function(e) {
+                e.preventDefault();
+
+                var message = $("#MessageInput").val();
+                var receiver_id = $(".reciver_id").val();
+                var url = "{{ route('chats.send') }}";
+
+                if (message == "") {
+                    return false;
+                }
+
+
+
+                // Perform Ajax request to send the message to the server
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        _token: $("input[name=_token]").val(),
+                        message: message,
+                        reciver_id: receiver_id,
+                        sender_id: sender_id,
+                    },
+                    success: function(res) {
+                        if (res.success) {
+                            $("#MessageInput").val("");
+
+                            let chat = res.chat.message;
+                            let created_at = res.chat.created_at;
+                            let time_format_12 = moment(created_at, "YYYY-MM-DD HH:mm:ss")
+                                .format("hh:mm A");
+
+                            let html = ` <div class="message me">
+                                            <p class="messageContent">${chat}</p>
+                                            <div class="messageDetails">
+                                                <div class="messageTime">${time_format_12}</div>
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                        </div>
+                                    `;
+                            $('#message-app-' + receiver_id).html(chat);
+                            if (res.chat_count > 0) {
+                                $("#chat-container-" + receiver_id).append(html);
+                                scrollChatToBottom(receiver_id);
+                            } else {
+                                $("#chat-container-" + receiver_id).html(html);
+                            }
+
+                            var users = res.users;
+                            $('#group-manage-' + sender_id).html('');
+                            var new_html = '';
+                            users.forEach(user => {
+                                let time_format_13 = moment(user.last_message
+                                        .created_at, "YYYY-MM-DD HH:mm:ss")
+                                    .format("hh:mm A");
+                                new_html += `
+                                            <li class="group user-list ${user.id == receiver_id ? 'active' : ''}" data-id="${user.id}">
+                                                <div class="avatar">`;
+                                if (user.profile_picture) {
+                                    new_html +=
+                                        `<img src="{{ Storage::url('${user.profile_picture}') }}" alt="">`;
+                                } else {
+                                    new_html +=
+                                        `<img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">`;
+                                }
+                                new_html += `</div>
+                                        <p class="GroupName">${user.first_name} ${user.middle_name ?? ''} ${user.last_name ?? ''}</p>
+                                        <p class="GroupDescrp">${user.last_message.message}</p>
+                                        <div class="time_online">
+                                            <p>${time_format_13}</p>
+                                        </div>
+                                    </li>`;
+                            });
+                            $('#group-manage-' + sender_id).append(new_html);
+
+                            // Emit chat message to the server
+                            socket.emit("chat", {
+                                message: message,
+                                sender_id: sender_id,
+                                receiver_id: receiver_id,
+                                receiver_users: res.receiver_users,
+                            });
+                        } else {
+                            console.log(res.msg);
+                        }
+                    },
+                });
+            });
+
+            // Listen for incoming chat messages from the server
+            socket.on("chat", function(data) {
+                html = `
+                        <div class="message you">
+                            <p class="messageContent">${data.message}</p>
+                            <div class="messageDetails">
+                                <div class="messageTime">${moment().format("hh:mm A")}</div>
+                            </div>
+                        </div>
+                    `;
+                if (data.receiver_id == sender_id) {
+                    if ($(".chat-module").length > 0) {
+                        if ($("#chat-container-" + data.sender_id).length > 0) {
+                            $("#chat-container-" + data.sender_id).append(html);
+                            scrollChatToBottom(data.sender_id);
+                        }
+                    }
+                    $('#message-app-' + data.sender_id).html(data.message);
+                    var users = data.receiver_users;
+                    $('#group-manage-' + sender_id).html('');
+                    var new_html = '';
+                    users.forEach(user => {
+                        let time_format_13 = moment(user.last_message.created_at,
+                                "YYYY-MM-DD HH:mm:ss")
+                            .format("hh:mm A");
+                        new_html += ` <li class="group user-list ${user.id == data.sender_id ? 'active' : ''}" data-id="${user.id}">
+                                             <div class="avatar">`;
+                        if (user.profile_picture) {
+                            new_html +=
+                                `<img src="{{ Storage::url('${user.profile_picture}') }}" alt="">`;
+                        } else {
+                            new_html +=
+                                `<img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">`;
+                        }
+                        new_html += `</div>
+                                        <p class="GroupName">${user.first_name} ${user.middle_name ?? ''} ${user.last_name ?? ''}</p>
+                                        <p class="GroupDescrp">${user.last_message.message}</p>
+                                        <div class="time_online">
+                                            <p>${time_format_13}</p>
+                                        </div>
+                                    </li>`;
+                    });
+                    $('#group-manage-' + sender_id).append(new_html);
+
+                }
+            });
+
+            // seen message
+
+        });
+    </script>
+@endpush

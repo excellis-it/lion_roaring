@@ -96,7 +96,7 @@ $('.slid_bh').slick({
 
 $('.testimonial_slider').slick({
   dots: true,
-  arrows:false,
+  arrows:true,
   autoplay: false,
   infinite: true,
   speed: 500,

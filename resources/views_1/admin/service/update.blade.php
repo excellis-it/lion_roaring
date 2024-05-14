@@ -1,11 +1,11 @@
 @extends('admin.layouts.master')
 @section('title')
-    {{ env('APP_NAME') }} | Update Service Page
+    {{ env('APP_NAME') }} | Update Details Page
 @endsection
 @push('styles')
 @endpush
 @section('head')
-    Update Service Page
+    Update Details Page
 @endsection
 
 @section('content')
