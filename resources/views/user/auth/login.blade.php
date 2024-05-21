@@ -43,27 +43,30 @@
                         <div class="login_bg_sec border-top-0">
                             <div class="heading_hp">
                                 <h2 id="greeting"><?php
-    /* This sets the $time variable to the current hour in the 24 hour clock format */
-    $time = date("H");
-    /* Set the $timezone variable to become the current timezone */
-    $timezone = date("e");
-    /* If the time is less than 1200 hours, show good morning */
-    if ($time < "12") {
-        echo "Good morning";
-    } else
-    /* If the time is grater than or equal to 1200 hours, but less than 1700 hours, so good afternoon */
-    if ($time >= "12" && $time < "17") {
-        echo "Good afternoon";
-    } else
-    /* Should the time be between or equal to 1700 and 1900 hours, show good evening */
-    if ($time >= "17" && $time < "19") {
-        echo "Good evening";
-    } else
-    /* Finally, show good night if the time is greater than or equal to 1900 hours */
-    if ($time >= "19") {
-        echo "Good night";
-    }
-    ?></h2>
+// Set the timezone to Eastern Time (ET)
+date_default_timezone_set('America/New_York');
+
+// Get the current hour in 24-hour format
+$time = date("H");
+// dd($time);
+// If the time is less than 12:00 hours, show "Good morning"
+if ($time < "12") {
+    echo "Good morning";
+} else
+// If the time is greater than or equal to 12:00 hours, but less than 17:00 hours, show "Good afternoon"
+if ($time >= "12" && $time < "17") {
+    echo "Good afternoon";
+} else
+// If the time is between or equal to 17:00 and 19:00 hours, show "Good evening"
+if ($time >= "17" && $time < "19") {
+    echo "Good evening";
+} else
+// Finally, show "Good night" if the time is greater than or equal to 19:00 hours
+if ($time >= "19") {
+    echo "Good night";
+}
+?>
+</h2>
                                 <h4>Sign on to enter Lion Roaring PMA Private Member area.</h4>
                                 <div class="admin-form">
                                     <form name="login-form" id="login-form" action="{{ route('login.check') }}"
@@ -101,12 +104,12 @@
                                         </p>
                                     </form>
                                 </div>
-                                <div class="join-text">
+                                <!--<div class="join-text">
                                     <a href="javascrip:void(0);" data-bs-toggle="modal"
                                         data-bs-target="#staticBackdrop">Join Lion
                                         Roaring Member</a> | <a href="{{route('user.forget.password.show')}}">Forgot username or password
                                     </a>
-                                </div>
+                                </div>-->
                                 <div class="join-text join-text-1">
                                     <a href="{{route('member-privacy-policy')}}">Privacy,
                                         Cookies, and Legal </a>
