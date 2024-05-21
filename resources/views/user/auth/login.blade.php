@@ -43,12 +43,18 @@
                         <div class="login_bg_sec border-top-0">
                             <div class="heading_hp">
                                 <h2 id="greeting"><?php
-// Set the timezone to Eastern Time (ET)
-date_default_timezone_set('America/New_York');
+
+// Get user's timezone based on IP address
+$ip = $_SERVER['REMOTE_ADDR'];
+$timezone = file_get_contents("http://ip-api.com/json/{$ip}?fields=timezone");
+$timezone = json_decode($timezone)->timezone;
+
+// Set the default timezone
+date_default_timezone_set($timezone);
 
 // Get the current hour in 24-hour format
 $time = date("H");
-// dd($time);
+
 // If the time is less than 12:00 hours, show "Good morning"
 if ($time < "12") {
     echo "Good morning";
@@ -66,6 +72,7 @@ if ($time >= "19") {
     echo "Good night";
 }
 ?>
+
 </h2>
                                 <h4>Sign on to enter Lion Roaring PMA Private Member area.</h4>
                                 <div class="admin-form">
