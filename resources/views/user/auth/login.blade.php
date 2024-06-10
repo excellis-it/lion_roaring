@@ -42,38 +42,43 @@
                     <div class="col-lg-5">
                         <div class="login_bg_sec border-top-0">
                             <div class="heading_hp">
-                                <h2 id="greeting"><?php
+                                <h2 id="greeting">
+                                    <?php
 
-// Get user's timezone based on IP address
-$ip = $_SERVER['REMOTE_ADDR'];
-$timezone = file_get_contents("http://ip-api.com/json/{$ip}?fields=timezone");
-$timezone = json_decode($timezone)->timezone;
+                                    // Get user's timezone based on IP address
+                                    $ip = $_SERVER['REMOTE_ADDR'];
+                                    $timezone = file_get_contents("http://ip-api.com/json/{$ip}?fields=timezone");
+                                    if ($timezone !== "{}") {
+                                        $timezone = json_decode($timezone)->timezone;
 
-// Set the default timezone
-date_default_timezone_set($timezone);
+                                        // Set the default timezone
+                                        date_default_timezone_set($timezone);
 
-// Get the current hour in 24-hour format
-$time = date("H");
+                                        // Get the current hour in 24-hour format
+                                        $time = date('H');
 
-// If the time is less than 12:00 hours, show "Good morning"
-if ($time < "12") {
-    echo "Good morning";
-} else
-// If the time is greater than or equal to 12:00 hours, but less than 17:00 hours, show "Good afternoon"
-if ($time >= "12" && $time < "17") {
-    echo "Good afternoon";
-} else
-// If the time is between or equal to 17:00 and 19:00 hours, show "Good evening"
-if ($time >= "17" && $time < "19") {
-    echo "Good evening";
-} else
-// Finally, show "Good night" if the time is greater than or equal to 19:00 hours
-if ($time >= "19") {
-    echo "Good night";
-}
-?>
+                                        // If the time is less than 12:00 hours, show "Good morning"
+                                        if ($time < '12') {
+                                            echo 'Good morning';
+                                        }
+                                        // If the time is greater than or equal to 12:00 hours, but less than 17:00 hours, show "Good afternoon"
+                                        elseif ($time >= '12' && $time < '17') {
+                                            echo 'Good afternoon';
+                                        }
+                                        // If the time is between or equal to 17:00 and 19:00 hours, show "Good evening"
+                                        elseif ($time >= '17' && $time < '19') {
+                                            echo 'Good evening';
+                                        }
+                                        // Finally, show "Good night" if the time is greater than or equal to 19:00 hours
+                                        elseif ($time >= '19') {
+                                            echo 'Good night';
+                                        }
+                                    } else {
+                                        echo 'Welcome';
+                                    }
+                                    ?>
 
-</h2>
+                                </h2>
                                 <h4>Sign on to enter Lion Roaring PMA Private Member area.</h4>
                                 <div class="admin-form">
                                     <form name="login-form" id="login-form" action="{{ route('login.check') }}"
@@ -114,11 +119,11 @@ if ($time >= "19") {
                                 <!--<div class="join-text">
                                     <a href="javascrip:void(0);" data-bs-toggle="modal"
                                         data-bs-target="#staticBackdrop">Join Lion
-                                        Roaring Member</a> | <a href="{{route('user.forget.password.show')}}">Forgot username or password
+                                        Roaring Member</a> | <a href="{{ route('user.forget.password.show') }}">Forgot username or password
                                     </a>
                                 </div>-->
                                 <div class="join-text join-text-1">
-                                    <a href="{{route('member-privacy-policy')}}">Privacy,
+                                    <a href="{{ route('member-privacy-policy') }}">Privacy,
                                         Cookies, and Legal </a>
                                 </div>
                             </div>
@@ -127,8 +132,8 @@ if ($time >= "19") {
                 </div>
             </div>
         </section>
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
