@@ -22,6 +22,10 @@ class assignRoleSeeder extends Seeder
             [
                 'name' => 'CUSTOMER',
                 'guard_name' => 'web',
+            ],
+            [
+                'name' => 'LEADER',
+                'guard_name' => 'web',
             ]
         ];
 
