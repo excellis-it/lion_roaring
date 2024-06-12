@@ -13,30 +13,35 @@ class ChatController extends Controller
 {
     public function chats()
     {
-        $users = User::with('chatSender')->role('CUSTOMER')->where('id', '!=', auth()->id())->where('status', 1)->get()->toArray();
-        // return user orderBy latest message
-        $users = array_map(function ($user) {
-            $user['last_message'] = Chat::where(function ($query) use ($user) {
-                $query->where('sender_id', $user['id'])->where('reciver_id', auth()->id());
-            })->orWhere(function ($query) use ($user) {
-                $query->where('sender_id', auth()->id())->where('reciver_id', $user['id']);
-            })->orderBy('created_at', 'desc')->first();
+        if (auth()->user()->can('View Chat')) {
+            $users = User::with('chatSender')->role('CUSTOMER')->where('id', '!=', auth()->id())->where('status', 1)->get()->toArray();
+            // return user orderBy latest message
+            $users = array_map(function ($user) {
+                $user['last_message'] = Chat::where(function ($query) use ($user) {
+                    $query->where('sender_id', $user['id'])->where('reciver_id', auth()->id());
+                })->orWhere(function ($query) use ($user) {
+                    $query->where('sender_id', auth()->id())->where('reciver_id', $user['id']);
+                })->orderBy('created_at', 'desc')->first();
 
-            return $user;
-        }, $users);
+                return $user;
+            }, $users);
 
-        // Sort users based on the latest message
-        usort($users, function ($a, $b) {
-            if ($a['last_message'] === null) {
-                return 1; // Move users with no messages to the end
-            }
-            if ($b['last_message'] === null) {
-                return -1; // Move users with no messages to the end
-            }
+            // Sort users based on the latest message
+            usort($users, function ($a, $b) {
+                if ($a['last_message'] === null) {
+                    return 1; // Move users with no messages to the end
+                }
+                if ($b['last_message'] === null) {
+                    return -1; // Move users with no messages to the end
+                }
 
-            return $b['last_message']->created_at <=> $a['last_message']->created_at; // Sort by latest message timestamp
-        });
-        return view('user.chat.list')->with(compact('users'));
+                return $b['last_message']->created_at <=> $a['last_message']->created_at; // Sort by latest message timestamp
+            });
+            return view('user.chat.list')->with(compact('users'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
     }
 
     public function load(Request $request)
@@ -142,7 +147,7 @@ class ChatController extends Controller
                 return $b['last_message']->created_at <=> $a['last_message']->created_at; // Sort by latest message timestamp
             });
 
-           
+
              return response()->json(['msg' => 'Message sent successfully', 'chat' => $chat, 'users' => $users, 'receiver_users' => $receiver_users, 'chat_count' => $chat_count, 'success' => true]);
         } catch (\Throwable $th) {
             return response()->json(['msg' => $th->getMessage(), 'success' => false]);

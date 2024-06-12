@@ -116,12 +116,12 @@
                                         </p>
                                     </form>
                                 </div>
-                                <!--<div class="join-text">
+                               <div class="join-text">
                                     <a href="javascrip:void(0);" data-bs-toggle="modal"
                                         data-bs-target="#staticBackdrop">Join Lion
                                         Roaring Member</a> | <a href="{{ route('user.forget.password.show') }}">Forgot username or password
                                     </a>
-                                </div>-->
+                                </div>
                                 <div class="join-text join-text-1">
                                     <a href="{{ route('member-privacy-policy') }}">Privacy,
                                         Cookies, and Legal </a>

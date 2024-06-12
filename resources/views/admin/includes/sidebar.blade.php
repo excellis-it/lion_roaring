@@ -30,7 +30,7 @@
                             href="{{ route('admin.password') }}">Change Password</a></li>
                 </ul>
             </li>
-            <li class="dropdown">
+            {{-- <li class="dropdown">
                 <a href="javascript:void(0);"
                     class="menu-toggle nav-link has-dropdown {{ Request::is('admin/customers*') ? 'active' : ' ' }}">
                     <i class="ph ph-user-list"></i>
@@ -42,7 +42,7 @@
                     <li class="{{ Request::is('admin/customers') ? 'active' : ' ' }}"><a class="nav-link"
                             href="{{ route('customers.index') }}"> User List</a></li>
                 </ul>
-            </li>
+            </li> --}}
             <li class="dropdown">
                 <a href="javascript:void(0);"
                     class="menu-toggle nav-link has-dropdown {{ Request::is('admin/plans*') ? 'active' : ' ' }}">

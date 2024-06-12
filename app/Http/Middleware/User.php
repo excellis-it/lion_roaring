@@ -16,7 +16,7 @@ class User
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->check() && auth()->user()->hasRole('CUSTOMER')) {
+        if (auth()->check()) {
             return $next($request);
         }
         return redirect()->route('user.login');

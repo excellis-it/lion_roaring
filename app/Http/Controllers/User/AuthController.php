@@ -33,7 +33,7 @@ class AuthController extends Controller
         $request->merge([$fieldType => $request->user_name]);
         // return $fieldType;
         if (auth()->attempt($request->only($fieldType, 'password'))) {
-            if (auth()->user()->status == 1 && auth()->user()->hasRole('CUSTOMER')) {
+            if (auth()->user()->status == 1) {
                 return redirect()->route('user.profile');
             } else {
                 auth()->logout();

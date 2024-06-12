@@ -16,14 +16,22 @@ class MemberAccess
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->check() && isset(auth()->user()->userSubscription) &&auth()->user()->userLastSubscription != null) {
-           if (auth()->user()->userLastSubscription->subscription_expire_date >= date('Y-m-d')) {
-               return $next($request);
-           } else {
-               return redirect()->route('user.subscription')->with('error', 'Your subscription has been expired. Please renew your subscription.');
-           }
+        if (auth()->check() && isset(auth()->user()->userSubscription) && auth()->user()->userLastSubscription != null) {
+            if (auth()->user()->userLastSubscription->subscription_expire_date >= date('Y-m-d')) {
+                return $next($request);
+            } else {
+                if (auth()->check() && auth()->user()->hasRole('CUSTOMER')) {
+                    return redirect()->route('user.subscription')->with('error', 'Your subscription has been expired. Please renew your subscription.');
+                } else {
+                    return $next($request);
+                }
+            }
         } else {
-            return redirect()->route('user.subscription')->with('error', 'You have not subscribed to any plan. Please subscribe to a plan.');
+            if (auth()->check() && auth()->user()->hasRole('CUSTOMER')) {
+                return redirect()->route('user.subscription')->with('error', 'You have not subscribed to any plan. Please subscribe to a plan.');
+            } else {
+                return $next($request);
+            }
         }
     }
 }

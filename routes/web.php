@@ -38,7 +38,10 @@ use App\Http\Controllers\User\ChatController;
 use App\Http\Controllers\User\CmsController as UserCmsController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\ForgetPasswordController as UserForgetPasswordController;
+use App\Http\Controllers\User\PartnerController;
+use App\Http\Controllers\User\RolePermissionsController;
 use App\Http\Controllers\User\SubscriptionController;
+use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Artisan;
 
 /*
@@ -220,5 +223,21 @@ Route::prefix('user')->middleware(['user'])->group(function () {
             Route::post('/load', [ChatController::class, 'load'])->name('load');
             Route::post('/send', [ChatController::class, 'send'])->name('send');
         });
+
+        Route::resources([
+            'roles' => RolePermissionsController::class,
+            'partners' => PartnerController::class,
+        ]);
+
+        Route::prefix('roles')->group(function () {
+            Route::get('/role-delete/{id}', [RolePermissionsController::class, 'delete'])->name('roles.delete');
+        });
+        
+        Route::prefix('partners')->group(function () {
+            Route::get('/partner-delete/{id}', [PartnerController::class, 'delete'])->name('partners.delete');
+        });
+
+        Route::get('/changePartnerStatus', [PartnerController::class, 'changePartnerStatus'])->name('partners.change-status');
+        Route::get('/partner-fetch-data', [PartnerController::class, 'fetchData'])->name('partners.fetch-data');
     });
 });

@@ -14,33 +14,37 @@
 
             <div class="row">
                 <div class="col-lg-12">
-                    <div
-                        class="expiery_date
-                    @if (isset(auth()->user()->userLastSubscription) && auth()->user()->userLastSubscription != null) @if (Helper::expireTo(auth()->user()->userLastSubscription->subscription_expire_date) <= 10)
-                    today-expire @endif
-                    @endif">
-                        @if (isset(auth()->user()->userLastSubscription) && auth()->user()->userLastSubscription != null)
-                            @if (Helper::expireTo(auth()->user()->userLastSubscription->subscription_expire_date) == 0)
-                                Today is the last day of your plan
-                            @elseif (Helper::expireTo(auth()->user()->userLastSubscription->subscription_expire_date) == 1)
-                                Tomorrow is the last day of your plan
-                            @elseif (Helper::expireTo(auth()->user()->userLastSubscription->subscription_expire_date) < 0)
-                                Expired
-                            @else
-                                @if (Helper::expireTo(auth()->user()->userLastSubscription->subscription_expire_date) <= 10)
-                                    Your plan will expire within
-                                    {{ Helper::expireTo(auth()->user()->userLastSubscription->subscription_expire_date) }}
-                                    days
+                    @if (auth()->user()->hasRole('CUSTOMER'))
+                        <div
+                            class="expiery_date
+                @if (isset(auth()->user()->userLastSubscription) && auth()->user()->userLastSubscription != null) @if (Helper::expireTo(auth()->user()->userLastSubscription->subscription_expire_date) <= 10)
+                today-expire @endif
+                @endif">
+                            @if (isset(auth()->user()->userLastSubscription) && auth()->user()->userLastSubscription != null)
+                                @if (Helper::expireTo(auth()->user()->userLastSubscription->subscription_expire_date) == 0)
+                                    Today is the last day of your plan
+                                @elseif (Helper::expireTo(auth()->user()->userLastSubscription->subscription_expire_date) == 1)
+                                    Tomorrow is the last day of your plan
+                                @elseif (Helper::expireTo(auth()->user()->userLastSubscription->subscription_expire_date) < 0)
+                                    Expired
                                 @else
-                                    Your plan will expire in
-                                    {{ Helper::expireTo(auth()->user()->userLastSubscription->subscription_expire_date) }}
-                                    days
+                                    @if (Helper::expireTo(auth()->user()->userLastSubscription->subscription_expire_date) <= 10)
+                                        Your plan will expire within
+                                        {{ Helper::expireTo(auth()->user()->userLastSubscription->subscription_expire_date) }}
+                                        days
+                                    @else
+                                        Your plan will expire in
+                                        {{ Helper::expireTo(auth()->user()->userLastSubscription->subscription_expire_date) }}
+                                        days
+                                    @endif
                                 @endif
+                            @else
+                                <p class="text-danger">No Ongoing Plan</p>
                             @endif
-                        @else
-                            <p class="text-danger">No Ongoing Plan</p>
-                        @endif
-                    </div>
+                        </div>
+                    @endif
+
+
                     <form action="{{ route('user.profile.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row mb-4">

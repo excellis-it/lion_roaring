@@ -1451,9 +1451,100 @@ border-radius: 50%;
 }
 
 /* ---- files ---------*/
+/* Start Toogle */
 
+.button-switch {
+    font-size: 1.5em;
+    height: 1.875em;
+    margin-bottom: 0.625em;
+    position: relative;
+    width: 4.5em;
+}
+.button-switch .lbl-off,
+.button-switch .lbl-on {
+    cursor: pointer;
+    display: block;
+    font-size: 0.9em;
+    font-weight: bold;
+    line-height: 1em;
+    position: absolute;
+    top: 0.5em;
+    transition: opacity 0.25s ease-out 0.1s;
+    text-transform: uppercase;
+}
+.button-switch .lbl-off {
+    right: 0.4375em;
+}
+.button-switch .lbl-on {
+    color: #fefefe;
+    opacity: 0;
+    left: 0.4375em;
+}
+.button-switch .switch {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    height: 0;
+    font-size: 1em;
+    left: 0;
+    line-height: 0;
+    outline: none;
+    position: absolute;
+    top: 0;
+    width: 0;
+    margin-top: 21px;
+}
+.button-switch .switch:before,
+.button-switch .switch:after {
+    content: "";
+    font-size: 1em;
+    position: absolute;
+}
+.button-switch .switch:before {
+    border-radius: 1.25em;
+    background: #bdc3c7;
+    height: 1.1em;
+    left: -0.25em;
+    top: -0.1875em;
+    transition: background-color 0.25s ease-out 0.1s;
+    width: 2.6em;
+}
+.button-switch .switch:after {
+    box-shadow: 0 0.0625em 0.375em 0 #666;
+    border-radius: 50%;
+    background: #fefefe;
+    height: 0.7em;
+    transform: translate(0, 0);
+    transition: transform 0.25s ease-out 0.1s;
+    width: 0.7em;
+}
+.button-switch .switch:checked:after {
+    transform: translate(1.3em, 0);
+}
+.button-switch .switch:checked ~ .lbl-off {
+    opacity: 0;
+}
+.button-switch .switch:checked ~ .lbl-on {
+    opacity: 1;
+}
+.button-switch .switch#switch-orange:checked:before {
+    background: #643271;
+}
+.button-switch .switch#switch-blue:checked:before {
+    background: #3498db;
+}
+
+/* End Toogle   */
+
+.toxic td {
+    border-bottom-color : rgb(243, 232, 232) !important;
+}
 .error {
     color: red;
+}
+
+.color_head th span {
+    margin-left: 5px;
 }
 
 .eye-btn-1 {
@@ -1464,6 +1555,12 @@ border-radius: 50%;
     font-size: 20px;
 }
 
+.round-btn {
+    background-color: #ff4842;
+    color: #fff;
+    border-radius: 10px;
+    padding: inherit;
+}
 
 .expiery_date {
     /* position: absolute; */
