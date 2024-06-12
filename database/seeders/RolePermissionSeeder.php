@@ -184,7 +184,6 @@ class RolePermissionSeeder extends Seeder
             'View Calendar',
             'View Education',
             'Download Education',
-            'Upload Education',
             'View Help'
         ]);
 
@@ -192,30 +191,16 @@ class RolePermissionSeeder extends Seeder
 
         $leaderRole->syncPermissions([
             'Manage Profile',
-            'Manage Bulletin',
             'Manage Password',
-            'Create Partners',
-            'Edit Partners',
-            'Delete Partners',
-            'View Partners',
-            'Create Team',
-            'Edit Team',
-            'Delete Team',
-            'View Team',
-            'Upload File',
-            'Delete File',
-            'View File',
+            'Manage Bulletin',
             'View Chat',
             'View Email',
             'View Calendar',
             'View Education',
             'Download Education',
             'Upload Education',
-            'View Sovereign',
-            'Create Sovereigns',
-            'Edit Sovereigns',
-            'Delete Sovereigns',
             'View Help',
         ]);
+
     }
 }

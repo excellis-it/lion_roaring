@@ -15,14 +15,14 @@ class assignRoleSeeder extends Seeder
     public function run()
     {
         $roles = [
-            [
-                'name' => 'ADMIN',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'CUSTOMER',
-                'guard_name' => 'web',
-            ],
+            // [
+            //     'name' => 'ADMIN',
+            //     'guard_name' => 'web',
+            // ],
+            // [
+            //     'name' => 'CUSTOMER',
+            //     'guard_name' => 'web',
+            // ],
             [
                 'name' => 'LEADER',
                 'guard_name' => 'web',
