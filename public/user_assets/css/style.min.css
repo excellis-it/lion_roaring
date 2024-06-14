@@ -23318,10 +23318,13 @@ select:disabled {
 }
 
 .bg_white_border{
-    background: #fff;
+        background: #fff url(../../user_assets/images/banner_lion.png);
     border-radius: 6px;
     padding: 25px;
     min-height: 89vh;
+    background-repeat: no-repeat;
+    background-size: 400px;
+    background-position: center;
 }
 .box_label{
     margin-bottom: 10px;
@@ -36931,7 +36934,7 @@ fieldset:disabled .btn {
 } */
 
 .left-sidebar {
-    width: 270px;
+    width: 130px;
     position: absolute;
     transition: .2s ease-in;
     height: 100%;
@@ -36953,7 +36956,7 @@ fieldset:disabled .btn {
 
 .brand-logo {
     min-height: 70px;
-    padding: 15px 5px 0 30px;
+    padding: 15px 5px 0 6px;
     background: transparent;
 }
 
@@ -36986,18 +36989,19 @@ fieldset:disabled .btn {
 
 .sidebar-nav ul .sidebar-item .sidebar-link {
     color: #fff;
-    display: flex;
-    font-size: 14px;
+    display: block;
+    font-size: 15px;
     white-space: nowrap;
     align-items: center;
     line-height: 25px;
     position: relative;
     margin: 0 0 2px;
-    padding: 14px;
+    padding: 5px;
     border-radius: 0px;
     gap: 15px;
     text-decoration: none;
-    font-weight: 400
+    font-weight: 400;
+    text-align:center;
 }
 
 .sidebar-nav ul .sidebar-item .sidebar-link span:last-child {
@@ -37062,23 +37066,24 @@ fieldset:disabled .btn {
 
 .sidebar-nav ul .sidebar-item .sidebar-link span:first-child {
     display: flex;
-    z-index: 1
+    z-index: 1;
+    justify-content:center;
 }
 
 .sidebar-nav ul .sidebar-item .sidebar-link .ti {
     flex-shrink: 0;
     font-size: 20px
 }
-.sidebar-nav ul .sidebar-item .sidebar-link i {
-    flex-shrink: 0;
-    font-size: 20px;
-    width: 32px;
-    height: 32px;
-    background: #F6BC41;
+.sidebar-nav ul .sidebar-item .sidebar-link img {
+        flex-shrink: 0;
+    /* font-size: 20px; */
+    width: 90px;
+    height: 90px;
+    /* background: #F6BC41; */
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
+    /* border-radius: 50%; */
 }
 .sidebar-nav ul .sidebar-item .sidebar-link:hover {
     background-color: rgba(93, 135, 255, .1);
@@ -37346,10 +37351,10 @@ fieldset:disabled .btn {
         width: calc(100% - 50px)
     }
     #main-wrapper[data-layout=vertical][data-header-position=fixed] .app-header {
-        width: calc(100% - 270px)
+        width: calc(100% - 150px)
     }
     #main-wrapper[data-layout=vertical][data-sidebartype=full] .body-wrapper {
-        margin-left: 270px;
+        margin-left: 130px;
 
     }
     #main-wrapper[data-layout=vertical][data-sidebartype=mini-sidebar] .body-wrapper {

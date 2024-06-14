@@ -54,6 +54,12 @@ class RolePermissionSeeder extends Seeder
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
             [
+                "name" => "Manage Partners",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+            [
                 "name" => "View Partners",
                 "guard_name" => "web",
                 "created_at" => date('Y-m-d H:i:s'),
@@ -73,6 +79,12 @@ class RolePermissionSeeder extends Seeder
             ],
             [
                 "name" => "Delete Team",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+            [
+                "name" => "Manage Team",
                 "guard_name" => "web",
                 "created_at" => date('Y-m-d H:i:s'),
                 "updated_at" => date('Y-m-d H:i:s'),
@@ -103,6 +115,12 @@ class RolePermissionSeeder extends Seeder
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
             [
+                "name" => "Manage Activity",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+            [
                 "name" => "View Activity",
                 "guard_name" => "web",
                 "created_at" => date('Y-m-d H:i:s'),
@@ -127,25 +145,31 @@ class RolePermissionSeeder extends Seeder
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
             [
-                "name" => "View Chat",
+                "name" => "Manage File",
                 "guard_name" => "web",
                 "created_at" => date('Y-m-d H:i:s'),
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
             [
-                "name" => "View Email",
+                "name" => "Manage Chat",
                 "guard_name" => "web",
                 "created_at" => date('Y-m-d H:i:s'),
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
             [
-                "name" => "View Calendar",
+                "name" => "Manage Email",
                 "guard_name" => "web",
                 "created_at" => date('Y-m-d H:i:s'),
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
             [
-                "name" => "View Education",
+                "name" => "Manage Calendar",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+            [
+                "name" => "Manage Education",
                 "guard_name" => "web",
                 "created_at" => date('Y-m-d H:i:s'),
                 "updated_at" => date('Y-m-d H:i:s'),
@@ -158,6 +182,12 @@ class RolePermissionSeeder extends Seeder
             ],
             [
                 "name" => "Upload Education",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+            [
+                "name" => "Manage Sovereigns",
                 "guard_name" => "web",
                 "created_at" => date('Y-m-d H:i:s'),
                 "updated_at" => date('Y-m-d H:i:s'),
@@ -187,7 +217,7 @@ class RolePermissionSeeder extends Seeder
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
             [
-                "name" => "View Help",
+                "name" => "Manage Help",
                 "guard_name" => "web",
                 "created_at" => date('Y-m-d H:i:s'),
                 "updated_at" => date('Y-m-d H:i:s'),
@@ -205,12 +235,12 @@ class RolePermissionSeeder extends Seeder
             'Manage Profile',
             'Manage Password',
             'Manage Bulletin',
-            'View Chat',
-            'View Email',
-            'View Calendar',
-            'View Education',
+            'Manage Chat',
+            'Manage Email',
+            'Manage Calendar',
+            'Manage Education',
             'Download Education',
-            'View Help'
+            'Manage Help'
         ]);
 
         $leaderRole = Role::where('name', 'LEADER')->first();
@@ -219,13 +249,13 @@ class RolePermissionSeeder extends Seeder
             'Manage Profile',
             'Manage Password',
             'Manage Bulletin',
-            'View Chat',
-            'View Email',
-            'View Calendar',
-            'View Education',
+            'Manage Chat',
+            'Manage Email',
+            'Manage Calendar',
+            'Manage Education',
             'Download Education',
             'Upload Education',
-            'View Help',
+            'Manage Help',
         ]);
 
     }

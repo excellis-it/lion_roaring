@@ -11,8 +11,6 @@
             <!--  Row 1 -->
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="card w-100">
-                            <div class="card-body">
                                 <form action="{{ route('roles.update', Crypt::encrypt($role->id)) }}" method="POST"
                                     enctype="multipart/form-data">
                                     @method('PUT')
@@ -227,8 +225,6 @@
                                             href="">Cancel</a>
                                     </div>
                                 </form>
-                            </div>
-                        </div>
                     </div>
                 </div>
         </div>
@@ -238,14 +234,14 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $("#checkAll").click(function() {
+            $("#checkAllEdit").click(function() {
                 $('input:checkbox').prop('checked', this.checked);
             });
 
             // Handle individual checkboxes
-            $('input:checkbox').not("#checkAll").click(function() {
+            $('input:checkbox').not("#checkAllEdit").click(function() {
                 if (!this.checked) {
-                    $("#checkAll").prop('checked', false);
+                    $("#checkAllEdit").prop('checked', false);
                 }
             });
         });

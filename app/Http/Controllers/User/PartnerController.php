@@ -21,7 +21,7 @@ class PartnerController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->can('View Partners')) {
+        if (Auth::user()->can('Manage Partners')) {
             if (Auth::user()->hasRole('ADMIN')) {
                 $partners = User::whereHas('roles', function ($q) {
                     $q->where('name', '!=', 'ADMIN');

@@ -15,7 +15,7 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
         rel="stylesheet">
     <!-- Bootstrap core CSS -->
-    <link href="{{asset('user_assets/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('user_assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
     <link rel="stylesheet" type="text/css"
@@ -24,17 +24,17 @@
         integrity="sha512-Woz+DqWYJ51bpVk5Fv0yES/edIMXjj3Ynda+KWTIkGoynAMHrqTcDUQltbipuiaD5ymEo9520lyoVOo9jCQOCA=="
         crossorigin="anonymous" referrerpolicy="no-referrer">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="{{asset('user_assets/css/menu.css')}}" rel="stylesheet">
-    <link id="themeColors" rel="stylesheet" href="{{asset('user_assets/css/style.min.css')}}">
-    <link href="{{asset('user_assets/css/style.css')}}" rel="stylesheet">
-    <link href="{{asset('user_assets/css/responsive.css')}}" rel="stylesheet">
+    <link href="{{ asset('user_assets/css/menu.css') }}" rel="stylesheet">
+    <link id="themeColors" rel="stylesheet" href="{{ asset('user_assets/css/style.min.css') }}">
+    <link href="{{ asset('user_assets/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('user_assets/css/responsive.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     @stack('styles')
 </head>
 
@@ -55,17 +55,17 @@
         </div>
         <div class="dark-transparent sidebartoggler"></div>
     </div>
-    <script src="{{asset('user_assets/js/jquery.min.js')}}"></script>
-    <script src="{{asset('user_assets/js/simplebar.min.js')}}"></script>
-    <script src="{{asset('user_assets/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{ asset('user_assets/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('user_assets/js/simplebar.min.js') }}"></script>
+    <script src="{{ asset('user_assets/js/bootstrap.bundle.min.js') }}"></script>
     <!--  core files -->
-    <script src="{{asset('user_assets/js/app.min.js')}}"></script>
-    <script src="{{asset('user_assets/js/app.init.js')}}"></script>
-    <script src="{{asset('user_assets/js/app-style-switcher.js')}}"></script>
-    <script src="{{asset('user_assets/js/sidebarmenu.js')}}"></script>
-    <script src="{{asset('user_assets/js/custom.js')}}"></script>
+    <script src="{{ asset('user_assets/js/app.min.js') }}"></script>
+    <script src="{{ asset('user_assets/js/app.init.js') }}"></script>
+    <script src="{{ asset('user_assets/js/app-style-switcher.js') }}"></script>
+    <script src="{{ asset('user_assets/js/sidebarmenu.js') }}"></script>
+    <script src="{{ asset('user_assets/js/custom.js') }}"></script>
     <!--  current page js files -->
-    <script src="{{asset('user_assets/js/owl.carousel.min.js')}}"></script>
+    <script src="{{ asset('user_assets/js/owl.carousel.min.js') }}"></script>
     <!-- <script src="js/apexcharts.min.js"></script> -->
     <!-- <script src="js/dashboard.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
@@ -73,17 +73,17 @@
     <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
-     {{-- trippy cdn link --}}
- <script src="https://unpkg.com/popper.js@1"></script>
- <script src="https://unpkg.com/tippy.js@5"></script>
- {{-- trippy --}}
- <script>
-     tippy('[data-tippy-content]', {
-         allowHTML: true,
-         placement: 'bottom',
-         theme: 'light-theme',
-     });
- </script>
+    {{-- trippy cdn link --}}
+    <script src="https://unpkg.com/popper.js@1"></script>
+    <script src="https://unpkg.com/tippy.js@5"></script>
+    {{-- trippy --}}
+    <script>
+        tippy('[data-tippy-content]', {
+            allowHTML: true,
+            placement: 'bottom',
+            theme: 'light-theme',
+        });
+    </script>
     <script>
         @if (Session::has('message'))
             toastr.options = {
@@ -117,7 +117,10 @@
             toastr.warning("{{ session('warning') }}");
         @endif
     </script>
-     @stack('scripts')
+   
+</script>
+
+    @stack('scripts')
 </body>
 
 </html>

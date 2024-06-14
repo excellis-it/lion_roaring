@@ -232,12 +232,14 @@ Route::prefix('user')->middleware(['user'])->group(function () {
         Route::prefix('roles')->group(function () {
             Route::get('/role-delete/{id}', [RolePermissionsController::class, 'delete'])->name('roles.delete');
         });
-        
+
         Route::prefix('partners')->group(function () {
             Route::get('/partner-delete/{id}', [PartnerController::class, 'delete'])->name('partners.delete');
         });
 
         Route::get('/changePartnerStatus', [PartnerController::class, 'changePartnerStatus'])->name('partners.change-status');
         Route::get('/partner-fetch-data', [PartnerController::class, 'fetchData'])->name('partners.fetch-data');
+
+        Route::get('/page/{name}/{permission}', [UserCmsController::class, 'page'])->name('user.page');
     });
 });

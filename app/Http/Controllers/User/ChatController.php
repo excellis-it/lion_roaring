@@ -13,7 +13,7 @@ class ChatController extends Controller
 {
     public function chats()
     {
-        if (auth()->user()->can('View Chat')) {
+        if (auth()->user()->can('Manage Chat')) {
             $users = User::with('chatSender')->role('CUSTOMER')->where('id', '!=', auth()->id())->where('status', 1)->get()->toArray();
             // return user orderBy latest message
             $users = array_map(function ($user) {
