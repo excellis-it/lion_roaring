@@ -45021,10 +45021,29 @@ ul {
 
 /*--- Profile ---- */
 
+.menu_bb{
+    background:#812048;
+}
+.menu_bb a{
+    width:100%;
+    display:inline-block;
+    padding:5px;
+    text-align:center;
+    color:#fff;
 
-
-
-
+}
+.menu_bb a span{
+    width:100%;
+    display:block;
+}
+.menu_bb a span img{
+    width:60px;
+    height:60px;
+    object-fit:contain;
+}
+.menu_bb a:hover{
+    color:#fff;
+}
 
 
 
