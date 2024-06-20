@@ -14,18 +14,12 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link"
                             href="{{ route('user.page', ['name' => 'Activity', 'permission' => 'Manage Activity']) }}"
-                            aria-expanded="false" data-bs-toggle="collapse" data-bs-target="#collapseExample"
-                            role="button" aria-controls="collapseExample">
+                            role="button" >
                             <span>
                                 <img src="{{ asset('user_assets/images/Activity.png') }}" alt="">
                             </span>
                             <span class="hide-menu">Activity</span>
                         </a>
-                        {{-- <div class="collapse" id="collapseExample">
-                        <div class="menu_bb">
-                            <a href="">Activity</a>
-                        </div>
-                    </div> --}}
                     </li>
                 @endif
                 @if (Gate::check('Manage Team'))
@@ -43,7 +37,7 @@
                 @if (Gate::check('Manage File'))
                     <li class="sidebar-item">
                         <a class="sidebar-link"
-                            href="{{ route('user.page', ['name' => 'Files', 'permission' => 'Manage File']) }}"
+                            href="{{ route('file.index') }}"
                             aria-expanded="false">
                             <span>
                                 <img src="{{ asset('user_assets/images/Files.png') }}" alt="">

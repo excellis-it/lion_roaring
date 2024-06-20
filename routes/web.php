@@ -37,6 +37,7 @@ use App\Http\Controllers\User\AuthController as UserAuthController;
 use App\Http\Controllers\User\ChatController;
 use App\Http\Controllers\User\CmsController as UserCmsController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
+use App\Http\Controllers\User\FileController;
 use App\Http\Controllers\User\ForgetPasswordController as UserForgetPasswordController;
 use App\Http\Controllers\User\PartnerController;
 use App\Http\Controllers\User\RolePermissionsController;
@@ -222,6 +223,15 @@ Route::prefix('user')->middleware(['user'])->group(function () {
             Route::get('/', [ChatController::class, 'chats'])->name('index');
             Route::post('/load', [ChatController::class, 'load'])->name('load');
             Route::post('/send', [ChatController::class, 'send'])->name('send');
+        });
+
+        Route::prefix('file')->group(function () {
+            Route::get('/', [FileController::class, 'index'])->name('file.index');
+            Route::get('/upload', [FileController::class, 'upload'])->name('file.upload');
+            Route::post('/store', [FileController::class, 'store'])->name('file.store');
+            Route::get('/delete/{id}', [FileController::class, 'delete'])->name('file.delete');
+            Route::get('/download/{file}', [FileController::class, 'download'])->name('file.download');
+            Route::get('/fetch-data', [FileController::class, 'fetchData'])->name('file.fetch-data');
         });
 
         Route::resources([

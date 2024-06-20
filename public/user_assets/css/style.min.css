@@ -22891,7 +22891,7 @@
 
 body {
     margin: 0;
-    background: #9c325e;
+    background: #7851A9;
 }
 
 hr {
@@ -23286,7 +23286,7 @@ select:disabled {
 }
 .table>:not(caption)>*>* {
     padding: 6px 10px;
-    background-color: #fff;
+    background-color: rgb(255 255 255 / 70%);
     border-width: 1px;
 }
 
@@ -23349,7 +23349,7 @@ select:disabled {
     font-weight: 500;
     line-height: 1.5;
     color: #1e1e1e;
-    background-color: #fff;
+    background-color: rgb(255 255 255 / 70%);
     background-clip: padding-box;
     border: 1px solid #C4C4C4;
     appearance: none;
@@ -36666,7 +36666,7 @@ fieldset:disabled .btn {
     position: relative;
     z-index: 50;
     width: 100%;
-    background: #9c325e;
+    background: #7851A9;
     padding: 0 25px
 }
 
@@ -45022,7 +45022,7 @@ ul {
 /*--- Profile ---- */
 
 .menu_bb{
-    background:#812048;
+    background:#5e3591;
 }
 .menu_bb a{
     width:100%;

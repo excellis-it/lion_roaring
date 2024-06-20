@@ -1556,10 +1556,12 @@ border-radius: 50%;
 }
 
 .round-btn {
-    background-color: #ff4842;
-    color: #fff;
+    background-color: #643271;
+    color: #ffffff;
     border-radius: 10px;
     padding: inherit;
+    display: inline-block;
+    margin-bottom: 6px;
 }
 
 .expiery_date {

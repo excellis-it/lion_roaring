@@ -412,7 +412,7 @@
                         @csrf
                         <div class="modal-body ">
                             {!! (Helper::getPmaTerm()) ? Helper::getPmaTerm()->description : 'It is the responsibility of the members to read and review the Articles of Association of Lion Roaring PMA in its entirety and agree to adopt and comply to its belief, foundation and purpose of the Lion Roaring PMA.' !!}
-                            <div class="modal_checkbox text-center">
+                            <div class="modal_checkbox text-left text-xl-center">
                                 <div class="form-group">
                                     <input type="checkbox" id="pma_check" name="is_checked">
                                     <label for="pma_check">I have read and agreed to the above requirements to access
