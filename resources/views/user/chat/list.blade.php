@@ -97,7 +97,7 @@
                         if (resp.status == true) {
                             $(".chat-module").html(resp.view);
                             // seen message
-                            
+
                             if (resp.chat_count > 0) {
                                 scrollChatToBottom(receiver_id);
                             }
@@ -165,12 +165,17 @@
                             $('#group-manage-' + sender_id).html('');
                             var new_html = '';
                             users.forEach(user => {
-                                let time_format_13 = moment(user.last_message
-                                        .created_at, "YYYY-MM-DD HH:mm:ss")
-                                    .format("hh:mm A");
+                                // Check if last_message exists and has a created_at property
+                                let time_format_13 = user.last_message && user
+                                    .last_message.created_at ?
+                                    moment(user.last_message.created_at,
+                                        "YYYY-MM-DD HH:mm:ss").format("hh:mm A") :
+                                    '';
+
                                 new_html += `
                                             <li class="group user-list ${user.id == receiver_id ? 'active' : ''}" data-id="${user.id}">
                                                 <div class="avatar">`;
+
                                 if (user.profile_picture) {
                                     new_html +=
                                         `<img src="{{ Storage::url('${user.profile_picture}') }}" alt="">`;
@@ -178,14 +183,16 @@
                                     new_html +=
                                         `<img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">`;
                                 }
+
                                 new_html += `</div>
-                                        <p class="GroupName">${user.first_name} ${user.middle_name ?? ''} ${user.last_name ?? ''}</p>
-                                        <p class="GroupDescrp">${user.last_message.message}</p>
-                                        <div class="time_online">
-                                            <p>${time_format_13}</p>
-                                        </div>
-                                    </li>`;
+                                                <p class="GroupName">${user.first_name} ${user.middle_name ? user.middle_name : ''} ${user.last_name ? user.last_name : ''}</p>
+                                                <p class="GroupDescrp">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p>
+                                                <div class="time_online">
+                                                    <p>${time_format_13}</p>
+                                                </div>
+                                            </li>`;
                             });
+
                             $('#group-manage-' + sender_id).append(new_html);
 
                             // Emit chat message to the server
@@ -224,11 +231,16 @@
                     $('#group-manage-' + sender_id).html('');
                     var new_html = '';
                     users.forEach(user => {
-                        let time_format_13 = moment(user.last_message.created_at,
-                                "YYYY-MM-DD HH:mm:ss")
-                            .format("hh:mm A");
-                        new_html += ` <li class="group user-list ${user.id == data.sender_id ? 'active' : ''}" data-id="${user.id}">
-                                             <div class="avatar">`;
+                        // Check if last_message exists and has a created_at property
+                        let time_format_13 = user.last_message && user.last_message.created_at ?
+                            moment(user.last_message.created_at, "YYYY-MM-DD HH:mm:ss").format(
+                                "hh:mm A") :
+                            '';
+
+                        new_html += `
+        <li class="group user-list ${user.id == data.sender_id ? 'active' : ''}" data-id="${user.id}">
+            <div class="avatar">`;
+
                         if (user.profile_picture) {
                             new_html +=
                                 `<img src="{{ Storage::url('${user.profile_picture}') }}" alt="">`;
@@ -236,14 +248,16 @@
                             new_html +=
                                 `<img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">`;
                         }
+
                         new_html += `</div>
-                                        <p class="GroupName">${user.first_name} ${user.middle_name ?? ''} ${user.last_name ?? ''}</p>
-                                        <p class="GroupDescrp">${user.last_message.message}</p>
-                                        <div class="time_online">
-                                            <p>${time_format_13}</p>
-                                        </div>
-                                    </li>`;
+        <p class="GroupName">${user.first_name} ${user.middle_name ? user.middle_name : ''} ${user.last_name ? user.last_name : ''}</p>
+        <p class="GroupDescrp">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p>
+        <div class="time_online">
+            <p>${time_format_13}</p>
+        </div>
+    </li>`;
                     });
+
                     $('#group-manage-' + sender_id).append(new_html);
 
                 }

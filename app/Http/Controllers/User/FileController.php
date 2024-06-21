@@ -16,7 +16,7 @@ class FileController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage File')) {
-            $files = File::where('user_id', auth()->id())->orderBy('id', 'desc')->paginate(10);
+            $files = File::where('user_id', auth()->id())->orderBy('id', 'desc')->paginate(15);
             return view('user.file.list')->with('files', $files);
         } else {
             return redirect()->route('user.dashboard')->with('error', 'Permission denied.');
@@ -104,7 +104,7 @@ class FileController extends Controller
                         ->orWhere('file_extension', 'like', '%' . $query . '%');
                 })
                 ->orderBy($sort_by, $sort_type)
-                ->paginate(10);
+                ->paginate(15);
 
             return response()->json(['data' => view('user.file.table', compact('files'))->render()]);
         }

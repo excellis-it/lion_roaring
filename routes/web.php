@@ -41,7 +41,9 @@ use App\Http\Controllers\User\FileController;
 use App\Http\Controllers\User\ForgetPasswordController as UserForgetPasswordController;
 use App\Http\Controllers\User\PartnerController;
 use App\Http\Controllers\User\RolePermissionsController;
+use App\Http\Controllers\User\SendMailController;
 use App\Http\Controllers\User\SubscriptionController;
+use App\Http\Controllers\User\TeamController;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Artisan;
 
@@ -249,6 +251,15 @@ Route::prefix('user')->middleware(['user'])->group(function () {
 
         Route::get('/changePartnerStatus', [PartnerController::class, 'changePartnerStatus'])->name('partners.change-status');
         Route::get('/partner-fetch-data', [PartnerController::class, 'fetchData'])->name('partners.fetch-data');
+
+        // Mail
+        Route::prefix('mail')->group(function () {
+            Route::get('/', [SendMailController::class, 'list'])->name('mail.index');
+            Route::get('/compose', [SendMailController::class, 'compose'])->name('mail.compose');
+            Route::post('/send', [SendMailController::class, 'sendMail'])->name('mail.send');
+        });
+
+        Route::get('/mail-fetch-data', [SendMailController::class, 'fetchData'])->name('mail.fetch-data');
 
         Route::get('/page/{name}/{permission}', [UserCmsController::class, 'page'])->name('user.page');
     });

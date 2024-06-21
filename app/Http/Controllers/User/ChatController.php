@@ -14,7 +14,7 @@ class ChatController extends Controller
     public function chats()
     {
         if (auth()->user()->can('Manage Chat')) {
-            $users = User::with('chatSender')->role('CUSTOMER')->where('id', '!=', auth()->id())->where('status', 1)->get()->toArray();
+            $users = User::with('chatSender')->where('id', '!=', auth()->id())->where('status', 1)->get()->toArray();
             // return user orderBy latest message
             $users = array_map(function ($user) {
                 $user['last_message'] = Chat::where(function ($query) use ($user) {
@@ -93,7 +93,7 @@ class ChatController extends Controller
             ]);
             // get chat data with sender and reciver
             $chat = Chat::with('sender', 'reciver')->find($chatData->id);
-            $users = User::with('chatSender')->role('CUSTOMER')->where('id', '!=', auth()->id())->where('status', 1)->get()->toArray();
+            $users = User::with('chatSender')->where('id', '!=', auth()->id())->where('status', 1)->get()->toArray();
             // return user orderBy latest message
             $users = array_map(function ($user) {
                 $user['last_message'] = Chat::where(function ($query) use ($user) {
@@ -119,7 +119,7 @@ class ChatController extends Controller
 
             $reciver_id = $request->reciver_id; // Corrected the variable name to match the request
             $receiver_users = User::with('chatSender') // Assuming 'chatSender' is the relationship to the Chat model
-                ->role('CUSTOMER')
+                // ->role('CUSTOMER')
                 ->where('id', '!=', $reciver_id)
                 ->where('status', 1)
                 ->get()

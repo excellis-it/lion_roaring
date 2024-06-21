@@ -20,6 +20,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'created_id',
         'first_name',
         'last_name',
         'created_id',
@@ -76,6 +77,9 @@ class User extends Authenticatable
         return $this->hasMany(Chat::class, 'reciver_id');
     }
 
-     
+    public function created_by()
+    {
+        return $this->belongsTo(User::class, 'created_id');
+    }
 
 }

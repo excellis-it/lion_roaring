@@ -19,7 +19,7 @@
                                     </div>
                                     <div class="col-md-2 float-right">
                                         <a href="{{ route('partners.create') }}" class="btn btn-primary w-100">+ Add
-                                            Partnet</a>
+                                            Partner</a>
                                     </div>
                                 </div>
                                 <div class="row ">

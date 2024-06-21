@@ -90,7 +90,7 @@ class PartnerController extends Controller
             'type' => ucfirst(strtolower($request->role)),
         ];
 
-        // Mail::to($request->email)->send(new RegistrationMail($maildata));
+        Mail::to($request->email)->send(new RegistrationMail($maildata));
         return redirect()->route('partners.index')->with('message', 'Customer created successfully.');
     }
 
