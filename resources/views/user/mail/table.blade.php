@@ -7,7 +7,7 @@
             <td> {{ $mail->subject }}</td>
             <td>
                 <div class="d-flex">
-                    <a href="javascript:void(0);" class="edit_icon me-2">
+                    <a href="javascript:void(0);" class="edit_icon me-2 view_details" data-id="{{$mail->id}}">
                         <i class="fa-solid fa-eye"></i>
                     </a>
                 </div>

@@ -5,12 +5,15 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Chat;
 use App\Models\User;
+use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 
 class ChatController extends Controller
 {
+    use ImageTrait;
+
     public function chats()
     {
         if (auth()->user()->can('Manage Chat')) {
@@ -85,12 +88,25 @@ class ChatController extends Controller
             })->orWhere(function ($query) use ($request) {
                 $query->where('sender_id', $request->reciver_id)->where('reciver_id', $request->sender_id);
             })->count();
+            if ($request->file) {
+                // check the file size
+                // if ($request->file('file')->getSize() > 10240) {
+                //     return response()->json(['msg' => 'File size is too large', 'success' => false]);
+                // }
+                $file = $this->imageUpload( $request->file('file'), 'chat');
+                $chatData = Chat::create([
+                    'sender_id' => $request->sender_id,
+                    'reciver_id' => $request->reciver_id,
+                    'attachment' => $file
+                ]);
+            } else {
+                $chatData = Chat::create([
+                    'sender_id' => $request->sender_id,
+                    'reciver_id' => $request->reciver_id,
+                    'message' => $request->message
+                ]);
+            }
 
-            $chatData = Chat::create([
-                'sender_id' => $request->sender_id,
-                'reciver_id' => $request->reciver_id,
-                'message' => $request->message
-            ]);
             // get chat data with sender and reciver
             $chat = Chat::with('sender', 'reciver')->find($chatData->id);
             $users = User::with('chatSender')->where('id', '!=', auth()->id())->where('status', 1)->get()->toArray();

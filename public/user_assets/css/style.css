@@ -1580,6 +1580,11 @@ border-radius: 50%;
     /* animation: changeBackgroundColor 2s infinite; */
 }
 
+.modal-header {
+    background-color: #643271;
+    color: #fff;
+}
+
 .today-expire {
     animation: changeBackgroundColor 1s infinite;
 }

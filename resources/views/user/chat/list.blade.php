@@ -94,37 +94,55 @@
                         sender_id: sender_id,
                     },
                     success: function(resp) {
-                        if (resp.status == true) {
+                        if (resp.status === true) {
                             $(".chat-module").html(resp.view);
-                            // seen message
 
                             if (resp.chat_count > 0) {
                                 scrollChatToBottom(receiver_id);
                             }
+
+                            // Initialize EmojiOneArea on MessageInput
+                            var emojioneAreaInstance = $("#MessageInput").emojioneArea({
+                                pickerPosition: "top",
+                                filtersPosition: "top",
+                                tonesStyle: "bullet"
+                            });
+
+                            // Handle Enter key press within the emoji picker
+                            emojioneAreaInstance[0].emojioneArea.on('keydown', function(editor, event) {
+                                if (event.which === 13 && !event.shiftKey) {
+                                    event.preventDefault();
+                                    $("#MessageForm").submit();
+                                }
+                            });
                         } else {
                             console.log(resp.msg);
                         }
                     },
+                    error: function(xhr, status, error) {
+                        console.error("An error occurred: " + status + "\nError: " + error);
+                    }
                 });
             }
+
 
             function scrollChatToBottom(receiver_id) {
                 var messages = document.getElementById("chat-container-" + receiver_id);
                 messages.scrollTop = messages.scrollHeight;
             }
 
+
             $(document).on("submit", "#MessageForm", function(e) {
                 e.preventDefault();
 
-                var message = $("#MessageInput").val();
+                // Get the message from the input field emoji area
+                var message = $("#MessageInput").emojioneArea()[0].emojioneArea.getText();
                 var receiver_id = $(".reciver_id").val();
                 var url = "{{ route('chats.send') }}";
 
                 if (message == "") {
                     return false;
                 }
-
-
 
                 // Perform Ajax request to send the message to the server
                 $.ajax({
@@ -138,7 +156,7 @@
                     },
                     success: function(res) {
                         if (res.success) {
-                            $("#MessageInput").val("");
+                            $("#MessageInput").data("emojioneArea").setText("");
 
                             let chat = res.chat.message;
                             let created_at = res.chat.created_at;
@@ -146,13 +164,13 @@
                                 .format("hh:mm A");
 
                             let html = ` <div class="message me">
-                                            <p class="messageContent">${chat}</p>
-                                            <div class="messageDetails">
-                                                <div class="messageTime">${time_format_12}</div>
-                                                <i class="fas fa-check"></i>
-                                            </div>
-                                        </div>
-                                    `;
+                                <p class="messageContent">${chat}</p>
+                                <div class="messageDetails">
+                                    <div class="messageTime">${time_format_12}</div>
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                        `;
                             $('#message-app-' + receiver_id).html(chat);
                             if (res.chat_count > 0) {
                                 $("#chat-container-" + receiver_id).append(html);
@@ -165,16 +183,14 @@
                             $('#group-manage-' + sender_id).html('');
                             var new_html = '';
                             users.forEach(user => {
-                                // Check if last_message exists and has a created_at property
                                 let time_format_13 = user.last_message && user
                                     .last_message.created_at ?
                                     moment(user.last_message.created_at,
-                                        "YYYY-MM-DD HH:mm:ss").format("hh:mm A") :
-                                    '';
+                                        "YYYY-MM-DD HH:mm:ss").format("hh:mm A") : '';
 
                                 new_html += `
-                                            <li class="group user-list ${user.id == receiver_id ? 'active' : ''}" data-id="${user.id}">
-                                                <div class="avatar">`;
+                                <li class="group user-list ${user.id == receiver_id ? 'active' : ''}" data-id="${user.id}">
+                                    <div class="avatar">`;
 
                                 if (user.profile_picture) {
                                     new_html +=
@@ -185,12 +201,12 @@
                                 }
 
                                 new_html += `</div>
-                                                <p class="GroupName">${user.first_name} ${user.middle_name ? user.middle_name : ''} ${user.last_name ? user.last_name : ''}</p>
-                                                <p class="GroupDescrp">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p>
-                                                <div class="time_online">
-                                                    <p>${time_format_13}</p>
-                                                </div>
-                                            </li>`;
+                                    <p class="GroupName">${user.first_name} ${user.middle_name ? user.middle_name : ''} ${user.last_name ? user.last_name : ''}</p>
+                                    <p class="GroupDescrp">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p>
+                                    <div class="time_online">
+                                        <p>${time_format_13}</p>
+                                    </div>
+                                </li>`;
                             });
 
                             $('#group-manage-' + sender_id).append(new_html);
@@ -209,12 +225,113 @@
                 });
             });
 
+            $(document).on("change", "#file", function(e) {
+                var file = e.target.files[0];
+                var receiver_id = $(".reciver_id").val();
+                var formData = new FormData();
+                formData.append('file', file);
+                formData.append('_token', $("meta[name='csrf-token']").attr(
+                'content')); // Retrieve CSRF token from meta tag
+                formData.append('reciver_id', receiver_id);
+                formData.append('sender_id', sender_id);
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('chats.send') }}",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        if (res.success) {
+                            let attachment = res.chat.attachment;
+                            let fileUrl = "{{ Storage::url('') }}" + attachment;
+                            let attachement_extention = attachment.split('.').pop();
+                            let created_at = res.chat.created_at;
+                            let time_format_12 = moment(created_at, "YYYY-MM-DD HH:mm:ss")
+                                .format("hh:mm A");
+                            let html = `<div class="message me">`;
+                            if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
+                                html +=
+                                    `<p class="messageContent"><a href="${fileUrl}" target="_blank"><img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a></p>`;
+                            } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
+                                html +=
+                                    `<p class="messageContent"><a href="${fileUrl}" target="_blank"><video width="200" height="200" controls><source src="${fileUrl}" type="video/mp4"><source src="${fileUrl}" type="video/webm"><source src="${fileUrl}" type="video/ogg"></video></a></p>`;
+                            } else {
+                                html +=
+                                    `<p class="messageContent"><a href="${fileUrl}" download="${attachment}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a></p>`;
+                            }
+
+                            html +=
+                                `<div class="messageDetails"><div class="messageTime">${time_format_12}</div><i class="fas fa-check"></i></div></div>`;
+
+                            if (res.chat_count > 0) {
+                                $("#chat-container-" + receiver_id).append(html);
+                                scrollChatToBottom(receiver_id);
+                            } else {
+                                $("#chat-container-" + receiver_id).html(html);
+                            }
+
+                            // Update the user list
+                            var users = res.users;
+                            $('#group-manage-' + sender_id).html('');
+                            var new_html = '';
+                            users.forEach(user => {
+                                let time_format_13 = user.last_message && user
+                                    .last_message.created_at ? moment(user.last_message
+                                        .created_at, "YYYY-MM-DD HH:mm:ss").format(
+                                        "hh:mm A") : '';
+
+                                new_html +=
+                                    `<li class="group user-list ${user.id == receiver_id ? 'active' : ''}" data-id="${user.id}"><div class="avatar">`;
+
+                                if (user.profile_picture) {
+                                    new_html +=
+                                        `<img src="{{ Storage::url('${user.profile_picture}') }}" alt="">`;
+                                } else {
+                                    new_html +=
+                                        `<img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">`;
+                                }
+
+                                new_html +=
+                                    `</div><p class="GroupName">${user.first_name} ${user.middle_name ? user.middle_name : ''} ${user.last_name ? user.last_name : ''}</p><p class="GroupDescrp">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p><div class="time_online"><p>${time_format_13}</p></div></li>`;
+                            });
+
+                            $('#group-manage-' + sender_id).append(new_html);
+
+                            socket.emit("chat", {
+                                message: file.name,
+                                file_url: fileUrl,
+                                sender_id: sender_id,
+                                receiver_id: receiver_id,
+                                receiver_users: res.receiver_users,
+                            });
+                        } else {
+                            console.log(res.msg);
+                        }
+                    }
+                });
+            });
+
             // Listen for incoming chat messages from the server
             socket.on("chat", function(data) {
                 html = `
                         <div class="message you">
-                            <p class="messageContent">${data.message}</p>
-                            <div class="messageDetails">
+                            <p class="messageContent">`
+                                if (data.file_url) {
+                                    let attachement_extention = data.file_url.split('.').pop();
+                                    if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
+                                        html += `<a href="${data.file_url}" target="_blank"><img src="${data.file_url}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a>`;
+                                    } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
+                                        html += `<a href="${data.file_url}" target="_blank"><video width="200" height="200" controls><source src="${data.file_url}" type="video/mp4"><source src="${data.file_url}" type="video/webm"><source src="${data.file_url}" type="video/ogg"></video></a>`;
+                                    } else {
+                                        html += `<a href="${data.file_url}" download="${data.message}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a>`;
+                                    }
+                                } else {
+                                    html += `${data.message}`;
+                                }
+
+                                html += `</p>
+                       <div class="messageDetails">
                                 <div class="messageTime">${moment().format("hh:mm A")}</div>
                             </div>
                         </div>

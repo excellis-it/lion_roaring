@@ -72,4 +72,11 @@ class SendMailController extends Controller
 
         return redirect()->route('mail.index')->with('message', 'Mail sent successfully.');
     }
+
+    public function view(Request $request)
+    {
+        $id = $request->id;
+        $viewMail = SendMail::findOrFail($id);
+        return response()->json(['view' => view('user.mail.model_body', compact('viewMail'))->render(), 'status' => true]);
+    }
 }

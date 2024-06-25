@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Email List - {{ env('APP_NAME') }}
+Becoming Sovereigns List - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -15,12 +15,12 @@
 
                                 <div class="row mb-3">
                                     <div class="col-md-10">
-                                        <h3 class="mb-3">Email List</h3>
+                                        <h3 class="mb-3">Becoming Sovereigns List</h3>
                                     </div>
                                     <div class="col-md-2 float-right">
-                                        @if (auth()->user()->can('Manage Email'))
-                                            <a href="{{ route('mail.compose') }}" class="btn btn-primary w-100"><i
-                                                    class="fa fa-paper-plane" aria-hidden="true"></i> Send Mail</a>
+                                        @if (auth()->user()->can('Upload Becomeing Sovereigns'))
+                                            <a href="{{ route('becoming-sovereign.upload') }}" class="btn btn-primary w-100"><i
+                                                    class="fa-solid fa-upload"></i> Upload Files</a>
                                         @endif
                                     </div>
                                 </div>
@@ -39,20 +39,20 @@
                                         <thead class="color_head">
                                             <tr class="header-row">
                                                 <th>ID (#)</th>
-                                                <th>
-                                                    Mail To
-                                                </th>
-                                                <th>
-                                                    Mail CC
-                                                </th>
-                                                <th>
-                                                    Subject
-                                                </th>
+                                                <th class="sorting" data-tippy-content="Sort by File Name"
+                                                data-sorting_type="desc" data-column_name="file_name"
+                                                style="cursor: pointer">File Name <span id="file_name_icon"><i
+                                                    class="fa fa-arrow-down"></i></span></th>
+                                                <th class="sorting" data-tippy-content="Sort by Extension"
+                                                data-sorting_type="desc" data-column_name="file_extension"
+                                                style="cursor: pointer">File Extension <span id="file_extension_icon"><i
+                                                    class="fa fa-arrow-down"></i></span></th>
+
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @include('user.mail.table', ['mails' => $mails])
+                                            @include('user.becoming-sovereign.table', ['files' => $files])
                                             <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
                                             <input type="hidden" name="hidden_column_name" id="hidden_column_name"
                                                 value="id" />
@@ -68,32 +68,43 @@
             </form>
         </div>
     </div>
-    <!-- Modal -->
-    <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="emailModalLabel">Email</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="mail_details">
-                    @include('user.mail.model_body')
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="print_btn" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')
     <script>
+        $(document).on('click', '#delete', function(e) {
+            swal({
+                    title: "Are you sure?",
+                    text: "To delete this file.",
+                    type: "warning",
+                    confirmButtonText: "Yes",
+                    showCancelButton: true
+                })
+                .then((result) => {
+                    if (result.value) {
+                        window.location = $(this).data('route');
+                    } else if (result.dismiss === 'cancel') {
+                        swal(
+                            'Cancelled',
+                            'Your stay here :)',
+                            'error'
+                        )
+                    }
+                })
+        });
+    </script>
+
+    <script>
         $(document).ready(function() {
+
+            function clear_icon() {
+                $('#file_name_icon').html('');
+                $('#file_extension_icon').html('');
+            }
 
             function fetch_data(page, sort_type, sort_by, query) {
                 $.ajax({
-                    url: "{{ route('mail.fetch-data') }}",
+                    url: "{{ route('becoming-sovereign.fetch-data') }}",
                     data: {
                         page: page,
                         sortby: sort_by,
@@ -153,29 +164,6 @@
                 fetch_data(page, sort_type, column_name, query);
             });
 
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $(document).on("click", '.view_details', function() {
-                var id = $(this).data('id');
-
-                $.ajax({
-                    type: 'GET',
-                    url: '{{ route('mail.view') }}',
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        id: id,
-                    },
-                    success: function(response) {
-                        $('#mail_details').html(response.view);
-                        $("#emailModal").modal('show');
-                    },
-                    error: function(xhr, textStatus, errorThrown) {
-                        console.error('Error fetching mail details: ' + textStatus);
-                    }
-                });
-            });
         });
     </script>
 @endpush

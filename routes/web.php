@@ -34,11 +34,15 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Frontend\CmsController;
 use App\Http\Controllers\Frontend\DonationController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
+use App\Http\Controllers\User\BecomingChristLikeController;
+use App\Http\Controllers\User\BecomingSovereignController;
 use App\Http\Controllers\User\ChatController;
 use App\Http\Controllers\User\CmsController as UserCmsController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\FileController;
 use App\Http\Controllers\User\ForgetPasswordController as UserForgetPasswordController;
+use App\Http\Controllers\User\LeadershipDevelopmentController;
+use App\Http\Controllers\User\LiveEventController;
 use App\Http\Controllers\User\PartnerController;
 use App\Http\Controllers\User\RolePermissionsController;
 use App\Http\Controllers\User\SendMailController;
@@ -231,10 +235,50 @@ Route::prefix('user')->middleware(['user'])->group(function () {
             Route::get('/', [FileController::class, 'index'])->name('file.index');
             Route::get('/upload', [FileController::class, 'upload'])->name('file.upload');
             Route::post('/store', [FileController::class, 'store'])->name('file.store');
+            Route::get('/edit/{id}', [FileController::class, 'edit'])->name('file.edit');
+            Route::post('/update/{id}', [FileController::class, 'update'])->name('file.update');
             Route::get('/delete/{id}', [FileController::class, 'delete'])->name('file.delete');
             Route::get('/download/{file}', [FileController::class, 'download'])->name('file.download');
             Route::get('/fetch-data', [FileController::class, 'fetchData'])->name('file.fetch-data');
         });
+
+        Route::prefix('becoming-sovereign')->group(function () {
+            Route::get('/', [BecomingSovereignController::class, 'index'])->name('becoming-sovereign.index');
+            Route::get('/upload', [BecomingSovereignController::class, 'upload'])->name('becoming-sovereign.upload');
+            Route::post('/store', [BecomingSovereignController::class, 'store'])->name('becoming-sovereign.store');
+            Route::get('/edit/{id}', [BecomingSovereignController::class, 'edit'])->name('becoming-sovereign.edit');
+            Route::post('/update/{id}', [BecomingSovereignController::class, 'update'])->name('becoming-sovereign.update');
+            Route::get('/delete/{id}', [BecomingSovereignController::class, 'delete'])->name('becoming-sovereign.delete');
+            Route::get('/download/{file}', [BecomingSovereignController::class, 'download'])->name('becoming-sovereign.download');
+            Route::get('/fetch-data', [BecomingSovereignController::class, 'fetchData'])->name('becoming-sovereign.fetch-data');
+            Route::get('/view/{id}', [BecomingSovereignController::class, 'view'])->name('becoming-sovereign.view');
+        });
+
+        Route::prefix('becoming-christ-link')->group(function () {
+            Route::get('/', [BecomingChristLikeController::class, 'index'])->name('becoming-christ-link.index');
+            Route::get('/upload', [BecomingChristLikeController::class, 'upload'])->name('becoming-christ-link.upload');
+            Route::post('/store', [BecomingChristLikeController::class, 'store'])->name('becoming-christ-link.store');
+            Route::get('/edit/{id}', [BecomingChristLikeController::class, 'edit'])->name('becoming-christ-link.edit');
+            Route::post('/update/{id}', [BecomingChristLikeController::class, 'update'])->name('becoming-christ-link.update');
+            Route::get('/delete/{id}', [BecomingChristLikeController::class, 'delete'])->name('becoming-christ-link.delete');
+            Route::get('/download/{file}', [BecomingChristLikeController::class, 'download'])->name('becoming-christ-link.download');
+            Route::get('/fetch-data', [BecomingChristLikeController::class, 'fetchData'])->name('becoming-christ-link.fetch-data');
+            Route::get('/view/{id}', [BecomingChristLikeController::class, 'view'])->name('becoming-christ-link.view');
+        });
+
+        // leadership development
+        Route::prefix('leadership-development')->group(function () {
+            Route::get('/', [LeadershipDevelopmentController::class, 'index'])->name('leadership-development.index');
+            Route::get('/upload', [LeadershipDevelopmentController::class, 'upload'])->name('leadership-development.upload');
+            Route::post('/store', [LeadershipDevelopmentController::class, 'store'])->name('leadership-development.store');
+            Route::get('/edit/{id}', [LeadershipDevelopmentController::class, 'edit'])->name('leadership-development.edit');
+            Route::post('/update/{id}', [LeadershipDevelopmentController::class, 'update'])->name('leadership-development.update');
+            Route::get('/delete/{id}', [LeadershipDevelopmentController::class, 'delete'])->name('leadership-development.delete');
+            Route::get('/download/{file}', [LeadershipDevelopmentController::class, 'download'])->name('leadership-development.download');
+            Route::get('/fetch-data', [LeadershipDevelopmentController::class, 'fetchData'])->name('leadership-development.fetch-data');
+            Route::get('/view/{id}', [LeadershipDevelopmentController::class, 'view'])->name('leadership-development.view');
+        });
+
 
         Route::resources([
             'roles' => RolePermissionsController::class,
@@ -257,6 +301,14 @@ Route::prefix('user')->middleware(['user'])->group(function () {
             Route::get('/', [SendMailController::class, 'list'])->name('mail.index');
             Route::get('/compose', [SendMailController::class, 'compose'])->name('mail.compose');
             Route::post('/send', [SendMailController::class, 'sendMail'])->name('mail.send');
+            Route::get('/view', [SendMailController::class, 'view'])->name('mail.view');
+        });
+
+        // live-event
+        Route::prefix('events')->group(function () {
+            Route::get('/', [LiveEventController::class, 'list'])->name('events.index');
+            Route::get('/calender', [LiveEventController::class, 'calender'])->name('events.calender');
+            Route::post('/store', [LiveEventController::class, 'store'])->name('events.store');
         });
 
         Route::get('/mail-fetch-data', [SendMailController::class, 'fetchData'])->name('mail.fetch-data');

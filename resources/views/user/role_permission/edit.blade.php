@@ -44,18 +44,19 @@
                                                     @php
                                                         $modules = [
                                                             'Profile',
-                                                            'Bulletin',
                                                             'Password',
-                                                            'Partners',
-                                                            'Team',
-                                                            'Activity',
-                                                            'File',
                                                             'Chat',
-                                                            'Education',
-                                                            'Calendar',
+                                                            'Team',
                                                             'Email',
-                                                            'Sovereigns',
-                                                            'Help',
+                                                            'Becomeing Sovereigns',
+                                                            'Becoming Christ Like',
+                                                            'Leadership Development',
+                                                            'File',
+                                                            'Job Postings',
+                                                            'Meeting Schedule',
+                                                            'Event',
+                                                            'Partners',
+                                                            'Help'
                                                         ];
 
                                                     @endphp

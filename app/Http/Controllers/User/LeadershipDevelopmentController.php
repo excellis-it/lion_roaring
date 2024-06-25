@@ -6,18 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\File;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class FileController extends Controller
+class LeadershipDevelopmentController extends Controller
 {
     use ImageTrait;
 
     public function index()
     {
-        if (auth()->user()->can('Manage File')) {
-            $files = File::where('user_id', auth()->id())->orderBy('id', 'desc')->paginate(15);
-            return view('user.file.list')->with('files', $files);
+        if (auth()->user()->can('Manage Leadership Development')) {
+            $files = File::where('user_id', auth()->id())->orderBy('id', 'desc')->where('type', 'Leadership Development')->paginate(15);
+            return view('user.leadership-development.list')->with('files', $files);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -25,8 +24,8 @@ class FileController extends Controller
 
     public function upload()
     {
-        if (auth()->user()->can('Upload File')) {
-            return view('user.file.upload');
+        if (auth()->user()->can('Upload Leadership Development')) {
+            return view('user.leadership-development.upload');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -36,7 +35,6 @@ class FileController extends Controller
     {
         $request->validate([
             'file' => 'required|max:2048',
-            'type' => 'required|in:Becoming Sovereign,Becoming Christ Like,Leadership Development',
         ]);
 
 
@@ -50,25 +48,25 @@ class FileController extends Controller
             $file_upload->user_id = auth()->id();
             $file_upload->file_name = $file_name;
             $file_upload->file_extension = $file_extension;
-            $file_upload->type = $request->type;
+            $file_upload->type = 'Leadership Development';
             $file_upload->file = $file;
             $file_upload->save();
         }
 
-        return redirect()->route('file.index')->with('message', 'File uploaded successfully.');
+        return redirect()->route('leadership-development.index')->with('message', 'File uploaded successfully.');
     }
 
     public function delete($id)
     {
-        if (auth()->user()->can('Delete File')) {
+        if (auth()->user()->can('Delete Leadership Development')) {
             $file = File::find($id);
             if ($file) {
                 $file->delete();
                 // delete file from storage
                 Storage::disk('public')->delete($file->file);
-                return redirect()->route('file.index')->with('message', 'File deleted successfully.');
+                return redirect()->route('leadership-development.index')->with('message', 'File deleted successfully.');
             } else {
-                return redirect()->route('file.index')->with('error', 'File not found.');
+                return redirect()->route('leadership-development.index')->with('error', 'File not found.');
             }
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -83,10 +81,10 @@ class FileController extends Controller
             if (file_exists($filePath)) {
                 return response()->download($filePath);
             } else {
-                return redirect()->route('file.index')->with('error', 'File not found.');
+                return redirect()->route('leadership-development.index')->with('error', 'File not found.');
             }
         } else {
-            return redirect()->route('file.index')->with('error', 'File not found.');
+            return redirect()->route('leadership-development.index')->with('error', 'File not found.');
         }
     }
 
@@ -105,21 +103,22 @@ class FileController extends Controller
                         ->orWhere('file_name', 'like', '%' . $query . '%')
                         ->orWhere('file_extension', 'like', '%' . $query . '%');
                 })
+                ->where('type', 'Leadership Development')
                 ->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 
-            return response()->json(['data' => view('user.file.table', compact('files'))->render()]);
+            return response()->json(['data' => view('user.leadership-development.table', compact('files'))->render()]);
         }
     }
 
     public function edit($id)
     {
-        if (auth()->user()->can('Edit File')) {
-            $file = File::findOrFail($id);
+        if (auth()->user()->can('Edit Leadership Development')) {
+             $file = File::findOrFail($id);
             if ($file) {
-                return view('user.file.edit')->with('file', $file);
+                return view('user.leadership-development.edit')->with('file', $file);
             } else {
-                return redirect()->route('file.index')->with('error', 'File not found.');
+                return redirect()->route('leadership-development.index')->with('error', 'File not found.');
             }
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -130,7 +129,6 @@ class FileController extends Controller
     {
         $request->validate([
             'file' => 'required|max:2048',
-            'type' => 'required|in:Becoming Sovereign,Becoming Christ Like,Leadership Development',
         ]);
 
         $file = File::findOrFail($id);
@@ -143,13 +141,26 @@ class FileController extends Controller
             // }
             $file->file_name = $file_name;
             $file->file_extension = $file_extension;
-            $file->type = $request->type;
             $file->file = $file_upload;
             $file->save();
 
-            return redirect()->route('file.index')->with('message', 'File updated successfully.');
+            return redirect()->route('leadership-development.index')->with('message', 'File updated successfully.');
         } else {
-            return redirect()->route('file.index')->with('error', 'File not found.');
+            return redirect()->route('leadership-development.index')->with('error', 'File not found.');
+        }
+    }
+
+    public function view($id)
+    {
+        if (auth()->user()->can('View Leadership Development')){
+            $file = File::findOrFail($id);
+            if ($file) {
+                return view('user.leadership-development.view')->with('file', $file);
+            } else {
+                return redirect()->route('leadership-development.index')->with('error', 'File not found.');
+            }
+        } else {
+            abort(403, 'You do not have permission to access this page.');
         }
     }
 }
