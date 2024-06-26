@@ -36,6 +36,8 @@ use App\Http\Controllers\Frontend\DonationController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
 use App\Http\Controllers\User\BecomingChristLikeController;
 use App\Http\Controllers\User\BecomingSovereignController;
+use App\Http\Controllers\User\BulletinBoardController;
+use App\Http\Controllers\User\BulletinController;
 use App\Http\Controllers\User\ChatController;
 use App\Http\Controllers\User\CmsController as UserCmsController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
@@ -283,7 +285,18 @@ Route::prefix('user')->middleware(['user'])->group(function () {
         Route::resources([
             'roles' => RolePermissionsController::class,
             'partners' => PartnerController::class,
+            'bulletins' => BulletinController::class,
         ]);
+
+        Route::prefix('bulletins')->group(function () {
+            Route::get('/bulletin-delete/{id}', [BulletinController::class, 'delete'])->name('bulletins.delete');
+        });
+        Route::get('/bulletins-fetch-data', [PartnerController::class, 'fetchData'])->name('bulletins.fetch-data');
+
+
+        Route::prefix('bulletin-board')->group(function () {
+            Route::get('/', [BulletinBoardController::class, 'list'])->name('bulletin-board.index');
+        });
 
         Route::prefix('roles')->group(function () {
             Route::get('/role-delete/{id}', [RolePermissionsController::class, 'delete'])->name('roles.delete');

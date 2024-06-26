@@ -19,8 +19,13 @@ class RolePermissionsController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->hasRole('ADMIN')) {
-            $roles = Role::where('name', '!=', 'ADMIN')->get();
+        if (Auth::user()->hasRole('ADMIN') || Auth::user()->hasRole('LEADER')) {
+            if (Auth::user()->hasRole('LEADER')) {
+                $roles = Role::where('name', 'CUSTOMER')->get();
+            } else {
+                $roles = Role::where('name', '!=', 'ADMIN')->get();
+            }
+
             return view('user.role_permission.list', compact('roles'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -91,7 +96,7 @@ class RolePermissionsController extends Controller
      */
     public function edit($id)
     {
-        if (Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->hasRole('ADMIN') || Auth::user()->hasRole('LEADER')) {
             $id = Crypt::decrypt($id);
             $role = Role::findOrFail($id);
             $user = Auth::user();
@@ -100,6 +105,7 @@ class RolePermissionsController extends Controller
                 $permissions = $permissions->merge($role1->permissions);
             }
             $permissions = $permissions->pluck('name', 'id')->toArray();
+
             return view('user.role_permission.edit', compact('role', 'permissions'));
         } else {
             abort(403, 'You do not have permission to access this page.');

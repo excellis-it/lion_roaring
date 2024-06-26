@@ -7,8 +7,6 @@
 @section('content')
     <div class="container-fluid">
         <div class="bg_white_border">
-
-            <!--  Row 1 -->
                 <div class="row">
                     <div class="col-lg-12">
                                 <form action="{{ route('roles.store') }}" method="POST">
@@ -47,6 +45,7 @@
                                                             'Becoming Christ Like',
                                                             'Leadership Development',
                                                             'File',
+                                                            'Bulletin',
                                                             'Job Postings',
                                                             'Meeting Schedule',
                                                             'Event',

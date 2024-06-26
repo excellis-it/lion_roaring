@@ -52,6 +52,7 @@
                                                             'Becoming Christ Like',
                                                             'Leadership Development',
                                                             'File',
+                                                            'Bulletin',
                                                             'Job Postings',
                                                             'Meeting Schedule',
                                                             'Event',
@@ -221,9 +222,8 @@
                                         </div>
                                     </div>
                                     <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
-                                        <button type="submit" class="print_btn me-2">Save</button>
-                                        <a href="{{ route('roles.index') }}" class="print_btn print_btn_vv"
-                                            href="">Cancel</a>
+                                        <button type="submit" class="print_btn me-2">Update</button>
+                                        <a href="{{ route('roles.index') }}" class="print_btn print_btn_vv">Cancel</a>
                                     </div>
                                 </form>
                     </div>

@@ -68,7 +68,8 @@
                                     </a>
                                 @endif
                                 @if (Gate::check('Manage Team'))
-                                    <a href="{{ route('user.page', ['name' => 'Team', 'permission' => 'Manage Team']) }}">
+                                    <a
+                                        href="{{ route('user.page', ['name' => 'Team', 'permission' => 'Manage Team']) }}">
                                         <span>
                                             <img src="{{ asset('user_assets/images/Team.png') }}" alt="">
 
@@ -93,8 +94,7 @@
                                     <span>Calls</span>
                                 </a> --}}
                                 @if (Gate::check('Manage Email'))
-                                    <a
-                                        href="{{ route('mail.index') }}">
+                                    <a href="{{ route('mail.index') }}">
                                         <span>
                                             <img src="{{ asset('user_assets/images/Mail.png') }}" alt="">
                                         </span>
@@ -105,7 +105,10 @@
                         </div>
                     </li>
                 @endif
-                @if (Gate::check('Manage Becomeing Sovereigns') || Gate::check('Manage Becoming Christ Like') || Gate::check('Manage Leadership Development') || Gate::check('Manage File'))
+                @if (Gate::check('Manage Becomeing Sovereigns') ||
+                        Gate::check('Manage Becoming Christ Like') ||
+                        Gate::check('Manage Leadership Development') ||
+                        Gate::check('Manage File'))
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExampleEducation">
@@ -117,35 +120,32 @@
                         {{-- Collapse content --}}
                         <div class="collapse" id="collapseExampleEducation">
                             <div class="menu_bb">
-                                @if(Gate::check('Manage Becomeing Sovereigns'))
-                                <a
-                                    href="{{ route('becoming-sovereign.index') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/Becoming Sovereign.png') }}"
-                                            alt="">
-                                    </span>
-                                    <span>Becoming Sovereign</span>
-                                </a>
+                                @if (Gate::check('Manage Becomeing Sovereigns'))
+                                    <a href="{{ route('becoming-sovereign.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/Becoming Sovereign.png') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Becoming Sovereign</span>
+                                    </a>
                                 @endif
-                                @if(Gate::check('Manage Becoming Christ Like'))
-                                <a
-                                    href="{{route('becoming-christ-link.index')}}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/Becoming Christ Like.png') }}"
-                                            alt="">
-                                    </span>
-                                    <span>Becoming Christ Like</span>
-                                </a>
+                                @if (Gate::check('Manage Becoming Christ Like'))
+                                    <a href="{{ route('becoming-christ-link.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/Becoming Christ Like.png') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Becoming Christ Like</span>
+                                    </a>
                                 @endif
-                                @if(Gate::check('Manage Leadership Development'))
-                                <a
-                                    href="{{route('leadership-development.index')}}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/Leadership Development.png') }}"
-                                            alt="">
-                                    </span>
-                                    <span>Leadership Development</span>
-                                </a>
+                                @if (Gate::check('Manage Leadership Development'))
+                                    <a href="{{ route('leadership-development.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/Leadership Development.png') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Leadership Development</span>
+                                    </a>
                                 @endif
                                 @if (Gate::check('Manage File'))
                                     <a href="{{ route('file.index') }}">
@@ -177,24 +177,42 @@
                         {{-- Collapse content --}}
                         <div class="collapse" id="collapseExample4">
                             <div class="menu_bb">
-                                @if(Gate::check('Manage Job Postings'))
-                                <a
-                                    href="{{ route('user.page', ['name' => 'Job Posting', 'permission' => 'Manage Job Postings']) }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/Job Posting.png') }}" alt="">
-                                    </span>
-                                    <span>Job Posting</span>
-                                </a>
-                                @endif
-                                @if(Gate::check('Manage Meeting Schedule'))
-                                <a
-                                    href="{{ route('user.page', ['name' => 'Meeting Schedule', 'permission' => 'Manage Meeting Schedule']) }}">
+                                {{-- bulletins --}}
+                                <a href="{{ route('bulletin-board.index') }}">
                                     <span>
                                         <img src="{{ asset('user_assets/images/Meeting Schedule.png') }}"
                                             alt="">
                                     </span>
-                                    <span>Meeting Schedule</span>
+                                    <span>Bulletin Board</span>
                                 </a>
+                                {{-- @if (Gate::check('Manage Bulletin'))
+                                    <a
+                                        href="{{ route('bulletins.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/Bulletine.png') }}" alt="">
+                                        </span>
+                                        <span>Bulletin</span>
+                                    </a>
+                                @endif --}}
+                                @if (Gate::check('Manage Job Postings'))
+                                    <a
+                                        href="{{ route('user.page', ['name' => 'Job Posting', 'permission' => 'Manage Job Postings']) }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/Job Posting.png') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Job Posting</span>
+                                    </a>
+                                @endif
+                                @if (Gate::check('Manage Meeting Schedule'))
+                                    <a
+                                        href="{{ route('user.page', ['name' => 'Meeting Schedule', 'permission' => 'Manage Meeting Schedule']) }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/Meeting Schedule.png') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Meeting Schedule</span>
+                                    </a>
                                 @endif
                                 {{-- <a href="{{ route('user.page', ['name' => 'Lion Roaring Store', 'permission' => 'Manage Bulletin']) }}">
                                 <span>
@@ -208,20 +226,29 @@
                                 </span>
                                 <span>Communities of interest</span>
                             </a> --}}
-                                @if(Gate::check('Manage Event'))
-                                <a
-                                    href="{{ route('events.index') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/Live Events.png') }}" alt="">
-                                    </span>
-                                    <span>Live Events</span>
-                                </a>
+                                @if (Gate::check('Manage Event'))
+                                    <a href="{{ route('events.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/Live Events.png') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Live Events</span>
+                                    </a>
                                 @endif
                             </div>
                         </div>
                     </li>
+                @else
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('bulletin-board.index') }}" aria-expanded="false">
+                            <span>
+                                <img src="{{ asset('user_assets/images/Meeting Schedule.png') }}" alt="">
+                            </span>
+                            <span class="hide-menu">Bulletin Board</span>
+                        </a>
+                    </li>
                 @endif
-                @if (Auth::user()->hasRole('ADMIN'))
+                @if (Auth::user()->hasRole('ADMIN') || Auth::user()->hasRole('LEADER'))
                     <li class="sidebar-item">
                         <a class="sidebar-link {{ Request::is('user/roles') ? 'active' : '' }}"
                             href="{{ route('roles.index') }}" aria-expanded="false">

@@ -210,6 +210,30 @@ class RolePermissionSeeder extends Seeder
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
             [
+                "name" => "Manage Bulletin",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+            [
+                "name" => "Edit Bulletin",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+            [
+                "name" => "Create Bulletin",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+            [
+                "name" => "Delete Bulletin",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+            [
                 "name" => "Manage Job Postings",
                 "guard_name" => "web",
                 "created_at" => date('Y-m-d H:i:s'),
@@ -342,6 +366,10 @@ class RolePermissionSeeder extends Seeder
             'Manage Meeting Schedule',
             'View Meeting Schedule',
             'Manage Help',
+            'Manage Bulletin',
+            'Create Bulletin',
+            'Edit Bulletin',
+            'Delete Bulletin',
         ]);
 
         $leaderRole = Role::where('name', 'LEADER')->first();
@@ -365,6 +393,10 @@ class RolePermissionSeeder extends Seeder
             'Manage Meeting Schedule',
             'View Meeting Schedule',
             'Manage Help',
+            'Manage Bulletin',
+            'Create Bulletin',
+            'Edit Bulletin',
+            'Delete Bulletin',
         ]);
 
     }

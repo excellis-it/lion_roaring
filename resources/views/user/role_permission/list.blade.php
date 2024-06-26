@@ -18,7 +18,9 @@
                                         <h3 class="mb-3">Role Permission List</h3>
                                     </div>
                                     <div class="col-md-2 float-right">
+                                        @if (Auth::user()->hasRole('ADMIN'))
                                         <a href="{{ route('roles.create') }}" class="btn btn-primary w-100">+ Add Role</a>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="row justify-content-end">
