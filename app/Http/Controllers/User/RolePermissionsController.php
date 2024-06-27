@@ -21,7 +21,7 @@ class RolePermissionsController extends Controller
     {
         if (Auth::user()->hasRole('ADMIN') || Auth::user()->hasRole('LEADER')) {
             if (Auth::user()->hasRole('LEADER')) {
-                $roles = Role::where('name', 'CUSTOMER')->get();
+                $roles = Role::where('name', 'MEMBER')->get();
             } else {
                 $roles = Role::where('name', '!=', 'ADMIN')->get();
             }

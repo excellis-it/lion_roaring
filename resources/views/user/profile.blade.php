@@ -14,7 +14,7 @@
 
             <div class="row">
                 <div class="col-lg-12">
-                    @if (auth()->user()->hasRole('CUSTOMER'))
+                    @if (auth()->user()->hasRole('MEMBER'))
                         <div
                             class="expiery_date
                 @if (isset(auth()->user()->userLastSubscription) && auth()->user()->userLastSubscription != null) @if (Helper::expireTo(auth()->user()->userLastSubscription->subscription_expire_date) <= 10)

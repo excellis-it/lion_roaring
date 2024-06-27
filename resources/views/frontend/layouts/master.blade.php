@@ -217,16 +217,16 @@
                                 </p>
                             </form>
                             <p>
-                                <a href="" data-bs-toggle="modal" data-bs-target="#join_member"
+                                <a  data-bs-toggle="modal" data-bs-target="#join_member"
                                     class="text-dark">Join
                                     Lion
-                                    Roaring Member</a> | <a href="" class="text-dark">Forgot username or
+                                    Roaring Member</a> | <a  class="text-dark">Forgot username or
                                     password
                                 </a>
                             </p>
-                            <a href="" class="text-dark">
+                            <a  class="text-dark">
                             </a>
-                            <a href="" class="login_privacy">Privacy,
+                            <a  class="login_privacy">Privacy,
                                 Cookies, and Legal </a>
                         </div>
                     </div>

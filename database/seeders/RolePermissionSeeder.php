@@ -348,7 +348,7 @@ class RolePermissionSeeder extends Seeder
 
         $adminRole->syncPermissions(Permission::all());
 
-        $customerRole = Role::where('name', 'CUSTOMER')->first();
+        $customerRole = Role::where('name', 'MEMBER')->first();
 
         $customerRole->syncPermissions([
             'Manage Profile',

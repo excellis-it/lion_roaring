@@ -117,7 +117,7 @@ class AuthController extends Controller
             $user->password = bcrypt($request->password);
             $user->status = 1;
             $user->save();
-            $user->assignRole('CUSTOMER');
+            $user->assignRole('MEMBER');
             $token = $user->createToken('authToken')->accessToken;
             return response()->json(['token' => $token, 'status' => true, 'message' => 'Registration successful'], 200);
         } catch (\Throwable $th) {

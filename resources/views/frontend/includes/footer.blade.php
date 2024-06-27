@@ -7,7 +7,7 @@
             <div class="row justify-content-between">
                 <div class="col-lg-5">
                     <div class="ftr_logo_sec">
-                        <a href="" class="ftr_logo">
+                        <a  class="ftr_logo">
                             @if (isset(Helper::getFooter()['footer_logo']))
                                 <img src="{{Storage::url(Helper::getFooter()['footer_logo'])}}" alt="">
                             @else

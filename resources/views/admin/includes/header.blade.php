@@ -2,7 +2,7 @@
     <div class="form-inline mr-auto">
         <ul class="navbar-nav mr-3">
             <li>
-                <a href="" data-toggle="sidebar" class="nav-link nav-link-lg collapse-btn">
+                <a  data-toggle="sidebar" class="nav-link nav-link-lg collapse-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round" class="feather feather-menu">
@@ -17,7 +17,7 @@
     </div>
     <ul class="navbar-nav navbar-right">
         <li class="dropdown">
-            <a href="" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+            <a  data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
                 <img alt="image" src="{{asset('admin_assets/img/profile.png')}}" class="user-img-radious-style" /> {{Auth::user()->name}}
                 <!---<span class="d-sm-none d-lg-inline-block"><i class="ph-caret-down"></i></span>---->
             </a>

@@ -25,7 +25,7 @@ class ForgetPasswordController extends Controller
             'email' => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix|exists:users,email',
         ]);
         // return $validator->errors();
-        $count = User::where('email', $request->email)->role('CUSTOMER')->count();
+        $count = User::where('email', $request->email)->role('MEMBER')->count();
         if ($count > 0) {
             $user = User::where('email', $request->email)->select('id', 'email')->first();
             PasswordReset::where('email', $request->email)->delete();

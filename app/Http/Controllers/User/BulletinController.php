@@ -24,6 +24,8 @@ class BulletinController extends Controller
             }
 
             return view('user.bulletin.list')->with(compact('bulletins'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
         }
     }
 
@@ -34,7 +36,11 @@ class BulletinController extends Controller
      */
     public function create()
     {
-        //
+        if (Auth::user()->can('Create Bulletin')) {
+            return view('user.bulletin.create');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -45,7 +51,26 @@ class BulletinController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (Auth::user()->can('Create Bulletin')) {
+            $request->validate([
+                'title' => 'required',
+                'description' => 'required',
+            ], [
+                'title.required' => 'The title field is required.',
+                'description.required' => 'The message field is required.',
+
+            ]);
+
+            $bulletin = new Bulletin();
+            $bulletin->user_id = Auth::user()->id;
+            $bulletin->title = $request->title;
+            $bulletin->description = $request->description;
+            $bulletin->save();
+
+            return redirect()->route('bulletins.index')->with('message', 'Bulletin created successfully');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -67,7 +92,19 @@ class BulletinController extends Controller
      */
     public function edit($id)
     {
-        //
+        if (Auth::user()->can('Edit Bulletin')) {
+            if (auth()->user()->hasRole('ADMIN')) {
+                $bulletin = Bulletin::find($id);
+            } else {
+                $bulletin = Bulletin::where('user_id', Auth::user()->id)->find($id);
+            }
+            if ($bulletin) {
+                return view('user.bulletin.edit')->with('bulletin', $bulletin);
+            }
+            return redirect()->back()->with('error', 'Bulletin not found');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -79,7 +116,31 @@ class BulletinController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if (Auth::user()->can('Edit Bulletin')) {
+            if (auth()->user()->hasRole('ADMIN')) {
+                $bulletin = Bulletin::find($id);
+            } else {
+                $bulletin = Bulletin::where('user_id', Auth::user()->id)->find($id);
+            }
+            if ($bulletin) {
+                $request->validate([
+                    'title' => 'required',
+                    'description' => 'required',
+                ], [
+                    'title.required' => 'The title field is required.',
+                    'description.required' => 'The message field is required.',
+                ]);
+
+                $bulletin->title = $request->title;
+                $bulletin->description = $request->description;
+                $bulletin->save();
+
+                return redirect()->route('bulletins.index')->with('message', 'Bulletin updated successfully');
+            }
+            return redirect()->back()->with('error', 'Bulletin not found');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -91,5 +152,64 @@ class BulletinController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function delete($id)
+    {
+        if (Auth::user()->can('Delete Bulletin')) {
+            if (auth()->user()->hasRole('ADMIN')) {
+                $bulletin = Bulletin::find($id);
+            } else {
+                $bulletin = Bulletin::where('user_id', Auth::user()->id)->find($id);
+            }
+            if ($bulletin) {
+                $bulletin->delete();
+                return redirect()->back()->with('message', 'Bulletin deleted successfully');
+            }
+            return redirect()->back()->with('error', 'Bulletin not found');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    public function fetchData(Request $request)
+    {
+        if ($request->ajax()) {
+            $sort_by = $request->get('sortby', 'id'); // Default sort by 'id'
+            $sort_type = $request->get('sorttype', 'asc'); // Default sort type 'asc'
+            $query = $request->get('query', '');
+            $query = str_replace(" ", "%", $query);
+
+            if ($request->ajax()) {
+                $sort_by = $request->get('sortby', 'id'); // Default sort by 'id'
+                $sort_type = $request->get('sorttype', 'asc'); // Default sort type 'asc'
+                $query = $request->get('query', '');
+                $query = str_replace(" ", "%", $query);
+
+                if (Auth::user()->hasRole('ADMIN')) {
+                    $bulletins = Bulletin::query()
+                        ->where('title', 'like', '%' . $query . '%')
+                        ->orWhere('description', 'like', '%' . $query . '%')
+                        ->orWhereHas('user', function ($q) use ($query) {
+                            $q->whereRaw("CONCAT(first_name, ' ', IFNULL(middle_name,''), ' ', last_name) LIKE ?", ['%' . $query . '%']);
+                        });
+                } else {
+                    $bulletins = Bulletin::query()
+                        ->where('user_id', Auth::user()->id)
+                        ->where(function ($q) use ($query) {
+                            $q->where('title', 'like', '%' . $query . '%')
+                                ->orWhere('description', 'like', '%' . $query . '%')
+                                ->orWhereHas('user', function ($subQuery) use ($query) {
+                                    $subQuery->whereRaw("CONCAT(first_name, ' ', IFNULL(middle_name,''), ' ', last_name) LIKE ?", ['%' . $query . '%']);
+                                });
+                        });
+                }
+
+                $bulletins = $bulletins->orderBy($sort_by, $sort_type)->paginate(15);
+            }
+
+
+            return response()->json(['data' => view('user.bulletin.table', compact('bulletins'))->render()]);
+        }
     }
 }

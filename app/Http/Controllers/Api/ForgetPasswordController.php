@@ -37,8 +37,8 @@ class ForgetPasswordController extends Controller
         if ($validator->fails()) {
             return response()->json(['status' => false, 'message' => $validator->errors()->first()], 201);
         }
-        
-        $count = User::where('email', $request->email)->role('CUSTOMER')->count();
+
+        $count = User::where('email', $request->email)->role('MEMBER')->count();
         if ($count > 0) {
             $user = User::where('email', $request->email)->select('id', 'email')->first();
             PasswordReset::where('email', $request->email)->delete();

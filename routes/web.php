@@ -70,6 +70,8 @@ Route::get('clear', function () {
     return "Optimize clear has been successfully";
 });
 
+
+
 Route::get('/admin', [AuthController::class, 'redirectAdminLogin']);
 Route::get('/admin/login', [AuthController::class, 'login'])->name('admin.login');
 Route::post('/admin-login-check', [AuthController::class, 'loginCheck'])->name('admin.login.check');  //login check
@@ -291,7 +293,7 @@ Route::prefix('user')->middleware(['user'])->group(function () {
         Route::prefix('bulletins')->group(function () {
             Route::get('/bulletin-delete/{id}', [BulletinController::class, 'delete'])->name('bulletins.delete');
         });
-        Route::get('/bulletins-fetch-data', [PartnerController::class, 'fetchData'])->name('bulletins.fetch-data');
+        Route::get('/bulletins-fetch-data', [BulletinController::class, 'fetchData'])->name('bulletins.fetch-data');
 
 
         Route::prefix('bulletin-board')->group(function () {

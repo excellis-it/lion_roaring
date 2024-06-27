@@ -77,7 +77,7 @@ class AuthController extends Controller
         $user->status = 1;
         $user->save();
 
-        $user->assignRole('CUSTOMER');
+        $user->assignRole('MEMBER');
         return redirect()->route('login')->with('message', 'User registered successfully');
     }
 

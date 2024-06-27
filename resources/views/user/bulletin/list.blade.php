@@ -46,12 +46,12 @@
                                                 @endif
                                                 <th class="sorting" data-tippy-content="Sort by Bulletin Title"
                                                 data-sorting_type="desc" data-column_name="title"
-                                                style="cursor: pointer">Bulletin Title <span id="bulletin_name_icon"><i
+                                                style="cursor: pointer">Bulletin Title <span id="title_icon"><i
                                                     class="fa fa-arrow-down"></i></span></th>
                                                     {{-- Description --}}
                                                     <th class="sorting" data-tippy-content="Sort by Bulletin Description"
                                                     data-sorting_type="desc" data-column_name="description"
-                                                    style="cursor: pointer">Bulletin Description <span id="bulletin_description_icon"><i
+                                                    style="cursor: pointer">Bulletin Description <span id="description_icon"><i
                                                         class="fa fa-arrow-down"></i></span></th>
                                                 <th></th>
                                             </tr>
@@ -80,7 +80,7 @@
         $(document).on('click', '#delete', function(e) {
             swal({
                     title: "Are you sure?",
-                    text: "To delete this file.",
+                    text: "To remove this bulletin from the bulletin board",
                     type: "warning",
                     confirmButtonText: "Yes",
                     showCancelButton: true
@@ -103,8 +103,8 @@
         $(document).ready(function() {
 
             function clear_icon() {
-                $('#bulletin_name_icon').html('');
-                $('#bulletin_description_icon').html('');
+                $('#title_icon').html('');
+                $('#description_icon').html('');
             }
 
             function fetch_data(page, sort_type, sort_by, query) {

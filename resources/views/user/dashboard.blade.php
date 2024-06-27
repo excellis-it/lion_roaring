@@ -118,17 +118,17 @@
 
                                 </div>
                                 <div class="w-100 text-end d-flex align-items-center justify-content-end">
-                                    <a class="print_btn me-2" href="">Save</a>
-                                    <a class="print_btn print_btn_vv" href="">Cancel</a>
+                                    <a class="print_btn me-2" >Save</a>
+                                    <a class="print_btn print_btn_vv" >Cancel</a>
                                 </div>
 
                             </div>
                         </div>
                         <div class="all_btn">
-                            <a href="" class="add_btn btn_all">Add</a>
-                            <a href="" class="delete_btn btn_all">Delete</a>
-                            <a href="" class="another_btn btn_all">Another</a>
-                            <a href="" class="exit_btn btn_all">Exit</a>
+                            <a  class="add_btn btn_all">Add</a>
+                            <a  class="delete_btn btn_all">Delete</a>
+                            <a  class="another_btn btn_all">Another</a>
+                            <a  class="exit_btn btn_all">Exit</a>
                         </div>
                     </div>
                 </div>

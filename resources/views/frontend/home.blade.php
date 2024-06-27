@@ -30,7 +30,7 @@
                     <div class="slide__content--headings text-left">
                         <h1 class="title">{{ $home['banner_title'] ?? 'title' }}</h1>
                         <p class="top-title"></p>
-                        <!--<a class="red_btn slidebottomleft" href=""><span>get started</span></a>-->
+                        <!--<a class="red_btn slidebottomleft" ><span>get started</span></a>-->
                     </div>
                 </div>
             </div>

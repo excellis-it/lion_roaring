@@ -48,7 +48,7 @@
                         <div id="google_translate_element"></div>
                     </div>
                     <div class="login_prf">
-                        @if (auth()->check() && auth()->user()->hasRole('CUSTOMER'))
+                        @if (auth()->check() && auth()->user()->hasRole('MEMBER'))
                             <a href="{{ route('user.profile') }}">Profile</a>
                         @else
                             <a href="{{ route('login') }}">Login</a>

@@ -28,7 +28,7 @@
                                                 <label>Name</label>
                                                 <input type="text" class="form-control" value="{{ $role->name }}" name="role_name"
                                                     placeholder=""
-                                                    {{ $role->name == 'LEADER' || $role->name == 'CUSTOMER' ? 'readonly' : '' }}>
+                                                    {{ $role->name == 'LEADER' || $role->name == 'MEMBER' ? 'readonly' : '' }}>
                                                     @if ($errors->has('role_name'))
                                                         @error('role_name')
                                                             <span class="text-danger" style="color: red !important"> {{ $message }}</span>

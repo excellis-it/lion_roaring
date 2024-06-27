@@ -185,7 +185,7 @@
                                     </span>
                                     <span>Bulletin Board</span>
                                 </a>
-                                {{-- @if (Gate::check('Manage Bulletin'))
+                                @if (Gate::check('Manage Bulletin'))
                                     <a
                                         href="{{ route('bulletins.index') }}">
                                         <span>
@@ -193,7 +193,7 @@
                                         </span>
                                         <span>Bulletin</span>
                                     </a>
-                                @endif --}}
+                                @endif
                                 @if (Gate::check('Manage Job Postings'))
                                     <a
                                         href="{{ route('user.page', ['name' => 'Job Posting', 'permission' => 'Manage Job Postings']) }}">
