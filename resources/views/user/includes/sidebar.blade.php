@@ -62,7 +62,7 @@
                                 @if (Gate::check('Manage Chat'))
                                     <a href="{{ route('chats.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/Chat.png') }}" alt="">
+                                            <img src="{{ asset('user_assets/images/chat.png') }}" alt="">
                                         </span>
                                         <span>Messaging</span>
                                     </a>
