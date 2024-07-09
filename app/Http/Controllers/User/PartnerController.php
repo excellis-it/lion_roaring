@@ -72,6 +72,7 @@ class PartnerController extends Controller
         ]);
 
         $data = new User();
+        $data->created_id = Auth::user()->id;
         $data->user_name = $request->user_name;
         $data->first_name = $request->first_name;
         $data->last_name = $request->last_name;
@@ -90,7 +91,7 @@ class PartnerController extends Controller
             'type' => ucfirst(strtolower($request->role)),
         ];
 
-        Mail::to($request->email)->send(new RegistrationMail($maildata));
+        // Mail::to($request->email)->send(new RegistrationMail($maildata));
         return redirect()->route('partners.index')->with('message', 'Customer created successfully.');
     }
 
