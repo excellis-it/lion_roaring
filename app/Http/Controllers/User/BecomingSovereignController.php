@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\File;
+use App\Models\Topic;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +17,8 @@ class BecomingSovereignController extends Controller
     {
         if (auth()->user()->can('Manage Becomeing Sovereigns')) {
             $files = File::where('user_id', auth()->id())->orderBy('id', 'desc')->where('type', 'Becoming Sovereign')->paginate(15);
-            return view('user.becoming-sovereign.list')->with('files', $files);
+            $topics = Topic::orderBy('topic_name', 'asc')->get();
+            return view('user.becoming-sovereign.list')->with(compact('files', 'topics'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -25,7 +27,8 @@ class BecomingSovereignController extends Controller
     public function upload()
     {
         if (auth()->user()->can('Upload Becomeing Sovereigns')) {
-            return view('user.becoming-sovereign.upload');
+            $topics = Topic::orderBy('topic_name', 'asc')->get();
+            return view('user.becoming-sovereign.upload')->with('topics', $topics);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -35,23 +38,23 @@ class BecomingSovereignController extends Controller
     {
         $request->validate([
             'file' => 'required|max:2048',
+            'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
         ]);
 
 
+        $file_name = $request->file('file')->getClientOriginalName();
+        $file_extension = $request->file('file')->getClientOriginalExtension();
+        $file_upload = $this->imageUpload($request->file('file'), 'files');
 
-        foreach ($request->file('file') as $file) {
-            $file_name = $file->getClientOriginalName();
-            $file_extension = $file->getClientOriginalExtension();
-            $file = $this->imageUpload($file, 'files');
+        $file = new File();
+        $file->user_id = auth()->id();
+        $file->file_name = $file_name;
+        $file->file_extension = $file_extension;
+        $file->topic_id = $request->topic_id;
+        $file->type = 'Becoming Sovereign';
+        $file->file = $file_upload;
+        $file->save();
 
-            $file_upload = new File();
-            $file_upload->user_id = auth()->id();
-            $file_upload->file_name = $file_name;
-            $file_upload->file_extension = $file_extension;
-            $file_upload->type = 'Becoming Sovereign';
-            $file_upload->file = $file;
-            $file_upload->save();
-        }
 
         return redirect()->route('becoming-sovereign.index')->with('message', 'File uploaded successfully.');
     }
@@ -102,8 +105,15 @@ class BecomingSovereignController extends Controller
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhere('file_name', 'like', '%' . $query . '%')
                         ->orWhere('file_extension', 'like', '%' . $query . '%');
-                })
-                ->where('type', 'Becoming Sovereign')
+                });
+
+                if ($request->topic_id) {
+                    $files->whereHas('topic', function ($q) use ($request) {
+                        $q->where('id', $request->topic_id);
+                    });
+                }
+
+                $files = $files->where('type', 'Becoming Sovereign')
                 ->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 
@@ -114,9 +124,10 @@ class BecomingSovereignController extends Controller
     public function edit($id)
     {
         if (auth()->user()->can('Edit Becomeing Sovereigns')) {
-             $file = File::findOrFail($id);
+            $file = File::findOrFail($id);
             if ($file) {
-                return view('user.becoming-sovereign.edit')->with('file', $file);
+                $topics = Topic::orderBy('topic_name', 'asc')->get();
+                return view('user.becoming-sovereign.edit')->with(compact('file', 'topics'));
             } else {
                 return redirect()->route('becoming-sovereign.index')->with('error', 'File not found.');
             }
@@ -128,31 +139,30 @@ class BecomingSovereignController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'file' => 'required|max:2048',
+            'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
         ]);
 
         $file = File::findOrFail($id);
-        if ($file) {
+        if ($request->hasFile('file')) {
+            $request->validate([
+                'file' => 'required',
+            ]);
             $file_name = $request->file('file')->getClientOriginalName();
             $file_extension = $request->file('file')->getClientOriginalExtension();
             $file_upload = $this->imageUpload($request->file('file'), 'files');
-            // if (is_array($file_name)) {
-            //     return "dsa";
-            // }
             $file->file_name = $file_name;
             $file->file_extension = $file_extension;
             $file->file = $file_upload;
-            $file->save();
-
-            return redirect()->route('becoming-sovereign.index')->with('message', 'File updated successfully.');
-        } else {
-            return redirect()->route('becoming-sovereign.index')->with('error', 'File not found.');
         }
+        $file->topic_id = $request->topic_id;
+        $file->save();
+
+        return redirect()->route('becoming-sovereign.index')->with('message', 'File updated successfully.');
     }
 
     public function view($id)
     {
-        if (auth()->user()->can('View Becomeing Sovereigns')){
+        if (auth()->user()->can('View Becomeing Sovereigns')) {
             $file = File::findOrFail($id);
             if ($file) {
                 return view('user.becoming-sovereign.view')->with('file', $file);

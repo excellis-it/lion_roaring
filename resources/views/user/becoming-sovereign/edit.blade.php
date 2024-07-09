@@ -24,14 +24,29 @@
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="file">Choose File</label>
-                                </div>
+
                                 <input type="file" name="file" id="file" class="form-control">
                                 @if ($errors->has('file'))
                                     <span class="error">{{ $errors->first('file') }}</span>
                                 @endif
                             </div>
+                        </div>
                             {{-- type --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label>Topics *</label>
+                                    <select name="topic_id" id="topics" class="form-control">
+                                        <option value="">Select Topics</option>
+                                        @foreach ($topics as $topic)
+                                            <option value="{{ $topic->id }}" {{ $file->topic_id == $topic->id ? 'selected' : '' }}>{{ $topic->topic_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('topics'))
+                                    <span class="error">{{ $errors->first('topics') }}</span>
+                                @endif
 
+                                </div>
+                            </div>
 
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                                 <button type="submit" class="print_btn me-2">Reupload</button>

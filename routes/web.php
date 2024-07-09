@@ -50,6 +50,7 @@ use App\Http\Controllers\User\RolePermissionsController;
 use App\Http\Controllers\User\SendMailController;
 use App\Http\Controllers\User\SubscriptionController;
 use App\Http\Controllers\User\TeamController;
+use App\Http\Controllers\User\TopicController;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Artisan;
 
@@ -155,7 +156,12 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
             'register-agreements' => RegisterAgreementController::class,
             'members-privacy-policies' => MemberPrivacyPolicyContoller::class,
             'pma-terms' => PmaDisclaimerController::class,
+            'topics' => TopicController::class,
         ]);
+
+        Route::prefix('topics')->group(function () {
+            Route::get('/topic-delete/{id}', [TopicController::class, 'delete'])->name('topics.delete');
+        });
 
         Route::get('/newsletter-fetch-data', [NewsletterController::class, 'fetchData'])->name('newsletters.fetch-data');
         Route::get('/contact-us-fetch-data', [ContactusController::class, 'fetchData'])->name('contact-us.fetch-data');

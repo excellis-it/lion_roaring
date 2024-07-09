@@ -5,6 +5,7 @@
             <td> {{ $file->file_name }}</td>
             <td> {{ $file->file_extension }}</td>
             <td> {{ $file->type }}</td>
+            <td> {{ $file->topic->topic_name ?? '--' }}</td>
             <td>
                 <div class="d-flex">
                     @if (auth()->user()->can('Edit File'))

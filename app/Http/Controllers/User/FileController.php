@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\File;
+use App\Models\Topic;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -17,7 +18,8 @@ class FileController extends Controller
     {
         if (auth()->user()->can('Manage File')) {
             $files = File::where('user_id', auth()->id())->orderBy('id', 'desc')->paginate(15);
-            return view('user.file.list')->with('files', $files);
+            $topics = Topic::orderBy('topic_name', 'asc')->get();
+            return view('user.file.list')->with(compact('files', 'topics'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -26,7 +28,8 @@ class FileController extends Controller
     public function upload()
     {
         if (auth()->user()->can('Upload File')) {
-            return view('user.file.upload');
+            $topics = Topic::orderBy('topic_name', 'asc')->get();
+            return view('user.file.upload')->with('topics', $topics);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -35,6 +38,7 @@ class FileController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
             'file' => 'required|max:2048',
             'type' => 'required|in:Becoming Sovereign,Becoming Christ Like,Leadership Development',
         ]);
@@ -50,6 +54,7 @@ class FileController extends Controller
             $file_upload->user_id = auth()->id();
             $file_upload->file_name = $file_name;
             $file_upload->file_extension = $file_extension;
+            $file_upload->topic_id = $request->topic_id;
             $file_upload->type = $request->type;
             $file_upload->file = $file;
             $file_upload->save();
@@ -104,8 +109,13 @@ class FileController extends Controller
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhere('file_name', 'like', '%' . $query . '%')
                         ->orWhere('file_extension', 'like', '%' . $query . '%');
-                })
-                ->orderBy($sort_by, $sort_type)
+                });
+                if ($request->topic_id) {
+                    $files->whereHas('topic', function ($q) use ($request) {
+                        $q->where('id', $request->topic_id);
+                    });
+                }
+              $files = $files->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 
             return response()->json(['data' => view('user.file.table', compact('files'))->render()]);
@@ -117,7 +127,8 @@ class FileController extends Controller
         if (auth()->user()->can('Edit File')) {
             $file = File::findOrFail($id);
             if ($file) {
-                return view('user.file.edit')->with('file', $file);
+                $topics = Topic::orderBy('topic_name', 'asc')->get();
+                return view('user.file.edit')->with(compact('file', 'topics'));
             } else {
                 return redirect()->route('file.index')->with('error', 'File not found.');
             }
@@ -129,27 +140,23 @@ class FileController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'file' => 'required|max:2048',
+            'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
             'type' => 'required|in:Becoming Sovereign,Becoming Christ Like,Leadership Development',
         ]);
 
         $file = File::findOrFail($id);
-        if ($file) {
+        if ($request->hasFile('file')) {
             $file_name = $request->file('file')->getClientOriginalName();
             $file_extension = $request->file('file')->getClientOriginalExtension();
             $file_upload = $this->imageUpload($request->file('file'), 'files');
-            // if (is_array($file_name)) {
-            //     return "dsa";
-            // }
             $file->file_name = $file_name;
             $file->file_extension = $file_extension;
-            $file->type = $request->type;
             $file->file = $file_upload;
-            $file->save();
-
-            return redirect()->route('file.index')->with('message', 'File updated successfully.');
-        } else {
-            return redirect()->route('file.index')->with('error', 'File not found.');
         }
+        $file->topic_id = $request->topic_id;
+        $file->type = $request->type;
+        $file->save();
+
+        return redirect()->route('file.index')->with('message', 'File updated successfully.');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\File;
+use App\Models\Topic;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +17,8 @@ class BecomingChristLikeController extends Controller
     {
         if (auth()->user()->can('Manage Becoming Christ Like')) {
             $files = File::where('user_id', auth()->id())->orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->paginate(15);
-            return view('user.becoming-christ-link.list')->with('files', $files);
+            $topics = Topic::orderBy('topic_name', 'asc')->get();
+            return view('user.becoming-christ-link.list')->with(compact('files', 'topics'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -25,7 +27,8 @@ class BecomingChristLikeController extends Controller
     public function upload()
     {
         if (auth()->user()->can('Upload Becoming Christ Like')) {
-            return view('user.becoming-christ-link.upload');
+            $topics = Topic::orderBy('topic_name', 'asc')->get();
+            return view('user.becoming-christ-link.upload')->with('topics', $topics);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -34,24 +37,25 @@ class BecomingChristLikeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'required|max:2048',
+            'file' => 'required',
+            'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
         ]);
 
 
 
-        foreach ($request->file('file') as $file) {
-            $file_name = $file->getClientOriginalName();
-            $file_extension = $file->getClientOriginalExtension();
-            $file = $this->imageUpload($file, 'files');
+        $file_name = $request->file('file')->getClientOriginalName();
+        $file_extension = $request->file('file')->getClientOriginalExtension();
+        $file_upload = $this->imageUpload($request->file('file'), 'files');
 
-            $file_upload = new File();
-            $file_upload->user_id = auth()->id();
-            $file_upload->file_name = $file_name;
-            $file_upload->file_extension = $file_extension;
-            $file_upload->type = 'Becoming Christ Like';
-            $file_upload->file = $file;
-            $file_upload->save();
-        }
+        $file = new File();
+        $file->user_id = auth()->id();
+        $file->file_name = $file_name;
+        $file->file_extension = $file_extension;
+        $file->topic_id = $request->topic_id;
+        $file->type = 'Becoming Christ Like';
+        $file->file = $file_upload;
+        $file->save();
+
 
         return redirect()->route('becoming-christ-link.index')->with('message', 'File uploaded successfully.');
     }
@@ -102,8 +106,15 @@ class BecomingChristLikeController extends Controller
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhere('file_name', 'like', '%' . $query . '%')
                         ->orWhere('file_extension', 'like', '%' . $query . '%');
-                })
-                ->where('type', 'Becoming Christ Like')
+                });
+
+                if ($request->topic_id) {
+                    $files->whereHas('topic', function ($q) use ($request) {
+                        $q->where('id', $request->topic_id);
+                    });
+                }
+
+                $files = $files->where('type', 'Becoming Christ Like')
                 ->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 
@@ -114,9 +125,10 @@ class BecomingChristLikeController extends Controller
     public function edit($id)
     {
         if (auth()->user()->can('Edit Becoming Christ Like')) {
-             $file = File::findOrFail($id);
+            $file = File::findOrFail($id);
             if ($file) {
-                return view('user.becoming-christ-link.edit')->with('file', $file);
+                $topics = Topic::orderBy('topic_name', 'asc')->get();
+                return view('user.becoming-christ-link.edit')->with(compact('file', 'topics'));
             } else {
                 return redirect()->route('becoming-christ-link.index')->with('error', 'File not found.');
             }
@@ -128,31 +140,27 @@ class BecomingChristLikeController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'file' => 'required|max:2048',
+            'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
         ]);
 
         $file = File::findOrFail($id);
-        if ($file) {
+        if ($request->hasFile('file')) {
             $file_name = $request->file('file')->getClientOriginalName();
             $file_extension = $request->file('file')->getClientOriginalExtension();
             $file_upload = $this->imageUpload($request->file('file'), 'files');
-            // if (is_array($file_name)) {
-            //     return "dsa";
-            // }
             $file->file_name = $file_name;
             $file->file_extension = $file_extension;
             $file->file = $file_upload;
-            $file->save();
-
-            return redirect()->route('becoming-christ-link.index')->with('message', 'File updated successfully.');
-        } else {
-            return redirect()->route('becoming-christ-link.index')->with('error', 'File not found.');
         }
+        $file->topic_id = $request->topic_id;
+        $file->save();
+
+        return redirect()->route('becoming-christ-link.index')->with('message', 'File updated successfully.');
     }
 
     public function view($id)
     {
-        if (auth()->user()->can('View Becoming Christ Like')){
+        if (auth()->user()->can('View Becoming Christ Like')) {
             $file = File::findOrFail($id);
             if ($file) {
                 return view('user.becoming-christ-link.view')->with('file', $file);

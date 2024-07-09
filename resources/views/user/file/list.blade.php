@@ -24,7 +24,18 @@
                                         @endif
                                     </div>
                                 </div>
-                                <div class="row justify-content-end">
+                                <div class="row justify-content-between">
+                                    <div class="col-md-3 ">
+                                        <div class="box_label">
+                                            <select name="topic_id" id="topics" class="form-select">
+                                                <option value="">Select Topics</option>
+                                                @foreach ($topics as $topic)
+                                                    <option value="{{ $topic->id }}">{{ $topic->topic_name }}</option>
+                                                @endforeach
+                                            </select>
+
+                                        </div>
+                                    </div>
                                     <div class="col-lg-4">
                                         <div class="search-field">
                                             <input type="text" name="search" id="search" placeholder="search..."
@@ -40,14 +51,15 @@
                                             <tr class="header-row">
                                                 <th>ID (#)</th>
                                                 <th class="sorting" data-tippy-content="Sort by File Name"
-                                                data-sorting_type="desc" data-column_name="file_name"
-                                                style="cursor: pointer">File Name <span id="file_name_icon"><i
-                                                    class="fa fa-arrow-down"></i></span></th>
+                                                    data-sorting_type="desc" data-column_name="file_name"
+                                                    style="cursor: pointer">File Name <span id="file_name_icon"><i
+                                                            class="fa fa-arrow-down"></i></span></th>
                                                 <th class="sorting" data-tippy-content="Sort by Extension"
-                                                data-sorting_type="desc" data-column_name="file_extension"
-                                                style="cursor: pointer">File Extension <span id="file_extension_icon"><i
-                                                    class="fa fa-arrow-down"></i></span></th>
-                                                    <th>Type</th>
+                                                    data-sorting_type="desc" data-column_name="file_extension"
+                                                    style="cursor: pointer">File Extension <span id="file_extension_icon"><i
+                                                            class="fa fa-arrow-down"></i></span></th>
+                                                <th>Type</th>
+                                                <th>Topic</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -57,7 +69,7 @@
                                             <input type="hidden" name="hidden_column_name" id="hidden_column_name"
                                                 value="id" />
                                             <input type="hidden" name="hidden_sort_type" id="hidden_sort_type"
-                                                value="asc" />
+                                                value="desc" />
                                         </tbody>
                                     </table>
                                 </div>
@@ -102,14 +114,15 @@
                 $('#file_extension_icon').html('');
             }
 
-            function fetch_data(page, sort_type, sort_by, query) {
+            function fetch_data(page, sort_type, sort_by, query, topic_id) {
                 $.ajax({
                     url: "{{ route('file.fetch-data') }}",
                     data: {
                         page: page,
                         sortby: sort_by,
                         sorttype: sort_type,
-                        query: query
+                        query: query,
+                        topic_id : topic_id
                     },
                     success: function(data) {
                         $('tbody').html(data.data);
@@ -122,7 +135,8 @@
                 var column_name = $('#hidden_column_name').val();
                 var sort_type = $('#hidden_sort_type').val();
                 var page = $('#hidden_page').val();
-                fetch_data(page, sort_type, column_name, query);
+                var topic_id = $('#topics').val();
+                fetch_data(page, sort_type, column_name, query, topic_id);
             });
 
             $(document).on('click', '.sorting', function() {
@@ -147,7 +161,8 @@
                 $('#hidden_sort_type').val(reverse_order);
                 var page = $('#hidden_page').val();
                 var query = $('#search').val();
-                fetch_data(page, reverse_order, column_name, query);
+                var topic_id = $('#topics').val();
+                fetch_data(page, reverse_order, column_name, query, topic_id);
             });
 
             $(document).on('click', '.pagination a', function(event) {
@@ -161,7 +176,17 @@
 
                 $('li').removeClass('active');
                 $(this).parent().addClass('active');
-                fetch_data(page, sort_type, column_name, query);
+                var topic_id = $('#topics').val();
+                fetch_data(page, sort_type, column_name, query, topic_id);
+            });
+
+            $(document).on('change', '#topics', function() {
+                var query = $('#search').val();
+                var column_name = $('#hidden_column_name').val();
+                var sort_type = $('#hidden_sort_type').val();
+                var page = $('#hidden_page').val();
+                var topic_id = $(this).val();
+                fetch_data(page, sort_type, column_name, query, topic_id);
             });
 
         });

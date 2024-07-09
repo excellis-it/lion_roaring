@@ -108,7 +108,7 @@
                 @if (Gate::check('Manage Becomeing Sovereigns') ||
                         Gate::check('Manage Becoming Christ Like') ||
                         Gate::check('Manage Leadership Development') ||
-                        Gate::check('Manage File'))
+                        Gate::check('Manage File') || Auth::user()->hasRole('ADMIN'))
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExampleEducation">
@@ -120,6 +120,14 @@
                         {{-- Collapse content --}}
                         <div class="collapse" id="collapseExampleEducation">
                             <div class="menu_bb">
+                                @if (Auth::user()->hasRole('ADMIN'))
+                                    <a href="{{ route('topics.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/Education.png') }}" alt="">
+                                        </span>
+                                        <span>Topics</span>
+                                    </a>
+                                @endif
                                 @if (Gate::check('Manage Becomeing Sovereigns'))
                                     <a href="{{ route('becoming-sovereign.index') }}">
                                         <span>

@@ -4,7 +4,7 @@
             <td>{{ $files->firstItem() + $key }}</td>
             <td> {{ $file->file_name }}</td>
             <td> {{ $file->file_extension }}</td>
-
+            <td> {{ $file->topic->topic_name ?? '--' }}</td>
             <td>
                 <div class="d-flex">
                     @if (auth()->user()->can('View Becomeing Sovereigns'))

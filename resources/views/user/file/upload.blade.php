@@ -21,20 +21,21 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-12 mb-2">
                                 <div class="box_label">
                                     <label for="file">Choose File</label>
-                                </div>
+
                                 <input type="file" name="file[]" id="file" class="form-control" multiple>
                                 @if ($errors->has('file'))
                                     <span class="error">{{ $errors->first('file') }}</span>
                                 @endif
                             </div>
+                            </div>
                             {{-- type --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="type">Type</label>
-                                </div>
+                                    <label >Type</label>
+
                                 <select name="type" id="type" class="form-control" >
                                     <option value="">Select Type</option>
                                     <option value="Becoming Sovereign">Becoming Sovereign</option>
@@ -44,7 +45,23 @@
                                 @if ($errors->has('type'))
                                     <span class="error">{{ $errors->first('type') }}</span>
                                 @endif
+                            </div>
+                            </div>
+                            {{-- topics --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label>Topics *</label>
+                                    <select name="topic_id" id="topics" class="form-control">
+                                        <option value="">Select Topics</option>
+                                        @foreach ($topics as $topic)
+                                            <option value="{{ $topic->id }}">{{ $topic->topic_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('topics'))
+                                    <span class="error">{{ $errors->first('topics') }}</span>
+                                @endif
 
+                                </div>
                             </div>
 
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
