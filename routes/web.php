@@ -101,7 +101,8 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         'organization-centers' => OrganizationCenterController::class,
         'services' => ServiceContoller::class,
         'donations' => AdminDonationController::class,
-        'plans' => PlanController::class
+        'plans' => PlanController::class,
+
     ]);
 
     Route::prefix('plans')->group(function () {
@@ -156,12 +157,10 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
             'register-agreements' => RegisterAgreementController::class,
             'members-privacy-policies' => MemberPrivacyPolicyContoller::class,
             'pma-terms' => PmaDisclaimerController::class,
-            'topics' => TopicController::class,
+
         ]);
 
-        Route::prefix('topics')->group(function () {
-            Route::get('/topic-delete/{id}', [TopicController::class, 'delete'])->name('topics.delete');
-        });
+
 
         Route::get('/newsletter-fetch-data', [NewsletterController::class, 'fetchData'])->name('newsletters.fetch-data');
         Route::get('/contact-us-fetch-data', [ContactusController::class, 'fetchData'])->name('contact-us.fetch-data');
@@ -294,7 +293,11 @@ Route::prefix('user')->middleware(['user'])->group(function () {
             'roles' => RolePermissionsController::class,
             'partners' => PartnerController::class,
             'bulletins' => BulletinController::class,
+            'topics' => TopicController::class,
         ]);
+        Route::prefix('topics')->group(function () {
+            Route::get('/topic-delete/{id}', [TopicController::class, 'delete'])->name('topics.delete');
+        });
 
         Route::prefix('bulletins')->group(function () {
             Route::get('/bulletin-delete/{id}', [BulletinController::class, 'delete'])->name('bulletins.delete');

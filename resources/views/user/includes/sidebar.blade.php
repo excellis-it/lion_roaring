@@ -57,7 +57,7 @@
                             <span class="hide-menu">Messaging</span>
                         </a>
                         {{-- collapse --}}
-                        <div class="collapse" id="collapseExample">
+                        <div class="collapse {{ Request::is('user/chats*') || Request::is('user/page/Team*') || Request::is('user/mail*') ? 'show' : '' }}" id="collapseExample">
                             <div class="menu_bb">
                                 @if (Gate::check('Manage Chat'))
                                     <a href="{{ route('chats.index') }}">
@@ -118,7 +118,7 @@
                             <span class="hide-menu">Education</span>
                         </a>
                         {{-- Collapse content --}}
-                        <div class="collapse" id="collapseExampleEducation">
+                        <div class="collapse {{ Request::is('user/topics*') || Request::is('user/becoming-sovereign*') || Request::is('user/becoming-christ-link*') || Request::is('user/leadership-development*') || Request::is('user/file*') ? 'show' : '' }}" id="collapseExampleEducation">
                             <div class="menu_bb">
                                 @if (Auth::user()->hasRole('ADMIN'))
                                     <a href="{{ route('topics.index') }}">
@@ -183,7 +183,7 @@
                             <span class="hide-menu">Bulletin</span>
                         </a>
                         {{-- Collapse content --}}
-                        <div class="collapse" id="collapseExample4">
+                        <div class="collapse {{ Request::is('user/bulletins*') || Request::is('user/bulletin-board*') || Request::is('user/events*') ? 'show' : '' }}" id="collapseExample4">
                             <div class="menu_bb">
                                 {{-- bulletins --}}
                                 <a href="{{ route('bulletin-board.index') }}">
