@@ -1,0 +1,60 @@
+<div class="main_menu_hdr">
+    <div class="container-fluid">
+        <div class="main_menu">
+            <div class="navigation navbar">
+                <div class="left_top me-auto">
+                    <div class="logo">
+                        <a href="{{route('e-store')}}" class="">
+                            <img src="{{asset('ecom_assets/images/logo.png')}}" alt="" />
+                        </a>
+                    </div>
+                </div>
+                <div class="right_btm">
+                    <div id="cssmenu">
+                        <ul>
+                            <li><a href="{{route('e-store')}}">Home</a></li>
+                            <li><a href="{{route('all-products')}}">our products</a></li>
+                            <li><a href="{{route('contact-us')}}">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="right_top">
+                    <div class="right_login">
+                        <div class="d-flex align-items-center justify-content-end">
+                            <a href="{{route('user.profile')}}" class="back_main">back to main page</a>
+                            <div class="profile_dropdown">
+                                <div class="dropdown">
+                                    <button class="profile_img_round dropdown-toggle" type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span>
+                                            @if (Auth::user()->profile_picture)
+                                                <img src="{{ Storage::url(Auth::user()->profile_picture) }}" alt="" />
+                                            @else
+                                                <img src="{{asset('ecom_assets/images/profile.jpg')}}" alt="" />
+                                            @endif
+                                        </span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Action</a></li>
+                                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                                        <li><a class="dropdown-item" href="#">Something else here</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- <div class="icon_c ms-2">
+            <a href="" class=""><i class="fa-solid fa-user"></i></a>
+          </div>
+          <div class="icon_c ms-2">
+            <a href="" class="add_cart_active"><i class="fa-solid fa-cart-shopping"></i></a>
+          </div>
+          <div class="icon_c ms-2">
+            <a href="" class="add_cart_active"><i class="fa-solid fa-heart"></i></a>
+          </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

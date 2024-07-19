@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Bulletin Edit - {{ env('APP_NAME') }}
+    Category Edit - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -38,7 +38,7 @@
                                 <div class="box_label">
                                     <label for="slug"> Category Slug*</label>
                                     <input type="text" name="slug" id="slug" class="form-control"
-                                        value="{{ $category->slug }}" placeholder="Enter Category Slug">
+                                        value="{{ $category->slug }}" placeholder="Enter Category Slug"  @if ($category->main == 1) readonly @endif>
                                     @if ($errors->has('slug'))
                                         <span class="error">{{ $errors->first('slug') }}</span>
                                     @endif
@@ -111,7 +111,7 @@
                             </div>
 
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
-                                <button type="submit" class="print_btn me-2">Upadet</button>
+                                <button type="submit" class="print_btn me-2">Update</button>
                                 <a href="{{ route('categories.index') }}" class="print_btn print_btn_vv">Cancel</a>
                             </div>
                         </div>

@@ -31,6 +31,8 @@ use App\Http\Controllers\Admin\RegisterAgreementController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\ServiceContoller;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Estore\HomeController;
+use App\Http\Controllers\Estore\ProductController as EstoreProductController;
 use App\Http\Controllers\Frontend\CmsController;
 use App\Http\Controllers\Frontend\DonationController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
@@ -53,6 +55,7 @@ use App\Http\Controllers\User\SendMailController;
 use App\Http\Controllers\User\SubscriptionController;
 use App\Http\Controllers\User\TeamController;
 use App\Http\Controllers\User\TopicController;
+use App\Models\Category;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Artisan;
 
@@ -229,7 +232,7 @@ Route::prefix('user')->middleware(['user'])->group(function () {
     Route::get('/stripe-checkout-success', [SubscriptionController::class, 'stripeCheckoutSuccess'])->name('stripe.checkout.success');
 
     Route::middleware(['member.access'])->group(function () {
-        Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
+        // Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
         Route::get('/profile', [UserDashboardController::class, 'profile'])->name('user.profile');
         Route::post('/profile-update', [UserDashboardController::class, 'profileUpdate'])->name('user.profile.update');
         Route::get('/change-password', [UserDashboardController::class, 'password'])->name('user.change.password');
@@ -357,4 +360,23 @@ Route::prefix('user')->middleware(['user'])->group(function () {
 
         Route::get('/page/{name}/{permission}', [UserCmsController::class, 'page'])->name('user.page');
     });
+});
+
+
+/**************************************************----------------------------ECOM--------------------------****************************************************************/
+
+Route::prefix('e-store')->middleware(['user'])->group(function () {
+    Route::get('/', [HomeController::class, 'eStore'])->name('e-store');
+    Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails'])->name('product-details');
+    Route::get('/all-products', [EstoreProductController::class, 'products'])->name('all-products');
+
+    $categories = Category::where('status', 1)->get();
+    foreach ($categories as $category) {
+        if ($category->slug) {
+            Route::get($category->slug, [EstoreProductController::class, 'products'])
+                ->name($category->slug . '.page')
+                ->defaults('category_id', $category->id);
+        }
+    }
+
 });

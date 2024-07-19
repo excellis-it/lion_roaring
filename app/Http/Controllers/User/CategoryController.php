@@ -146,7 +146,9 @@ class CategoryController extends Controller
             ]);
 
             $category->name = $request->name;
-            $category->slug = $request->slug;
+            if ($category->main == 0) {
+                $category->slug = $request->slug;
+            }
             $category->meta_title = $request->meta_title;
             $category->meta_description = $request->meta_description;
             $category->status = $request->status;

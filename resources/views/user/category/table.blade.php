@@ -15,10 +15,12 @@
                     <a href="{{ route('categories.edit', $category->id) }}" class="delete_icon">
                         <i class="fa-solid fa-edit"></i>
                     </a> &nbsp; &nbsp;
-                    <a href="javascript:void(0)" id="delete"
-                        data-route="{{ route('categories.delete', $category->id) }}" class="delete_icon">
-                        <i class="fa-solid fa-trash"></i>
-                    </a>
+                    @if ($category->main == 0)
+                        <a href="javascript:void(0)" id="delete"
+                            data-route="{{ route('categories.delete', $category->id) }}" class="delete_icon">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    @endif
                 </div>
             </td>
         </tr>
