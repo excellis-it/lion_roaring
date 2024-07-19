@@ -38,6 +38,7 @@ use App\Http\Controllers\User\BecomingChristLikeController;
 use App\Http\Controllers\User\BecomingSovereignController;
 use App\Http\Controllers\User\BulletinBoardController;
 use App\Http\Controllers\User\BulletinController;
+use App\Http\Controllers\User\CategoryController;
 use App\Http\Controllers\User\ChatController;
 use App\Http\Controllers\User\CmsController as UserCmsController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
@@ -46,6 +47,7 @@ use App\Http\Controllers\User\ForgetPasswordController as UserForgetPasswordCont
 use App\Http\Controllers\User\LeadershipDevelopmentController;
 use App\Http\Controllers\User\LiveEventController;
 use App\Http\Controllers\User\PartnerController;
+use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\User\RolePermissionsController;
 use App\Http\Controllers\User\SendMailController;
 use App\Http\Controllers\User\SubscriptionController;
@@ -294,7 +296,23 @@ Route::prefix('user')->middleware(['user'])->group(function () {
             'partners' => PartnerController::class,
             'bulletins' => BulletinController::class,
             'topics' => TopicController::class,
+            'categories' => CategoryController::class,
+            'products' => ProductController::class,
         ]);
+
+        Route::prefix('products')->group(function () {
+            Route::get('/product-delete/{id}', [ProductController::class, 'delete'])->name('products.delete');
+        });
+        // products.image.delete
+        Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
+        Route::get('/products-fetch-data', [ProductController::class, 'fetchData'])->name('products.fetch-data');
+
+        Route::get('/categories-fetch-data', [CategoryController::class, 'fetchData'])->name('categories.fetch-data');
+
+        Route::prefix('categories')->group(function () {
+            Route::get('/category-delete/{id}', [CategoryController::class, 'delete'])->name('categories.delete');
+        });
+
         Route::prefix('topics')->group(function () {
             Route::get('/topic-delete/{id}', [TopicController::class, 'delete'])->name('topics.delete');
         });

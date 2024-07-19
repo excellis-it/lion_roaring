@@ -44,41 +44,47 @@
                             <div class="heading_hp">
                                 <h2 id="greeting">
                                     <?php
+                                    // Function to get timezone from IP
+                                    function getTimezoneFromIp($ip) {
+                                        $url = "http://ip-api.com/json/{$ip}?fields=timezone";
+                                        $response = @file_get_contents($url); // Suppress warnings and handle errors manually
+                                        if ($response) {
+                                            $data = json_decode($response);
+                                            if ($data && isset($data->timezone)) {
+                                                return $data->timezone;
+                                            }
+                                        }
+                                        return null;
+                                    }
 
                                     // Get user's timezone based on IP address
                                     $ip = $_SERVER['REMOTE_ADDR'];
-                                    $timezone = file_get_contents("http://ip-api.com/json/{$ip}?fields=timezone");
-                                    if ($timezone !== "{}") {
-                                        $timezone = json_decode($timezone)->timezone;
+                                    $timezone = getTimezoneFromIp($ip);
 
+                                    if ($timezone) {
                                         // Set the default timezone
                                         date_default_timezone_set($timezone);
-
-                                        // Get the current hour in 24-hour format
-                                        $time = date('H');
-
-                                        // If the time is less than 12:00 hours, show "Good morning"
-                                        if ($time < '12') {
-                                            echo 'Good morning';
-                                        }
-                                        // If the time is greater than or equal to 12:00 hours, but less than 17:00 hours, show "Good afternoon"
-                                        elseif ($time >= '12' && $time < '17') {
-                                            echo 'Good afternoon';
-                                        }
-                                        // If the time is between or equal to 17:00 and 19:00 hours, show "Good evening"
-                                        elseif ($time >= '17' && $time < '19') {
-                                            echo 'Good evening';
-                                        }
-                                        // Finally, show "Good night" if the time is greater than or equal to 19:00 hours
-                                        elseif ($time >= '19') {
-                                            echo 'Good night';
-                                        }
                                     } else {
-                                        echo 'Welcome';
+                                        // Fallback timezone
+                                        date_default_timezone_set('UTC');
+                                    }
+
+                                    // Get the current hour in 24-hour format
+                                    $time = date('H');
+
+                                    // Determine greeting based on time
+                                    if ($time < '12') {
+                                        echo 'Good morning';
+                                    } elseif ($time >= '12' && $time < '17') {
+                                        echo 'Good afternoon';
+                                    } elseif ($time >= '17' && $time < '19') {
+                                        echo 'Good evening';
+                                    } else {
+                                        echo 'Good night';
                                     }
                                     ?>
-
                                 </h2>
+
                                 <h4>Sign on to enter Lion Roaring PMA Private Member area.</h4>
                                 <div class="admin-form">
                                     <form name="login-form" id="login-form" action="{{ route('login.check') }}"
@@ -116,10 +122,11 @@
                                         </p>
                                     </form>
                                 </div>
-                               <div class="join-text">
+                                <div class="join-text">
                                     <a href="javascrip:void(0);" data-bs-toggle="modal"
                                         data-bs-target="#staticBackdrop">Join Lion
-                                        Roaring Member</a> | <a href="{{ route('user.forget.password.show') }}">Forgot username or password
+                                        Roaring Member</a> | <a href="{{ route('user.forget.password.show') }}">Forgot
+                                        username or password
                                     </a>
                                 </div>
                                 <div class="join-text join-text-1">

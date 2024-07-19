@@ -13,6 +13,10 @@
         </div>
 
         <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-center">
+            <li class="nav-item m-3">
+
+                <a href="{{ route('home') }}" class="btn btn-primary">   <i class="ti ti-shopping-cart"></i>e-Store</a>
+            </li>
 
             <li class="nav-item dropdown">
                 <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"

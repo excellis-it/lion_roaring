@@ -25844,7 +25844,7 @@ fieldset:disabled .btn {
     --bs-pagination-font-size: 0.765625rem;
     --bs-pagination-border-radius: var(--bs-border-radius-sm)
 }
-
+/* 
 .badge {
     --bs-badge-padding-x: 10px;
     --bs-badge-padding-y: 5px;
@@ -25862,7 +25862,7 @@ fieldset:disabled .btn {
     white-space: nowrap;
     vertical-align: baseline;
     border-radius: var(--bs-badge-border-radius)
-}
+} */
 
 .badge:empty {
     display: none

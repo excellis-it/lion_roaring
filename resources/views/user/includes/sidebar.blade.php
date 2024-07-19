@@ -57,7 +57,8 @@
                             <span class="hide-menu">Messaging</span>
                         </a>
                         {{-- collapse --}}
-                        <div class="collapse {{ Request::is('user/chats*') || Request::is('user/page/Team*') || Request::is('user/mail*') ? 'show' : '' }}" id="collapseExample">
+                        <div class="collapse {{ Request::is('user/chats*') || Request::is('user/page/Team*') || Request::is('user/mail*') ? 'show' : '' }}"
+                            id="collapseExample">
                             <div class="menu_bb">
                                 @if (Gate::check('Manage Chat'))
                                     <a href="{{ route('chats.index') }}">
@@ -108,7 +109,8 @@
                 @if (Gate::check('Manage Becomeing Sovereigns') ||
                         Gate::check('Manage Becoming Christ Like') ||
                         Gate::check('Manage Leadership Development') ||
-                        Gate::check('Manage File') || Auth::user()->hasRole('ADMIN'))
+                        Gate::check('Manage File') ||
+                        Auth::user()->hasRole('ADMIN'))
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExampleEducation">
@@ -118,7 +120,8 @@
                             <span class="hide-menu">Education</span>
                         </a>
                         {{-- Collapse content --}}
-                        <div class="collapse {{ Request::is('user/topics*') || Request::is('user/becoming-sovereign*') || Request::is('user/becoming-christ-link*') || Request::is('user/leadership-development*') || Request::is('user/file*') ? 'show' : '' }}" id="collapseExampleEducation">
+                        <div class="collapse {{ Request::is('user/topics*') || Request::is('user/becoming-sovereign*') || Request::is('user/becoming-christ-link*') || Request::is('user/leadership-development*') || Request::is('user/file*') ? 'show' : '' }}"
+                            id="collapseExampleEducation">
                             <div class="menu_bb">
                                 @if (Auth::user()->hasRole('ADMIN'))
                                     <a href="{{ route('topics.index') }}">
@@ -183,7 +186,8 @@
                             <span class="hide-menu">Bulletin</span>
                         </a>
                         {{-- Collapse content --}}
-                        <div class="collapse {{ Request::is('user/bulletins*') || Request::is('user/bulletin-board*') || Request::is('user/events*') ? 'show' : '' }}" id="collapseExample4">
+                        <div class="collapse {{ Request::is('user/bulletins*') || Request::is('user/bulletin-board*') || Request::is('user/events*') ? 'show' : '' }}"
+                            id="collapseExample4">
                             <div class="menu_bb">
                                 {{-- bulletins --}}
                                 <a href="{{ route('bulletin-board.index') }}">
@@ -194,8 +198,7 @@
                                     <span>Bulletin Board</span>
                                 </a>
                                 @if (Gate::check('Manage Bulletin'))
-                                    <a
-                                        href="{{ route('bulletins.index') }}">
+                                    <a href="{{ route('bulletins.index') }}">
                                         <span>
                                             <img src="{{ asset('user_assets/images/Bulletine.png') }}" alt="">
                                         </span>
@@ -222,12 +225,6 @@
                                         <span>Meeting Schedule</span>
                                     </a>
                                 @endif
-                                {{-- <a href="{{ route('user.page', ['name' => 'Lion Roaring Store', 'permission' => 'Manage Bulletin']) }}">
-                                <span>
-                                    <img src="{{ asset('user_assets/images/Lion Roaring Store.png') }}" alt="">
-                                </span>
-                                <span>Lion Roaring Store</span>
-                            </a> --}}
                                 {{-- <a href="{{ route('user.page', ['name' => 'Communities of interest', 'permission' => 'Manage Bulletin']) }}">
                                 <span>
                                     <img src="{{ asset('user_assets/images/Communities of interest.png') }}" alt="">
@@ -255,6 +252,47 @@
                             <span class="hide-menu">Bulletin Board</span>
                         </a>
                     </li>
+                @endif
+                @if (Auth::user()->hasRole('ADMIN'))
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
+                        data-bs-target="#collapseExample10">
+                        <span>
+                            <img src="{{ asset('user_assets/images/Lion Roaring Store.png') }}" alt="">
+                        </span>
+                        <span class="hide-menu">Store</span>
+                    </a>
+                    {{-- Collapse content --}}
+                    <div class="collapse {{ Request::is('user/products*') || Request::is('user/categories*') ? 'show' : '' }}"
+                        id="collapseExample10">
+                        <div class="menu_bb">
+                            {{-- bulletins --}}
+                            <a href="{{ route('categories.index') }}">
+                                <span>
+                                    <img src="{{ asset('user_assets/images/Meeting Schedule.png') }}"
+                                        alt="">
+                                </span>
+                                <span>Product Categories</span>
+                            </a>
+                                <a href="{{ route('products.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/Bulletine.png') }}" alt="">
+                                    </span>
+                                    <span>Product</span>
+                                </a>
+                            {{-- @if (Gate::check('Manage Job Postings'))
+                                <a
+                                    href="{{ route('user.page', ['name' => 'Job Posting', 'permission' => 'Manage Job Postings']) }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/Job Posting.png') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Job Posting</span>
+                                </a>
+                            @endif --}}
+                        </div>
+                    </div>
+                </li>
                 @endif
                 @if (Auth::user()->hasRole('ADMIN') || Auth::user()->hasRole('LEADER'))
                     <li class="sidebar-item">
