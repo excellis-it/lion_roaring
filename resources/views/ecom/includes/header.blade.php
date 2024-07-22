@@ -35,9 +35,9 @@
                                         </span>
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Action</a></li>
-                                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                                        <li><a class="dropdown-item" href="#">Something else here</a>
+                                        <li><a class="dropdown-item" href="{{route('user.profile')}}">Profile</a></li>
+                                        <li><a class="dropdown-item" href="{{route('user.change.password')}}">Change Password</a></li>
+                                        <li><a class="dropdown-item" href="{{route('logout')}}">Logout</a>
                                         </li>
                                     </ul>
                                 </div>

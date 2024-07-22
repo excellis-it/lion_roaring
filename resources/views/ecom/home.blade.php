@@ -6,6 +6,9 @@
 @endpush
 
 @section('content')
+    @php
+        use App\Helpers\Helper;
+    @endphp
     <section class="banner__slider banner_sec middle_arrow">
         <div class="slider stick-dots">
             <div class="slide">
@@ -44,7 +47,8 @@
                         <div class="feature_slid_padding">
                             <div class="feature_box">
                                 <div class="feature_img">
-                                    <a href="{{ route($category->slug . '.page') }}"><img src="{{ Storage::url($category->image) }}" /></a>
+                                    <a href="{{ route($category->slug . '.page') }}"><img
+                                            src="{{ Storage::url($category->image) }}" /></a>
                                 </div>
                                 <div class="feature_text">
                                     <a href="{{ route($category->slug . '.page') }}">{{ $category->name }}</a>
@@ -118,7 +122,7 @@
                                         <div class="wishlist_icon">
                                             <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
                                         </div>
-                                        <a href="{{route('product-details', $product->slug)}}">
+                                        <a href="{{ route('product-details', $product->slug) }}">
                                             @if (isset($product->main_image) && $product->main_image != null)
                                                 <img src="{{ Storage::url($product->main_image) }}"
                                                     alt="{{ $product->main_image }}">
@@ -127,20 +131,30 @@
                                     </div>
                                     <div class="feature_text">
                                         <ul class="star_ul">
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li>(5)</li>
+                                            @if (Helper::getTotalProductRating($product->id))
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <li><i
+                                                        class="fa-{{ $i <= Helper::getTotalProductRating($product->id) ? 'solid' : 'regular' }} fa-star"></i>
+                                                </li>
+                                            @endfor
+                                        @else
+                                            <li><i class="fa-regular fa-star"></i></li>
+                                            <li><i class="fa-regular fa-star"></i></li>
+                                            <li><i class="fa-regular fa-star"></i></li>
+                                            <li><i class="fa-regular fa-star"></i></li>
+                                            <li><i class="fa-regular fa-star"></i></li>
+                                        @endif
+
+                                        <li>({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
+                                        </li>
                                         </ul>
-                                        <a href="{{route('product-details', $product->slug)}}">{{ $product->name }}</a>
+                                        <a href="{{ route('product-details', $product->slug) }}">{{ $product->name }}</a>
                                         <p>{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
                                         </p>
                                         <span class="price_text">$ {{ $product->price }}</span>
                                     </div>
                                     <div class="addtocart">
-                                        <a href="{{route('product-details', $product->slug)}}"> view details</a>
+                                        <a href="{{ route('product-details', $product->slug) }}"> view details</a>
                                     </div>
                                 </div>
                             </div>
@@ -171,7 +185,7 @@
                                         <div class="wishlist_icon">
                                             <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
                                         </div>
-                                        <a href="{{route('product-details', $product->slug)}}">
+                                        <a href="{{ route('product-details', $product->slug) }}">
                                             @if (isset($product->main_image) && $product->main_image != null)
                                                 <img src="{{ Storage::url($product->main_image) }}"
                                                     alt="{{ $product->main_image }}">
@@ -180,20 +194,30 @@
                                     </div>
                                     <div class="feature_text">
                                         <ul class="star_ul">
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li>(5)</li>
+                                            @if (Helper::getTotalProductRating($product->id))
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <li><i
+                                                            class="fa-{{ $i <= Helper::getTotalProductRating($product->id) ? 'solid' : 'regular' }} fa-star"></i>
+                                                    </li>
+                                                @endfor
+                                            @else
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                            @endif
+
+                                            <li>({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
+                                            </li>
                                         </ul>
-                                        <a href="{{route('product-details', $product->slug)}}">{{ $product->name }}</a>
+                                        <a href="{{ route('product-details', $product->slug) }}">{{ $product->name }}</a>
                                         <p>{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
                                         </p>
                                         <span class="price_text">${{ $product->price }}</span>
                                     </div>
                                     <div class="addtocart">
-                                        <a href="{{route('product-details', $product->slug)}}">view details</a>
+                                        <a href="{{ route('product-details', $product->slug) }}">view details</a>
                                     </div>
                                 </div>
                             </div>
@@ -225,7 +249,7 @@
                                         <div class="wishlist_icon">
                                             <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
                                         </div>
-                                        <a href="{{route('product-details', $product->slug)}}">
+                                        <a href="{{ route('product-details', $product->slug) }}">
                                             @if (isset($product->main_image) && $product->main_image != null)
                                                 <img src="{{ Storage::url($product->main_image) }}"
                                                     alt="{{ $product->main_image }}">
@@ -234,20 +258,30 @@
                                     </div>
                                     <div class="feature_text">
                                         <ul class="star_ul">
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li>(5)</li>
+                                            @if (Helper::getTotalProductRating($product->id))
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <li><i
+                                                        class="fa-{{ $i <= Helper::getTotalProductRating($product->id) ? 'solid' : 'regular' }} fa-star"></i>
+                                                </li>
+                                            @endfor
+                                        @else
+                                            <li><i class="fa-regular fa-star"></i></li>
+                                            <li><i class="fa-regular fa-star"></i></li>
+                                            <li><i class="fa-regular fa-star"></i></li>
+                                            <li><i class="fa-regular fa-star"></i></li>
+                                            <li><i class="fa-regular fa-star"></i></li>
+                                        @endif
+
+                                        <li>({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
+                                        </li>
                                         </ul>
-                                        <a href="{{route('product-details', $product->slug)}}">{{ $product->name }}</a>
+                                        <a href="{{ route('product-details', $product->slug) }}">{{ $product->name }}</a>
                                         <p>{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
                                         </p>
                                         <span class="price_text">${{ $product->price }}</span>
                                     </div>
                                     <div class="addtocart">
-                                        <a href="{{route('product-details', $product->slug)}}">view details</a>
+                                        <a href="{{ route('product-details', $product->slug) }}">view details</a>
                                     </div>
                                 </div>
                             </div>
@@ -278,7 +312,7 @@
                                         <div class="wishlist_icon">
                                             <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
                                         </div>
-                                        <a href="{{route('product-details', $product->slug)}}">
+                                        <a href="{{ route('product-details', $product->slug) }}">
                                             @if (isset($product->main_image) && $product->main_image != null)
                                                 <img src="{{ Storage::url($product->main_image) }}"
                                                     alt="{{ $product->main_image }}">
@@ -287,20 +321,30 @@
                                     </div>
                                     <div class="feature_text">
                                         <ul class="star_ul">
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li>(5)</li>
+                                            @if (Helper::getTotalProductRating($product->id))
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <li><i
+                                                            class="fa-{{ $i <= Helper::getTotalProductRating($product->id) ? 'solid' : 'regular' }} fa-star"></i>
+                                                    </li>
+                                                @endfor
+                                            @else
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                            @endif
+
+                                            <li>({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
+                                            </li>
                                         </ul>
-                                        <a href="{{route('product-details', $product->slug)}}">{{ $product->name }}</a>
+                                        <a href="{{ route('product-details', $product->slug) }}">{{ $product->name }}</a>
                                         <p>{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
                                         </p>
                                         <span class="price_text">${{ $product->price }}</span>
                                     </div>
                                     <div class="addtocart">
-                                        <a href="{{route('product-details', $product->slug)}}">view details</a>
+                                        <a href="{{ route('product-details', $product->slug) }}">view details</a>
                                     </div>
                                 </div>
                             </div>

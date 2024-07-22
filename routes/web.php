@@ -369,7 +369,9 @@ Route::prefix('e-store')->middleware(['user'])->group(function () {
     Route::get('/', [HomeController::class, 'eStore'])->name('e-store');
     Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails'])->name('product-details');
     Route::get('/all-products', [EstoreProductController::class, 'products'])->name('all-products');
-
+    Route::get('/products-filter', [EstoreProductController::class, 'productsFilter'])->name('products-filter');
+    Route::post('/product-add-review', [EstoreProductController::class, 'productAddReview'])->name('product-add-review');
+    
     $categories = Category::where('status', 1)->get();
     foreach ($categories as $category) {
         if ($category->slug) {

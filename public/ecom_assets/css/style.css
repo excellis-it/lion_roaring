@@ -319,8 +319,8 @@ opacity: 1;
 
 /* ==== Slider Image Transition === */
 @keyframes Slick-FastSwipeIn{
-    0%{transform:rotate3d(0,1,0,150deg) scale(0)  perspective(400px);} 
-    100%{transform:rotate3d(0,1,0,0deg) scale(1) perspective(400px);} 
+    0%{transform:rotate3d(0,1,0,150deg) scale(0)  perspective(400px);}
+    100%{transform:rotate3d(0,1,0,0deg) scale(1) perspective(400px);}
 }
 
 @-webkit-keyframes ProgressDots{from{width:0px;}to{width:100%;}}
@@ -570,7 +570,7 @@ font-weight: 500;
 position: relative;
 font-family: var(--button-font);
 letter-spacing: 2px;
-color: var(--white-color); 
+color: var(--white-color);
 }
 .red_btn:before {
 content: "";
@@ -590,7 +590,7 @@ transition: all ease-in 0.3s;
 height: 100%;
 }
 .red_btn:hover span{
-color: var(--white-color);  
+color: var(--white-color);
 }
 .red_btn.white_bg{
 color: var(--black-color);
@@ -670,7 +670,7 @@ color: var(--white-color);
   width: 40px;
   height: auto;
   position: absolute;
-  right: 4px;  
+  right: 4px;
   bottom: 4px;
   transition: all ease-in 0.3s;
 }
@@ -1221,7 +1221,7 @@ color: var(--white-color);
 
 
 /*---- Price ----*/
-/* 
+/*
 .proce_slider.price-input {
   width: 100%;
   display: flex;
@@ -1375,7 +1375,7 @@ input[type="range"]::-moz-range-thumb {
   color: var(--text-color);
   line-height: 30px;
   }
-  
+
   .related-heading {
   text-align: center;
   font-size: 1.5rem;
@@ -1428,11 +1428,11 @@ input[type="range"]::-moz-range-thumb {
   padding: 0 5px;
   }
   .slid_rel{
-  padding: 0 15px; 
+  padding: 0 15px;
   }
 
 
-	/*  
+	/*
 		 * Rating styles
 		 */
      .rating {
@@ -1482,7 +1482,7 @@ input[type="range"]::-moz-range-thumb {
       justify-content: center;
       align-items: center;
   }
-   
+
 .pure_tab .testimonial-heading span{
       font-size: 1.3rem;
       color: #252525;
@@ -1556,7 +1556,7 @@ input[type="range"]::-moz-range-thumb {
   .additional-details .nav-tabs{
     border-bottom: 0;
   }
-  
+
   @media(max-width:1060px){
     .pure_tab .testimonial-box{
           width:45%;
@@ -1670,9 +1670,51 @@ input[type="range"]::-moz-range-thumb {
 
 
   /*--- product_details ---*/
-  
-  
 
+
+/** Rate */
+.rate {
+    height: 46px;
+    padding: 0 10px;
+}
+
+.rate:not(:checked)>input {
+    position: absolute;
+    top: -9999px;
+}
+
+.rate:not(:checked)>label {
+    float: right;
+    width: 1em;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: 30px;
+    color: #ccc;
+}
+
+.rate:not(:checked)>label:before {
+    content: '★ ';
+}
+
+.rate>input:checked~label {
+    color: #ffc700;
+}
+
+.rate:not(:checked)>label:hover,
+.rate:not(:checked)>label:hover~label {
+    color: #deb217;
+}
+
+.rate>input:checked+label:hover,
+.rate>input:checked+label:hover~label,
+.rate>input:checked~label:hover,
+.rate>input:checked~label:hover~label,
+.rate>label:hover~input:checked~label {
+    color: #c59b08;
+}
+
+/** Rate */
 
 
 

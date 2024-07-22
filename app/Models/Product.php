@@ -39,4 +39,15 @@ class Product extends Model
     {
         return $this->images->where('featured_image', 1)->pluck('image')->first();
     }
+
+    public function image()
+    {
+        return $this->hasOne(ProductImage::class)->where('featured_image', 1);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
 }

@@ -8,6 +8,7 @@ use App\Models\Footer;
 use App\Models\Organization;
 use App\Models\OurOrganization;
 use App\Models\PmaTerm;
+use App\Models\Review;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Count;
 
@@ -70,5 +71,24 @@ class Helper
     {
         $term = PmaTerm::orderBy('id', 'desc')->first();
         return $term;
+    }
+
+    public static function getTotalProductRating($product_id)
+    {
+        $total_rating = Review::where('product_id', $product_id)->sum('rating');
+        $total_review = Review::where('product_id', $product_id)->count();
+        if ($total_review > 0) {
+            $avg_rating = $total_rating / $total_review;
+        } else {
+            $avg_rating = 0;
+        }
+        // showing 1 decimal point
+        return $avg_rating = number_format((float)$avg_rating, 1, '.', '');
+    }
+
+    public static function getRatingCount($product_id)
+    {
+        $rating_count = Review::where('product_id', $product_id)->count();
+        return $rating_count;
     }
 }

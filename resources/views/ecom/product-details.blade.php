@@ -10,6 +10,9 @@
 @endpush
 
 @section('content')
+    @php
+        use App\Helpers\Helper;
+    @endphp
     <section class="inner_banner_sec"
         style="background-image: url({{ asset('ecom_assets/images/banner.jpg') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
@@ -57,7 +60,9 @@
                 <div class="col-md-7">
                     <div class="ratings my-2">
                         <div class="stars d-flex">
-                            4.4 <div class="mx-2"> <i class="fa-solid fa-star"></i> </div>(21000+)
+                            {{ Helper::getTotalProductRating($product->id) ? Helper::getTotalProductRating($product->id) : 0 }}
+                            <div class="mx-2"> <i class="fa-solid fa-star"></i> </div>
+                            ({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
                         </div>
                     </div>
                     <div class="title">{{ $product->name }}</div>
@@ -108,107 +113,35 @@
                     <div class="tab-pane fade" id="menu1">
                         <div class="review">
                             <div class="pure_tab">
-                                <form id="review-form" action="index.html" method="post">
+                                <form id="review-form" action="javascript:void(0);" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="product_id" value="{{ $product['id'] }}">
                                     <h2>Write Your Review</h2>
-                                    <div class="rating rating2">
-                                        <a href="#5" title="Give 5 stars">★</a>
-                                        <a href="#4" title="Give 4 stars">★</a>
-                                        <a href="#3" title="Give 3 stars">★</a>
-                                        <a href="#2" title="Give 2 stars">★</a>
-                                        <a href="#1" title="Give 1 star">★</a>
+                                    <div class="rate">
+                                        <input type="radio" id="star5" name="rate" value="5" />
+                                        <label for="star5" title="text">5 stars</label>
+                                        <input type="radio" id="star4" name="rate" value="4" />
+                                        <label for="star4" title="text">4 stars</label>
+                                        <input type="radio" id="star3" name="rate" value="3" />
+                                        <label for="star3" title="text">3 stars</label>
+                                        <input type="radio" id="star2" name="rate" value="2" />
+                                        <label for="star2" title="text">2 stars</label>
+                                        <input type="radio" id="star1" name="rate" value="1" />
+                                        <label for="star1" title="text">1 star</label>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label" for="review">Your Review:</label>
                                         <textarea class="form-control" rows="5" placeholder="Your Reivew" name="review" id="review"></textarea>
-                                        <span id="reviewInfo" class="help-block pull-right">
-                                            <span id="remaining">999</span> Characters remaining
+                                        <span id="reviewInfo" class="help-block pull-right ">
+
                                         </span>
                                     </div>
-                                    <a href="" class="red_btn mb-5"><span>Submit</span></a>
+                                    <button type="submit" class="red_btn mb-5 mt-3"
+                                        style="border: none"><span>Submit</span></button>
                                 </form>
-                                <div class="testimonial-box">
-                                    <div class="box-top">
-                                        <div class="profile">
-                                            <div class="profile-img">
-                                                <img
-                                                    src="https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png" />
-                                            </div>
-                                            <div class="name-user">
-                                                <strong>Noah Wood</strong>
-                                                <span>@noahwood</span>
-                                            </div>
-                                        </div>
-                                        <div class="reviews">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </div>
-                                    </div>
-                                    <div class="client-comment">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem, quaerat
-                                            quis?
-                                            Provident temporibus architecto asperiores nobis maiores nisi a. Quae doloribus
-                                            ipsum aliquam
-                                            tenetur voluptates incidunt blanditiis sed atque cumque.</p>
-                                    </div>
-                                </div>
-                                <div class="testimonial-box">
-                                    <div class="box-top">
-                                        <div class="profile">
-                                            <div class="profile-img">
-                                                <img
-                                                    src="https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png" />
-                                            </div>
-                                            <div class="name-user">
-                                                <strong>Noah Wood</strong>
-                                                <span>@noahwood</span>
-                                            </div>
-                                        </div>
-                                        <div class="reviews">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </div>
-                                    </div>
-                                    <div class="client-comment">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem, quaerat
-                                            quis?
-                                            Provident temporibus architecto asperiores nobis maiores nisi a. Quae doloribus
-                                            ipsum aliquam
-                                            tenetur voluptates incidunt blanditiis sed atque cumque.</p>
-                                    </div>
-                                </div>
-                                <div class="testimonial-box">
-                                    <div class="box-top">
-                                        <div class="profile">
-                                            <div class="profile-img">
-                                                <img
-                                                    src="https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png" />
-                                            </div>
-                                            <div class="name-user">
-                                                <strong>Noah Wood</strong>
-                                                <span>@noahwood</span>
-                                            </div>
-                                        </div>
-                                        <div class="reviews">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </div>
-                                    </div>
-                                    <div class="client-comment">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem, quaerat
-                                            quis?
-                                            Provident temporibus architecto asperiores nobis maiores nisi a. Quae doloribus
-                                            ipsum aliquam
-                                            tenetur voluptates incidunt blanditiis sed atque cumque.</p>
-                                    </div>
+
+                                <div id="show-review">
+                                    @include('ecom.partials.product-review', ['reviews' => $reviews])
                                 </div>
 
                             </div>
@@ -218,20 +151,6 @@
             </div>
         </div>
     </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <section class="feature_sec">
         <div class="pos_zi">
             <div class="container">
@@ -245,110 +164,52 @@
                     </div>
                 </div>
                 <div class="featured_slider">
-                    <div class="feature_slid_padding">
-                        <div class="feature_box">
-                            <div class="feature_img">
-                                <div class="wishlist_icon">
-                                    <a href=""><i class="fa-solid fa-heart"></i></a>
+                    @if (count($related_products) > 0)
+                        @foreach ($related_products as $related_product)
+                            <div class="feature_slid_padding">
+                                <div class="feature_box">
+                                    <div class="feature_img">
+                                        <div class="wishlist_icon">
+                                            <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
+                                        </div>
+                                        <a href="{{ route('product-details', $related_product->slug) }}">
+                                            @if (isset($related_product->main_image) && $related_product->main_image != null)
+                                                <img src="{{ Storage::url($related_product->main_image) }}"
+                                                    alt="{{ $related_product->main_image }}">
+                                            @endif
+                                        </a>
+                                    </div>
+                                    <div class="feature_text">
+                                        <ul class="star_ul">
+                                            @if (Helper::getTotalProductRating($related_product->id))
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <li><i class="fa-{{ $i <= Helper::getTotalProductRating($related_product->id) ? 'solid' : 'regular' }} fa-star"></i>
+                                                    </li>
+                                                @endfor
+                                            @else
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                                <li><i class="fa-regular fa-star"></i></li>
+                                            @endif
+
+                                            <li>({{ Helper::getRatingCount($related_product->id) ? Helper::getRatingCount($related_product->id) : 0 }})
+                                            </li>
+                                        </ul>
+                                        <a
+                                            href="{{ route('product-details', $related_product->slug) }}">{{ $related_product->name }}</a>
+                                        <p>{{ strlen($related_product->short_description) > 50 ? substr($related_product->short_description, 0, 50) . '...' : $related_product->short_description }}
+                                        </p>
+                                        <span class="price_text">$ {{ $related_product->price }}</span>
+                                    </div>
+                                    <div class="addtocart">
+                                        <a href="{{ route('product-details', $related_product->slug) }}"> view details</a>
+                                    </div>
                                 </div>
-                                <a href=""><img src="{{ asset('ecom_assets/images/product.jpg') }}" /></a>
                             </div>
-                            <div class="feature_text">
-                                <ul class="star_ul">
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li>(5)</li>
-                                </ul>
-                                <a href="">holy bible book</a>
-                                <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien.</p>
-                                <span class="price_text">$20.30</span>
-                            </div>
-                            <div class="addtocart">
-                                <a href="">view details</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="feature_slid_padding">
-                        <div class="feature_box">
-                            <div class="feature_img">
-                                <div class="wishlist_icon">
-                                    <a href=""><i class="fa-solid fa-heart"></i></a>
-                                </div>
-                                <a href=""><img src="{{ asset('ecom_assets/images/product7.jpg') }}" /></a>
-                            </div>
-                            <div class="feature_text">
-                                <ul class="star_ul">
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li>(5)</li>
-                                </ul>
-                                <a href="">photo frame</a>
-                                <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien.</p>
-                                <span class="price_text">$20.30</span>
-                            </div>
-                            <div class="addtocart">
-                                <a href="">view details</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="feature_slid_padding">
-                        <div class="feature_box">
-                            <div class="feature_img">
-                                <div class="wishlist_icon">
-                                    <a href=""><i class="fa-solid fa-heart"></i></a>
-                                </div>
-                                <a href=""><img src="{{ asset('ecom_assets/images/product5.jpg') }}" /></a>
-                            </div>
-                            <div class="feature_text">
-                                <ul class="star_ul">
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li>(5)</li>
-                                </ul>
-                                <a href="">holy bible book</a>
-                                <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien.</p>
-                                <span class="price_text">$20.30</span>
-                            </div>
-                            <div class="addtocart">
-                                <a href="">view details</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="feature_slid_padding">
-                        <div class="feature_box">
-                            <div class="feature_img">
-                                <div class="wishlist_icon">
-                                    <a href=""><i class="fa-solid fa-heart"></i></a>
-                                </div>
-                                <a href=""><img src="{{ asset('ecom_assets/images/product8.jpg') }}" /></a>
-                            </div>
-                            <div class="feature_text">
-                                <ul class="star_ul">
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li>(5)</li>
-                                </ul>
-                                <a href="">Cross locket</a>
-                                <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien.</p>
-                                <span class="price_text">$20.30</span>
-                            </div>
-                            <div class="addtocart">
-                                <a href="">view details</a>
-                            </div>
-                        </div>
-                    </div>
+                        @endforeach
+                    @endif
                 </div>
             </div>
         </div>
@@ -356,4 +217,44 @@
 @endsection
 
 @push('scripts')
+    <script>
+        $(document).ready(function() {
+            $(document).on('submit', '#review-form', function() {
+                var formData = $(this).serialize();
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                $.ajax({
+                    url: "{{ route('product-add-review') }}",
+                    type: 'POST',
+                    data: formData,
+                    // processData: false,
+                    // contentType: false,
+                    success: function(response) {
+                        if (response.status == true) {
+                            toastr.success(response.message);
+                            $('#review-form')[0].reset();
+                            $('#show-review').html(response.view);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('.text-danger').html('');
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                            if (key.includes('.')) {
+                                var fieldName = key.split('.');
+                                var fieldName = fieldName[0];
+                                var num = key.match(/\d+/)[0];
+                                console.log(value[0]);
+                                toastr.error(value[0]);
+                            } else {
+                                toastr.error(value[0]);
+                            }
+                        });
+
+                    }
+                });
+            });
+        });
+    </script>
 @endpush

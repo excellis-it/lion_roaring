@@ -1,5 +1,9 @@
 @extends('ecom.layouts.master')
+@section('meta')
+    <meta name="description" content="{{ isset($category['meta_description']) ? $category['meta_description'] : '' }}">
+@endsection
 @section('title')
+    {{ isset($category['meta_title']) ? $category['meta_title'] : 'Products' }}
 @endsection
 
 @push('styles')
@@ -40,37 +44,37 @@
                     </div>
                     @if ($category_id != '')
                     @else
-                    <div class="padding_filter">
-                        <div class="accordion" id="agegroup">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingAge">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseAge" aria-expanded="true" aria-controls="collapseAge">
-                                        Categories
-                                    </button>
-                                </h2>
-                                <div id="collapseAge" class="accordion-collapse collapse show" aria-labelledby="headingAge"
-                                    data-bs-parent="#agegroup">
-                                    <div class="accordion-body">
-                                        <div class="new">
+                        <div class="padding_filter">
+                            <div class="accordion" id="agegroup">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingAge">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseAge" aria-expanded="true" aria-controls="collapseAge">
+                                            Categories
+                                        </button>
+                                    </h2>
+                                    <div id="collapseAge" class="accordion-collapse collapse show"
+                                        aria-labelledby="headingAge" data-bs-parent="#agegroup">
+                                        <div class="accordion-body">
+                                            <div class="new">
 
-                                            @if (count($categories) > 0)
-                                                @foreach ($categories as $category)
-                                                    <div class="form-group">
-                                                        <input type="checkbox" id="catagory{{ $category->id }}" name="category"
-                                                            value="{{ $category->id }}">
-                                                        <label
-                                                            for="catagory{{ $category->id }}">{{ $category->name }}</label>
-                                                    </div>
-                                                @endforeach
-                                            @endif
+                                                @if (count($categories) > 0)
+                                                    @foreach ($categories as $category)
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="catagory{{ $category->id }}"
+                                                                name="category_id" value="{{ $category->id }}">
+                                                            <label
+                                                                for="catagory{{ $category->id }}">{{ $category->name }}</label>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
 
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     @endif
                     <div class="padding_filter">
                         <div class="accordion" id="price">
@@ -83,36 +87,40 @@
                                 </h2>
                                 <div id="collapsePrice" class="accordion-collapse collapse" aria-labelledby="headingPrice"
                                     data-bs-parent="#price">
-                                    {{-- <div class="accordion-body">
-                                        <div class="proce_slider">
-                                            <div class="slider">
-                                                <div class="progress"></div>
+                                    <div class="accordion-body">
+                                        <div class="new">
+                                            <div class="form-group">
+                                                <input type="checkbox" id="price1" value="Below 500" name="price">
+                                                <label for="price1">BELOW 500</label>
                                             </div>
-                                            <div class="range-input">
-                                                <input type="range" class="range-min" min="0" max="10000"
-                                                    value="2500" step="100">
-                                                <input type="range" class="range-max" min="0" max="10000"
-                                                    value="7500" step="100">
+                                            <div class="form-group">
+                                                <input type="checkbox" id="price2" value="500-999" name="price">
+                                                <label for="price2">₹500 - ₹999</label>
                                             </div>
-                                            <div class="price-input d-flex align-items-center justify-content-between">
-                                                <div class="field">
-                                                    <span>Min Price: INR</span>
-                                                    <input type="number" class="input-min" value="2500">
-                                                </div>
-                                                <div class="separator">-</div>
-                                                <div class="field">
-                                                    <span>Min Price: INR</span>
-                                                    <input type="number" class="input-max" value="7500">
-                                                </div>
+                                            <div class="form-group">
+                                                <input type="checkbox" id="price3" value="1000-1499" name="price">
+                                                <label for="price3">₹1000 - ₹1,499</label>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="checkbox" id="price4" value="1500-2499" name="price">
+                                                <label for="price4">₹1500 - ₹2,499</label>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="checkbox" id="price5" value="2500-4499" name="price">
+                                                <label for="price5">₹₹2500 - ₹4,499</label>
                                             </div>
 
+                                            <div class="form-group">
+                                                <input type="checkbox" id="price6" value="Above 5000" name="price">
+                                                <label for="price6">ABOVE ₹5000</label>
+                                            </div>
                                         </div>
-                                    </div> --}}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="padding_filter">
+                    {{-- <div class="padding_filter">
                         <div class="accordion" id="starrating">
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingStarrating">
@@ -151,85 +159,177 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
-            <div class="col-xl-9 col-lg-8 p-0">
-                <div class="filter_resilt">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="filter_res_text">
-                                <h4>
-                                    @if ($category_id != '')
-                                        {{ $category['name'] ?? '' }}
-                                    @else
-                                        All Products
-                                    @endif
-                                    ({{ $product_count ?? '' }} Products Found)
-                                </h4>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex justify-content-end">
-                                <div class="">
-                                    <select class="latest_filter">
-                                        <option>Latest</option>
-                                        <option>Low to High</option>
-                                        <option>High to Low</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-xl-9 col-lg-8 p-0" id="product-filter">
+                @include('ecom.partials.product-filter')
 
-                <div class="row mx-3">
-                    @if (count($products) > 0)
-                        @foreach ($products as $product)
-                            <div class="col-xl-3 col-lg-4 col-md-6 mb-5">
-                                <div class="feature_box">
-                                    <div class="feature_img">
-                                        <div class="wishlist_icon">
-                                            <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
-                                        </div>
-                                        <a href="{{route('product-details', $product->slug)}}">
-                                            @if (isset($product->main_image) && $product->main_image != null)
-                                                <img src="{{ Storage::url($product->main_image) }}"
-                                                    alt="{{ $product->main_image }}">
-                                            @endif
-                                        </a>
-                                    </div>
-                                    <div class="feature_text">
-                                        <ul class="star_ul">
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li><i class="fa-solid fa-star"></i></li>
-                                            <li>(5)</li>
-                                        </ul>
-                                        <a href="{{route('product-details', $product->slug)}}">{{ $product->name }}</a>
-                                        <p>{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
-                                        </p>
-                                        <span class="price_text">${{ $product->price }}</span>
-                                    </div>
-                                    <div class="addtocart">
-                                        <a href="{{route('product-details', $product->slug)}}">view details</a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    @else
-                        <div class="col-md-12">
-                            <div class="alert alert-danger" role="alert">
-                                No data found!
-                            </div>
-                        </div>
-                    @endif
-                </div>
             </div>
     </section>
 @endsection
 
 @push('scripts')
+    <script>
+        $(document).ready(function() {
+            var page = 1;
+            var loading = false;
+            var numSlick = 0; // Initialize numSlick variable
+
+
+            // Show loading GIF function
+            function showLoading() {
+                $('#loading').show(); // Show loading GIF
+            }
+
+            // Hide loading GIF function
+            function hideLoading() {
+                $('#loading').hide(); // Hide loading GIF
+            }
+
+            // Scroll event handler
+            $(window).on('scroll', handleScroll);
+
+            function handleScroll() {
+                var lastProduct = $('.productitem:last');
+                var lastProductOffset = lastProduct.offset().top + lastProduct.outerHeight();
+                var scrollTop = $(window).scrollTop() + $(window).height();
+
+                if (scrollTop > lastProductOffset && !loading) {
+                    loading = true;
+                    page++;
+                    var prices = [];
+                    var category_id = [];
+                    var search = $('#serach-product').val();
+
+
+                    $('input[name="price"]:checked').each(function() {
+                        prices.push($(this).val());
+                    });
+
+                    var latestFilter = $('#latest_filter').val();
+
+                    @if ($category_id != '')
+                        var cat = '{{ $category_id }}';
+                        category_id.push(cat);
+                    @else
+                        $('input[name="category_id"]:checked').each(function() {
+                            category_id.push($(this).val());
+                        });
+                    @endif
+
+                    showLoading(); // Show loading GIF
+                    loadMoreProducts(page, prices, category_id, latestFilter, search); // Load more products
+                }
+            }
+
+            // Filter products by frame shape, size, material, price, gender
+            $(document).on('change',
+                'input[name="price"], #latest_filter, input[name="category_id"]',
+                function() {
+                    var prices = [];
+                    var category_id = [];
+                    var search = $('#serach-product').val();
+
+                    $('input[name="price"]:checked').each(function() {
+                        prices.push($(this).val());
+                    });
+
+
+                    var latestFilter = $('#latest_filter').val();
+
+                    @if ($category_id != '')
+                        var cat = '{{ $category_id }}';
+                        category_id.push(cat);
+                    @else
+                        $('input[name="category_id"]:checked').each(function() {
+                            category_id.push($(this).val());
+                        });
+                    @endif
+
+                    showLoading(); // Show loading GIF before making the AJAX request
+
+                    // Reset page to 1 and container for new filtered results
+                    page = 1;
+                    $('#products').html('');
+
+                    loadMoreProducts(page, prices, category_id, latestFilter, search);
+                });
+
+            // Search products
+            $(document).on('submit', '#product-search-form', function(e) {
+                e.preventDefault();
+                var search = $('#serach-product').val();
+                var prices = [];
+                var category_id = [];
+
+
+                $('input[name="price"]:checked').each(function() {
+                    prices.push($(this).val());
+                });
+
+                var latestFilter = $('#latest_filter').val();
+
+                @if ($category_id != '')
+                    var cat = '{{ $category_id }}';
+                    category_id.push(cat);
+                @else
+                    $('input[name="category_id"]:checked').each(function() {
+                        category_id.push($(this).val());
+                    });
+                @endif
+
+                page = 1;
+                $('#products').html('');
+
+                loadMoreProducts(page, prices, category_id, latestFilter, search);
+            });
+
+
+
+            function loadMoreProducts(page, prices = [], category_id = [],
+                latestFilter = '', search = '') {
+                $.ajax({
+                    url: '{{ route('products-filter') }}',
+                    type: 'GET',
+                    data: {
+                        page: page,
+                        category_id: category_id,
+                        prices: prices,
+                        latestFilter: latestFilter,
+                        search: search
+
+                    },
+                    success: function(response) {
+                        var productsContainer = $('#products');
+                        var productsCount = $('#count-product');
+                        if (page === 1) {
+                            productsContainer.html(response
+                                .view); // Replace products if it's the first page
+                            productsCount.html(response
+                                .view2); // Replace filters if it's the first page
+                            $('#proccedtologin').hide();
+                        } else {
+                            productsContainer.append(response.view); // Append new products
+                            productsCount.html(response
+                                .view2); // Replace filters if it's the first page
+                        }
+
+                        // console.log(response);
+
+                        if (response.products.length < 12) {
+                            $(window).off('scroll',
+                                handleScroll
+                            ); // Stop loading more if fewer than 12 products are returned
+                        } else {
+                            $(window).on('scroll', handleScroll); // Reattach scroll event
+                        }
+
+                        hideLoading(); // Hide loading GIF after products are loaded
+                        loading = false;
+                    }
+                });
+            }
+        });
+    </script>
 @endpush
