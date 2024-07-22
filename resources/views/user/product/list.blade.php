@@ -66,6 +66,8 @@
                                                     data-sorting_type="desc" data-column_name="sku" style="cursor: pointer">
                                                     Product SKU <span id="sku_icon"><i class="fa fa-arrow-down"></i></span>
                                                 </th>
+                                                <th>Affiliate Link</th>
+                                                
                                                 <th>Status</th>
                                                 <th>
                                                     Is Featured

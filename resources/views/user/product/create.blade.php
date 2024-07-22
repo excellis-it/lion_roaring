@@ -33,7 +33,7 @@
                                 <div class="box_label">
                                     <label for="name"> Product Name*</label>
                                     <input type="text" name="name" id="name" class="form-control"
-                                        value="{{ old('name') }}" >
+                                        value="{{ old('name') }}">
                                     @if ($errors->has('name'))
                                         <span class="error">{{ $errors->first('name') }}</span>
                                     @endif
@@ -61,7 +61,7 @@
                                 <div class="box_label">
                                     <label for="price"> Product Price*</label>
                                     <input type="text" name="price" id="price" class="form-control"
-                                        value="{{ old('price') }}" >
+                                        value="{{ old('price') }}">
                                     @if ($errors->has('price'))
                                         <span class="error">{{ $errors->first('price') }}</span>
                                     @endif
@@ -72,7 +72,7 @@
                                 <div class="box_label">
                                     <label for="quantity"> Product Quantity*</label>
                                     <input type="number" name="quantity" id="quantity" class="form-control"
-                                        value="{{ old('quantity') }}" >
+                                        value="{{ old('quantity') }}">
                                     @if ($errors->has('quantity'))
                                         <span class="error">{{ $errors->first('quantity') }}</span>
                                     @endif
@@ -84,7 +84,7 @@
                                 <div class="box_label">
                                     <label for="slug"> Product Slug*</label>
                                     <input type="text" name="slug" id="slug" class="form-control"
-                                        value="{{ old('slug') }}" >
+                                        value="{{ old('slug') }}">
                                     @if ($errors->has('slug'))
                                         <span class="error">{{ $errors->first('slug') }}</span>
                                     @endif
@@ -95,7 +95,7 @@
                                 <div class="box_label">
                                     <label for="image"> Product Featured Image*</label>
                                     <input type="file" name="image" id="image" class="form-control"
-                                        value="{{ old('image') }}" >
+                                        value="{{ old('image') }}">
                                     @if ($errors->has('image'))
                                         <span class="error">{{ $errors->first('image') }}</span>
                                     @endif
@@ -106,10 +106,20 @@
                                 <div class="box_label">
                                     <label for="short_description"> Product Short Description*</label>
                                     <input type="text" name="short_description" id="short_description"
-                                        class="form-control" value="{{ old('short_description') }}"
-                                        >
+                                        class="form-control" value="{{ old('short_description') }}">
                                     @if ($errors->has('short_description'))
                                         <span class="error">{{ $errors->first('short_description') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            {{-- affiliate_link --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="affiliate_link"> Affiliate Link*</label>
+                                    <input type="text" name="affiliate_link" id="affiliate_link" class="form-control"
+                                        value="{{ old('affiliate_link') }}">
+                                    @if ($errors->has('affiliate_link'))
+                                        <span class="error">{{ $errors->first('affiliate_link') }}</span>
                                     @endif
                                 </div>
                             </div>
@@ -118,7 +128,7 @@
                                 <div class="box_label">
                                     <label for="sku"> Product SKU*</label>
                                     <input type="text" name="sku" id="sku" class="form-control"
-                                        value="{{ old('sku') }}" >
+                                        value="{{ old('sku') }}">
                                     @if ($errors->has('sku'))
                                         <span class="error">{{ $errors->first('sku') }}</span>
                                     @endif
@@ -130,8 +140,10 @@
                                     <label for="feature_product"> Feature Product*</label>
                                     <select name="feature_product" id="feature_product" class="form-control">
                                         <option value="">Select Feature Product</option>
-                                        <option value="1" {{ old('feature_product') == 1 ? 'selected' : '' }}>Yes</option>
-                                        <option value="0" {{ old('feature_product') == 0 ? 'selected' : '' }}>No</option>
+                                        <option value="1" {{ old('feature_product') == 1 ? 'selected' : '' }}>Yes
+                                        </option>
+                                        <option value="0" {{ old('feature_product') == 0 ? 'selected' : '' }}>No
+                                        </option>
                                     </select>
                                     @if ($errors->has('feature_product'))
                                         <span class="error">{{ $errors->first('feature_product') }}</span>
@@ -145,7 +157,8 @@
                                     <select name="status" id="status" class="form-control">
                                         <option value="">Select Status</option>
                                         <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Active</option>
-                                        <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Inactive</option>
+                                        <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Inactive
+                                        </option>
                                     </select>
                                     @if ($errors->has('status'))
                                         <span class="error">{{ $errors->first('status') }}</span>
@@ -175,11 +188,11 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="inputConfirmPassword2"
-                                    class="col-sm-3 col-form-label">Image(Drag and drop atleast 1
+                                <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image(Drag and drop
+                                    atleast 1
                                     images)<span style="color:red">*<span></label>
-                                <input type="file" class="form-control dropzone"
-                                    id="image-upload" name="images[]" multiple>
+                                <input type="file" class="form-control dropzone" id="image-upload" name="images[]"
+                                    multiple>
                                 @if ($errors->has('images.*'))
                                     <div class="error" style="color:red;">
                                         {{ $errors->first('images.*') }}</div>

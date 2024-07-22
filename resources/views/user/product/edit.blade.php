@@ -146,7 +146,7 @@
                                 </div>
                             </div>
                             {{-- short_description --}}
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-12 mb-2">
                                 <div class="box_label">
                                     <label for="short_description"> Product Short Description*</label>
                                     <input type="text" name="short_description" id="short_description"
@@ -156,6 +156,18 @@
                                     @endif
                                 </div>
                             </div>
+                            {{-- affiliate_link --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="affiliate_link"> Affiliate Link*</label>
+                                    <input type="text" name="affiliate_link" id="affiliate_link" class="form-control"
+                                        value="{{ $product->affiliate_link }}">
+                                    @if ($errors->has('affiliate_link'))
+                                        <span class="error">{{ $errors->first('affiliate_link') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            
                             {{-- sku --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">

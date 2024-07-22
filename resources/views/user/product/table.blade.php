@@ -16,6 +16,8 @@
             <td> {{ $product->price  ? '$' . $product->price : '' }}</td>
             <td> {{ $product->quantity }}</td>
             <td> {{ $product->sku }}</td>
+            <td> {{ $product->affiliate_link }}</td>
+            {{-- status --}}
             <td>
                 @if ($product->status == 1)
                     <span class=" badge-success">Active</span>

@@ -88,6 +88,7 @@ class ProductController extends Controller
             'quantity' => 'required|numeric',
             'feature_product' => 'required',
             'slug' => 'required|string|unique:products',
+            'affiliate_link' => 'required|string',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -107,6 +108,7 @@ class ProductController extends Controller
         $product->price = $request->price;
         $product->quantity = $request->quantity;
         $product->slug = $request->slug;
+        $product->affiliate_link = $request->affiliate_link;
         $product->feature_product = $request->feature_product;
         $product->meta_title = $request->meta_title;
         $product->meta_description = $request->meta_description;
@@ -182,6 +184,7 @@ class ProductController extends Controller
                 'price' => 'required|numeric',
                 'quantity' => 'required|numeric',
                 'slug' => 'required|string|unique:products,slug,' . $id,
+                'affiliate_link' => 'required|string',
                 'meta_title' => 'nullable|string|max:255',
                 'meta_description' => 'nullable|string|max:255',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -200,6 +203,7 @@ class ProductController extends Controller
             $product->price = $request->price;
             $product->quantity = $request->quantity;
             $product->slug = $request->slug;
+            $product->affiliate_link = $request->affiliate_link;
             $product->feature_product = $request->feature_product;
             $product->meta_title = $request->meta_title;
             $product->meta_description = $request->meta_description;
