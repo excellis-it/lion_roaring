@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ecclesia;
 use App\Models\RegisterAgreement;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ class AuthController extends Controller
     public function login()
     {
         $agreement = RegisterAgreement::orderBy('id', 'desc')->first();
+
         return view('user.auth.login')->with(compact('agreement'));
     }
 
@@ -46,19 +48,27 @@ class AuthController extends Controller
 
     public function register()
     {
-        return view('user.auth.register');
+        $eclessias = Ecclesia::orderBy('id', 'desc')->get();
+        return view('user.auth.register')->with('eclessias', $eclessias);
     }
 
     public function registerCheck(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'user_name' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
+            'ecclesia_id' => 'required',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
             'address' => 'required|string|max:255',
-            'phone_number' => 'nullable|numeric',
+            'phone_number' => 'nullable',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'address2' => 'nullable|string|max:255',
+            'country' => 'required|string|max:255',
+            'zip' => 'required',
             'email_confirmation' => 'required|same:email',
             'password' => 'required|string|min:8',
             'password_confirmation' => 'required|same:password',
@@ -66,12 +76,18 @@ class AuthController extends Controller
 
         $user = new User();
         $user->user_name = $request->user_name;
+        $user->ecclesia_id = $request->ecclesia_id;
         $user->email = $request->email;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->middle_name = $request->middle_name;
         $user->address = $request->address;
         $user->phone = $request->phone_number;
+        $user->city = $request->city;
+        $user->state = $request->state;
+        $user->address2 = $request->address2;
+        $user->country = $request->country;
+        $user->zip = $request->zip;
         $user->password = bcrypt($request->password);
         $user->email_verified_at = now();
         $user->status = 1;

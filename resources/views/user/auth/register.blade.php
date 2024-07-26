@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
         type="text/css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
 </head>
 
 <body style="background: #643271">
@@ -51,16 +51,36 @@
                                     <form name="login-form" id="login-form" action="{{ route('register.check') }}"
                                         method="post">
                                         @csrf
-                                        <div class="login-username mb-3">
-                                            <label for="user_login">Username</label>
-                                            <input type="text" name="user_name" id="user_login" class="input"
-                                                value="{{ old('user_name') }}">
-                                            @if ($errors->has('user_name'))
-                                                <div class="error" style="color:red;">
-                                                    {{ $errors->first('user_name') }}</div>
-                                            @endif
-                                        </div>
+
                                         <div class="row">
+                                            <div class="col-lg-6 mb-3">
+                                                <div class="login-username">
+                                                    <label for="user_login">Username</label>
+                                                    <input type="text" name="user_name" id="user_login" class="input"
+                                                        value="{{ old('user_name') }}">
+                                                    @if ($errors->has('user_name'))
+                                                        <div class="error" style="color:red;">
+                                                            {{ $errors->first('user_name') }}</div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            {{-- eclessias --}}
+                                            <div class="col-lg-6 mb-3">
+                                                <div class="login-username">
+                                                    <label for="user_login">Ecclesia</label>
+                                                    <select name="ecclesia_id" id="ecclesia_id" class="input">
+                                                        <option value="">Select Ecclesia</option>
+                                                        @foreach ($eclessias as $ecclesia)
+                                                            <option value="{{ $ecclesia->id }}">
+                                                                {{ $ecclesia->name }} - ({{ $ecclesia->country }})    </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @if ($errors->has('ecclesia_id'))
+                                                        <div class="error" style="color:red;">
+                                                            {{ $errors->first('ecclesia_id') }}</div>
+                                                    @endif
+                                                </div>
+                                            </div>
                                             <div class="col-lg-4 mb-3">
                                                 <div class="login-username">
                                                     <label for="user_login">First Name</label>
@@ -90,17 +110,82 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="login-password mb-3">
-                                            <label for="user_password">Home Address</label>
-                                            <input type="text" name="address" id="user_password"
-                                                spellcheck="false" class="input" value="{{ old('address') }}">
-                                            @if ($errors->has('address'))
-                                                <div class="error" style="color:red;">
-                                                    {{ $errors->first('address') }}</div>
-                                            @endif
+                                            {{-- city --}}
+                                            <div class="col-lg-4 mb-3">
+                                                <div class="login-username">
+                                                    <label for="user_login">City</label>
+                                                    <input type="text" name="city" id="user_login"
+                                                        class="input" value="{{ old('city') }}">
+                                                    @if ($errors->has('city'))
+                                                        <div class="error" style="color:red;">
+                                                            {{ $errors->first('city') }}</div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            {{-- state --}}
+                                            <div class="col-lg-4 mb-3">
+                                                <div class="login-username">
+                                                    <label for="user_login">State</label>
+                                                    <input type="text" name="state" id="user_login"
+                                                        class="input" value="{{ old('state') }}">
+                                                    @if ($errors->has('state'))
+                                                        <div class="error" style="color:red;">
+                                                            {{ $errors->first('state') }}</div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            {{-- country --}}
+                                            <div class="col-lg-4 mb-3">
+                                                <div class="login-username">
+                                                    <label for="user_login">Country</label>
+                                                    <input type="text" name="country" id="user_login"
+                                                        class="input" value="{{ old('country') }}">
+                                                    @if ($errors->has('country'))
+                                                        <div class="error" style="color:red;">
+                                                            {{ $errors->first('country') }}</div>
+                                                    @endif
+                                                </div>
+                                            </div>
 
+                                            {{-- address --}}
+                                            <div class="col-lg-12 mb-3">
+                                                <div class="login-username">
+                                                    <label for="user_login">Address Line 1</label>
+                                                    <input type="text" name="address" id="user_login"
+                                                        class="input" value="{{ old('address') }}">
+                                                    @if ($errors->has('address'))
+                                                        <div class="error" style="color:red;">
+                                                            {{ $errors->first('address') }}</div>
+                                                    @endif
+
+                                                </div>
+                                            </div>
+                                            {{-- address2 --}}
+                                            <div class="col-lg-6 mb-3">
+                                                <div class="login-username">
+                                                    <label for="user_login">Address Line 2</label>
+                                                    <input type="text" name="address2" id="user_login"
+                                                        class="input" value="{{ old('address2') }}">
+                                                    @if ($errors->has('address2'))
+                                                        <div class="error" style="color:red;">
+                                                            {{ $errors->first('address2') }}</div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            {{-- zip --}}
+                                            <div class="col-lg-6 mb-3">
+                                                <div class="login-username">
+                                                    <label for="user_login">Zip</label>
+                                                    <input type="text" name="zip" id="user_login"
+                                                        class="input" value="{{ old('zip') }}">
+                                                    @if ($errors->has('zip'))
+                                                        <div class="error" style="color:red;">
+                                                            {{ $errors->first('zip') }}</div>
+                                                    @endif
+                                                </div>
+                                            </div>
                                         </div>
+
                                         <div class="row">
                                             <div class="col-lg-4 mb-3">
                                                 <div class="login-username">
@@ -110,10 +195,10 @@
                                                     @if ($errors->has('phone_number'))
                                                         <div class="error" style="color:red;">
                                                             {{ $errors->first('phone_number') }}</div>
-
                                                     @endif
                                                 </div>
                                             </div>
+
                                             <div class="col-lg-4 mb-3">
                                                 <div class="login-username">
                                                     <label for="user_login">Email ID</label>
@@ -152,8 +237,9 @@
                                             <div class="col-lg-6 mb-3">
                                                 <div class="login-username">
                                                     <label for="user_login">Confirm Password</label>
-                                                    <input type="password" name="password_confirmation" id="user_login"
-                                                        class="input" value="{{ old('password_confirmation') }}">
+                                                    <input type="password" name="password_confirmation"
+                                                        id="user_login" class="input"
+                                                        value="{{ old('password_confirmation') }}">
                                                     @if ($errors->has('password_confirmation'))
                                                         <div class="error" style="color:red;">
                                                             {{ $errors->first('password_confirmation') }}</div>
@@ -236,17 +322,15 @@
             window.location.href = "{{ route('login') }}";
         });
     </script>
-     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput-jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/css/intlTelInput.css">
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/js/intlTelInput.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $("#mobile_code").intlTelInput({
-                // insizlized usa country code
-                initialCountry: "US",
-                separateDialCode: true,
-                // utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/11.0.4/js/utils.js"
-            });
-           
+        const input = document.querySelector("#mobile_code");
+        window.intlTelInput(input, {
+            separateDialCode: true,
+            initialCountry: "us",
+            utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/js/utils.js",
         });
     </script>
 </body>

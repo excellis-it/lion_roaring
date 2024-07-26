@@ -82,4 +82,9 @@ class User extends Authenticatable
         return $this->belongsTo(User::class, 'created_id');
     }
 
+    public function ecclesia()
+    {
+        return $this->belongsTo(Ecclesia::class);
+    }
+
 }

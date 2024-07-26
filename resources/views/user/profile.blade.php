@@ -70,6 +70,12 @@
                                         <p>Hello!</p>
                                         <h2> {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</h2>
                                         <p>{{ Auth::user()->email }}</p>
+                                        <span>
+
+                                            <b>
+                                                 {{ Auth::user()->ecclesia ? 'Ecclesia: '. Auth::user()->ecclesia->name : '' }}
+                                            </b>
+                                        </span>
                                     </div>
                                 </div>
                             </div>

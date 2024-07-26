@@ -5,6 +5,9 @@
                 {{ $partners->firstItem() + $key }}
             </td>
             <td>{{ $partner->full_name }}</td>
+            <td>
+                {{ $partner->ecclesia ?  $partner->ecclesia->name : '' }}
+            </td>
             <td>{{ $partner->user_name }}</td>
             <td>{{ $partner->email }}</td>
             <td>{{ $partner->phone }}</td>
@@ -40,7 +43,7 @@
     @endforeach
     {{-- pagination --}}
     <tr class="toxic">
-        <td colspan="9" >
+        <td colspan="10" >
             <div class="d-flex justify-content-center">
                 {!! $partners->links() !!}
             </div>
@@ -48,6 +51,6 @@
     </tr>
     @else
     <tr class="toxic">
-        <td colspan="9" class="text-center">No Data Found</td>
+        <td colspan="10" class="text-center">No Data Found</td>
     </tr>
 @endif

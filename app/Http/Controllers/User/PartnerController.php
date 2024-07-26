@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Mail\RegistrationMail;
+use App\Models\Ecclesia;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -44,7 +45,8 @@ class PartnerController extends Controller
     {
         if (Auth::user()->can('Create Partners')) {
             $roles = Role::where('name', '!=', 'ADMIN')->get();
-            return view('user.partner.create')->with('roles', $roles);
+            $eclessias = Ecclesia::orderBy('id', 'desc')->get();
+            return view('user.partner.create')->with(compact('roles', 'eclessias'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -58,8 +60,10 @@ class PartnerController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'user_name' => 'required|unique:users',
+            'ecclesia_id' => 'nullable|exists:ecclesias,id',
             'role' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
@@ -68,6 +72,11 @@ class PartnerController extends Controller
             'password' => 'required|min:8',
             'confirm_password' => 'required|min:8|same:password',
             'address' => 'required',
+            'country' => 'required',
+            'state' => 'required',
+            'city' => 'required',
+            'zip' => 'required',
+            'address2' => 'nullable',
             'phone' => 'required',
         ]);
 
@@ -80,6 +89,12 @@ class PartnerController extends Controller
         $data->email = $request->email;
         $data->password = bcrypt($request->password);
         $data->address = $request->address;
+        $data->country = $request->country;
+        $data->state = $request->state;
+        $data->city = $request->city;
+        $data->zip = $request->zip;
+        $data->address2 = $request->address2;
+        $data->ecclesia_id = $request->ecclesia_id;
         $data->phone = $request->phone;
         $data->status = 1;
         $data->save();
@@ -118,7 +133,8 @@ class PartnerController extends Controller
             $id = Crypt::decrypt($id);
             $partner = User::findOrFail($id);
             $roles = Role::where('name', '!=', 'ADMIN')->get();
-            return view('user.partner.edit', compact('partner', 'roles'));
+            $ecclessias = Ecclesia::orderBy('id', 'desc')->get();
+            return view('user.partner.edit', compact('partner', 'roles', 'ecclessias'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -143,6 +159,13 @@ class PartnerController extends Controller
                 'email' => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
                 'address' => 'required',
                 'phone' => 'required',
+                'ecclesia_id' => 'nullable|exists:ecclesias,id',
+                'country' => 'required',
+                'state' => 'required',
+                'city' => 'required',
+                'zip' => 'required',
+                'address2' => 'nullable',
+
             ]);
 
            $data = User::find($id);
@@ -151,6 +174,12 @@ class PartnerController extends Controller
             $data->middle_name = $request->middle_name;
             $data->email = $request->email;
             $data->address = $request->address;
+            $data->country = $request->country;
+            $data->state = $request->state;
+            $data->city = $request->city;
+            $data->zip = $request->zip;
+            $data->address2 = $request->address2;
+            $data->ecclesia_id = $request->ecclesia_id;
             $data->phone = $request->phone;
             $data->save();
             $data->syncRoles([$request->role]);

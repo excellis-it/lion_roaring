@@ -44,6 +44,7 @@ use App\Http\Controllers\User\CategoryController;
 use App\Http\Controllers\User\ChatController;
 use App\Http\Controllers\User\CmsController as UserCmsController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
+use App\Http\Controllers\User\EcclesiaContorller;
 use App\Http\Controllers\User\FileController;
 use App\Http\Controllers\User\ForgetPasswordController as UserForgetPasswordController;
 use App\Http\Controllers\User\LeadershipDevelopmentController;
@@ -301,7 +302,12 @@ Route::prefix('user')->middleware(['user'])->group(function () {
             'topics' => TopicController::class,
             'categories' => CategoryController::class,
             'products' => ProductController::class,
+            'ecclesias' => EcclesiaContorller::class,
         ]);
+
+        Route::prefix('ecclesias')->group(function () {
+            Route::get('/ecclesia-delete/{id}', [EcclesiaContorller::class, 'delete'])->name('ecclesias.delete');
+        });
 
         Route::prefix('products')->group(function () {
             Route::get('/product-delete/{id}', [ProductController::class, 'delete'])->name('products.delete');
@@ -371,7 +377,7 @@ Route::prefix('e-store')->middleware(['user'])->group(function () {
     Route::get('/all-products', [EstoreProductController::class, 'products'])->name('all-products');
     Route::get('/products-filter', [EstoreProductController::class, 'productsFilter'])->name('products-filter');
     Route::post('/product-add-review', [EstoreProductController::class, 'productAddReview'])->name('product-add-review');
-    
+
     $categories = Category::where('status', 1)->get();
     foreach ($categories as $category) {
         if ($category->slug) {

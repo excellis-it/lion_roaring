@@ -44,6 +44,9 @@
                                                     data-sorting_type="desc" data-column_name="name"
                                                     style="cursor: pointer"> Name<span id="name_icon"><i
                                                             class="fa fa-arrow-down"></i></span></th>
+                                                            <th>
+                                                                Ecclesia
+                                                            </th>
                                                 <th class="sorting" data-tippy-content="Sort by User Name"
                                                     data-sorting_type="desc" data-column_name="user_name"
                                                     style="cursor: pointer">User Name<span id="user_name_icon"></span></th>

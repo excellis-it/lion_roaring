@@ -316,6 +316,17 @@
                         </a>
                     </li>
                 @endif
+              @if(Auth::user()->hasRole('ADMIN'))
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ Request::is('user/ecclesias/*') ? 'active' : '' }}"
+                        href="{{ route('ecclesias.index') }}" aria-expanded="false">
+                        <span>
+                            <img src="{{ asset('user_assets/images/Team.png') }}" alt="">
+                        </span>
+                        <span class="hide-menu">Ecclesias</span>
+                    </a>
+                </li>
+            @endif
                 {{-- @if (Gate::check('Manage Sovereigns'))
                     <li class="sidebar-item">
                         <a class="sidebar-link"

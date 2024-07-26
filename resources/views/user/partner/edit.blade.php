@@ -39,7 +39,7 @@
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
                                             <label>Phone *</label>
-                                            <input type="text" class="form-control" name="phone"
+                                            <input type="text" class="form-control" name="phone" id="mobile_code"
                                                 value="{{ $partner->phone }}" placeholder="">
                                             @if ($errors->has('phone'))
                                                 <div class="error" style="color:red !important;">
@@ -87,7 +87,7 @@
                                 </div>
                                 <div class="row">
                                     {{-- user_name --}}
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>User Name *</label>
                                             <input type="text" class="form-control" name="user_name"
@@ -99,7 +99,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>Roles *</label>
                                             <select class="form-control" name="role">
@@ -116,6 +116,25 @@
                                                 </div>
                                             @endif
 
+                                        </div>
+                                    </div>
+                                    {{-- ecclesia_id --}}
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+                                            <label>Ecclesia *</label>
+                                            <select class="form-control" name="ecclesia_id">
+                                                <option value="">Select Ecclesia</option>
+                                                @foreach ($ecclessias as $item)
+                                                    <option value="{{ $item->id }}"
+                                                        {{ $partner->ecclesia_id == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @if ($errors->has('ecclesia_id'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('ecclesia_id') }}
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="col-md-4 mb-2">
@@ -156,9 +175,60 @@
                                             @endif
                                         </div>
                                     </div>
+                                    {{-- city --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>City</label>
+                                            <input type="text" class="form-control" name="city"
+                                                value="{{ $partner->city }}" placeholder="">
+                                            @if ($errors->has('city'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('city') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- state --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>State</label>
+                                            <input type="text" class="form-control" name="state"
+                                                value="{{ $partner->state }}" placeholder="">
+                                            @if ($errors->has('state'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('state') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- country --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>Country</label>
+                                            <input type="text" class="form-control" name="country"
+                                                value="{{ $partner->country }}" placeholder="">
+                                            @if ($errors->has('country'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('country') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- zip --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>Zip</label>
+                                            <input type="text" class="form-control" name="zip" value="{{ $partner->zip }}"
+                                                placeholder="">
+                                            @if ($errors->has('zip'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('zip') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
 
-
-                                    <div class="col-md-12 mb-2">
+                                    <div class="col-md-6 mb-2">
                                         <div class="box_label">
                                             <label>Address</label>
                                             <input type="text" class="form-control" name="address"
@@ -170,7 +240,19 @@
                                             @endif
                                         </div>
                                     </div>
-
+                                    {{-- address2 --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>Address 2</label>
+                                            <input type="text" class="form-control" name="address2"
+                                                value="{{ $partner->address2 }}" placeholder="">
+                                            @if ($errors->has('address2'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('address2') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
 
                                 </div>
                                 <div class="w-100 text-end d-flex align-items-center justify-content-end">
@@ -188,4 +270,14 @@
 @endsection
 
 @push('scripts')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/css/intlTelInput.css">
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/js/intlTelInput.min.js"></script>
+<script>
+    const input = document.querySelector("#mobile_code");
+    window.intlTelInput(input, {
+        separateDialCode: true,
+        initialCountry: "us",
+        utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/js/utils.js",
+    });
+</script>
 @endpush
