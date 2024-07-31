@@ -19,7 +19,7 @@
                             <i class="fa-solid fa-edit"></i>
                         </a>
                     @endif
-                    @if (auth()->user()->can('Delete Leadership Development'))
+                    @if (auth()->user()->can('Download Leadership Development'))
                     <a href="{{ route('leadership-development.download', $file->id) }}" class="edit_icon me-2">
                         <i class="fa-solid fa-download"></i>
                     </a>

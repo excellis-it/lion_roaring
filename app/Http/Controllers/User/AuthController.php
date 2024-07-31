@@ -58,7 +58,7 @@ class AuthController extends Controller
         $request->validate([
             'user_name' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
-            'ecclesia_id' => 'required',
+            'ecclesia_id' => 'nullable',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
@@ -82,7 +82,7 @@ class AuthController extends Controller
         $user->last_name = $request->last_name;
         $user->middle_name = $request->middle_name;
         $user->address = $request->address;
-        $user->phone = $request->phone_number;
+        $user->phone = $request->country_code ? '+'.$request->country_code . ' ' . $request->phone_number : $request->phone_number;
         $user->city = $request->city;
         $user->state = $request->state;
         $user->address2 = $request->address2;
@@ -90,7 +90,7 @@ class AuthController extends Controller
         $user->zip = $request->zip;
         $user->password = bcrypt($request->password);
         $user->email_verified_at = now();
-        $user->status = 1;
+        $user->status = 0;
         $user->save();
 
         $user->assignRole('MEMBER');

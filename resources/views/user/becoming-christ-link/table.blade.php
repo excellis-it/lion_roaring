@@ -19,7 +19,7 @@
                             <i class="fa-solid fa-edit"></i>
                         </a>
                     @endif
-                    @if (auth()->user()->can('Delete Becoming Christ Like'))
+                    @if (auth()->user()->can('Download Becoming Christ Like'))
                     <a href="{{ route('becoming-christ-link.download', $file->id) }}" class="edit_icon me-2">
                         <i class="fa-solid fa-download"></i>
                     </a>

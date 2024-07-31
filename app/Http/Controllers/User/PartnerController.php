@@ -60,7 +60,7 @@ class PartnerController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+
         $request->validate([
             'user_name' => 'required|unique:users',
             'ecclesia_id' => 'nullable|exists:ecclesias,id',
@@ -77,7 +77,7 @@ class PartnerController extends Controller
             'city' => 'required',
             'zip' => 'required',
             'address2' => 'nullable',
-            'phone' => 'required',
+            'phone' => 'nullable',
         ]);
 
         $data = new User();
@@ -95,7 +95,7 @@ class PartnerController extends Controller
         $data->zip = $request->zip;
         $data->address2 = $request->address2;
         $data->ecclesia_id = $request->ecclesia_id;
-        $data->phone = $request->phone;
+        $data->phone = $request->country_code ? '+'.$request->country_code . ' ' . $request->phone : $request->phone;
         $data->status = 1;
         $data->save();
         $data->assignRole($request->role);
@@ -149,6 +149,7 @@ class PartnerController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // dd($request->all());
         if (Auth::user()->can('Edit Partners')) {
             $id = Crypt::decrypt($id);
             $request->validate([
@@ -158,7 +159,7 @@ class PartnerController extends Controller
                 'middle_name' => 'nullable',
                 'email' => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
                 'address' => 'required',
-                'phone' => 'required',
+                'phone' => 'nullable',
                 'ecclesia_id' => 'nullable|exists:ecclesias,id',
                 'country' => 'required',
                 'state' => 'required',
@@ -180,7 +181,7 @@ class PartnerController extends Controller
             $data->zip = $request->zip;
             $data->address2 = $request->address2;
             $data->ecclesia_id = $request->ecclesia_id;
-            $data->phone = $request->phone;
+            $data->phone = $request->country_code ? '+'.$request->country_code . ' ' . $request->phone : $request->phone;
             $data->save();
             $data->syncRoles([$request->role]);
             return redirect()->route('partners.index')->with('message', 'Partner updated successfully.');

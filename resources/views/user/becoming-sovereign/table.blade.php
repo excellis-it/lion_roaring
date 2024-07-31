@@ -17,7 +17,7 @@
                             <i class="fa-solid fa-edit"></i>
                         </a>
                     @endif
-                    @if (auth()->user()->can('Delete Becomeing Sovereigns'))
+                    @if (auth()->user()->can('Download Becomeing Sovereigns'))
                     <a href="{{ route('becoming-sovereign.download', $file->id) }}" class="edit_icon me-2">
                         <i class="fa-solid fa-download"></i>
                     </a>

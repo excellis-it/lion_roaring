@@ -37,7 +37,7 @@
                                     {{-- phone --}}
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
-                                            <label>Phone *</label>
+                                            <label>Phone</label>
                                             <input type="text" class="form-control" name="phone" id="mobile_code"
                                                 value="{{ old('phone') }}" placeholder="">
                                             @if ($errors->has('phone'))
@@ -270,14 +270,102 @@
 @endsection
 
 @push('scripts')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/css/intlTelInput.css">
-    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/js/intlTelInput.min.js"></script>
-    <script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/css/intlTelInput.css">
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/js/intlTelInput.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/js/utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.7/dist/inputmask.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
         const input = document.querySelector("#mobile_code");
-        window.intlTelInput(input, {
+        const iti = window.intlTelInput(input, {
             separateDialCode: true,
             initialCountry: "us",
             utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/js/utils.js",
         });
-    </script>
+
+        // Function to apply the mask based on the selected country
+        const applyMask = (countryData) => {
+            const mask = getMaskForCountry(countryData.iso2);
+            Inputmask(mask).mask(input);
+        };
+
+        // Get the mask for the country
+        const getMaskForCountry = (countryCode) => {
+            const masks = {
+                // Add all the country masks as you've defined
+                us: '(999) 999-9999',
+                gb: '99999 999999',
+                in: '99999-99999',
+                br: '99999-999',
+                au: '9999 999 999',
+                de: '99999 999999',
+                dk: '99 99 99 99',
+                fr: '99 99 99 99 99',
+                it: '999 999 9999',
+                ru: '999 999-99-99',
+                mx: '999 999 9999',
+                jp: '999-9999-9999',
+                cn: '999 9999 9999',
+                sg: '9999 9999',
+                pt: '999 999 999',
+                kr: '999-9999-9999',
+                pl: '99 999 99 99',
+                th: '9999 9999',
+                tw: '9999 999 999',
+                cz: '999 999 999',
+                sk: '999 999 999',
+                ph: '9999 999 9999',
+                my: '999 999 9999',
+                id: '9999 999 9999',
+                vn: '999 999 999',
+                nl: '99 9999999',
+                be: '999 99 99 99',
+                fi: '999 9999999',
+                se: '999-999 99 99',
+                no: '999 99 999',
+                pl: '99 999 99 99',
+                hu: '99 999 9999',
+                at: '999 9999999',
+                ch: '999 999 9999',
+                za: '999 999 9999',
+                gr: '999 999 9999',
+                ro: '999 999 999',
+                hr: '999 999 9999',
+                bg: '999 999 9999',
+                tr: '999 999 9999',
+                is: '999 9999',
+                ie: '999 999 9999',
+                es: '999 999 999',
+                ar: '999 999 9999',
+                cl: '999 999 9999',
+                co: '999 999 9999',
+                // ... other country masks
+            };
+            return masks[countryCode] || '9999999999';
+        };
+
+        // Apply mask initially
+        applyMask(iti.getSelectedCountryData());
+
+        // Apply mask on country change
+        input.addEventListener('countrychange', function() {
+            applyMask(iti.getSelectedCountryData());
+        });
+
+        // Add event listener to the form
+        const form = document.querySelector("form");
+        form.addEventListener("submit", function(event) {
+            // Get only the country full code number
+            const countryCode = iti.getSelectedCountryData().dialCode;
+            const fullNumber = iti.getNumber();
+            // Set the full number as a hidden input's value
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'country_code'; // Name this as needed
+            hiddenInput.value = countryCode;
+            form.appendChild(hiddenInput);
+        });
+    });
+</script>
 @endpush
