@@ -183,10 +183,10 @@
                             <span>
                                 <img src="{{ asset('user_assets/images/Bulletine.png') }}" alt="">
                             </span>
-                            <span class="hide-menu">Bulletin</span>
+                            <span class="hide-menu">Bulletins</span>
                         </a>
                         {{-- Collapse content --}}
-                        <div class="collapse {{ Request::is('user/bulletins*') || Request::is('user/bulletin-board*') || Request::is('user/events*') ? 'show' : '' }}"
+                        <div class="collapse {{ Request::is('user/bulletins*') || Request::is('user/view-calender*') || Request::is('user/jobs*') || Request::is('user/meetings*') || Request::is('user/bulletin-board*') || Request::is('user/events*') ? 'show' : '' }}"
                             id="collapseExample4">
                             <div class="menu_bb">
                                 {{-- bulletins --}}
@@ -195,19 +195,19 @@
                                         <img src="{{ asset('user_assets/images/Meeting Schedule.png') }}"
                                             alt="">
                                     </span>
-                                    <span>Bulletin Board</span>
+                                    <span>Bulletins Board</span>
                                 </a>
                                 @if (Gate::check('Manage Bulletin'))
                                     <a href="{{ route('bulletins.index') }}">
                                         <span>
                                             <img src="{{ asset('user_assets/images/Bulletine.png') }}" alt="">
                                         </span>
-                                        <span>Bulletin</span>
+                                        <span>Bulletins</span>
                                     </a>
                                 @endif
                                 @if (Gate::check('Manage Job Postings'))
                                     <a
-                                        href="{{ route('user.page', ['name' => 'Job Posting', 'permission' => 'Manage Job Postings']) }}">
+                                        href="{{ route('jobs.index') }}">
                                         <span>
                                             <img src="{{ asset('user_assets/images/Job Posting.png') }}"
                                                 alt="">
@@ -217,7 +217,7 @@
                                 @endif
                                 @if (Gate::check('Manage Meeting Schedule'))
                                     <a
-                                        href="{{ route('user.page', ['name' => 'Meeting Schedule', 'permission' => 'Manage Meeting Schedule']) }}">
+                                        href="{{ route('meetings.index') }}">
                                         <span>
                                             <img src="{{ asset('user_assets/images/Meeting Schedule.png') }}"
                                                 alt="">
@@ -278,7 +278,7 @@
                                     <span>
                                         <img src="{{ asset('user_assets/images/Bulletine.png') }}" alt="">
                                     </span>
-                                    <span>Product</span>
+                                    <span>Products</span>
                                 </a>
                             {{-- @if (Gate::check('Manage Job Postings'))
                                 <a

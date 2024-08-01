@@ -190,7 +190,8 @@ class ProductController extends Controller
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'images' => 'nullable|array',
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'feature_product' => 'required'
+                'feature_product' => 'required',
+                'status' => 'required'
             ]);
 
             $product = Product::findOrFail($id);
@@ -207,6 +208,7 @@ class ProductController extends Controller
             $product->feature_product = $request->feature_product;
             $product->meta_title = $request->meta_title;
             $product->meta_description = $request->meta_description;
+            $product->status = $request->status;
             $product->save();
 
             if ($request->hasFile('image')) {

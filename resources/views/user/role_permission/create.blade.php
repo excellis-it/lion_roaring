@@ -75,7 +75,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="list">
-                                                @foreach ($modules as $module)
+                                                @foreach ($modules as $new => $module)
                                                     <tr>
                                                         <td></td>
                                                         <td>{{ ucfirst($module) }} </td>
@@ -84,10 +84,10 @@
                                                                 @if ($key = array_search('Manage ' . $module, $permissions))
                                                                     <div class="toggle-check">
                                                                         <div class="form-check form-switch">
-                                                                            <input class="form-check-input" type="checkbox"
+                                                                            <input class="form-check-input manage-cl" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"
-                                                                                data-module="{{ $module }}"
+                                                                                data-id="{{ $new }}"
                                                                                 id="flexSwitchCheckChecked">
                                                                         </div>
                                                                     </div>
@@ -102,7 +102,7 @@
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"
-                                                                                data-module="{{ $module }}"
+                                                                                data-id="{{ $new }}"
                                                                                 id="flexSwitchCheckChecked">
                                                                         </div>
                                                                     </div>
@@ -117,7 +117,7 @@
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"
-                                                                                data-module="{{ $module }}"
+                                                                                data-id="{{ $new }}"
                                                                                 id="flexSwitchCheckChecked">
                                                                         </div>
                                                                     </div>
@@ -133,7 +133,7 @@
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"
-                                                                                data-module="{{ $module }}"
+                                                                                data-id="{{ $new }}"
                                                                                 id="flexSwitchCheckChecked">
                                                                         </div>
                                                                     </div>
@@ -148,7 +148,7 @@
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"
-                                                                                data-module="{{ $module }}"
+                                                                                data-id="{{ $new }}"
                                                                                 id="flexSwitchCheckChecked">
                                                                         </div>
                                                                     </div>
@@ -164,7 +164,7 @@
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"
-                                                                                data-module="{{ $module }}"
+                                                                                data-id="{{ $new }}"
                                                                                 id="flexSwitchCheckChecked">
                                                                         </div>
                                                                     </div>
@@ -179,7 +179,7 @@
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"
-                                                                                data-module="{{ $module }}"
+                                                                                data-id="{{ $new }}"
                                                                                 id="flexSwitchCheckChecked">
                                                                         </div>
                                                                     </div>
@@ -227,6 +227,17 @@
                     $("#checkAll").prop('checked', false);
                 }
             });
+        });
+    </script>
+    <script>
+        // when i uncheck manage only uncheck the row of view, create, update, delete, upload, download
+        $('.manage-cl').click(function() {
+            var id = $(this).data('id');
+            if ($(this).is(':checked')) {
+                $('input[data-id="' + id + '"]').prop('checked', true);
+            } else {
+                $('input[data-id="' + id + '"]').prop('checked', false);
+            }
         });
     </script>
 @endpush

@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Bulletin List - {{ env('APP_NAME') }}
+    Job List - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -15,12 +15,12 @@
 
                                 <div class="row mb-3">
                                     <div class="col-md-10">
-                                        <h3 class="mb-3">Bulletin List</h3>
+                                        <h3 class="mb-3">Job List</h3>
                                     </div>
                                     <div class="col-md-2 float-right">
-                                        @if (auth()->user()->can('Create Bulletin'))
-                                            <a href="{{ route('bulletins.create') }}" class="btn btn-primary w-100"><i
-                                                    class="fa-solid fa-plus"></i> Create Bulletin</a>
+                                        @if (auth()->user()->can('Create Job Postings'))
+                                            <a href="{{ route('jobs.create') }}" class="btn btn-primary w-100"><i
+                                                    class="fa-solid fa-plus"></i> Create Job</a>
                                         @endif
                                     </div>
                                 </div>
@@ -39,33 +39,43 @@
                                         <thead class="color_head">
                                             <tr class="header-row">
                                                 <th>ID (#)</th>
-                                                @if (auth()->user()->hasRole('ADMIN'))
-                                                <th>
-                                                    Upload By
-                                                </th>
-                                                @endif
-                                                <th class="sorting" data-tippy-content="Sort by Bulletin Title"
-                                                data-sorting_type="desc" data-column_name="title"
-                                                style="cursor: pointer">Bulletin Title <span id="title_icon"><i
-                                                    class="fa fa-arrow-down"></i></span></th>
-                                                    {{-- Description --}}
-                                                    <th class="sorting" data-tippy-content="Sort by Bulletin Description"
-                                                    data-sorting_type="desc" data-column_name="description"
-                                                    style="cursor: pointer">Bulletin Description <span id="description_icon"><i
-                                                        class="fa fa-arrow-down"></i></span></th>
+                                                <th class="sorting" data-tippy-content="Sort by Job Name"
+                                                    data-sorting_type="desc" data-column_name="job_title"
+                                                    style="cursor: pointer">Job Title <span id="job_title_icon"><i
+                                                            class="fa fa-arrow-down"></i></span></th>
+                                                {{-- job_type --}}
+                                                <th class="sorting" data-tippy-content="Sort by Job Type"
+                                                    data-sorting_type="desc" data-column_name="job_type"
+                                                    style="cursor: pointer">Job Type <span id="job_type_icon"><i
+                                                            class="fa fa-arrow-down"></i></span></th>
+                                                {{-- job_location --}}
+                                                <th class="sorting" data-tippy-content="Sort by Job Location"
+                                                    data-sorting_type="desc" data-column_name="job_location"
+                                                    style="cursor: pointer">Job Location <span id="job_location_icon"><i
+                                                            class="fa fa-arrow-down"></i></span></th>
+                                                {{-- job_salary --}}
+                                                <th class="sorting" data-tippy-content="Sort by Job Salary"
+                                                    data-sorting_type="desc" data-column_name="job_salary"
+                                                    style="cursor: pointer">Job Salary <span id="job_salary_icon"><i
+                                                            class="fa fa-arrow-down"></i></span></th>
+                                                {{-- job_experience --}}
+                                                <th class="sorting" data-tippy-content="Sort by Job Experience"
+                                                    data-sorting_type="desc" data-column_name="job_experience"
+                                                    style="cursor: pointer">Job Experience <span id="job_experience_icon"><i
+                                                            class="fa fa-arrow-down"></i></span></th>
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @include('user.bulletin.table', ['bulletins' => $bulletins])
+                                            @include('user.job.table', ['jobs' => $jobs])
 
                                         </tbody>
                                     </table>
                                     <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
-                                            <input type="hidden" name="hidden_column_name" id="hidden_column_name"
-                                                value="id" />
-                                            <input type="hidden" name="hidden_sort_type" id="hidden_sort_type"
-                                                value="desc" />
+                                    <input type="hidden" name="hidden_column_name" id="hidden_column_name"
+                                        value="id" />
+                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type"
+                                        value="desc" />
                                 </div>
                             </div>
                         </div>
@@ -81,7 +91,7 @@
         $(document).on('click', '#delete', function(e) {
             swal({
                     title: "Are you sure?",
-                    text: "To remove this bulletin from the bulletin board",
+                    text: "To remove this job from the job board",
                     type: "warning",
                     confirmButtonText: "Yes",
                     showCancelButton: true
@@ -104,13 +114,16 @@
         $(document).ready(function() {
 
             function clear_icon() {
-                $('#title_icon').html('');
-                $('#description_icon').html('');
+                $('#job_title_icon').html('');
+                $('#job_type_icon').html('');
+                $('#job_location_icon').html('');
+                $('#job_salary_icon').html('');
+                $('#job_experience_icon').html('');
             }
 
             function fetch_data(page, sort_type, sort_by, query) {
                 $.ajax({
-                    url: "{{ route('bulletins.fetch-data') }}",
+                    url: "{{ route('jobs.fetch-data') }}",
                     data: {
                         page: page,
                         sortby: sort_by,

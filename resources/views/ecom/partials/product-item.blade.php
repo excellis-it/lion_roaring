@@ -10,7 +10,7 @@ use App\Helpers\Helper;
                 <div class="wishlist_icon">
                     <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
                 </div>
-                <a href="{{route('product-details', $product['slug'])}}">
+                <a href="{{$product['affiliate_link']}}">
                     @if (isset($product['image']['image']) && $product['image']['image'] != null)
                         <img src="{{ Storage::url($product['image']['image']) }}"
                             alt="{{ $product['image']['image'] }}">
@@ -35,13 +35,13 @@ use App\Helpers\Helper;
                 <li>({{ Helper::getRatingCount($product['id']) ? Helper::getRatingCount($product['id']) : 0 }})
                 </li>
                 </ul>
-                <a href="{{route('product-details', $product['slug'])}}">{{ $product['name'] }}</a>
+                <a href="{{$product['affiliate_link']}}">{{ $product['name'] }}</a>
                 <p>{{ strlen($product['short_description']) > 50 ? substr($product['short_description'], 0, 50) . '...' : $product['short_description'] }}
                 </p>
                 <span class="price_text">${{ $product['price'] }}</span>
             </div>
             <div class="addtocart">
-                <a href="{{route('product-details', $product['slug'])}}">view details</a>
+                <a href="{{ $product['affiliate_link'] }}">go to shop</a>
             </div>
         </div>
     </div>

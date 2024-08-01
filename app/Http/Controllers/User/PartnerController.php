@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ActiveUserMail;
+use App\Mail\InactiveUserMail;
 use App\Mail\RegistrationMail;
 use App\Models\Ecclesia;
 use App\Models\User;
@@ -106,7 +108,7 @@ class PartnerController extends Controller
             'type' => ucfirst(strtolower($request->role)),
         ];
 
-        // Mail::to($request->email)->send(new RegistrationMail($maildata));
+        Mail::to($request->email)->send(new RegistrationMail($maildata));
         return redirect()->route('partners.index')->with('message', 'Customer created successfully.');
     }
 
@@ -246,6 +248,22 @@ class PartnerController extends Controller
         $user = User::find($request->user_id);
         $user->status = $request->status;
         $user->save();
+        // Mail to user
+        if ($request->status == 0) {
+            $maildata = [
+                'name' => $user->full_name,
+                'email' => $user->email,
+                'type' => 'Deactivated',
+            ];
+            Mail::to($user->email)->send(new InactiveUserMail($maildata));
+        } else {
+            $maildata = [
+                'name' => $user->full_name,
+                'email' => $user->email,
+                'type' => 'Activated',
+            ];
+            Mail::to($user->email)->send(new ActiveUserMail($maildata));
+        }
         return response()->json(['success' => 'Status change successfully.']);
     }
 

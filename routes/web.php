@@ -47,8 +47,10 @@ use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\EcclesiaContorller;
 use App\Http\Controllers\User\FileController;
 use App\Http\Controllers\User\ForgetPasswordController as UserForgetPasswordController;
+use App\Http\Controllers\User\JobpostingController;
 use App\Http\Controllers\User\LeadershipDevelopmentController;
 use App\Http\Controllers\User\LiveEventController;
+use App\Http\Controllers\User\MeetingSchedulingController;
 use App\Http\Controllers\User\PartnerController;
 use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\User\RolePermissionsController;
@@ -303,7 +305,23 @@ Route::prefix('user')->middleware(['user'])->group(function () {
             'categories' => CategoryController::class,
             'products' => ProductController::class,
             'ecclesias' => EcclesiaContorller::class,
+            'jobs' => JobpostingController::class,
+            'meetings' => MeetingSchedulingController::class,
         ]);
+
+        Route::prefix('meetings')->group(function () {
+            Route::get('/meeting-delete/{id}', [MeetingSchedulingController::class, 'delete'])->name('meetings.delete');
+
+        });
+        // calender ajax fetch data
+        Route::get('/view-calender', [MeetingSchedulingController::class, 'viewCalender'])->name('meetings.view-calender');
+        Route::get('/meetings-calender-fetch-data', [MeetingSchedulingController::class, 'fetchCalenderData'])->name('meetings.calender-fetch-data');
+        Route::get('/meetings-fetch-data', [MeetingSchedulingController::class, 'fetchData'])->name('meetings.fetch-data');
+
+        Route::prefix('jobs')->group(function () {
+            Route::get('/job-delete/{id}', [JobpostingController::class, 'delete'])->name('jobs.delete');
+        });
+        Route::get('/jobs-fetch-data', [JobpostingController::class, 'fetchData'])->name('jobs.fetch-data');
 
         Route::prefix('ecclesias')->group(function () {
             Route::get('/ecclesia-delete/{id}', [EcclesiaContorller::class, 'delete'])->name('ecclesias.delete');

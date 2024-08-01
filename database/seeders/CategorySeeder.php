@@ -16,10 +16,7 @@ class CategorySeeder extends Seeder
     public function run()
     {
         $cat_arr = [
-            ['name' => 'Books', 'slug' => 'books', 'status' => 1, 'main' => 1],
-            ['name' => 'Lockets', 'slug' => 'lockets', 'status' => 1, 'main' => 1],
-            ['name' => 'Photo Frame', 'slug' => 'photo-frame', 'status' => 1, 'main' => 1],
-            ['name' => 'Showpiece', 'slug' => 'showpiece', 'status' => 1, 'main' => 1],
+            ['name' => 'Stores', 'slug' => 'stores', 'status' => 1, 'main' => 1],
         ];
 
         // truncate the table

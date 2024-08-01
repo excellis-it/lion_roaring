@@ -12,7 +12,7 @@
             </td>
             <td> {{ $product->name }}</td>
             <td> {{ $product->slug }}</td>
-            <td> {{ $product->category->name }}</td>
+            <td> {{ $product->category ? $product->category->name : '' }}</td>
             <td> {{ $product->price  ? '$' . $product->price : '' }}</td>
             <td> {{ $product->quantity }}</td>
             <td> {{ $product->sku }}</td>

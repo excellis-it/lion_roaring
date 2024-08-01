@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Bulletin List - {{ env('APP_NAME') }}
+    Meeting List - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -14,17 +14,22 @@
                             <div class="col-md-12">
 
                                 <div class="row mb-3">
-                                    <div class="col-md-10">
-                                        <h3 class="mb-3">Bulletin List</h3>
+                                    <div class="col-md-8">
+                                        <h3 class="mb-3">Meeting List</h3>
                                     </div>
-                                    <div class="col-md-2 float-right">
-                                        @if (auth()->user()->can('Create Bulletin'))
-                                            <a href="{{ route('bulletins.create') }}" class="btn btn-primary w-100"><i
-                                                    class="fa-solid fa-plus"></i> Create Bulletin</a>
-                                        @endif
+                                    <div class="col-lg-2 float-right">
+                                            <a href="{{ route('meetings.view-calender') }}" class="btn btn-primary w-100"><i
+                                                    class="fa fa-calendar"></i> Calender View</a>
                                     </div>
+                                    @if (auth()->user()->can('Create Meeting Schedule'))
+                                        <div class="col-md-2 float-right">
+                                            <a href="{{ route('meetings.create') }}" class="btn btn-primary w-100"><i
+                                                    class="fa-solid fa-plus"></i> Create Meeting</a>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="row justify-content-end">
+
                                     <div class="col-lg-4">
                                         <div class="search-field">
                                             <input type="text" name="search" id="search" placeholder="search..."
@@ -39,33 +44,37 @@
                                         <thead class="color_head">
                                             <tr class="header-row">
                                                 <th>ID (#)</th>
-                                                @if (auth()->user()->hasRole('ADMIN'))
-                                                <th>
-                                                    Upload By
-                                                </th>
-                                                @endif
-                                                <th class="sorting" data-tippy-content="Sort by Bulletin Title"
-                                                data-sorting_type="desc" data-column_name="title"
-                                                style="cursor: pointer">Bulletin Title <span id="title_icon"><i
-                                                    class="fa fa-arrow-down"></i></span></th>
-                                                    {{-- Description --}}
-                                                    <th class="sorting" data-tippy-content="Sort by Bulletin Description"
-                                                    data-sorting_type="desc" data-column_name="description"
-                                                    style="cursor: pointer">Bulletin Description <span id="description_icon"><i
-                                                        class="fa fa-arrow-down"></i></span></th>
+                                                <th class="sorting" data-tippy-content="Sort by Meeting Name"
+                                                    data-sorting_type="desc" data-column_name="title"
+                                                    style="cursor: pointer">Meeting Title <span id="title_icon"><i
+                                                            class="fa fa-arrow-down"></i></span></th>
+                                                {{-- start_time --}}
+                                                <th class="sorting" data-tippy-content="Sort by Meeting Start Time"
+                                                    data-sorting_type="desc" data-column_name="start_time"
+                                                    style="cursor: pointer">Meeting Start Time <span id="start_time_icon"><i
+                                                            class="fa fa-arrow-down"></i></span></th>
+                                                {{-- end_time --}}
+                                                <th class="sorting" data-tippy-content="Sort by Meeting End Time"
+                                                    data-sorting_type="desc" data-column_name="end_time"
+                                                    style="cursor: pointer">Meeting End Time <span id="end_time_icon"><i
+                                                            class="fa fa-arrow-down"></i></span></th>
+                                                {{-- meeting_link --}}
+                                                <th class="sorting" data-tippy-content="Sort by Meeting Link"
+                                                    data-sorting_type="desc" data-column_name="meeting_link"
+                                                    style="cursor: pointer">Meeting Link <span id="meeting_link_icon"><i
+                                                            class="fa fa-arrow-down"></i></span></th>
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @include('user.bulletin.table', ['bulletins' => $bulletins])
+                                            @include('user.meeting.table', ['meetings' => $meetings])
 
                                         </tbody>
                                     </table>
                                     <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
-                                            <input type="hidden" name="hidden_column_name" id="hidden_column_name"
-                                                value="id" />
-                                            <input type="hidden" name="hidden_sort_type" id="hidden_sort_type"
-                                                value="desc" />
+                                    <input type="hidden" name="hidden_column_name" id="hidden_column_name"
+                                        value="id" />
+                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
                                 </div>
                             </div>
                         </div>
@@ -81,7 +90,7 @@
         $(document).on('click', '#delete', function(e) {
             swal({
                     title: "Are you sure?",
-                    text: "To remove this bulletin from the bulletin board",
+                    text: "To remove this meeting from the meeting board",
                     type: "warning",
                     confirmButtonText: "Yes",
                     showCancelButton: true
@@ -105,12 +114,14 @@
 
             function clear_icon() {
                 $('#title_icon').html('');
-                $('#description_icon').html('');
+                $('#start_time_icon').html('');
+                $('#end_time_icon').html('');
+                $('#meeting_link_icon').html('');
             }
 
             function fetch_data(page, sort_type, sort_by, query) {
                 $.ajax({
-                    url: "{{ route('bulletins.fetch-data') }}",
+                    url: "{{ route('meetings.fetch-data') }}",
                     data: {
                         page: page,
                         sortby: sort_by,
