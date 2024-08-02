@@ -202,7 +202,7 @@
                                         <span>
                                             <img src="{{ asset('user_assets/images/Bulletine.png') }}" alt="">
                                         </span>
-                                        <span>Bulletins</span>
+                                        <span>Create Bulletins</span>
                                     </a>
                                 @endif
                                 @if (Gate::check('Manage Job Postings'))
