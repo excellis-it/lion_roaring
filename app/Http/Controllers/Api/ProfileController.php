@@ -139,7 +139,7 @@ class ProfileController extends Controller
     public function profilePictureUpdate(Request $request)
     {
         $validator = validator($request->all(), [
-            'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
         if ($validator->fails()) {

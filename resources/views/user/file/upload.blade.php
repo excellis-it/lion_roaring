@@ -38,9 +38,9 @@
 
                                 <select name="type" id="type" class="form-control" >
                                     <option value="">Select Type</option>
-                                    <option value="Becoming Sovereign">Becoming Sovereign</option>
-                                    <option value="Becoming Christ Like">Becoming Christ Like</option>
-                                    <option value="Leadership Development">Leadership Development</option>
+                                    <option value="Becoming Sovereign" {{ old('type') == 'Becoming Sovereign' ? 'selected' : '' }}>Becoming Sovereign</option>
+                                    <option value="Becoming Christ Like" {{ old('type') == 'Becoming Christ Like' ? 'selected' : '' }}>Becoming Christ Like</option>
+                                    <option value="Leadership Development" {{ old('type') == 'Leadership Development' ? 'selected' : '' }}>Leadership Development</option>
                                 </select>
                                 @if ($errors->has('type'))
                                     <span class="error">{{ $errors->first('type') }}</span>
@@ -54,7 +54,7 @@
                                     <select name="topic_id" id="topics" class="form-control">
                                         <option value="">Select Topics</option>
                                         @foreach ($topics as $topic)
-                                            <option value="{{ $topic->id }}">{{ $topic->topic_name }}</option>
+                                            <option value="{{ $topic->id }}" {{ old('topic_id') == $topic->id ? 'selected' : '' }}>{{ $topic->topic_name }}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('topics'))

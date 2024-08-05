@@ -34,7 +34,7 @@ class AdminController extends Controller
             $admin->status = true;
             if ($request->hasFile('profile_picture')) {
                 $request->validate([
-                    'profile_picture' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+                    'profile_picture' => 'required|image|mimes:jpg,png,jpeg,gif,svg',
                 ]);
 
                 $file = $request->file('profile_picture');

@@ -55,25 +55,67 @@
         </div>
     </div>
     <!-- Event view model -->
-    <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="eventModalLabel">Event Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>Title:</strong> <span id="modalTitle"></span></p>
-                    <p><strong>Start:</strong> <span id="modalStart"></span></p>
-                    <p><strong>End:</strong> <span id="modalEnd"></span></p>
-                    <p><strong>Description:</strong> <span id="modalDescription"></span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="print_btn" data-bs-dismiss="modal">Close</button>
+    @if (auth()->user()->can('Edit Event'))
+        <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="eventModalLabel">Edit Event</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="POST" action="javascript:void(0);" id="event-edit">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="modalTitleEdit" class="col-form-label">Title:</label>
+                                <input type="text" class="form-control" id="modalTitleEdit" name="title">
+                            </div>
+                            <div class="mb-3">
+                                <label for="modalStartEdit" class="col-form-label">Start:</label>
+                                <input type="datetime-local" class="form-control" id="modalStartEdit" name="start">
+                            </div>
+                            <div class="mb-3">
+                                <label for="modalEndEdit" class="col-form-label">End:</label>
+                                <input type="datetime-local" class="form-control" id="modalEndEdit" name="end">
+                            </div>
+                            <div class="mb-3">
+                                <label for="modalDescriptionEdit" class="col-form-label">Description:</label>
+                                <textarea class="form-control" id="modalDescriptionEdit" name="description"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
+    @else
+        <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="eventModalLabel">Event Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Title:</strong> <span id="modalTitle"></span></p>
+                        <p><strong>Start:</strong> <span id="modalStart"></span></p>
+                        <p><strong>End:</strong> <span id="modalEnd"></span></p>
+                        <p><strong>Description:</strong> <span id="modalDescription"></span></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="print_btn" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+
+
+
 
     {{-- add event model --}}
     @if (auth()->user()->can('Create Event'))
@@ -142,7 +184,7 @@
                 })
         });
     </script>
-    <script>
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -190,10 +232,78 @@
             });
             calendar.render();
         });
+    </script> --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                eventColor: '#7851a9',
+                events: function(fetchInfo, successCallback, failureCallback) {
+                    $.ajax({
+                        url: '{{ route('events.calender') }}',
+                        method: 'GET',
+                        success: function(data) {
+                            var events = data.map(event => ({
+                                id: event.id,
+                                title: event.title,
+                                start: event.start,
+                                end: event.end,
+                                description: event.description
+                            }));
+                            successCallback(events);
+                        },
+                        error: function() {
+                            failureCallback();
+                        }
+                    });
+                },
+                eventClick: function(info) {
+                    @if (auth()->user()->can('Edit Event'))
+                        $('#modalTitleEdit').val(info.event.title);
+                        $('#modalStartEdit').val(info.event.start.toISOString().slice(0, 16));
+                        $('#modalEndEdit').val(info.event.end ? info.event.end.toISOString().slice(0,
+                                16) :
+                            '');
+                        $('#modalDescriptionEdit').val(info.event.extendedProps.description);
+                        $('#event-edit').attr('action', '{{ route('events.update', '') }}/' + info.event
+                            .id);
+                    @else
+                        $('#modalTitle').text(info.event.title);
+                        $('#modalStart').text(info.event.start.toLocaleString());
+                        $('#modalEnd').text(info.event.end ? info.event.end.toLocaleString() : 'N/A');
+                        $('#modalDescription').text(info.event.extendedProps.description);
+                    @endif
+                    $('#eventModal').modal('show');
+                },
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    meridiem: false
+                }
+            });
+            calendar.render();
+        });
     </script>
+
     <script>
         // validation
         $(document).ready(function() {
+            // Add custom validation method
+            $.validator.addMethod("greaterThan", function(value, element, params) {
+                var startDate = $(params).val();
+                if (!/Invalid|NaN/.test(new Date(value))) {
+                    return new Date(value) > new Date(startDate);
+                }
+                return isNaN(value) && isNaN(startDate) || (Number(value) > Number(startDate));
+            }, 'End date must be greater than start date.');
+
+            // Initialize form validation
             $('#event-store').validate({
                 rules: {
                     title: {
@@ -205,6 +315,53 @@
                     end: {
                         required: true,
                         greaterThan: "#modalStart"
+                    },
+                    description: {
+                        required: true,
+                    },
+                },
+                messages: {
+                    title: {
+                        required: "Please enter title",
+                    },
+                    start: {
+                        required: "Please enter start date",
+                    },
+                    end: {
+                        required: "Please enter end date",
+                    },
+                    description: {
+                        required: "Please enter description",
+                    },
+                },
+                submitHandler: function(form) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+    <script>
+        // validation
+        $(document).ready(function() {
+            $.validator.addMethod("greaterThan", function(value, element, params) {
+                var startDate = $(params).val();
+                if (!/Invalid|NaN/.test(new Date(value))) {
+                    return new Date(value) > new Date(startDate);
+                }
+                return isNaN(value) && isNaN(startDate) || (Number(value) > Number(startDate));
+            }, 'End date must be greater than start date.');
+
+            $('#event-edit').validate({
+                rules: {
+                    title: {
+                        required: true,
+                    },
+                    start: {
+                        required: true,
+                    },
+                    end: {
+                        required: true,
+                        greaterThan: "#modalStartEdit"
                     },
                     description: {
                         required: true,

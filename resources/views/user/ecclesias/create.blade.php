@@ -37,8 +37,16 @@
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label>Country *</label>
-                                    <input type="text" class="form-control" name="country" value="{{ old('country') }}"
-                                        placeholder="">
+                                    <select name="country" id="country" class="form-control">
+                                        <option value="">Select Country</option>
+                                        @foreach ($countries as $country)
+                                            <option value="{{ $country->id }}"
+                                                @if (old('country') == $country->id) selected @endif
+                                                {{ $country->code == 'US' ? 'selected' : '' }}>
+                                                {{ $country->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                     @if ($errors->has('country'))
                                         <div class="error" style="color:red !important;">
                                             {{ $errors->first('country') }}

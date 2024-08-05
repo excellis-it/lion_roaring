@@ -63,7 +63,7 @@ class OurOrganizationController extends Controller
         $request->validate([
             'name' => 'required',
             'description' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
         $slug = $this->createSlug($request->name);
@@ -134,7 +134,7 @@ class OurOrganizationController extends Controller
         $our_organization->description = $request->description;
         if ($request->hasFile('image')) {
             $request->validate([
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             ]);
             $our_organization->image = $this->imageUpload($request->file('image'), 'our_organizations');
         }

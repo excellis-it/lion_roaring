@@ -16,7 +16,7 @@ class BecomingChristLikeController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Becoming Christ Like')) {
-            $files = File::where('user_id', auth()->id())->orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->paginate(15);
+            $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->paginate(15);
             $topics = Topic::orderBy('topic_name', 'asc')->get();
             return view('user.becoming-christ-link.list')->with(compact('files', 'topics'));
         } else {
@@ -36,27 +36,37 @@ class BecomingChristLikeController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'file' => 'required',
+        // Validate the request
+        $validated = $request->validate([
+            'file' => 'required|file', // Ensure file validation
             'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
         ]);
 
+        // Get file details
+        $file = $request->file('file');
+        $file_name = $file->getClientOriginalName();
+        $file_extension = $file->getClientOriginalExtension();
+        $file_upload = $this->imageUpload($file, 'files');
 
+        // Check if a file with the same name and extension already exists
+        $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
 
-        $file_name = $request->file('file')->getClientOriginalName();
-        $file_extension = $request->file('file')->getClientOriginalExtension();
-        $file_upload = $this->imageUpload($request->file('file'), 'files');
+        // Return validation error if file already exists
+        if ($check) {
+            return redirect()->back()->withErrors(['file' => 'The file name has already been taken.'])->withInput();
+        }
 
-        $file = new File();
-        $file->user_id = auth()->id();
-        $file->file_name = $file_name;
-        $file->file_extension = $file_extension;
-        $file->topic_id = $request->topic_id;
-        $file->type = 'Becoming Christ Like';
-        $file->file = $file_upload;
-        $file->save();
+        // Save the new file details to the database
+        $fileModel = new File();
+        $fileModel->user_id = auth()->id();
+        $fileModel->file_name = $file_name;
+        $fileModel->file_extension = $file_extension;
+        $fileModel->topic_id = $request->topic_id;
+        $fileModel->type = 'Becoming Christ Like';
+        $fileModel->file = $file_upload;
+        $fileModel->save();
 
-
+        // Redirect with success message
         return redirect()->route('becoming-christ-link.index')->with('message', 'File uploaded successfully.');
     }
 
@@ -101,20 +111,19 @@ class BecomingChristLikeController extends Controller
             $query = str_replace(" ", "%", $query);
 
             $files = File::query()
-                ->where('user_id', auth()->id())
                 ->where(function ($q) use ($query) {
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhere('file_name', 'like', '%' . $query . '%')
                         ->orWhere('file_extension', 'like', '%' . $query . '%');
                 });
 
-                if ($request->topic_id) {
-                    $files->whereHas('topic', function ($q) use ($request) {
-                        $q->where('id', $request->topic_id);
-                    });
-                }
+            if ($request->topic_id) {
+                $files->whereHas('topic', function ($q) use ($request) {
+                    $q->where('id', $request->topic_id);
+                });
+            }
 
-                $files = $files->where('type', 'Becoming Christ Like')
+            $files = $files->where('type', 'Becoming Christ Like')
                 ->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 
@@ -139,22 +148,48 @@ class BecomingChristLikeController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
+
+        // Validate the request
+        $validated = $request->validate([
+            'topic_id' => 'required|exists:topics,id',
+            'file' => 'sometimes|file' // Validate the file only if it is present
         ]);
 
+        // Find the file by ID
         $file = File::findOrFail($id);
+
+        // Handle file upload if a file is present in the request
         if ($request->hasFile('file')) {
-            $file_name = $request->file('file')->getClientOriginalName();
-            $file_extension = $request->file('file')->getClientOriginalExtension();
-            $file_upload = $this->imageUpload($request->file('file'), 'files');
+            $uploadedFile = $request->file('file');
+            $file_name = $uploadedFile->getClientOriginalName();
+            $file_extension = $uploadedFile->getClientOriginalExtension();
+
+            // Check for file name and extension duplication
+            $check = File::where('file_name', $file_name)
+                ->where('file_extension', $file_extension)
+                ->first();
+
+            // If a file with the same name and extension already exists, return an error
+            if ($check) {
+                return redirect()->back()->withErrors(['file' => 'The file name has already been taken.'])->withInput();
+            }
+
+            // Upload the file
+            $file_upload = $this->imageUpload($uploadedFile, 'files');
+
+            // Update file details in the database
             $file->file_name = $file_name;
             $file->file_extension = $file_extension;
             $file->file = $file_upload;
         }
+
+        // Update topic ID
         $file->topic_id = $request->topic_id;
+
+        // Save the file details
         $file->save();
 
+        // Redirect with success message
         return redirect()->route('becoming-christ-link.index')->with('message', 'File updated successfully.');
     }
 

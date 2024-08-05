@@ -229,12 +229,15 @@ Route::get('reset-password/{id}/{token}', [UserForgetPasswordController::class, 
 // member privacy policy
 Route::get('/member-privacy-policy', [UserCmsController::class, 'memberPrivacyPolicy'])->name('member-privacy-policy');
 
+// get.states
+Route::get('/get-states', [UserAuthController::class, 'getStates'])->name('get.states');
+
 Route::prefix('user')->middleware(['user'])->group(function () {
     Route::get('/subscription', [SubscriptionController::class, 'subscription'])->name('user.subscription');
     Route::get('/subscription-payment/{id}', [SubscriptionController::class, 'payment'])->name('user.subscription.payment');
     Route::get('/stripe-checkout-success', [SubscriptionController::class, 'stripeCheckoutSuccess'])->name('stripe.checkout.success');
 
-    Route::middleware(['member.access'])->group(function () {
+    // Route::middleware(['member.access'])->group(function () {
         // Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
         Route::get('/profile', [UserDashboardController::class, 'profile'])->name('user.profile');
         Route::post('/profile-update', [UserDashboardController::class, 'profileUpdate'])->name('user.profile.update');
@@ -378,13 +381,14 @@ Route::prefix('user')->middleware(['user'])->group(function () {
             Route::get('/', [LiveEventController::class, 'list'])->name('events.index');
             Route::get('/calender', [LiveEventController::class, 'calender'])->name('events.calender');
             Route::post('/store', [LiveEventController::class, 'store'])->name('events.store');
+            Route::put('/update/{id}', [LiveEventController::class, 'update'])->name('events.update');
         });
 
         Route::get('/mail-fetch-data', [SendMailController::class, 'fetchData'])->name('mail.fetch-data');
 
         Route::get('/page/{name}/{permission}', [UserCmsController::class, 'page'])->name('user.page');
     });
-});
+// });
 
 
 /**************************************************----------------------------ECOM--------------------------****************************************************************/

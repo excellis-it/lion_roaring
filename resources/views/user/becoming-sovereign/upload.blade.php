@@ -16,7 +16,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
-                                    <h3>Upload Multiple Becoming Sovereigns</h3>
+                                    <h3>Upload Becoming Sovereigns</h3>
                                 </div>
                             </div>
                         </div>
@@ -25,7 +25,7 @@
                                 <div class="box_label">
                                     <label for="file">Choose File</label>
 
-                                <input type="file" name="file" id="file" class="form-control" >
+                                <input type="file" name="file" id="file" class="form-control">
                                 @if ($errors->has('file'))
                                     <span class="error">{{ $errors->first('file') }}</span>
                                 @endif
@@ -37,7 +37,7 @@
                                     <select name="topic_id" id="topics" class="form-control">
                                         <option value="">Select Topics</option>
                                         @foreach ($topics as $topic)
-                                            <option value="{{ $topic->id }}">{{ $topic->topic_name }}</option>
+                                            <option value="{{ $topic->id }}" {{ old('topic_id') == $topic->id ? 'selected' : '' }}>{{ $topic->topic_name }}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('topics'))

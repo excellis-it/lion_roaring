@@ -36,7 +36,7 @@ class ArticleOfAssociationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'pdf' => 'required|mimes:pdf|max:2048'
+            'pdf' => 'required|mimes:pdf'
         ]);
         if ($request->id != '') {
             $article = Article::find($request->id);

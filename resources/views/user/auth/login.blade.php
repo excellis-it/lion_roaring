@@ -80,7 +80,7 @@
                                     } elseif ($time >= '17' && $time < '19') {
                                         echo 'Good evening';
                                     } else {
-                                        echo 'Good night';
+                                        echo 'Good evening';
                                     }
                                     ?>
                                 </h2>

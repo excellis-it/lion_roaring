@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\ActiveUserMail;
 use App\Mail\InactiveUserMail;
 use App\Mail\RegistrationMail;
+use App\Models\Country;
 use App\Models\Ecclesia;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -48,7 +49,8 @@ class PartnerController extends Controller
         if (Auth::user()->can('Create Partners')) {
             $roles = Role::where('name', '!=', 'ADMIN')->get();
             $eclessias = Ecclesia::orderBy('id', 'desc')->get();
-            return view('user.partner.create')->with(compact('roles', 'eclessias'));
+            $countries = Country::orderBy('name', 'asc')->get();
+            return view('user.partner.create')->with(compact('roles', 'eclessias', 'countries'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -79,7 +81,7 @@ class PartnerController extends Controller
             'city' => 'required',
             'zip' => 'required',
             'address2' => 'nullable',
-            'phone' => 'nullable',
+            'phone' => 'required',
         ]);
 
         $data = new User();
@@ -136,7 +138,8 @@ class PartnerController extends Controller
             $partner = User::findOrFail($id);
             $roles = Role::where('name', '!=', 'ADMIN')->get();
             $ecclessias = Ecclesia::orderBy('id', 'desc')->get();
-            return view('user.partner.edit', compact('partner', 'roles', 'ecclessias'));
+            $countries = Country::orderBy('name', 'asc')->get();
+            return view('user.partner.edit', compact('partner', 'roles', 'ecclessias', 'countries'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -161,7 +164,7 @@ class PartnerController extends Controller
                 'middle_name' => 'nullable',
                 'email' => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
                 'address' => 'required',
-                'phone' => 'nullable',
+                'phone' => 'required',
                 'ecclesia_id' => 'nullable|exists:ecclesias,id',
                 'country' => 'required',
                 'state' => 'required',

@@ -16,7 +16,7 @@ class LeadershipDevelopmentController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Leadership Development')) {
-            $files = File::where('user_id', auth()->id())->orderBy('id', 'desc')->where('type', 'Leadership Development')->paginate(15);
+            $files = File::orderBy('id', 'desc')->where('type', 'Leadership Development')->paginate(15);
             $topics = Topic::orderBy('topic_name', 'asc')->get();
             return view('user.leadership-development.list')->with(compact('files', 'topics'));
         } else {
@@ -36,8 +36,8 @@ class LeadershipDevelopmentController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'file' => 'required|max:2048',
+        $valdate = $request->validate([
+            'file' => 'required',
             'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
         ]);
 
@@ -46,6 +46,14 @@ class LeadershipDevelopmentController extends Controller
         $file_name = $request->file('file')->getClientOriginalName();
         $file_extension = $request->file('file')->getClientOriginalExtension();
         $file_upload = $this->imageUpload($request->file('file'), 'files');
+
+        $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
+
+        // get the same name validation error
+        if ($check) {
+            return redirect()->back()->withErrors(['file' => 'The file name has already been taken.'])->withInput();
+        }
+
 
         $file = new File();
         $file->user_id = auth()->id();
@@ -100,7 +108,6 @@ class LeadershipDevelopmentController extends Controller
             $query = str_replace(" ", "%", $query);
 
             $files = File::query()
-                ->where('user_id', auth()->id())
                 ->where(function ($q) use ($query) {
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhere('file_name', 'like', '%' . $query . '%')
@@ -138,7 +145,7 @@ class LeadershipDevelopmentController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
         ]);
 
@@ -147,6 +154,10 @@ class LeadershipDevelopmentController extends Controller
             $file_name = $request->file('file')->getClientOriginalName();
             $file_extension = $request->file('file')->getClientOriginalExtension();
             $file_upload = $this->imageUpload($request->file('file'), 'files');
+            $check = File::where('file_name', $file_name)->where('file_extension', $file_extension)->first();
+            if ($check) {
+                return redirect()->back()->withErrors(['file' => 'The file name has already been taken.'])->withInput();
+            }
             $file->file_name = $file_name;
             $file->file_extension = $file_extension;
             $file->file = $file_upload;

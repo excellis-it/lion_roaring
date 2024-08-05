@@ -65,7 +65,7 @@ class TestimonialController extends Controller
         // return $request;
         $request->validate([
             'name' => "required|string|max:255",
-            'image' => "required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048",
+            'image' => "required|image|mimes:jpeg,png,jpg,gif,svg,webp",
             'description' => 'required',
             'address' => 'required',
         ]);
@@ -124,7 +124,7 @@ class TestimonialController extends Controller
         $testimonials->description = $request->description;
         if ($request->hasFile('image')) {
             $request->validate([
-                'image' => "image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048",
+                'image' => "image|mimes:jpeg,png,jpg,gif,svg,webp",
             ]);
             $testimonials->image = $this->imageUpload($request->file('image'), 'testimonials');
         }

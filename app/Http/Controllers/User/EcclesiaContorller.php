@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Ecclesia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +34,8 @@ class EcclesiaContorller extends Controller
     public function create()
     {
         if (Auth::user()->hasRole('ADMIN')) {
-            return view('user.ecclesias.create');
+            $countries = Country::orderBy('name', 'asc')->get();
+            return view('user.ecclesias.create')->with('countries', $countries);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -48,7 +50,7 @@ class EcclesiaContorller extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:ecclesias',
             'country' => 'required|string|max:255',
         ]);
 
@@ -81,7 +83,8 @@ class EcclesiaContorller extends Controller
     {
         if (Auth::user()->hasRole('ADMIN')) {
             $ecclesia = Ecclesia::findOrFail(Crypt::decrypt($id));
-            return view('user.ecclesias.edit')->with('ecclesia', $ecclesia);
+            $countries = Country::orderBy('name', 'asc')->get();
+            return view('user.ecclesias.edit')->with(compact('ecclesia', 'countries'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -98,7 +101,7 @@ class EcclesiaContorller extends Controller
     {
         if (Auth::user()->hasRole('ADMIN')) {
             $request->validate([
-                'name' => 'required|string|max:255',
+                'name' => 'required|string|max:255|unique:ecclesias,name,' . Crypt::decrypt($id),
                 'country' => 'required|string|max:255',
             ]);
 

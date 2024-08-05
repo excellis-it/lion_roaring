@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Ecclesia;
 use App\Models\RegisterAgreement;
+use App\Models\State;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,7 +51,8 @@ class AuthController extends Controller
     public function register()
     {
         $eclessias = Ecclesia::orderBy('id', 'desc')->get();
-        return view('user.auth.register')->with('eclessias', $eclessias);
+        $countries = Country::all();
+        return view('user.auth.register')->with(compact('eclessias', 'countries'));
     }
 
     public function registerCheck(Request $request)
@@ -63,7 +66,7 @@ class AuthController extends Controller
             'last_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
             'address' => 'required|string|max:255',
-            'phone_number' => 'nullable',
+            'phone_number' => 'required',
             'city' => 'required|string|max:255',
             'state' => 'required|string|max:255',
             'address2' => 'nullable|string|max:255',
@@ -101,5 +104,11 @@ class AuthController extends Controller
     {
         auth()->logout();
         return redirect()->route('login');
+    }
+
+    public function getStates(Request $request)
+    {
+        $states = State::where('country_id', $request->country)->get();
+        return response()->json($states);
     }
 }

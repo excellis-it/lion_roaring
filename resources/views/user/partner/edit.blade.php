@@ -38,7 +38,7 @@
                                     {{-- phone --}}
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
-                                            <label>Phone</label>
+                                            <label>Phone*</label>
                                             <input type="text" class="form-control" name="phone" id="mobile_code"
                                                 value="{{ $partner->phone }}" placeholder="">
                                             @if ($errors->has('phone'))
@@ -175,6 +175,42 @@
                                             @endif
                                         </div>
                                     </div>
+
+                                    {{-- country --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>Country</label>
+                                            <select name="country" id="country" class="form-control">
+                                                <option value="">Select Country</option>
+                                                @foreach ($countries as $country)
+                                                    <option value="{{ $country->id }}"
+                                                        @if ($partner->country == $country->id) selected @endif>
+                                                        {{ $country->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @if ($errors->has('country'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('country') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- state --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>State</label>
+                                            <select name="state" id="state" class="form-control">
+                                                <option value="">Select State</option>
+                                            </select>
+                                            @if ($errors->has('state'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('state') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+
                                     {{-- city --}}
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
@@ -188,32 +224,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    {{-- state --}}
-                                    <div class="col-md-6 mb-2">
-                                        <div class="box_label">
-                                            <label>State</label>
-                                            <input type="text" class="form-control" name="state"
-                                                value="{{ $partner->state }}" placeholder="">
-                                            @if ($errors->has('state'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('state') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    {{-- country --}}
-                                    <div class="col-md-6 mb-2">
-                                        <div class="box_label">
-                                            <label>Country</label>
-                                            <input type="text" class="form-control" name="country"
-                                                value="{{ $partner->country }}" placeholder="">
-                                            @if ($errors->has('country'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('country') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
+
                                     {{-- zip --}}
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
@@ -294,7 +305,7 @@
             const getMaskForCountry = (countryCode) => {
                 const masks = {
                     // Add all the country masks as you've defined
-                    us: '(999) 999-9999',
+                    us: '999 999-9999',
                     gb: '99999 999999',
                     in: '99999-99999',
                     br: '99999-999',
@@ -366,6 +377,40 @@
                 hiddenInput.value = countryCode;
                 form.appendChild(hiddenInput);
             });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            var country = $('#country').val();
+            var state = {{ is_numeric($partner->state) && $partner->state != null ? $partner->state : 0 }};
+
+            getStates(country, state);
+
+            $('#country').change(function() {
+                var country = $(this).val();
+                getStates(country);
+            });
+
+            function getStates(country, state = 0) {
+                // alert(country);
+                $.ajax({
+                    url: "{{ route('get.states') }}",
+                    type: "get",
+                    data: {
+                        country: country
+                    },
+                    success: function(response) {
+                        var states = response;
+                        var html = '<option value="">Select State</option>';
+                        states.forEach(stateObj => {
+                            var selected = stateObj.id == state ? 'selected' : '';
+                            html +=
+                                `<option value="${stateObj.id}" ${selected}>${stateObj.name}</option>`;
+                        });
+                        $('#state').html(html);
+                    }
+                });
+            }
         });
     </script>
 @endpush

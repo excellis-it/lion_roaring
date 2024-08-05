@@ -63,8 +63,8 @@ class OurGovernanceController extends Controller
         $request->validate([
             'name' => 'required',
             'description' => 'required',
-            'banner_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'banner_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'meta_title' => 'nullable',
             'meta_description' => 'nullable',
             'meta_keywords' => 'nullable',
@@ -148,13 +148,13 @@ class OurGovernanceController extends Controller
         $our_governance->meta_keywords = $request->meta_keywords;
         if ($request->hasFile('banner_image')) {
             $request->validate([
-                'banner_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'banner_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             ]);
             $our_governance->banner_image = $this->imageUpload($request->file('banner_image'), 'our_governances');
         }
         if ($request->hasFile('image')) {
             $request->validate([
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             ]);
             $our_governance->image = $this->imageUpload($request->file('image'), 'our_governances');
         }

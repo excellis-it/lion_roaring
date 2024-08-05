@@ -87,4 +87,16 @@ class User extends Authenticatable
         return $this->belongsTo(Ecclesia::class);
     }
 
+    public function country()
+    {
+        return $this->belongsTo(Country::class, 'country');
+
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(State::class, 'state');
+
+    }
+
 }

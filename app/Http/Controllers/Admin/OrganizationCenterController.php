@@ -69,8 +69,8 @@ class OrganizationCenterController extends Controller
             'our_organization_id' => 'required', // 'our_organization_id' => 'required
             'name' => 'required',
             'description' => 'nullable',
-            'banner_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'banner_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'meta_title' => 'nullable',
             'meta_description' => 'nullable',
             'meta_keywords' => 'nullable',
@@ -157,13 +157,13 @@ class OrganizationCenterController extends Controller
         $organization_center->meta_keywords = $request->meta_keywords;
         if ($request->hasFile('banner_image')) {
             $request->validate([
-                'banner_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'banner_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             ]);
             $organization_center->banner_image = $this->imageUpload($request->file('banner_image'), 'organization_centers');
         }
         if ($request->hasFile('image')) {
             $request->validate([
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             ]);
             $organization_center->image = $this->imageUpload($request->file('image'), 'organization_centers');
         }

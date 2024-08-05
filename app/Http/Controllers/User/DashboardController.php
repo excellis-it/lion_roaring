@@ -64,7 +64,7 @@ class DashboardController extends Controller
             'last_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
             'address' => 'required|string|max:255',
-            'phone_number' => 'nullable|numeric',
+            'phone_number' => 'nullable',
         ]);
         if (auth()->user()->can('Manage Profile')) {
             $data = ModelsUser::find(Auth::user()->id);
@@ -72,7 +72,7 @@ class DashboardController extends Controller
             $data->last_name = $request->last_name;
             $data->middle_name = $request->middle_name;
             $data->address = $request->address;
-            $data->phone = $request->phone_number;
+            $data->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone_number : $request->phone_number;
             if ($request->hasFile('profile_picture')) {
                 $data->profile_picture = $this->imageUpload($request->file('profile_picture'), 'profile_picture');
             }

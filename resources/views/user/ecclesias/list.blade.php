@@ -56,7 +56,7 @@
                                                     </td>
                                                     <td>{{ $ecclesia->name }}</td>
                                                     <td>
-                                                        {{ $ecclesia->country }}
+                                                        {{ $ecclesia->country ? $ecclesia->countryName->name : '-' }}
                                                     </td>
                                                     <td>
                                                         <div class="d-flex">
