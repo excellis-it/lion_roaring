@@ -19,7 +19,7 @@ class MemberAccess
         if (auth()->check() && isset(auth()->user()->userSubscription) && auth()->user()->userLastSubscription != null) {
             if (auth()->user()->userLastSubscription->subscription_expire_date >= date('Y-m-d')) {
                 return $next($request);
-            } else {
+            } else { 
                 if (auth()->check() && auth()->user()->hasRole('MEMBER')) {
                     return redirect()->route('user.subscription')->with('error', 'Your subscription has been expired. Please renew your subscription.');
                 } else {
