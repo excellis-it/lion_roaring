@@ -1,5 +1,6 @@
 @extends('ecom.layouts.master')
 @section('title')
+Lion Roaring Ecom | Home
 @endsection
 
 @push('styles')

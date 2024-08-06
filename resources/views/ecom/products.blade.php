@@ -17,9 +17,9 @@
                 <div class="col-xxl-6 col-xl-8 col-md-12">
                     <div class="inner_banner_ontent">
                         <h2>Product listing</h2>
-                        <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing volutpat
+                        {{-- <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing volutpat
                             consectetur
-                            id purus rhoncus.</p>
+                            id purus rhoncus.</p> --}}
                     </div>
                 </div>
             </div>

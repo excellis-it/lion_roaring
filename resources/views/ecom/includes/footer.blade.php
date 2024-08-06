@@ -82,9 +82,8 @@
             <div class="ftr_line_link">
                 <ul>
                     <li><a href="{{route('e-store')}}">Home</a></li>
-                    <li><a href="javascript:void(0);">Our Products</a></li>
-                    <li><a href="javascript:void(0);">category</a></li>
-                    <li><a href="javascript:void(0);">Contact us</a></li>
+                    <li><a href="{{route('all-products')}}">Our Products</a></li>
+                    <li><a href="{{route('contact-us')}}">Contact us</a></li>
                     <li><a href="javascript:void(0);">Terms & Conditions</a></li>
                     <li><a href="javascript:void(0);">Privacy Policy</a></li>
                 </ul>

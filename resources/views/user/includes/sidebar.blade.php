@@ -1,7 +1,7 @@
 <aside class="left-sidebar">
     <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
-            <a href="{{ route('home') }}" class="text-nowrap logo-img">
+            <a href="javascript:void(0);" class="text-nowrap logo-img">
                 <img src="{{ asset('user_assets/images/logo.png') }}" class="dark-logo" alt="">
             </a>
             <div class="close-btn d-lg-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
