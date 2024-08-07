@@ -34,6 +34,13 @@
                                             <p class="card-text"><strong>Experience:</strong>
                                                 {{ $job->job_experience ? ($job->job_experience > 1 ? $job->job_experience . ' years' : $job->job_experience . ' year') : 'N/A' }}
                                             </p>
+                                            {{-- contact_person --}}
+                                            <p class="card-text"><strong>Contact Person:</strong>
+                                                {{ $job->contact_person ? $job->contact_person : 'N/A' }}</p>
+                                            {{-- contact_email --}}
+                                            <p class="card-text"><strong>Contact Email:</strong>
+                                                {{ $job->contact_email ? $job->contact_email : 'N/A' }}</p>
+                                            {{-- contact_phone --}}
                                             <hr>
                                         </div>
                                         <div class="col-md-6 text-right">

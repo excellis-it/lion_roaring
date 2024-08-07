@@ -4,6 +4,8 @@ namespace App\Helpers;
 use App\Models\Article;
 use App\Models\Chat;
 use App\Models\Country;
+use App\Models\EcomCmsPage;
+use App\Models\EcomFooterCms;
 use App\Models\Footer;
 use App\Models\Organization;
 use App\Models\OurOrganization;
@@ -90,5 +92,17 @@ class Helper
     {
         $rating_count = Review::where('product_id', $product_id)->count();
         return $rating_count;
+    }
+
+    public static function getCmsPages()
+    {
+        $pages = EcomCmsPage::get();
+        return $pages;
+    }
+
+    public static function getFooterCms()
+    {
+        $cms = EcomFooterCms::orderBy('id', 'desc')->first();
+        return $cms;
     }
 }

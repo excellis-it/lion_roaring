@@ -14,14 +14,15 @@ Lion Roaring Ecom | Home
         <div class="slider stick-dots">
             <div class="slide">
                 <div class="slide__img">
-                    <img src="{{ asset('ecom_assets/images/banner.jpg') }}" alt="" data-lazy="" class="full-image" />
+                    <img src="{{ isset($content['banner_image']) ? Storage::url($content['banner_image']) : asset('ecom_assets/images/banner.jpg') }}"
+                        alt="banner" />
                 </div>
                 <div class="slide__content slide__content__left">
                     <div class="slide__content--headings text-center">
-                        <h2 class="title">Shop with us</h2>
-                        <p class="top-title">Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc
-                            adipiscing
-                            volutpat consectetur id purus rhoncus. </p>
+                        <h2 class="title"> {{ isset($content['banner_title']) ? $content['banner_title'] : '' }}</h2>
+                        <p class="top-title">
+                            {{ isset($content['banner_subtitle']) ? $content['banner_subtitle'] : '' }}
+                        </p>
                         <!-- <a class="red_btn slidebottomleft" href="javascript:void(0);"><span>order now</span></a> -->
                     </div>
                 </div>
@@ -35,10 +36,10 @@ Lion Roaring Ecom | Home
             <div class="row justify-content-center">
                 <div class="col-xl-7">
                     <div class="heading_hp text-center">
-                        <h2>product categories</h2>
-                        <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing
-                            volutpat consectetur
-                            id purus rhoncus.</p>
+                        <h2>{!! isset($content['product_category_title']) ? $content['product_category_title'] : '' !!}</h2>
+                        <p>
+                            {!! isset($content['product_category_subtitle']) ? $content['product_category_subtitle'] : '' !!}
+                            </p>
                     </div>
                 </div>
             </div>
@@ -108,9 +109,10 @@ Lion Roaring Ecom | Home
                 <div class="row justify-content-center">
                     <div class="col-xl-7">
                         <div class="heading_hp text-center">
-                            <h2>Featured products</h2>
-                            <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing
-                                volutpat consectetur id purus rhoncus.</p>
+                            <h2>{!! isset($content['featured_product_title']) ? $content['featured_product_title'] : '' !!}</h2>
+                            <p>
+                                {!! isset($content['featured_product_subtitle']) ? $content['featured_product_subtitle'] : '' !!}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -171,9 +173,9 @@ Lion Roaring Ecom | Home
                 <div class="row justify-content-center">
                     <div class="col-xl-7">
                         <div class="heading_hp text-center">
-                            <h2>Newly added</h2>
-                            <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing
-                                volutpat consectetur id purus rhoncus.</p>
+                            <h2>{!! isset($content['new_product_title']) ? $content['new_product_title'] : '' !!}</h2>
+                            <p>
+                                {!! isset($content['new_product_subtitle']) ? $content['new_product_subtitle'] : '' !!}
                         </div>
                     </div>
                 </div>

@@ -31,6 +31,7 @@ use App\Http\Controllers\Admin\RegisterAgreementController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\ServiceContoller;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Estore\CmsController as EstoreCmsController;
 use App\Http\Controllers\Estore\HomeController;
 use App\Http\Controllers\Estore\ProductController as EstoreProductController;
 use App\Http\Controllers\Frontend\CmsController;
@@ -51,6 +52,7 @@ use App\Http\Controllers\User\JobpostingController;
 use App\Http\Controllers\User\LeadershipDevelopmentController;
 use App\Http\Controllers\User\LiveEventController;
 use App\Http\Controllers\User\MeetingSchedulingController;
+use App\Http\Controllers\User\NewsletterController as UserNewsletterController;
 use App\Http\Controllers\User\PartnerController;
 use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\User\RolePermissionsController;
@@ -59,6 +61,7 @@ use App\Http\Controllers\User\SubscriptionController;
 use App\Http\Controllers\User\TeamController;
 use App\Http\Controllers\User\TopicController;
 use App\Models\Category;
+use App\Models\EcomCmsPage;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Artisan;
 
@@ -238,156 +241,171 @@ Route::prefix('user')->middleware(['user'])->group(function () {
     Route::get('/stripe-checkout-success', [SubscriptionController::class, 'stripeCheckoutSuccess'])->name('stripe.checkout.success');
 
     // Route::middleware(['member.access'])->group(function () {
-        // Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
-        Route::get('/profile', [UserDashboardController::class, 'profile'])->name('user.profile');
-        Route::post('/profile-update', [UserDashboardController::class, 'profileUpdate'])->name('user.profile.update');
-        Route::get('/change-password', [UserDashboardController::class, 'password'])->name('user.change.password');
-        Route::post('/change-password-update', [UserDashboardController::class, 'passwordUpdate'])->name('user.password.update');
-        Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
+    // Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
+    Route::get('/profile', [UserDashboardController::class, 'profile'])->name('user.profile');
+    Route::post('/profile-update', [UserDashboardController::class, 'profileUpdate'])->name('user.profile.update');
+    Route::get('/change-password', [UserDashboardController::class, 'password'])->name('user.change.password');
+    Route::post('/change-password-update', [UserDashboardController::class, 'passwordUpdate'])->name('user.password.update');
+    Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
 
-        Route::prefix('chats')->name('chats.')->group(function () {
-            Route::get('/', [ChatController::class, 'chats'])->name('index');
-            Route::post('/load', [ChatController::class, 'load'])->name('load');
-            Route::post('/send', [ChatController::class, 'send'])->name('send');
-        });
-
-        Route::prefix('file')->group(function () {
-            Route::get('/', [FileController::class, 'index'])->name('file.index');
-            Route::get('/upload', [FileController::class, 'upload'])->name('file.upload');
-            Route::post('/store', [FileController::class, 'store'])->name('file.store');
-            Route::get('/edit/{id}', [FileController::class, 'edit'])->name('file.edit');
-            Route::post('/update/{id}', [FileController::class, 'update'])->name('file.update');
-            Route::get('/delete/{id}', [FileController::class, 'delete'])->name('file.delete');
-            Route::get('/download/{file}', [FileController::class, 'download'])->name('file.download');
-            Route::get('/fetch-data', [FileController::class, 'fetchData'])->name('file.fetch-data');
-        });
-
-        Route::prefix('becoming-sovereign')->group(function () {
-            Route::get('/', [BecomingSovereignController::class, 'index'])->name('becoming-sovereign.index');
-            Route::get('/upload', [BecomingSovereignController::class, 'upload'])->name('becoming-sovereign.upload');
-            Route::post('/store', [BecomingSovereignController::class, 'store'])->name('becoming-sovereign.store');
-            Route::get('/edit/{id}', [BecomingSovereignController::class, 'edit'])->name('becoming-sovereign.edit');
-            Route::post('/update/{id}', [BecomingSovereignController::class, 'update'])->name('becoming-sovereign.update');
-            Route::get('/delete/{id}', [BecomingSovereignController::class, 'delete'])->name('becoming-sovereign.delete');
-            Route::get('/download/{file}', [BecomingSovereignController::class, 'download'])->name('becoming-sovereign.download');
-            Route::get('/fetch-data', [BecomingSovereignController::class, 'fetchData'])->name('becoming-sovereign.fetch-data');
-            Route::get('/view/{id}', [BecomingSovereignController::class, 'view'])->name('becoming-sovereign.view');
-        });
-
-        Route::prefix('becoming-christ-link')->group(function () {
-            Route::get('/', [BecomingChristLikeController::class, 'index'])->name('becoming-christ-link.index');
-            Route::get('/upload', [BecomingChristLikeController::class, 'upload'])->name('becoming-christ-link.upload');
-            Route::post('/store', [BecomingChristLikeController::class, 'store'])->name('becoming-christ-link.store');
-            Route::get('/edit/{id}', [BecomingChristLikeController::class, 'edit'])->name('becoming-christ-link.edit');
-            Route::post('/update/{id}', [BecomingChristLikeController::class, 'update'])->name('becoming-christ-link.update');
-            Route::get('/delete/{id}', [BecomingChristLikeController::class, 'delete'])->name('becoming-christ-link.delete');
-            Route::get('/download/{file}', [BecomingChristLikeController::class, 'download'])->name('becoming-christ-link.download');
-            Route::get('/fetch-data', [BecomingChristLikeController::class, 'fetchData'])->name('becoming-christ-link.fetch-data');
-            Route::get('/view/{id}', [BecomingChristLikeController::class, 'view'])->name('becoming-christ-link.view');
-        });
-
-        // leadership development
-        Route::prefix('leadership-development')->group(function () {
-            Route::get('/', [LeadershipDevelopmentController::class, 'index'])->name('leadership-development.index');
-            Route::get('/upload', [LeadershipDevelopmentController::class, 'upload'])->name('leadership-development.upload');
-            Route::post('/store', [LeadershipDevelopmentController::class, 'store'])->name('leadership-development.store');
-            Route::get('/edit/{id}', [LeadershipDevelopmentController::class, 'edit'])->name('leadership-development.edit');
-            Route::post('/update/{id}', [LeadershipDevelopmentController::class, 'update'])->name('leadership-development.update');
-            Route::get('/delete/{id}', [LeadershipDevelopmentController::class, 'delete'])->name('leadership-development.delete');
-            Route::get('/download/{file}', [LeadershipDevelopmentController::class, 'download'])->name('leadership-development.download');
-            Route::get('/fetch-data', [LeadershipDevelopmentController::class, 'fetchData'])->name('leadership-development.fetch-data');
-            Route::get('/view/{id}', [LeadershipDevelopmentController::class, 'view'])->name('leadership-development.view');
-        });
-
-
-        Route::resources([
-            'roles' => RolePermissionsController::class,
-            'partners' => PartnerController::class,
-            'bulletins' => BulletinController::class,
-            'topics' => TopicController::class,
-            'categories' => CategoryController::class,
-            'products' => ProductController::class,
-            'ecclesias' => EcclesiaContorller::class,
-            'jobs' => JobpostingController::class,
-            'meetings' => MeetingSchedulingController::class,
-        ]);
-
-        Route::prefix('meetings')->group(function () {
-            Route::get('/meeting-delete/{id}', [MeetingSchedulingController::class, 'delete'])->name('meetings.delete');
-
-        });
-        // calender ajax fetch data
-        Route::get('/view-calender', [MeetingSchedulingController::class, 'viewCalender'])->name('meetings.view-calender');
-        Route::get('/meetings-calender-fetch-data', [MeetingSchedulingController::class, 'fetchCalenderData'])->name('meetings.calender-fetch-data');
-        Route::get('/meetings-fetch-data', [MeetingSchedulingController::class, 'fetchData'])->name('meetings.fetch-data');
-
-        Route::prefix('jobs')->group(function () {
-            Route::get('/job-delete/{id}', [JobpostingController::class, 'delete'])->name('jobs.delete');
-        });
-        Route::get('/jobs-fetch-data', [JobpostingController::class, 'fetchData'])->name('jobs.fetch-data');
-
-        Route::prefix('ecclesias')->group(function () {
-            Route::get('/ecclesia-delete/{id}', [EcclesiaContorller::class, 'delete'])->name('ecclesias.delete');
-        });
-
-        Route::prefix('products')->group(function () {
-            Route::get('/product-delete/{id}', [ProductController::class, 'delete'])->name('products.delete');
-        });
-        // products.image.delete
-        Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
-        Route::get('/products-fetch-data', [ProductController::class, 'fetchData'])->name('products.fetch-data');
-
-        Route::get('/categories-fetch-data', [CategoryController::class, 'fetchData'])->name('categories.fetch-data');
-
-        Route::prefix('categories')->group(function () {
-            Route::get('/category-delete/{id}', [CategoryController::class, 'delete'])->name('categories.delete');
-        });
-
-        Route::prefix('topics')->group(function () {
-            Route::get('/topic-delete/{id}', [TopicController::class, 'delete'])->name('topics.delete');
-        });
-
-        Route::prefix('bulletins')->group(function () {
-            Route::get('/bulletin-delete/{id}', [BulletinController::class, 'delete'])->name('bulletins.delete');
-        });
-        Route::get('/bulletins-fetch-data', [BulletinController::class, 'fetchData'])->name('bulletins.fetch-data');
-
-
-        Route::prefix('bulletin-board')->group(function () {
-            Route::get('/', [BulletinBoardController::class, 'list'])->name('bulletin-board.index');
-        });
-
-        Route::prefix('roles')->group(function () {
-            Route::get('/role-delete/{id}', [RolePermissionsController::class, 'delete'])->name('roles.delete');
-        });
-
-        Route::prefix('partners')->group(function () {
-            Route::get('/partner-delete/{id}', [PartnerController::class, 'delete'])->name('partners.delete');
-        });
-
-        Route::get('/changePartnerStatus', [PartnerController::class, 'changePartnerStatus'])->name('partners.change-status');
-        Route::get('/partner-fetch-data', [PartnerController::class, 'fetchData'])->name('partners.fetch-data');
-
-        // Mail
-        Route::prefix('mail')->group(function () {
-            Route::get('/', [SendMailController::class, 'list'])->name('mail.index');
-            Route::get('/compose', [SendMailController::class, 'compose'])->name('mail.compose');
-            Route::post('/send', [SendMailController::class, 'sendMail'])->name('mail.send');
-            Route::get('/view', [SendMailController::class, 'view'])->name('mail.view');
-        });
-
-        // live-event
-        Route::prefix('events')->group(function () {
-            Route::get('/', [LiveEventController::class, 'list'])->name('events.index');
-            Route::get('/calender', [LiveEventController::class, 'calender'])->name('events.calender');
-            Route::post('/store', [LiveEventController::class, 'store'])->name('events.store');
-            Route::put('/update/{id}', [LiveEventController::class, 'update'])->name('events.update');
-        });
-
-        Route::get('/mail-fetch-data', [SendMailController::class, 'fetchData'])->name('mail.fetch-data');
-
-        Route::get('/page/{name}/{permission}', [UserCmsController::class, 'page'])->name('user.page');
+    Route::prefix('chats')->name('chats.')->group(function () {
+        Route::get('/', [ChatController::class, 'chats'])->name('index');
+        Route::post('/load', [ChatController::class, 'load'])->name('load');
+        Route::post('/send', [ChatController::class, 'send'])->name('send');
     });
+
+    Route::prefix('file')->group(function () {
+        Route::get('/', [FileController::class, 'index'])->name('file.index');
+        Route::get('/upload', [FileController::class, 'upload'])->name('file.upload');
+        Route::post('/store', [FileController::class, 'store'])->name('file.store');
+        Route::get('/edit/{id}', [FileController::class, 'edit'])->name('file.edit');
+        Route::post('/update/{id}', [FileController::class, 'update'])->name('file.update');
+        Route::get('/delete/{id}', [FileController::class, 'delete'])->name('file.delete');
+        Route::get('/download/{file}', [FileController::class, 'download'])->name('file.download');
+        Route::get('/fetch-data', [FileController::class, 'fetchData'])->name('file.fetch-data');
+    });
+
+    Route::prefix('becoming-sovereign')->group(function () {
+        Route::get('/', [BecomingSovereignController::class, 'index'])->name('becoming-sovereign.index');
+        Route::get('/upload', [BecomingSovereignController::class, 'upload'])->name('becoming-sovereign.upload');
+        Route::post('/store', [BecomingSovereignController::class, 'store'])->name('becoming-sovereign.store');
+        Route::get('/edit/{id}', [BecomingSovereignController::class, 'edit'])->name('becoming-sovereign.edit');
+        Route::post('/update/{id}', [BecomingSovereignController::class, 'update'])->name('becoming-sovereign.update');
+        Route::get('/delete/{id}', [BecomingSovereignController::class, 'delete'])->name('becoming-sovereign.delete');
+        Route::get('/download/{file}', [BecomingSovereignController::class, 'download'])->name('becoming-sovereign.download');
+        Route::get('/fetch-data', [BecomingSovereignController::class, 'fetchData'])->name('becoming-sovereign.fetch-data');
+        Route::get('/view/{id}', [BecomingSovereignController::class, 'view'])->name('becoming-sovereign.view');
+    });
+
+    Route::prefix('becoming-christ-link')->group(function () {
+        Route::get('/', [BecomingChristLikeController::class, 'index'])->name('becoming-christ-link.index');
+        Route::get('/upload', [BecomingChristLikeController::class, 'upload'])->name('becoming-christ-link.upload');
+        Route::post('/store', [BecomingChristLikeController::class, 'store'])->name('becoming-christ-link.store');
+        Route::get('/edit/{id}', [BecomingChristLikeController::class, 'edit'])->name('becoming-christ-link.edit');
+        Route::post('/update/{id}', [BecomingChristLikeController::class, 'update'])->name('becoming-christ-link.update');
+        Route::get('/delete/{id}', [BecomingChristLikeController::class, 'delete'])->name('becoming-christ-link.delete');
+        Route::get('/download/{file}', [BecomingChristLikeController::class, 'download'])->name('becoming-christ-link.download');
+        Route::get('/fetch-data', [BecomingChristLikeController::class, 'fetchData'])->name('becoming-christ-link.fetch-data');
+        Route::get('/view/{id}', [BecomingChristLikeController::class, 'view'])->name('becoming-christ-link.view');
+    });
+
+    // leadership development
+    Route::prefix('leadership-development')->group(function () {
+        Route::get('/', [LeadershipDevelopmentController::class, 'index'])->name('leadership-development.index');
+        Route::get('/upload', [LeadershipDevelopmentController::class, 'upload'])->name('leadership-development.upload');
+        Route::post('/store', [LeadershipDevelopmentController::class, 'store'])->name('leadership-development.store');
+        Route::get('/edit/{id}', [LeadershipDevelopmentController::class, 'edit'])->name('leadership-development.edit');
+        Route::post('/update/{id}', [LeadershipDevelopmentController::class, 'update'])->name('leadership-development.update');
+        Route::get('/delete/{id}', [LeadershipDevelopmentController::class, 'delete'])->name('leadership-development.delete');
+        Route::get('/download/{file}', [LeadershipDevelopmentController::class, 'download'])->name('leadership-development.download');
+        Route::get('/fetch-data', [LeadershipDevelopmentController::class, 'fetchData'])->name('leadership-development.fetch-data');
+        Route::get('/view/{id}', [LeadershipDevelopmentController::class, 'view'])->name('leadership-development.view');
+    });
+
+
+    Route::resources([
+        'roles' => RolePermissionsController::class,
+        'partners' => PartnerController::class,
+        'bulletins' => BulletinController::class,
+        'topics' => TopicController::class,
+        'categories' => CategoryController::class,
+        'products' => ProductController::class,
+        'ecclesias' => EcclesiaContorller::class,
+        'jobs' => JobpostingController::class,
+        'meetings' => MeetingSchedulingController::class,
+    ]);
+
+    Route::prefix('meetings')->group(function () {
+        Route::get('/meeting-delete/{id}', [MeetingSchedulingController::class, 'delete'])->name('meetings.delete');
+    });
+    // calender ajax fetch data
+    Route::get('/view-calender', [MeetingSchedulingController::class, 'viewCalender'])->name('meetings.view-calender');
+    Route::get('/meetings-calender-fetch-data', [MeetingSchedulingController::class, 'fetchCalenderData'])->name('meetings.calender-fetch-data');
+    Route::get('/meetings-fetch-data', [MeetingSchedulingController::class, 'fetchData'])->name('meetings.fetch-data');
+
+    Route::prefix('jobs')->group(function () {
+        Route::get('/job-delete/{id}', [JobpostingController::class, 'delete'])->name('jobs.delete');
+    });
+    Route::get('/jobs-fetch-data', [JobpostingController::class, 'fetchData'])->name('jobs.fetch-data');
+
+    Route::prefix('ecclesias')->group(function () {
+        Route::get('/ecclesia-delete/{id}', [EcclesiaContorller::class, 'delete'])->name('ecclesias.delete');
+    });
+
+    Route::prefix('products')->group(function () {
+        Route::get('/product-delete/{id}', [ProductController::class, 'delete'])->name('products.delete');
+    });
+    // products.image.delete
+    Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
+    Route::get('/products-fetch-data', [ProductController::class, 'fetchData'])->name('products.fetch-data');
+
+    Route::get('/categories-fetch-data', [CategoryController::class, 'fetchData'])->name('categories.fetch-data');
+
+    Route::prefix('categories')->group(function () {
+        Route::get('/category-delete/{id}', [CategoryController::class, 'delete'])->name('categories.delete');
+    });
+
+    Route::prefix('topics')->group(function () {
+        Route::get('/topic-delete/{id}', [TopicController::class, 'delete'])->name('topics.delete');
+    });
+
+    Route::prefix('bulletins')->group(function () {
+        Route::get('/bulletin-delete/{id}', [BulletinController::class, 'delete'])->name('bulletins.delete');
+    });
+    Route::get('/bulletins-fetch-data', [BulletinController::class, 'fetchData'])->name('bulletins.fetch-data');
+
+
+    Route::prefix('bulletin-board')->group(function () {
+        Route::get('/', [BulletinBoardController::class, 'list'])->name('bulletin-board.index');
+    });
+
+    Route::prefix('roles')->group(function () {
+        Route::get('/role-delete/{id}', [RolePermissionsController::class, 'delete'])->name('roles.delete');
+    });
+
+    Route::prefix('partners')->group(function () {
+        Route::get('/partner-delete/{id}', [PartnerController::class, 'delete'])->name('partners.delete');
+    });
+
+    Route::get('/changePartnerStatus', [PartnerController::class, 'changePartnerStatus'])->name('partners.change-status');
+    Route::get('/partner-fetch-data', [PartnerController::class, 'fetchData'])->name('partners.fetch-data');
+
+    // Mail
+    Route::prefix('mail')->group(function () {
+        Route::get('/', [SendMailController::class, 'list'])->name('mail.index');
+        Route::get('/compose', [SendMailController::class, 'compose'])->name('mail.compose');
+        Route::post('/send', [SendMailController::class, 'sendMail'])->name('mail.send');
+        Route::get('/view', [SendMailController::class, 'view'])->name('mail.view');
+    });
+
+    // live-event
+    Route::prefix('events')->group(function () {
+        Route::get('/', [LiveEventController::class, 'list'])->name('events.index');
+        Route::get('/calender', [LiveEventController::class, 'calender'])->name('events.calender');
+        Route::post('/store', [LiveEventController::class, 'store'])->name('events.store');
+        Route::put('/update/{id}', [LiveEventController::class, 'update'])->name('events.update');
+    });
+
+    Route::prefix('newsletters')->group(function () {
+        Route::get('/', [UserNewsletterController::class, 'list'])->name('user.newsletters.index');
+    });
+    Route::get('/user-newsletter-fetch-data', [UserNewsletterController::class, 'fetchData'])->name('user.newsletters.fetch-data');
+
+    Route::get('/mail-fetch-data', [SendMailController::class, 'fetchData'])->name('mail.fetch-data');
+
+    Route::get('/page/{name}/{permission}', [UserCmsController::class, 'page'])->name('user.page');
+
+    Route::get('/cms/dashboard', [UserCmsController::class, 'dashboard'])->name('user.cms.dashboard');
+    Route::get('/cms/list', [UserCmsController::class, 'list'])->name('user.cms.list');
+    Route::get('/cms/create', [UserCmsController::class, 'create'])->name('user.cms.create');
+    Route::post('/cms/store', [UserCmsController::class, 'store'])->name('user.cms.store');
+    Route::put('/cms/update/{id}', [UserCmsController::class, 'update'])->name('user.cms.update');
+    Route::get('/cms-delete/{id}', [UserCmsController::class, 'delete'])->name('user.cms.delete');
+    Route::get('/cms-page/{page}', [UserCmsController::class, 'cms'])->name('user.cms.edit');
+    Route::post('/cms/home/update', [UserCmsController::class, 'homeCmsUpdate'])->name('user.cms.home.update');
+    Route::post('/cms/footer/update', [UserCmsController::class, 'footerUpdate'])->name('user.cms.footer.update');
+
+});
 // });
 
 
@@ -395,6 +413,7 @@ Route::prefix('user')->middleware(['user'])->group(function () {
 
 Route::prefix('e-store')->middleware(['user'])->group(function () {
     Route::get('/', [HomeController::class, 'eStore'])->name('e-store');
+    Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-store.newsletter');
     Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails'])->name('product-details');
     Route::get('/all-products', [EstoreProductController::class, 'products'])->name('all-products');
     Route::get('/products-filter', [EstoreProductController::class, 'productsFilter'])->name('products-filter');
@@ -409,4 +428,12 @@ Route::prefix('e-store')->middleware(['user'])->group(function () {
         }
     }
 
+    $pages = EcomCmsPage::get();
+    foreach ($pages as $page) {
+        if ($page->slug) {
+            Route::get($page->slug, [EstoreCmsController::class, 'cmsPage'])
+                ->name($page->slug . '.cms-page')
+                ->defaults('page_id', $page->id);
+        }
+    }
 });

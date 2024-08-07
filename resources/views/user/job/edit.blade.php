@@ -77,6 +77,28 @@
                                     @endif
                                 </div>
                             </div>
+                            {{-- contact_person --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="contact_person"> Contact Person </label>
+                                    <input type="text" name="contact_person" id="contact_person" class="form-control"
+                                        placeholder="Enter Contact Person" value="{{ $job->contact_person }}">
+                                    @if ($errors->has('contact_person'))
+                                        <span class="text-danger" style="color:red !important;">{{ $errors->first('contact_person') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            {{-- contact_email --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="contact_email"> Contact Email </label>
+                                    <input type="email" name="contact_email" id="contact_email" class="form-control"
+                                        placeholder="Enter Contact Email" value="{{ $job->contact_email }}">
+                                    @if ($errors->has('contact_email'))
+                                        <span class="text-danger" style="color:red !important;">{{ $errors->first('contact_email') }}</span>
+                                    @endif
+                                </div>
+                            </div>
                             {{-- job_description --}}
                             <div class="col-md-12 mb-2">
                                 <div class="box_label">

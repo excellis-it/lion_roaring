@@ -23,6 +23,7 @@
     <link href="{{asset('ecom_assets/css/menu.css')}}" rel="stylesheet" />
     <link href="{{asset('ecom_assets/css/style.css')}}" rel="stylesheet">
     <link href="{{asset('ecom_assets/css/responsive.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     @stack('styles')
@@ -42,6 +43,7 @@
     <script src="{{asset('ecom_assets/bootstrap-5.3.2/js/bootstrap.bundle.min.js')}}"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="{{asset('ecom_assets/js/custom.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
         @if (Session::has('message'))
@@ -75,6 +77,60 @@
             }
             toastr.warning("{{ session('warning') }}");
         @endif
+    </script>
+     <script>
+        $(document).ready(function() {
+            $(document).on('submit', '#submit-newsletter', function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.status === true) {
+                            $('.text-danger').html('');
+                            $('#newsletter_email').val('');
+                            $('#newsletter_name').val('');
+                            $('#newsletter_message').val('');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.message,
+                                showConfirmButton: true,
+                                timer: 3000
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: response.message,
+                                showConfirmButton: true,
+                                timer: 3000
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        $('.text-danger').html('');
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                            if (key.includes('.')) {
+                                var fieldName = key.split('.')[0];
+                                // Display errors for array fields
+                                var num = key.match(/\d+/)[0];
+                                $('#' + fieldName + '_' + num).html(value[0]);
+                            } else {
+                                // after text danger span
+                                $('#' + key + '_error').html(value[0]);
+                            }
+                        });
+                    }
+                });
+            });
+        });
     </script>
     @stack('scripts')
 </body>

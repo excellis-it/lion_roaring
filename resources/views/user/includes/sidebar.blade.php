@@ -206,8 +206,7 @@
                                     </a>
                                 @endif
                                 @if (Gate::check('Manage Job Postings'))
-                                    <a
-                                        href="{{ route('jobs.index') }}">
+                                    <a href="{{ route('jobs.index') }}">
                                         <span>
                                             <img src="{{ asset('user_assets/images/Job Posting.png') }}"
                                                 alt="">
@@ -216,8 +215,7 @@
                                     </a>
                                 @endif
                                 @if (Gate::check('Manage Meeting Schedule'))
-                                    <a
-                                        href="{{ route('meetings.index') }}">
+                                    <a href="{{ route('meetings.index') }}">
                                         <span>
                                             <img src="{{ asset('user_assets/images/Meeting Schedule.png') }}"
                                                 alt="">
@@ -254,45 +252,43 @@
                     </li>
                 @endif
                 @if (Auth::user()->hasRole('ADMIN'))
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
-                        data-bs-target="#collapseExample10">
-                        <span>
-                            <img src="{{ asset('user_assets/images/Lion Roaring Store.png') }}" alt="">
-                        </span>
-                        <span class="hide-menu">Store</span>
-                    </a>
-                    {{-- Collapse content --}}
-                    <div class="collapse {{ Request::is('user/products*') || Request::is('user/categories*') ? 'show' : '' }}"
-                        id="collapseExample10">
-                        <div class="menu_bb">
-                            {{-- bulletins --}}
-                            <a href="{{ route('categories.index') }}">
-                                <span>
-                                    <img src="{{ asset('user_assets/images/Meeting Schedule.png') }}"
-                                        alt="">
-                                </span>
-                                <span>Product Categories</span>
-                            </a>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
+                            data-bs-target="#collapseExample10">
+                            <span>
+                                <img src="{{ asset('user_assets/images/Lion Roaring Store.png') }}" alt="">
+                            </span>
+                            <span class="hide-menu">Store</span>
+                        </a>
+                        {{-- Collapse content --}}
+                        <div class="collapse {{ Request::is('user/products*') || Request::is('user/cms*') || Request::is('user/cms-page/home*') || Request::is('user/cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
+                            id="collapseExample10">
+                            <div class="menu_bb">
+                                {{-- bulletins --}}
+                                <a href="{{ route('user.cms.dashboard') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/Activity.png') }}"
+                                            alt="">
+                                    </span>
+                                    <span>E-store Dashboard</span>
+                                </a>
+
+                                <a href="{{ route('categories.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/Meeting Schedule.png') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Product Categories</span>
+                                </a>
                                 <a href="{{ route('products.index') }}">
                                     <span>
                                         <img src="{{ asset('user_assets/images/Bulletine.png') }}" alt="">
                                     </span>
                                     <span>Products</span>
                                 </a>
-                            {{-- @if (Gate::check('Manage Job Postings'))
-                                <a
-                                    href="{{ route('user.page', ['name' => 'Job Posting', 'permission' => 'Manage Job Postings']) }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/Job Posting.png') }}"
-                                            alt="">
-                                    </span>
-                                    <span>Job Posting</span>
-                                </a>
-                            @endif --}}
+                            </div>
                         </div>
-                    </div>
-                </li>
+                    </li>
                 @endif
                 @if (Auth::user()->hasRole('ADMIN') || Auth::user()->hasRole('LEADER'))
                     <li class="sidebar-item">
@@ -316,17 +312,17 @@
                         </a>
                     </li>
                 @endif
-              @if(Auth::user()->hasRole('ADMIN'))
-                <li class="sidebar-item">
-                    <a class="sidebar-link {{ Request::is('user/ecclesias/*') ? 'active' : '' }}"
-                        href="{{ route('ecclesias.index') }}" aria-expanded="false">
-                        <span>
-                            <img src="{{ asset('user_assets/images/Team.png') }}" alt="">
-                        </span>
-                        <span class="hide-menu">Ecclesias</span>
-                    </a>
-                </li>
-            @endif
+                @if (Auth::user()->hasRole('ADMIN'))
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ Request::is('user/ecclesias/*') ? 'active' : '' }}"
+                            href="{{ route('ecclesias.index') }}" aria-expanded="false">
+                            <span>
+                                <img src="{{ asset('user_assets/images/Team.png') }}" alt="">
+                            </span>
+                            <span class="hide-menu">Ecclesias</span>
+                        </a>
+                    </li>
+                @endif
                 {{-- @if (Gate::check('Manage Sovereigns'))
                     <li class="sidebar-item">
                         <a class="sidebar-link"

@@ -55,6 +55,8 @@ class JobpostingController extends Controller
                 'job_location' => 'required',
                 'job_salary' => 'nullable|numeric',
                 'job_experience' => 'nullable|numeric',
+                'contact_person' => 'nullable',
+                'contact_email' => 'nullable|email',
             ]);
 
             $job = new Job();
@@ -65,6 +67,8 @@ class JobpostingController extends Controller
             $job->job_location = $request->job_location;
             $job->job_salary = $request->job_salary;
             $job->job_experience = $request->job_experience;
+            $job->contact_person = $request->contact_person;
+            $job->contact_email = $request->contact_email;
             $job->save();
 
             return redirect()->route('jobs.index')->with('message', 'Job has been created successfully.');
@@ -122,6 +126,8 @@ class JobpostingController extends Controller
                 'job_location' => 'required',
                 'job_salary' => 'nullable|numeric',
                 'job_experience' => 'nullable|numeric',
+                'contact_person' => 'nullable',
+                'contact_email' => 'nullable|email',
             ]);
 
             $job = Job::findOrFail($id);
@@ -131,6 +137,8 @@ class JobpostingController extends Controller
             $job->job_location = $request->job_location;
             $job->job_salary = $request->job_salary;
             $job->job_experience = $request->job_experience;
+            $job->contact_person = $request->contact_person;
+            $job->contact_email = $request->contact_email;
             $job->save();
 
             return redirect()->route('jobs.index')->with('message', 'Job has been updated successfully.');
@@ -166,7 +174,9 @@ class JobpostingController extends Controller
                         ->orWhere('job_type', 'like', '%' . $query . '%')
                         ->orWhere('job_location', 'like', '%' . $query . '%')
                         ->orWhere('job_salary', 'like', '%' . $query . '%')
-                        ->orWhere('job_experience', 'like', '%' . $query . '%');
+                        ->orWhere('job_experience', 'like', '%' . $query . '%')
+                        ->orWhere('contact_person', 'like', '%' . $query . '%')
+                        ->orWhere('contact_email', 'like', '%' . $query . '%');
                 });
 
 

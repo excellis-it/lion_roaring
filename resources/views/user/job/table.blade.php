@@ -7,6 +7,13 @@
             <td>{{ $job->job_location ? $job->job_location : '-' }}</td>
             <td> {{ $job->job_salary > 1 ? 'USD' : 'USD' }} {{ $job->job_salary ? $job->job_salary : 0 }}</td>
             <td>{{ $job->job_experience ? $job->job_experience : 0 }} {{ $job->job_experience > 1 ? 'years' : 'year' }}</td>
+            {{-- contact_person --}}
+            <td>
+                {{ $job->contact_person ? $job->contact_person : '-' }}
+            </td>
+            <td>
+                {{ $job->contact_email ? $job->contact_email : '-' }}
+            </td>
             <td>
                 <div class="d-flex">
                     @if (auth()->user()->can('Edit Job Postings'))
