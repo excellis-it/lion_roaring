@@ -305,6 +305,13 @@ class RolePermissionSeeder extends Seeder
                 "created_at" => date('Y-m-d H:i:s'),
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
+
+            [
+                "name" => "Edit Event",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
             [
                 "name" => "Create Partners",
                 "guard_name" => "web",

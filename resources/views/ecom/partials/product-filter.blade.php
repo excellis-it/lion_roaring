@@ -14,8 +14,8 @@
                 <div class="">
                     <select class="latest_filter" name="latest_filter" id="latest_filter">
                         <option value="Latest" selected>Latest</option>
-                        <option value="Low to High">Low to High</option>
-                        <option value="High to Low">High to Low</option>
+                        <option value="A to Z">A to Z</option>
+                        <option value="Z to A">Z to A</option>
                     </select>
                 </div>
             </div>

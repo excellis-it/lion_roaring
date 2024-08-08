@@ -13,9 +13,9 @@
             <td> {{ $product->name }}</td>
             <td> {{ $product->slug }}</td>
             <td> {{ $product->category ? $product->category->name : '' }}</td>
-            <td> {{ $product->price  ? '$' . $product->price : '' }}</td>
+            {{-- <td> {{ $product->price  ? '$' . $product->price : '' }}</td>
             <td> {{ $product->quantity }}</td>
-            <td> {{ $product->sku }}</td>
+            <td> {{ $product->sku }}</td> --}}
             <td> {{ $product->affiliate_link }}</td>
             {{-- status --}}
             <td>
@@ -39,10 +39,10 @@
                     <a href="{{ route('products.edit', $product->id) }}" class="delete_icon">
                         <i class="fa-solid fa-edit"></i>
                     </a> &nbsp; &nbsp;
-                    {{-- <a href="javascript:void(0)" id="delete"
+                    <a href="javascript:void(0)" id="delete"
                         data-route="{{ route('products.delete', $product->id) }}" class="delete_icon">
                         <i class="fa-solid fa-trash"></i>
-                    </a> --}}
+                    </a>
                 </div>
             </td>
         </tr>

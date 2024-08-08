@@ -137,4 +137,27 @@ class EcclesiaContorller extends Controller
             abort(403, 'You do not have permission to access this page.');
         }
     }
+
+    public function fetchData(Request $request)
+    {
+        if ($request->ajax()) {
+            $sort_by = $request->get('sortby', 'id'); // Default sort by 'id'
+            $sort_type = $request->get('sorttype', 'asc'); // Default sort type 'asc'
+            $query = $request->get('query', '');
+            $query = str_replace(" ", "%", $query);
+
+            $ecclesias = Ecclesia::query()
+                ->where(function ($q) use ($query) {
+                    $q->where('id', 'like', '%' . $query . '%')
+                        ->orWhere('name', 'like', '%' . $query . '%');
+                })
+               ->orWhereHas('countryName', function ($q) use ($query) {
+                    $q->where('name', 'like', '%' . $query . '%');
+                })
+                ->orderBy($sort_by, $sort_type)
+                ->paginate(15);
+
+                return response()->json(['data' => view('user.ecclesias.table', compact('ecclesias'))->render()]);
+        }
+    }
 }

@@ -64,4 +64,12 @@ class LiveEventController extends Controller
 
         return redirect()->route('events.index')->with('message', 'Event updated successfully.');
     }
+
+    public function destroy($id)
+    {
+        $event = Event::findOrFail($id);
+        $event->delete();
+
+        return response()->json(['success' => 'Event deleted successfully.']);
+    }
 }

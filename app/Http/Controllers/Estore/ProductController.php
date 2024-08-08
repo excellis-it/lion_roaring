@@ -29,7 +29,7 @@ class ProductController extends Controller
     public function products(Request $request, $category_id = null)
     {
         $category_id = $category_id ?? ''; // Default value is ' '
-        $products = Product::where('status', 1)->where('quantity', '>', 0);
+        $products = Product::where('status', 1);
         if ($category_id) {
             $products = $products->where('category_id', $category_id);
             $category = Category::find($category_id);
@@ -37,6 +37,7 @@ class ProductController extends Controller
             $category = null;
         }
         $products = $products->orderBy('id', 'DESC')->limit(12)->get();
+        // dd($products);
 
         $products_count  = $products->count();
         $categories = Category::where('status', 1)->orderBy('id', 'DESC')->get();
@@ -60,26 +61,26 @@ class ProductController extends Controller
                 $products->whereIn('category_id', $category_id);
             }
 
-            if (!empty($prices)) {
-                $products->where(function ($query) use ($prices) {
-                    foreach ($prices as $price) {
-                        if ($price == 'Below 500') {
-                            $query->orWhere('price', '<', 500);
-                        } elseif ($price == 'Above 5000') {
-                            $query->orWhere('price', '>', 5000);
-                        } else {
-                            $priceRange = explode('-', $price);
-                            $query->orWhereBetween('price', [$priceRange[0], $priceRange[1]]);
-                        }
-                    }
-                });
-            }
+            // if (!empty($prices)) {
+            //     $products->where(function ($query) use ($prices) {
+            //         foreach ($prices as $price) {
+            //             if ($price == 'Below 500') {
+            //                 $query->orWhere('price', '<', 500);
+            //             } elseif ($price == 'Above 5000') {
+            //                 $query->orWhere('price', '>', 5000);
+            //             } else {
+            //                 $priceRange = explode('-', $price);
+            //                 $query->orWhereBetween('price', [$priceRange[0], $priceRange[1]]);
+            //             }
+            //         }
+            //     });
+            // }
 
             if (!empty($latest_filter)) {
-                if ($latest_filter == 'Low to High') {
-                    $products->orderBy('price', 'asc');
-                } elseif ($latest_filter == 'High to Low') {
-                    $products->orderBy('price', 'desc');
+                if ($latest_filter == 'A to Z') {
+                    $products->orderBy('name', 'asc');
+                } elseif ($latest_filter == 'Z to A') {
+                    $products->orderBy('name', 'desc');
                 } else {
                     $products->orderBy('id', 'desc');
                 }
@@ -95,8 +96,7 @@ class ProductController extends Controller
             $products_count = $products->count();
 
             // Get the paginated products
-            $products = $products->where('quantity', '>', 0)
-                ->skip($offset)
+            $products = $products->skip($offset)
                 ->take($limit)
                 ->get()->toArray();
 

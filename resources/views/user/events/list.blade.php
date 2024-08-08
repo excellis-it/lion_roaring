@@ -86,6 +86,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Save changes</button>
+                            <button type="button" class="btn btn-danger" id="deleteEventBtn" style="color: white; background:red"><i class="fas fa-trash"></i> Delete</button>
                         </div>
                     </form>
                 </div>
@@ -184,55 +185,6 @@
                 })
         });
     </script>
-    {{-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                // change to dayGridWeek or timeGridWeek for week view
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                // change color for each event
-                eventColor: '#7851a9',
-
-                events: function(fetchInfo, successCallback, failureCallback) {
-                    $.ajax({
-                        url: '{{ route('events.calender') }}',
-                        method: 'GET',
-                        success: function(data) {
-                            var events = data.map(event => ({
-                                id: event.id,
-                                title: event.title,
-                                start: event.start,
-                                end: event.end,
-                                description: event.description
-                            }));
-                            successCallback(events);
-                        },
-                        error: function() {
-                            failureCallback();
-                        }
-                    });
-                },
-                eventClick: function(info) {
-                    $('#modalTitle').text(info.event.title);
-                    $('#modalStart').text(info.event.start.toLocaleString());
-                    $('#modalEnd').text(info.event.end ? info.event.end.toLocaleString() : 'N/A');
-                    $('#modalDescription').text(info.event.extendedProps.description);
-                    $('#eventModal').modal('show');
-                },
-                eventTimeFormat: { // like '14:30:00'
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    meridiem: false
-                }
-            });
-            calendar.render();
-        });
-    </script> --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
@@ -268,16 +220,37 @@
                         $('#modalTitleEdit').val(info.event.title);
                         $('#modalStartEdit').val(info.event.start.toISOString().slice(0, 16));
                         $('#modalEndEdit').val(info.event.end ? info.event.end.toISOString().slice(0,
-                                16) :
-                            '');
+                            16) : '');
                         $('#modalDescriptionEdit').val(info.event.extendedProps.description);
                         $('#event-edit').attr('action', '{{ route('events.update', '') }}/' + info.event
                             .id);
+
+                        $('#deleteEventBtn').off('click').on('click', function() {
+                            if (confirm('Are you sure you want to delete this event?')) {
+                                $.ajax({
+                                    url: '{{ route('events.destroy', '') }}/' + info
+                                        .event.id,
+                                    method: 'DELETE',
+                                    success: function() {
+                                        toastr.success('Event deleted successfully.');
+                                        info.event.remove();
+                                        $('#eventModal').modal('hide');
+                                    },
+                                    error: function() {
+                                        alert('Failed to delete event.');
+                                    }
+                                });
+                            }
+                        });
+
+                        $('#deleteEventBtn').show();
                     @else
                         $('#modalTitle').text(info.event.title);
                         $('#modalStart').text(info.event.start.toLocaleString());
                         $('#modalEnd').text(info.event.end ? info.event.end.toLocaleString() : 'N/A');
                         $('#modalDescription').text(info.event.extendedProps.description);
+
+                        $('#deleteEventBtn').hide();
                     @endif
                     $('#eventModal').modal('show');
                 },
@@ -350,6 +323,7 @@
                 }
                 return isNaN(value) && isNaN(startDate) || (Number(value) > Number(startDate));
             }, 'End date must be greater than start date.');
+
 
             $('#event-edit').validate({
                 rules: {

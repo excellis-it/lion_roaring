@@ -154,7 +154,7 @@ Lion Roaring Ecom | Home
                                         <a href="{{ $product['affiliate_link'] }}">{{ $product->name }}</a>
                                         <p>{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
                                         </p>
-                                        <span class="price_text">$ {{ $product->price }}</span>
+                                        {{-- <span class="price_text">$ {{ $product->price }}</span> --}}
                                     </div>
                                     <div class="addtocart">
                                         <a href="{{ $product['affiliate_link'] }}"> go to shop</a>
@@ -217,7 +217,7 @@ Lion Roaring Ecom | Home
                                         <a href="{{ $product['affiliate_link'] }}">{{ $product->name }}</a>
                                         <p>{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
                                         </p>
-                                        <span class="price_text">${{ $product->price }}</span>
+                                        {{-- <span class="price_text">${{ $product->price }}</span> --}}
                                     </div>
                                     <div class="addtocart">
                                         <a href="{{ $product['affiliate_link'] }}">go to shop</a>

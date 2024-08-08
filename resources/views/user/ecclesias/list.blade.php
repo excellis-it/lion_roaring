@@ -26,65 +26,37 @@
                                     <div class="col-md-8">
                                         <h3 class="mb-3 float-left">Ecclesia List</h3>
                                     </div>
-                                    {{-- <div class="col-lg-4">
+                                    <div class="col-lg-4">
                                         <div class="search-field float-right">
                                             <input type="text" name="search" id="search" placeholder="search..."
                                                 required class="form-control">
                                             <button class="submit_search" id="search-button"> <span class=""><i
                                                         class="fa fa-search"></i></span></button>
                                         </div>
-                                    </div> --}}
+                                    </div>
                                 </div>
                                 <div class="table-responsive">
                                     <table class="table align-middle bg-white color_body_text">
                                         <thead class="color_head">
                                             <tr>
                                                 <th>ID </th>
-                                                <th>Ecclesia Name</th>
-                                                <th>
-                                                    Country
-                                                </th>
+                                                <th class="sorting" data-tippy-content="Sort by Name"
+                                                    data-sorting_type="desc" data-column_name="name"
+                                                    style="cursor: pointer"> Ecclesia Name<span id="name_icon"><i
+                                                            class="fa fa-arrow-down"></i></span></th>
+                                                <th> Country </th>
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (count($ecclesias) > 0)
-                                            @foreach ($ecclesias as $key => $ecclesia)
-                                                <tr>
-                                                    <td>
-                                                        {{ $ecclesias->firstItem() + $key }}
-                                                    </td>
-                                                    <td>{{ $ecclesia->name }}</td>
-                                                    <td>
-                                                        {{ $ecclesia->country ? $ecclesia->countryName->name : '-' }}
-                                                    </td>
-                                                    <td>
-                                                        <div class="d-flex">
-                                                            <a href="{{route('ecclesias.edit', Crypt::encrypt($ecclesia->id))}}" class="edit_icon me-2">
-                                                                <i class="ti ti-edit"></i>
-                                                            </a>
-                                                            <a href="javascript:void(0);" data-route="{{ route('ecclesias.delete', Crypt::encrypt($ecclesia->id)) }}" class="delete_icon" id="delete">
-                                                                <i class="ti ti-trash"></i>
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                            {{-- pagination --}}
-                                            <tr class="toxic">
-                                                <td colspan="4" >
-                                                    <div class="d-flex justify-content-center">
-                                                        {!! $ecclesias->links() !!}
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            @else
-                                            <tr class="toxic">
-                                                <td colspan="4" class="text-center">No Data Found</td>
-                                            </tr>
-                                        @endif
+                                            @include('user.ecclesias.table')
 
                                         </tbody>
+                                        <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
+                                        <input type="hidden" name="hidden_column_name" id="hidden_column_name"
+                                            value="id" />
+                                        <input type="hidden" name="hidden_sort_type" id="hidden_sort_type"
+                                            value="desc" />
                                     </table>
                                 </div>
                             </div>
@@ -118,6 +90,91 @@
                         )
                     }
                 })
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+
+            function clear_icon() {
+                $('#name_icon').html('');
+                $('#country_icon').html('');
+            }
+
+            function fetch_data(page, sort_type, sort_by, query, topic_id) {
+                $.ajax({
+                    url: "{{ route('ecclesias.fetch-data') }}",
+                    data: {
+                        page: page,
+                        sortby: sort_by,
+                        sorttype: sort_type,
+                        query: query,
+                        topic_id : topic_id
+                    },
+                    success: function(data) {
+                        $('tbody').html(data.data);
+                    }
+                });
+            }
+
+            $(document).on('keyup', '#search', function() {
+                var query = $('#search').val();
+                var column_name = $('#hidden_column_name').val();
+                var sort_type = $('#hidden_sort_type').val();
+                var page = $('#hidden_page').val();
+                var topic_id = $('#topics').val();
+                fetch_data(page, sort_type, column_name, query, topic_id);
+            });
+
+            $(document).on('click', '.sorting', function() {
+                var column_name = $(this).data('column_name');
+                var order_type = $(this).data('sorting_type');
+                var reverse_order = '';
+                if (order_type == 'asc') {
+                    $(this).data('sorting_type', 'desc');
+                    reverse_order = 'desc';
+                    clear_icon();
+                    $('#' + column_name + '_icon').html(
+                        '<i class="fa fa-arrow-down"></i>');
+                }
+                if (order_type == 'desc') {
+                    $(this).data('sorting_type', 'asc');
+                    reverse_order = 'asc';
+                    clear_icon();
+                    $('#' + column_name + '_icon').html(
+                        '<i class="fa fa-arrow-up"></i>');
+                }
+                $('#hidden_column_name').val(column_name);
+                $('#hidden_sort_type').val(reverse_order);
+                var page = $('#hidden_page').val();
+                var query = $('#search').val();
+                var topic_id = $('#topics').val();
+                fetch_data(page, reverse_order, column_name, query, topic_id);
+            });
+
+            $(document).on('click', '.pagination a', function(event) {
+                event.preventDefault();
+                var page = $(this).attr('href').split('page=')[1];
+                $('#hidden_page').val(page);
+                var column_name = $('#hidden_column_name').val();
+                var sort_type = $('#hidden_sort_type').val();
+
+                var query = $('#search').val();
+
+                $('li').removeClass('active');
+                $(this).parent().addClass('active');
+                var topic_id = $('#topics').val();
+                fetch_data(page, sort_type, column_name, query, topic_id);
+            });
+
+            $(document).on('change', '#topics', function() {
+                var query = $('#search').val();
+                var column_name = $('#hidden_column_name').val();
+                var sort_type = $('#hidden_sort_type').val();
+                var page = $('#hidden_page').val();
+                var topic_id = $(this).val();
+                fetch_data(page, sort_type, column_name, query, topic_id);
+            });
+
         });
     </script>
 @endpush

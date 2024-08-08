@@ -331,6 +331,7 @@ Route::prefix('user')->middleware(['user'])->group(function () {
     Route::prefix('ecclesias')->group(function () {
         Route::get('/ecclesia-delete/{id}', [EcclesiaContorller::class, 'delete'])->name('ecclesias.delete');
     });
+    Route::get('/ecclesias-fetch-data', [EcclesiaContorller::class, 'fetchData'])->name('ecclesias.fetch-data');
 
     Route::prefix('products')->group(function () {
         Route::get('/product-delete/{id}', [ProductController::class, 'delete'])->name('products.delete');
@@ -338,6 +339,7 @@ Route::prefix('user')->middleware(['user'])->group(function () {
     // products.image.delete
     Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
     Route::get('/products-fetch-data', [ProductController::class, 'fetchData'])->name('products.fetch-data');
+    
 
     Route::get('/categories-fetch-data', [CategoryController::class, 'fetchData'])->name('categories.fetch-data');
 
@@ -384,6 +386,7 @@ Route::prefix('user')->middleware(['user'])->group(function () {
         Route::get('/calender', [LiveEventController::class, 'calender'])->name('events.calender');
         Route::post('/store', [LiveEventController::class, 'store'])->name('events.store');
         Route::put('/update/{id}', [LiveEventController::class, 'update'])->name('events.update');
+        Route::delete('/destroy/{id}', [LiveEventController::class, 'destroy'])->name('events.destroy');
     });
 
     Route::prefix('newsletters')->group(function () {

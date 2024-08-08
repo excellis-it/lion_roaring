@@ -76,7 +76,7 @@
                             </div>
                         </div>
                     @endif
-                    <div class="padding_filter">
+                    {{-- <div class="padding_filter">
                         <div class="accordion" id="price">
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingPrice">
@@ -119,7 +119,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     {{-- <div class="padding_filter">
                         <div class="accordion" id="starrating">
                             <div class="accordion-item">

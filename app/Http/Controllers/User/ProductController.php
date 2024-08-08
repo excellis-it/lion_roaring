@@ -39,11 +39,13 @@ class ProductController extends Controller
                 ->where(function ($q) use ($query) {
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhere('name', 'like', '%' . $query . '%')
-                        ->orWhere('sku', 'like', '%' . $query . '%')
-                        ->orWhere('price', 'like', '%' . $query . '%')
-                        ->orWhere('quantity', 'like', '%' . $query . '%');
+                        // ->orWhere('sku', 'like', '%' . $query . '%')
+                        // ->orWhere('price', 'like', '%' . $query . '%')
+                        // ->orWhere('quantity', 'like', '%' . $query . '%');
+                        ->orWhere('slug', 'like', '%' . $query . '%');
+                })->orWhereHas('category', function ($q) use ($query) {
+                    $q->where('name', 'like', '%' . $query . '%');
                 });
-
             if ($sort_by && $sort_type) {
                 $products = $products->orderBy($sort_by, $sort_type);
             }
@@ -82,10 +84,10 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'short_description' => 'required|string',
-            'sku' => 'required|string|unique:products',
+            // 'sku' => 'required|string|unique:products',
             'specification' => 'required|string',
-            'price' => 'required|numeric',
-            'quantity' => 'required|numeric',
+            // 'price' => 'required|numeric',
+            // 'quantity' => 'required|numeric',
             'feature_product' => 'required',
             'slug' => 'required|string|unique:products',
             'affiliate_link' => 'required|string',
@@ -103,10 +105,10 @@ class ProductController extends Controller
         $product->name = $request->name;
         $product->description = $request->description;
         $product->short_description = $request->short_description;
-        $product->sku = $request->sku;
+        // $product->sku = $request->sku;
         $product->specification = $request->specification;
-        $product->price = $request->price;
-        $product->quantity = $request->quantity;
+        // $product->price = $request->price;
+        // $product->quantity = $request->quantity;
         $product->slug = $request->slug;
         $product->affiliate_link = $request->affiliate_link;
         $product->feature_product = $request->feature_product;
@@ -179,10 +181,10 @@ class ProductController extends Controller
                 'name' => 'required|string|max:255',
                 'description' => 'required|string',
                 'short_description' => 'required|string',
-                'sku' => 'required|string|unique:products,sku,' . $id,
+                // 'sku' => 'required|string|unique:products,sku,' . $id,
                 'specification' => 'required|string',
-                'price' => 'required|numeric',
-                'quantity' => 'required|numeric',
+                // 'price' => 'required|numeric',
+                // 'quantity' => 'required|numeric',
                 'slug' => 'required|string|unique:products,slug,' . $id,
                 'affiliate_link' => 'required|string',
                 'meta_title' => 'nullable|string|max:255',
@@ -199,10 +201,10 @@ class ProductController extends Controller
             $product->name = $request->name;
             $product->description = $request->description;
             $product->short_description = $request->short_description;
-            $product->sku = $request->sku;
+            // $product->sku = $request->sku;
             $product->specification = $request->specification;
-            $product->price = $request->price;
-            $product->quantity = $request->quantity;
+            // $product->price = $request->price;
+            // $product->quantity = $request->quantity;
             $product->slug = $request->slug;
             $product->affiliate_link = $request->affiliate_link;
             $product->feature_product = $request->feature_product;
@@ -248,6 +250,17 @@ class ProductController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function delete($id)
+    {
+        if (auth()->user()->hasRole('ADMIN')) {
+            $product = Product::findOrFail($id);
+            $product->delete();
+            return redirect()->route('products.index')->with('message', 'Product deleted successfully!');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     public function imageDelete(Request $request)

@@ -52,20 +52,20 @@
                                                     style="cursor: pointer">Product Slug <span id="slug_icon"><i
                                                             class="fa fa-arrow-down"></i></span></th>
                                                 {{-- price --}}
-                                                <th class="sorting" data-tippy-content="Sort by Product Price"
+                                                {{-- <th class="sorting" data-tippy-content="Sort by Product Price"
                                                     data-sorting_type="desc" data-column_name="price"
                                                     style="cursor: pointer">Product Price <span id="price_icon"><i
-                                                            class="fa fa-arrow-down"></i></span></th>
+                                                            class="fa fa-arrow-down"></i></span></th> --}}
                                                 {{-- quantity --}}
-                                                <th class="sorting" data-tippy-content="Sort by Product Quantity"
+                                                {{-- <th class="sorting" data-tippy-content="Sort by Product Quantity"
                                                     data-sorting_type="desc" data-column_name="quantity"
                                                     style="cursor: pointer">Product Quantity <span id="quantity_icon"><i
-                                                            class="fa fa-arrow-down"></i></span></th>
+                                                            class="fa fa-arrow-down"></i></span></th> --}}
                                                 {{-- sku --}}
-                                                <th class="sorting" data-tippy-content="Sort by Product SKU"
+                                                {{-- <th class="sorting" data-tippy-content="Sort by Product SKU"
                                                     data-sorting_type="desc" data-column_name="sku" style="cursor: pointer">
                                                     Product SKU <span id="sku_icon"><i class="fa fa-arrow-down"></i></span>
-                                                </th>
+                                                </th> --}}
                                                 <th>Affiliate Link</th>
 
                                                 <th>Status</th>

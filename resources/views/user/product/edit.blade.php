@@ -101,7 +101,7 @@
                                 </div>
                             </div>
                             {{-- price --}}
-                            <div class="col-md-6 mb-2">
+                            {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="price"> Product Price*</label>
                                     <input type="text" name="price" id="price" class="form-control"
@@ -110,9 +110,9 @@
                                         <span class="error">{{ $errors->first('price') }}</span>
                                     @endif
                                 </div>
-                            </div>
+                            </div> --}}
                             {{-- quantity --}}
-                            <div class="col-md-6 mb-2">
+                            {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="quantity"> Product Quantity*</label>
                                     <input type="number" name="quantity" id="quantity" class="form-control"
@@ -121,7 +121,7 @@
                                         <span class="error">{{ $errors->first('quantity') }}</span>
                                     @endif
                                 </div>
-                            </div>
+                            </div> --}}
 
                             {{-- slug --}}
                             <div class="col-md-6 mb-2">
@@ -146,7 +146,7 @@
                                 </div>
                             </div>
                             {{-- short_description --}}
-                            <div class="col-md-12 mb-2">
+                            <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="short_description"> Product Short Description*</label>
                                     <input type="text" name="short_description" id="short_description"
@@ -167,9 +167,9 @@
                                     @endif
                                 </div>
                             </div>
-                            
+
                             {{-- sku --}}
-                            <div class="col-md-6 mb-2">
+                            {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="sku"> Product SKU*</label>
                                     <input type="text" name="sku" id="sku" class="form-control"
@@ -178,7 +178,7 @@
                                         <span class="error">{{ $errors->first('sku') }}</span>
                                     @endif
                                 </div>
-                            </div>
+                            </div> --}}
                             {{-- feature_product --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">

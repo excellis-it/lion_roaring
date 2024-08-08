@@ -31,7 +31,7 @@ class PartnerController extends Controller
                     $q->where('name', '!=', 'ADMIN');
                 })->orderBy('id', 'desc')->paginate(10);
             } else {
-                $partners = User::where('created_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(10);
+                $partners = User::orderBy('id', 'desc')->paginate(10);
             }
             return view('user.partner.list', compact('partners'));
         } else {
@@ -229,13 +229,13 @@ class PartnerController extends Controller
                 $partners->orderBy($sort_by, $sort_type);
             }
 
-            if (Auth::user()->hasRole('ADMIN')) {
-                $partners->whereDoesntHave('roles', function ($q) {
-                    $q->where('name', 'ADMIN');
-                });
-            } else {
-                $partners->where('created_id', Auth::user()->id);
-            }
+            // if (Auth::user()->hasRole('ADMIN')) {
+            //     $partners->whereDoesntHave('roles', function ($q) {
+            //         $q->where('name', 'ADMIN');
+            //     });
+            // } else {
+            //     $partners->where('created_id', Auth::user()->id);
+            // }
 
             $partners = $partners->paginate(10);
 
