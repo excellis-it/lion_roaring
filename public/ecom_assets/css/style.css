@@ -658,8 +658,8 @@ color: var(--white-color);
   display: block;
   position: relative;
   margin-bottom: 6px;
-  -webkit-clip-path: polygon(0 17%, 100% 0, 100% 100%, 0% 100%);
-  clip-path: polygon(0 17%, 100% 0, 100% 100%, 0% 100%);
+  /* -webkit-clip-path: polygon(0 17%, 100% 0, 100% 100%, 0% 100%);
+  clip-path: polygon(0 17%, 100% 0, 100% 100%, 0% 100%); */
 }
 .feature_img img{
   width: 100%;

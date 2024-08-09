@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\User;
+use App\Models\Country;
 use App\Models\User as ModelsUser;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
@@ -21,7 +22,8 @@ class DashboardController extends Controller
     public function profile()
     {
         if (auth()->user()->can('Manage Profile')) {
-            return view('user.profile');
+            $countries = Country::orderBy('name', 'asc')->get();
+            return view('user.profile')->with('countries', $countries);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -64,7 +66,11 @@ class DashboardController extends Controller
             'last_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
             'address' => 'required|string|max:255',
-            'phone_number' => 'nullable',
+            'phone_number' => 'required',
+            'country' => 'required',
+            'state' => 'required',
+            'city' => 'required',
+            'zip' => 'required',
         ]);
         if (auth()->user()->can('Manage Profile')) {
             $data = ModelsUser::find(Auth::user()->id);
@@ -72,6 +78,12 @@ class DashboardController extends Controller
             $data->last_name = $request->last_name;
             $data->middle_name = $request->middle_name;
             $data->address = $request->address;
+            $data->address2 = $request->address2;
+            $data->country = $request->country;
+            $data->state = $request->state;
+            $data->city = $request->city;
+            $data->zip = $request->zip;
+
             $data->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone_number : $request->phone_number;
             if ($request->hasFile('profile_picture')) {
                 $data->profile_picture = $this->imageUpload($request->file('profile_picture'), 'profile_picture');

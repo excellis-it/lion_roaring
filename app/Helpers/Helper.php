@@ -10,6 +10,7 @@ use App\Models\Footer;
 use App\Models\Organization;
 use App\Models\OurOrganization;
 use App\Models\PmaTerm;
+use App\Models\RegisterAgreement;
 use App\Models\Review;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Count;
@@ -104,5 +105,11 @@ class Helper
     {
         $cms = EcomFooterCms::orderBy('id', 'desc')->first();
         return $cms;
+    }
+
+    public static function getAgreements()
+    {
+        $agreement = RegisterAgreement::orderBy('id', 'desc')->first();
+        return $agreement;  
     }
 }

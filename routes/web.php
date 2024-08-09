@@ -235,7 +235,7 @@ Route::get('/member-privacy-policy', [UserCmsController::class, 'memberPrivacyPo
 // get.states
 Route::get('/get-states', [UserAuthController::class, 'getStates'])->name('get.states');
 
-Route::prefix('user')->middleware(['user'])->group(function () {
+Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(function () {
     Route::get('/subscription', [SubscriptionController::class, 'subscription'])->name('user.subscription');
     Route::get('/subscription-payment/{id}', [SubscriptionController::class, 'payment'])->name('user.subscription.payment');
     Route::get('/stripe-checkout-success', [SubscriptionController::class, 'stripeCheckoutSuccess'])->name('stripe.checkout.success');
@@ -339,7 +339,7 @@ Route::prefix('user')->middleware(['user'])->group(function () {
     // products.image.delete
     Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
     Route::get('/products-fetch-data', [ProductController::class, 'fetchData'])->name('products.fetch-data');
-    
+
 
     Route::get('/categories-fetch-data', [CategoryController::class, 'fetchData'])->name('categories.fetch-data');
 

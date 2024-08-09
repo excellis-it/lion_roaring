@@ -26,13 +26,13 @@ class PartnerController extends Controller
     public function index()
     {
         if (Auth::user()->can('Manage Partners')) {
-            if (Auth::user()->hasRole('ADMIN')) {
-                $partners = User::whereHas('roles', function ($q) {
-                    $q->where('name', '!=', 'ADMIN');
-                })->orderBy('id', 'desc')->paginate(10);
-            } else {
-                $partners = User::orderBy('id', 'desc')->paginate(10);
-            }
+            // if (Auth::user()->hasRole('ADMIN')) {
+            $partners = User::whereHas('roles', function ($q) {
+                $q->where('name', '!=', 'ADMIN');
+            })->orderBy('id', 'desc')->paginate(15);
+            // } else {
+            //     $partners = User::orderBy('id', 'desc')->paginate(15);
+            // }
             return view('user.partner.list', compact('partners'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -99,7 +99,7 @@ class PartnerController extends Controller
         $data->zip = $request->zip;
         $data->address2 = $request->address2;
         $data->ecclesia_id = $request->ecclesia_id;
-        $data->phone = $request->country_code ? '+'.$request->country_code . ' ' . $request->phone : $request->phone;
+        $data->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
         $data->status = 1;
         $data->save();
         $data->assignRole($request->role);
@@ -174,7 +174,7 @@ class PartnerController extends Controller
 
             ]);
 
-           $data = User::find($id);
+            $data = User::find($id);
             $data->first_name = $request->first_name;
             $data->last_name = $request->last_name;
             $data->middle_name = $request->middle_name;
@@ -186,7 +186,7 @@ class PartnerController extends Controller
             $data->zip = $request->zip;
             $data->address2 = $request->address2;
             $data->ecclesia_id = $request->ecclesia_id;
-            $data->phone = $request->country_code ? '+'.$request->country_code . ' ' . $request->phone : $request->phone;
+            $data->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
             $data->save();
             $data->syncRoles([$request->role]);
             return redirect()->route('partners.index')->with('message', 'Partner updated successfully.');
@@ -214,34 +214,38 @@ class PartnerController extends Controller
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
 
-            $partners = User::query()
+            $partners = User::with(['ecclesia', 'roles'])
                 ->where(function ($q) use ($query) {
                     $q->where('id', 'like', '%' . $query . '%')
-                        ->orWhereRaw('CONCAT(first_name, " ", middle_name, " ", last_name) like ?', ['%' . $query . '%'])
+                        ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) like ?', ['%' . $query . '%'])
                         ->orWhere('email', 'like', '%' . $query . '%')
                         ->orWhere('phone', 'like', '%' . $query . '%')
-                        ->orWhere('address', 'like', '%' . $query . '%');
+                        ->orWhere('address', 'like', '%' . $query . '%')
+                        ->orWhere('user_name', 'like', '%' . $query . '%')
+                        ->orWhereHas('ecclesia', function ($q) use ($query) {
+                            $q->where('name', 'like', '%' . $query . '%');
+                        })
+                        ->orWhereHas('roles', function ($q) use ($query) {
+                            $q->where('name', 'like', '%' . $query . '%');
+                        });
                 });
 
+            // Sorting logic
             if ($sort_by == 'name') {
-                $partners->orderBy(DB::raw('CONCAT(first_name, " ", middle_name, " ", last_name)'), $sort_type);
+                $partners->orderBy(DB::raw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, ""))'), $sort_type);
             } else {
                 $partners->orderBy($sort_by, $sort_type);
             }
 
-            // if (Auth::user()->hasRole('ADMIN')) {
-            //     $partners->whereDoesntHave('roles', function ($q) {
-            //         $q->where('name', 'ADMIN');
-            //     });
-            // } else {
-            //     $partners->where('created_id', Auth::user()->id);
-            // }
+            // Exclude users with the "ADMIN" role
+            $partners->whereDoesntHave('roles', function ($q) {
+                $q->where('name', 'ADMIN');
+            });
 
-            $partners = $partners->paginate(10);
+            $partners = $partners->paginate(15);
 
             return response()->json(['data' => view('user.partner.table', compact('partners'))->render()]);
         }
-
 
     }
 
@@ -272,13 +276,13 @@ class PartnerController extends Controller
 
     public function delete($id)
     {
-       if (Auth::user()->can('Delete Partners')){
-        $id = Crypt::decrypt($id);
-        $user = User::findOrFail($id);
-        $user->delete();
-        return redirect()->route('partners.index')->with('error', 'Partner has been deleted successfully.');
-       } else {
-        abort(403, 'You do not have permission to access this page.');
-       }
+        if (Auth::user()->can('Delete Partners')) {
+            $id = Crypt::decrypt($id);
+            $user = User::findOrFail($id);
+            $user->delete();
+            return redirect()->route('partners.index')->with('error', 'Partner has been deleted successfully.');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 }

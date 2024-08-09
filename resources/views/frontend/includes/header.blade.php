@@ -48,10 +48,10 @@
                         <div id="google_translate_element"></div>
                     </div>
                     <div class="login_prf">
-                        @if (auth()->check() && auth()->user()->hasRole('MEMBER'))
+                        @if (auth()->check())
                             <a href="{{ route('user.profile') }}">Profile</a>
                         @else
-                            <a href="{{ route('login') }}">Login</a>
+                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal" href="{{ route('login') }}">Login</a>
                         @endif
                     </div>
                     <div class="login_prf">

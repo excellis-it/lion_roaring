@@ -19,6 +19,6 @@ class User
         if (auth()->check()) {
             return $next($request);
         }
-        return redirect()->route('login');
+        return redirect()->route('home')->with('error', 'You must be logged in to access this page');
     }
 }

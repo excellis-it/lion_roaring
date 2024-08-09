@@ -79,7 +79,7 @@
                                     </form>
                                 </div>
                                 <div class="join-text join-text-1">
-                                    <a href="{{route('login')}}"> Back to Login</a>
+                                    <a href="{{route('home')}}"> Back to Home</a>
                                 </div>
                             </div>
                         </div>

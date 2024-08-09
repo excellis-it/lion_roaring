@@ -30,6 +30,14 @@ class User extends Authenticatable
         'email',
         'phone',
         'password',
+        'country',
+        'state',
+        'ecclesia_id',
+        'city',
+        'state',
+        'address2',
+        'country',
+        'zip',
     ];
 
     /**
@@ -87,7 +95,7 @@ class User extends Authenticatable
         return $this->belongsTo(Ecclesia::class);
     }
 
-    public function country()
+    public function countries()
     {
         return $this->belongsTo(Country::class, 'country');
 

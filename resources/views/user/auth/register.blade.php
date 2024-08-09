@@ -334,7 +334,7 @@
     </script>
     <script>
         $('#back-login').click(function() {
-            window.location.href = "{{ route('login') }}";
+            window.location.href = "{{ route('home') }}";
         });
     </script>
 

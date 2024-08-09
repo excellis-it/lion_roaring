@@ -27,6 +27,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link href="{{ asset('frontend_assets/css/menu.css') }}" rel="stylesheet">
     <link href="{{ asset('frontend_assets/css/style.css') }}" rel="stylesheet">
+    {{-- <link href="{{ asset('user_assets/css/style.css') }}" rel="stylesheet"> --}}
     <link href="{{ asset('frontend_assets/css/responsive.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
@@ -57,6 +58,7 @@
     <main>
         @php
             use App\Helpers\Helper;
+            // dd(date('H'))
         @endphp
 
         @include('frontend.includes.header')
@@ -196,19 +198,62 @@
                 <div class="modal-content">
                     <div class="modal-body login_bg_sec border-top-0">
                         <div class="heading_hp">
-                            <h2 id="greeting">Good Afternoon</h2>
-                            <h4>Sign on to enter Lion Roaring PMA Private Member area.</h4>
-                            <form name="login-form" id="login-form" action="" method="post">
+                            <h2 id="greeting">
+                                <?php
+                                function getTimezoneFromIp($ip) {
+                                    $url = "http://ip-api.com/json/{$ip}?fields=timezone";
+                                    $response = @file_get_contents($url); // Suppress warnings and handle errors manually
+                                    if ($response) {
+                                        $data = json_decode($response);
+                                        if ($data && isset($data->timezone)) {
+                                            return $data->timezone;
+                                        }
+                                    }
+                                    return null;
+                                }
+
+                                // Get user's timezone based on IP address
+                                $ip = $_SERVER['REMOTE_ADDR'];
+                                $timezone = getTimezoneFromIp($ip);
+
+                                if ($timezone) {
+                                    // Set the default timezone
+                                    date_default_timezone_set($timezone);
+                                } else {
+                                    // Fallback timezone
+                                    date_default_timezone_set('UTC');
+                                }
+
+                                // Get the current hour in 24-hour format
+                                $time = date('H');
+
+                                // Determine greeting based on time
+                                if ($time < '12') {
+                                    echo 'Good morning';
+                                } elseif ($time >= '12' && $time < '17') {
+                                    echo 'Good afternoon';
+                                } elseif ($time >= '17' && $time < '19') {
+                                    echo 'Good evening';
+                                } else {
+                                    echo 'Good evening';
+                                }
+                                ?>
+                            </h2>
+                            <h4 class="text-center">Sign on to enter Lion Roaring PMA Private Member area.</h4>
+                            <form name="login-form" id="sign-in-form" action="{{ route('login.check') }}" method="post">
+                                @csrf
                                 <p class="login-username">
-                                    <label for="user_login">Username</label>
-                                    <input type="text" name="log" id="user_login" autocomplete="username"
+                                    <label for="user_login">Username or Email Address</label>
+                                    <input type="text" name="user_name" id="user_login" autocomplete="username"
                                         class="input" value="" size="20">
+                                        <span class="text-danger"></span>
                                 </p>
                                 <p class="login-password">
                                     <label for="user_password">Password</label>
-                                    <input type="password" name="pwd" id="user_password"
+                                    <input type="password" name="password" id="user_password"
                                         autocomplete="current-password" spellcheck="false" class="input"
                                         value="" size="20">
+                                        <span class="text-danger"></span>
                                 </p>
                                 <p class="login-submit">
                                     <input type="submit" name="wp-submit" id="login-submit"
@@ -216,18 +261,18 @@
                                     <input type="hidden" name="redirect_to" value="">
                                 </p>
                             </form>
-                            <p>
-                                <a  data-bs-toggle="modal" data-bs-target="#join_member"
-                                    class="text-dark">Join
+                            <p class="text-center join_member">
+                                <a  href="javascrip:void(0);" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop">Join
                                     Lion
-                                    Roaring Member</a> | <a  class="text-dark">Forgot username or
+                                    Roaring Member</a> | <a href="{{ route('user.forget.password.show') }}" >Forgot username or
                                     password
                                 </a>
+                                <br>
+                                <a href="{{ route('member-privacy-policy') }}" class="login_privacy text-dark">Privacy,
+                                    Cookies, and Legal </a>
                             </p>
-                            <a  class="text-dark">
-                            </a>
-                            <a  class="login_privacy">Privacy,
-                                Cookies, and Legal </a>
+
                         </div>
                     </div>
                 </div>
@@ -431,7 +476,51 @@
 
             </div>
         </div>
-
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!-- <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5> -->
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="agre">
+                        <div class="logo-admin">
+                            <img src="{{ asset('user_assets/images/logo.png') }}" alt="">
+                        </div>
+                        <div class="heading_hp">
+                            <h2 id="greeting">
+                                {{ Helper::getAgreements()['agreement_title'] ?? 'Lion Roaring PMA (Private Members Association) Agreement' }}
+                            </h2>
+                        </div>
+                        <div class="member-text-div admin-srl" id="admin-srl_1">
+                            <div class="member-text">
+                                {!! Helper::getAgreements()['agreement_description'] ??
+                                    'This is the agreement for Lion Roaring PMA (Private Members Association)' !!}
+                            </div>
+                            <div class="check-main">
+                                <div class="form-group">
+                                    <input type="checkbox" id="pma_check1">
+                                    <label for="pma_check1">I have read and agreed to the Lion Roaring PMA
+                                        Agreement</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-end">
+                            <div class="col-lg-4">
+                                <div class="login-submit mt-lg-4 mt-2 text-end">
+                                    <a href="javascript:void(0);" class="button button-primary w-100 regis">
+                                        Next</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -551,6 +640,17 @@
             @else
                 $('#onload_popup').modal('show');
             @endif
+        });
+    </script>
+     <script>
+        $(document).ready(function() {
+            $('.regis').on('click', function() {
+                if ($('#pma_check1').is(':checked')) {
+                    window.location.href = "{{ route('register') }}";
+                } else {
+                    toastr.error('Please check the agreement');
+                }
+            });
         });
     </script>
     <script>
@@ -809,6 +909,40 @@
             $('#card-number').attr('maxlength', maxLength);
             return formattedValue;
         }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#sign-in-form').submit(function(e) {
+                e.preventDefault();
+
+                var formData = $(this).serialize();
+                var url = $(this).attr('action');
+                $.ajax({
+                    url: url,
+                    type: $(this).attr('method'),
+                    data: formData,
+                    success: function(response) {
+                        //windows load with toastr message
+                        // window.location.reload();
+                        if (response.status == true) {
+                            window.location.href = response.redirect;
+                        } else {
+                            $('.text-danger').html('');
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        // Handle errors (e.g., display validation errors)
+                        //clear any old errors
+                        $('.text-danger').html('');
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                           toastr.error(value[0]);
+                        });
+                    }
+                });
+            });
+        });
     </script>
     @stack('scripts')
 </body>

@@ -18,8 +18,11 @@
                                         {{-- <h3 class="mb-3">Partners List</h3> --}}
                                     </div>
                                     <div class="col-md-2 float-right">
+                                        @if ( auth()->user()->can('Create Partners') )
                                         <a href="{{ route('partners.create') }}" class="btn btn-primary w-100">+ Add
                                             Partner</a>
+                                        @endif
+
                                     </div>
                                 </div>
                                 <div class="row ">
@@ -59,9 +62,14 @@
                                                 <th class="sorting" data-tippy-content="Sort by Address"
                                                     data-sorting_type="desc" data-column_name="address"
                                                     style="cursor: pointer"> Address <span id="address_icon"></span></th>
+
                                                 <th>Role</th>
-                                                <th>Status</th>
+                                                @if (auth()->user()->hasRole('ADMIN') || auth()->user()->hasRole('LEADER') && auth()->user()->can('Edit Partners'))
+                                                    <th>Status</th>
+                                                @endif
+                                                @if (auth()->user()->can('Edit Partners') || auth()->user()->can('Delete Partners'))
                                                 <th></th>
+                                                @endif
                                             </tr>
                                         </thead>
                                         <tbody>

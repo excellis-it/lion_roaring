@@ -120,7 +120,7 @@
                                         </div>
                                     </div>
                                     {{-- phone number --}}
-                                    <div class="col-md-4 mb-2">
+                                    <div class="col-md-6 mb-2">
                                         <div class="box_label">
                                             <label>Phone Number*</label>
                                             <input type="text" class="form-control" id="mobile_code" name="phone_number"
@@ -131,14 +131,82 @@
                                             @endif
                                         </div>
                                     </div>
-                                    {{-- address --}}
-                                    <div class="col-md-8 mb-2">
+                                    <div class="col-md-6 mb-2">
                                         <div class="box_label">
-                                            <label>Address*</label>
+                                            <label>Zip*</label>
+                                            <input type="text" class="form-control" id="zip" name="zip"
+                                                placeholder="Zip" value="{{ Auth::user()->zip }}">
+                                            @if ($errors->has('zip'))
+                                                <div class="error" style="color:red;">{{ $errors->first('zip') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- country --}}
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+                                            <label>Country*</label>
+                                           <select class="form-control" name="country" id="country">
+                                                <option value="">Select Country</option>
+                                                @foreach ($countries as $country)
+                                                    <option value="{{ $country->id }}"
+                                                        {{ Auth::user()->country == $country->id ? 'selected' : '' }}>
+                                                        {{ $country->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @if ($errors->has('country'))
+                                                <div class="error" style="color:red;">{{ $errors->first('country') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- state --}}
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+                                            <label>State*</label>
+                                            <select class="form-control" name="state" id="state">
+                                                <option value="">Select State</option>
+                                            </select>
+                                            @if ($errors->has('state'))
+                                                <div class="error" style="color:red;">{{ $errors->first('state') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- city --}}
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+                                            <label>City*</label>
+                                           <input type="text" class="form-control" id="city" name="city"
+                                                placeholder="City" value="{{ Auth::user()->city }}">
+                                            @if ($errors->has('city'))
+                                                <div class="error" style="color:red;">{{ $errors->first('city') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- zip --}}
+
+                                    {{-- address --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>Address 1*</label>
                                             <input type="text" class="form-control" id="address" name="address"
                                                 placeholder="Address" value="{{ Auth::user()->address }}">
                                             @if ($errors->has('address'))
                                                 <div class="error" style="color:red;">{{ $errors->first('address') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- address2 --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label>Address 2</label>
+                                            <input type="text" class="form-control" id="address2" name="address2"
+                                                placeholder="Address 2" value="{{ Auth::user()->address2 }}">
+                                            @if ($errors->has('address2'))
+                                                <div class="error" style="color:red;">{{ $errors->first('address2') }}
                                                 </div>
                                             @endif
                                         </div>
@@ -267,6 +335,40 @@
                     hiddenInput.value = countryCode;
                     form.appendChild(hiddenInput);
                 });
+            });
+        </script>
+         <script>
+            $(document).ready(function() {
+                var country = $('#country').val();
+                var state = {{ is_numeric(auth()->user()->state) && auth()->user()->state != null ? auth()->user()->state : 0 }};
+
+                getStates(country, state);
+
+                $('#country').change(function() {
+                    var country = $(this).val();
+                    getStates(country);
+                });
+
+                function getStates(country, state = 0) {
+                    // alert(country);
+                    $.ajax({
+                        url: "{{ route('get.states') }}",
+                        type: "get",
+                        data: {
+                            country: country
+                        },
+                        success: function(response) {
+                            var states = response;
+                            var html = '<option value="">Select State</option>';
+                            states.forEach(stateObj => {
+                                var selected = stateObj.id == state ? 'selected' : '';
+                                html +=
+                                    `<option value="${stateObj.id}" ${selected}>${stateObj.name}</option>`;
+                            });
+                            $('#state').html(html);
+                        }
+                    });
+                }
             });
         </script>
 @endpush

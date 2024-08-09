@@ -38,13 +38,14 @@ class AuthController extends Controller
         // return $fieldType;
         if (auth()->attempt($request->only($fieldType, 'password'))) {
             if (auth()->user()->status == 1) {
-                return redirect()->route('user.profile');
+                session()->flash('message', 'Login success');
+                return response()->json(['message' => 'Login success', 'status' => true, 'redirect' => route('user.profile')]);
             } else {
                 auth()->logout();
-                return redirect()->back()->with('error', 'Your account is not active!');
+                return response()->json(['message' => 'Your account is not active!', 'status' => false]);
             }
         } else {
-            return redirect()->back()->with('error', 'User name & password was invalid!');
+            return response()->json(['message' => 'User name & password was invalid!', 'status' => false]);
         }
     }
 
@@ -103,7 +104,7 @@ class AuthController extends Controller
     public function logout()
     {
         auth()->logout();
-        return redirect()->route('login');
+        return redirect()->route('home')->with('message', 'Logout success');
     }
 
     public function getStates(Request $request)

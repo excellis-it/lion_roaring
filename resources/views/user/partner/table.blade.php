@@ -13,6 +13,7 @@
             <td>{{ $partner->phone }}</td>
             <td>{{ $partner->address }}</td>
             <td>{{$partner->getRoleNames()->first()}}</td>
+            @if (auth()->user()->hasRole('ADMIN') || auth()->user()->hasRole('LEADER') && auth()->user()->can('Edit Partners'))
             <td>
                 <div class="button-switch">
                     <input type="checkbox" id="switch-orange" class="switch toggle-class" data-id="{{ $partner['id'] }}"
@@ -21,6 +22,8 @@
                     <label for="switch-orange" class="lbl-on"></label>
                 </div>
             </td>
+            @endif
+            @if (auth()->user()->can('Edit Partners') || auth()->user()->can('Delete Partners'))
             <td>
                 <div class="d-flex">
                     @if (Auth::user()->can('Edit Partners'))
@@ -38,7 +41,7 @@
                 </div>
 
             </td>
-
+            @endif
         </tr>
     @endforeach
     {{-- pagination --}}
