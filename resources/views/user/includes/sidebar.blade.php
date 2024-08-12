@@ -70,7 +70,7 @@
                                 @endif
                                 @if (Gate::check('Manage Team'))
                                     <a
-                                        href="{{ route('user.page', ['name' => 'Team', 'permission' => 'Manage Team']) }}">
+                                        href="{{ route('team-chats.index') }}">
                                         <span>
                                             <img src="{{ asset('user_assets/images/Team.png') }}" alt="">
 

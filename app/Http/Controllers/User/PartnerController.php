@@ -122,7 +122,13 @@ class PartnerController extends Controller
      */
     public function show($id)
     {
-        //
+        if (Auth::user()->can('View Partners')) {
+            $id = Crypt::decrypt($id);
+            $partner = User::findOrFail($id);
+            return view('user.partner.show', compact('partner'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -263,6 +269,7 @@ class PartnerController extends Controller
                 'type' => 'Deactivated',
             ];
             Mail::to($user->email)->send(new InactiveUserMail($maildata));
+            $message = 'Status deactivated successfully.';
         } else {
             $maildata = [
                 'name' => $user->full_name,
@@ -270,8 +277,9 @@ class PartnerController extends Controller
                 'type' => 'Activated',
             ];
             Mail::to($user->email)->send(new ActiveUserMail($maildata));
+            $message = 'Status activated successfully.';
         }
-        return response()->json(['success' => 'Status change successfully.']);
+        return response()->json(['success' => $message]);
     }
 
     public function delete($id)

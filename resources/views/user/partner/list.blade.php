@@ -5,6 +5,9 @@
 @push('styles')
 @endpush
 @section('content')
+<section id="loading">
+    <div id="loading-content"></div>
+</section>
     <div class="container-fluid">
         <div class="bg_white_border">
             <form>
@@ -67,7 +70,7 @@
                                                 @if (auth()->user()->hasRole('ADMIN') || auth()->user()->hasRole('LEADER') && auth()->user()->can('Edit Partners'))
                                                     <th>Status</th>
                                                 @endif
-                                                @if (auth()->user()->can('Edit Partners') || auth()->user()->can('Delete Partners'))
+                                                @if (auth()->user()->can('Edit Partners') || auth()->user()->can('Delete Partners') || auth()->user()->can('View Partners'))
                                                 <th></th>
                                                 @endif
                                             </tr>
@@ -117,10 +120,12 @@
         });
     </script>
     <script>
-        $('.toggle-class').change(function() {
+         $(document).ready(function() {
+        $(document).on('change','.toggle-class',function() {
             var status = $(this).prop('checked') == true ? 1 : 0;
             var user_id = $(this).data('id');
-
+            $('#loading').addClass('loading');
+            $('#loading-content').addClass('loading-content');
             $.ajax({
                 type: "GET",
                 dataType: "json",
@@ -130,10 +135,13 @@
                     'user_id': user_id
                 },
                 success: function(resp) {
-                    console.log(resp.success)
+                    $('#loading').removeClass('loading');
+                    $('#loading-content').removeClass('loading-content');
+                    toastr.success(resp.success);
                 }
             });
         });
+    });
     </script>
     <script>
         $(document).ready(function() {

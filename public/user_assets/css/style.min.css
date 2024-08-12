@@ -23268,6 +23268,16 @@ select:disabled {
     justify-content: center;
     border-radius: 6px;
 }
+.view_icon i{
+    color: #fff;
+    background: #643271;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+}
 .color_head tr th{
     background: #643271;
     color: #fff;

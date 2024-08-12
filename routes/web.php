@@ -58,6 +58,7 @@ use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\User\RolePermissionsController;
 use App\Http\Controllers\User\SendMailController;
 use App\Http\Controllers\User\SubscriptionController;
+use App\Http\Controllers\User\TeamChatController;
 use App\Http\Controllers\User\TeamController;
 use App\Http\Controllers\User\TopicController;
 use App\Models\Category;
@@ -252,6 +253,12 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::get('/', [ChatController::class, 'chats'])->name('index');
         Route::post('/load', [ChatController::class, 'load'])->name('load');
         Route::post('/send', [ChatController::class, 'send'])->name('send');
+    });
+
+    // Team Chat
+    Route::prefix('team-chats')->name('team-chats.')->group(function () {
+        Route::get('/', [TeamChatController::class, 'index'])->name('index');
+        Route::post('/create', [TeamChatController::class, 'create'])->name('create');
     });
 
     Route::prefix('file')->group(function () {

@@ -95,7 +95,7 @@
 @else
 <div class="icon_chat">
     <span><img src="{{ asset('user_assets/images/icon-chat.png') }}" alt=""></span>
-    <h4>Lorem ipsum dolor sit amet consectetur adipisicing elit.</h4>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+    <h4>Seamless Real-Time Chat | Connect Instantly</h4>
+    <p>Join our dynamic chat platform, where real-time communication is effortless. Engage in private and group conversations, manage your contacts, and stay connected with instant updates. Experience a secure and responsive interface, perfect for personal or professional use.</p>
 </div>
 @endif

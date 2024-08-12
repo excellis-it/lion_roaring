@@ -23,7 +23,7 @@
                 </div>
             </td>
             @endif
-            @if (auth()->user()->can('Edit Partners') || auth()->user()->can('Delete Partners'))
+            @if (auth()->user()->can('Edit Partners') || auth()->user()->can('Delete Partners') || auth()->user()->can('View Partners'))
             <td>
                 <div class="d-flex">
                     @if (Auth::user()->can('Edit Partners'))
@@ -32,6 +32,11 @@
                     </a>
                     @endif
 
+                    @if (Auth::user()->can('View Partners'))
+                    <a href="{{route('partners.show', Crypt::encrypt($partner->id))}}" class="view_icon me-2">
+                        <i class="ti ti-eye"></i>
+                    </a>
+                    @endif
                     @if (Auth::user()->can('Delete Partners'))
                     <a href="javascript:void(0);" data-route="{{ route('partners.delete', Crypt::encrypt($partner->id)) }}" class="delete_icon" id="delete">
                         <i class="ti ti-trash"></i>
