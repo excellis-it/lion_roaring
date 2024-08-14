@@ -79,4 +79,16 @@ class SendMailController extends Controller
         $viewMail = SendMail::findOrFail($id);
         return response()->json(['view' => view('user.mail.model_body', compact('viewMail'))->render(), 'status' => true]);
     }
+    // delete
+    public function delete($id)
+    {
+        if (auth()->user()->can('Manage Email')){
+            $id = $id;
+            $mail = SendMail::findOrFail($id);
+            $mail->delete();
+            return redirect()->back()->with('message', 'Mail deleted successfully.');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
 }

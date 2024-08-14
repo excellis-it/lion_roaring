@@ -44,9 +44,8 @@
                                     <option value="Becoming Christ Like"
                                         {{ $file->type == 'Becoming Christ Like' ? 'selected' : '' }}>Becoming Christ Like
                                     </option>
-                                    <option value="Leadership Development"
-                                        {{ $file->type == 'Leadership Development' ? 'selected' : '' }}>Leadership
-                                        Development</option>
+                                    <option value="Becoming a Leader"
+                                        {{ $file->type == 'Becoming a Leader' ? 'selected' : '' }}>Becoming a Leader</option>
                                 </select>
                                 @if ($errors->has('type'))
                                     <span class="error">{{ $errors->first('type') }}</span>

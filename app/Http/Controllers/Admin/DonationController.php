@@ -32,13 +32,15 @@ class DonationController extends Controller
                 ->orWhere('email', 'like', '%' . $query . '%')
                 ->orWhere('address', 'like', '%' . $query . '%')
                 ->orWhere('city', 'like', '%' . $query . '%')
-                ->orWhere('state', 'like', '%' . $query . '%')
                 ->orWhere('postcode', 'like', '%' . $query . '%')
                 ->orWhere('phone', 'like', '%' . $query . '%')
                 ->orWhere('transaction_id', 'like', '%' . $query . '%')
                 ->orWhere('donation_amount', 'like', '%' . $query . '%')
                 ->orWhere('payment_status', 'like', '%' . $query . '%')
                 ->orWhereHas('country', function ($q) use ($query) {
+                    $q->where('name', 'like', '%' . $query . '%');
+                })
+                ->orWhereHas('state', function ($q) use ($query) {
                     $q->where('name', 'like', '%' . $query . '%');
                 })
                 ->orderBy($sort_by, $sort_type)

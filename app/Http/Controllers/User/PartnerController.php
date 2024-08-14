@@ -73,7 +73,7 @@ class PartnerController extends Controller
             'last_name' => 'required',
             'middle_name' => 'nullable',
             'email' => 'required|unique:users|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
-            'password' => 'required|min:8',
+            'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
             'confirm_password' => 'required|min:8|same:password',
             'address' => 'required',
             'country' => 'required',
@@ -82,6 +82,8 @@ class PartnerController extends Controller
             'zip' => 'required',
             'address2' => 'nullable',
             'phone' => 'required',
+        ],[
+            'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
         ]);
 
         $data = new User();
@@ -177,8 +179,12 @@ class PartnerController extends Controller
                 'city' => 'required',
                 'zip' => 'required',
                 'address2' => 'nullable',
-
+                'password' => ['nullable', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
+                'confirm_password' => 'nullable|min:8|same:password',
+            ],[
+                'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             ]);
+
 
             $data = User::find($id);
             $data->first_name = $request->first_name;

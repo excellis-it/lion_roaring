@@ -155,7 +155,7 @@
                                             <img src="{{ asset('user_assets/images/Leadership Development.png') }}"
                                                 alt="">
                                         </span>
-                                        <span>Leadership Development</span>
+                                        <span>Becoming a Leader</span>
                                     </a>
                                 @endif
                                 @if (Gate::check('Manage File'))

@@ -25,7 +25,7 @@
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
                                             <label>Email *</label>
-                                            <input type="email" class="form-control" name="email"
+                                            <input type="text" class="form-control" name="email"
                                                 value="{{ old('email') }}" placeholder="">
                                             @if ($errors->has('email'))
                                                 <div class="error" style="color:red !important;">

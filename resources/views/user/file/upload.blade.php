@@ -40,7 +40,7 @@
                                     <option value="">Select Type</option>
                                     <option value="Becoming Sovereign" {{ old('type') == 'Becoming Sovereign' ? 'selected' : '' }}>Becoming Sovereign</option>
                                     <option value="Becoming Christ Like" {{ old('type') == 'Becoming Christ Like' ? 'selected' : '' }}>Becoming Christ Like</option>
-                                    <option value="Leadership Development" {{ old('type') == 'Leadership Development' ? 'selected' : '' }}>Leadership Development</option>
+                                    <option value="Becoming a Leader" {{ old('type') == 'Becoming a Leader' ? 'selected' : '' }}>Becoming a Leader</option>
                                 </select>
                                 @if ($errors->has('type'))
                                     <span class="error">{{ $errors->first('type') }}</span>

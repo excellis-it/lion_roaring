@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AccountPendingApprovalMail;
+use App\Mail\RegistrationMail;
 use App\Models\Country;
 use App\Models\Ecclesia;
 use App\Models\RegisterAgreement;
@@ -10,6 +12,8 @@ use App\Models\State;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -26,7 +30,7 @@ class AuthController extends Controller
         $request->validate([
             'user_name'    => 'required',
             'password' => 'required|min:8'
-        ],[
+        ], [
             'user_name.required' => 'User name or email is required',
             'password.required' => 'Password is required',
             'password.min' => 'Password must be at least 8 characters'
@@ -59,7 +63,26 @@ class AuthController extends Controller
     public function registerCheck(Request $request)
     {
         // dd($request->all());
-        $request->validate([
+        // $request->validate([
+        //     'user_name' => 'required|string|max:255|unique:users',
+        //     'email' => 'required|string|email|max:255|unique:users',
+        //     'ecclesia_id' => 'nullable',
+        //     'first_name' => 'required|string|max:255',
+        //     'last_name' => 'required|string|max:255',
+        //     'middle_name' => 'nullable|string|max:255',
+        //     'address' => 'required|string|max:255',
+        //     'phone_number' => 'required',
+        //     'city' => 'required|string|max:255',
+        //     'state' => 'required|string|max:255',
+        //     'address2' => 'nullable|string|max:255',
+        //     'country' => 'required|string|max:255',
+        //     'zip' => 'required',
+        //     'email_confirmation' => 'required|same:email',
+        //     'password' => 'required|string|regex:/^[\S]+$/',
+        //     'password_confirmation' => 'required|same:password',
+        // ]);
+
+        $validator = Validator::make($request->all(), [
             'user_name' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'ecclesia_id' => 'nullable',
@@ -74,9 +97,19 @@ class AuthController extends Controller
             'country' => 'required|string|max:255',
             'zip' => 'required',
             'email_confirmation' => 'required|same:email',
-            'password' => 'required|string|min:8',
+            'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
             'password_confirmation' => 'required|same:password',
+        ],[
+            'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
         ]);
+
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
 
         $user = new User();
         $user->user_name = $request->user_name;
@@ -86,7 +119,7 @@ class AuthController extends Controller
         $user->last_name = $request->last_name;
         $user->middle_name = $request->middle_name;
         $user->address = $request->address;
-        $user->phone = $request->country_code ? '+'.$request->country_code . ' ' . $request->phone_number : $request->phone_number;
+        $user->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone_number : $request->phone_number;
         $user->city = $request->city;
         $user->state = $request->state;
         $user->address2 = $request->address2;
@@ -98,7 +131,12 @@ class AuthController extends Controller
         $user->save();
 
         $user->assignRole('MEMBER');
-        return redirect()->route('login')->with('message', 'User registered successfully');
+        $maildata = [
+            'name' => $request->full_name,
+        ];
+
+        Mail::to($request->email)->send(new AccountPendingApprovalMail($maildata));
+        return redirect()->route('home')->with('message', 'Plase wait for admin approval');
     }
 
     public function logout()

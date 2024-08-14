@@ -47,6 +47,7 @@
                                                     data-sorting_type="desc" data-column_name="message"
                                                     style="cursor: pointer">Message <span id="message_icon"><i
                                                             class="fa fa-arrow-down"></i></span></th>
+                                                            <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>

@@ -385,6 +385,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::get('/compose', [SendMailController::class, 'compose'])->name('mail.compose');
         Route::post('/send', [SendMailController::class, 'sendMail'])->name('mail.send');
         Route::get('/view', [SendMailController::class, 'view'])->name('mail.view');
+        // mail.delete
+        Route::get('/mail-delete/{id}', [SendMailController::class, 'delete'])->name('mail.delete');
     });
 
     // live-event
@@ -398,6 +400,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
 
     Route::prefix('newsletters')->group(function () {
         Route::get('/', [UserNewsletterController::class, 'list'])->name('user.newsletters.index');
+        // newsletters.delete
+        Route::get('/newsletter-delete/{id}', [UserNewsletterController::class, 'delete'])->name('user.newsletters.delete');
     });
     Route::get('/user-newsletter-fetch-data', [UserNewsletterController::class, 'fetchData'])->name('user.newsletters.fetch-data');
 

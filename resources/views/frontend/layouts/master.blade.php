@@ -132,7 +132,11 @@
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label for="state">State</label>
-                                    <input class="form-control" type="text" id="state" name="state">
+                                    {{-- <input class="form-control" type="text" id="state" name="state"> --}}
+                                    <select class="form-control" name="state" id="state">
+                                        <option value="">—</option>
+                                    </select>
+
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label for="postcode">Postcode</label>
@@ -796,46 +800,7 @@
                 unhighlight: function(element, errorClass, validClass) {
                     $(element).removeClass('is-invalid');
                 },
-                // messages: {
-                //     first_name: {
-                //         required: "First name is required"
-                //     },
-                //     last_name: {
-                //         required: "Last name is required"
-                //     },
-                //     email: {
-                //         required: "Email is required",
-                //         email: "Please enter a valid email address"
-                //     },
-                //     address: {
-                //         required: "Address is required"
-                //     },
-                //     city: {
-                //         required: "City is required"
-                //     },
-                //     country_id: {
-                //         required: "Country is required"
-                //     },
-                //     state: {
-                //         required: "State is required"
-                //     },
-                //     postcode: {
-                //         required: "Postcode is required"
-                //     },
-                //     card_number: {
-                //         required: "Card number is required"
-                //     },
-                //     card_expiry_month: {
-                //         required: "Card expiry month is required",
-                //         number: "Please enter a valid number"
-                //     },
-                //     card_expiry_year: {
-                //         required: "Card expiry year is required"
-                //     },
-                //     card_cvc: {
-                //         required: "Card cvc is required"
-                //     }
-                // },
+
                 submitHandler: function(form) {
                     var $form = $(form),
                         inputSelector = ['input[type=email]', 'input[type=password]',
@@ -942,6 +907,45 @@
                     }
                 });
             });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Initially load states for the selected country
+            getStates($('#country').val());
+
+            // Fetch states when the country changes
+            $('#country').change(function() {
+                var country = $(this).val();
+                getStates(country);
+            });
+
+            function getStates(country) {
+                $.ajax({
+                    url: "{{ route('get.states') }}", // Ensure this route returns the states for the given country
+                    type: "GET",
+                    data: {
+                        country: country
+                    },
+                    success: function(response) {
+                        var states = response;
+                        var selectedState = "{{ old('state') }}"; // Fetch the old input value for state
+                        var html = '<option value="">Select State</option>';
+
+                        states.forEach(function(state) {
+                            html += '<option value="' + state.id + '"';
+
+                            if (selectedState == state.id) {
+                                html += ' selected';
+                            }
+
+                            html += '>' + state.name + '</option>';
+                        });
+
+                        $('#state').html(html); // Populate the state dropdown
+                    }
+                });
+            }
         });
     </script>
     @stack('scripts')

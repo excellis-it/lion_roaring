@@ -11,7 +11,7 @@
         {{-- city --}}
         <td>{{ $donation->city ?? 'N/A' }}</td>
         {{-- state --}}
-        <td>{{ $donation->state ?? 'N/A' }}</td>
+        <td>{{ $donation->states ? $donation->states->name : 'N/A' }}</td>
         {{-- zip --}}
         <td>{{ $donation->postcode ?? 'N/A' }}</td>
         {{-- country --}}

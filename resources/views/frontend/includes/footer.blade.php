@@ -103,7 +103,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <p>{{Helper::getFooter()['footer_playstore_link'] ?? 'Copyright © '. date('Y') .' Daud Santosa. All Rights Reserved'}}</p>
+                    <p>{{Helper::getFooter()['footer_copywrite_text'] ?? 'Copyright © '. date('Y') .' Daud Santosa. All Rights Reserved'}}</p>
                 </div>
             </div>
         </div>

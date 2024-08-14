@@ -16,7 +16,7 @@ class LeadershipDevelopmentController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Leadership Development')) {
-            $files = File::orderBy('id', 'desc')->where('type', 'Leadership Development')->paginate(15);
+            $files = File::orderBy('id', 'desc')->where('type', 'Becoming a Leader')->paginate(15);
             $topics = Topic::orderBy('topic_name', 'asc')->get();
             return view('user.leadership-development.list')->with(compact('files', 'topics'));
         } else {
@@ -120,7 +120,7 @@ class LeadershipDevelopmentController extends Controller
                 });
             }
 
-            $files = $files->where('type', 'Leadership Development')
+            $files = $files->where('type', 'Becoming a Leader')
                 ->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 

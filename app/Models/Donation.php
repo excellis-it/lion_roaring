@@ -37,4 +37,9 @@ class Donation extends Model
         return $this->first_name . ' ' . $this->last_name;
     }
 
+    public function states()
+    {
+        return $this->belongsTo(State::class, 'state');
+    }
+
 }

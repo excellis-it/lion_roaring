@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Update Leadership Development - {{ env('APP_NAME') }}
+    Update Becoming a Leader - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -16,7 +16,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
-                                    <h3>Update Leadership Development</h3>
+                                    <h3>Update Becoming a Leader</h3>
                                 </div>
                             </div>
                         </div>

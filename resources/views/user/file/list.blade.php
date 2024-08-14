@@ -58,7 +58,7 @@
                                                     data-sorting_type="desc" data-column_name="file_extension"
                                                     style="cursor: pointer">File Extension <span id="file_extension_icon"><i
                                                             class="fa fa-arrow-down"></i></span></th>
-                                                <th>Type</th>
+                                                <th>Type of Education</th>
                                                 <th>Topic</th>
                                                 <th></th>
                                             </tr>

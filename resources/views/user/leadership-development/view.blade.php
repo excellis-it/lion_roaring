@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-Leadership Development View - {{ env('APP_NAME') }}
+Becoming a Leader View - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.2.0/main.min.css">
@@ -25,7 +25,7 @@ Leadership Development View - {{ env('APP_NAME') }}
                             </div>
                             <div class="row ">
                                 <div class="col-md-10">
-                                    <h3 class="mb-3 float-left">Leadership Development File</h3>
+                                    <h3 class="mb-3 float-left">Becoming a Leader File</h3>
                                 </div>
                                 <div class="col-md-2">
                                     <a href="{{ route('leadership-development.index') }}" class="btn btn-primary w-100">< Back</a>

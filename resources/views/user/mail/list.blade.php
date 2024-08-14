@@ -179,4 +179,26 @@
             });
         });
     </script>
+    <script>
+        $(document).on('click', '#delete', function(e) {
+            swal({
+                    title: "Are you sure?",
+                    text: "To remove this mail",
+                    type: "warning",
+                    confirmButtonText: "Yes",
+                    showCancelButton: true
+                })
+                .then((result) => {
+                    if (result.value) {
+                        window.location = $(this).data('route');
+                    } else if (result.dismiss === 'cancel') {
+                        swal(
+                            'Cancelled',
+                            'Your stay here :)',
+                            'error'
+                        )
+                    }
+                })
+        });
+    </script>
 @endpush

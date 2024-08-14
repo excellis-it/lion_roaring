@@ -14,7 +14,7 @@ class AddToFilesTable extends Migration
     public function up()
     {
         Schema::table('files', function (Blueprint $table) {
-           $table->enum('type', ['Becoming Sovereign', 'Becoming Christ Like', 'Leadership Development'])->after('file_extension')->default('Becoming Sovereign');
+           $table->string('type')->nullable()->after('file_extension');
         });
     }
 

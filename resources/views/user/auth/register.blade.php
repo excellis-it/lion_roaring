@@ -116,11 +116,10 @@
                                                     <select name="country" id="country" class="input">
                                                         <option value="">Select Country</option>
                                                         @foreach ($countries as $country)
-                                                            <option value="{{ $country->id }}"
-                                                                @if (old('country') == $country->id) selected @endif
-                                                                {{ $country->code == 'US' ? 'selected' : '' }}>
-                                                                {{ $country->name }}
-                                                            </option>
+                                                        <option value="{{ $country->id }}"
+                                                            {{ old('country', $country->code == 'US' ? $country->id : '') == $country->id ? 'selected' : '' }}>
+                                                            {{ $country->name }}
+                                                        </option>
                                                         @endforeach
                                                     </select>
                                                     @if ($errors->has('country'))
@@ -338,36 +337,46 @@
         });
     </script>
 
-    <script>
-        $(document).ready(function() {
-            getStates($('#country').val());
+<script>
+    $(document).ready(function() {
+        // Initially load states for the selected country
+        getStates($('#country').val());
 
-            $('#country').change(function() {
-                var country = $(this).val();
-                getStates(country);
-            });
-
-
-            function getStates(country) {
-                $.ajax({
-                    url: "{{ route('get.states') }}",
-                    type: "get",
-                    data: {
-                        country: country
-                    },
-                    success: function(response) {
-                        var states = response;
-                        var html = '<option value="">Select State</option>';
-                        states.forEach(state => {
-                            html += '<option value="' + state.id + '">' + state.name +
-                                '</option>';
-                        });
-                        $('#state').html(html);
-                    }
-                });
-            }
+        // Fetch states when the country changes
+        $('#country').change(function() {
+            var country = $(this).val();
+            getStates(country);
         });
-    </script>
+
+        function getStates(country) {
+            $.ajax({
+                url: "{{ route('get.states') }}", // Ensure this route returns the states for the given country
+                type: "GET",
+                data: {
+                    country: country
+                },
+                success: function(response) {
+                    var states = response;
+                    var selectedState = "{{ old('state') }}"; // Fetch the old input value for state
+                    var html = '<option value="">Select State</option>';
+
+                    states.forEach(function(state) {
+                        html += '<option value="' + state.id + '"';
+
+                        if (selectedState == state.id) {
+                            html += ' selected';
+                        }
+
+                        html += '>' + state.name + '</option>';
+                    });
+
+                    $('#state').html(html); // Populate the state dropdown
+                }
+            });
+        }
+    });
+</script>
+
 
 
 

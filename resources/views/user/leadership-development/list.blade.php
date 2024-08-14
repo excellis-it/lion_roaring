@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Leadership Development List - {{ env('APP_NAME') }}
+Becoming a Leader List - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -15,7 +15,7 @@
 
                                 <div class="row mb-3">
                                     <div class="col-md-10">
-                                        <h3 class="mb-3">Leadership Development List</h3>
+                                        <h3 class="mb-3">Becoming a Leader List</h3>
                                     </div>
                                     <div class="col-md-2 float-right">
                                         @if (auth()->user()->can('Upload Leadership Development'))

@@ -5,6 +5,12 @@
             <td> {{ $newsletter->name }}</td>
             <td> {{ $newsletter->email }}</td>
             <td> {{ $newsletter->message ? $newsletter->message : '--' }}</td>
+            <td>
+                <a href="javascript:void(0)" id="delete" data-route="{{ route('user.newsletters.delete', $newsletter->id) }}"
+                    class="delete_icon">
+                    <i class="fa-solid fa-trash"></i>
+                </a>
+            </td>
         </tr>
     @endforeach
     <tr class="toxic">

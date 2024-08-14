@@ -39,4 +39,20 @@ class NewsletterController extends Controller
 
         return response()->json(['data' => view('user.newsletter.table', compact('newsletters'))->render()]);
     }
+
+    // delete
+    public function delete($id)
+    {
+        if (auth()->user()->hasRole('ADMIN')) {
+            $newsletter = EcomNewsletter::find($id);
+            if ($newsletter) {
+                $newsletter->delete();
+                return redirect()->back()->with('message', 'Newsletter deleted successfully.');
+            } else {
+                return redirect()->back()->with('error', 'Newsletter not found.');
+            }
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
 }
