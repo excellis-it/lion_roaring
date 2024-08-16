@@ -64,7 +64,7 @@
                                         </h5>
                                         <div class="search-field float-right">
                                             <input type="text" name="search" id="search" placeholder="search..."
-                                                 class="form-control">
+                                                class="form-control">
                                             <button class="submit_search" id="search-button"> <span class=""><i
                                                         class="fa fa-search"></i></span></button>
                                         </div>
@@ -116,7 +116,8 @@
                                                     id="flexCheckDefault">
                                                 <label class="form-check-label" for="flexCheckDefault"></label>
                                             </div>
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                         </li>
                                         <li>
@@ -125,7 +126,8 @@
                                                     id="flexCheckDefault">
                                                 <label class="form-check-label" for="flexCheckDefault"></label>
                                             </div>
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                         </li>
                                         <li>
@@ -134,7 +136,8 @@
                                                     id="flexCheckDefault">
                                                 <label class="form-check-label" for="flexCheckDefault"></label>
                                             </div>
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                         </li>
                                         <li>
@@ -143,7 +146,8 @@
                                                     id="flexCheckDefault">
                                                 <label class="form-check-label" for="flexCheckDefault"></label>
                                             </div>
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                         </li>
                                         <li>
@@ -152,7 +156,8 @@
                                                     id="flexCheckDefault">
                                                 <label class="form-check-label" for="flexCheckDefault"></label>
                                             </div>
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                         </li>
                                         <li>
@@ -161,7 +166,8 @@
                                                     id="flexCheckDefault">
                                                 <label class="form-check-label" for="flexCheckDefault"></label>
                                             </div>
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                         </li>
                                         <li>
@@ -170,7 +176,8 @@
                                                     id="flexCheckDefault">
                                                 <label class="form-check-label" for="flexCheckDefault"></label>
                                             </div>
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                         </li>
                                         <li>
@@ -179,7 +186,8 @@
                                                     id="flexCheckDefault">
                                                 <label class="form-check-label" for="flexCheckDefault"></label>
                                             </div>
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                         </li>
                                         <li>
@@ -188,7 +196,8 @@
                                                     id="flexCheckDefault">
                                                 <label class="form-check-label" for="flexCheckDefault"></label>
                                             </div>
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                         </li>
                                     </ul>
@@ -250,7 +259,8 @@
                                 <div class="min_height400">
                                     <ul>
                                         <li class="group">
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                             <p class="GroupDescrp">Lorem ipsum dolor sit amet</p>
                                             <div class="time_online">
@@ -270,43 +280,50 @@
                                             </div>
                                         </li>
                                         <li class="group">
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                             <p class="GroupDescrp">Lorem ipsum dolor sit amet </p>
                                             <div class="time_online"><i class="fa-solid fa-ellipsis-vertical"></i></div>
                                         </li>
                                         <li class="group">
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                             <p class="GroupDescrp">Lorem ipsum dolor sit amet</p>
                                             <div class="time_online"><i class="fa-solid fa-ellipsis-vertical"></i></div>
                                         </li>
                                         <li class="group">
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                             <p class="GroupDescrp">Lorem ipsum dolor sit amet.</p>
                                             <div class="time_online"><i class="fa-solid fa-ellipsis-vertical"></i></div>
                                         </li>
                                         <li class="group">
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                             <p class="GroupDescrp">Lorem ipsum dolor sit amet.</p>
                                             <div class="time_online"><i class="fa-solid fa-ellipsis-vertical"></i></div>
                                         </li>
                                         <li class="group">
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                             <p class="GroupDescrp">Lorem ipsum dolor sit amet.</p>
                                             <div class="time_online"><i class="fa-solid fa-ellipsis-vertical"></i></div>
                                         </li>
                                         <li class="group">
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                             <p class="GroupDescrp">Lorem ipsum dolor sit amet.</p>
                                             <div class="time_online"><i class="fa-solid fa-ellipsis-vertical"></i></div>
                                         </li>
                                         <li class="group">
-                                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
+                                            <div class="avatar"><img src="{{ asset('user_assets/images/group.jpg') }}"
+                                                    alt=""></div>
                                             <p class="GroupName">David Johnson</p>
                                             <p class="GroupDescrp">Lorem ipsum dolor sit amet.</p>
                                             <div class="time_online"><i class="fa-solid fa-ellipsis-vertical"></i></div>
@@ -318,225 +335,38 @@
                                 </div>
                             </div>
                             <!-- <div class="modal-footer">
-                                        <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back to Create Page</button>
-                                        <button class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
-                                      </div> -->
+                                                        <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back to Create Page</button>
+                                                        <button class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+                                                      </div> -->
                         </div>
                     </div>
                 </div>
 
                 <div class="main">
-                    <div class="sideNav2">
-                        <li class="group">
-                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
-                            <p class="GroupName">David Johnson</p>
-                            <p class="GroupDescrp">Lorem ipsum dolor sit amet consectetur adipisicing elit. Earujdsajf djf
-                                df
-                                dfjdkj
-                                dlkjfl.kjl dlkjf lkjlkdjfm, sequi.</p>
-                            <div class="time_online">12.36 PM</div>
-                        </li>
-                        <li class="group">
-                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
-                            <p class="GroupName">David Johnson</p>
-                            <p class="GroupDescrp">Lorem ipsum dolor sit amet consectetur adipisicing elit. Earujdsajf djf
-                                df
-                                dfjdkj
-                                dlkjfl.kjl dlkjf lkjlkdjfm, sequi.</p>
-                            <div class="time_online">12.36 PM</div>
-                        </li>
-                        <li class="group active">
-                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
-                            <p class="GroupName">David Johnson</p>
-                            <p class="GroupDescrp">Lorem ipsum dolor sit amet consectetur adipisicing elit. Earujdsajf djf
-                                df
-                                dfjdkj
-                                dlkjfl.kjl dlkjf lkjlkdjfm, sequi.</p>
-                            <div class="time_online">12.36 PM</div>
-                        </li>
-                        <li class="group">
-                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
-                            <p class="GroupName">David Johnson</p>
-                            <p class="GroupDescrp">Lorem ipsum dolor sit amet consectetur adipisicing elit. Earujdsajf djf
-                                df
-                                dfjdkj
-                                dlkjfl.kjl dlkjf lkjlkdjfm, sequi.</p>
-                            <div class="time_online">12.36 PM</div>
-                        </li>
-                        <li class="group">
-                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
-                            <p class="GroupName">David Johnson</p>
-                            <p class="GroupDescrp">Lorem ipsum dolor sit amet consectetur adipisicing elit. Earujdsajf djf
-                                df
-                                dfjdkj
-                                dlkjfl.kjl dlkjf lkjlkdjfm, sequi.</p>
-                            <div class="time_online">12.36 PM</div>
-                        </li>
-                        <li class="group">
-                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
-                            <p class="GroupName">David Johnson</p>
-                            <p class="GroupDescrp">Lorem ipsum dolor sit amet consectetur adipisicing elit. Earujdsajf djf
-                                df
-                                dfjdkj
-                                dlkjfl.kjl dlkjf lkjlkdjfm, sequi.</p>
-                            <div class="time_online">12.36 PM</div>
-                        </li>
-                        <li class="group">
-                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
-                            <p class="GroupName">David Johnson</p>
-                            <p class="GroupDescrp">Lorem ipsum dolor sit amet consectetur adipisicing elit. Earujdsajf djf
-                                df
-                                dfjdkj
-                                dlkjfl.kjl dlkjf lkjlkdjfm, sequi.</p>
-                            <div class="time_online">12.36 PM</div>
-                        </li>
-                        <li class="group">
-                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
-                            <p class="GroupName">David Johnson</p>
-                            <p class="GroupDescrp">Lorem ipsum dolor sit amet consectetur adipisicing elit. Earujdsajf djf
-                                df
-                                dfjdkj
-                                dlkjfl.kjl dlkjf lkjlkdjfm, sequi.</p>
-                            <div class="time_online">12.36 PM</div>
-                        </li>
-                        <li class="group">
-                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
-                            <p class="GroupName">David Johnson</p>
-                            <p class="GroupDescrp">Lorem ipsum dolor sit amet consectetur adipisicing elit. Earujdsajf djf
-                                df
-                                dfjdkj
-                                dlkjfl.kjl dlkjf lkjlkdjfm, sequi.</p>
-                            <div class="time_online">12.36 PM</div>
-                        </li>
-                        <li class="group">
-                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
-                            <p class="GroupName">David Johnson</p>
-                            <p class="GroupDescrp">Lorem ipsum dolor sit amet consectetur adipisicing elit. Earujdsajf djf
-                                df
-                                dfjdkj
-                                dlkjfl.kjl dlkjf lkjlkdjfm, sequi.</p>
-                            <div class="time_online">12.36 PM</div>
-                        </li>
-                        <li class="group">
-                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
-                            <p class="GroupName">David Johnson</p>
-                            <p class="GroupDescrp">Lorem ipsum dolor sit amet consectetur adipisicing elit. Earujdsajf djf
-                                df
-                                dfjdkj
-                                dlkjfl.kjl dlkjf lkjlkdjfm, sequi.</p>
-                            <div class="time_online">12.36 PM</div>
-                        </li>
-                        <li class="group">
-                            <div class="avatar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
-                            <p class="GroupName">David Johnson</p>
-                            <p class="GroupDescrp">Lorem ipsum dolor sit amet consectetur adipisicing elit. Earujdsajf djf
-                                df
-                                dfjdkj
-                                dlkjfl.kjl dlkjf lkjlkdjfm, sequi.</p>
-                            <div class="time_online">12.36 PM</div>
-                        </li>
+                    <div class="sideNav2 group-list">
+                        @if (count($teams) > 0)
+                            @foreach ($teams as $team)
+                                <li class="group">
+                                    <div class="avatar"><img
+                                            src="{{ $team->group_image ? Storage::url($team->group_image) : asset('user_assets/images/group.jpg') }}"
+                                            alt=""></div>
+                                    <p class="GroupName">{{ $team->name }}</p>
+                                    <p class="GroupDescrp">{{ $team->lastMessage ? $team->lastMessage->message : '' }}</p>
+                                    <div class="time_online">
+                                        {{ $team->lastMessage ? $team->lastMessage->created_at->format('h:i A') : '' }}
+                                    </div>
+                                </li>
+                            @endforeach
+                        @else
+                            <li class="group">
+                                <p></p>
+                                <p class="" style="color: black">No Group Found</p>
+                            </li>
+                        @endif
                     </div>
-                    <section class="Chat">
-                        <div class="groupChatHead">
-                            <div class="main_avtar"><img src="{{asset('user_assets/images/group.jpg')}}" alt=""></div>
-                            <div class="group_text">
-                                <p class="GroupName">David Johnson</p>
-                                <span>10 member, 5 Online</span>
-                            </div>
-                            <div class="group_text_right">
-                                <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button"
-                                        id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fa-solid fa-ellipsis-vertical"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" data-bs-toggle="modal" href="#groupInfo">Group
-                                                info</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="MessageContainer">
-                            <div class="messageSeperator"><span>Yesterday</span></div>
-                            <div class="message me">
-                                <p class="messageContent">Hello!</p>
-                                <div class="messageDetails">
-                                    <div class="messageTime">3:21 PM</div>
-                                    <i class="fas fa-check-double"></i>
-                                </div>
-                            </div>
-                            <div class="message me">
-                                <p class="messageContent">How are You!</p>
-                                <div class="messageDetails">
-                                    <div class="messageTime">3:22 PM</div>
-                                    <i class="fas fa-check-double"></i>
-                                </div>
-                            </div>
-                            <div class="message you">
-                                <p class="messageContent">I'm Fine!</p>
-                                <div class="messageDetails">
-                                    <div class="messageTime">3:30 PM</div>
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </div>
-                            <div class="message you">
-                                <p class="messageContent">Lorem Ipsum is simply dummy text of the printing and typesetting
-                                    industry.
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                                    is simply
-                                    dummy text of the printing and typesetting industry.</p>
-                                <div class="messageDetails">
-                                    <div class="messageTime">3:32 PM</div>
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </div>
-                            <div class="message me">
-                                <p class="messageContent">Lorem Ipsum is simply dummy text of the printing and typesetting
-                                    industry.
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                                    is simply
-                                    dummy text of the printing and typesetting industry.</p>
-                                <div class="messageDetails">
-                                    <div class="messageTime">3:36 PM</div>
-                                    <i class="fas fa-check-double"></i>
-                                </div>
-                            </div>
-                            <div class="message me">
-                                <p class="messageContent">Send Me the Pics!</p>
-                                <div class="messageDetails">
-                                    <div class="messageTime">3:21 PM</div>
-                                    <i class="fas fa-check-double"></i>
-                                </div>
-                            </div>
-                            <div class="messageSeperator"><span>Today</span></div>
-                            <div class="message you">
-                                <p class="messageContent">Sorry for the Delay!</p>
-                                <div class="messageDetails">
-                                    <div class="messageTime">8:09 AM</div>
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </div>
-                            <div class="message you">
-                                <p class="messageContent">Here are Pics!</p>
-                                <div class="messageDetails">
-                                    <div class="messageTime">3:21 AM</div>
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <form id="MessageForm">
-                            <input type="text" id="MessageInput" placeholder="Type a message...">
-                            <div>
-                                <button class="Send">
-                                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M0.82186 0.827412C0.565716 0.299519 0.781391 0.0763349 1.32445 0.339839L20.6267 9.70604C21.1614 9.96588 21.1578 10.4246 20.6421 10.7179L1.6422 21.526C1.11646 21.8265 0.873349 21.6115 1.09713 21.0513L4.71389 12.0364L15.467 10.2952L4.77368 8.9726L0.82186 0.827412Z"
-                                            fill="white" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </form>
+                    <section class="Chat chat-body">
+                        @include('user.team-chat.chat-body')
+
                     </section>
                 </div>
             </div>
@@ -597,8 +427,33 @@
                     data: new FormData(this),
                     processData: false,
                     contentType: false,
-                    success: function(data) {
-                        window.location.reload();
+                    success: function(resp) {
+                        toastr.success(resp.message);
+                        // append new team to the list
+                        var data = resp.team;
+                        var group_image = data.group_image;
+                        var time = data.last_message ?
+                            "{{ date('h:i A', strtotime('" + data.last_message.created_at + "')) }}" :
+                            '';
+                        html = `<li class="group">
+                                    <div class="avatar">`
+
+                        if (group_image) {
+                            html +=
+                                `<img src="{{ Storage::url('${data.group_image}') }}" alt="">`;
+                        } else {
+                            html +=
+                                `<img src="{{ asset('user_assets/images/group.jpg') }}" alt="">`;
+
+                        }
+                        html += `</div><p class="GroupName">${data.name}</p>
+                                    <p class="GroupDescrp">${data.last_message ? data.last_message.message : ''}</p>
+                                    <div class="time_online">${time ? time : ''}</div>
+                                </li>`;
+                        $('.group-list').prepend(html);
+                        $('#exampleModalToggle').modal('hide');
+                        // reset form
+                        $('#create-team')[0].reset();
                     },
                     error: function(xhr) {
                         $('.text-danger').html('');
@@ -617,6 +472,22 @@
                     }
                 });
             });
+
+            functio loadChat(teamId) {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('team-chats.load') }}",
+                    data: {
+                        team_id: teamId
+                    },
+                    success: function(resp) {
+                        $('.chat-body').html(resp.view);
+                    },
+                    error: function(xhr) {
+                        console.log(xhr);
+                    }
+                });
+            }
         });
     </script>
 @endpush

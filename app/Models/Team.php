@@ -31,8 +31,9 @@ class Team extends Model
         return $this->belongsTo(User::class, 'created_by', 'id');
     }
 
-    public function getGroupImageAttribute($value)
+    
+    public function lastMessage()
     {
-        return $value ? asset('storage/' . $value) : asset('images/group.png');
+        return $this->hasOne(TeamChat::class, 'team_id', 'id')->latest();
     }
 }
