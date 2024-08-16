@@ -17,7 +17,7 @@ class BecomingChristLikeController extends Controller
     {
         if (auth()->user()->can('Manage Becoming Christ Like')) {
             $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->paginate(15);
-            $topics = Topic::orderBy('topic_name', 'asc')->get();
+            $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->get();
             return view('user.becoming-christ-link.list')->with(compact('files', 'topics'));
         } else {
             abort(403, 'You do not have permission to access this page.');

@@ -21,7 +21,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12 mb-2">
+                            <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label>Topic Name *</label>
                                     <input type="text" class="form-control" name="topic_name"
@@ -33,7 +33,21 @@
                                     @endif
                                 </div>
                             </div>
+                            {{-- type --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label >Education Type</label>
 
+                                <select name="education_type" id="type" class="form-control" >
+                                    <option value="">Select Type</option>
+                                    <option value="Becoming Sovereign" {{ old('education_type') == 'Becoming Sovereign' ? 'selected' : '' }}>Becoming Sovereign</option>
+                                    <option value="Becoming Christ Like" {{ old('education_type') == 'Becoming Christ Like' ? 'selected' : '' }}>Becoming Christ Like</option>
+                                    <option value="Becoming a Leader" {{ old('education_type') == 'Becoming a Leader' ? 'selected' : '' }}>Becoming a Leader</option>
+                                </select>
+                                @if ($errors->has('education_type'))
+                                    <span class="error">{{ $errors->first('education_type') }}</span>
+                                @endif
+                            </div>
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                                 <button type="submit" class="print_btn me-2">Upload</button>
                                 <a href="{{ route('topics.index') }}" class="print_btn print_btn_vv"

@@ -133,6 +133,9 @@ class FileController extends Controller
                     $q->where('id', $request->topic_id);
                 });
             }
+            if ($request->type) {
+                $files->where('type', $request->type);
+            }
             $files = $files->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 
@@ -201,5 +204,11 @@ class FileController extends Controller
 
         // Redirect with success message
         return redirect()->route('file.index')->with('message', 'File updated successfully.');
+    }
+
+    public function getTopics($type)
+    {
+        $topics = Topic::where('education_type', $type)->orderBy('topic_name', 'asc')->get();
+        return response()->json(['data' => $topics]);
     }
 }

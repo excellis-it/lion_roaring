@@ -27,16 +27,24 @@
                                 <div class="row justify-content-between">
                                     <div class="col-md-3 ">
                                         <div class="box_label">
+                                            <select name="education_type" id="type" class="form-select">
+                                                <option value="">Select Education Type</option>
+                                                <option value="Becoming Sovereign">Becoming Sovereign</option>
+                                                <option value="Becoming Christ Like">Becoming Christ Like</option>
+                                                <option value="Becoming a Leader">Becoming a Leader</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 ">
+                                        <div class="box_label">
                                             <select name="topic_id" id="topics" class="form-select">
                                                 <option value="">Select Topics</option>
-                                                @foreach ($topics as $topic)
-                                                    <option value="{{ $topic->id }}">{{ $topic->topic_name }}</option>
-                                                @endforeach
+
                                             </select>
 
                                         </div>
                                     </div>
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-6">
                                         <div class="search-field">
                                             <input type="text" name="search" id="search" placeholder="search..."
                                                 required="" class="form-control rounded_search">
@@ -115,7 +123,7 @@
                 $('#file_extension_icon').html('');
             }
 
-            function fetch_data(page, sort_type, sort_by, query, topic_id) {
+            function fetch_data(page, sort_type, sort_by, query, topic_id, type) {
                 $.ajax({
                     url: "{{ route('file.fetch-data') }}",
                     data: {
@@ -123,7 +131,8 @@
                         sortby: sort_by,
                         sorttype: sort_type,
                         query: query,
-                        topic_id : topic_id
+                        topic_id : topic_id,
+                        type : type
                     },
                     success: function(data) {
                         $('tbody').html(data.data);
@@ -137,7 +146,8 @@
                 var sort_type = $('#hidden_sort_type').val();
                 var page = $('#hidden_page').val();
                 var topic_id = $('#topics').val();
-                fetch_data(page, sort_type, column_name, query, topic_id);
+                var type = $('#type').val();
+                fetch_data(page, sort_type, column_name, query, topic_id, type);
             });
 
             $(document).on('click', '.sorting', function() {
@@ -163,7 +173,8 @@
                 var page = $('#hidden_page').val();
                 var query = $('#search').val();
                 var topic_id = $('#topics').val();
-                fetch_data(page, reverse_order, column_name, query, topic_id);
+                var type = $('#type').val();
+                fetch_data(page, reverse_order, column_name, query, topic_id, type);
             });
 
             $(document).on('click', '.pagination a', function(event) {
@@ -178,7 +189,8 @@
                 $('li').removeClass('active');
                 $(this).parent().addClass('active');
                 var topic_id = $('#topics').val();
-                fetch_data(page, sort_type, column_name, query, topic_id);
+                var type = $('#type').val();
+                fetch_data(page, sort_type, column_name, query, topic_id , type);
             });
 
             $(document).on('change', '#topics', function() {
@@ -187,9 +199,45 @@
                 var sort_type = $('#hidden_sort_type').val();
                 var page = $('#hidden_page').val();
                 var topic_id = $(this).val();
-                fetch_data(page, sort_type, column_name, query, topic_id);
+                var type = $('#type').val();
+                fetch_data(page, sort_type, column_name, query, topic_id, type);
             });
 
+            $(document).on('change', '#type', function() {
+                var query = $('#search').val();
+                var column_name = $('#hidden_column_name').val();
+                var sort_type = $('#hidden_sort_type').val();
+                var page = $('#hidden_page').val();
+                var topic_id = $('#topics').val();
+                var type = $(this).val();
+                fetch_data(page, sort_type, column_name, query, topic_id, type);
+            });
         });
     </script>
+
+<script>
+    $(document).ready(function() {
+        $('#type').change(function() {
+            var type = $(this).val();
+            var url = "{{ route('topics.getTopics', ':type') }}";
+            url = url.replace(':type', type);
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(resp) {
+                    var html = '<option value="">Select Topics</option>';
+                    var oldTopic = "{{ old('topic_id') }}";
+                    $.each(resp.data, function(index, value) {
+                        if (oldTopic == value.id) {
+                            html += '<option value="' + value.id + '" selected>' + value.topic_name + '</option>';
+                        } else {
+                            html += '<option value="' + value.id + '">' + value.topic_name + '</option>';
+                        }
+                    });
+                    $('#topics').html(html);
+                }
+            });
+        });
+    });
+</script>
 @endpush

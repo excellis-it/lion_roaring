@@ -17,7 +17,7 @@ class LeadershipDevelopmentController extends Controller
     {
         if (auth()->user()->can('Manage Leadership Development')) {
             $files = File::orderBy('id', 'desc')->where('type', 'Becoming a Leader')->paginate(15);
-            $topics = Topic::orderBy('topic_name', 'asc')->get();
+            $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
             return view('user.leadership-development.list')->with(compact('files', 'topics'));
         } else {
             abort(403, 'You do not have permission to access this page.');

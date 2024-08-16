@@ -271,6 +271,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::get('/download/{file}', [FileController::class, 'download'])->name('file.download');
         Route::get('/fetch-data', [FileController::class, 'fetchData'])->name('file.fetch-data');
     });
+    // topics.getTopics
+    Route::get('/get-topics/{type}', [FileController::class, 'getTopics'])->name('topics.getTopics');
 
     Route::prefix('becoming-sovereign')->group(function () {
         Route::get('/', [BecomingSovereignController::class, 'index'])->name('becoming-sovereign.index');

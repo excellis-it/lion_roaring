@@ -49,10 +49,12 @@ class TopicController extends Controller
     {
         $request->validate([
             'topic_name' => 'required|string|max:255',
+            'education_type' => 'required|string|max:255',
         ]);
 
         $topic = new Topic();
         $topic->topic_name = $request->topic_name;
+        $topic->education_type = $request->education_type;
         $topic->save();
 
         return redirect()->route('topics.index')->with('message', 'Topic created successfully.');
@@ -97,10 +99,12 @@ class TopicController extends Controller
         if (Auth::user()->hasRole('ADMIN')) {
             $request->validate([
                 'topic_name' => 'required|string|max:255',
+                'education_type' => 'required|string|max:255',
             ]);
 
             $topic = Topic::findOrFail(Crypt::decrypt($id));
             $topic->topic_name = $request->topic_name;
+            $topic->education_type = $request->education_type;
             $topic->save();
 
             return redirect()->route('topics.index')->with('message', 'Topic updated successfully.');

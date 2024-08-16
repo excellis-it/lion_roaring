@@ -58,10 +58,7 @@
                                     <label>Topics *</label>
                                     <select name="topic_id" id="topics" class="form-control">
                                         <option value="">Select Topics</option>
-                                        @foreach ($topics as $topic)
-                                            <option value="{{ $topic->id }}" {{ $file->topic_id == $topic->id ? 'selected' : '' }}>
-                                                {{ $topic->topic_name }}</option>
-                                        @endforeach
+
                                     </select>
                                     @if ($errors->has('topics'))
                                         <span class="error">{{ $errors->first('topics') }}</span>
@@ -80,4 +77,57 @@
     @endsection
 
     @push('scripts')
+    <script>
+        $(document).ready(function() {
+            // $('#type').change(function() {
+            //     var type = $(this).val();
+            //     var url = "{{ route('topics.getTopics', ':type') }}";
+            //     url = url.replace(':type', type);
+            //     $.ajax({
+            //         url: url,
+            //         type: 'GET',
+            //         success: function(resp) {
+            //             var html = '<option value="">Select Topics</option>';
+            //             var oldTopic = "{{ old('topic_id') }}";
+            //             $.each(resp.data, function(index, value) {
+            //                 if (oldTopic == value.id) {
+            //                     html += '<option value="' + value.id + '" selected>' + value.topic_name + '</option>';
+            //                 } else {
+            //                     html += '<option value="' + value.id + '">' + value.topic_name + '</option>';
+            //                 }
+            //             });
+            //             $('#topics').html(html);
+            //         }
+            //     });
+            // });
+
+            function getTopics(type) {
+                var url = "{{ route('topics.getTopics', ':type') }}";
+                url = url.replace(':type', type);
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(resp) {
+                        var html = '<option value="">Select Topics</option>';
+                        var oldTopic = "{{ $file->topic_id }}";
+                        $.each(resp.data, function(index, value) {
+                            if (oldTopic == value.id) {
+                                html += '<option value="' + value.id + '" selected>' + value.topic_name + '</option>';
+                            } else {
+                                html += '<option value="' + value.id + '">' + value.topic_name + '</option>';
+                            }
+                        });
+                        $('#topics').html(html);
+                    }
+                });
+            }
+
+            getTopics("{{ $file->type }}");
+
+            $('#type').change(function() {
+                var type = $(this).val();
+                getTopics(type);
+            });
+        });
+    </script>
     @endpush

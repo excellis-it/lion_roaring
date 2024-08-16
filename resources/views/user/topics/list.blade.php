@@ -41,6 +41,9 @@
                                             <tr>
                                                 <th>ID </th>
                                                 <th>Topic</th>
+                                                <th>
+                                                    Education Type
+                                                </th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -52,6 +55,7 @@
                                                         {{ $topics->firstItem() + $key }}
                                                     </td>
                                                     <td>{{ $topic->topic_name }}</td>
+                                                    <td>{{ $topic->education_type }}</td>
                                                     <td>
                                                         <div class="d-flex">
                                                             <a href="{{route('topics.edit', Crypt::encrypt($topic->id))}}" class="edit_icon me-2">
@@ -66,7 +70,7 @@
                                             @endforeach
                                             {{-- pagination --}}
                                             <tr class="toxic">
-                                                <td colspan="3" >
+                                                <td colspan="4" >
                                                     <div class="d-flex justify-content-center">
                                                         {!! $topics->links() !!}
                                                     </div>
@@ -74,7 +78,7 @@
                                             </tr>
                                             @else
                                             <tr class="toxic">
-                                                <td colspan="3" class="text-center">No Data Found</td>
+                                                <td colspan="4" class="text-center">No Data Found</td>
                                             </tr>
                                         @endif
 
@@ -96,7 +100,7 @@
         $(document).on('click', '#delete', function(e) {
             swal({
                     title: "Are you sure?",
-                    text: "To delete this Role.",
+                    text: "To delete this topic.",
                     type: "warning",
                     confirmButtonText: "Yes",
                     showCancelButton: true

@@ -18,7 +18,7 @@ class BecomingSovereignController extends Controller
     {
         if (auth()->user()->can('Manage Becomeing Sovereigns')) {
             $files = File::orderBy('id', 'desc')->where('type', 'Becoming Sovereign')->paginate(15);
-            $topics = Topic::orderBy('topic_name', 'asc')->get();
+            $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->get();
             return view('user.becoming-sovereign.list')->with(compact('files', 'topics'));
         } else {
             abort(403, 'You do not have permission to access this page.');
