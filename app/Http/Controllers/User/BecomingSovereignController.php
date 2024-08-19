@@ -28,7 +28,7 @@ class BecomingSovereignController extends Controller
     public function upload()
     {
         if (auth()->user()->can('Upload Becomeing Sovereigns')) {
-            $topics = Topic::orderBy('topic_name', 'asc')->get();
+            $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->get();
             return view('user.becoming-sovereign.upload')->with('topics', $topics);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -142,7 +142,7 @@ class BecomingSovereignController extends Controller
         if (auth()->user()->can('Edit Becomeing Sovereigns')) {
             $file = File::findOrFail($id);
             if ($file) {
-                $topics = Topic::orderBy('topic_name', 'asc')->get();
+                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->get();
                 return view('user.becoming-sovereign.edit')->with(compact('file', 'topics'));
             } else {
                 return redirect()->route('becoming-sovereign.index')->with('error', 'File not found.');

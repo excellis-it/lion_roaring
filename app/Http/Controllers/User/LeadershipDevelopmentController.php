@@ -27,7 +27,7 @@ class LeadershipDevelopmentController extends Controller
     public function upload()
     {
         if (auth()->user()->can('Upload Leadership Development')) {
-            $topics = Topic::orderBy('topic_name', 'asc')->get();
+            $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
             return view('user.leadership-development.upload')->with('topics', $topics);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -133,7 +133,7 @@ class LeadershipDevelopmentController extends Controller
         if (auth()->user()->can('Edit Leadership Development')) {
             $file = File::findOrFail($id);
             if ($file) {
-                $topics = Topic::orderBy('topic_name', 'asc')->get();
+                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
                 return view('user.leadership-development.edit')->with(compact('file', 'topics'));
             } else {
                 return redirect()->route('leadership-development.index')->with('error', 'File not found.');

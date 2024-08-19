@@ -14,9 +14,13 @@
 
                     </div>
                     <div>
+                        @if (auth()->user()->can('Create Team'))
                         <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle"><i
-                                class="fa-solid fa-plus"></i>
-                            Create Group</a>
+                            class="fa-solid fa-plus"></i>
+                        Create Group</a>
+
+                        @endif
+
                     </div>
                 </div>
                 <div class="SideNavhead">
@@ -346,7 +350,7 @@
                     <div class="sideNav2 group-list">
                         @if (count($teams) > 0)
                             @foreach ($teams as $team)
-                                <li class="group">
+                                <li class="group group-data" data-id="{{ $team->id }}">
                                     <div class="avatar"><img
                                             src="{{ $team->group_image ? Storage::url($team->group_image) : asset('user_assets/images/group.jpg') }}"
                                             alt=""></div>
@@ -473,21 +477,89 @@
                 });
             });
 
-            functio loadChat(teamId) {
+            function loadChat(teamId) {
                 $.ajax({
-                    type: "GET",
+                    type: "POST",
                     url: "{{ route('team-chats.load') }}",
                     data: {
-                        team_id: teamId
+                        team_id: teamId,
+                        _token: "{{ csrf_token() }}"
                     },
                     success: function(resp) {
                         $('.chat-body').html(resp.view);
+                        scrollChatToBottom(teamId);
+
+                          // Initialize EmojiOneArea on MessageInput
+                          var emojioneAreaInstance = $("#TeamMessageInput").emojioneArea({
+                                pickerPosition: "top",
+                                filtersPosition: "top",
+                                tonesStyle: "bullet"
+                            });
+
+                            // Handle Enter key press within the emoji picker
+                            emojioneAreaInstance[0].emojioneArea.on('keydown', function(editor, event) {
+                                if (event.which === 13 && !event.shiftKey) {
+                                    event.preventDefault();
+                                    $("#MessageForm").submit();
+                                }
+                            });
                     },
                     error: function(xhr) {
-                        console.log(xhr);
+                        toastr.error('Something went wrong');
                     }
                 });
             }
+
+            $(document).on('click', '.group-data', function() {
+                var teamId = $(this).data('id');
+                loadChat(teamId);
+            });
+
+            function scrollChatToBottom(team_id) {
+                var messages = document.getElementById("team-chat-container-" + team_id);
+                messages.scrollTop = messages.scrollHeight;
+            }
+
+            // Send message
+
+            $(document).on("submit", "#TeamMessageForm", function(e) {
+                e.preventDefault();
+                var message = $("#TeamMessageInput").emojioneArea()[0].emojioneArea.getText();
+                var url = "{{ route('team-chats.send') }}";
+
+                if (message.trim() == '') {
+                    return false;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        message: message,
+                        team_id: $(".team_id").val(),
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(resp) {
+                        loadChat($("#team_id").val());
+                        $("#TeamMessageInput").emojioneArea()[0].emojioneArea.setText('');
+
+                        // append new message to the chat
+                        var data = resp.chat;
+                        var html = `<div class="message me">
+                                        <p class="messageContent">${data.message}</p>
+                                        <div class="messageDetails">
+                                            <div class="messageTime">${data.created_at}</div>
+                                        </div>
+                                    </div>`;
+                        $('#team-chat-container-' + data.team_id).append(html);
+                        scrollChatToBottom(data.team_id);
+                        
+                    },
+                    error: function(xhr) {
+                        toastr.error('Something went wrong');
+                    }
+                });
+            });
         });
     </script>
 @endpush

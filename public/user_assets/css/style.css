@@ -1908,7 +1908,25 @@ border-radius: 50%;
   .exit_group a{
     color: #ff0000;
   }
-
+  .member_image span{
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-right: 5px;
+  }
+  .member_image span img{
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    border-radius: 50%;
+  }
+.namemember{
+    font-size: 15px;
+    margin-bottom: 0;
+    display: block;
+    font-weight: 600;
+    color: #4f2f01;
+}
   /*--- group chat ---- */
 
   /* loader */
@@ -1932,6 +1950,37 @@ border-radius: 50%;
     left: 50%;
     animation: spin 2s linear infinite;
 }
+
+#TeamMessageForm {
+    padding: 10px;
+    display: flex;
+    width: 100%;
+  }
+
+  #TeamMessageForm input {
+    padding: 10px;
+    flex: 1;
+    border-radius: 10px;
+    border: 1px solid #404040;
+    background-color: transparent;
+  }
+
+  #TeamMessageForm button {
+    padding: 10px 15px;
+    border: none;
+    background-color: var(--sec-color);
+    color: white;
+    cursor: pointer;
+    border-radius: 50%;
+    margin: 0px 5px;
+    font-size: 1.2rem;
+    width: 50px;
+    height: 50px;
+  }
+  #TeamMessageForm input:focus{
+    outline:none;
+    border:1px solid #00f5d4;
+  }
 
 @keyframes spin {
     0% {

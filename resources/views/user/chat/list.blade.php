@@ -63,7 +63,9 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
+
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -155,11 +157,13 @@
                         sender_id: sender_id,
                     },
                     success: function(res) {
+                        console.log(res);
+
                         if (res.success) {
                             $("#MessageInput").data("emojioneArea").setText("");
-
                             let chat = res.chat.message;
-                            let created_at = res.chat.created_at;
+                            let created_at = res.chat.created_at_formatted;
+                            // use timezones to format the time America/New_York
                             let time_format_12 = moment(created_at, "YYYY-MM-DD HH:mm:ss")
                                 .format("hh:mm A");
 
@@ -183,10 +187,12 @@
                             $('#group-manage-' + sender_id).html('');
                             var new_html = '';
                             users.forEach(user => {
+                                let timezone = 'America/New_York';
                                 let time_format_13 = user.last_message && user
                                     .last_message.created_at ?
-                                    moment(user.last_message.created_at,
-                                        "YYYY-MM-DD HH:mm:ss").format("hh:mm A") : '';
+                                    moment.tz(user.last_message.created_at, timezone)
+                                    .format("hh:mm A") :
+                                    '';
 
                                 new_html += `
                                 <li class="group user-list ${user.id == receiver_id ? 'active' : ''}" data-id="${user.id}">
@@ -231,7 +237,7 @@
                 var formData = new FormData();
                 formData.append('file', file);
                 formData.append('_token', $("meta[name='csrf-token']").attr(
-                'content')); // Retrieve CSRF token from meta tag
+                    'content')); // Retrieve CSRF token from meta tag
                 formData.append('reciver_id', receiver_id);
                 formData.append('sender_id', sender_id);
 
@@ -247,8 +253,8 @@
                             let fileUrl = "{{ Storage::url('') }}" + attachment;
                             let attachement_extention = attachment.split('.').pop();
                             let created_at = res.chat.created_at;
-                            let time_format_12 = moment(created_at, "YYYY-MM-DD HH:mm:ss")
-                                .format("hh:mm A");
+                            let timeZome = 'America/New_York';
+                            let time_format_12 = moment.tz(created_at, timeZome).format("hh:mm A");
                             let html = `<div class="message me">`;
                             if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
                                 html +=
@@ -276,9 +282,10 @@
                             $('#group-manage-' + sender_id).html('');
                             var new_html = '';
                             users.forEach(user => {
+                                let timeZome = 'America/New_York';
                                 let time_format_13 = user.last_message && user
-                                    .last_message.created_at ? moment(user.last_message
-                                        .created_at, "YYYY-MM-DD HH:mm:ss").format(
+                                    .last_message.created_at ? moment.tz(user.last_message
+                                        .created_at, timeZome).format(
                                         "hh:mm A") : '';
 
                                 new_html +=
@@ -314,25 +321,29 @@
 
             // Listen for incoming chat messages from the server
             socket.on("chat", function(data) {
+                let timeZome = 'America/New_York';
                 html = `
                         <div class="message you">
                             <p class="messageContent">`
-                                if (data.file_url) {
-                                    let attachement_extention = data.file_url.split('.').pop();
-                                    if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
-                                        html += `<a href="${data.file_url}" target="_blank"><img src="${data.file_url}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a>`;
-                                    } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
-                                        html += `<a href="${data.file_url}" target="_blank"><video width="200" height="200" controls><source src="${data.file_url}" type="video/mp4"><source src="${data.file_url}" type="video/webm"><source src="${data.file_url}" type="video/ogg"></video></a>`;
-                                    } else {
-                                        html += `<a href="${data.file_url}" download="${data.message}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a>`;
-                                    }
-                                } else {
-                                    html += `${data.message}`;
-                                }
+                if (data.file_url) {
+                    let attachement_extention = data.file_url.split('.').pop();
+                    if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
+                        html +=
+                            `<a href="${data.file_url}" target="_blank"><img src="${data.file_url}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a>`;
+                    } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
+                        html +=
+                            `<a href="${data.file_url}" target="_blank"><video width="200" height="200" controls><source src="${data.file_url}" type="video/mp4"><source src="${data.file_url}" type="video/webm"><source src="${data.file_url}" type="video/ogg"></video></a>`;
+                    } else {
+                        html +=
+                            `<a href="${data.file_url}" download="${data.message}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a>`;
+                    }
+                } else {
+                    html += `${data.message}`;
+                }
 
-                                html += `</p>
+                html += `</p>
                        <div class="messageDetails">
-                                <div class="messageTime">${moment().format("hh:mm A")}</div>
+                                <div class="messageTime">${ moment.tz(data.created_at, timeZome).format("hh:mm A")}</div>
                             </div>
                         </div>
                     `;
@@ -349,8 +360,9 @@
                     var new_html = '';
                     users.forEach(user => {
                         // Check if last_message exists and has a created_at property
+                        let timeZome = 'America/New_York';
                         let time_format_13 = user.last_message && user.last_message.created_at ?
-                            moment(user.last_message.created_at, "YYYY-MM-DD HH:mm:ss").format(
+                            moment.tz(user.last_message.created_at, timeZome).format(
                                 "hh:mm A") :
                             '';
 

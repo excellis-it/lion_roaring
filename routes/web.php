@@ -260,6 +260,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::get('/', [TeamChatController::class, 'index'])->name('index');
         Route::post('/create', [TeamChatController::class, 'create'])->name('create');
         Route::post('/load', [TeamChatController::class, 'load'])->name('load');
+        Route::post('/send', [TeamChatController::class, 'send'])->name('send');
     });
 
     Route::prefix('file')->group(function () {

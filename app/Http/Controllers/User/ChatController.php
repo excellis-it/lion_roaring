@@ -109,6 +109,9 @@ class ChatController extends Controller
 
             // get chat data with sender and reciver
             $chat = Chat::with('sender', 'reciver')->find($chatData->id);
+            $chat->created_at_formatted = $chat->created_at->setTimezone('America/New_York')->format('Y-m-d H:i:s');
+            // return $chat;
+            // dd($chat);
             $users = User::with('chatSender')->where('id', '!=', auth()->id())->where('status', 1)->get()->toArray();
             // return user orderBy latest message
             $users = array_map(function ($user) {
@@ -117,6 +120,10 @@ class ChatController extends Controller
                 })->orWhere(function ($query) use ($user) {
                     $query->where('sender_id', auth()->id())->where('reciver_id', $user['id']);
                 })->orderBy('created_at', 'desc')->first();
+
+                if ($user['last_message']) {
+                    $user['last_message']->created_at = $user['last_message']->created_at->format('Y-m-d H:i:s'); // Format to string
+                }
 
                 return $user;
             }, $users);
@@ -148,6 +155,10 @@ class ChatController extends Controller
                     $query->where('sender_id', $reciver_id)->where('reciver_id', $user['id']); // Corrected 'receiver_id' variable
                 })->orderBy('created_at', 'desc')->first();
 
+                if ($user['last_message']) {
+                    $user['last_message']->created_at = $user['last_message']->created_at->format('Y-m-d H:i:s'); // Format to string
+                }
+                
                 return $user;
             }, $receiver_users);
 

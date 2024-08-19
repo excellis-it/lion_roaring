@@ -27,7 +27,7 @@ class BecomingChristLikeController extends Controller
     public function upload()
     {
         if (auth()->user()->can('Upload Becoming Christ Like')) {
-            $topics = Topic::orderBy('topic_name', 'asc')->get();
+            $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->get();
             return view('user.becoming-christ-link.upload')->with('topics', $topics);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -136,7 +136,7 @@ class BecomingChristLikeController extends Controller
         if (auth()->user()->can('Edit Becoming Christ Like')) {
             $file = File::findOrFail($id);
             if ($file) {
-                $topics = Topic::orderBy('topic_name', 'asc')->get();
+                $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->get();
                 return view('user.becoming-christ-link.edit')->with(compact('file', 'topics'));
             } else {
                 return redirect()->route('becoming-christ-link.index')->with('error', 'File not found.');

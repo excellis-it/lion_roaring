@@ -18,7 +18,7 @@
                 <a href="{{ route('e-store') }}" class="btn btn-primary">   <i class="ti ti-shopping-cart"></i>e-Store</a>
             </li>
 
-            <li class="nav-item dropdown">
+            {{-- <li class="nav-item dropdown">
                 <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
                     aria-expanded="false">
                     <i class="ti ti-bell-ringing"></i>
@@ -96,7 +96,7 @@
                         <button class="btn btn-primary w-100"> See All Notifications </button>
                     </div>
                 </div>
-            </li>
+            </li> --}}
             <li class="nav-item dropdown">
                 <a class="nav-link pe-0" href="javascript:void(0)" id="drop1" data-bs-toggle="dropdown"
                     aria-expanded="false">

@@ -74,8 +74,21 @@ class TeamChatController extends Controller
 
     public function load(Request $request)
     {
-        // if ($request->ajax()) {
-        //     $team
-        // }
+        if ($request->ajax()) {
+            $team_id = $request->team_id;
+            $team = Team::where('id', $team_id)->with(['members', 'members.user'])->first()->toArray();
+            $team_chats = TeamChat::where('team_id', $team_id)->orderBy('created_at', 'asc')->get();
+            // team member name with comma separated
+            $team_member_name = '';
+            foreach ($team['members'] as $member) {
+                $team_member_name .= ($member['user']['first_name'] ?? '') . ' ' .
+                                     ($member['user']['middle_name'] ?? '') . ' ' .
+                                     ($member['user']['last_name'] ?? '') . ', ';
+            }
+            $team_member_name = rtrim($team_member_name, ', ');
+
+            $is_chat = true;
+            return response()->json(['view' => (string) view('user.team-chat.chat-body')->with(compact('team', 'team_chats', 'is_chat', 'team_member_name'))]);
+        }
     }
 }
