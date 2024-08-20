@@ -15,10 +15,9 @@
                     </div>
                     <div>
                         @if (auth()->user()->can('Create Team'))
-                        <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle"><i
-                            class="fa-solid fa-plus"></i>
-                        Create Group</a>
-
+                            <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle"><i
+                                    class="fa-solid fa-plus"></i>
+                                Create Group</a>
                         @endif
 
                     </div>
@@ -339,9 +338,9 @@
                                 </div>
                             </div>
                             <!-- <div class="modal-footer">
-                                                        <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back to Create Page</button>
-                                                        <button class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
-                                                      </div> -->
+                                                                                        <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back to Create Page</button>
+                                                                                        <button class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+                                                                                      </div> -->
                         </div>
                     </div>
                 </div>
@@ -419,8 +418,23 @@
             });
         });
     </script>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
+
     <script>
         $(document).ready(function() {
+
+            $.ajaxSetup({
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                },
+            });
+            let ip_address = '127.0.0.1';
+            let socket_port = '3000';
+            let socket = io(ip_address + ':' + socket_port);
+            var sender_id = "{{ auth()->user()->id }}";
+
             $('#create-team').submit(function(e) {
                 e.preventDefault();
                 var form = $(this);
@@ -489,20 +503,22 @@
                         $('.chat-body').html(resp.view);
                         scrollChatToBottom(teamId);
 
-                          // Initialize EmojiOneArea on MessageInput
-                          var emojioneAreaInstance = $("#TeamMessageInput").emojioneArea({
-                                pickerPosition: "top",
-                                filtersPosition: "top",
-                                tonesStyle: "bullet"
-                            });
+                        // Initialize EmojiOneArea on MessageInput
+                        var emojioneAreaInstance = $("#TeamMessageInput").emojioneArea({
+                            pickerPosition: "top",
+                            filtersPosition: "top",
+                            tonesStyle: "bullet"
+                        });
 
-                            // Handle Enter key press within the emoji picker
-                            emojioneAreaInstance[0].emojioneArea.on('keydown', function(editor, event) {
-                                if (event.which === 13 && !event.shiftKey) {
-                                    event.preventDefault();
-                                    $("#MessageForm").submit();
-                                }
-                            });
+                        // Handle Enter key press within the emoji picker
+                        emojioneAreaInstance[0].emojioneArea.on('keydown', function(editor, event) {
+                            if (event.which === 13 && !event.shiftKey) {
+                                event.preventDefault();
+                                $("#TeamMessageForm").submit();
+                            }
+                        });
+
+                        // scrollChatToBottom(teamId);
                     },
                     error: function(xhr) {
                         toastr.error('Something went wrong');
@@ -517,10 +533,67 @@
 
             function scrollChatToBottom(team_id) {
                 var messages = document.getElementById("team-chat-container-" + team_id);
-                messages.scrollTop = messages.scrollHeight;
+                if (messages) {
+                    messages.scrollTop = messages.scrollHeight;
+                } else {
+                    console.error("Element with ID 'team-chat-container-" + team_id + "' not found.");
+                }
             }
 
+
             // Send message
+
+            $(document).on("change", "#file", function(e) {
+                var file = e.target.files[0];
+                var team_id = $(this).data('team-id');
+                var formData = new FormData();
+                formData.append('file', file);
+                formData.append('_token', $("meta[name='csrf-token']").attr(
+                    'content')); // Retrieve CSRF token from meta tag
+                formData.append('team_id', team_id);
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('team-chats.send') }}",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        if (res.status == true) {
+                            let attachment = res.chat.attachment;
+                            let fileUrl = "{{ Storage::url('') }}" + attachment;
+                            let attachement_extention = attachment.split('.').pop();
+                            let created_at = res.chat.created_at;
+                            let timeZome = 'America/New_York';
+                            let time_format_12 = moment.tz(created_at, timeZome).format(
+                                "hh:mm A");
+                            let html = `<div class="message me">`;
+                            if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
+                                html +=
+                                    `<p class="messageContent"><a href="${fileUrl}" target="_blank"><img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a></p>`;
+                            } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
+                                html +=
+                                    `<p class="messageContent"><a href="${fileUrl}" target="_blank"><video width="200" height="200" controls><source src="${fileUrl}" type="video/mp4"><source src="${fileUrl}" type="video/webm"><source src="${fileUrl}" type="video/ogg"></video></a></p>`;
+                            } else {
+                                html +=
+                                    `<p class="messageContent"><a href="${fileUrl}" download="${attachment}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a></p>`;
+                            }
+
+                            html +=
+                                `<div class="messageDetails"><div class="messageTime">${time_format_12}</div></div></div>`;
+                            $('#team-chat-container-' + team_id).append(html);
+                            scrollChatToBottom(team_id);
+                            // Send message to socket
+                            socket.emit('sendTeamMessage', {
+                                chat: res.chat,
+                                file_url: fileUrl,
+                            });
+                        } else {
+                            console.log(res.msg);
+                        }
+                    }
+                });
+            });
 
             $(document).on("submit", "#TeamMessageForm", function(e) {
                 e.preventDefault();
@@ -542,24 +615,90 @@
                     success: function(resp) {
                         loadChat($("#team_id").val());
                         $("#TeamMessageInput").emojioneArea()[0].emojioneArea.setText('');
+                        let timezone = 'America/New_York';
+                        let created_at = resp.chat.created_at;
+                        let time = moment.tz(created_at, timezone).format('h:mm A');
 
                         // append new message to the chat
                         var data = resp.chat;
                         var html = `<div class="message me">
                                         <p class="messageContent">${data.message}</p>
                                         <div class="messageDetails">
-                                            <div class="messageTime">${data.created_at}</div>
+                                            <div class="messageTime">${time}</div>
                                         </div>
                                     </div>`;
                         $('#team-chat-container-' + data.team_id).append(html);
                         scrollChatToBottom(data.team_id);
-                        
+
+                        // Send message to socket
+                        socket.emit('sendTeamMessage', {
+                            chat: data,
+
+                        });
                     },
                     error: function(xhr) {
                         toastr.error('Something went wrong');
                     }
                 });
             });
+
+            // Receive message from socket
+            socket.on('sendTeamMessage', function(data) {
+                // console.log(data);
+
+                let timezone = 'America/New_York';
+                let created_at = data.chat.created_at;
+                let time = moment.tz(created_at, timezone).format('h:mm A');
+                if (data.chat.user_id != sender_id) {
+                    let html = `
+        <div class="message you">
+            <div class="d-flex">
+                <div class="member_image">
+                    <span>`;
+
+                    if (data.chat.user.profile_picture) {
+                        html +=
+                            `<img src="{{ Storage::url('${data.chat.user.profile_picture}') }}" alt="">`;
+                    } else {
+                        html += `<img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">`;
+                    }
+
+                    html += `   </span>
+                </div>
+                <div class="message_group">
+                    <p class="messageContent">
+                        <span class="namemember">
+    ${ (data.chat.user.first_name ?? '') + ' ' + (data.chat.user.middle_name ?? '') + ' ' + (data.chat.user.last_name ?? '') }
+</span>`;
+                    if (data.file_url) {
+                        let attachement_extention = data.file_url.split('.').pop();
+                        if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
+                            html +=
+                                `<a href="${data.file_url}" target="_blank"><img src="${data.file_url}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a>`;
+                        } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
+                            html +=
+                                `<a href="${data.file_url}" target="_blank"><video width="200" height="200" controls><source src="${data.file_url}" type="video/mp4"><source src="${data.file_url}" type="video/webm"><source src="${data.file_url}" type="video/ogg"></video></a>`;
+                        } else {
+                            html +=
+                                `<a href="${data.file_url}" download="${data.file_url}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a>`;
+                        }
+                    } else {
+                        html += `${data.chat.message}`;
+                    }
+                    html += `</p>
+                    <div class="messageDetails">
+                        <div class="messageTime">${time}</div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+                    $('#team-chat-container-' + data.chat.team_id).append(html);
+                    scrollChatToBottom(data.chat.team_id);
+                }
+
+            });
+
         });
     </script>
 @endpush

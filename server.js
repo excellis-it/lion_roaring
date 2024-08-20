@@ -25,6 +25,12 @@ io.on('connection', (socket) => {
         io.sockets.emit('seen', msg);
     });
 
+    // sendTeamMessage
+    socket.on('sendTeamMessage', (msg) => {
+        console.log('sendTeamMessage: ' + msg);
+        io.sockets.emit('sendTeamMessage', msg);
+    });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });

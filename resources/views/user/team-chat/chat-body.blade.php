@@ -35,7 +35,31 @@
                 @foreach ($groupedChats as $chat)
                     @if ($chat->user_id == Auth::user()->id)
                         <div class="message me">
-                            <p class="messageContent"> {{ $chat->message }} </p>
+                            <p class="messageContent">
+                                @if ($chat->message != null)
+                                    {{ $chat->message }}
+                                @else
+                                    @php
+                                        $ext = pathinfo($chat->attachment, PATHINFO_EXTENSION);
+                                    @endphp
+                                    @if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp']))
+                                        <a href="{{ Storage::url($chat->attachment) }}" target="_blank">
+                                            <img src="{{ Storage::url($chat->attachment) }}" alt=""
+                                                style="max-width: 200px; max-height: 200px;">
+                                        </a>
+                                    @elseif (in_array($ext, ['mp4', 'webm', 'ogg']))
+                                        <video width="200" height="200" controls>
+                                            <source src="{{ Storage::url($chat->attachment) }}"
+                                                type="video/{{ $ext }}">
+                                        </video>
+                                    @else
+                                        <a href="{{ Storage::url($chat->attachment) }}" target="_blank"
+                                            download="{{ $chat->attachment }}">
+                                            <img src="{{ asset('user_assets/images/file.png') }}" alt="">
+                                        </a>
+                                    @endif
+                                @endif
+                            </p>
                             <div class="messageDetails">
                                 <div class="messageTime">{{ $chat->created_at->format('h:i A') }}</div>
                                 {{-- <i class="fas fa-check-double"></i> --}}
@@ -45,17 +69,40 @@
                         <div class="message you">
                             <div class="d-flex">
                                 <div class="member_image">
-                                    <span><img src="{{ $chat->user->profile_picture ? Storage::url($chat->user->profile_picture) : asset('user_assets/images/profile_dummy.png') }}"
+                                    <span><img
+                                            src="{{ $chat->user->profile_picture ? Storage::url($chat->user->profile_picture) : asset('user_assets/images/profile_dummy.png') }}"
                                             alt=""></span>
                                 </div>
                                 <div class="message_group">
                                     <p class="messageContent">
                                         <span class="namemember">{{ $chat->user->full_name }}</span>
-                                        {{ $chat->message }}
+                                        @if ($chat->message != null)
+                                            {{ $chat->message }}
+                                        @else
+                                            @php
+                                                $ext = pathinfo($chat->attachment, PATHINFO_EXTENSION);
+                                            @endphp
+                                            @if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp']))
+                                                <a href="{{ Storage::url($chat->attachment) }}" target="_blank">
+                                                    <img src="{{ Storage::url($chat->attachment) }}" alt=""
+                                                        style="max-width: 200px; max-height: 200px;">
+                                                </a>
+                                            @elseif (in_array($ext, ['mp4', 'webm', 'ogg']))
+                                                <video width="200" height="200" controls>
+                                                    <source src="{{ Storage::url($chat->attachment) }}"
+                                                        type="video/{{ $ext }}">
+                                                </video>
+                                            @else
+                                                <a href="{{ Storage::url($chat->attachment) }}" target="_blank"
+                                                    download="{{ $chat->attachment }}">
+                                                    <img src="{{ asset('user_assets/images/file.png') }}"
+                                                        alt="">
+                                                </a>
+                                            @endif
+                                        @endif
                                     </p>
                                     <div class="messageDetails">
                                         <div class="messageTime">{{ $chat->created_at->format('h:i A') }}</div>
-                                        <i class="fa-solid fa-check"></i>
                                     </div>
                                 </div>
                             </div>
@@ -66,6 +113,17 @@
         @endif
     </div>
     <form id="TeamMessageForm">
+        <input type="file" id="file" style="display: none" data-team-id="{{ $team['id'] }}">
+        <div class="file-upload">
+            <label for="file">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                    viewBox="0 0 24 24">
+                    <path fill="currentColor" fill-rule="evenodd"
+                        d="M9 7a5 5 0 0 1 10 0v8a7 7 0 1 1-14 0V9a1 1 0 0 1 2 0v6a5 5 0 0 0 10 0V7a3 3 0 1 0-6 0v8a1 1 0 1 0 2 0V9a1 1 0 1 1 2 0v6a3 3 0 1 1-6 0z"
+                        clip-rule="evenodd" style="color:black"></path>
+                </svg>
+            </label>
+        </div>
         <input type="text" id="TeamMessageInput" placeholder="Type a message...">
         <input type="hidden" id="team_id" value="{{ $team['id'] }}" class="team_id">
         <div>

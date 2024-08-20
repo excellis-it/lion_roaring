@@ -91,4 +91,22 @@ class TeamChatController extends Controller
             return response()->json(['view' => (string) view('user.team-chat.chat-body')->with(compact('team', 'team_chats', 'is_chat', 'team_member_name'))]);
         }
     }
+
+    public function send(Request $request)
+    {
+
+        $team_chat = new TeamChat();
+        $team_chat->team_id = $request->team_id;
+        $team_chat->user_id = auth()->id();
+        if ($request->file) {
+            $team_chat->attachment = $this->imageUpload($request->file('file'), 'team-chat');
+        } else {
+            $team_chat->message = $request->message;
+        }
+        $team_chat->save();
+
+        $chat = TeamChat::where('id', $team_chat->id)->with('user')->first();
+
+        return response()->json(['message' => 'Message sent successfully.', 'status' => true, 'chat' => $chat]);
+    }
 }

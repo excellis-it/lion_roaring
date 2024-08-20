@@ -840,6 +840,8 @@ p {
     line-height: initial;
     top: 0;
     color: rgb(255 255 255 / 10%);
+    height: 100%;
+    text-align: center;
 }
 
 .right_v {
