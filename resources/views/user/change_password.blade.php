@@ -69,6 +69,8 @@
                                 </div>
                                 <div class="w-100 text-end d-flex align-items-center justify-content-end">
                                     <button type="submit" class="print_btn me-2">Update</button>
+                                    <a href="{{ route('user.profile') }}" class="print_btn print_btn_vv"
+                                    >Cancel</a>
                                 </div>
                             </div>
                         </div>

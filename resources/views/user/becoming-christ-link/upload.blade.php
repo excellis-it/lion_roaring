@@ -16,7 +16,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
-                                    <h3>Upload Becoming Christ Like</h3>
+                                    <h3>Save Becoming Christ Like</h3>
                                 </div>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
                                 </div>
                             </div>
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
-                                <button type="submit" class="print_btn me-2">Upload</button>
+                                <button type="submit" class="print_btn me-2">Save</button>
                                 <a href="{{ route('becoming-christ-link.index') }}" class="print_btn print_btn_vv"
                                     >Cancel</a>
                             </div>

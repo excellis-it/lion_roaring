@@ -54,6 +54,7 @@ class JobpostingController extends Controller
                 'job_type' => 'required',
                 'job_location' => 'required',
                 'job_salary' => 'nullable|numeric',
+                'currency' => 'nullable',
                 'job_experience' => 'nullable|numeric',
                 'contact_person' => 'nullable',
                 'contact_email' => 'nullable|email',
@@ -66,6 +67,7 @@ class JobpostingController extends Controller
             $job->job_type = $request->job_type;
             $job->job_location = $request->job_location;
             $job->job_salary = $request->job_salary;
+            $job->currency = $request->currency;
             $job->job_experience = $request->job_experience;
             $job->contact_person = $request->contact_person;
             $job->contact_email = $request->contact_email;
@@ -128,6 +130,7 @@ class JobpostingController extends Controller
                 'job_experience' => 'nullable|numeric',
                 'contact_person' => 'nullable',
                 'contact_email' => 'nullable|email',
+                'currency' => 'nullable',
             ]);
 
             $job = Job::findOrFail($id);
@@ -136,6 +139,7 @@ class JobpostingController extends Controller
             $job->job_type = $request->job_type;
             $job->job_location = $request->job_location;
             $job->job_salary = $request->job_salary;
+            $job->currency = $request->currency;
             $job->job_experience = $request->job_experience;
             $job->contact_person = $request->contact_person;
             $job->contact_email = $request->contact_email;

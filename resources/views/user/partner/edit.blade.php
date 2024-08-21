@@ -90,7 +90,7 @@
                                     <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>User Name *</label>
-                                            <input type="text" class="form-control" name="user_name"
+                                            <input type="text" class="form-control" name="user_name" readonly
                                                 value="{{ $partner->user_name }}" placeholder="">
                                             @if ($errors->has('user_name'))
                                                 <div class="error" style="color:red !important;">

@@ -58,14 +58,55 @@
                             {{-- job_salary --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="job_salary"> Job Salary </label>
-                                    <input type="text" name="job_salary" id="job_salary" class="form-control"
-                                        placeholder="Enter Job Salary" value="{{ $job->job_salary }}">
+                                    <label for="job_salary">Job Salary</label>
+                                    <div class="input-group">
+                                        <select name="currency" id="currency" class="form-control" style="max-width: 100px;">
+                                            <option value="$" @if ($job->currency == '$') selected @endif>USD ($)</option>
+                                            <option value="€" @if ($job->currency == '€') selected @endif>EUR (€)</option>
+                                            <option value="£" @if ($job->currency == '£') selected @endif>GBP (£)</option>
+                                            <option value="₹" @if ($job->currency == '₹') selected @endif>INR (₹)</option>
+                                            <option value="A$" @if ($job->currency == 'A$') selected @endif>AUD (A$)</option>
+                                            <option value="C$" @if ($job->currency == 'C$') selected @endif>CAD (C$)</option>
+                                            <option value="S$" @if ($job->currency == 'S$') selected @endif>SGD (S$)</option>
+                                            <option value="د.إ" @if ($job->currency == 'د.إ') selected @endif>AED (د.إ)</option>
+                                            <option value="﷼" @if ($job->currency == '﷼') selected @endif>SAR (﷼)</option>
+                                            <option value="QR" @if ($job->currency == 'QR') selected @endif>QAR (QR)</option>
+                                            <option value="ر.ع." @if ($job->currency == 'ر.ع.') selected @endif>OMR (ر.ع.)</option>
+                                            <option value="د.ك" @if ($job->currency == 'د.ك') selected @endif>KWD (د.ك)</option>
+                                            <option value="BD" @if ($job->currency == 'BD') selected @endif>BHD (BD)</option>
+                                            <option value="¥" @if ($job->currency == '¥') selected @endif>JPY (¥)</option>
+                                            <option value="¥" @if ($job->currency == '¥') selected @endif>CNY (¥)</option>
+                                            <option value="RM" @if ($job->currency == 'RM') selected @endif>MYR (RM)</option>
+                                            <option value="฿" @if ($job->currency == '฿') selected @endif>THB (฿)</option>
+                                            <option value="Rp" @if ($job->currency == 'Rp') selected @endif>IDR (Rp)</option>
+                                            <option value="₱" @if ($job->currency == '₱') selected @endif>PHP (₱)</option>
+                                            <option value="₫" @if ($job->currency == '₫') selected @endif>VND (₫)</option>
+                                            <option value="₨" @if ($job->currency == '₨') selected @endif>PKR (₨)</option>
+                                            <option value="৳" @if ($job->currency == '৳') selected @endif>BDT (৳)</option>
+                                            <option value="₨" @if ($job->currency == '₨') selected @endif>LKR (₨)</option>
+                                            <option value="₨" @if ($job->currency == '₨') selected @endif>NPR (₨)</option>
+                                            <option value="Rf" @if ($job->currency == 'Rf') selected @endif>MVR (Rf)</option>
+                                            <option value="₨" @if ($job->currency == '₨') selected @endif>MUR (₨)</option>
+                                            <option value="R" @if ($job->currency == 'R') selected @endif>ZAR (R)</option>
+                                            <option value="₦" @if ($job->currency == '₦') selected @endif>NGN (₦)</option>
+                                            <option value="KSh" @if ($job->currency == 'KSh') selected @endif>KES (KSh)</option>
+                                            <option value="GH₵" @if ($job->currency == 'GH₵') selected @endif>GHS (GH₵)</option>
+                                            <option value="E£" @if ($job->currency == 'E£') selected @endif>EGP (E£)</option>
+                                            <option value="USh" @if ($job->currency == 'USh') selected @endif>UGX (USh)</option>
+                                            <option value="TSh" @if ($job->currency == 'TSh') selected @endif>TZS (TSh)</option>
+                                            <option value="ZK" @if ($job->currency == 'ZK') selected @endif>ZMW (ZK)</option>
+                                        </select>
+                                        <input type="text" name="job_salary" id="job_salary" class="form-control" placeholder="Enter Job Salary" value="{{ $job->job_salary }}">
+                                    </div>
+                                    @if ($errors->has('currency'))
+                                        <span class="text-danger">{{ $errors->first('currency') }}</span>
+                                    @endif
                                     @if ($errors->has('job_salary'))
-                                        <span class="text-danger" style="color:red !important;">{{ $errors->first('job_salary') }}</span>
+                                        <span class="text-danger">{{ $errors->first('job_salary') }}</span>
                                     @endif
                                 </div>
                             </div>
+
                             {{-- job_experience --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">

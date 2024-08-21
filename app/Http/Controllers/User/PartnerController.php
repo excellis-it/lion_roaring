@@ -199,6 +199,9 @@ class PartnerController extends Controller
             $data->address2 = $request->address2;
             $data->ecclesia_id = $request->ecclesia_id;
             $data->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
+            if ($request->password) {
+                $data->password = bcrypt($request->password);
+            }
             $data->save();
             $data->syncRoles([$request->role]);
             return redirect()->route('partners.index')->with('message', 'Partner updated successfully.');

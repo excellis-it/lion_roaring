@@ -12,6 +12,7 @@ use App\Models\OurOrganization;
 use App\Models\PmaTerm;
 use App\Models\RegisterAgreement;
 use App\Models\Review;
+use App\Models\Team;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Count;
 
@@ -110,6 +111,18 @@ class Helper
     public static function getAgreements()
     {
         $agreement = RegisterAgreement::orderBy('id', 'desc')->first();
-        return $agreement;  
+        return $agreement;
+    }
+
+    public static function checkAdminTeam($user_id, $team_id)
+    {
+        $team = Team::where('id', $team_id)->whereHas('members', function ($query) use ($user_id) {
+            $query->where('user_id', $user_id)->where('is_admin', true);
+        })->first();
+        if ($team) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

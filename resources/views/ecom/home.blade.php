@@ -103,7 +103,7 @@ Lion Roaring Ecom | Home
         </div>
     </section>
 
-    <section class="feature_sec">
+    <section class="feature_sec arrw-color">
         <div class="pos_zi">
             <div class="container">
                 <div class="row justify-content-center">

@@ -306,7 +306,7 @@
                         <a class="sidebar-link {{ Request::is('user/partners/*') ? 'active' : '' }}"
                             href="{{ route('partners.index') }}" aria-expanded="false">
                             <span>
-                                <img src="{{ asset('user_assets/images/Partners.png') }}" alt="">
+                                <img src="{{ asset('user_assets/images/partner.png') }}" alt="">
                             </span>
                             <span class="hide-menu">Partners</span>
                         </a>

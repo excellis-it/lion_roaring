@@ -109,4 +109,14 @@ class TeamChatController extends Controller
 
         return response()->json(['message' => 'Message sent successfully.', 'status' => true, 'chat' => $chat]);
     }
+
+    public function groupInfo(Request $request)
+    {
+        if ($request->ajax()) {
+            $team_id = $request->team_id;
+            $team = Team::where('id', $team_id)->with(['members', 'members.user'])->first();
+            $is_group_info = true;
+            return response()->json(['view' => (string) view('user.team-chat.group-info')->with(compact('team','is_group_info'))]);
+        }
+    }
 }

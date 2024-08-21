@@ -30,7 +30,7 @@
                                             <p class="card-text"><strong>Location:</strong>
                                                 {{ $job->job_location ? $job->job_location : 'N/A' }}</p>
                                             <p class="card-text"><strong>Salary:</strong>
-                                                {{ $job->job_salary ? '$' . $job->job_salary : 'N/A' }}</p>
+                                                {{ $job->job_salary ? $job->currency . ' ' . $job->job_salary : 'N/A' }}</p>
                                             <p class="card-text"><strong>Experience:</strong>
                                                 {{ $job->job_experience ? ($job->job_experience > 1 ? $job->job_experience . ' years' : $job->job_experience . ' year') : 'N/A' }}
                                             </p>

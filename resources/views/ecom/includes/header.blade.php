@@ -30,7 +30,7 @@
                                             @if (Auth::user()->profile_picture)
                                                 <img src="{{ Storage::url(Auth::user()->profile_picture) }}" alt="" />
                                             @else
-                                                <img src="{{asset('ecom_assets/images/profile.jpg')}}" alt="" />
+                                                <img src="{{asset('user_assets/images/profile_dummy.png')}}" alt="" />
                                             @endif
                                         </span>
                                     </button>

@@ -23,7 +23,7 @@
                                     <img src="{{ Storage::url(Auth::user()->profile_picture) }}" alt=""
                                         id="blah">
                                 @else
-                                    <img src="{{ asset('user_assets/images/logo.png') }}" alt=""
+                                    <img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt=""
                                         id="blah" />
                                 @endif
                             </span>

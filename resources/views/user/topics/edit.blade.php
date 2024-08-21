@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
-                                    <h3>Upload Topic</h3>
+                                    <h3>Save Topic</h3>
                                 </div>
                             </div>
                         </div>

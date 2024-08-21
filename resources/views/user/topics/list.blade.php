@@ -19,7 +19,7 @@
                                     </div>
                                     <div class="col-md-2 float-right">
                                         <a href="{{ route('topics.create') }}" class="btn btn-primary w-100">+ Add
-                                            topic</a>
+                                            Topic</a>
                                     </div>
                                 </div>
                                 <div class="row ">

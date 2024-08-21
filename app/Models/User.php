@@ -106,5 +106,4 @@ class User extends Authenticatable
         return $this->belongsTo(State::class, 'state');
 
     }
-
 }

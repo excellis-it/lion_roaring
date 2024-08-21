@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Upload File - {{ env('APP_NAME') }}
+Save File - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -16,7 +16,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
-                                    <h3>Upload Multiple Files</h3>
+                                    <h3>Save Multiple Files</h3>
                                 </div>
                             </div>
                         </div>
@@ -63,7 +63,7 @@
                             </div>
 
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
-                                <button type="submit" class="print_btn me-2">Upload</button>
+                                <button type="submit" class="print_btn me-2">Save</button>
                                 <a href="{{ route('file.index') }}" class="print_btn print_btn_vv"
                                     >Cancel</a>
                             </div>

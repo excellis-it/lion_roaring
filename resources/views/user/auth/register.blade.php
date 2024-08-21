@@ -68,7 +68,7 @@
                                                     <select name="ecclesia_id" id="ecclesia_id" class="input">
                                                         <option value=""></option>
                                                         @foreach ($eclessias as $ecclesia)
-                                                            <option value="{{ $ecclesia->id }}">
+                                                            <option value="{{ $ecclesia->id }}" {{ old('ecclesia_id') == $ecclesia->id ? 'selected' : '' }}>
                                                                 {{ $ecclesia->name }} -
                                                                 ({{ $ecclesia->country ? $ecclesia->countryName->name : '-' }})
                                                             </option>

@@ -201,6 +201,14 @@
         font-size: 40px;
     }
 
+    .left-sidebar .scroll-sidebar {
+        height: calc(100vh - 70px);
+        background: #7851a9;
+    }
+    .logo-img{
+        display:none;
+    }
+
 }
 
 @media (max-width:767px){
@@ -344,6 +352,9 @@
     }
     .map-location-details p{
         font-size: 14px;
+    }
+    .dark-logo {
+        width: 75px;
     }
 }
 @media (max-width:375.98px){

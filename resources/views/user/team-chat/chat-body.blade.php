@@ -14,7 +14,7 @@
                     <i class="fa-solid fa-ellipsis-vertical"></i>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" data-bs-toggle="modal" href="#groupInfo">Group
+                    <li><a class="dropdown-item group-info" data-team-id="{{$team['id']}}">Group
                             info</a></li>
                 </ul>
             </div>
