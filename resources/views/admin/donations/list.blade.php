@@ -111,7 +111,7 @@
         $(document).on('click', '#delete', function(e) {
             swal({
                     title: "Are you sure?",
-                    text: "To delete this contact.",
+                    text: "To delete this donation.",
                     type: "warning",
                     confirmButtonText: "Yes",
                     showCancelButton: true

@@ -127,9 +127,23 @@
             });
         });
     </script>
+    @if (isset($details) && count($details) > 0)
+        @foreach ($details as $key => $item)
+            <script>
+                ClassicEditor.create(document.querySelector('#content_{{$key}}'));
+            </script>
+        @endforeach
+    @else
+        <script>
+            ClassicEditor.create(document.querySelector('.description'));
+        </script>
+
+    @endif
     <script>
         $(document).ready(function() {
-         
+            // ckeditor for description
+            // ClassicEditor.create(document.querySelector('.description'));
+
             $(document).on("click", ".add-more", function() {
                 var count = $("#add-more .col-xl-5").length;
                 var html = `
@@ -158,7 +172,7 @@
                                 </div>
                             </div>`;
                 $("#add-more").append(html);
-                
+
                 ClassicEditor.create(document.querySelectorAll('.description')[count]);
 
             });
@@ -171,10 +185,8 @@
         });
     </script>
 
- 
-        <script>
-        ClassicEditor.create(document.querySelector(".description"));
-        </script>
+
+
 
 
 @endpush

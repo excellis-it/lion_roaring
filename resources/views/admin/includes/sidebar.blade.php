@@ -28,6 +28,9 @@
                             href="{{ route('admin.profile') }}">My Profile</a></li>
                     <li class="{{ Request::is('admin/password*') ? 'active' : ' ' }}"><a class="nav-link"
                             href="{{ route('admin.password') }}">Change Password</a></li>
+                    {{-- <li class="{{ Request::is('admin/password*') ? 'active' : ' ' }}"><a class="nav-link"
+                            href="{{ route('admin.index') }}">Admin List</a></li> --}}
+
                 </ul>
             </li>
             {{-- <li class="dropdown">
@@ -193,10 +196,10 @@
                     <li class="{{ Request::is('admin/pages/members-privacy-policies') ? 'active' : ' ' }}"><a
                             class="nav-link" href="{{ route('members-privacy-policies.index') }}">
                             MEMBERS PRIVACY POLICIES</a></li>
-                            {{-- PMA Terms --}}
-                    <li class="{{ Request::is('admin/pages/pma-terms') ? 'active' : ' ' }}"><a
-                        class="nav-link" href="{{ route('pma-terms.index') }}">
-                        PMA Terms</a></li>
+                    {{-- PMA Terms --}}
+                    <li class="{{ Request::is('admin/pages/pma-terms') ? 'active' : ' ' }}"><a class="nav-link"
+                            href="{{ route('pma-terms.index') }}">
+                            PMA Terms</a></li>
                 </ul>
             </li>
         </ul>

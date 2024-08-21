@@ -24,6 +24,14 @@
         <td>{{ $donation->payment_status ?? 'N/A' }}</td>
         {{-- created_at --}}
         <td>{{ $donation->created_at->format('d M Y') }}</td>
+        <td>
+            <div class="edit-1 d-flex align-items-center justify-content-center">
+                <a title="Delete" data-route="{{ route('donations.delete', $donation->id) }}"
+                    href="javascript:void(0);" id="delete">
+                    <span class="trash-icon"><i class="ph ph-trash"></i></span>
+                </a>
+            </div>
+        </td>
     </tr>
 @endforeach
 <tr class="toxic">

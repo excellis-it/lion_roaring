@@ -105,6 +105,8 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::post('/update', [ProfileController::class, 'passwordUpdate'])->name('admin.password.update'); // password update
     });
 
+
+
     Route::resources([
         'customers' => CustomerController::class,
         'testimonials' => TestimonialController::class,
@@ -124,6 +126,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     Route::get('/plan-fetch-data', [PlanController::class, 'fetchData'])->name('plans.fetch-data');
 
     Route::get('/donations-fetch-data', [AdminDonationController::class, 'fetchData'])->name('donations.fetch-data');
+    Route::get('/donations-delete/{id}', [AdminDonationController::class, 'delete'])->name('donations.delete');
 
     Route::prefix('organization-centers')->group(function () {
         Route::get('/organization-center-delete/{id}', [OrganizationCenterController::class, 'delete'])->name('organization-centers.delete');
@@ -175,7 +178,10 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
 
 
         Route::get('/newsletter-fetch-data', [NewsletterController::class, 'fetchData'])->name('newsletters.fetch-data');
+        // delete newsletter
+        Route::get('/newsletter-delete/{id}', [NewsletterController::class, 'delete'])->name('newsletters.delete');
         Route::get('/contact-us-fetch-data', [ContactusController::class, 'fetchData'])->name('contact-us.fetch-data');
+        Route::get('/contact-us-delete/{id}', [ContactusController::class, 'delete'])->name('contact-us.delete');
 
         Route::get('/organizations-image-delete', [OrganizationController::class, 'imageDelete'])->name('organization.image.delete');
 

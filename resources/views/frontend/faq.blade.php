@@ -38,7 +38,7 @@
                                         <div id="collapseOne" class="accordion-collapse collapse show"
                                             aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                             <div class="accordion-body">
-                                                {{ $faq->answer }}
+                                                {!! $faq->answer !!}
                                             </div>
                                         </div>
                                     </div>
@@ -50,7 +50,7 @@
                                     </div>
                                 </div>
                             @endif
-                     
+
                         </div>
                     </div>
                 </div>

@@ -103,4 +103,15 @@ class NewsletterController extends Controller
     {
         //
     }
+
+    public function delete($id)
+    {
+        $newsletter = Newsletter::find($id);
+        if ($newsletter) {
+            $newsletter->delete();
+            return redirect()->route('newsletters.index')->with('message', 'Newsletter deleted successfully.');
+        } else {
+            return redirect()->route('newsletters.index')->with('error', 'Newsletter not found.');
+        }
+    }
 }

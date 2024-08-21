@@ -15,10 +15,10 @@
                             @endif
                         </a>
                         <p>
-                            {{Helper::getFooter()['footer_title'] ?? 'Our main focus is to restore our various communities, villages, cities, states,
+                            {!! Helper::getFooter()['footer_title'] ?? 'Our main focus is to restore our various communities, villages, cities, states,
                             and
                             our nation by restoring the condition of a person in both the spiritual and the
-                            physical.'}}
+                            physical.'!!}
                             </p>
                         <div class="col-lg-12">
                             <div class="d-flex align-items-center">
@@ -43,7 +43,7 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="find-us">
-                        <h4>{{Helper::getFooter()['footer_newsletter_title'] ?? 'Don’t miss our newsletter! Get in touch today!'}}</h4>
+                        <h4>{!! Helper::getFooter()['footer_newsletter_title'] ?? 'Don’t miss our newsletter! Get in touch today!' !!}</h4>
                         <div class="ftr-frm">
                             <div class="wpcf7 js" id="wpcf7-f52-o1" lang="en-US" dir="ltr">
                                 <div class="screen-reader-response">
@@ -103,7 +103,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <p>{{Helper::getFooter()['footer_copywrite_text'] ?? 'Copyright © '. date('Y') .' Daud Santosa. All Rights Reserved'}}</p>
+                    <p>{!! Helper::getFooter()['footer_copywrite_text'] ?? 'Copyright © '. date('Y') .' Daud Santosa. All Rights Reserved' !!}</p>
                 </div>
             </div>
         </div>

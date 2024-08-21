@@ -18,7 +18,8 @@
     <ul class="navbar-nav navbar-right">
         <li class="dropdown">
             <a  data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-                <img alt="image" src="{{asset('admin_assets/img/profile.png')}}" class="user-img-radious-style" /> {{Auth::user()->name}}
+
+                <img alt="image" src=" {{auth()->user()->profile_picture ? Storage::url(auth()->user()->profile_picture) : asset('user_assets/images/logo.png')}}" class="user-img-radious-style" /> {{Auth::user()->name}}
                 <!---<span class="d-sm-none d-lg-inline-block"><i class="ph-caret-down"></i></span>---->
             </a>
             <div class="dropdown-menu dropdown-menu-right pullDown">

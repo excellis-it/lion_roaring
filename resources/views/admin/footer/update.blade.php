@@ -36,27 +36,27 @@
                                 </div>
                             </div>
                             {{-- view footer logo --}}
-                           
+
                                 <div class="col-md-2">
                                     <div class="form-group-div">
                                         <div class="form-group">
                                         @if (isset($footer->footer_logo))
                                             <img src="{{ Storage::url($footer->footer_logo) }}" id="footer_logo_preview" alt="Footer Logo"
                                                 style="width: 180px; height: 100px;">
-                                        @else    
+                                        @else
                                         <img src="" id="footer_logo_preview" alt="Footer Logo"
-                                                style="width: 180px; height: 100px; display:none;">    
+                                                style="width: 180px; height: 100px; display:none;">
                                         @endif
                                         </div>
                                     </div>
                                 </div>
-                            
+
                             {{-- our_organization_id --}}
                             <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                        <label for="floatingInputValue">Footer Title*</label>
-                                        <textarea type="text" class="form-control" id="floatingInputValue" name="footer_title" placeholder="Footer Title"> {{ isset($footer->footer_title) ? $footer->footer_title : old('footer_title') }}</textarea>
+                                        <label for="footer_title">Footer Title*</label>
+                                        <textarea type="text" class="form-control" id="footer_title" name="footer_title" placeholder="Footer Title"> {{ isset($footer->footer_title) ? $footer->footer_title : old('footer_title') }}</textarea>
                                         @if ($errors->has('footer_title'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('footer_title') }}</div>
@@ -68,8 +68,8 @@
                             <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                        <label for="floatingInputValue">Footer Address Title*</label>
-                                        <input type="text" class="form-control" id="floatingInputValue"
+                                        <label for="footer_address_title">Footer Address Title*</label>
+                                        <input type="text" class="form-control" id="footer_address_title"
                                             name="footer_address_title"
                                             value="{{ isset($footer->footer_address_title) ? $footer->footer_address_title : old('footer_address_title') }}"
                                             placeholder="Footer Address Title">
@@ -84,8 +84,8 @@
                             <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                        <label for="floatingInputValue">Footer Address*</label>
-                                        <textarea type="text" class="form-control" id="floatingInputValue" name="footer_address"
+                                        <label for="footer_address">Footer Address*</label>
+                                        <textarea type="text" class="form-control" id="footer_address" name="footer_address"
                                             placeholder="Footer Address"> {{ isset($footer->footer_address) ? $footer->footer_address : old('footer_address') }}</textarea>
                                         @if ($errors->has('footer_address'))
                                             <div class="error" style="color:red;">
@@ -176,7 +176,7 @@
                                 </div>
                             </div>
                             {{-- view footer playstore icon --}}
-                           
+
                                 <div class="col-md-2">
                                     <div class="form-group-div">
                                         <div class="form-group">
@@ -190,7 +190,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            
+
                             {{-- footer_playstore_link --}}
                             <div class="col-md-6">
                                 <div class="form-group-div">
@@ -224,7 +224,7 @@
                                 </div>
                             </div>
                             {{-- view footer appstore icon --}}
-                           
+
                             <div class="col-md-2">
                                 <div class="form-group-div">
                                     <div class="form-group">
@@ -345,6 +345,11 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor.create(document.querySelector("#footer_address"));
+    ClassicEditor.create(document.querySelector("#footer_title"));
+</script>
     <script>
         $(document).on("click", ".add-more", function() {
             var count = $("#add-more .col-xl-5").length;

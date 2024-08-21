@@ -7,10 +7,18 @@
         <td>{{ $contact->email }}</td>
         <td>{{ $contact->message }}
         </td>
+        <td>
+            <div class="edit-1 d-flex align-items-center justify-content-center">
+                <a title="Delete" data-route="{{ route('contact-us.delete', $contact->id) }}"
+                    href="javascript:void(0);" id="delete">
+                    <span class="trash-icon"><i class="ph ph-trash"></i></span>
+                </a>
+            </div>
+        </td>
     </tr>
 @endforeach
 <tr style="box-shadow: none;">
-    <td colspan="5">
+    <td colspan="6">
         <div class="d-flex justify-content-center">
             {!! $contacts->links() !!}
         </div>
@@ -18,6 +26,6 @@
 </tr>
 @else
 <tr>
-    <td colspan="5" class="text-center">No Contact Found</td>
+    <td colspan="6" class="text-center">No Contact Found</td>
 </tr>
 @endif

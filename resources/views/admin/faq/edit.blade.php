@@ -39,9 +39,8 @@
                                     <div class="form-group">
                                         {{-- answer --}}
                                         <label for="floatingInputValue">Answer*</label>
-                                        <input type="text" class="form-control" id="floatingInputValue"
-                                            name="answer" value="{{ $faq->answer ?? '' }}"
-                                            value="{{ old('answer') }}" placeholder="Answer*">
+                                        <textarea name="answer" id="description" cols="30" rows="10" required placeholder="Answer"
+                                            class="form-control description">{{ $faq->answer }}</textarea>
                                         @if ($errors->has('answer'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('answer') }}</div>

@@ -6,10 +6,18 @@
         <td>{{ $newsletter->email }}</td>
         <td>{{ $newsletter->message }}
         </td>
+        <td>
+            <div class="edit-1 d-flex align-items-center justify-content-center">
+                <a title="Delete" data-route="{{ route('newsletters.delete', $newsletter->id) }}"
+                    href="javascript:void(0);" id="delete">
+                    <span class="trash-icon"><i class="ph ph-trash"></i></span>
+                </a>
+            </div>
+        </td>
     </tr>
 @endforeach
 <tr style="box-shadow: none;">
-    <td colspan="4">
+    <td colspan="5">
         <div class="d-flex justify-content-center">
             {!! $newsletters->links() !!}
         </div>
@@ -17,6 +25,6 @@
 </tr>
 @else
 <tr>
-    <td colspan="4" class="text-center">No Newsletter Found</td>
+    <td colspan="5" class="text-center">No Newsletter Found</td>
 </tr>
 @endif

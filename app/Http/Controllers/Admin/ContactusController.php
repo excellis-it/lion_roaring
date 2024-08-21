@@ -106,4 +106,15 @@ class ContactusController extends Controller
     {
         //
     }
+
+    public function delete($id)
+    {
+        $contact = ContactUs::find($id);
+        if ($contact) {
+            $contact->delete();
+            return redirect()->route('contact-us.index')->with('message', 'Contact deleted successfully.');
+        } else {
+            return redirect()->route('contact-us.index')->with('error', 'Contact not found.');
+        }
+    }
 }

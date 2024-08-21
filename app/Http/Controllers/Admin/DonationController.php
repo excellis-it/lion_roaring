@@ -40,7 +40,7 @@ class DonationController extends Controller
                 ->orWhereHas('country', function ($q) use ($query) {
                     $q->where('name', 'like', '%' . $query . '%');
                 })
-                ->orWhereHas('state', function ($q) use ($query) {
+                ->orWhereHas('states', function ($q) use ($query) {
                     $q->where('name', 'like', '%' . $query . '%');
                 })
                 ->orderBy($sort_by, $sort_type)
@@ -110,5 +110,11 @@ class DonationController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function delete($id)
+    {
+        Donation::where('id', $id)->delete();
+        return redirect()->route('donations.index')->with('message', 'Donation has been deleted successfully');
     }
 }
