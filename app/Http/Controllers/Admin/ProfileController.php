@@ -26,8 +26,8 @@ class ProfileController extends Controller
             'first_name' => 'required',
             'last_name' => 'required',
             'email'    => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix|unique:users,email,'.Auth::user()->id,
-            'phone_number' => 'required|unique:users,phone,'.Auth::user()->id,
-            'profile_picture' => 'required|mimes:jpg,png,jpeg,gif,svg',
+            'phone_number' => 'required',
+            'profile_picture' => 'nullable|mimes:jpg,png,jpeg,gif,svg',
         ]);
 
         $data = User::find(Auth::user()->id);
