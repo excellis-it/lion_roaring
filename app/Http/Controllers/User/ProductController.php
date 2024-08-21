@@ -195,7 +195,8 @@ class ProductController extends Controller
                 'images' => 'nullable|array',
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
                 'feature_product' => 'required',
-                'status' => 'required'
+                'status' => 'required',
+                'button_name' => 'required|string',
             ]);
 
             $product = Product::findOrFail($id);
@@ -210,6 +211,7 @@ class ProductController extends Controller
             $product->slug = $request->slug;
             $product->affiliate_link = $request->affiliate_link;
             $product->feature_product = $request->feature_product;
+            $product->button_name = $request->button_name;
             // $product->meta_title = $request->meta_title;
             // $product->meta_description = $request->meta_description;
             $product->status = $request->status;
