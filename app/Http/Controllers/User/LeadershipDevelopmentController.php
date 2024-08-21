@@ -15,7 +15,7 @@ class LeadershipDevelopmentController extends Controller
 
     public function index()
     {
-        if (auth()->user()->can('Manage Leadership Development')) {
+        if (auth()->user()->can('Manage Becoming a Leader')) {
             $files = File::orderBy('id', 'desc')->where('type', 'Becoming a Leader')->paginate(15);
             $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
             return view('user.leadership-development.list')->with(compact('files', 'topics'));
@@ -26,7 +26,7 @@ class LeadershipDevelopmentController extends Controller
 
     public function upload()
     {
-        if (auth()->user()->can('Upload Leadership Development')) {
+        if (auth()->user()->can('Upload Becoming a Leader')) {
             $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
             return view('user.leadership-development.upload')->with('topics', $topics);
         } else {
@@ -69,7 +69,7 @@ class LeadershipDevelopmentController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->can('Delete Leadership Development')) {
+        if (auth()->user()->can('Delete Becoming a Leader')) {
             $file = File::find($id);
             if ($file) {
                 $file->delete();
@@ -130,7 +130,7 @@ class LeadershipDevelopmentController extends Controller
 
     public function edit($id)
     {
-        if (auth()->user()->can('Edit Leadership Development')) {
+        if (auth()->user()->can('Edit Becoming a Leader')) {
             $file = File::findOrFail($id);
             if ($file) {
                 $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming a Leader')->get();
@@ -170,7 +170,7 @@ class LeadershipDevelopmentController extends Controller
 
     public function view($id)
     {
-        if (auth()->user()->can('View Leadership Development')) {
+        if (auth()->user()->can('View Becoming a Leader')) {
             $file = File::findOrFail($id);
             if ($file) {
                 return view('user.leadership-development.view')->with('file', $file);

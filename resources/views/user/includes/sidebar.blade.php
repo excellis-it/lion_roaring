@@ -106,9 +106,9 @@
                         </div>
                     </li>
                 @endif
-                @if (Gate::check('Manage Becomeing Sovereigns') ||
+                @if (Gate::check('Manage Becoming Sovereigns') ||
                         Gate::check('Manage Becoming Christ Like') ||
-                        Gate::check('Manage Leadership Development') ||
+                        Gate::check('Manage Becoming a Leader') ||
                         Gate::check('Manage File') ||
                         Auth::user()->hasRole('ADMIN'))
                     <li class="sidebar-item">
@@ -131,7 +131,7 @@
                                         <span>Topics</span>
                                     </a>
                                 @endif
-                                @if (Gate::check('Manage Becomeing Sovereigns'))
+                                @if (Gate::check('Manage Becoming Sovereigns'))
                                     <a href="{{ route('becoming-sovereign.index') }}">
                                         <span>
                                             <img src="{{ asset('user_assets/images/Becoming Sovereign.png') }}"
@@ -149,7 +149,7 @@
                                         <span>Becoming Christ Like</span>
                                     </a>
                                 @endif
-                                @if (Gate::check('Manage Leadership Development'))
+                                @if (Gate::check('Manage Becoming a Leader'))
                                     <a href="{{ route('leadership-development.index') }}">
                                         <span>
                                             <img src="{{ asset('user_assets/images/Leadership Development.png') }}"

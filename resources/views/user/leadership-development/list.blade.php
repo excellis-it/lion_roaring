@@ -18,7 +18,7 @@ Becoming a Leader List - {{ env('APP_NAME') }}
                                         <h3 class="mb-3">Becoming a Leader List</h3>
                                     </div>
                                     <div class="col-md-2 float-right">
-                                        @if (auth()->user()->can('Upload Leadership Development'))
+                                        @if (auth()->user()->can('Upload Becoming a Leader'))
                                             <a href="{{ route('leadership-development.upload') }}"
                                                 class="btn btn-primary w-100"><i class="fa-solid fa-upload"></i> Upload
                                                 Files</a>

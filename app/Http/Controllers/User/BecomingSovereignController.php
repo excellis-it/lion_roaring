@@ -16,7 +16,7 @@ class BecomingSovereignController extends Controller
 
     public function index()
     {
-        if (auth()->user()->can('Manage Becomeing Sovereigns')) {
+        if (auth()->user()->can('Manage Becoming Sovereigns')) {
             $files = File::orderBy('id', 'desc')->where('type', 'Becoming Sovereign')->paginate(15);
             $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->get();
             return view('user.becoming-sovereign.list')->with(compact('files', 'topics'));
@@ -27,7 +27,7 @@ class BecomingSovereignController extends Controller
 
     public function upload()
     {
-        if (auth()->user()->can('Upload Becomeing Sovereigns')) {
+        if (auth()->user()->can('Upload Becoming Sovereigns')) {
             $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->get();
             return view('user.becoming-sovereign.upload')->with('topics', $topics);
         } else {
@@ -78,7 +78,7 @@ class BecomingSovereignController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->can('Delete Becomeing Sovereigns')) {
+        if (auth()->user()->can('Delete Becoming Sovereigns')) {
             $file = File::find($id);
             if ($file) {
                 $file->delete();
@@ -139,7 +139,7 @@ class BecomingSovereignController extends Controller
 
     public function edit($id)
     {
-        if (auth()->user()->can('Edit Becomeing Sovereigns')) {
+        if (auth()->user()->can('Edit Becoming Sovereigns')) {
             $file = File::findOrFail($id);
             if ($file) {
                 $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->get();
@@ -194,7 +194,7 @@ class BecomingSovereignController extends Controller
 
     public function view($id)
     {
-        if (auth()->user()->can('View Becomeing Sovereigns')) {
+        if (auth()->user()->can('View Becoming Sovereigns')) {
             $file = File::findOrFail($id);
             if ($file) {
                 return view('user.becoming-sovereign.view')->with('file', $file);

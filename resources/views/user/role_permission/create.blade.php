@@ -44,7 +44,7 @@
                                                 'Email',
                                                 'Becoming Sovereigns',
                                                 'Becoming Christ Like',
-                                                'Leadership Development',
+                                                'Becoming a Leader',
                                                 'File',
                                                 'Bulletin',
                                                 'Job Postings',

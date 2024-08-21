@@ -18,7 +18,7 @@
                                         <h3 class="mb-3">Becoming Sovereigns List</h3>
                                     </div>
                                     <div class="col-md-2 float-right">
-                                        @if (auth()->user()->can('Upload Becomeing Sovereigns'))
+                                        @if (auth()->user()->can('Upload Becoming Sovereigns'))
                                             <a href="{{ route('becoming-sovereign.upload') }}"
                                                 class="btn btn-primary w-100"><i class="fa-solid fa-upload"></i> Upload
                                                 Files</a>

@@ -40,8 +40,8 @@
                                             <option value="{{ $topic->id }}" {{ old('topic_id') == $topic->id ? 'selected' : '' }}>{{ $topic->topic_name }}</option>
                                         @endforeach
                                     </select>
-                                    @if ($errors->has('topics'))
-                                    <span class="error">{{ $errors->first('topics') }}</span>
+                                    @if ($errors->has('topic_id'))
+                                    <span class="error">{{ $errors->first('topic_id') }}</span>
                                 @endif
 
                                 </div>
