@@ -122,9 +122,9 @@ Lion Roaring Ecom | Home
                             <div class="feature_slid_padding">
                                 <div class="feature_box">
                                     <div class="feature_img">
-                                        <div class="wishlist_icon">
+                                        {{-- <div class="wishlist_icon">
                                             <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
-                                        </div>
+                                        </div> --}}
                                         <a href="{{ $product['affiliate_link'] }}">
                                             @if (isset($product->main_image) && $product->main_image != null)
                                                 <img src="{{ Storage::url($product->main_image) }}"
@@ -134,7 +134,7 @@ Lion Roaring Ecom | Home
                                     </div>
                                     <div class="feature_text">
                                         <ul class="star_ul">
-                                            @if (Helper::getTotalProductRating($product->id))
+                                            {{-- @if (Helper::getTotalProductRating($product->id))
                                             @for ($i = 1; $i <= 5; $i++)
                                                 <li><i
                                                         class="fa-{{ $i <= Helper::getTotalProductRating($product->id) ? 'solid' : 'regular' }} fa-star"></i>
@@ -146,10 +146,10 @@ Lion Roaring Ecom | Home
                                             <li><i class="fa-regular fa-star"></i></li>
                                             <li><i class="fa-regular fa-star"></i></li>
                                             <li><i class="fa-regular fa-star"></i></li>
-                                        @endif
+                                        @endif --}}
 
-                                        <li>({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
-                                        </li>
+                                        {{-- <li>({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
+                                        </li> --}}
                                         </ul>
                                         <a href="{{ $product['affiliate_link'] }}">{{ $product->name }}</a>
                                         <p>{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
@@ -157,7 +157,7 @@ Lion Roaring Ecom | Home
                                         {{-- <span class="price_text">$ {{ $product->price }}</span> --}}
                                     </div>
                                     <div class="addtocart">
-                                        <a href="{{ $product['affiliate_link'] }}"> go to shop</a>
+                                        <a href="{{ $product['affiliate_link'] }}"> {{ $product['button_name'] ? $product['button_name'] : 'go to shop' }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -185,9 +185,9 @@ Lion Roaring Ecom | Home
                             <div class="feature_slid_padding">
                                 <div class="feature_box">
                                     <div class="feature_img">
-                                        <div class="wishlist_icon">
+                                        {{-- <div class="wishlist_icon">
                                             <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
-                                        </div>
+                                        </div> --}}
                                         <a href="{{ $product['affiliate_link'] }}">
                                             @if (isset($product->main_image) && $product->main_image != null)
                                                 <img src="{{ Storage::url($product->main_image) }}"
@@ -197,7 +197,7 @@ Lion Roaring Ecom | Home
                                     </div>
                                     <div class="feature_text">
                                         <ul class="star_ul">
-                                            @if (Helper::getTotalProductRating($product->id))
+                                            {{-- @if (Helper::getTotalProductRating($product->id))
                                                 @for ($i = 1; $i <= 5; $i++)
                                                     <li><i
                                                             class="fa-{{ $i <= Helper::getTotalProductRating($product->id) ? 'solid' : 'regular' }} fa-star"></i>
@@ -209,10 +209,10 @@ Lion Roaring Ecom | Home
                                                 <li><i class="fa-regular fa-star"></i></li>
                                                 <li><i class="fa-regular fa-star"></i></li>
                                                 <li><i class="fa-regular fa-star"></i></li>
-                                            @endif
+                                            @endif --}}
 
-                                            <li>({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
-                                            </li>
+                                            {{-- <li>({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
+                                            </li> --}}
                                         </ul>
                                         <a href="{{ $product['affiliate_link'] }}">{{ $product->name }}</a>
                                         <p>{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
@@ -220,7 +220,7 @@ Lion Roaring Ecom | Home
                                         {{-- <span class="price_text">${{ $product->price }}</span> --}}
                                     </div>
                                     <div class="addtocart">
-                                        <a href="{{ $product['affiliate_link'] }}">go to shop</a>
+                                        <a href="{{ $product['affiliate_link'] }}">{{ $product['button_name'] ? $product['button_name'] : 'go to shop' }}</a>
                                     </div>
                                 </div>
                             </div>

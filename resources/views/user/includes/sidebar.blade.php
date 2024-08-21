@@ -65,7 +65,7 @@
                                         <span>
                                             <img src="{{ asset('user_assets/images/chat.png') }}" alt="">
                                         </span>
-                                        <span>Messaging</span>
+                                        <span>Chats</span>
                                     </a>
                                 @endif
                                 @if (Gate::check('Manage Team'))

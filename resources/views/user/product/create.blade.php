@@ -101,14 +101,26 @@
                                     @endif
                                 </div>
                             </div>
+
                             {{-- short_description --}}
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-12 mb-2">
                                 <div class="box_label">
                                     <label for="short_description"> Product Short Description*</label>
                                     <input type="text" name="short_description" id="short_description"
                                         class="form-control" value="{{ old('short_description') }}">
                                     @if ($errors->has('short_description'))
                                         <span class="error">{{ $errors->first('short_description') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                              {{-- button_name --}}
+                              <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="button_name"> Button Name*</label>
+                                    <input type="text" name="button_name" id="button_name" class="form-control"
+                                        value="{{ old('button_name') }}">
+                                    @if ($errors->has('button_name'))
+                                        <span class="error">{{ $errors->first('button_name') }}</span>
                                     @endif
                                 </div>
                             </div>
@@ -166,7 +178,7 @@
                                 </div>
                             </div>
                             {{-- description --}}
-                            <div class="col-md-6 mb-2">
+                            {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="description"> Product Description*</label>
                                     <textarea name="description" id="description" class="form-control" rows="5" cols="30"
@@ -175,9 +187,9 @@
                                         <span class="error">{{ $errors->first('description') }}</span>
                                     @endif
                                 </div>
-                            </div>
+                            </div> --}}
                             {{-- specification --}}
-                            <div class="col-md-6 mb-2">
+                            {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="specification"> Product Specification*</label>
                                     <textarea name="specification" id="specification" class="form-control" rows="5" cols="30"
@@ -186,7 +198,7 @@
                                         <span class="error">{{ $errors->first('specification') }}</span>
                                     @endif
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-md-12">
                                 <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image(Drag and drop
                                     atleast 1
@@ -203,15 +215,15 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
                                     <h3>Seo Section</h3>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="row">
-                            <div class="col-md-12 mb-2">
+                            {{-- <div class="col-md-12 mb-2">
                                 <div class="box_label">
                                     <label for="meta_title">Meta Title</label>
 
@@ -231,7 +243,7 @@
                                         <span class="error">{{ $errors->first('meta_description') }}</span>
                                     @endif
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                                 <button type="submit" class="print_btn me-2">Add</button>

@@ -7,9 +7,9 @@ use App\Helpers\Helper;
     <div class="col-xl-3 col-lg-4 col-md-6 mb-5 productitem">
         <div class="feature_box">
             <div class="feature_img">
-                <div class="wishlist_icon">
+                {{-- <div class="wishlist_icon">
                     <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
-                </div>
+                </div> --}}
                 <a href="{{$product['affiliate_link']}}">
                     @if (isset($product['image']['image']) && $product['image']['image'] != null)
                         <img src="{{ Storage::url($product['image']['image']) }}"
@@ -18,7 +18,7 @@ use App\Helpers\Helper;
                 </a>
             </div>
             <div class="feature_text">
-                <ul class="star_ul">
+                {{-- <ul class="star_ul">
                     @if (Helper::getTotalProductRating($product['id']))
                     @for ($i = 1; $i <= 5; $i++)
                         <li><i class="fa-{{ $i <= Helper::getTotalProductRating($product['id']) ? 'solid' : 'regular' }} fa-star"></i>
@@ -33,7 +33,7 @@ use App\Helpers\Helper;
                 @endif
 
                 <li>({{ Helper::getRatingCount($product['id']) ? Helper::getRatingCount($product['id']) : 0 }})
-                </li>
+                </li> --}}
                 </ul>
                 <a href="{{$product['affiliate_link']}}">{{ $product['name'] }}</a>
                 <p>{{ strlen($product['short_description']) > 50 ? substr($product['short_description'], 0, 50) . '...' : $product['short_description'] }}
@@ -41,7 +41,7 @@ use App\Helpers\Helper;
                 {{-- <span class="price_text">${{ $product['price'] }}</span> --}}
             </div>
             <div class="addtocart">
-                <a href="{{ $product['affiliate_link'] }}">go to shop</a>
+                <a href="{{ $product['affiliate_link'] }}">{{ $product['button_name'] ? $product['button_name'] : 'go to shop' }}</a>
             </div>
         </div>
     </div>
