@@ -268,6 +268,11 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/load', [TeamChatController::class, 'load'])->name('load');
         Route::post('/send', [TeamChatController::class, 'send'])->name('send');
         Route::post('/group-info', [TeamChatController::class, 'groupInfo'])->name('group-info');
+        Route::post('/update-group-image', [TeamChatController::class, 'updateGroupImage'])->name('update-group-image');
+        Route::post('/edit-name-des', [TeamChatController::class, 'editNameDes'])->name('edit-name-des');
+        Route::post('/name-des-update', [TeamChatController::class, 'nameDesUpdate'])->name('name-des-update');
+        Route::post('/remove-member', [TeamChatController::class, 'removeMember'])->name('remove-member');
+        Route::post('/group-list', [TeamChatController::class, 'groupList'])->name('group-list');
     });
 
     Route::prefix('file')->group(function () {

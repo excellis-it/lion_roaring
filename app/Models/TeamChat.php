@@ -30,4 +30,9 @@ class TeamChat extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    public function chatMembers()
+    {
+        return $this->hasMany(ChatMember::class, 'chat_id', 'id');
+    }
+
 }

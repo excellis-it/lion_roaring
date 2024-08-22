@@ -13,6 +13,8 @@ use App\Models\PmaTerm;
 use App\Models\RegisterAgreement;
 use App\Models\Review;
 use App\Models\Team;
+use App\Models\TeamChat;
+use App\Models\TeamMember;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Count;
 
@@ -124,5 +126,23 @@ class Helper
         } else {
             return false;
         }
+    }
+
+    public static function checkRemovedFromTeam($team_id, $user_id)
+    {
+        $team_member_check = TeamMember::where('team_id', $team_id)->where('user_id', $user_id)->first();
+
+        if ($team_member_check->is_removed == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public static function userLastMessage($team_id, $user_id)
+    {
+       return TeamChat::where('team_id', $team_id)->whereHas('chatMembers', function ($query) use ($user_id) {
+            $query->where('user_id', $user_id);
+        })->latest()->first();
     }
 }

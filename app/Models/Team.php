@@ -31,9 +31,9 @@ class Team extends Model
         return $this->belongsTo(User::class, 'created_by', 'id');
     }
 
-    
+
     public function lastMessage()
     {
-        return $this->hasOne(TeamChat::class, 'team_id', 'id')->latest();
+        return $this->hasOne(TeamChat::class, 'team_id', 'id')->latest(); 
     }
 }

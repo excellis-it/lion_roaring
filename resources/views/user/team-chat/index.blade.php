@@ -5,9 +5,12 @@
 @push('styles')
 @endpush
 @section('content')
-<section id="loading">
-    <div id="loading-content"></div>
-</section>
+@php
+    use App\Helpers\Helper;
+@endphp
+    <section id="loading">
+        <div id="loading-content"></div>
+    </section>
     <div class="container-fluid">
         <div class="bg_white_border">
             <div class="messaging_sec">
@@ -49,7 +52,7 @@
                                             <div class="image-upload">
                                                 <div class="image-wrap"><img id="previewImage01"
                                                         src="{{ asset('user_assets/images/group.jpg') }}" /></div>
-                                                <input class="btn-inputfile" id="file01" type="file"
+                                                <input class="btn-inputfile change-profile" id="file01" type="file"
                                                     name="group_image" />
                                                 <label for="file01"><i class="fa-solid fa-camera"></i></label>
                                             </div>
@@ -104,12 +107,17 @@
                         </div>
                     </div>
                 </div>
+                <div id="change-group-details">
+                    @include('user.team-chat.group-details')
+                </div>
+
                 <div class="modal fade" id="exampleModalToggle2" aria-hidden="true"
                     aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content group_create">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalToggleLabel2">Add Member</h5>
+                                <h5 class="modal-title" id="exampleModalToggleLabel2">Change Group Name And Description
+                                </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
@@ -218,32 +226,17 @@
                     </div>
                 </div>
 
+
+
                 <div id="group-information">
                     @include('user.team-chat.group-info')
                 </div>
 
 
                 <div class="main">
-                    <div class="sideNav2 group-list">
-                        @if (count($teams) > 0)
-                            @foreach ($teams as $team)
-                                <li class="group group-data" data-id="{{ $team->id }}">
-                                    <div class="avatar"><img
-                                            src="{{ $team->group_image ? Storage::url($team->group_image) : asset('user_assets/images/group.jpg') }}"
-                                            alt=""></div>
-                                    <p class="GroupName">{{ $team->name }}</p>
-                                    <p class="GroupDescrp">{{ $team->lastMessage ? $team->lastMessage->message : '' }}</p>
-                                    <div class="time_online">
-                                        {{ $team->lastMessage ? $team->lastMessage->created_at->format('h:i A') : '' }}
-                                    </div>
-                                </li>
-                            @endforeach
-                        @else
-                            <li class="group">
-                                <p></p>
-                                <p class="" style="color: black">No Group Found</p>
-                            </li>
-                        @endif
+                    <div class="sideNav2 group-list" id="group-list">
+                        @include('user.team-chat.group-list')
+
                     </div>
                     <section class="Chat chat-body">
                         @include('user.team-chat.chat-body')
@@ -257,24 +250,40 @@
 
 @push('scripts')
     <script>
-        $(".btn-inputfile").change(function() {
-            var previewImageID = $(this).parent().find("img").attr("id");
-            // alert(previewImageID);
-            previewFile(this, previewImageID);
-        });
+        $(document).ready(function() {
+            $(document).on('change', '.change-profile', function() {
+                var previewImageID = $(this).parent().find("img").attr("id");
+                // alert(previewImageID);
+                previewFile(this, previewImageID);
+            });
 
-        function previewFile(input, image) {
-            var preview = document.getElementById(image);
-            var file = input.files[0];
-            var reader = new FileReader();
-            reader.addEventListener("load", function() {
-                preview.src = reader.result;
-            }, false);
-            if (file) {
-                reader.readAsDataURL(file);
+            function previewFile(input, image) {
+                var preview = document.getElementById(image);
+                var file = input.files[0];
+                var reader = new FileReader();
+                reader.addEventListener("load", function() {
+                    preview.src = reader.result;
+                }, false);
+                if (file) {
+                    reader.readAsDataURL(file);
+                }
             }
-        }
+        });
     </script>
+    {{-- <script>
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        $('#blah')
+                            .attr('src', e.target.result);
+                    };
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+        </script> --}}
     <script>
         $(document).ready(function() {
             $('#search').on('keyup', function() {
@@ -311,7 +320,7 @@
             let ip_address = '127.0.0.1';
             let socket_port = '3000';
             let socket = io(ip_address + ':' + socket_port);
-            var sender_id = "{{ auth()->user()->id }}";
+            var sender_id = {{ auth()->user()->id }};
 
             $('#create-team').submit(function(e) {
                 e.preventDefault();
@@ -350,6 +359,12 @@
                         $('#exampleModalToggle').modal('hide');
                         // reset form
                         $('#create-team')[0].reset();
+
+                        // Send message to socket
+                        socket.emit('createTeam', {
+                            user_id: sender_id,
+                            chat_member_id : resp.chat_member_id
+                        });
                     },
                     error: function(xhr) {
                         $('.text-danger').html('');
@@ -407,6 +422,7 @@
             $(document).on('click', '.group-data', function() {
                 var teamId = $(this).data('id');
                 loadChat(teamId);
+                $(this).addClass("active").siblings().removeClass("active");
             });
 
             function scrollChatToBottom(team_id) {
@@ -465,6 +481,7 @@
                             socket.emit('sendTeamMessage', {
                                 chat: res.chat,
                                 file_url: fileUrl,
+                                chat_member_id: res.chat_member_id,
                             });
                         } else {
                             console.log(res.msg);
@@ -511,7 +528,7 @@
                         // Send message to socket
                         socket.emit('sendTeamMessage', {
                             chat: data,
-
+                            chat_member_id: resp.chat_member_id
                         });
                     },
                     error: function(xhr) {
@@ -520,8 +537,51 @@
                 });
             });
 
+            // name-des-update form submit
+            $(document).on('submit', '#name-des-update', function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    success: function(resp) {
+                        toastr.success(resp.message);
+                        $('.group-name-' + resp.team_id).html(resp.name);
+                        $('.group-des-' + resp.team_id).html(resp.description);
+                        $('#exampleModalToggle3').modal('hide');
+                        $('#groupInfo').modal('show');
+                    },
+                    error: function(xhr) {
+                        $('.text-danger').html('');
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                            if (key.includes('.')) {
+                                var fieldName = key.split('.')[0];
+                                // Display errors for array fields
+                                var num = key.match(/\d+/)[0];
+                                toastr.error(value[0]);
+                            } else {
+                                // after text danger span
+                                toastr.error(value[0]);
+                            }
+                        });
+                    }
+                });
+            });
+
+
             // group-info
             $(document).on('click', '.group-info', function() {
+                var team_id = $(this).data('team-id');
+                groupDetails(team_id);
+            });
+
+            $(document).on('click', '.back-to-group-info', function() {
+                $('#exampleModalToggle3').modal('hide');
                 var team_id = $(this).data('team-id');
                 groupDetails(team_id);
             });
@@ -550,6 +610,173 @@
                 });
             }
 
+            $(document).on('change', '.team-profile-picture', function() {
+                var team_id = $(this).data('team-id');
+                var file = $(this).prop('files')[0];
+                var formData = new FormData();
+                formData.append('group_image', file);
+                formData.append('team_id', team_id);
+                formData.append('_token', "{{ csrf_token() }}");
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('team-chats.update-group-image') }}",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(resp) {
+                        if (resp.status == true) {
+                            var group_image = resp.group_image;
+                            var group_image_url = "{{ Storage::url('') }}" + group_image;
+                            $('.team-image-' + team_id).html(
+                                `<img src="{{ Storage::url('') }}${group_image}" alt="">`);
+
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
+                            toastr.success(resp.message);
+
+                            socket.emit('updateGroupImage', {
+                                team_id: team_id,
+                                group_image: group_image_url
+                            });
+                        } else {
+                            toastr.error(resp.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        $('.text-danger').html('');
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                            if (key.includes('.')) {
+                                var fieldName = key.split('.')[0];
+                                // Display errors for array fields
+                                var num = key.match(/\d+/)[0];
+                                toastr.error(value[0]);
+                            } else {
+                                // after text danger span
+                                toastr.error(value[0]);
+                            }
+                        });
+                    }
+                });
+            });
+
+            $(document).on('click', '.edit-name-des', function() {
+                var team_id = $(this).data('team-id');
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('team-chats.edit-name-des') }}",
+                    data: {
+                        team_id: team_id,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(resp) {
+                        $('#change-group-details').html(resp.view);
+                        $('#groupInfo').modal('hide');
+                        $('#exampleModalToggle3').modal('show');
+                        $('#loading').removeClass('loading');
+                        $('#loading-content').removeClass('loading-content');
+                    },
+                    error: function(xhr) {
+                        toastr.error('Something went wrong');
+                    }
+                });
+            });
+
+            // remove-member-from-group click
+            $(document).on('click', '.remove-member-from-group', function() {
+                var team_id = $(this).data('team-id');
+                var user_id = $(this).data('user-id');
+                var r = confirm("Are you sure you want to remove this member?");
+                if (r == true) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('team-chats.remove-member') }}",
+                        data: {
+                            team_id: team_id,
+                            user_id: user_id,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(resp) {
+                            if (resp.status == true) {
+                                $('#groupInfo').modal('hide');
+                                loadChat(team_id);
+                                toastr.success(resp.message);
+                                $('#group-member-' + team_id + '-' + user_id).remove();
+
+                                // socket emit
+                                socket.emit('removeMemberFromGroup', {
+                                    team_id: team_id,
+                                    user_id: user_id
+                                });
+
+                                socket.emit('sendTeamMessage', {
+                                    chat: resp.chat,
+                                    chat_member_id: resp.chat_member_id
+                                });
+
+                            } else {
+                                toastr.error(resp.message);
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error('Something went wrong');
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+
+            function groupList(user_id) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('team-chats.group-list') }}",
+                    data: {
+                        user_id: user_id,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(resp) {
+                        $('.group-list').html(resp.view);
+                    },
+                    error: function(xhr) {
+                        toastr.error('Something went wrong');
+                    }
+                });
+            }
+
+            // createTeam
+            socket.on('createTeam', function(data){
+                console.log(data);
+
+                if (sender_id != data.user_id && data.chat_member_id.includes(sender_id)) {
+                    console.log(data);
+
+                    groupList(sender_id);
+                }
+            })
+
+            socket.on('removeMemberFromGroup', function(data) {
+                $('#group-member-form-' + data.team_id + '-' + data.user_id).html(`
+                  <div class="justify-content-center">
+            <div class="text-center">
+                <h4 style="color:#be2020 !important; front-size:1.3125rem;">Sorry! You are removed from this group.</h4>
+            </div>
+        </div>
+                `);
+                if (data.user_id != sender_id) {
+                    $('#group-member-' + data.team_id + '-' + data.user_id).remove();
+                }
+            });
+
+            socket.on('updateGroupImage', function(data) {
+                $('.team-image-' + data.team_id).html(
+                    `<img src="${data.group_image}" alt="">`);
+            });
+
             // Receive message from socket
             socket.on('sendTeamMessage', function(data) {
                 // console.log(data);
@@ -557,7 +784,10 @@
                 let timezone = 'America/New_York';
                 let created_at = data.chat.created_at;
                 let time = moment.tz(created_at, timezone).format('h:mm A');
-                if (data.chat.user_id != sender_id) {
+
+                let chat_member_id_array = data.chat_member_id;
+
+                if (data.chat.user_id != sender_id && chat_member_id_array.includes(sender_id)) {
                     let html = `
         <div class="message you">
             <div class="d-flex">

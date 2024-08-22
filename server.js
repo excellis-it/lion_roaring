@@ -30,6 +30,23 @@ io.on('connection', (socket) => {
         console.log('sendTeamMessage: ' + msg);
         io.sockets.emit('sendTeamMessage', msg);
     });
+    //updateGroupImage1
+    socket.on('updateGroupImage', (msg) => {
+        console.log('updateGroupImage: ' + msg);
+        io.sockets.emit('updateGroupImage', msg);
+    });
+
+    // removeMemberFromGroup
+    socket.on('removeMemberFromGroup', (msg) => {
+        console.log('removeMemberFromGroup: ' + msg);
+        io.sockets.emit('removeMemberFromGroup', msg);
+    });
+
+    // createTeam
+    socket.on('createTeam', (msg) => {
+        console.log('createTeam: ' + msg);
+        io.sockets.emit('createTeam', msg);
+    });
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
