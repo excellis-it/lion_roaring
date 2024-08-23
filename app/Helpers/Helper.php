@@ -119,7 +119,7 @@ class Helper
     public static function checkAdminTeam($user_id, $team_id)
     {
         $team = Team::where('id', $team_id)->whereHas('members', function ($query) use ($user_id) {
-            $query->where('user_id', $user_id)->where('is_admin', true);
+            $query->where('user_id', $user_id)->where('is_admin', true)->where('is_removed', false);
         })->first();
         if ($team) {
             return true;
@@ -138,11 +138,26 @@ class Helper
             return false;
         }
     }
-    
+
     public static function userLastMessage($team_id, $user_id)
     {
        return TeamChat::where('team_id', $team_id)->whereHas('chatMembers', function ($query) use ($user_id) {
             $query->where('user_id', $user_id);
         })->latest()->first();
+    }
+
+    public static function checkMemberInTeam($team_id, $user_id)
+    {
+        $team_member_check = TeamMember::where(function ($query) use ($team_id, $user_id) {
+            $query->where('team_id', $team_id)
+                ->where('user_id', $user_id)
+                ->where('is_removed', false);
+        })->first();
+
+        if ($team_member_check) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

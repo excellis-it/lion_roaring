@@ -8,7 +8,7 @@
                 alt=""></div>
         <div class="group_text">
             <p class="GroupName group-name-{{ $team['id'] }}">{{ $team['name'] ?? '' }}</p>
-            <span>{{ $team_member_name ? (strlen($team_member_name) > 60 ? substr($team_member_name, 0, 60) . '...' : $team_member_name) : '' }}</span>
+            <span id="all-member-{{$team['id']}}">{{ $team_member_name ? (strlen($team_member_name) > 60 ? substr($team_member_name, 0, 60) . '...' : $team_member_name) : '' }}</span>
         </div>
         <div class="group_text_right">
             <div class="dropdown">

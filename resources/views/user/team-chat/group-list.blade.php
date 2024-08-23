@@ -3,11 +3,11 @@
 @endphp
 @if (count($teams) > 0)
 @foreach ($teams as $team)
-    <li class="group group-data" data-id="{{ $team->id }}">
+    <li class="group group-data  {{isset($team_id) && ($team['id'] == $team_id) ? 'active' : ''}}" data-id="{{ $team['id'] }}">
         <div class="avatar team-image-{{ $team['id'] }}"><img
-                src="{{ $team->group_image ? Storage::url($team->group_image) : asset('user_assets/images/group.jpg') }}"
+                src="{{ $team['group_image'] ? Storage::url($team['group_image']) : asset('user_assets/images/group.jpg') }}"
                 alt=""></div>
-        <p class="GroupName group-name-{{ $team['id'] }}">{{ $team->name }}</p>
+        <p class="GroupName group-name-{{ $team['id'] }}">{{ $team['name'] }}</p>
         <p class="GroupDescrp">{!! Helper::userLastMessage($team['id'], auth()->user()->id)
             ? (Helper::userLastMessage($team['id'], auth()->user()->id)->message
                 ? (Helper::userLastMessage($team['id'], auth()->user()->id)->message)

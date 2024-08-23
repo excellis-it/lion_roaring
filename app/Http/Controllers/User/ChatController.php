@@ -158,7 +158,7 @@ class ChatController extends Controller
                 if ($user['last_message']) {
                     $user['last_message']->created_at = $user['last_message']->created_at->format('Y-m-d H:i:s'); // Format to string
                 }
-                
+
                 return $user;
             }, $receiver_users);
 
@@ -179,5 +179,23 @@ class ChatController extends Controller
         } catch (\Throwable $th) {
             return response()->json(['msg' => $th->getMessage(), 'success' => false]);
         }
+    }
+
+    public function clear(Request $request)
+    {
+        $sender_id = $request->sender_id;
+        $reciver_id = $request->reciver_id;
+
+        $chats = Chat::where(function ($query) use ($sender_id, $reciver_id) {
+            $query->where('sender_id', $sender_id)
+                ->where('reciver_id', $reciver_id);
+        })
+            ->orWhere(function ($query) use ($sender_id, $reciver_id) {
+                $query->where('sender_id', $reciver_id)
+                    ->where('reciver_id', $sender_id);
+            })
+            ->delete();
+
+        return response()->json(['msg' => 'Chat cleared successfully', 'success' => true]);
     }
 }

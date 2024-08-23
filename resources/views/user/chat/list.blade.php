@@ -63,8 +63,8 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
 
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
     <script>
@@ -75,7 +75,7 @@
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
                 },
             });
-            let ip_address = '127.0.0.1';
+            let ip_address = "{{ env('IP_ADDRESS') }}";
             let socket_port = '3000';
             let socket = io(ip_address + ':' + socket_port);
 
@@ -254,7 +254,8 @@
                             let attachement_extention = attachment.split('.').pop();
                             let created_at = res.chat.created_at;
                             let timeZome = 'America/New_York';
-                            let time_format_12 = moment.tz(created_at, timeZome).format("hh:mm A");
+                            let time_format_12 = moment.tz(created_at, timeZome).format(
+                                "hh:mm A");
                             let html = `<div class="message me">`;
                             if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
                                 html +=
@@ -284,7 +285,8 @@
                             users.forEach(user => {
                                 let timeZome = 'America/New_York';
                                 let time_format_13 = user.last_message && user
-                                    .last_message.created_at ? moment.tz(user.last_message
+                                    .last_message.created_at ? moment.tz(user
+                                        .last_message
                                         .created_at, timeZome).format(
                                         "hh:mm A") : '';
 
@@ -318,6 +320,53 @@
                     }
                 });
             });
+
+            // clear-chat
+
+            $(document).on("click", ".clear-chat", function(e) {
+                var receiver_id = $(this).data("reciver-id");
+                r = confirm("Are you sure you want to clear chat?");
+                if (r == false) {
+                    return false;
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('chats.clear') }}",
+                        data: {
+                            _token: $("input[name=_token]").val(),
+                            reciver_id: receiver_id,
+                            sender_id: sender_id,
+                        },
+                        success: function(res) {
+                            if (res.success) {
+                                $("#chat-container-" + receiver_id).html("");
+                                $("#message-app-" + receiver_id).html("");
+                                // loadChats();
+                                // socket.emit("chat", {
+                                socket.emit("clear-chat", {
+                                    receiver_id: receiver_id,
+                                    sender_id: sender_id,
+                                });
+
+                            } else {
+                                console.log(res.msg);
+                            }
+                        }
+                    });
+                }
+
+            });
+
+            // clear-chat
+            socket.on('clear-chat', function(data){
+                console.log(sender_id + ' ' + data.sender_id);
+
+                if (data.receiver_id == sender_id) {
+                    $("#chat-container-" + data.sender_id).html("");
+                    $("#message-app-" + data.sender_id).html("");
+                }
+            })
+
 
             // Listen for incoming chat messages from the server
             socket.on("chat", function(data) {

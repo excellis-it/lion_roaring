@@ -259,6 +259,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::get('/', [ChatController::class, 'chats'])->name('index');
         Route::post('/load', [ChatController::class, 'load'])->name('load');
         Route::post('/send', [ChatController::class, 'send'])->name('send');
+        // clear
+        Route::post('/clear', [ChatController::class, 'clear'])->name('clear');
     });
 
     // Team Chat
@@ -273,6 +275,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/name-des-update', [TeamChatController::class, 'nameDesUpdate'])->name('name-des-update');
         Route::post('/remove-member', [TeamChatController::class, 'removeMember'])->name('remove-member');
         Route::post('/group-list', [TeamChatController::class, 'groupList'])->name('group-list');
+        Route::post('/exit-from-group', [TeamChatController::class, 'exitFromGroup'])->name('exit-from-group');
+        Route::post('/add-member-team', [TeamChatController::class, 'addMemberTeam'])->name('add-member-team');
     });
 
     Route::prefix('file')->group(function () {

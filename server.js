@@ -25,6 +25,12 @@ io.on('connection', (socket) => {
         io.sockets.emit('seen', msg);
     });
 
+    // clear-chat
+    socket.on('clear-chat', (msg) => {
+        console.log('clear-chat: ' + msg);
+        io.sockets.emit('clear-chat', msg);
+    });
+
     // sendTeamMessage
     socket.on('sendTeamMessage', (msg) => {
         console.log('sendTeamMessage: ' + msg);
@@ -40,6 +46,18 @@ io.on('connection', (socket) => {
     socket.on('removeMemberFromGroup', (msg) => {
         console.log('removeMemberFromGroup: ' + msg);
         io.sockets.emit('removeMemberFromGroup', msg);
+    });
+
+    // exitFromGroup
+    socket.on('exitFromGroup', (msg) => {
+        console.log('exitFromGroup: ' + msg);
+        io.sockets.emit('exitFromGroup', msg);
+    });
+
+    // addMemberToGroup
+    socket.on('addMemberToGroup', (msg) => {
+        console.log('addMemberToGroup: ' + msg);
+        io.sockets.emit('addMemberToGroup', msg);
     });
 
     // createTeam

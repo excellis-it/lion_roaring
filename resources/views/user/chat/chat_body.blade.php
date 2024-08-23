@@ -9,6 +9,18 @@
         </div>
         <p class="GroupName">{{ $reciver->full_name }}</p>
     </div>
+    <div class="group_text_right clear-chat-button">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item clear-chat"  data-reciver-id="{{ $reciver->id }}">Clear all chat</a></li>
+            </ul>
+        </div>
+    </div>
+
     <div class="MessageContainer" id="chat-container-{{ $reciver->id }}">
         @if ($chats->count() > 0)
             @foreach ($chats->groupBy(function ($chat) {
