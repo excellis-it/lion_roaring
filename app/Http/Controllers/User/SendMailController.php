@@ -60,6 +60,27 @@ class SendMailController extends Controller
             'message' => 'required',
         ]);
 
+        if ($request->cc) {
+            // check the cc email is valid or not
+            $cc = explode(',', $request->cc);
+            foreach ($cc as $email) {
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    return redirect()->back()->with('error', 'CC email is not valid.');
+                }
+            }
+        }
+
+        if ($request->to) {
+            // check the to email is valid or not
+            $to = explode(',', $request->to);
+            foreach ($to as $email) {
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    return redirect()->back()->with('error', 'To email is not valid.');
+                }
+            }
+        }
+
+        // dd($request->all());
         $mail = new SendMail();
         $mail->form_id = auth()->id();
         $mail->to = $request->to;
@@ -68,7 +89,11 @@ class SendMailController extends Controller
         $mail->message = $request->message;
         $mail->save();
 
-        Mail::to($request->to)->send(new MailSendMail($mail));
+        // Mail::to($request->to)->send(new MailSendMail($mail));
+        // send multiple mail to cc at a time
+        $cc = explode(',', $request->cc);
+        $to = explode(',', $request->to);
+        Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
 
         return redirect()->route('mail.index')->with('message', 'Mail sent successfully.');
     }

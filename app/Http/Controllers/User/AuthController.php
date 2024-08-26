@@ -62,7 +62,7 @@ class AuthController extends Controller
 
     public function registerCheck(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
         // $request->validate([
         //     'user_name' => 'required|string|max:255|unique:users',
         //     'email' => 'required|string|email|max:255|unique:users',

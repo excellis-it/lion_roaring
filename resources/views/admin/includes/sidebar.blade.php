@@ -28,8 +28,8 @@
                             href="{{ route('admin.profile') }}">My Profile</a></li>
                     <li class="{{ Request::is('admin/password*') ? 'active' : ' ' }}"><a class="nav-link"
                             href="{{ route('admin.password') }}">Change Password</a></li>
-                    {{-- <li class="{{ Request::is('admin/password*') ? 'active' : ' ' }}"><a class="nav-link"
-                            href="{{ route('admin.index') }}">Admin List</a></li> --}}
+                    <li class="{{ Request::is('admin/password*') ? 'active' : ' ' }}"><a class="nav-link"
+                            href="{{ route('admin.index') }}">Admin List</a></li>
 
                 </ul>
             </li>

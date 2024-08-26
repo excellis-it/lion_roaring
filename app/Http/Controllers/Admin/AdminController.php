@@ -11,16 +11,21 @@ class AdminController extends Controller
     //
     public function index()
     {
-        $admins = User::role('ADMIN')->get();
+        $admins = User::role('ADMIN')->where('id', '!=', auth()->user()->id)->get();
         return view('admin.admin.list')->with(compact('admins'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'middle_name' => 'nullable',
+            'email' => 'required|email|unique:users',
+            'user_name' => 'required|unique:users',
             'password' => 'required',
+            'phone' => 'required',
+            'confirm_password' => 'required|same:password',
         ]);
 
         $count = User::where('email', $request->email)->count();
@@ -28,23 +33,18 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Email already exists');
         } else {
             $admin = new User;
-            $admin->name = $request->name;
+            $admin->first_name = $request->first_name;
+            $admin->last_name = $request->last_name;
+            $admin->middle_name = $request->middle_name ?? null;
             $admin->email = $request->email;
+            $admin->user_name = $request->user_name;
             $admin->password = bcrypt($request->password);
+            $admin->phone = $request->phone;
             $admin->status = true;
-            if ($request->hasFile('profile_picture')) {
-                $request->validate([
-                    'profile_picture' => 'required|image|mimes:jpg,png,jpeg,gif,svg',
-                ]);
-
-                $file = $request->file('profile_picture');
-                $filename = date('YmdHi') . $file->getClientOriginalName();
-                $image_path = $request->file('profile_picture')->store('admin', 'public');
-                $admin->profile_picture = $image_path;
-            }
             $admin->save();
             $admin->assignRole('ADMIN');
-            return redirect()->route('admin.index')->with('message', 'Admin has been added successfully');
+            session()->flash('message', 'Admin account has been successfully created.');
+            return response()->json(['message' => 'Admin account has been successfully created.', 'status' => 'success']);
         }
     }
 
@@ -58,27 +58,34 @@ class AdminController extends Controller
     {
 
         $request->validate([
-            'edit_name' => 'required',
-            'edit_email' => 'required',
+            'edit_first_name' => 'required',
+            'edit_last_name' => 'required',
+            'edit_middle_name' => 'nullable',
+            'edit_email' => 'required|email|unique:users,email,' . $request->id,
+            'edit_user_name' => 'required|unique:users,user_name,' . $request->id,
+            'edit_phone' => 'required',
+        ],[
+            'edit_email.unique' => 'Email already exists',
+            'edit_user_name.unique' => 'Username already exists',
+            'edit_email.required' => 'Email is required',
+            'edit_user_name.required' => 'Username is required',
+            'edit_phone.required' => 'Phone number is required',
+            'edit_first_name.required' => 'First name is required',
+            'edit_last_name.required' => 'Last name is required',
+
         ]);
 
-        $count = User::where('email', $request->edit_email)->where('id', '!=', $request->id)->count();
-        if ($count > 0) {
-            return redirect()->back()->with('error', 'Email already exists');
-        } else {
-            $user = User::where('id', $request->id)->first();
-            $user->name =  $request->edit_name;
-            $user->email =  $request->edit_email;
-            if ($request->hasFile('profile_picture')) {
-                $file = $request->file('profile_picture');
-                $filename = date('YmdHi') . $file->getClientOriginalName();
-                $image_path = $request->file('profile_picture')->store('user', 'public');
-                $user->profile_picture = $image_path;
-            }
-            $user->save();
+        $admin = User::findOrFail($request->id);
+        $admin->first_name = $request->edit_first_name;
+        $admin->last_name = $request->edit_last_name;
+        $admin->middle_name = $request->edit_middle_name ?? null;
+        $admin->email = $request->edit_email;
+        $admin->user_name = $request->edit_user_name;
+        $admin->phone = $request->edit_phone;
+        $admin->save();
+        session()->flash('message', 'Admin account has been successfully updated.');
+        return response()->json(['message' => 'Admin account has been successfully updated.', 'status' => 'success']);
 
-            return redirect()->back()->with('message',  'Admin account has been successfully updated.');
-        }
     }
 
 

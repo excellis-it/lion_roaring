@@ -68,7 +68,8 @@
                                                     <select name="ecclesia_id" id="ecclesia_id" class="input">
                                                         <option value=""></option>
                                                         @foreach ($eclessias as $ecclesia)
-                                                            <option value="{{ $ecclesia->id }}" {{ old('ecclesia_id') == $ecclesia->id ? 'selected' : '' }}>
+                                                            <option value="{{ $ecclesia->id }}"
+                                                                {{ old('ecclesia_id') == $ecclesia->id ? 'selected' : '' }}>
                                                                 {{ $ecclesia->name }} -
                                                                 ({{ $ecclesia->country ? $ecclesia->countryName->name : '-' }})
                                                             </option>
@@ -116,10 +117,10 @@
                                                     <select name="country" id="country" class="input">
                                                         <option value="">Select Country</option>
                                                         @foreach ($countries as $country)
-                                                        <option value="{{ $country->id }}"
-                                                            {{ old('country', $country->code == 'US' ? $country->id : '') == $country->id ? 'selected' : '' }}>
-                                                            {{ $country->name }}
-                                                        </option>
+                                                            <option value="{{ $country->id }}"
+                                                                {{ old('country', $country->code == 'US' ? $country->id : '') == $country->id ? 'selected' : '' }}>
+                                                                {{ $country->name }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                     @if ($errors->has('country'))
@@ -337,145 +338,116 @@
         });
     </script>
 
-<script>
-    $(document).ready(function() {
-        // Initially load states for the selected country
-        getStates($('#country').val());
+    <script>
+        $(document).ready(function() {
+            // Initially load states for the selected country
+            getStates($('#country').val());
 
-        // Fetch states when the country changes
-        $('#country').change(function() {
-            var country = $(this).val();
-            getStates(country);
-        });
-
-        function getStates(country) {
-            $.ajax({
-                url: "{{ route('get.states') }}", // Ensure this route returns the states for the given country
-                type: "GET",
-                data: {
-                    country: country
-                },
-                success: function(response) {
-                    var states = response;
-                    var selectedState = "{{ old('state') }}"; // Fetch the old input value for state
-                    var html = '<option value="">Select State</option>';
-
-                    states.forEach(function(state) {
-                        html += '<option value="' + state.id + '"';
-
-                        if (selectedState == state.id) {
-                            html += ' selected';
-                        }
-
-                        html += '>' + state.name + '</option>';
-                    });
-
-                    $('#state').html(html); // Populate the state dropdown
-                }
+            // Fetch states when the country changes
+            $('#country').change(function() {
+                var country = $(this).val();
+                getStates(country);
             });
-        }
-    });
-</script>
+
+            function getStates(country) {
+                $.ajax({
+                    url: "{{ route('get.states') }}", // Ensure this route returns the states for the given country
+                    type: "GET",
+                    data: {
+                        country: country
+                    },
+                    success: function(response) {
+                        var states = response;
+                        var selectedState =
+                            "{{ old('state') }}"; // Fetch the old input value for state
+                        var html = '<option value="">Select State</option>';
+
+                        states.forEach(function(state) {
+                            html += '<option value="' + state.id + '"';
+
+                            if (selectedState == state.id) {
+                                html += ' selected';
+                            }
+
+                            html += '>' + state.name + '</option>';
+                        });
+
+                        $('#state').html(html); // Populate the state dropdown
+                    }
+                });
+            }
+        });
+    </script>
 
 
 
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/css/intlTelInput.css">
-    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/js/intlTelInput.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/js/utils.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.7/dist/inputmask.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput-jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/utils.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const input = document.querySelector("#mobile_code");
-            const iti = window.intlTelInput(input, {
-                separateDialCode: true,
-                initialCountry: "us",
-                utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.7.0/build/js/utils.js",
-            });
+        function validate() {
+            var number = $("#mobile_code").intlTelInput('getNumber');
+            var iso = $("#mobile_code").intlTelInput('getSelectedCountryData').iso2;
 
-            // Function to apply the mask based on the selected country
-            const applyMask = (countryData) => {
-                const mask = getMaskForCountry(countryData.iso2);
-                Inputmask(mask).mask(input);
-            };
+            var isValidNumber = intlTelInputUtils.isValidNumber(number, iso);
+            var validationError = intlTelInputUtils.getValidationError(number, iso);
 
-            // Get the mask for the country
-            const getMaskForCountry = (countryCode) => {
-                const masks = {
-                    // Add all the country masks as you've defined
-                    us: '999 999-9999',
-                    gb: '99999 999999',
-                    in: '99999-99999',
-                    br: '99999-999',
-                    au: '9999 999 999',
-                    de: '99999 999999',
-                    dk: '99 99 99 99',
-                    fr: '99 99 99 99 99',
-                    it: '999 999 9999',
-                    ru: '999 999-99-99',
-                    mx: '999 999 9999',
-                    jp: '999-9999-9999',
-                    cn: '999 9999 9999',
-                    sg: '9999 9999',
-                    pt: '999 999 999',
-                    kr: '999-9999-9999',
-                    pl: '99 999 99 99',
-                    th: '9999 9999',
-                    tw: '9999 999 999',
-                    cz: '999 999 999',
-                    sk: '999 999 999',
-                    ph: '9999 999 9999',
-                    my: '999 999 9999',
-                    id: '9999 999 9999',
-                    vn: '999 999 999',
-                    nl: '99 9999999',
-                    be: '999 99 99 99',
-                    fi: '999 9999999',
-                    se: '999-999 99 99',
-                    no: '999 99 999',
-                    pl: '99 999 99 99',
-                    hu: '99 999 9999',
-                    at: '999 9999999',
-                    ch: '999 999 9999',
-                    za: '999 999 9999',
-                    gr: '999 999 9999',
-                    ro: '999 999 999',
-                    hr: '999 999 9999',
-                    bg: '999 999 9999',
-                    tr: '999 999 9999',
-                    is: '999 9999',
-                    ie: '999 999 9999',
-                    es: '999 999 999',
-                    ar: '999 999 9999',
-                    cl: '999 999 9999',
-                    co: '999 999 9999',
-                    // ... other country masks
-                };
-                return masks[countryCode] || '9999999999';
-            };
+            console.log(number);
+            console.log(intlTelInputUtils.formatNumber(number, iso, intlTelInputUtils.numberFormat.INTERNATIONAL));
+            console.log(isValidNumber);
+            console.log(validationError);
 
-            // Apply mask initially
-            applyMask(iti.getSelectedCountryData());
+            // You can add custom validation logic here if needed
+        }
 
-            // Apply mask on country change
-            input.addEventListener('countrychange', function() {
-                applyMask(iti.getSelectedCountryData());
-            });
+        $("#mobile_code").intlTelInput({
+            geoIpLookup: function(callback) {
+                $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                });
+            },
+            initialCountry: "auto",
+            separateDialCode: true,
+        });
 
-            // Add event listener to the form
-            const form = document.querySelector("form");
-            form.addEventListener("submit", function(event) {
-                // Get only the country full code number
-                const countryCode = iti.getSelectedCountryData().dialCode;
-                const fullNumber = iti.getNumber();
-                // Set the full number as a hidden input's value
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'country_code'; // Name this as needed
-                hiddenInput.value = countryCode;
-                form.appendChild(hiddenInput);
-            });
+        $('#mobile_code').on('countrychange', function(e) {
+            $(this).val('');
+
+            var selectedCountry = $(this).intlTelInput('getSelectedCountryData');
+            var dialCode = selectedCountry.dialCode;
+            var exampleNumber = intlTelInputUtils.getExampleNumber(selectedCountry.iso2, 0, 0);
+
+            var maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
+            maskNumber = maskNumber.replace('+' + dialCode + ' ', '');
+
+            var mask = maskNumber.replace(/[0-9+]/g, '0');
+            $('#mobile_code').mask(mask, { placeholder: maskNumber });
+        });
+
+        // Example to submit the form
+        $('form').on('submit', function(e) {
+            // Get the full number including the country code
+            var fullNumber = $("#mobile_code").intlTelInput('getNumber');
+            var countryCode = $("#mobile_code").intlTelInput('getSelectedCountryData').dialCode;
+
+            // Store the full number in a hidden input field
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'full_phone_number',
+                value: fullNumber
+            }).appendTo('form');
+
+            // Store the country code in a hidden input field
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'country_code',
+                value: countryCode
+            }).appendTo('form');
         });
     </script>
 </body>

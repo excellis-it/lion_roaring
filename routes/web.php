@@ -105,7 +105,14 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::post('/update', [ProfileController::class, 'passwordUpdate'])->name('admin.password.update'); // password update
     });
 
-
+    // admin index
+    Route::prefix('detail')->group(function () {
+        Route::get('/',[AdminController::class,'index'])->name('admin.index');
+        Route::post('/store',[AdminController::class,'store'])->name('admin.store');
+        Route::post('/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
+        Route::get('/delete/{id}', [AdminController::class, 'delete'])->name('admin.delete');
+        Route::post('/update',[AdminController::class, 'update'])->name('admin.update');
+    });   
 
     Route::resources([
         'customers' => CustomerController::class,

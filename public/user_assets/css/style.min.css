@@ -37094,8 +37094,8 @@ fieldset:disabled .btn {
 .sidebar-nav ul .sidebar-item .sidebar-link img {
         flex-shrink: 0;
     /* font-size: 20px; */
-    width: 90px;
-    height: 90px;
+    width: 50px;
+    height: 50px;
     /* background: #F6BC41; */
     display: flex;
     align-items: center;
@@ -45054,15 +45054,21 @@ ul {
     display:block;
 }
 .menu_bb a span img{
-    width:60px;
-    height:60px;
+    width:35px;
+    height:35px;
     object-fit:contain;
 }
 .menu_bb a:hover{
     color:#fff;
 }
 
+.sidebar-item{
+    padding: 5px;
+}
 
+.iti__country-list {
+    z-index: 14 !important;
+}
 
 @media (max-width:1280px) {
     .breadcome-list{

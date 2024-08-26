@@ -1,253 +1,272 @@
 @extends('admin.layouts.master')
 @section('title')
-    All Admin Details - {{env('APP_NAME')}}
+    Admin - {{ env('APP_NAME') }}
 @endsection
-
+@push('styles')
+    <style>
+        .dataTables_filter {
+            margin-bottom: 10px !important;
+        }
+    </style>
+@endpush
+@section('head')
+    Admin
+@endsection
+@section('create_button')
+    <a href="javascript:void(0)" id="create-admin"  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_admin">Add Admin</a>
+@endsection
 
 @section('content')
     <section id="loading">
         <div id="loading-content"></div>
     </section>
-    <div class="page-wrapper">
-
-        <div class="content container-fluid">
-
-            <div class="page-header">
-                <div class="row align-items-center">
-                    <div class="col">
-                        <h3 class="page-title">Admin Information</h3>
-                        <ul class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active">List</li>
-                        </ul>
-                    </div>
-                    <div class="col-auto float-end ms-auto">
-                        <a href="#" class="btn add-btn" data-bs-toggle="modal" data-bs-target="#add_admin"><i
-                                class="fa fa-plus"></i> Add Admin</a>
-                    </div>
+    <div id="add_admin" class="modal custom-modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Admin Information</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </div>
-
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-title">
+                <div class="modal-body">
+                    <form action="{{ route('admin.store') }}" method="POST" id="createForm"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-12">
+                                {{-- <div class="profile-img-wrap edit-img">
+                                    <img class="inline-block" alt="admin"
+                                        src="{{ asset('admin_assets/img/profiles/avatar-02.jpg') }}">
+                                    <div class="fileupload btn">
+                                        <span class="btn-text">upload</span>
+                                        <input class="upload" type="file" name="profile_picture"
+                                            id="profile_picture">
+                                    </div>
+                                </div> --}}
+                                <div class="row">
+                                    {{-- user_name --}}
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>User Name<span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="user_name"
+                                                id="user_name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>First Name<span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="first_name"
+                                                id="first_name">
+                                        </div>
+                                    </div>
+                                    {{-- middle_name --}}
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Middle Name</label>
+                                            <input type="text" class="form-control" name="middle_name"
+                                                id="middle_name">
+                                        </div>
+                                    </div>
+                                    {{-- last_name --}}
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Last Name<span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="last_name"
+                                                id="last_name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Email<span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="email"
+                                                id="email">
+                                        </div>
+                                    </div>
+                                    {{-- phone --}}
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Phone<span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="phone"
+                                                id="phone">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <h4 class="mb-0">Admin Details</h4>
+                                <div class="form-group">
+                                    <label>Password<span class="text-danger">*</span></label>
+                                    <input type="password" class="form-control" name="password" id="password">
+                                </div>
                             </div>
-                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Confirm Password<span class="text-danger">*</span></label>
+                                    <input type="password" class="form-control" name="confirm_password"
+                                        id="confirm_password">
+                                </div>
+                            </div>
                         </div>
-                    </div>
-
-                    <hr />
-                    <div class="table-responsive">
-                        <table id="example" class="dd table table-striped table-bordered" style="width:100%">
-                            <thead>
-                                <tr>
-
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Created Date</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($admins as $admin)
-                                
-                                <tr>
-                                    <td style="display:none;"><a href="{{Storage::url($admin->profile_picture)}}" target="_blank" >
-                                        <img src="{{Storage::url($admin->profile_picture)}}" class="rounded-circle shadow" width="130px" height="130px" alt="" id="img-{{ $admin->id }}" data-url="{{ Storage::url($admin->profile_picture) }}"></a></td>
-                                    <td>{{ $admin->name}}</td>
-                                    <td>{{ $admin->email}}</td>
-                                    <td>{{ date('d M Y',strtotime($admin->created_at)) }}</td>
-                                    <td align="center">
-                                        <a class="edit-admins" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit_admin" data-id="{{ $admin->id }}"
-                                                data-route="{{ route('admin.edit', $admin->id) }}"><i
-                                                    class="fas fa-edit"></i></a> &nbsp;&nbsp;
-                                                    
-                                        <a href="{{route('admin.delete', $admin->id)}}" onclick="return confirm('Are you sure to delete this admin?')"><i class="fas fa-trash"></i></a>
-                                        
-                                    </td>
-                                </tr>
-                               
-                                @endforeach
-                            </tbody>
-
-                        </table>
-                    </div>
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn">Submit</button>
+                        </div>
+                    </form>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div id="add_admin" class="modal custom-modal fade" role="dialog">
-                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Admin Information</h5>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="{{ route('admin.store') }}" method="POST" id="createForm"
-                                enctype="multipart/form-data">
-                                @csrf
+    <div id="edit_admin" class="modal custom-modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Admin Information</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('admin.update') }}" method="POST" id="editForm"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="hidden" id="hidden_id" name="id" value="">
                                 <div class="row">
+                                    {{-- user_name --}}
                                     <div class="col-md-12">
-                                        <div class="profile-img-wrap edit-img">
-                                            <img class="inline-block" alt="admin"
-                                                src="{{ asset('admin_assets/img/profiles/avatar-02.jpg') }}">
-                                            <div class="fileupload btn">
-                                                <span class="btn-text">upload</span>
-                                                <input class="upload" type="file" name="profile_picture"
-                                                    id="profile_picture">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Name<span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control" name="name"
-                                                        id="name">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Email<span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control" name="email"
-                                                        id="email">
-                                                </div>
-                                            </div>
+                                        <div class="form-group">
+                                            <label>User Name<span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="edit_user_name"
+                                                id="edit_user_name">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Password<span class="text-danger">*</span></label>
-                                            <input type="password" class="form-control" name="password" id="password">
+                                            <label>First Name<span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="edit_first_name"
+                                                id="edit_first_name">
+                                        </div>
+                                    </div>
+                                    {{-- middle_name --}}
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Middle Name</label>
+                                            <input type="text" class="form-control" name="edit_middle_name"
+                                                id="edit_middle_name">
+                                        </div>
+                                    </div>
+                                    {{-- last name --}}
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Last Name<span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="edit_last_name"
+                                                id="edit_last_name">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Confirm Password<span class="text-danger">*</span></label>
-                                            <input type="password" class="form-control" name="confirm_password"
-                                                id="confirm_password">
+                                            <label>Email<span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="edit_email"
+                                                id="edit_email">
+                                        </div>
+                                    </div>
+                                    {{-- phone --}}
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Phone<span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="edit_phone"
+                                                id="edit_phone">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="submit-section">
-                                    <button class="btn btn-primary submit-btn">Submit</button>
-                                </div>
-                            </form>
+                            </div>
+                        </div>
+
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="inner_page">
+
+            <div class="card table_sec stuff-list-table">
+                <div class="row justify-content-end">
+                    <div class="col-md-6">
+                        <div class="row g-1 justify-content-end">
+
+                            {{-- <div class="col-md-3 pl-0 ml-2">
+                                <button class="btn btn-primary button-search" id="search-button"> <span class=""><i
+                                            class="ph ph-magnifying-glass"></i></span> Search</button>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
-            </div>
+                <div class="table-responsive" id="contacts-data">
+                    <table id="example" class="dd table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>
+                                    User Name
+                                </th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>
+                                    Phone
+                                </th>
+                                <th>Created Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($admins as $admin)
 
-            <div id="edit_admin" class="modal custom-modal fade" role="dialog">
-                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Admin Information</h5>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="{{ route('admin.update') }}" method="POST" id="editForm"
-                                enctype="multipart/form-data">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="profile-img-wrap edit-img">
-                                            <div class="show-image"></div>
-                                            <img class="inline-block" alt="admin"
-                                                src="{{ asset('admin_assets/img/profiles/avatar-02.jpg') }}">
-                                            <div class="fileupload btn">
-                                                <span class="btn-text">upload</span>
-                                                <input class="upload" type="file" name="profile_picture"
-                                                    id="profile_picture">
-                                            </div>
-                                        </div>
-                                        <input type="hidden" id="hidden_id" name="id" value="">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Name<span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control" name="edit_name"
-                                                        id="edit_name">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Email<span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control" name="edit_email"
-                                                        id="edit_email">
-                                                </div>
-                                            </div>
-                                        </div>
+                            <tr>
+                                <td>{{ $admin->user_name}}</td>
+                                <td>{{ $admin->full_name}}</td>
+                                <td>{{ $admin->email}}</td>
+                                <td>{{ $admin->phone}}</td>
+                                <td>{{ date('d M Y',strtotime($admin->created_at)) }}</td>
+                                <td align="center">
+                                    <div class="edit-1 d-flex align-items-center justify-content-center">
+                                    <a class="edit-admins edit-icon" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#edit_admin" data-id="{{ $admin->id }}"
+                                            data-route="{{ route('admin.edit', $admin->id) }}">  <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span></a>
+
+                                    <a href="{{route('admin.delete', $admin->id)}}" onclick="return confirm('Are you sure to delete this admin?')"> <span class="trash-icon"><i
+                                        class="ph ph-trash"></i></span></a>
                                     </div>
-                                </div>
-                               
-                                <div class="submit-section">
-                                    <button class="btn btn-primary submit-btn">Update</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+
+                                </td>
+                            </tr>
+
+                            @endforeach
+                        </tbody>
+
+                    </table>
                 </div>
             </div>
 
         </div>
-
     </div>
 @endsection
 
 @push('scripts')
+{{-- create-admin --}}
     <script>
         $(document).ready(function() {
-            jQuery.validator.addMethod("emailExt", function(value, element, param) {
-                return value.match(/^[a-zA-Z0-9_\.%\+\-]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}$/);
-            }, 'Your E-mail is wrong');
-
-            $("#createForm").validate({
-                rules: {
-                    name: "required",
-                    email: {
-                        required: true,
-                        email: true,
-                        emailExt: true,
-                    },
-                    password: {
-                        required: true,
-                        minlength: 8
-                    },
-                    confirm_password: {
-                        required: true,
-                        minlength: 8,
-                        equalTo: "#password"
-                    },
-
-                },
-
+            $('#create-admin').on('click', function() {
+                $('#add_admin').modal('show');
             });
-
-            $("#editForm").validate({
-                rules: {
-                    edit_name: "required",
-                    edit_email: {
-                        required: true,
-                        email: true,
-                        emailExt: true,
-                    },
-                },
-
-            });
-
-            
         });
     </script>
+
     <script>
         $(document).ready(function() {
 
@@ -271,15 +290,109 @@
                     dataType: 'JSON',
                     success: async function(data) {
                         try {
-                            console.log(data);
+                        //    open modal
+                            await $('#edit_admin').modal('show');
                             await $('#hidden_id').val(data.admin.id);
-                            await $('#edit_name').val(data.admin.name);
+                            await $('#edit_user_name').val(data.admin.user_name);
+                            await $('#edit_first_name').val(data.admin.first_name);
+                            await $('#edit_middle_name').val(data.admin.middle_name);
+                            await $('#edit_last_name').val(data.admin.last_name);
                             await $('#edit_email').val(data.admin.email);
-                            await $('.show-image').html('<img src="'+img_url+'" class="inline-block" alt="admin">');
+                            await $('#edit_phone').val(data.admin.phone);
                             await $('#loading').removeClass('loading');
                             await $('#loading-content').removeClass('loading-content');
                         } catch (error) {
                             console.log(error);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+{{-- createForm  submit --}}
+    <script>
+        $(document).ready(function() {
+            $('#createForm').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                var type = form.attr('method');
+                var data = new FormData(form[0]);
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
+                $.ajax({
+                    url: url,
+                    type: type,
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        if (data.status == 'success') {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
+                            $('#add_admin').modal('hide');
+                            location.reload();
+
+                        } else {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
+                            toastr.error(data.message);
+                        }
+                    },
+                    error: function(data) {
+                        // validation error
+                        if (data.status == 422) {
+                            var errors = data.responseJSON.errors;
+                            $.each(errors, function(key, value) {
+                                toastr.error(value[0]);
+                            });
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+{{-- editForm  submit --}}
+    <script>
+        $(document).ready(function() {
+            $('#editForm').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                var type = form.attr('method');
+                var data = new FormData(form[0]);
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
+                $.ajax({
+                    url: url,
+                    type: type,
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        if (data.status == 'success') {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
+                            $('#edit_admin').modal('hide');
+                            location.reload();
+                        } else {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
+                            toastr.error(data.message);
+                        }
+                    }, error: function(data) {
+                        // validation error
+                        if (data.status == 422) {
+                            var errors = data.responseJSON.errors;
+                            $.each(errors, function(key, value) {
+                                toastr.error(value[0]);
+                            });
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
                         }
                     }
                 });

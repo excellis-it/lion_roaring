@@ -269,8 +269,7 @@
                                 <a  href="javascrip:void(0);" data-bs-toggle="modal"
                                 data-bs-target="#staticBackdrop">Join
                                     Lion
-                                    Roaring Member</a> | <a href="{{ route('user.forget.password.show') }}" >Forgot username or
-                                    password
+                                    Roaring Member</a> | <a href="{{ route('user.forget.password.show') }}" >Forgot password
                                 </a>
                                 <br>
                                 <a href="{{ route('member-privacy-policy') }}" class="login_privacy text-dark">Privacy,

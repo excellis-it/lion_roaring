@@ -30,6 +30,6 @@ class SendMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('user.mails.SendMail')->subject($this->mail->subject)->cc($this->mail->cc)->with('mail', $this->mail);
+        return $this->markdown('user.mails.SendMail')->subject($this->mail->subject)->with('mail', $this->mail);
     }
 }
