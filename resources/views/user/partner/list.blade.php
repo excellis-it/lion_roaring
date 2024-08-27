@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Partners List - {{ env('APP_NAME') }}
+    Members List - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -23,14 +23,14 @@
                                     <div class="col-md-2 float-right">
                                         @if ( auth()->user()->can('Create Partners') )
                                         <a href="{{ route('partners.create') }}" class="btn btn-primary w-100">+ Add
-                                            Partner</a>
+                                            Members</a>
                                         @endif
 
                                     </div>
                                 </div>
                                 <div class="row ">
                                     <div class="col-md-8">
-                                        <h3 class="mb-3 float-left">Partners List</h3>
+                                        <h3 class="mb-3 float-left">Members List</h3>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="search-field float-right">

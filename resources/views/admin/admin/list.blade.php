@@ -123,7 +123,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Admin Information</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <button type="button" class="edit_close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -399,6 +399,17 @@
             });
         });
     </script>
+    {{-- close --}}
+    <script>
+        $(document).ready(function() {
+            $('.edit_close').on('click', function() {
+                $('#edit_admin').modal('hide');
+            });
 
+            $('.close').on('click', function() {
+                $('#add_admin').modal('hide');
+            });
+        });
+    </script>
 
 @endpush

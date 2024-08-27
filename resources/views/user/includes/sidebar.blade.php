@@ -308,7 +308,7 @@
                             <span>
                                 <img src="{{ asset('user_assets/images/partner.png') }}" alt="">
                             </span>
-                            <span class="hide-menu">Partners</span>
+                            <span class="hide-menu">All Members</span>
                         </a>
                     </li>
                 @endif

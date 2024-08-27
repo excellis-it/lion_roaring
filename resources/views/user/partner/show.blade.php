@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Partner Details View - {{ env('APP_NAME') }}
+    Member Details View - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -18,7 +18,7 @@
 
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">Partner Name: {{ $partner->full_name }}</h4>
+                        <h4 class="mb-0">Member Name: {{ $partner->full_name }}</h4>
                     </div>
                     <div class="card-body">
                         <div class="row">
