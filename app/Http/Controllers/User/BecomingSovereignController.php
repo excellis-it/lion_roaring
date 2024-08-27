@@ -95,6 +95,7 @@ class BecomingSovereignController extends Controller
 
     public function download($id)
     {
+        
         $file = File::where('id', $id)->first();
         if ($file) {
             $filePath = Storage::disk('public')->path($file->file); // ensure using 'public' disk

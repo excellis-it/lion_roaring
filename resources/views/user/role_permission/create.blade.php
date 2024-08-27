@@ -51,6 +51,7 @@
                                                 'Meeting Schedule',
                                                 'Event',
                                                 'Partners',
+                                                'Strategy',
                                                 'Help',
                                             ];
 

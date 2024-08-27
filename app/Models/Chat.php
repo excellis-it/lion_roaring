@@ -15,6 +15,8 @@ class Chat extends Model
         'message',
         'attachment',
         'seen',
+        'deleted_for_sender',
+        'deleted_for_reciver',
     ];
 
     public function sender()

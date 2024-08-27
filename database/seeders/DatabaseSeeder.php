@@ -19,7 +19,10 @@ class DatabaseSeeder extends Seeder
             // assignAdminSeeder::class,
             // CountriesTableSeeder::class,
             // CategorySeeder::class,
-
+            // RolePermissionSeeder::class,
+            // AddStrategyPermission::class,
+            // StatesTableSeeder::class,
+            // AddStrategyPermission::class,
         ]);
     }
 }

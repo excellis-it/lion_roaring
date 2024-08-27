@@ -40,7 +40,7 @@
                                                     {{ isset($bulletin->description) && !empty($bulletin->description) ? $bulletin->description : '' }}
                                                 </p>
                                             </div>
-                                            <div class="time_bulle">{{ date('h:i A', strtotime($bulletin->created_at)) }}</div>
+                                            <div class="time_bulle">{{ date('d M, Y h:i A', strtotime($bulletin->created_at)) }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -56,7 +56,7 @@
                                                     {{ isset($bulletin->description) && !empty($bulletin->description) ? $bulletin->description : '' }}
                                                 </p>
                                             </div>
-                                            <div class="time_bulle">{{ date('h:i A', strtotime($bulletin->created_at)) }}</div>
+                                            <div class="time_bulle">{{ date('d M, Y h:i A', strtotime($bulletin->created_at)) }}</div>
                                         </div>
                                         <div class="bulletin_img_name">
                                             <div class="main_avtar">

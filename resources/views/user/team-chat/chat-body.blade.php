@@ -19,6 +19,10 @@
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                     <li><a class="dropdown-item group-info" data-team-id="{{ $team['id'] }}">Group
                             info</a></li>
+                            @if (auth()->user()->can('Delete Team'))
+                            <li><a class="dropdown-item delete-group" data-team-id="{{ $team['id'] }}">Delete Group</a></li>
+                            @endif
+
                 </ul>
             </div>
         </div>
@@ -146,7 +150,7 @@
         {{-- show message --}}
         <div class="justify-content-center">
             <div class="text-center">
-                <h4 style="color:#be2020 !important; front-size:1.3125rem;">Sorry! You are removed from this group.</h4>
+                <h4 style="color:#be2020 !important; front-size:1.25rem;">Sorry! you are not able to send message in this group.</h4>
             </div>
         </div>
     @endif

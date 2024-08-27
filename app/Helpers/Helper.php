@@ -160,4 +160,13 @@ class Helper
             return false;
         }
     }
+
+    public static function getCountUnseenMessage($sender_id, $reciver_id)
+    {
+        $chats = Chat::where('reciver_id', $sender_id)
+            ->where('sender_id', $reciver_id)
+            ->where('seen', 0)
+            ->count();
+        return $chats;
+    }
 }

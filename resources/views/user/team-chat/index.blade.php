@@ -640,6 +640,38 @@
                 }
             });
 
+            // make-admin
+            $(document).on('click', '.make-admin', function() {
+                var team_id = $(this).data('team-id');
+                var user_id = $(this).data('user-id');
+                var r = confirm("Are you sure you want to make this member admin?");
+                if (r == true) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('team-chats.make-admin') }}",
+                        data: {
+                            team_id: team_id,
+                            user_id: user_id,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(resp) {
+                            if (resp.status == true) {
+                                toastr.success(resp.message);
+                                $('#show-permission-' + team_id + '-' + user_id).html(
+                                    ` <span class="admin_name">Admin</span>`);
+                            } else {
+                                toastr.error(resp.message);
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error('Something went wrong');
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+
             function groupList(user_id, team_id = null) {
                 $.ajax({
                     type: "POST",
@@ -745,6 +777,67 @@
                 });
             });
 
+            // delete-group
+            $(document).on('click', '.delete-group', function() {
+                var team_id = $(this).data('team-id');
+                var r = confirm("Are you sure you want to delete this group?");
+                if (r == true) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('team-chats.delete-group') }}",
+                        data: {
+                            team_id: team_id,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(resp) {
+                            if (resp.status == true) {
+                                toastr.success(resp.message);
+                                groupList(sender_id);
+                                html = `<div class="icon_chat">
+                                        <span><img src="{{ asset('user_assets/images/icon-chat.png') }}" alt=""></span>
+                                        <h4>Seamless Real-Time Chat | Connect Instantly</h4>
+                                        <p>Join our dynamic chat platform, where real-time communication is effortless. Engage in private and group
+                                            conversations, manage your contacts, and stay connected with instant updates. Experience a secure and
+                                            responsive interface, perfect for personal or professional use.</p>
+                                    </div>`;
+                                $('.chat-body').html(html);
+
+                                // socket emit
+                                socket.emit('deleteGroup', {
+                                    team_id: resp.team_id,
+                                    user_id: sender_id,
+                                    team_member_id: resp.team_member_id
+                                });
+
+                            } else {
+                                toastr.error(resp.message);
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error('Something went wrong');
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+
+            // deleteGroup
+
+            socket.on('deleteGroup', function(data) {
+                if (data.user_id != sender_id && data.team_member_id.includes(sender_id)) {
+                    groupList(sender_id);
+                    html = `<div class="icon_chat">
+                                        <span><img src="{{ asset('user_assets/images/icon-chat.png') }}" alt=""></span>
+                                        <h4>Seamless Real-Time Chat | Connect Instantly</h4>
+                                        <p>Join our dynamic chat platform, where real-time communication is effortless. Engage in private and group
+                                            conversations, manage your contacts, and stay connected with instant updates. Experience a secure and
+                                            responsive interface, perfect for personal or professional use.</p>
+                                    </div>`;
+                    $('.chat-body').html(html);
+                }
+            });
+
             // addMemberToGroup
             socket.on('addMemberToGroup', function(data) {
                 if (data.user_id != sender_id && data.chat_member_id.includes(sender_id)) {
@@ -813,7 +906,7 @@
                 $('#group-member-form-' + data.team_id + '-' + data.user_id).html(`
                   <div class="justify-content-center">
             <div class="text-center">
-                <h4 style="color:#be2020 !important; front-size:1.3125rem;">Sorry! You are removed from this group.</h4>
+                <h4 style="color:#be2020 !important; front-size:1.25rem;">Sorry! you are not able to send message in this group.</h4>
             </div>
         </div>
                 `);

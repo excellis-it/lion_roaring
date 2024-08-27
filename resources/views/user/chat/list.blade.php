@@ -46,6 +46,12 @@
                                                 <p>{{ $user['last_message']['created_at']->format('h:i A') }}</p>
                                             @endif
                                         </div>
+                                        @if (Helper::getCountUnseenMessage(Auth::user()->id, $user['id']) > 0)
+                                        <div class="count-unseen" id="count-unseen-{{ $user['id'] }}">
+                                            <span><p>{{Helper::getCountUnseenMessage(Auth::user()->id, $user['id'])}}</p></span>
+                                        </div>
+                                        @endif
+
                                     </li>
                                 @endforeach
                             @else
@@ -99,6 +105,13 @@
                         if (resp.status === true) {
                             $(".chat-module").html(resp.view);
 
+                            // unseen_chat count remove
+                            $('#count-unseen-' + receiver_id).remove();
+
+                            socket.emit("multiple_seen", {
+                                unseen_chat: resp.unseen_chat,
+                            });
+
                             if (resp.chat_count > 0) {
                                 scrollChatToBottom(receiver_id);
                             }
@@ -118,7 +131,7 @@
                                 }
                             });
                         } else {
-                            console.log(resp.msg);
+                            toastr.error(resp.msg);
                         }
                     },
                     error: function(xhr, status, error) {
@@ -157,7 +170,6 @@
                         sender_id: sender_id,
                     },
                     success: function(res) {
-                        console.log(res);
 
                         if (res.success) {
                             $("#MessageInput").data("emojioneArea").setText("");
@@ -171,7 +183,9 @@
                                 <p class="messageContent">${chat}</p>
                                 <div class="messageDetails">
                                     <div class="messageTime">${time_format_12}</div>
+                                    <div id="seen_${res.chat.id}">
                                     <i class="fas fa-check"></i>
+                                    </div>
                                 </div>
                             </div>
                         `;
@@ -223,6 +237,7 @@
                                 sender_id: sender_id,
                                 receiver_id: receiver_id,
                                 receiver_users: res.receiver_users,
+                                chat_id : res.chat.id
                             });
                         } else {
                             console.log(res.msg);
@@ -269,7 +284,12 @@
                             }
 
                             html +=
-                                `<div class="messageDetails"><div class="messageTime">${time_format_12}</div><i class="fas fa-check"></i></div></div>`;
+                                `<div class="messageDetails"><div class="messageTime">${time_format_12}</div>
+                                <div id="seen_${res.chat.id}">
+                                <i class="fas fa-check">
+                                    </i>
+                                </div>
+                                </div></div>`;
 
                             if (res.chat_count > 0) {
                                 $("#chat-container-" + receiver_id).append(html);
@@ -313,6 +333,7 @@
                                 sender_id: sender_id,
                                 receiver_id: receiver_id,
                                 receiver_users: res.receiver_users,
+                                chat_id : res.chat.id
                             });
                         } else {
                             console.log(res.msg);
@@ -359,7 +380,6 @@
 
             // clear-chat
             socket.on('clear-chat', function(data){
-                console.log(sender_id + ' ' + data.sender_id);
 
                 if (data.receiver_id == sender_id) {
                     $("#chat-container-" + data.sender_id).html("");
@@ -401,8 +421,32 @@
                         if ($("#chat-container-" + data.sender_id).length > 0) {
                             $("#chat-container-" + data.sender_id).append(html);
                             scrollChatToBottom(data.sender_id);
+                            // remove unseen count
+                            $('#count-unseen-' + data.sender_id).remove();
+                            // seen message
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ route('chats.seen') }}",
+                                data: {
+                                    _token: $("input[name=_token]").val(),
+                                    reciver_id: data.sender_id,
+                                    sender_id: sender_id,
+                                    chat_id: data.chat_id,
+                                },
+                                success: function(res) {
+                                    if (res.status == true) {
+                                        socket.emit("seen", {
+                                            last_chat: res.last_chat,
+                                        });
+                                    } else {
+                                        console.log(res.msg);
+                                    }
+                                }
+                            });
+
                         }
                     }
+
                     $('#message-app-' + data.sender_id).html(data.message);
                     var users = data.receiver_users;
                     $('#group-manage-' + sender_id).html('');
@@ -432,17 +476,50 @@
         <p class="GroupDescrp">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p>
         <div class="time_online">
             <p>${time_format_13}</p>
-        </div>
-    </li>`;
+        </div>`
+                        if (user.id == data.sender_id) {
+                            new_html += `<div class="count-unseen" id="count-unseen-${user.id}">
+            <span><p>${user.unseen_chat}</p></span>
+        </div>`;
+                        }
+                        new_html += `</li>`;
                     });
 
                     $('#group-manage-' + sender_id).append(new_html);
 
                 }
+
+                if (data.receiver_id == sender_id) {
+                    if ($(".chat-module").length > 0) {
+                        if ($("#chat-container-" + data.sender_id).length > 0) {
+                            $('#count-unseen-' + data.sender_id).remove();
+                        }
+                    }
+                }
             });
 
             // seen message
+            socket.on("seen", function(data) {
+                if (sender_id == data.last_chat.sender_id) {
+                    $("#seen_" + data.last_chat.id).html(
+                        '<i class="fas fa-check-double"></i>'
+                    );
 
+                } else {
+                    console.log("Not seen");
+                }
+            });
+
+            //multiple_seen
+            socket.on("multiple_seen", function(data) {
+                data.unseen_chat.forEach(function(chat) {
+                    if (sender_id == chat.sender_id) {
+                        $("#seen_" + chat.id).html(
+                            '<i class="fas fa-check-double"></i>'
+                        );
+                    }
+                });
+            });
         });
     </script>
 @endpush

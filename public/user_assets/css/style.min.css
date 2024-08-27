@@ -45070,6 +45070,24 @@ ul {
     z-index: 14 !important;
 }
 
+.count-unseen {
+    position: absolute;
+    right: 0;
+    margin: 28px;
+}
+.count-unseen span p{
+    color: #fff;
+    background: #7851a9;
+    border-radius: 50%;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+}
+
 @media (max-width:1280px) {
     .breadcome-list{
         width: calc(90% - 13px);

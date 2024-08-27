@@ -323,18 +323,18 @@
                         </a>
                     </li>
                 @endif
-                {{-- @if (Gate::check('Manage Sovereigns'))
+                @if (Gate::check('Manage Strategy'))
                     <li class="sidebar-item">
                         <a class="sidebar-link"
-                            href="{{ route('user.page', ['name' => 'Sovereigns', 'permission' => 'Manage Sovereigns']) }}"
+                            href="{{ route('strategy.index') }}"
                             aria-expanded="false">
                             <span>
                                 <img src="{{ asset('user_assets/images/Sovereign.png') }}" alt="">
                             </span>
-                            <span class="hide-menu">Sovereign</span>
+                            <span class="hide-menu">Strategy</span>
                         </a>
                     </li>
-                @endif --}}
+                @endif
                 @if (Gate::check('Manage Help'))
                     <li class="sidebar-item">
                         <a class="sidebar-link"

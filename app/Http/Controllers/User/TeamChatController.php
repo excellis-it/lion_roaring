@@ -396,4 +396,27 @@ class TeamChatController extends Controller
 
         return response()->json(['message' => 'Members added successfully.', 'status' => true, 'team_id' => $team_id, 'team_member_name' => $team_member_name, 'chat' => $chat, 'chat_member_id' => $chat_member_id, 'already_member_arr' => $already_member_arr]);
     }
+
+    public function deleteGroup(Request $request)
+    {
+        $team_id = $request->team_id;
+        $team = Team::find($team_id);
+
+        $team_member_id = TeamMember::where('team_id', $team_id)->pluck('user_id')->toArray();
+        $team->delete();
+
+        return response()->json(['message' => 'Group deleted successfully.', 'status' => true, 'team_id' => $team_id, 'team_member_id' => $team_member_id]);
+    }
+
+    public function makeAdmin(Request $request)
+    {
+        $team_id = $request->team_id;
+        $user_id = $request->user_id;
+
+        $team_member = TeamMember::where('team_id', $team_id)->where('user_id', $user_id)->first();
+        $team_member->is_admin = true;
+        $team_member->save();
+
+        return response()->json(['message' => 'Member made admin successfully.', 'status' => true, 'team_id' => $team_id, 'user_id' => $user_id]);
+    }
 }

@@ -57,6 +57,7 @@ use App\Http\Controllers\User\PartnerController;
 use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\User\RolePermissionsController;
 use App\Http\Controllers\User\SendMailController;
+use App\Http\Controllers\User\StrategyController;
 use App\Http\Controllers\User\SubscriptionController;
 use App\Http\Controllers\User\TeamChatController;
 use App\Http\Controllers\User\TeamController;
@@ -112,7 +113,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::post('/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
         Route::get('/delete/{id}', [AdminController::class, 'delete'])->name('admin.delete');
         Route::post('/update',[AdminController::class, 'update'])->name('admin.update');
-    });   
+    });
 
     Route::resources([
         'customers' => CustomerController::class,
@@ -266,8 +267,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::get('/', [ChatController::class, 'chats'])->name('index');
         Route::post('/load', [ChatController::class, 'load'])->name('load');
         Route::post('/send', [ChatController::class, 'send'])->name('send');
-        // clear
         Route::post('/clear', [ChatController::class, 'clear'])->name('clear');
+        Route::post('/seen', [ChatController::class, 'seen'])->name('seen');
     });
 
     // Team Chat
@@ -284,6 +285,18 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/group-list', [TeamChatController::class, 'groupList'])->name('group-list');
         Route::post('/exit-from-group', [TeamChatController::class, 'exitFromGroup'])->name('exit-from-group');
         Route::post('/add-member-team', [TeamChatController::class, 'addMemberTeam'])->name('add-member-team');
+        Route::post('/delete-group', [TeamChatController::class, 'deleteGroup'])->name('delete-group');
+        Route::post('/make-admin', [TeamChatController::class, 'makeAdmin'])->name('make-admin');
+    });
+
+    Route::prefix('strategy')->group(function () {
+        Route::get('/', [StrategyController::class, 'index'])->name('strategy.index');
+        Route::get('/upload', [StrategyController::class, 'upload'])->name('strategy.upload');
+        Route::post('/store', [StrategyController::class, 'store'])->name('strategy.store');
+        Route::get('/delete/{id}', [StrategyController::class, 'delete'])->name('strategy.delete');
+        Route::get('/download/{strategy}', [StrategyController::class, 'download'])->name('strategy.download');
+        Route::get('/fetch-data', [StrategyController::class, 'fetchData'])->name('strategy.fetch-data');
+        Route::get('/view/{id}', [StrategyController::class, 'view'])->name('strategy.view');
     });
 
     Route::prefix('file')->group(function () {

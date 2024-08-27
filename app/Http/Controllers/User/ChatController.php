@@ -54,12 +54,18 @@ class ChatController extends Controller
             $chats = Chat::where(function ($query) use ($request) {
                 $query->where('sender_id', $request->sender_id)
                     ->where('reciver_id', $request->reciver_id);
+                    // ->where('deleted_for_sender', 0);
             })
                 ->orWhere(function ($query) use ($request) {
                     $query->where('sender_id', $request->reciver_id)
                         ->where('reciver_id', $request->sender_id);
+                        // ->where('deleted_for_reciver', 0);
                 })
                 ->orderBy('created_at', 'asc') // Assuming you want to order chats by timestamp
+                ->get();
+
+            $unseen_chat = Chat::where('sender_id', $request->reciver_id)
+                ->where('seen', 0)
                 ->get();
 
             // seen chat
@@ -73,7 +79,7 @@ class ChatController extends Controller
             $chat_count = count($chats);
             $reciver = User::find($request->reciver_id);
 
-            return response()->json(['message' => 'Show Chat', 'status' => true, 'chat_count' => $chat_count, 'view' => (string)View::make('user.chat.chat_body')->with(compact('chats', 'is_chat', 'reciver'))]);
+            return response()->json(['message' => 'Show Chat', 'status' => true, 'chat_count' => $chat_count,'unseen_chat' => $unseen_chat, 'view' => (string)View::make('user.chat.chat_body')->with(compact('chats', 'is_chat', 'reciver'))]);
         } catch (\Throwable $th) {
             return response()->json(['msg' => $th->getMessage(), 'status' => false]);
         }
@@ -158,6 +164,11 @@ class ChatController extends Controller
                 if ($user['last_message']) {
                     $user['last_message']->created_at = $user['last_message']->created_at->format('Y-m-d H:i:s'); // Format to string
                 }
+                // count unseen chat
+                $user['unseen_chat'] = Chat::where('sender_id',  $user['id'])
+                    ->where('reciver_id', $reciver_id)
+                    ->where('seen', 0)
+                    ->count();
 
                 return $user;
             }, $receiver_users);
@@ -197,5 +208,18 @@ class ChatController extends Controller
             ->delete();
 
         return response()->json(['msg' => 'Chat cleared successfully', 'success' => true]);
+    }
+
+    public function seen(Request $request)
+    {
+        $sender_id = $request->sender_id;
+        $reciver_id = $request->reciver_id;
+
+        $chats = Chat::where('id', $request->chat_id)
+            ->update(['seen' => 1]);
+
+        $last_chat = Chat::findOrfail($request->chat_id);
+
+        return response()->json(['msg' => 'Chat seen successfully', 'status' => true , 'last_chat' => $last_chat]);
     }
 }

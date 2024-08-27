@@ -42,12 +42,6 @@ class RolePermissionSeeder extends Seeder
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
             [
-                "name" => "Edit Team",
-                "guard_name" => "web",
-                "created_at" => date('Y-m-d H:i:s'),
-                "updated_at" => date('Y-m-d H:i:s'),
-            ],
-            [
                 "name" => "Delete Team",
                 "guard_name" => "web",
                 "created_at" => date('Y-m-d H:i:s'),
@@ -60,19 +54,13 @@ class RolePermissionSeeder extends Seeder
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
             [
-                "name" => "View Team",
-                "guard_name" => "web",
-                "created_at" => date('Y-m-d H:i:s'),
-                "updated_at" => date('Y-m-d H:i:s'),
-            ],
-            [
                 "name" => "Manage Email",
                 "guard_name" => "web",
                 "created_at" => date('Y-m-d H:i:s'),
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
             [
-                "name" => "Manage Becomeing Sovereigns",
+                "name" => "Manage Becoming Sovereigns",
                 "guard_name" => "web",
                 "created_at" => date('Y-m-d H:i:s'),
                 "updated_at" => date('Y-m-d H:i:s'),

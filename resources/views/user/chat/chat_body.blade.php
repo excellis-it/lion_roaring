@@ -16,7 +16,9 @@
                 <i class="fa-solid fa-ellipsis-vertical"></i>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item clear-chat"  data-reciver-id="{{ $reciver->id }}">Clear all chat</a></li>
+                {{-- <li><a class="dropdown-item clear-chat-only-me"  data-reciver-id="{{ $reciver->id }}">Clear chats for me</a></li> --}}
+                <li><a class="dropdown-item clear-chat" data-reciver-id="{{ $reciver->id }}">Clear chats for
+                        everyone</a></li>
             </ul>
         </div>
     </div>
@@ -66,13 +68,15 @@
                     </p>
                     <div class="messageDetails">
                         <div class="messageTime">{{ $chat->created_at->format('h:i A') }}</div>
-                        @if ($chat->sender_id == Auth::user()->id)
-                            @if ($chat->seen == 1)
-                                <i class="fas fa-check-double"></i>
-                            @else
-                                <i class="fas fa-check"></i>
+                        <div id="seen_{{ $chat->id }}">
+                            @if ($chat->sender_id == Auth::user()->id)
+                                @if ($chat->seen == 1)
+                                    <i class="fas fa-check-double"></i>
+                                @else
+                                    <i class="fas fa-check"></i>
+                                @endif
                             @endif
-                        @endif
+                        </div>
                     </div>
     </div>
 @endforeach

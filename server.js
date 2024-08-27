@@ -20,9 +20,15 @@ io.on('connection', (socket) => {
 
 
     // seen event
-    socket.on('seen', (msg) => {
-        console.log('seen: ' + msg);
-        io.sockets.emit('seen', msg);
+    socket.on('seen', (messageId) => {
+        console.log('message seen: ' + messageId);
+        io.sockets.emit('seen', messageId);
+    });
+
+    // multiple_seen
+    socket.on('multiple_seen', (msg) => {
+        console.log('multiple_seen: ' + msg);
+        io.sockets.emit('multiple_seen', msg);
     });
 
     // clear-chat
@@ -64,6 +70,11 @@ io.on('connection', (socket) => {
     socket.on('createTeam', (msg) => {
         console.log('createTeam: ' + msg);
         io.sockets.emit('createTeam', msg);
+    });
+    // deleteGroup
+    socket.on('deleteGroup', (msg) => {
+        console.log('deleteGroup: ' + msg);
+        io.sockets.emit('deleteGroup', msg);
     });
 
     socket.on('disconnect', () => {
