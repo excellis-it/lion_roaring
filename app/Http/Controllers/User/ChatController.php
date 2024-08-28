@@ -21,11 +21,10 @@ class ChatController extends Controller
             // return user orderBy latest message
             $users = array_map(function ($user) {
                 $user['last_message'] = Chat::where(function ($query) use ($user) {
-                    $query->where('sender_id', $user['id'])->where('reciver_id', auth()->id());
+                    $query->where('sender_id', $user['id'])->where('reciver_id', auth()->id())->where('deleted_for_reciver', 0);
                 })->orWhere(function ($query) use ($user) {
-                    $query->where('sender_id', auth()->id())->where('reciver_id', $user['id']);
+                    $query->where('sender_id', auth()->id())->where('reciver_id', $user['id'])->where('deleted_for_sender', 0);
                 })->orderBy('created_at', 'desc')->first();
-
                 return $user;
             }, $users);
 
@@ -44,7 +43,6 @@ class ChatController extends Controller
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
-
     }
 
     public function load(Request $request)
@@ -53,13 +51,13 @@ class ChatController extends Controller
             $is_chat = true;
             $chats = Chat::where(function ($query) use ($request) {
                 $query->where('sender_id', $request->sender_id)
-                    ->where('reciver_id', $request->reciver_id);
-                    // ->where('deleted_for_sender', 0);
+                    ->where('reciver_id', $request->reciver_id)
+                    ->where('deleted_for_sender', 0);
             })
                 ->orWhere(function ($query) use ($request) {
                     $query->where('sender_id', $request->reciver_id)
-                        ->where('reciver_id', $request->sender_id);
-                        // ->where('deleted_for_reciver', 0);
+                        ->where('reciver_id', $request->sender_id)
+                        ->where('deleted_for_reciver', 0);
                 })
                 ->orderBy('created_at', 'asc') // Assuming you want to order chats by timestamp
                 ->get();
@@ -79,7 +77,7 @@ class ChatController extends Controller
             $chat_count = count($chats);
             $reciver = User::find($request->reciver_id);
 
-            return response()->json(['message' => 'Show Chat', 'status' => true, 'chat_count' => $chat_count,'unseen_chat' => $unseen_chat, 'view' => (string)View::make('user.chat.chat_body')->with(compact('chats', 'is_chat', 'reciver'))]);
+            return response()->json(['message' => 'Show Chat', 'status' => true, 'chat_count' => $chat_count, 'unseen_chat' => $unseen_chat, 'view' => (string)View::make('user.chat.chat_body')->with(compact('chats', 'is_chat', 'reciver'))]);
         } catch (\Throwable $th) {
             return response()->json(['msg' => $th->getMessage(), 'status' => false]);
         }
@@ -99,7 +97,7 @@ class ChatController extends Controller
                 // if ($request->file('file')->getSize() > 10240) {
                 //     return response()->json(['msg' => 'File size is too large', 'success' => false]);
                 // }
-                $file = $this->imageUpload( $request->file('file'), 'chat');
+                $file = $this->imageUpload($request->file('file'), 'chat');
                 $chatData = Chat::create([
                     'sender_id' => $request->sender_id,
                     'reciver_id' => $request->reciver_id,
@@ -186,7 +184,7 @@ class ChatController extends Controller
             });
 
 
-             return response()->json(['msg' => 'Message sent successfully', 'chat' => $chat, 'users' => $users, 'receiver_users' => $receiver_users, 'chat_count' => $chat_count, 'success' => true]);
+            return response()->json(['msg' => 'Message sent successfully', 'chat' => $chat, 'users' => $users, 'receiver_users' => $receiver_users, 'chat_count' => $chat_count, 'success' => true]);
         } catch (\Throwable $th) {
             return response()->json(['msg' => $th->getMessage(), 'success' => false]);
         }
@@ -220,6 +218,21 @@ class ChatController extends Controller
 
         $last_chat = Chat::findOrfail($request->chat_id);
 
-        return response()->json(['msg' => 'Chat seen successfully', 'status' => true , 'last_chat' => $last_chat]);
+        return response()->json(['msg' => 'Chat seen successfully', 'status' => true, 'last_chat' => $last_chat]);
+    }
+
+
+    public function remove(Request $request)
+    {
+        $chat_id = $request->chat_id;
+        $del_from = $request->del_from;
+        $chat = Chat::where('id', $chat_id)->first();
+        if ($del_from == 'everyone') {
+            Chat::where('id', $chat_id)->delete();
+        } else {
+            Chat::where('id', $chat_id)->update(['deleted_for_sender' => 1]);
+        }
+
+        return response()->json(['msg' => 'Chat removed successfully', 'status' => true, 'chat' => $chat]);
     }
 }

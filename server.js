@@ -18,6 +18,12 @@ io.on('connection', (socket) => {
         io.sockets.emit('chat', msg);
     });
 
+    // remove-chat
+    socket.on('remove-chat', (msg) => {
+        console.log('remove-chat: ' + msg);
+        io.sockets.emit('remove-chat', msg);
+    });
+
 
     // seen event
     socket.on('seen', (messageId) => {

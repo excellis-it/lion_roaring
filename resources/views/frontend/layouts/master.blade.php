@@ -56,6 +56,9 @@
 
 <body>
     <main>
+        <section id="loading">
+            <div id="loading-content"></div>
+        </section>
         @php
             use App\Helpers\Helper;
             // dd(date('H'))
@@ -672,6 +675,11 @@
 
                 }
             });
+
+            // $(document).on('click', '#submit-btn', function(){
+            //     $('#loading').addClass('loading');
+            //     $('#loading-content').addClass('loading-content');
+            // })
         });
     </script>
     <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
@@ -838,6 +846,8 @@
                 if (response.error) {
                     toastr.error(response.error.message);
                 } else {
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
                     var token = response['id'];
                     $form.find('input[type=text]').empty();
                     $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");

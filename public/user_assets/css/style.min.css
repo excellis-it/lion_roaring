@@ -45118,13 +45118,40 @@ ul {
         width: 120px;
     }
 }
-
-
-
-
-
-
-
+.message.me .dropdown .btn{
+    padding: 5px 0px;
+}
+.message.me .dropdown .btn .dropdown-menu{
+  display: none !important;
+}
+.message.me .dropdown-toggle::after{
+    display: none !important;
+}
+.message.me .dropdown .btn i{
+  color: #000 !important;
+}
+.message.me .dropdown .btn{
+    cursor: pointer;
+}
+.message.me .dropdown .btn:hover{
+  background: transparent;
+   box-shadow: none;
+   outline: none;
+}
+.message.me {
+    display: flex;
+}
+.message-wrap{
+    display: flex;
+}
+.message-wrap .dropdown i{
+ margin-left: 10px;
+}
+.message.me .dropdown .btn:focus{
+   background: transparent;
+   box-shadow: none;
+   outline: none;
+}
 
 
 

@@ -36,20 +36,25 @@
                                         </div>
                                         <p class="GroupName">{{ $user['first_name'] }} {{ $user['middle_name'] ?? '' }}
                                             {{ $user['last_name'] ?? '' }}</p>
-                                        <p class="GroupDescrp" id="message-app-{{ $user['id'] }}">
+                                        <p class="GroupDescrp last-chat-{{ isset($user['last_message']) ? $user['last_message']['id'] : '' }}"
+                                            id="message-app-{{ $user['id'] }}">
                                             @if (isset($user['last_message']['message']))
                                                 {{ $user['last_message']['message'] }}
                                             @endif
                                         </p>
-                                        <div class="time_online">
+                                        <div class="time_online"
+                                            id="last-chat-time-{{ isset($user['last_message']) ? $user['last_message']['id'] : '' }}">
                                             @if (isset($user['last_message']['created_at']))
                                                 <p>{{ $user['last_message']['created_at']->format('h:i A') }}</p>
                                             @endif
                                         </div>
                                         @if (Helper::getCountUnseenMessage(Auth::user()->id, $user['id']) > 0)
-                                        <div class="count-unseen" id="count-unseen-{{ $user['id'] }}">
-                                            <span><p>{{Helper::getCountUnseenMessage(Auth::user()->id, $user['id'])}}</p></span>
-                                        </div>
+                                            <div class="count-unseen" id="count-unseen-{{ $user['id'] }}">
+                                                <span>
+                                                    <p>{{ Helper::getCountUnseenMessage(Auth::user()->id, $user['id']) }}
+                                                    </p>
+                                                </span>
+                                            </div>
                                         @endif
 
                                     </li>
@@ -179,8 +184,20 @@
                             let time_format_12 = moment(created_at, "YYYY-MM-DD HH:mm:ss")
                                 .format("hh:mm A");
 
-                            let html = ` <div class="message me">
-                                <p class="messageContent">${chat}</p>
+                            let html = ` <div class="message me" id="chat-message-${res.chat.id}">
+                                 <div class="message-wrap">
+                                    <p class="messageContent">${chat}</p>
+                                <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item remove-chat" data-chat-id="${res.chat.id}" data-del-from="me">Remove For Me</a></li>
+                                    <li><a class="dropdown-item remove-chat" data-chat-id="${res.chat.id}" data-del-from="everyone">Remove For Everyone</a></li>
+                        </ul>
+                    </div>
+                    </div>
                                 <div class="messageDetails">
                                     <div class="messageTime">${time_format_12}</div>
                                     <div id="seen_${res.chat.id}">
@@ -222,8 +239,8 @@
 
                                 new_html += `</div>
                                     <p class="GroupName">${user.first_name} ${user.middle_name ? user.middle_name : ''} ${user.last_name ? user.last_name : ''}</p>
-                                    <p class="GroupDescrp">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p>
-                                    <div class="time_online">
+                                    <p class="GroupDescrp last-chat-${user.last_message ? user.last_message.id : ''}">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p>
+                                    <div class="time_online" id="last-chat-time-${user.last_message ? user.last_message.id : ''}">
                                         <p>${time_format_13}</p>
                                     </div>
                                 </li>`;
@@ -237,7 +254,7 @@
                                 sender_id: sender_id,
                                 receiver_id: receiver_id,
                                 receiver_users: res.receiver_users,
-                                chat_id : res.chat.id
+                                chat_id: res.chat.id
                             });
                         } else {
                             console.log(res.msg);
@@ -274,17 +291,26 @@
                             let html = `<div class="message me">`;
                             if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
                                 html +=
-                                    `<p class="messageContent"><a href="${fileUrl}" target="_blank"><img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a></p>`;
+                                    ` <div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank"><img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a></p>`;
                             } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
                                 html +=
-                                    `<p class="messageContent"><a href="${fileUrl}" target="_blank"><video width="200" height="200" controls><source src="${fileUrl}" type="video/mp4"><source src="${fileUrl}" type="video/webm"><source src="${fileUrl}" type="video/ogg"></video></a></p>`;
+                                    ` <div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank"><video width="200" height="200" controls><source src="${fileUrl}" type="video/mp4"><source src="${fileUrl}" type="video/webm"><source src="${fileUrl}" type="video/ogg"></video></a></p>`;
                             } else {
                                 html +=
-                                    `<p class="messageContent"><a href="${fileUrl}" download="${attachment}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a></p>`;
+                                    ` <div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" download="${attachment}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a></p>`;
                             }
 
                             html +=
-                                `<div class="messageDetails"><div class="messageTime">${time_format_12}</div>
+                                ` <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item remove-chat" data-chat-id="${res.chat.id}" data-del-from="me">Remove For Me</a></li>
+                                    <li><a class="dropdown-item remove-chat" data-chat-id="${res.chat.id}" data-del-from="everyone">Remove For Everyone</a></li>
+                        </ul>
+                    </div></div><div class="messageDetails"><div class="messageTime">${time_format_12}</div>
                                 <div id="seen_${res.chat.id}">
                                 <i class="fas fa-check">
                                     </i>
@@ -322,7 +348,7 @@
                                 }
 
                                 new_html +=
-                                    `</div><p class="GroupName">${user.first_name} ${user.middle_name ? user.middle_name : ''} ${user.last_name ? user.last_name : ''}</p><p class="GroupDescrp">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p><div class="time_online"><p>${time_format_13}</p></div></li>`;
+                                    `</div><p class="GroupName">${user.first_name} ${user.middle_name ? user.middle_name : ''} ${user.last_name ? user.last_name : ''}</p><p class="GroupDescrp last-chat-${user.last_message ? user.last_message.id : ''}">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p><div class="time_online" id="last-chat-time-${user.last_message ? user.last_message.id : ''}"><p>${time_format_13}</p></div></li>`;
                             });
 
                             $('#group-manage-' + sender_id).append(new_html);
@@ -333,7 +359,7 @@
                                 sender_id: sender_id,
                                 receiver_id: receiver_id,
                                 receiver_users: res.receiver_users,
-                                chat_id : res.chat.id
+                                chat_id: res.chat.id
                             });
                         } else {
                             console.log(res.msg);
@@ -378,10 +404,59 @@
 
             });
 
-            // clear-chat
-            socket.on('clear-chat', function(data){
+            //remove-chat
+            $(document).on("click", ".remove-chat", function(e) {
+                var chat_id = $(this).data("chat-id");
+                var del_from = $(this).data("del-from");
+                r = confirm("Are you sure you want to remove chat?");
+                if (r == false) {
+                    return false;
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('chats.remove') }}",
+                        data: {
+                            _token: $("input[name=_token]").val(),
+                            chat_id: chat_id,
+                            del_from: del_from,
+                        },
+                        success: function(res) {
+                            if (res.status == true) {
+                                if (del_from == 'me') {
+                                    $("#chat-message-" + chat_id).remove();
+                                    $("#last-chat-time-" + chat_id).remove();
+                                    $('.last-chat-' + chat_id).html('');
+                                } else {
+                                    $("#chat-message-" + chat_id).remove();
+                                    $("#last-chat-time-" + chat_id).remove();
+                                    $('.last-chat-' + chat_id).html('');
 
-                if (data.receiver_id == sender_id) {
+                                    socket.emit("remove-chat", {
+                                        chat : res.chat,
+                                    });
+                                }
+                            } else {
+                                console.log(res.msg);
+                            }
+                        }
+                    });
+                }
+
+            });
+
+            //remove-chat
+            socket.on('remove-chat', function(data) {
+              if (data.chat.reciver_id == sender_id) {
+                $("#chat-message-" + data.chat.id).remove();
+                $("#last-chat-time-" + data.chat.id).remove();
+                $('.last-chat-' + data.chat.id).html('');
+              }
+            });
+
+            // clear-chat
+            socket.on('clear-chat', function(data) {
+
+                if (data.reciver_id == sender_id) {
                     $("#chat-container-" + data.sender_id).html("");
                     $("#message-app-" + data.sender_id).html("");
                 }
@@ -473,8 +548,8 @@
 
                         new_html += `</div>
         <p class="GroupName">${user.first_name} ${user.middle_name ? user.middle_name : ''} ${user.last_name ? user.last_name : ''}</p>
-        <p class="GroupDescrp">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p>
-        <div class="time_online">
+        <p class="GroupDescrp last-chat-${user.last_message ? user.last_message.id : ''}">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p>
+        <div class="time_online" id="last-chat-time-${user.last_message ? user.last_message.id : ''}">
             <p>${time_format_13}</p>
         </div>`
                         if (user.id == data.sender_id) {

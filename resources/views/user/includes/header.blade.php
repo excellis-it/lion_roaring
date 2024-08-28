@@ -106,7 +106,7 @@
                             <img src="{{ Storage::url(Auth::user()->profile_picture) }}" class="rounded-circle"
                             width="35" height="35" alt="">
                         @else
-                        <img src="{{ asset('user_assets/images/logo.png') }}" class="rounded-circle"
+                        <img src="{{ asset('user_assets/images/profile_dummy.png') }}" class="rounded-circle"
                         width="35" height="35" alt="">
                         @endif
 

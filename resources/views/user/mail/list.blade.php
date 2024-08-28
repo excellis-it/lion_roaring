@@ -20,7 +20,7 @@
                                     <div class="col-md-2 float-right">
                                         @if (auth()->user()->can('Manage Email'))
                                             <a href="{{ route('mail.compose') }}" class="btn btn-primary w-100"><i
-                                                    class="fa fa-paper-plane" aria-hidden="true"></i> Send Mail</a>
+                                                    class="fa fa-paper-plane" aria-hidden="true"></i> Create Email</a>
                                         @endif
                                     </div>
                                 </div>

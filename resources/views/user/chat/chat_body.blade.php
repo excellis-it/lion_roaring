@@ -9,19 +9,18 @@
         </div>
         <p class="GroupName">{{ $reciver->full_name }}</p>
     </div>
-    <div class="group_text_right clear-chat-button">
+    {{-- <div class="group_text_right clear-chat-button">
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
                 data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa-solid fa-ellipsis-vertical"></i>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                {{-- <li><a class="dropdown-item clear-chat-only-me"  data-reciver-id="{{ $reciver->id }}">Clear chats for me</a></li> --}}
                 <li><a class="dropdown-item clear-chat" data-reciver-id="{{ $reciver->id }}">Clear chats for
                         everyone</a></li>
             </ul>
         </div>
-    </div>
+    </div> --}}
 
     <div class="MessageContainer" id="chat-container-{{ $reciver->id }}">
         @if ($chats->count() > 0)
@@ -37,37 +36,54 @@
                 <div class="messageSeperator"><span>{{ $date }}</span></div>
                 @foreach ($groupedChats as $chat)
                     @if ($chat->sender_id == Auth::user()->id)
-                        <div class="message me">
+                        <div class="message me" id="chat-message-{{$chat->id}}">
                         @else
-                            <div class="message you">
+                            <div class="message you" id="chat-message-{{$chat->id}}">
                     @endif
-                    <p class="messageContent">
-                        @if ($chat->message != null)
-                            {{ $chat->message }}
-                        @else
-                            @php
-                                $ext = pathinfo($chat->attachment, PATHINFO_EXTENSION);
-                            @endphp
-                            @if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp']))
-                                <a href="{{ Storage::url($chat->attachment) }}" target="_blank">
-                                    <img src="{{ Storage::url($chat->attachment) }}" alt=""
-                                        style="max-width: 200px; max-height: 200px;">
-                                </a>
-                            @elseif (in_array($ext, ['mp4', 'webm', 'ogg']))
-                                <video width="200" height="200" controls>
-                                    <source src="{{ Storage::url($chat->attachment) }}"
-                                        type="video/{{ $ext }}">
-                                </video>
+                    <div class="message-wrap">
+                        <p class="messageContent">
+                            @if ($chat->message != null)
+                                {{ $chat->message }}
                             @else
-                                <a href="{{ Storage::url($chat->attachment) }}" target="_blank"
-                                    download="{{ $chat->attachment }}">
-                                    <img src="{{ asset('user_assets/images/file.png') }}" alt="">
-                                </a>
+                                @php
+                                    $ext = pathinfo($chat->attachment, PATHINFO_EXTENSION);
+                                @endphp
+                                @if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp']))
+                                    <a href="{{ Storage::url($chat->attachment) }}" target="_blank">
+                                        <img src="{{ Storage::url($chat->attachment) }}" alt=""
+                                            style="max-width: 200px; max-height: 200px;">
+                                    </a>
+                                @elseif (in_array($ext, ['mp4', 'webm', 'ogg']))
+                                    <video width="200" height="200" controls>
+                                        <source src="{{ Storage::url($chat->attachment) }}"
+                                            type="video/{{ $ext }}">
+                                    </video>
+                                @else
+                                    <a href="{{ Storage::url($chat->attachment) }}" target="_blank"
+                                        download="{{ $chat->attachment }}">
+                                        <img src="{{ asset('user_assets/images/file.png') }}" alt="">
+                                    </a>
+                                @endif
                             @endif
+                        </p>
+                        @if ($chat->sender_id == Auth::user()->id)
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                {{-- <li><a class="dropdown-item clear-chat-only-me"  data-reciver-id="{{ $reciver->id }}">Clear chats for me</a></li> --}}
+                                <li><a class="dropdown-item remove-chat" data-chat-id="{{ $chat->id }}" data-del-from="me">Remove For Me</a></li>
+                                        <li><a class="dropdown-item remove-chat" data-chat-id="{{ $chat->id }}" data-del-from="everyone">Remove For Everyone</a></li>
+                            </ul>
+                        </div>
                         @endif
-                    </p>
+                    </div>
+
                     <div class="messageDetails">
                         <div class="messageTime">{{ $chat->created_at->format('h:i A') }}</div>
+
                         <div id="seen_{{ $chat->id }}">
                             @if ($chat->sender_id == Auth::user()->id)
                                 @if ($chat->seen == 1)

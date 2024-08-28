@@ -269,6 +269,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/send', [ChatController::class, 'send'])->name('send');
         Route::post('/clear', [ChatController::class, 'clear'])->name('clear');
         Route::post('/seen', [ChatController::class, 'seen'])->name('seen');
+        Route::post('/remove', [ChatController::class, 'remove'])->name('remove');
     });
 
     // Team Chat

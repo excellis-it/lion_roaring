@@ -22,7 +22,8 @@
 
                             <div class="row mb-3 justify-content-end">
                                 <div class="col-md-2">
-                                 <a href="{{ route('meetings.index') }}" class="btn btn-primary w-100"><i class="fa fa-table" aria-hidden="true"></i> Table List</a>
+                                    <a href="{{ route('meetings.index') }}" class="btn btn-primary w-100"><i
+                                            class="fa fa-table" aria-hidden="true"></i> Table List</a>
                                 </div>
 
                             </div>
@@ -63,6 +64,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.js'></script>
     <script>
@@ -100,12 +102,14 @@
                     });
                 },
                 eventClick: function(info) {
-                    console.log(info.event);
+                    // console.log(info.event);
                     $('#modalTitle').text(info.event.title);
-                    $('#modalStart').text(info.event.start.toLocaleString());
-                    $('#modalEnd').text(info.event.end ? info.event.end.toLocaleString() : 'N/A');
+                    $('#modalStart').text(moment(info.event.start).format('DD-MM-YYYY HH:mm A'));
+                    $('#modalEnd').text(info.event.end ? moment(info.event.end).format(
+                        'DD-MM-YYYY HH:mm A') : 'N/A');
                     $('#modalDescription').text(info.event.extendedProps.description);
-                    $('#modalLink').text(info.event.extendedProps.meeting_link ? info.event.extendedProps.meeting_link : 'N/A');
+                    $('#modalLink').text(info.event.extendedProps.meeting_link ? info.event
+                        .extendedProps.meeting_link : 'N/A');
                     $('#eventModal').modal('show');
                 },
                 eventTimeFormat: { // like '14:30:00'

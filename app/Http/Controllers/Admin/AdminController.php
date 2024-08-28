@@ -23,9 +23,11 @@ class AdminController extends Controller
             'middle_name' => 'nullable',
             'email' => 'required|email|unique:users',
             'user_name' => 'required|unique:users',
-            'password' => 'required',
+            'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
             'phone' => 'required',
             'confirm_password' => 'required|same:password',
+        ],[
+            'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
         ]);
 
         $count = User::where('email', $request->email)->count();
