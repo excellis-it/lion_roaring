@@ -7,6 +7,7 @@ use App\Models\Country;
 use App\Models\EcomCmsPage;
 use App\Models\EcomFooterCms;
 use App\Models\Footer;
+use App\Models\Notification;
 use App\Models\Organization;
 use App\Models\OurOrganization;
 use App\Models\PmaTerm;
@@ -168,5 +169,15 @@ class Helper
             ->where('seen', 0)
             ->count();
         return $chats;
+    }
+
+    public static function notificationCount()
+    {
+        if (auth()->check()) {
+            $notifications = Notification::where('user_id', auth()->user()->id)->where('is_read', 0)->count();
+            return $notifications;
+        } else {
+            return 0;
+        }
     }
 }

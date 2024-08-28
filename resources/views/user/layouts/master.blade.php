@@ -35,7 +35,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-        <link rel="stylesheet" href="https://rawgit.com/mervick/emojionearea/master/dist/emojionearea.min.css">
+    <link rel="stylesheet" href="https://rawgit.com/mervick/emojionearea/master/dist/emojionearea.min.css">
     @stack('styles')
 </head>
 
@@ -120,7 +120,50 @@
         @endif
     </script>
 
-</script>
+    </script>
+    <script>
+        $(document).ready(function() {
+            var notification_page = 1;
+            var loading = false; // Prevents multiple simultaneous AJAX requests
+
+            $(document).on('click', '#drop2', function() {
+                $('.notification-dropdown').addClass('show');
+                // if ($('#show-notification').children().length === 0) { // Load only if not already loaded
+                    loadMoreNotification(notification_page);
+                // }
+            });
+
+            $(document).on('scroll', '.notification-dropdown', function() {
+                if (!loading && ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight)) {
+                    notification_page++;
+                    loadMoreNotification(notification_page);
+                }
+            });
+
+            function loadMoreNotification(page) {
+                loading = true;
+                $.ajax({
+                    url: "{{ route('notification.list') }}",
+                    data: {
+                        page: page
+                    },
+                    success: function(data) {
+                        if (data.count > 0) {
+                            $('#show-notification').html(data.view);
+                        } else {
+                            // Optional: Disable further requests if no more notifications
+                            $(document).off('scroll');
+                        }
+                        loading = false;
+                    },
+                    error: function() {
+                        // Handle the error
+                        loading = false;
+                    }
+                });
+            }
+        });
+    </script>
 
     @stack('scripts')
 </body>

@@ -45088,6 +45088,42 @@ ul {
     font-size: 12px;
 }
 
+.round-note {
+    background: #f6bc41;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    height: 16px;
+    width: 16px;
+    margin-top: 23px;
+}
+
+.round-note p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.srl {
+    overflow: hidden;
+    overflow-y: scroll;
+    padding-right: 10px;
+  }
+  #show-notification::-webkit-scrollbar
+  {
+      width: 10px;
+      border-radius: 10px;
+      background-color: #ccc;
+  }
+
+  #show-notification::-webkit-scrollbar-thumb
+  {
+      border-radius: 10px;
+      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+      background-color: var(--main-color);
+  }
+
 @media (max-width:1280px) {
     .breadcome-list{
         width: calc(90% - 13px);

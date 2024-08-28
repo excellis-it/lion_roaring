@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\User;
 use App\Models\Country;
+use App\Models\Notification;
 use App\Models\User as ModelsUser;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
@@ -93,6 +94,28 @@ class DashboardController extends Controller
             return redirect()->back()->with('message', 'Profile updated successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    public function notifications(Request $request)
+    {
+        if ($request->ajax()) {
+            $perPage = 6; // Number of notifications per page
+            $page = $request->get('page', 1);
+            $offset = ($page - 1) * $perPage;
+
+            $notifications = Notification::where('user_id', Auth::user()->id)
+                ->orderBy('created_at', 'desc')
+                ->skip($offset)
+                ->take($perPage)
+                ->get();
+
+            $is_notification = true;
+
+            return response()->json([
+                'view' => view('user.includes.notification', compact('notifications', 'is_notification'))->render(),
+                'count' => $notifications->count()
+            ]);
         }
     }
 }

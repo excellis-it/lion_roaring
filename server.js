@@ -9,6 +9,25 @@ const io = require('socket.io')(server, {
   },
 });
 
+// const https = require('https');
+// const fs = require('fs');
+
+// const express = require('express');
+// const app = express();
+
+// // Load SSL certificate files
+// const privateKey = fs.readFileSync('/etc/ssl/paidkey/key/dollarcare.org.key', 'utf8');
+// const certificate = fs.readFileSync('/etc/ssl/paidkey/key/dollarcare_org.crt', 'utf8');
+// const credentials = { key: privateKey, cert: certificate };
+
+// const httpsServer = https.createServer(credentials, app);
+
+// const io = require('socket.io')(httpsServer, {
+//     cors: {
+//         origin: '*',
+//     },
+// });
+
 
 io.on('connection', (socket) => {
     console.log('a user connected');

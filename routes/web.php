@@ -261,6 +261,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::post('/profile-update', [UserDashboardController::class, 'profileUpdate'])->name('user.profile.update');
     Route::get('/change-password', [UserDashboardController::class, 'password'])->name('user.change.password');
     Route::post('/change-password-update', [UserDashboardController::class, 'passwordUpdate'])->name('user.password.update');
+    Route::get('/notifications', [UserDashboardController::class, 'notifications'])->name('notification.list');
+
     Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
 
     Route::prefix('chats')->name('chats.')->group(function () {
