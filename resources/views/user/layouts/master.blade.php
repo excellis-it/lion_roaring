@@ -119,49 +119,1513 @@
             toastr.warning("{{ session('warning') }}");
         @endif
     </script>
-
-    </script>
     <script>
         $(document).ready(function() {
+
             var notification_page = 1;
             var loading = false; // Prevents multiple simultaneous AJAX requests
 
-            $(document).on('click', '#drop2', function() {
-                $('.notification-dropdown').addClass('show');
-                // if ($('#show-notification').children().length === 0) { // Load only if not already loaded
-                    loadMoreNotification(notification_page);
-                // }
-            });
-
-            $(document).on('scroll', '.notification-dropdown', function() {
-                if (!loading && ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight)) {
-                    notification_page++;
-                    loadMoreNotification(notification_page);
+            // remove notification dropdown when clicked outside
+            $(document).on('click', function(e) {
+                if ($('#show-notification .showing').length > 0) {
+                    if (!$(e.target).closest('#show-notification').length) {
+                        $('.notification-dropdown').removeClass('show');
+                        $('#show-notification').html(''); // Clear the notifications
+                        notification_page = 1;
+                    }
                 }
             });
 
-            function loadMoreNotification(page) {
+            $(document).on('click', '#drop2', function() {
+                var $dropdown = $('.notification-dropdown');
+                if ($dropdown.hasClass('show')) {
+                    // If the dropdown is already shown, hide it
+                    $dropdown.removeClass('show');
+                    $('#show-notification').html(''); // Clear the notifications
+                    notification_page = 1;
+                } else {
+                    $dropdown.addClass('show');
+                    loadMoreNotification(notification_page, true);
+                }
+            });
+
+            $('#show-notification').on('scroll', function() {
+                loadingNotification();
+            });
+
+            function loadingNotification() {
+                if (loading) return; // Exit if a load is already in progress
+
+                var $container = $('#show-notification');
+                var lastItem = $('.message-body').last();
+                var lastItemOffset = lastItem.offset().top + lastItem.outerHeight();
+                var containerOffset = $container.scrollTop() + $container.innerHeight();
+
+                if (containerOffset >= lastItemOffset) {
+                    loading = true;
+                    notification_page++;
+                    loadMoreNotification(notification_page, false);
+                }
+            }
+
+            function loadMoreNotification(page, initialLoad) {
                 loading = true;
+                if (!initialLoad) {
+                    $('#show-notification').append('<div class="loader-topbar"></div>');
+                }
                 $.ajax({
                     url: "{{ route('notification.list') }}",
                     data: {
                         page: page
                     },
                     success: function(data) {
-                        if (data.count > 0) {
+                        if (page === 1) {
                             $('#show-notification').html(data.view);
                         } else {
-                            // Optional: Disable further requests if no more notifications
-                            $(document).off('scroll');
+                            $('#show-notification').append(data.view);
                         }
+
+                        if (data.count < 8) {
+                            // Stop loading if there are fewer items than the threshold
+                            $('#show-notification').off('scroll');
+                        } else {
+                            $('#show-notification').on('scroll', function() {
+                                loadingNotification();
+                            });
+                        }
+
                         loading = false;
+                        $('.loader-topbar').remove();
                     },
                     error: function() {
-                        // Handle the error
                         loading = false;
+                        $('.loader-topbar').remove();
                     }
                 });
             }
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
+
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var sender_id = "{{ Auth::user()->id }}";
+            $.ajaxSetup({
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                },
+            });
+            let ip_address = "{{ env('IP_ADDRESS') }}";
+            let socket_port = '3000';
+            let socket = io(ip_address + ':' + socket_port);
+
+            $(document).on("click", ".user-list", function(e) {
+                var getUserID = $(this).attr("data-id");
+                receiver_id = getUserID;
+                loadChats();
+                $(this).addClass("active").siblings().removeClass("active");
+            });
+
+            function loadChats() {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('chats.load') }}",
+                    data: {
+                        _token: $("input[name=_token]").val(),
+                        reciver_id: receiver_id,
+                        sender_id: sender_id,
+                    },
+                    success: function(resp) {
+                        if (resp.status === true) {
+                            $(".chat-module").html(resp.view);
+
+                            // unseen_chat count remove
+                            $('#count-unseen-' + receiver_id).remove();
+
+                            socket.emit("multiple_seen", {
+                                unseen_chat: resp.unseen_chat,
+                            });
+
+                            if (resp.chat_count > 0) {
+                                scrollChatToBottom(receiver_id);
+                            }
+
+                            // Initialize EmojiOneArea on MessageInput
+                            var emojioneAreaInstance = $("#MessageInput").emojioneArea({
+                                pickerPosition: "top",
+                                filtersPosition: "top",
+                                tonesStyle: "bullet"
+                            });
+
+                            // Handle Enter key press within the emoji picker
+                            emojioneAreaInstance[0].emojioneArea.on('keydown', function(editor, event) {
+                                if (event.which === 13 && !event.shiftKey) {
+                                    event.preventDefault();
+                                    $("#MessageForm").submit();
+                                }
+                            });
+                        } else {
+                            toastr.error(resp.msg);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("An error occurred: " + status + "\nError: " + error);
+                    }
+                });
+            }
+
+
+            function scrollChatToBottom(receiver_id) {
+                var messages = document.getElementById("chat-container-" + receiver_id);
+                messages.scrollTop = messages.scrollHeight;
+            }
+
+
+            $(document).on("submit", "#MessageForm", function(e) {
+                e.preventDefault();
+
+                // Get the message from the input field emoji area
+                var message = $("#MessageInput").emojioneArea()[0].emojioneArea.getText();
+                var receiver_id = $(".reciver_id").val();
+                var url = "{{ route('chats.send') }}";
+
+                if (message == "") {
+                    return false;
+                }
+
+                // Perform Ajax request to send the message to the server
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        _token: $("input[name=_token]").val(),
+                        message: message,
+                        reciver_id: receiver_id,
+                        sender_id: sender_id,
+                    },
+                    success: function(res) {
+
+                        if (res.success) {
+                            $("#MessageInput").data("emojioneArea").setText("");
+                            let chat = res.chat.message;
+                            let created_at = res.chat.created_at_formatted;
+                            // use timezones to format the time America/New_York
+                            let time_format_12 = moment(created_at, "YYYY-MM-DD HH:mm:ss")
+                                .format("hh:mm A");
+
+                            let html = ` <div class="message me" id="chat-message-${res.chat.id}">
+                                  <div class="message-wrap">
+                                     <p class="messageContent">${chat}</p>
+                                 <div class="dropdown">
+                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                             data-bs-toggle="dropdown" aria-expanded="false">
+                             <i class="fa-solid fa-ellipsis-vertical"></i>
+                         </button>
+                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                             <li><a class="dropdown-item remove-chat" data-chat-id="${res.chat.id}" data-del-from="me">Remove For Me</a></li>
+                                     <li><a class="dropdown-item remove-chat" data-chat-id="${res.chat.id}" data-del-from="everyone">Remove For Everyone</a></li>
+                         </ul>
+                     </div>
+                     </div>
+                                 <div class="messageDetails">
+                                     <div class="messageTime">${time_format_12}</div>
+                                     <div id="seen_${res.chat.id}">
+                                     <i class="fas fa-check"></i>
+                                     </div>
+                                 </div>
+                             </div>
+                         `;
+                            $('#message-app-' + receiver_id).html(chat);
+                            if (res.chat_count > 0) {
+                                $("#chat-container-" + receiver_id).append(html);
+                                scrollChatToBottom(receiver_id);
+                            } else {
+                                $("#chat-container-" + receiver_id).html(html);
+                            }
+
+                            var users = res.users;
+                            $('#group-manage-' + sender_id).html('');
+                            var new_html = '';
+                            users.forEach(user => {
+                                let timezone = 'America/New_York';
+                                let time_format_13 = user.last_message && user
+                                    .last_message.created_at ?
+                                    moment.tz(user.last_message.created_at, timezone)
+                                    .format("hh:mm A") :
+                                    '';
+
+                                new_html += `
+                                 <li class="group user-list ${user.id == receiver_id ? 'active' : ''}" data-id="${user.id}">
+                                     <div class="avatar">`;
+
+                                if (user.profile_picture) {
+                                    new_html +=
+                                        `<img src="{{ Storage::url('${user.profile_picture}') }}" alt="">`;
+                                } else {
+                                    new_html +=
+                                        `<img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">`;
+                                }
+
+                                new_html += `</div>
+                                     <p class="GroupName">${user.first_name} ${user.middle_name ? user.middle_name : ''} ${user.last_name ? user.last_name : ''}</p>
+                                     <p class="GroupDescrp last-chat-${user.last_message ? user.last_message.id : ''}">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p>
+                                     <div class="time_online" id="last-chat-time-${user.last_message ? user.last_message.id : ''}">
+                                         <p>${time_format_13}</p>
+                                     </div>
+                                 </li>`;
+                            });
+
+                            $('#group-manage-' + sender_id).append(new_html);
+
+                            // Emit chat message to the server
+                            socket.emit("chat", {
+                                message: message,
+                                sender_id: sender_id,
+                                receiver_id: receiver_id,
+                                receiver_users: res.receiver_users,
+                                chat_id: res.chat.id
+                            });
+                        } else {
+                            console.log(res.msg);
+                        }
+                    },
+                });
+            });
+
+            $(document).on("change", "#file", function(e) {
+                var file = e.target.files[0];
+                var receiver_id = $(".reciver_id").val();
+                var formData = new FormData();
+                formData.append('file', file);
+                formData.append('_token', $("meta[name='csrf-token']").attr(
+                    'content')); // Retrieve CSRF token from meta tag
+                formData.append('reciver_id', receiver_id);
+                formData.append('sender_id', sender_id);
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('chats.send') }}",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        if (res.success) {
+                            let attachment = res.chat.attachment;
+                            let fileUrl = "{{ Storage::url('') }}" + attachment;
+                            let attachement_extention = attachment.split('.').pop();
+                            let created_at = res.chat.created_at;
+                            let timeZome = 'America/New_York';
+                            let time_format_12 = moment.tz(created_at, timeZome).format(
+                                "hh:mm A");
+                            let html = `<div class="message me">`;
+                            if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
+                                html +=
+                                    ` <div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank"><img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a></p>`;
+                            } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
+                                html +=
+                                    ` <div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank"><video width="200" height="200" controls><source src="${fileUrl}" type="video/mp4"><source src="${fileUrl}" type="video/webm"><source src="${fileUrl}" type="video/ogg"></video></a></p>`;
+                            } else {
+                                html +=
+                                    ` <div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" download="${attachment}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a></p>`;
+                            }
+
+                            html +=
+                                ` <div class="dropdown">
+                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                             data-bs-toggle="dropdown" aria-expanded="false">
+                             <i class="fa-solid fa-ellipsis-vertical"></i>
+                         </button>
+                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                             <li><a class="dropdown-item remove-chat" data-chat-id="${res.chat.id}" data-del-from="me">Remove For Me</a></li>
+                                     <li><a class="dropdown-item remove-chat" data-chat-id="${res.chat.id}" data-del-from="everyone">Remove For Everyone</a></li>
+                         </ul>
+                     </div></div><div class="messageDetails"><div class="messageTime">${time_format_12}</div>
+                                 <div id="seen_${res.chat.id}">
+                                 <i class="fas fa-check">
+                                     </i>
+                                 </div>
+                                 </div></div>`;
+
+                            if (res.chat_count > 0) {
+                                $("#chat-container-" + receiver_id).append(html);
+                                scrollChatToBottom(receiver_id);
+                            } else {
+                                $("#chat-container-" + receiver_id).html(html);
+                            }
+
+                            // Update the user list
+                            var users = res.users;
+                            $('#group-manage-' + sender_id).html('');
+                            var new_html = '';
+                            users.forEach(user => {
+                                let timeZome = 'America/New_York';
+                                let time_format_13 = user.last_message && user
+                                    .last_message.created_at ? moment.tz(user
+                                        .last_message
+                                        .created_at, timeZome).format(
+                                        "hh:mm A") : '';
+
+                                new_html +=
+                                    `<li class="group user-list ${user.id == receiver_id ? 'active' : ''}" data-id="${user.id}"><div class="avatar">`;
+
+                                if (user.profile_picture) {
+                                    new_html +=
+                                        `<img src="{{ Storage::url('${user.profile_picture}') }}" alt="">`;
+                                } else {
+                                    new_html +=
+                                        `<img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">`;
+                                }
+
+                                new_html +=
+                                    `</div><p class="GroupName">${user.first_name} ${user.middle_name ? user.middle_name : ''} ${user.last_name ? user.last_name : ''}</p><p class="GroupDescrp last-chat-${user.last_message ? user.last_message.id : ''}">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p><div class="time_online" id="last-chat-time-${user.last_message ? user.last_message.id : ''}"><p>${time_format_13}</p></div></li>`;
+                            });
+
+                            $('#group-manage-' + sender_id).append(new_html);
+
+                            socket.emit("chat", {
+                                message: file.name,
+                                file_url: fileUrl,
+                                sender_id: sender_id,
+                                receiver_id: receiver_id,
+                                receiver_users: res.receiver_users,
+                                chat_id: res.chat.id
+                            });
+                        } else {
+                            console.log(res.msg);
+                        }
+                    }
+                });
+            });
+
+            // clear-chat
+
+            $(document).on("click", ".clear-chat", function(e) {
+                var receiver_id = $(this).data("reciver-id");
+                r = confirm("Are you sure you want to clear chat?");
+                if (r == false) {
+                    return false;
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('chats.clear') }}",
+                        data: {
+                            _token: $("input[name=_token]").val(),
+                            reciver_id: receiver_id,
+                            sender_id: sender_id,
+                        },
+                        success: function(res) {
+                            if (res.success) {
+                                $("#chat-container-" + receiver_id).html("");
+                                $("#message-app-" + receiver_id).html("");
+                                // loadChats();
+                                // socket.emit("chat", {
+                                socket.emit("clear-chat", {
+                                    receiver_id: receiver_id,
+                                    sender_id: sender_id,
+                                });
+
+                            } else {
+                                console.log(res.msg);
+                            }
+                        }
+                    });
+                }
+
+            });
+
+            //remove-chat
+            $(document).on("click", ".remove-chat", function(e) {
+                var chat_id = $(this).data("chat-id");
+                var del_from = $(this).data("del-from");
+                r = confirm("Are you sure you want to remove chat?");
+                if (r == false) {
+                    return false;
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('chats.remove') }}",
+                        data: {
+                            _token: $("input[name=_token]").val(),
+                            chat_id: chat_id,
+                            del_from: del_from,
+                        },
+                        success: function(res) {
+                            if (res.status == true) {
+                                if (del_from == 'me') {
+                                    $("#chat-message-" + chat_id).remove();
+                                    $("#last-chat-time-" + chat_id).remove();
+                                    $('.last-chat-' + chat_id).html('');
+                                } else {
+                                    $("#chat-message-" + chat_id).remove();
+                                    $("#last-chat-time-" + chat_id).remove();
+                                    $('.last-chat-' + chat_id).html('');
+
+                                    socket.emit("remove-chat", {
+                                        chat: res.chat,
+                                    });
+                                }
+                            } else {
+                                console.log(res.msg);
+                            }
+                        }
+                    });
+                }
+
+            });
+
+            //remove-chat
+            socket.on('remove-chat', function(data) {
+                if (data.chat.reciver_id == sender_id) {
+                    $("#chat-message-" + data.chat.id).remove();
+                    $("#last-chat-time-" + data.chat.id).remove();
+                    $('.last-chat-' + data.chat.id).html('');
+                }
+            });
+
+            // clear-chat
+            socket.on('clear-chat', function(data) {
+
+                if (data.reciver_id == sender_id) {
+                    $("#chat-container-" + data.sender_id).html("");
+                    $("#message-app-" + data.sender_id).html("");
+                }
+            })
+
+
+            // Listen for incoming chat messages from the server
+            socket.on("chat", function(data) {
+                let timeZome = 'America/New_York';
+                html = `
+                         <div class="message you">
+                             <p class="messageContent">`
+                if (data.file_url) {
+                    let attachement_extention = data.file_url.split('.').pop();
+                    if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
+                        html +=
+                            `<a href="${data.file_url}" target="_blank"><img src="${data.file_url}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a>`;
+                    } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
+                        html +=
+                            `<a href="${data.file_url}" target="_blank"><video width="200" height="200" controls><source src="${data.file_url}" type="video/mp4"><source src="${data.file_url}" type="video/webm"><source src="${data.file_url}" type="video/ogg"></video></a>`;
+                    } else {
+                        html +=
+                            `<a href="${data.file_url}" download="${data.message}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a>`;
+                    }
+                } else {
+                    html += `${data.message}`;
+                }
+
+                html += `</p>
+                        <div class="messageDetails">
+                                 <div class="messageTime">${ moment.tz(data.created_at, timeZome).format("hh:mm A")}</div>
+                             </div>
+                         </div>
+                     `;
+                if (data.receiver_id == sender_id) {
+                    if ($(".chat-module").length > 0) {
+                        if ($("#chat-container-" + data.sender_id).length > 0) {
+                            $("#chat-container-" + data.sender_id).append(html);
+                            scrollChatToBottom(data.sender_id);
+                            // remove unseen count
+                            $('#count-unseen-' + data.sender_id).remove();
+                            // seen message
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ route('chats.seen') }}",
+                                data: {
+                                    _token: $("input[name=_token]").val(),
+                                    reciver_id: data.sender_id,
+                                    sender_id: sender_id,
+                                    chat_id: data.chat_id,
+                                },
+                                success: function(res) {
+                                    if (res.status == true) {
+                                        socket.emit("seen", {
+                                            last_chat: res.last_chat,
+                                        });
+                                    } else {
+                                        console.log(res.msg);
+                                    }
+                                }
+                            });
+
+                        }
+                    }
+
+                    $('#message-app-' + data.sender_id).html(data.message);
+                    var users = data.receiver_users;
+                    $('#group-manage-' + sender_id).html('');
+                    var new_html = '';
+                    users.forEach(user => {
+                        // Check if last_message exists and has a created_at property
+                        let timeZome = 'America/New_York';
+                        let time_format_13 = user.last_message && user.last_message.created_at ?
+                            moment.tz(user.last_message.created_at, timeZome).format(
+                                "hh:mm A") :
+                            '';
+
+                        new_html += `
+         <li class="group user-list ${user.id == data.sender_id ? 'active' : ''}" data-id="${user.id}">
+             <div class="avatar">`;
+
+                        if (user.profile_picture) {
+                            new_html +=
+                                `<img src="{{ Storage::url('${user.profile_picture}') }}" alt="">`;
+                        } else {
+                            new_html +=
+                                `<img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">`;
+                        }
+
+                        new_html += `</div>
+         <p class="GroupName">${user.first_name} ${user.middle_name ? user.middle_name : ''} ${user.last_name ? user.last_name : ''}</p>
+         <p class="GroupDescrp last-chat-${user.last_message ? user.last_message.id : ''}">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p>
+         <div class="time_online" id="last-chat-time-${user.last_message ? user.last_message.id : ''}">
+             <p>${time_format_13}</p>
+         </div>`
+                        if (user.id == data.sender_id) {
+                            new_html += `<div class="count-unseen" id="count-unseen-${user.id}">
+             <span><p>${user.unseen_chat}</p></span>
+         </div>`;
+                        }
+                        new_html += `</li>`;
+                    });
+
+                    $('#group-manage-' + sender_id).append(new_html);
+
+                }
+
+                if (data.receiver_id == sender_id) {
+                    if ($(".chat-module").length > 0) {
+                        console.log("Seen");
+
+                        if ($("#chat-container-" + data.sender_id).length > 0) {
+                            $('#count-unseen-' + data.sender_id).remove();
+                        } else {
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ route('chats.notification') }}",
+                                data: {
+                                    _token: $("input[name=_token]").val(),
+                                    user_id: sender_id,
+                                    sender_id: data.sender_id, // sender_id
+                                },
+                                success: function(res) {
+                                    if (res.status == true) {
+                                        $('#show-notification-count-' + sender_id).html(res
+                                            .notification_count);
+                                        var route =
+                                            `{{ route('notification.read', ['type' => 'Chat', 'id' => '__ID__']) }}`
+                                            .replace('__ID__', res.notification.id);
+                                        var html = `<li>
+                                                 <a href="${route}" class="top-text-block">
+                                                     <div class="top-text-heading">${res.notification.message}</div>
+                                                     <div class="top-text-light">${moment(res.notification.created_at).fromNow()}</div>
+                                                 </a>
+                                             </li>`;
+                                        $('#show-notification').prepend(
+                                            html
+                                        ); // Use prepend to add new notification at the top
+                                    } else {
+                                        console.log(res.msg);
+                                    }
+
+
+                                }
+                            });
+                        }
+                    } else {
+                        console.log("Not seen");
+
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ route('chats.notification') }}",
+                            data: {
+                                _token: $("input[name=_token]").val(),
+                                user_id: sender_id,
+                                sender_id: data.sender_id, // sender_id
+                            },
+                            success: function(res) {
+                                if (res.status == true) {
+                                    $('#show-notification-count-' + sender_id).html(res
+                                        .notification_count);
+                                    var route =
+                                        `{{ route('notification.read', ['type' => 'Chat', 'id' => '__ID__']) }}`
+                                        .replace('__ID__', res.notification.id);
+                                    var html = `<li>
+                                                 <a href="${route}" class="top-text-block">
+                                                     <div class="top-text-heading">${res.notification.message}</div>
+                                                     <div class="top-text-light">${moment(res.notification.created_at).fromNow()}</div>
+                                                 </a>
+                                             </li>`;
+                                    $('#show-notification').prepend(
+                                        html
+                                    ); // Use prepend to add new notification at the top
+                                } else {
+                                    console.log(res.msg);
+                                }
+
+
+                            }
+                        });
+                    }
+                }
+            });
+
+            // seen message
+            socket.on("seen", function(data) {
+                if (sender_id == data.last_chat.sender_id) {
+                    $("#seen_" + data.last_chat.id).html(
+                        '<i class="fas fa-check-double"></i>'
+                    );
+
+                }
+            });
+
+            //multiple_seen
+            socket.on("multiple_seen", function(data) {
+                data.unseen_chat.forEach(function(chat) {
+                    if (sender_id == chat.sender_id) {
+                        $("#seen_" + chat.id).html(
+                            '<i class="fas fa-check-double"></i>'
+                        );
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+
+            $.ajaxSetup({
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                },
+            });
+            let ip_address = "{{ env('IP_ADDRESS') }}";
+            let socket_port = '3000';
+            let socket = io(ip_address + ':' + socket_port);
+            var sender_id = {{ auth()->user()->id }};
+
+            $('#create-team').submit(function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    success: function(resp) {
+                        toastr.success(resp.message);
+                        // append new team to the list
+                        var data = resp.team;
+                        var group_image = data.group_image;
+                        var time = data.last_message ?
+                            "{{ date('h:i A', strtotime('" + data.last_message.created_at + "')) }}" :
+                            '';
+                        html = `<li class="group group-data" data-id="${data.id}">
+                                    <div class="avatar">`
+
+                        if (group_image) {
+                            html +=
+                                `<img src="{{ Storage::url('${data.group_image}') }}" alt="">`;
+                        } else {
+                            html +=
+                                `<img src="{{ asset('user_assets/images/group.jpg') }}" alt="">`;
+
+                        }
+                        html += `</div><p class="GroupName">${data.name}</p>
+                                    <p class="GroupDescrp">${data.last_message ? data.last_message.message : ''}</p>
+                                    <div class="time_online">${time ? time : ''}</div>
+                                </li>`;
+                        $('.group-list').prepend(html);
+                        $('#exampleModalToggle').modal('hide');
+                        // reset form
+                        $('#create-team')[0].reset();
+
+                        // Send message to socket
+                        socket.emit('createTeam', {
+                            user_id: sender_id,
+                            chat_member_id: resp.chat_member_id
+                        });
+                    },
+                    error: function(xhr) {
+                        $('.text-danger').html('');
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                            if (key.includes('.')) {
+                                var fieldName = key.split('.')[0];
+                                // Display errors for array fields
+                                var num = key.match(/\d+/)[0];
+                                toastr.error(value[0]);
+                            } else {
+                                // after text danger span
+                                toastr.error(value[0]);
+                            }
+                        });
+                    }
+                });
+            });
+
+            function loadChat(teamId) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('team-chats.load') }}",
+                    data: {
+                        team_id: teamId,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(resp) {
+                        $('.chat-body').html(resp.view);
+                        scrollChatToBottom(teamId);
+
+                        // Initialize EmojiOneArea on MessageInput
+                        var emojioneAreaInstance = $("#TeamMessageInput").emojioneArea({
+                            pickerPosition: "top",
+                            filtersPosition: "top",
+                            tonesStyle: "bullet"
+                        });
+
+                        // Handle Enter key press within the emoji picker
+                        emojioneAreaInstance[0].emojioneArea.on('keydown', function(editor, event) {
+                            if (event.which === 13 && !event.shiftKey) {
+                                event.preventDefault();
+                                $("#TeamMessageForm").submit();
+                            }
+                        });
+
+                        // scrollChatToBottom(teamId);
+                    },
+                    error: function(xhr) {
+                        toastr.error('Something went wrong');
+                    }
+                });
+            }
+
+            $(document).on('click', '.group-data', function() {
+                var teamId = $(this).data('id');
+                loadChat(teamId);
+                $(this).addClass("active").siblings().removeClass("active");
+            });
+
+            function scrollChatToBottom(team_id) {
+                var messages = document.getElementById("team-chat-container-" + team_id);
+                if (messages) {
+                    messages.scrollTop = messages.scrollHeight;
+                } else {
+                    console.error("Element with ID 'team-chat-container-" + team_id + "' not found.");
+                }
+            }
+
+            $(document).on("change", "#file", function(e) {
+                var file = e.target.files[0];
+                var team_id = $(this).data('team-id');
+                var formData = new FormData();
+                formData.append('file', file);
+                formData.append('_token', $("meta[name='csrf-token']").attr(
+                    'content')); // Retrieve CSRF token from meta tag
+                formData.append('team_id', team_id);
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('team-chats.send') }}",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        if (res.status == true) {
+                            groupList(sender_id);
+                            let attachment = res.chat.attachment;
+                            let fileUrl = "{{ Storage::url('') }}" + attachment;
+                            let attachement_extention = attachment.split('.').pop();
+                            let created_at = res.chat.created_at;
+                            let timeZome = 'America/New_York';
+                            let time_format_12 = moment.tz(created_at, timeZome).format(
+                                "hh:mm A");
+                            let html = `<div class="message me">`;
+                            if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
+                                html +=
+                                    `<p class="messageContent"><a href="${fileUrl}" target="_blank"><img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a></p>`;
+                            } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
+                                html +=
+                                    `<p class="messageContent"><a href="${fileUrl}" target="_blank"><video width="200" height="200" controls><source src="${fileUrl}" type="video/mp4"><source src="${fileUrl}" type="video/webm"><source src="${fileUrl}" type="video/ogg"></video></a></p>`;
+                            } else {
+                                html +=
+                                    `<p class="messageContent"><a href="${fileUrl}" download="${attachment}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a></p>`;
+                            }
+
+                            html +=
+                                `<div class="messageDetails"><div class="messageTime">${time_format_12}</div></div></div>`;
+                            $('#team-chat-container-' + team_id).append(html);
+                            scrollChatToBottom(team_id);
+
+                            // Send message to socket
+                            socket.emit('sendTeamMessage', {
+                                chat: res.chat,
+                                file_url: fileUrl,
+                                chat_member_id: res.chat_member_id,
+                            });
+                        } else {
+                            console.log(res.msg);
+                        }
+                    }
+                });
+            });
+
+            $(document).on("submit", "#TeamMessageForm", function(e) {
+                e.preventDefault();
+                var message = $("#TeamMessageInput").emojioneArea()[0].emojioneArea.getText();
+                var url = "{{ route('team-chats.send') }}";
+
+                if (message.trim() == '') {
+                    return false;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        message: message,
+                        team_id: $(".team_id").val(),
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(resp) {
+                        loadChat($("#team_id").val());
+
+                        $("#TeamMessageInput").emojioneArea()[0].emojioneArea.setText('');
+                        let timezone = 'America/New_York';
+                        let created_at = resp.chat.created_at;
+                        let time = moment.tz(created_at, timezone).format('h:mm A');
+
+                        // append new message to the chat
+                        var data = resp.chat;
+                        groupList(sender_id, data.team_id);
+                        var html = `<div class="message me">
+                                        <p class="messageContent">${data.message}</p>
+                                        <div class="messageDetails">
+                                            <div class="messageTime">${time}</div>
+                                        </div>
+                                    </div>`;
+                        $('#team-chat-container-' + data.team_id).append(html);
+
+                        scrollChatToBottom(data.team_id);
+
+                        // Send message to socket
+                        socket.emit('sendTeamMessage', {
+                            chat: data,
+                            chat_member_id: resp.chat_member_id
+                        });
+                    },
+                    error: function(xhr) {
+                        toastr.error('Something went wrong');
+                    }
+                });
+            });
+
+            $(document).on('submit', '#name-des-update', function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    success: function(resp) {
+                        toastr.success(resp.message);
+                        $('.group-name-' + resp.team_id).html(resp.name);
+                        $('.group-des-' + resp.team_id).html(resp.description);
+                        $('#exampleModalToggle3').modal('hide');
+                        $('#groupInfo').modal('show');
+                    },
+                    error: function(xhr) {
+                        $('.text-danger').html('');
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                            if (key.includes('.')) {
+                                var fieldName = key.split('.')[0];
+                                // Display errors for array fields
+                                var num = key.match(/\d+/)[0];
+                                toastr.error(value[0]);
+                            } else {
+                                // after text danger span
+                                toastr.error(value[0]);
+                            }
+                        });
+                    }
+                });
+            });
+
+
+            $(document).on('click', '.group-info', function() {
+                var team_id = $(this).data('team-id');
+                groupDetails(team_id);
+            });
+
+            $(document).on('click', '.back-to-group-info', function() {
+                $('#exampleModalToggle3').modal('hide');
+                var team_id = $(this).data('team-id');
+                groupDetails(team_id);
+            });
+            // back-to-group-info-one
+            $(document).on('click', '.back-to-group-info-one', function() {
+                $('#exampleModalToggle2').modal('hide');
+                var team_id = $(this).data('team-id');
+                groupDetails(team_id);
+            });
+
+            function groupDetails(team_id) {
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('team-chats.group-info') }}",
+                    data: {
+                        team_id: team_id,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(resp) {
+                        // model open
+
+                        $('#group-information').html(resp.view);
+                        $('#groupInfo').modal('show');
+                        $('#loading').removeClass('loading');
+                        $('#loading-content').removeClass('loading-content');
+                    },
+                    error: function(xhr) {
+                        toastr.error('Something went wrong');
+                    }
+                });
+            }
+
+            $(document).on('change', '.team-profile-picture', function() {
+                var team_id = $(this).data('team-id');
+                var file = $(this).prop('files')[0];
+                var formData = new FormData();
+                formData.append('group_image', file);
+                formData.append('team_id', team_id);
+                formData.append('_token', "{{ csrf_token() }}");
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('team-chats.update-group-image') }}",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(resp) {
+                        if (resp.status == true) {
+                            var group_image = resp.group_image;
+                            var group_image_url = "{{ Storage::url('') }}" + group_image;
+                            $('.team-image-' + team_id).html(
+                                `<img src="{{ Storage::url('') }}${group_image}" alt="">`);
+
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
+                            toastr.success(resp.message);
+
+                            socket.emit('updateGroupImage', {
+                                team_id: team_id,
+                                group_image: group_image_url
+                            });
+                        } else {
+                            toastr.error(resp.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        $('.text-danger').html('');
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                            if (key.includes('.')) {
+                                var fieldName = key.split('.')[0];
+                                // Display errors for array fields
+                                var num = key.match(/\d+/)[0];
+                                toastr.error(value[0]);
+                            } else {
+                                // after text danger span
+                                toastr.error(value[0]);
+                            }
+                        });
+                    }
+                });
+            });
+
+            $(document).on('click', '.edit-name-des', function() {
+                var team_id = $(this).data('team-id');
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('team-chats.edit-name-des') }}",
+                    data: {
+                        team_id: team_id,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(resp) {
+                        $('#change-group-details').html(resp.view);
+                        $('#groupInfo').modal('hide');
+                        $('#exampleModalToggle3').modal('show');
+                        $('#loading').removeClass('loading');
+                        $('#loading-content').removeClass('loading-content');
+                    },
+                    error: function(xhr) {
+                        toastr.error('Something went wrong');
+                    }
+                });
+            });
+
+            $(document).on('click', '.remove-member-from-group', function() {
+                var team_id = $(this).data('team-id');
+                var user_id = $(this).data('user-id');
+                var r = confirm("Are you sure you want to remove this member?");
+                if (r == true) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('team-chats.remove-member') }}",
+                        data: {
+                            team_id: team_id,
+                            user_id: user_id,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(resp) {
+                            if (resp.status == true) {
+                                $('#groupInfo').modal('hide');
+                                loadChat(team_id);
+                                toastr.success(resp.message);
+                                $('#group-member-' + team_id + '-' + user_id).remove();
+
+                                // socket emit
+                                socket.emit('removeMemberFromGroup', {
+                                    team_id: team_id,
+                                    user_id: user_id,
+                                    sender_id : sender_id,
+                                    notification: resp.notification
+                                });
+
+                                socket.emit('sendTeamMessage', {
+                                    chat: resp.chat,
+                                    chat_member_id: resp.chat_member_id
+                                });
+
+                            } else {
+                                toastr.error(resp.message);
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error('Something went wrong');
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+
+            // make-admin
+            $(document).on('click', '.make-admin', function() {
+                var team_id = $(this).data('team-id');
+                var user_id = $(this).data('user-id');
+                var r = confirm("Are you sure you want to make this member admin?");
+                if (r == true) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('team-chats.make-admin') }}",
+                        data: {
+                            team_id: team_id,
+                            user_id: user_id,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(resp) {
+                            if (resp.status == true) {
+                                toastr.success(resp.message);
+                                $('#show-permission-' + team_id + '-' + user_id).html(
+                                    ` <span class="admin_name">Admin</span>`);
+
+                                // socket emit sendAdminNotification
+                                socket.emit('sendAdminNotification', {
+                                    team_id: team_id,
+                                    user_id: user_id,
+                                    sender_id: sender_id,
+                                    notification: resp.notification
+                                });
+                            } else {
+                                toastr.error(resp.message);
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error('Something went wrong');
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+
+            function groupList(user_id, team_id = null) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('team-chats.group-list') }}",
+                    data: {
+                        user_id: user_id,
+                        team_id: team_id,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(resp) {
+                        $('.group-list').html(resp.view);
+                    },
+                    error: function(xhr) {
+                        toastr.error('Something went wrong');
+                    }
+                });
+            }
+
+            $(document).on('click', '.exit-from-group', function() {
+                var team_id = $(this).data('team-id');
+                var r = confirm("Are you sure you want to exit from this group?");
+                if (r == true) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('team-chats.exit-from-group') }}",
+                        data: {
+                            team_id: team_id,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(resp) {
+                            if (resp.status == true) {
+                                toastr.success(resp.message);
+                                loadChat(team_id);
+                                $('#group-member-' + resp.team_id + '-' + resp.user_id)
+                                    .remove();
+                                $('#groupInfo').modal('hide');
+
+                                // socket emit
+                                socket.emit('exitFromGroup', {
+                                    team_id: team_id,
+                                    user_id: resp.user_id,
+                                    team_member_name: resp.team_member_name
+                                });
+                            } else {
+                                toastr.error(resp.message);
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error('Something went wrong');
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+
+            //add-member-team form submit
+            $(document).on('submit', '#add-member-team', function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    success: function(resp) {
+                        toastr.success(resp.message);
+                        $('#add-member-team')[0].reset();
+                        $('#exampleModalToggle2').modal('hide');
+                        loadChat(resp.team_id);
+                        // socket emit
+                        socket.emit('sendTeamMessage', {
+                            chat: resp.chat,
+                            chat_member_id: resp.chat_member_id
+                        });
+
+                        socket.emit('addMemberToGroup', {
+                            team_id: resp.team_id,
+                            user_id: resp.user_id,
+                            team_member_name: resp.team_member_name,
+                            chat_member_id: resp.chat_member_id,
+                            already_member_arr: resp.already_member_arr,
+                            only_added_members : resp.only_added_members
+                        });
+
+                    },
+                    error: function(xhr) {
+                        $('.text-danger').html('');
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                            if (key.includes('.')) {
+                                var fieldName = key.split('.')[0];
+                                // Display errors for array fields
+                                var num = key.match(/\d+/)[0];
+                                toastr.error(value[0]);
+                            } else {
+                                // after text danger span
+                                toastr.error(value[0]);
+                            }
+                        });
+                    }
+                });
+            });
+
+            // delete-group
+            $(document).on('click', '.delete-group', function() {
+                var team_id = $(this).data('team-id');
+                var r = confirm("Are you sure you want to delete this group?");
+                if (r == true) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('team-chats.delete-group') }}",
+                        data: {
+                            team_id: team_id,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(resp) {
+                            if (resp.status == true) {
+                                toastr.success(resp.message);
+                                groupList(sender_id);
+                                html = `<div class="icon_chat">
+                                        <span><img src="{{ asset('user_assets/images/icon-chat.png') }}" alt=""></span>
+                                        <h4>Seamless Real-Time Chat | Connect Instantly</h4>
+                                        <p>Join our dynamic chat platform, where real-time communication is effortless. Engage in private and group
+                                            conversations, manage your contacts, and stay connected with instant updates. Experience a secure and
+                                            responsive interface, perfect for personal or professional use.</p>
+                                    </div>`;
+                                $('.chat-body').html(html);
+
+                                // socket emit
+                                socket.emit('deleteGroup', {
+                                    team_id: resp.team_id,
+                                    user_id: sender_id,
+                                    team_member_id: resp.team_member_id
+                                });
+
+                            } else {
+                                toastr.error(resp.message);
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error('Something went wrong');
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+
+            // deleteGroup
+
+            socket.on('deleteGroup', function(data) {
+                if (data.user_id != sender_id && data.team_member_id.includes(sender_id)) {
+                    groupList(sender_id);
+                    html = `<div class="icon_chat">
+                                        <span><img src="{{ asset('user_assets/images/icon-chat.png') }}" alt=""></span>
+                                        <h4>Seamless Real-Time Chat | Connect Instantly</h4>
+                                        <p>Join our dynamic chat platform, where real-time communication is effortless. Engage in private and group
+                                            conversations, manage your contacts, and stay connected with instant updates. Experience a secure and
+                                            responsive interface, perfect for personal or professional use.</p>
+                                    </div>`;
+                    $('.chat-body').html(html);
+                }
+            });
+
+            // addMemberToGroup
+            socket.on('addMemberToGroup', function(data) {
+                if (data.user_id != sender_id && data.chat_member_id.includes(sender_id)) {
+                    $('#all-member-' + data.team_id).html(
+                        data.team_member_name.length > 60 ?
+                        data.team_member_name.substring(0, 60) + '...' :
+                        data.team_member_name
+                    );
+
+                    groupList(sender_id);
+                }
+
+                if (data.only_added_members.includes(sender_id)) {
+                     //  get count notification
+                     var count = $('#show-notification-count-' + sender_id).text();
+                    count = parseInt(count);
+                    count += 1;
+                    $('#show-notification-count-' + sender_id).text(count);
+                }
+
+
+                if (data.already_member_arr.includes(sender_id)) {
+                    html = `  <form id="TeamMessageForm">
+            <input type="file" id="file" style="display: none" data-team-id="${data.team_id}">
+            <div class="file-upload">
+                <label for="file">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                        viewBox="0 0 24 24">
+                        <path fill="currentColor" fill-rule="evenodd"
+                            d="M9 7a5 5 0 0 1 10 0v8a7 7 0 1 1-14 0V9a1 1 0 0 1 2 0v6a5 5 0 0 0 10 0V7a3 3 0 1 0-6 0v8a1 1 0 1 0 2 0V9a1 1 0 1 1 2 0v6a3 3 0 1 1-6 0z"
+                            clip-rule="evenodd" style="color:black"></path>
+                    </svg>
+                </label>
+            </div>
+            <input type="text" id="TeamMessageInput" placeholder="Type a message...">
+            <input type="hidden" id="team_id" value="${data.team_id}" class="team_id">
+            <div>
+                <button class="Send">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M0.82186 0.827412C0.565716 0.299519 0.781391 0.0763349 1.32445 0.339839L20.6267 9.70604C21.1614 9.96588 21.1578 10.4246 20.6421 10.7179L1.6422 21.526C1.11646 21.8265 0.873349 21.6115 1.09713 21.0513L4.71389 12.0364L15.467 10.2952L4.77368 8.9726L0.82186 0.827412Z"
+                            fill="white" />
+                    </svg>
+                </button>
+            </div>
+        </form>`;
+                    $('#group-member-form-' + data.team_id + '-' + sender_id).html(html);
+
+                }
+            });
+
+
+            // exitFromGroup
+            socket.on('exitFromGroup', function(data) {
+                if (data.user_id != sender_id) {
+                    $('#group-member-' + data.team_id + '-' + data.user_id).remove();
+                    $('#all-member-' + data.team_id).html(
+                        data.team_member_name.length > 60 ?
+                        data.team_member_name.substring(0, 60) + '...' :
+                        data.team_member_name
+                    );
+                }
+            });
+
+            socket.on('createTeam', function(data) {
+                if (sender_id != data.user_id && data.chat_member_id.includes(sender_id)) {
+                    // get count notification
+                    var count = $('#show-notification-count-' + sender_id).text();
+                    count = parseInt(count);
+                    count += 1;
+                    $('#show-notification-count-' + sender_id).text(count);
+                    groupList(sender_id);
+                }
+            })
+
+            socket.on('removeMemberFromGroup', function(data) {
+                if (data.user_id == sender_id) {
+                    var notification = data.notification;
+                    var count = $('#show-notification-count-' + sender_id).text();
+                    count = parseInt(count);
+                    count += 1;
+                    $('#show-notification-count-' + sender_id).text(count);
+                    var route =
+                        `{{ route('notification.read', ['type' => 'Team', 'id' => '__ID__']) }}`
+                        .replace('__ID__', data.notification.id);
+                    var html = `<li>
+                                    <a href="${route}" class="top-text-block">
+                                        <div class="top-text-heading">${data.notification.message}</div>
+                                        <div class="top-text-light">${moment(data.notification.created_at).fromNow()}</div>
+                                    </a>
+                                </li>`;
+                    $('#show-notification').prepend(html);
+
+                    $('#group-member-form-' + data.team_id + '-' + data.user_id).html(`
+                  <div class="justify-content-center">
+            <div class="text-center">
+                <h4 style="color:#be2020 !important; front-size:1.25rem;">Sorry! you are not able to send message in this group.</h4>
+            </div>
+        </div>
+                `);
+
+                }
+
+                if (data.sender_id != sender_id) {
+                    $('#group-member-' + data.team_id + '-' + data.user_id).remove();
+                }
+            });
+
+            socket.on('updateGroupImage', function(data) {
+                $('.team-image-' + data.team_id).html(
+                    `<img src="${data.group_image}" alt="">`);
+            });
+
+            // Receive message from socket
+            socket.on('sendTeamMessage', function(data) {
+                // console.log(data);
+
+                let timezone = 'America/New_York';
+                let created_at = data.chat.created_at;
+                let time = moment.tz(created_at, timezone).format('h:mm A');
+
+                let chat_member_id_array = data.chat_member_id;
+
+                if (data.chat.user_id != sender_id && chat_member_id_array.includes(sender_id)) {
+                    groupList(sender_id, data.chat.team_id);
+                    let html = `
+        <div class="message you">
+            <div class="d-flex">
+                <div class="member_image">
+                    <span>`;
+
+                    if (data.chat.user.profile_picture) {
+                        html +=
+                            `<img src="{{ Storage::url('${data.chat.user.profile_picture}') }}" alt="">`;
+                    } else {
+                        html += `<img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">`;
+                    }
+
+                    html += `   </span>
+                </div>
+                <div class="message_group">
+                    <p class="messageContent">
+                        <span class="namemember">
+    ${ (data.chat.user.first_name ?? '') + ' ' + (data.chat.user.middle_name ?? '') + ' ' + (data.chat.user.last_name ?? '') }
+</span>`;
+                    if (data.file_url) {
+                        let attachement_extention = data.file_url.split('.').pop();
+                        if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
+                            html +=
+                                `<a href="${data.file_url}" target="_blank"><img src="${data.file_url}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a>`;
+                        } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
+                            html +=
+                                `<a href="${data.file_url}" target="_blank"><video width="200" height="200" controls><source src="${data.file_url}" type="video/mp4"><source src="${data.file_url}" type="video/webm"><source src="${data.file_url}" type="video/ogg"></video></a>`;
+                        } else {
+                            html +=
+                                `<a href="${data.file_url}" download="${data.file_url}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a>`;
+                        }
+                    } else {
+                        html += `${data.chat.message}`;
+                    }
+                    html += `</p>
+                    <div class="messageDetails">
+                        <div class="messageTime">${time}</div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+                    $('#team-chat-container-' + data.chat.team_id).append(html);
+                    scrollChatToBottom(data.chat.team_id);
+                }
+
+            });
+
+            // sendAdminNotification
+            socket.on('sendAdminNotification', function(data) {
+                if (data.user_id == sender_id) {
+                    // get count notification
+                    var count = $('#show-notification-count-' + sender_id).text();
+                    count = parseInt(count);
+                    count += 1;
+                    $('#show-notification-count-' + sender_id).text(count);
+                    var route =
+                        `{{ route('notification.read', ['type' => 'Team', 'id' => '__ID__']) }}`
+                        .replace('__ID__', data.notification.id);
+                    var html = `<li>
+                                    <a href="${route}" class="top-text-block">
+                                        <div class="top-text-heading">${data.notification.message}</div>
+                                        <div class="top-text-light">${moment(data.notification.created_at).fromNow()}</div>
+                                    </a>
+                                </li>`;
+                    $('#show-notification').prepend(html);
+                }
+            });
+
         });
     </script>
 

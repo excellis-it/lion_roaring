@@ -100,7 +100,7 @@ class DashboardController extends Controller
     public function notifications(Request $request)
     {
         if ($request->ajax()) {
-            $perPage = 6; // Number of notifications per page
+            $perPage = 8; // Number of notifications per page
             $page = $request->get('page', 1);
             $offset = ($page - 1) * $perPage;
 
@@ -117,5 +117,25 @@ class DashboardController extends Controller
                 'count' => $notifications->count()
             ]);
         }
+
+        return abort(404); // Optional: return a 404 response if not an AJAX request
+    }
+
+    public function notificationRead($type, $id)
+    {
+        $id = $id;
+        if ($type == 'Chat') {
+            $notification = Notification::find($id);
+            $notification->is_read = 1;
+            $notification->update();
+            return redirect()->route('chats.index');
+        } elseif ($type == 'Team') {
+            $notification = Notification::find($id);
+            $notification->is_read = 1;
+            $notification->update();
+            return redirect()->route('team-chats.index');
+        }
+
+        return abort(404);
     }
 }

@@ -102,6 +102,12 @@ io.on('connection', (socket) => {
         io.sockets.emit('deleteGroup', msg);
     });
 
+    // sendAdminNotification
+    socket.on('sendAdminNotification', (msg) => {
+        console.log('sendAdminNotification: ' + msg);
+        io.sockets.emit('sendAdminNotification', msg);
+    });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });

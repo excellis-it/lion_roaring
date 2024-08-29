@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\ChatMember;
+use App\Models\Notification;
 use App\Models\Team;
 use App\Models\TeamChat;
 use App\Models\TeamMember;
@@ -104,12 +105,22 @@ class TeamChatController extends Controller
             $chat_member->chat_id = $team_chat->id;
             $chat_member->user_id = $member;
             $chat_member->save();
+
+            $notification = new Notification();
+            $notification->user_id = $member;
+            $notification->message = 'You have been added to <b>' . $team->name . '</b> group.';
+            $notification->type = 'Team';
+            $notification->save();
         }
+
+        // $notification['message'] = 'You have been added to ' . $team->name . ' group.';
+        // $notification['created_at'] = now();
 
         $admin_add_chat = new ChatMember();
         $admin_add_chat->chat_id = $team_chat->id;
         $admin_add_chat->user_id = auth()->id();
         $admin_add_chat->save();
+
 
         $team = Team::with('lastMessage')->find($team->id);
         $chat_member_id = ChatMember::where('chat_id', $team_chat->id)->pluck('user_id')->toArray();
@@ -236,6 +247,13 @@ class TeamChatController extends Controller
 
         $members = TeamMember::where('team_id', $team_id)->where('is_removed', false)->get();
 
+        // notificaion
+        $notification = new Notification();
+        $notification->user_id = $user_id;
+        $notification->message = 'You have been removed from <b>' . Team::find($team_id)->name . '</b> group.';
+        $notification->type = 'Team';
+        $notification->save();
+
         foreach ($members as $team) {
             $chat_member = new ChatMember();
             $chat_member->chat_id = $team_chat->id;
@@ -247,7 +265,7 @@ class TeamChatController extends Controller
 
         $chat = TeamChat::where('id', $team_chat->id)->with('user')->first();
 
-        return response()->json(['message' => 'Member removed successfully.', 'status' => true, 'team_id' => $team_id, 'user_id' => $user_id, 'chat' => $chat, 'chat_member_id' => $chat_member_id]);
+        return response()->json(['message' => 'Member removed successfully.', 'status' => true, 'team_id' => $team_id, 'user_id' => $user_id, 'chat' => $chat, 'chat_member_id' => $chat_member_id, 'notification' => $notification]);
     }
 
     public function groupList(Request $request)
@@ -345,7 +363,7 @@ class TeamChatController extends Controller
         ]);
 
         $team_id = $request->team_id;
-
+        $only_added_members = $request->members;
         if ($request->members) {
             $already_member_arr = [];
             foreach ($request->members as $member) {
@@ -362,6 +380,12 @@ class TeamChatController extends Controller
                     $team_member->is_admin = false;
                     $team_member->save();
                 }
+
+                $notification = new Notification();
+                $notification->user_id = $member;
+                $notification->message = 'You have been added to <b>' . Team::find($team_id)->name . '</b> group.';
+                $notification->type = 'Team';
+                $notification->save();
             }
         }
 
@@ -376,11 +400,20 @@ class TeamChatController extends Controller
 
         $team_member_name = rtrim($team_member_name, ', ');
 
+        $new_team_members = TeamMember::where('team_id', $team_id)->where('is_removed', false)->whereIn('user_id', $only_added_members)->with('user')->get();
+        $only_added_members_name = '';
+        foreach ($new_team_members as $member) {
+            $only_added_members_name .= ($member['user']['first_name'] ?? '') . ' ' .
+                ($member['user']['middle_name'] ?? '') . ' ' .
+                ($member['user']['last_name'] ?? '') . ', ';
+        }
+
+        $only_added_members_name = rtrim($only_added_members_name, ', ');
         // chat message
         $team_chat = new TeamChat();
         $team_chat->team_id = $team_id;
         $team_chat->user_id = auth()->id();
-        $team_chat->message = 'New members added to the group. ' . $team_member_name;
+        $team_chat->message = 'New members added to the group. ' . $only_added_members_name;
         $team_chat->save();
 
         foreach ($team_members as $member) {
@@ -394,7 +427,7 @@ class TeamChatController extends Controller
 
         $chat = TeamChat::where('id', $team_chat->id)->with('user')->first();
 
-        return response()->json(['message' => 'Members added successfully.', 'status' => true, 'team_id' => $team_id, 'team_member_name' => $team_member_name, 'chat' => $chat, 'chat_member_id' => $chat_member_id, 'already_member_arr' => $already_member_arr]);
+        return response()->json(['message' => 'Members added successfully.', 'status' => true, 'team_id' => $team_id, 'team_member_name' => $team_member_name, 'chat' => $chat, 'chat_member_id' => $chat_member_id, 'already_member_arr' => $already_member_arr, 'only_added_members' => $only_added_members]);
     }
 
     public function deleteGroup(Request $request)
@@ -417,6 +450,14 @@ class TeamChatController extends Controller
         $team_member->is_admin = true;
         $team_member->save();
 
-        return response()->json(['message' => 'Member made admin successfully.', 'status' => true, 'team_id' => $team_id, 'user_id' => $user_id]);
+        $notification = new Notification();
+        $notification->user_id = $user_id;
+        $notification->message = 'You have been made admin of <b>' . Team::find($team_id)->name . '</b> group.';
+        $notification->type = 'Team';
+        $notification->save();
+
+        return response()->json(['message' => 'Member made admin successfully.', 'status' => true, 'team_id' => $team_id, 'user_id' => $user_id, 'notification' => $notification]);
     }
+
+
 }

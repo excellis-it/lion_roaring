@@ -262,6 +262,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/change-password', [UserDashboardController::class, 'password'])->name('user.change.password');
     Route::post('/change-password-update', [UserDashboardController::class, 'passwordUpdate'])->name('user.password.update');
     Route::get('/notifications', [UserDashboardController::class, 'notifications'])->name('notification.list');
+    Route::get('/notification-read/{type}/{id}', [UserDashboardController::class, 'notificationRead'])->name('notification.read');
 
     Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
 
@@ -272,6 +273,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/clear', [ChatController::class, 'clear'])->name('clear');
         Route::post('/seen', [ChatController::class, 'seen'])->name('seen');
         Route::post('/remove', [ChatController::class, 'remove'])->name('remove');
+        Route::post('/notification', [ChatController::class, 'notification'])->name('notification');
     });
 
     // Team Chat

@@ -45189,11 +45189,16 @@ ul {
    outline: none;
 }
 
+.notification_active a{
+ color: var(--main-color);
+}
+.notification_active a::before{
+    background: var(--main-color) !important;
+}
 
-
-
-
-
+.member-item .form-check-input:disabled {
+    opacity: .2;
+}
 
 
 

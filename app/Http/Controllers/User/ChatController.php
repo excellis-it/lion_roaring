@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Chat;
+use App\Models\Notification;
 use App\Models\User;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
@@ -234,5 +235,24 @@ class ChatController extends Controller
         }
 
         return response()->json(['msg' => 'Chat removed successfully', 'status' => true, 'chat' => $chat]);
+    }
+
+    public function notification(Request $request)
+    {
+        if ($request->ajax()) {
+           $user_id = $request->user_id;
+           $sender_id = $request->sender_id;
+           $sender = User::find($sender_id);
+
+           $notification = new Notification();
+           $notification->user_id =  $user_id;
+           $notification->message = 'You have a <b>new message</b> from ' . $sender->full_name;
+           $notification->type = 'Chat';
+           $notification->save();
+           $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->count();
+           return response()->json(['msg' => 'Notification sent successfully', 'status' => true, 'notification_count' => $notification_count, 'notification' => $notification]);
+        }
+
+        return abort(404); // Optional: return a 404 response if not an AJAX request
     }
 }
