@@ -3,6 +3,7 @@
 namespace App\Helpers;
 use App\Models\Article;
 use App\Models\Chat;
+use App\Models\ChatMember;
 use App\Models\Country;
 use App\Models\EcomCmsPage;
 use App\Models\EcomFooterCms;
@@ -179,5 +180,16 @@ class Helper
         } else {
             return 0;
         }
+    }
+
+    public static function getTeamCountUnseenMessage($user_id, $team_id)
+    {
+        $team_chat = ChatMember::where('user_id', $user_id)
+            ->whereHas('chat', function ($query) use ($team_id) {
+                $query->where('team_id', $team_id);
+            })
+            ->where('is_seen', 0)
+            ->count();
+        return $team_chat;
     }
 }

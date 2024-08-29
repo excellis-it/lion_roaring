@@ -135,6 +135,9 @@ class TeamChatController extends Controller
             $team_chats = TeamChat::where('team_id', $team_id)->orderBy('created_at', 'asc')->whereHas('chatMembers', function ($query) {
                 $query->where('user_id', auth()->id());
             })->with('user')->get();
+            ChatMember::where('user_id', auth()->id())->whereHas('chat', function ($query) use ($team_id) {
+                $query->where('team_id', $team_id);
+            })->update(['is_seen' => true]);
             // team member name with comma separated
             $team_members = TeamMember::where('team_id', $team_id)->where('is_removed', false)->with('user')->get();
             $team_member_name = '';
@@ -168,6 +171,11 @@ class TeamChatController extends Controller
             $chat_member = new ChatMember();
             $chat_member->chat_id = $team_chat->id;
             $chat_member->user_id = $team->user_id;
+            if ($team->user_id == auth()->id()) {
+                $chat_member->is_seen = true;
+            } else {
+                $chat_member->is_seen = false;
+            }
             $chat_member->save();
         }
         $chat_member_id = ChatMember::where('chat_id', $team_chat->id)->pluck('user_id')->toArray();
@@ -258,6 +266,11 @@ class TeamChatController extends Controller
             $chat_member = new ChatMember();
             $chat_member->chat_id = $team_chat->id;
             $chat_member->user_id = $team->user_id;
+            if ($team->user_id == auth()->id()) {
+                $chat_member->is_seen = true;
+            } else {
+                $chat_member->is_seen = false;
+            }
             $chat_member->save();
         }
 
@@ -420,6 +433,11 @@ class TeamChatController extends Controller
             $chat_member = new ChatMember();
             $chat_member->chat_id = $team_chat->id;
             $chat_member->user_id = $member->user_id;
+            if ($member->user_id == auth()->id()) {
+                $chat_member->is_seen = true;
+            } else {
+                $chat_member->is_seen = false;
+            }
             $chat_member->save();
         }
 
@@ -459,5 +477,41 @@ class TeamChatController extends Controller
         return response()->json(['message' => 'Member made admin successfully.', 'status' => true, 'team_id' => $team_id, 'user_id' => $user_id, 'notification' => $notification]);
     }
 
+    public function seen(Request $request)
+    {
+        $chat_id = $request->chat_id;
+
+        $chat_member = ChatMember::where('chat_id', $chat_id)->where('user_id', auth()->id())->first();
+        $chat_member->is_seen = true;
+        $chat_member->save();
+
+        return response()->json(['message' => 'Message seen successfully.', 'status' => true]);
+    }
+
+    public function notification(Request $request)
+    {
+        if ($request->ajax()) {
+            $team_id = $request->team_id;
+            $chat_id = $request->chat_id;
+            $user_id = auth()->id();
+            $notification_check = Notification::where('user_id', $user_id)->where('chat_id', $chat_id)->where('type', 'Team')->first();
+            if ($notification_check) {
+                $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->count();
+                return response()->json(['message' => 'Notification read successfully.', 'status' => true, 'notification' => $notification_check, 'notification_count' => $notification_count]);
+            } else {
+                $notification = new Notification();
+                $notification->user_id = $user_id;
+                $notification->chat_id = $chat_id;
+                $notification->message = 'You have a new message in <b>' . Team::find($team_id)->name . '</b> group.';
+                $notification->type = 'Team';
+                $notification->save();
+                $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->count();
+                return response()->json(['message' => 'Notification sent successfully.', 'status' => true, 'notification' => $notification, 'notification_count' => $notification_count]);
+            }
+
+        }
+
+        return abort(404); // Optional: return a 404 response if not an AJAX request
+    }
 
 }

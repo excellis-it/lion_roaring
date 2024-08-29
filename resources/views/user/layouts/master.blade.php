@@ -880,6 +880,8 @@
                     success: function(resp) {
                         $('.chat-body').html(resp.view);
                         scrollChatToBottom(teamId);
+                        // remove unseen count
+                        $('#count-team-unseen-' + teamId).html(``);
 
                         // Initialize EmojiOneArea on MessageInput
                         var emojioneAreaInstance = $("#TeamMessageInput").emojioneArea({
@@ -1601,6 +1603,92 @@
 
                     $('#team-chat-container-' + data.chat.team_id).append(html);
                     scrollChatToBottom(data.chat.team_id);
+                }
+                if (data.chat.user_id != sender_id && chat_member_id_array.includes(sender_id)) {
+                    if ($(".chat-body").length > 0) {
+                        if ($("#team-chat-container-" + data.chat.team_id).length > 0) {
+                            // seen team message
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ route('team-chats.seen') }}",
+                                data: {
+                                    chat_id: data.chat.id,
+                                    _token: "{{ csrf_token() }}"
+                                },
+                                success: function(res) {
+                                    if (res.status == true) {
+                                        // socket.emit('teamSeenChat', {
+                                        //     last_chat: data.chat
+                                        // });
+                                    } else {
+                                        console.log(res.msg);
+                                    }
+                                }
+                            });
+                        } else {
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ route('team-chats.notification') }}",
+                                data: {
+                                    user_id: sender_id,
+                                    team_id: data.chat.team_id,
+                                    chat_id: data.chat.id,
+                                    _token: "{{ csrf_token() }}"
+                                },
+                                success: function(res) {
+                                    if (res.status == true) {
+                                        $('#show-notification-count-' + sender_id).html(res
+                                            .notification_count);
+                                        var route =
+                                            `{{ route('notification.read', ['type' => 'Team', 'id' => '__ID__']) }}`
+                                            .replace('__ID__', res.notification.id);
+                                        var html = `<li>
+                                                 <a href="${route}" class="top-text-block">
+                                                     <div class="top-text-heading">${res.notification.message}</div>
+                                                     <div class="top-text-light">${moment(res.notification.created_at).fromNow()}</div>
+                                                 </a>
+                                             </li>`;
+                                        $('#show-notification').prepend(
+                                            html
+                                        ); // Use prepend to add new notification at the top
+                                    } else {
+                                        console.log(res.msg);
+                                    }
+                                }
+                            });
+                        }
+                    } else {
+                        $.ajax({
+                                type: "POST",
+                                url: "{{ route('team-chats.notification') }}",
+                                data: {
+                                    user_id: sender_id,
+                                    team_id: data.chat.team_id,
+                                    chat_id: data.chat.id,
+                                    _token: "{{ csrf_token() }}"
+                                },
+                                success: function(res) {
+                                    if (res.status == true) {
+                                        $('#show-notification-count-' + sender_id).html(res
+                                            .notification_count);
+                                        var route =
+                                            `{{ route('notification.read', ['type' => 'Team', 'id' => '__ID__']) }}`
+                                            .replace('__ID__', res.notification.id);
+                                        var html = `<li>
+                                                 <a href="${route}" class="top-text-block">
+                                                     <div class="top-text-heading">${res.notification.message}</div>
+                                                     <div class="top-text-light">${moment(res.notification.created_at).fromNow()}</div>
+                                                 </a>
+                                             </li>`;
+                                        $('#show-notification').prepend(
+                                            html
+                                        ); // Use prepend to add new notification at the top
+                                    } else {
+                                        console.log(res.msg);
+                                    }
+                                }
+                            });
+                    }
                 }
 
             });

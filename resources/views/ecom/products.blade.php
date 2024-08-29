@@ -16,7 +16,7 @@
             <div class="row justify-content-center">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
                     <div class="inner_banner_ontent">
-                        <h2>Product listing</h2>
+                        <h2>Our Collection</h2>
                         {{-- <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing volutpat
                             consectetur
                             id purus rhoncus.</p> --}}
@@ -36,7 +36,7 @@
                             <h4>Filter</h4>
                         </div>
                         <div class="search_color w-100">
-                            <input type="text" placeholder="Search Product" class="form-control">
+                            <input type="text" placeholder="Search Collection" class="form-control">
                             <button type="button">
                                 <img src="{{ asset('ecom_assets/images/search.svg') }}" alt="">
                             </button>

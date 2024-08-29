@@ -13,4 +13,14 @@ class ChatMember extends Model
         'chat_id',
         'user_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function chat()
+    {
+        return $this->belongsTo(TeamChat::class, 'chat_id' , 'id');
+    }
 }

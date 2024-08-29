@@ -292,6 +292,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/add-member-team', [TeamChatController::class, 'addMemberTeam'])->name('add-member-team');
         Route::post('/delete-group', [TeamChatController::class, 'deleteGroup'])->name('delete-group');
         Route::post('/make-admin', [TeamChatController::class, 'makeAdmin'])->name('make-admin');
+        Route::post('/seen', [TeamChatController::class, 'seen'])->name('seen');
+        Route::post('/notification', [TeamChatController::class, 'notification'])->name('notification');
     });
 
     Route::prefix('strategy')->group(function () {

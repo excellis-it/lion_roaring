@@ -18,6 +18,16 @@
         <div class="time_online">
             {{ Helper::userLastMessage($team['id'], auth()->user()->id) ? Helper::userLastMessage($team['id'], auth()->user()->id)->created_at->format('h:i A') : '' }}
         </div>
+
+        <div class="count-unseen" id="count-team-unseen-{{ $team['id'] }}">
+            @if (Helper::getTeamCountUnseenMessage(Auth::user()->id, $team['id']) > 0)
+            <span>
+                <p>{{ Helper::getTeamCountUnseenMessage(Auth::user()->id, $team['id']) }}
+                </p>
+            </span>
+            @endif
+        </div>
+
     </li>
 @endforeach
 @else
