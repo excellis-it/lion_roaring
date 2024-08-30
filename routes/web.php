@@ -294,6 +294,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/make-admin', [TeamChatController::class, 'makeAdmin'])->name('make-admin');
         Route::post('/seen', [TeamChatController::class, 'seen'])->name('seen');
         Route::post('/notification', [TeamChatController::class, 'notification'])->name('notification');
+        // remove-chat
+        Route::post('/remove-chat', [TeamChatController::class, 'removeChat'])->name('remove-chat');
     });
 
     Route::prefix('strategy')->group(function () {

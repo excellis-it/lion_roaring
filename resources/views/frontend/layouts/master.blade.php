@@ -8,7 +8,8 @@
     <meta name="author" content="Swarnadwip Nath">
     <meta name="generator" content="Hugo 0.84.0">
     {{-- favicon --}}
-    <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}" sizes="32x32" />
+    <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}"
+        sizes="32x32" />
     @yield('meta_title')
     <title>@yield('title')</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
@@ -118,7 +119,8 @@
                                 <hr />
                                 <div class="col-lg-6 mb-3">
                                     <label for="address">Address</label>
-                                    <input class="form-control has-icon" type="text" id="address" name="address">
+                                    <input class="form-control has-icon" type="text" id="address"
+                                        name="address">
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label for="city">City</label>
@@ -153,12 +155,15 @@
                                 <hr />
                                 <div class="col-md-12">
                                     <label for="card-element">Card Number</label>
-                                    <input class="form-control card-number" aria-hidden="true" aria-label=" " name="card_number"
-                                        id="card-number" autocomplete="false">
+                                    <div style="position: relative;">
+                                        <input class="form-control card-number" aria-hidden="true" aria-label=" " name="card_number" id="card-number" autocomplete="off">
+                                        <img id="card-type-image" src="{{asset('frontend_assets/images/unknown.webp')}}" alt="Card Type" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); max-height: 24px;">
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="card-element">Month</label>
-                                    <select class="form-control form-control--sm card-expiry-month valid card-expiry-month"
+                                    <select
+                                        class="form-control form-control--sm card-expiry-month valid card-expiry-month"
                                         name="card_expiry_month" id="card-expiry-month" aria-invalid="false">
                                         <option selected="" value="1">January</option>
                                         <option value="2">February</option>
@@ -176,21 +181,25 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="card-element">Year</label>
-                                    <input class="form-control" aria-hidden="true" aria-label=" " id="card-expiry-year"
-                                        name="card_expiry_year" autocomplete="false" maxlength="5">
+                                    <input class="form-control" aria-hidden="true" aria-label=" "
+                                        id="card-expiry-year" name="card_expiry_year" autocomplete="false"
+                                        maxlength="5">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="card-element">CVC</label>
-                                    <input class="form-control" aria-hidden="true" aria-label=" " name="card_cvc" id="card-cvc"
-                                        autocomplete="false" maxlength="3">
+                                    <label for="card-element">CVV</label>
+                                    <input class="form-control" aria-hidden="true" aria-label=" " name="card_cvc"
+                                        id="card-cvc" autocomplete="false" maxlength="4">
                                 </div>
 
                             </div>
 
                             <div class="mt-4">
-                                <div class="pure-u-5-5 centered">
+                                <div class="pure-u-5-5 centered d-flex">
                                     <button type="submit" id="submit-btn"
-                                        class="pure-button pure-button-primary">Donate US$0.00</button>
+                                        class="pure-button pure-button-primary">Donate US $0.00</button>
+                                    <p style="margin-left: 5px;"><b>We Accept </b><img
+                                            src="{{ asset('frontend_assets/images/cards.png') }}" alt=""
+                                            height="35px"></p>
                                 </div>
                             </div>
                         </form>
@@ -207,7 +216,8 @@
                         <div class="heading_hp">
                             <h2 id="greeting">
                                 <?php
-                                function getTimezoneFromIp($ip) {
+                                function getTimezoneFromIp($ip)
+                                {
                                     $url = "http://ip-api.com/json/{$ip}?fields=timezone";
                                     $response = @file_get_contents($url); // Suppress warnings and handle errors manually
                                     if ($response) {
@@ -247,20 +257,21 @@
                                 ?>
                             </h2>
                             <h4 class="text-center">Sign on to enter Lion Roaring PMA Private Member area.</h4>
-                            <form name="login-form" id="sign-in-form" action="{{ route('login.check') }}" method="post">
+                            <form name="login-form" id="sign-in-form" action="{{ route('login.check') }}"
+                                method="post">
                                 @csrf
                                 <p class="login-username">
                                     <label for="user_login">Username or Email Address</label>
                                     <input type="text" name="user_name" id="user_login" autocomplete="username"
                                         class="input" value="" size="20">
-                                        <span class="text-danger"></span>
+                                    <span class="text-danger"></span>
                                 </p>
                                 <p class="login-password">
                                     <label for="user_password">Password</label>
                                     <input type="password" name="password" id="user_password"
                                         autocomplete="current-password" spellcheck="false" class="input"
                                         value="" size="20">
-                                        <span class="text-danger"></span>
+                                    <span class="text-danger"></span>
                                 </p>
                                 <p class="login-submit">
                                     <input type="submit" name="wp-submit" id="login-submit"
@@ -269,13 +280,15 @@
                                 </p>
                             </form>
                             <p class="text-center join_member">
-                                <a  href="javascrip:void(0);" data-bs-toggle="modal"
-                                data-bs-target="#staticBackdrop">Join
+                                <a href="javascrip:void(0);" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop">Join
                                     Lion
-                                    Roaring Member</a> | <a href="{{ route('user.forget.password.show') }}" >Forgot password
+                                    Roaring Member</a> | <a href="{{ route('user.forget.password.show') }}">Forgot
+                                    password
                                 </a>
                                 <br>
-                                <a href="{{ route('member-privacy-policy') }}" class="login_privacy text-dark">Privacy,
+                                <a href="{{ route('member-privacy-policy') }}"
+                                    class="login_privacy text-dark">Privacy,
                                     Cookies, and Legal </a>
                             </p>
 
@@ -457,12 +470,16 @@
                 <div class="modal-content">
                     <div class="modal-header text-center justify-content-center">
                         <!--         <button type="button" class="close" data-bs-dismiss="modal">&times;</button> -->
-                        <h4 class="modal-title">{{(Helper::getPmaTerm()) ? Helper::getPmaTerm()->title : 'Lion Roaring PMA (Private Members Association) Agreement'}}</h4>
+                        <h4 class="modal-title">
+                            {{ Helper::getPmaTerm() ? Helper::getPmaTerm()->title : 'Lion Roaring PMA (Private Members Association) Agreement' }}
+                        </h4>
                     </div>
                     <form action="{{ route('session.store') }}" method="POST">
                         @csrf
                         <div class="modal-body ">
-                            {!! (Helper::getPmaTerm()) ? Helper::getPmaTerm()->description : 'It is the responsibility of the members to read and review the Articles of Association of Lion Roaring PMA in its entirety and agree to adopt and comply to its belief, foundation and purpose of the Lion Roaring PMA.' !!}
+                            {!! Helper::getPmaTerm()
+                                ? Helper::getPmaTerm()->description
+                                : 'It is the responsibility of the members to read and review the Articles of Association of Lion Roaring PMA in its entirety and agree to adopt and comply to its belief, foundation and purpose of the Lion Roaring PMA.' !!}
                             <div class="modal_checkbox text-left text-xl-center">
                                 <div class="form-group">
                                     <input type="checkbox" id="pma_check" name="is_checked">
@@ -473,7 +490,7 @@
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="continue-btn changed " data-bs-dismiss="modal"
-                                id="myButton">Continue</button>
+                                    id="myButton">Continue</button>
                             </div>
 
                         </div>
@@ -482,43 +499,44 @@
 
             </div>
         </div>
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <!-- <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5> -->
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="agre">
-                        <div class="logo-admin">
-                            <img src="{{ asset('user_assets/images/logo.png') }}" alt="">
-                        </div>
-                        <div class="heading_hp">
-                            <h2 id="greeting">
-                                {{ Helper::getAgreements()['agreement_title'] ?? 'Lion Roaring PMA (Private Members Association) Agreement' }}
-                            </h2>
-                        </div>
-                        <div class="member-text-div admin-srl" id="admin-srl_1">
-                            <div class="member-text">
-                                {!! Helper::getAgreements()['agreement_description'] ??
-                                    'This is the agreement for Lion Roaring PMA (Private Members Association)' !!}
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!-- <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5> -->
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="agre">
+                            <div class="logo-admin">
+                                <img src="{{ asset('user_assets/images/logo.png') }}" alt="">
                             </div>
-                            <div class="check-main">
-                                <div class="form-group">
-                                    <input type="checkbox" id="pma_check1">
-                                    <label for="pma_check1">I have read and agreed to the Lion Roaring PMA
-                                        Agreement</label>
+                            <div class="heading_hp">
+                                <h2 id="greeting">
+                                    {{ Helper::getAgreements()['agreement_title'] ?? 'Lion Roaring PMA (Private Members Association) Agreement' }}
+                                </h2>
+                            </div>
+                            <div class="member-text-div admin-srl" id="admin-srl_1">
+                                <div class="member-text">
+                                    {!! Helper::getAgreements()['agreement_description'] ??
+                                        'This is the agreement for Lion Roaring PMA (Private Members Association)' !!}
+                                </div>
+                                <div class="check-main">
+                                    <div class="form-group">
+                                        <input type="checkbox" id="pma_check1">
+                                        <label for="pma_check1">I have read and agreed to the Lion Roaring PMA
+                                            Agreement</label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row justify-content-end">
-                            <div class="col-lg-4">
-                                <div class="login-submit mt-lg-4 mt-2 text-end">
-                                    <a href="javascript:void(0);" class="button button-primary w-100 regis">
-                                        Next</a>
+                            <div class="row justify-content-end">
+                                <div class="col-lg-4">
+                                    <div class="login-submit mt-lg-4 mt-2 text-end">
+                                        <a href="javascript:void(0);" class="button button-primary w-100 regis">
+                                            Next</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -526,7 +544,6 @@
                 </div>
             </div>
         </div>
-    </div>
 
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -648,7 +665,7 @@
             @endif
         });
     </script>
-     <script>
+    <script>
         $(document).ready(function() {
             $('.regis').on('click', function() {
                 if ($('#pma_check1').is(':checked')) {
@@ -683,7 +700,30 @@
         });
     </script>
     <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.payment/1.4.1/jquery.payment.min.js"></script>
 
+    <script>
+        $(document).ready(function() {
+            var cardTypeImages = {
+               'visa': '{{("frontend_assets/images/visa.png")}}',
+                'mastercard': '{{("frontend_assets/images/mastercard.png")}}',
+                'amex': '{{("frontend_assets/images/amex.png")}}',
+                'unknown': '{{("frontend_assets/images/unknown.webp")}}'
+            };
+
+            $('#card-number').on('keyup change', function() {
+                var cardNumber = $(this).val();
+                var cardType = $.payment.cardType(cardNumber);
+
+                var cardTypeImage = cardTypeImages[cardType] || cardTypeImages['unknown'];
+                $('#card-type-image').attr('src', cardTypeImage);
+
+                // Adjust CVV validation based on card type
+                var cvvLength = cardType === 'amex' ? 4 : 3;
+                $('#card-cvc').attr('maxlength', cvvLength);
+            });
+        });
+    </script>
     <script type="text/javascript">
         // $(function() {
 
@@ -750,6 +790,7 @@
         //     }
 
         // });
+
         $(document).ready(function() {
             var $form = $(".require-validation");
             $('.require-validation').validate({
@@ -911,7 +952,7 @@
                         $('.text-danger').html('');
                         var errors = xhr.responseJSON.errors;
                         $.each(errors, function(key, value) {
-                           toastr.error(value[0]);
+                            toastr.error(value[0]);
                         });
                     }
                 });
@@ -938,7 +979,8 @@
                     },
                     success: function(response) {
                         var states = response;
-                        var selectedState = "{{ old('state') }}"; // Fetch the old input value for state
+                        var selectedState =
+                            "{{ old('state') }}"; // Fetch the old input value for state
                         var html = '<option value="">Select State</option>';
 
                         states.forEach(function(state) {

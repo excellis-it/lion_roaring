@@ -101,6 +101,11 @@ io.on('connection', (socket) => {
         console.log('deleteGroup: ' + msg);
         io.sockets.emit('deleteGroup', msg);
     });
+    // team-remove-chat
+    socket.on('team-remove-chat', (msg) => {
+        console.log('team-remove-chat: ' + msg);
+        io.sockets.emit('team-remove-chat', msg);
+    });
 
     // sendAdminNotification
     socket.on('sendAdminNotification', (msg) => {

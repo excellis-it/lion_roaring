@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\ChatMember;
 use App\Models\Notification;
@@ -512,6 +513,35 @@ class TeamChatController extends Controller
         }
 
         return abort(404); // Optional: return a 404 response if not an AJAX request
+    }
+
+    public function removeChat(Request $request)
+    {
+        $chat_id = $request->chat_id;
+        $del_from = $request->del_from;
+        $team_id = $request->team_id;
+
+        $team_chat = TeamChat::find($chat_id);
+        if ($del_from == 'everyone') {
+            $last_message = Helper::userLastMessage($team_id, auth()->id());
+            if ($last_message->id == $chat_id) {
+                $last_message = true;
+            } else {
+                $last_message = false;
+            }
+            $team_chat->delete();
+        } else {
+            $last_message = Helper::userLastMessage($team_id, auth()->id());
+            if ($last_message->id == $chat_id) {
+                $last_message = true;
+            } else {
+                $last_message = false;
+            }
+            $chat_member = ChatMember::where('chat_id', $chat_id)->where('user_id', auth()->id())->first();
+            $chat_member->delete();
+        }
+
+        return response()->json(['message' => 'Chat removed successfully.', 'status' => true, 'chat_id' => $chat_id, 'last_message' => $last_message]);
     }
 
 }

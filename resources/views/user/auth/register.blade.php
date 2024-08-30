@@ -407,7 +407,8 @@
         $("#mobile_code").intlTelInput({
             geoIpLookup: function(callback) {
                 $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    var countryCode = (resp && resp.country) ? resp.country : "US";
+
                     callback(countryCode);
                 });
             },

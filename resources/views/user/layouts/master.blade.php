@@ -921,7 +921,7 @@
                 }
             }
 
-            $(document).on("change", "#file", function(e) {
+            $(document).on("change", "#team-file", function(e) {
                 var file = e.target.files[0];
                 var team_id = $(this).data('team-id');
                 var formData = new FormData();
@@ -946,20 +946,29 @@
                             let timeZome = 'America/New_York';
                             let time_format_12 = moment.tz(created_at, timeZome).format(
                                 "hh:mm A");
-                            let html = `<div class="message me">`;
+                            let html = `<div class="message me" id="team-chat-message-${res.chat.id}">`;
                             if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
                                 html +=
-                                    `<p class="messageContent"><a href="${fileUrl}" target="_blank"><img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a></p>`;
+                                    `<div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank"><img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a></p>`;
                             } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
                                 html +=
-                                    `<p class="messageContent"><a href="${fileUrl}" target="_blank"><video width="200" height="200" controls><source src="${fileUrl}" type="video/mp4"><source src="${fileUrl}" type="video/webm"><source src="${fileUrl}" type="video/ogg"></video></a></p>`;
+                                    ` <div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank"><video width="200" height="200" controls><source src="${fileUrl}" type="video/mp4"><source src="${fileUrl}" type="video/webm"><source src="${fileUrl}" type="video/ogg"></video></a></p>`;
                             } else {
                                 html +=
-                                    `<p class="messageContent"><a href="${fileUrl}" download="${attachment}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a></p>`;
+                                    `<div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" download="${attachment}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a></p>`;
                             }
 
                             html +=
-                                `<div class="messageDetails"><div class="messageTime">${time_format_12}</div></div></div>`;
+                                `<div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item team-remove-chat" data-chat-id="${res.chat.id}" data-del-from="me" data-team-id="${res.chat.team_id}">Remove For Me</a></li>
+                                            <li><a class="dropdown-item team-remove-chat" data-chat-id="${res.chat.id}" data-del-from="everyone" data-team-id="${res.chat.team_id}">Remove For Everyone</a></li>
+                                </ul>
+                            </div></div><div class="messageDetails"><div class="messageTime">${time_format_12}</div></div></div>`;
                             $('#team-chat-container-' + team_id).append(html);
                             scrollChatToBottom(team_id);
 
@@ -1004,12 +1013,23 @@
                         // append new message to the chat
                         var data = resp.chat;
                         groupList(sender_id, data.team_id);
-                        var html = `<div class="message me">
+                        var html = `<div class="message me" id="team-chat-message-${data.id}"><div class="message-wrap">
                                         <p class="messageContent">${data.message}</p>
                                         <div class="messageDetails">
                                             <div class="messageTime">${time}</div>
                                         </div>
-                                    </div>`;
+                                    </div>
+                                     <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item team-remove-chat" data-chat-id="${data.id}" data-del-from="me" data-team-id="${data.team_id}">Remove For Me</a></li>
+                                            <li><a class="dropdown-item team-remove-chat" data-chat-id="${data.id}" data-del-from="everyone" data-team-id="${data.team_id}">Remove For Everyone</a></li>
+                                </ul>
+                            </div></div>
+                                    `;
                         $('#team-chat-container-' + data.team_id).append(html);
 
                         scrollChatToBottom(data.team_id);
@@ -1416,6 +1436,64 @@
                 }
             });
 
+            // team-remove-chat
+            $(document).on('click', '.team-remove-chat', function() {
+                var chat_id = $(this).data('chat-id');
+                var del_from = $(this).data('del-from');
+                var team_id = $(this).data('team-id');
+                var r = confirm("Are you sure you want to delete this message?");
+                if (r == true) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('team-chats.remove-chat') }}",
+                        data: {
+                            chat_id: chat_id,
+                            del_from: del_from,
+                            team_id: team_id,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(resp) {
+                            if (resp.status == true) {
+                                if (del_from == 'me') {
+                                    $("#team-chat-message-" + chat_id).remove();
+                                    if (resp.last_message == true) {
+                                        $("#team-last-chat-time-" + chat_id).remove();
+                                        $('.team-last-chat-' + chat_id).html('');
+                                    }
+                                } else {
+                                    $("#team-chat-message-" + chat_id).remove();
+                                    if (resp.last_message == true) {
+                                        $("#team-last-chat-time-" + chat_id).remove();
+                                        $('.team-last-chat-' + chat_id).html('');
+                                    }
+
+                                    socket.emit("team-remove-chat", {
+                                        chat_id: chat_id,
+                                        last_message: resp.last_message,
+                                    });
+                                }
+                            } else {
+                                toastr.error(resp.message);
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error('Something went wrong');
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+
+            // team-remove-chat
+            socket.on('team-remove-chat', function(data) {
+                $("#team-chat-message-" + data.chat_id).remove();
+                if (data.last_message == true) {
+                    $("#team-last-chat-time-" + data.chat_id).remove();
+                    $('.team-last-chat-' + data.chat_id).html('');
+                }
+            });
+
             // deleteGroup
 
             socket.on('deleteGroup', function(data) {
@@ -1525,14 +1603,15 @@
                                     </a>
                                 </li>`;
                     $('#show-notification').prepend(html);
+                    loadChat(data.team_id);
 
-                    $('#group-member-form-' + data.team_id + '-' + data.user_id).html(`
-                  <div class="justify-content-center">
-            <div class="text-center">
-                <h4 style="color:#be2020 !important; front-size:1.25rem;">Sorry! you are not able to send message in this group.</h4>
-            </div>
-        </div>
-                `);
+        //             $('#group-member-form-' + data.team_id + '-' + data.user_id).html(`
+        //           <div class="justify-content-center">
+        //     <div class="text-center">
+        //         <h4 style="color:#be2020 !important; front-size:1.25rem;">Sorry! you are not able to send message in this group.</h4>
+        //     </div>
+        // </div>
+        //         `);
 
                 }
 
@@ -1557,9 +1636,9 @@
                 let chat_member_id_array = data.chat_member_id;
 
                 if (data.chat.user_id != sender_id && chat_member_id_array.includes(sender_id)) {
-                    groupList(sender_id, data.chat.team_id);
+
                     let html = `
-        <div class="message you">
+        <div class="message you" id="team-chat-message-${data.chat.id}">
             <div class="d-flex">
                 <div class="member_image">
                     <span>`;
@@ -1607,6 +1686,10 @@
                 if (data.chat.user_id != sender_id && chat_member_id_array.includes(sender_id)) {
                     if ($(".chat-body").length > 0) {
                         if ($("#team-chat-container-" + data.chat.team_id).length > 0) {
+                            console.log('chat-body');
+
+                            // remove count seen
+                            $('#count-team-unseen-' + data.chat.team_id).html('');
                             // seen team message
                             $.ajax({
                                 type: "POST",
@@ -1689,6 +1772,7 @@
                                 }
                             });
                     }
+                    groupList(sender_id, data.chat.team_id);
                 }
 
             });
@@ -1713,6 +1797,8 @@
                     $('#show-notification').prepend(html);
                 }
             });
+
+
 
         });
     </script>

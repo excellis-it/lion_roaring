@@ -293,7 +293,7 @@
             phoneInput.intlTelInput({
                 geoIpLookup: function(callback) {
                     $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-                        const countryCode = (resp && resp.country) ? resp.country : "";
+                        const countryCode = (resp && resp.country) ? resp.country : "US";
                         callback(countryCode);
                     });
                 },

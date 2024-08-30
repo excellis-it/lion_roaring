@@ -8,14 +8,15 @@
                 src="{{ $team['group_image'] ? Storage::url($team['group_image']) : asset('user_assets/images/group.jpg') }}"
                 alt=""></div>
         <p class="GroupName group-name-{{ $team['id'] }}">{{ $team['name'] }}</p>
-        <p class="GroupDescrp">{!! Helper::userLastMessage($team['id'], auth()->user()->id)
+        <p class="GroupDescrp team-last-chat-{{ Helper::userLastMessage($team['id'], auth()->user()->id) ? Helper::userLastMessage($team['id'], auth()->user()->id)->id : '' }}">
+            {!! Helper::userLastMessage($team['id'], auth()->user()->id)
             ? (Helper::userLastMessage($team['id'], auth()->user()->id)->message
                 ? (Helper::userLastMessage($team['id'], auth()->user()->id)->message)
                 : (Helper::userLastMessage($team['id'], auth()->user()->id)->attachment
                     ? '<i class="fa-solid fa-file"></i> File uploaded'
                     : ''))
             : '' !!}</p>
-        <div class="time_online">
+        <div class="time_online" id="team-last-chat-time-{{ Helper::userLastMessage($team['id'], auth()->user()->id) ? Helper::userLastMessage($team['id'], auth()->user()->id)->id : '' }}">
             {{ Helper::userLastMessage($team['id'], auth()->user()->id) ? Helper::userLastMessage($team['id'], auth()->user()->id)->created_at->format('h:i A') : '' }}
         </div>
 
