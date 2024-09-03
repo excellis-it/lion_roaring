@@ -198,14 +198,14 @@
                                             <div class="col-lg-4 mb-3">
                                                 <div class="login-username">
                                                     <label for="user_login">Phone Number</label>
-                                                    <input type="text" name="phone_number" id="mobile_code"
-                                                        class="input" value="{{ old('phone_number') }}">
+                                                    <input type="text" name="phone_number" id="mobile_code" class="input"
+                                                        value="{{ old('full_phone_number') }}">
                                                     @if ($errors->has('phone_number'))
-                                                        <div class="error" style="color:red;">
-                                                            {{ $errors->first('phone_number') }}</div>
+                                                        <div class="error" style="color:red;">{{ $errors->first('phone_number') }}</div>
                                                     @endif
                                                 </div>
                                             </div>
+
 
                                             <div class="col-lg-4 mb-3">
                                                 <div class="login-username">
@@ -388,7 +388,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput-jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/utils.min.js"></script>
 
-    <script>
+    {{-- <script>
         function validate() {
             var number = $("#mobile_code").intlTelInput('getNumber');
             var iso = $("#mobile_code").intlTelInput('getSelectedCountryData').iso2;
@@ -432,25 +432,101 @@
 
         // Example to submit the form
         $('form').on('submit', function(e) {
-            // Get the full number including the country code
-            var fullNumber = $("#mobile_code").intlTelInput('getNumber');
-            var countryCode = $("#mobile_code").intlTelInput('getSelectedCountryData').dialCode;
+            // Get the dial code and the phone number separately
+            var dialCode = $("#mobile_code").intlTelInput('getSelectedCountryData').dialCode;
+            // var phoneNumber = $("#mobile_code").intlTelInput('getNumber').replace('+' + dialCode, '').trim();
+            // get number without dial code
+            var phoneNumber = $("#mobile_code").val();
+            // Concatenate them with a space
+            var fullNumberWithSpace = '+' + dialCode + ' ' + phoneNumber;
 
-            // Store the full number in a hidden input field
+            // Store the full number with a space in a hidden input field
             $('<input>').attr({
                 type: 'hidden',
                 name: 'full_phone_number',
-                value: fullNumber
+                value: fullNumberWithSpace
             }).appendTo('form');
 
             // Store the country code in a hidden input field
             $('<input>').attr({
                 type: 'hidden',
                 name: 'country_code',
-                value: countryCode
+                value: dialCode
             }).appendTo('form');
         });
+    </script> --}}
+    <script>
+        function initializeIntlTelInput() {
+            const phoneInput = $("#mobile_code");
+
+            phoneInput.intlTelInput({
+                geoIpLookup: function(callback) {
+                    $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                        const countryCode = (resp && resp.country) ? resp.country : "US";
+                        callback(countryCode);
+                    });
+                },
+                initialCountry: "auto",
+                separateDialCode: true,
+            });
+
+            const selectedCountry = phoneInput.intlTelInput('getSelectedCountryData');
+            const dialCode = selectedCountry.dialCode;
+            const exampleNumber = intlTelInputUtils.getExampleNumber(selectedCountry.iso2, 0, 0);
+
+            let maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
+            maskNumber = maskNumber.replace('+' + dialCode + ' ', '');
+
+            const mask = maskNumber.replace(/[0-9+]/g, '0');
+            phoneInput.mask(mask, { placeholder: maskNumber });
+
+            phoneInput.on('countrychange', function() {
+                $(this).val('');
+                const newSelectedCountry = $(this).intlTelInput('getSelectedCountryData');
+                const newDialCode = newSelectedCountry.dialCode;
+                const newExampleNumber = intlTelInputUtils.getExampleNumber(newSelectedCountry.iso2, 0, 0);
+
+                let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
+                newMaskNumber = newMaskNumber.replace('+' + newDialCode + ' ', '');
+
+                const newMask = newMaskNumber.replace(/[0-9+]/g, '0');
+                phoneInput.mask(newMask, { placeholder: newMaskNumber });
+            });
+        }
+
+        function setPhoneNumber() {
+            const phoneInput = $("#mobile_code");
+            const fullNumber = "{{ old('full_phone_number') }}";
+
+            if (fullNumber) {
+                phoneInput.intlTelInput("setNumber", fullNumber);
+            }
+        }
+
+        $(document).ready(function() {
+            initializeIntlTelInput();
+            setPhoneNumber();
+
+            $('form').on('submit', function() {
+                const phoneInput = $("#mobile_code");
+                const fullNumber = phoneInput.intlTelInput('getNumber');
+                const countryCode = phoneInput.intlTelInput('getSelectedCountryData').dialCode;
+
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'full_phone_number',
+                    value: fullNumber
+                }).appendTo('form');
+
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'country_code',
+                    value: countryCode
+                }).appendTo('form');
+            });
+        });
     </script>
+
 </body>
 
 </html>

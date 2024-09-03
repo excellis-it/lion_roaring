@@ -27,7 +27,7 @@
                                                 @if (isset($bulletin->user->profile_picture) && !empty($bulletin->user->profile_picture))
                                                     <img src="{{ Storage::url($bulletin->user->profile_picture) }}" alt="">
                                                 @else
-                                                    <img src="{{asset('user_assets/images/jhon.png')}}" alt="">
+                                                    <img src="{{asset('user_assets/images/profile_dummy.png')}}" alt="">
                                                 @endif
                                             </div>
                                         </div>
@@ -63,7 +63,7 @@
                                                 @if (isset($bulletin->user->profile_picture) && !empty($bulletin->user->profile_picture))
                                                     <img src="{{ Storage::url($bulletin->user->profile_picture) }}" alt="">
                                                 @else
-                                                    <img src="{{asset('user_assets/images/jhon.png')}}" alt="">
+                                                    <img src="{{asset('user_assets/images/profile_dummy.png')}}" alt="">
                                                 @endif
                                             </div>
                                         </div>

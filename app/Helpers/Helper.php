@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Helpers;
+
 use App\Models\Article;
 use App\Models\Chat;
 use App\Models\ChatMember;
@@ -143,7 +144,7 @@ class Helper
 
     public static function userLastMessage($team_id, $user_id)
     {
-       return TeamChat::where('team_id', $team_id)->whereHas('chatMembers', function ($query) use ($user_id) {
+        return TeamChat::where('team_id', $team_id)->whereHas('chatMembers', function ($query) use ($user_id) {
             $query->where('user_id', $user_id);
         })->latest()->first();
     }
@@ -191,5 +192,19 @@ class Helper
             ->where('is_seen', 0)
             ->count();
         return $team_chat;
+    }
+
+    public static function isOwner($id)
+    {
+        if (auth()->check()) {
+            $team = Team::where('id', $id)->where('user_id', auth()->user()->id)->first();
+            if ($team) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 }

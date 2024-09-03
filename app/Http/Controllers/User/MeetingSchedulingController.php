@@ -94,7 +94,7 @@ class MeetingSchedulingController extends Controller
      */
     public function edit($id)
     {
-        if (auth()->user()->can('Edit Meeting Schedule')) {
+        if (auth()->user()->can('Edit Meeting Schedule') && auth()->user()->id == Meeting::find($id)->user_id || auth()->user()->hasRole('ADMIN')) {
             $meeting = Meeting::find($id);
             return view('user.meeting.edit')->with('meeting', $meeting);
         } else {
@@ -172,7 +172,7 @@ class MeetingSchedulingController extends Controller
     }
     public function delete($id)
     {
-        if (Auth::user()->can('Delete Meeting Schedule')) {
+        if (Auth::user()->can('Delete Meeting Schedule') && Auth::user()->id == Meeting::find($id)->user_id || Auth::user()->hasRole('ADMIN')) {
             $meeting = Meeting::findOrFail($id);
             $meeting->delete();
             return redirect()->route('meetings.index')->with('error', 'Meeting has been deleted successfully.');

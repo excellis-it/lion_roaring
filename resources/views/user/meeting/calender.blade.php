@@ -102,20 +102,18 @@
                     });
                 },
                 eventClick: function(info) {
-                    // console.log(info.event);
+                    // Format the start and end times to match 'MM-DD-YYYY HH:mm A'
                     $('#modalTitle').text(info.event.title);
-                    $('#modalStart').text(moment(info.event.start).format('DD-MM-YYYY HH:mm A'));
-                    $('#modalEnd').text(info.event.end ? moment(info.event.end).format(
-                        'DD-MM-YYYY HH:mm A') : 'N/A');
+                    $('#modalStart').text(moment(info.event.start).format('MM-DD-YYYY h:mm A'));
+                    $('#modalEnd').text(info.event.end ? moment(info.event.end).format('MM-DD-YYYY h:mm A') : 'N/A');
                     $('#modalDescription').text(info.event.extendedProps.description);
-                    $('#modalLink').text(info.event.extendedProps.meeting_link ? info.event
-                        .extendedProps.meeting_link : 'N/A');
+                    $('#modalLink').text(info.event.extendedProps.meeting_link ? info.event.extendedProps.meeting_link : 'N/A');
                     $('#eventModal').modal('show');
                 },
-                eventTimeFormat: { // like '14:30:00'
+                eventTimeFormat: { // format for times in the calendar view
                     hour: '2-digit',
                     minute: '2-digit',
-                    meridiem: false
+                    meridiem: true // Show AM/PM
                 }
             });
             calendar.render();

@@ -2229,9 +2229,9 @@ section {
 }
 
 .clear-chat-button{
-    position: absolute;
-    right: 24px;
-    top: 27px;
+    position: relative;
+    /* right: 24px;
+    top: 27px; */
 }
 
 /* notification */
@@ -2311,3 +2311,22 @@ section {
 }
 
 /* end loader */
+.message-wrap ul {
+    padding: 0;
+    border-radius: 0;
+    box-shadow: 0 3px 5px #bdbdbd;
+}
+.message-wrap ul li{
+    margin: 8px auto;
+}
+.message-wrap ul li a{
+    cursor: pointer;
+    padding-left: .5rem;
+    padding-right: .5rem;
+
+
+}
+.message-wrap ul li a:hover{
+    background-color: #643271;
+    color: #fff;
+}

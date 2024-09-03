@@ -1,26 +1,42 @@
 @if (isset($is_chat))
-    <div class="ChatHead">
-        <div class="main_avtar">
-            @if ($reciver->profile_picture)
-                <img src="{{ Storage::url($reciver->profile_picture) }}" alt="">
-            @else
-                <img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">
-            @endif
+<div class="row align-items-center">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+        <div class="ChatHead">
+            <div class="main_avtar">
+                @if ($reciver->profile_picture)
+                    <img src="{{ Storage::url($reciver->profile_picture) }}" alt="">
+                @else
+                    <img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">
+                @endif
+            </div>
+            <p class="GroupName">{{ $reciver->full_name }}</p>
         </div>
-        <p class="GroupName">{{ $reciver->full_name }}</p>
     </div>
-    {{-- <div class="group_text_right clear-chat-button">
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa-solid fa-ellipsis-vertical"></i>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item clear-chat" data-reciver-id="{{ $reciver->id }}">Clear chats for
-                        everyone</a></li>
-            </ul>
+    <div class="col-lg-3">
+        <div class="d-flex align-items-center">
+
+        <div class="search-field w-100 mb-0">
+            <input type="text" name="search" id="search" placeholder="search..." required="" class="form-control rounded_search">
+            <button class="submit_search" id="search-button"> <span class=""><i class="fa fa-search"></i></span></button>
         </div>
-    </div> --}}
+        <div class="group_text_right clear-chat-button ms-4">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item clear-chat" data-reciver-id="{{ $reciver->id }}">Clear historical chats</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+
+
 
     <div class="MessageContainer" id="chat-container-{{ $reciver->id }}">
         @if ($chats->count() > 0)

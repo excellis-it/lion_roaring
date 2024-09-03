@@ -90,7 +90,9 @@
         @if (Session::has('message'))
             toastr.options = {
                 "closeButton": true,
-                "progressBar": true
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000", // Duration before it auto-closes
             }
             toastr.success("{{ session('message') }}");
         @endif
@@ -98,7 +100,9 @@
         @if (Session::has('error'))
             toastr.options = {
                 "closeButton": true,
-                "progressBar": true
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000",
             }
             toastr.error("{{ session('error') }}");
         @endif
@@ -106,7 +110,9 @@
         @if (Session::has('info'))
             toastr.options = {
                 "closeButton": true,
-                "progressBar": true
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000",
             }
             toastr.info("{{ session('info') }}");
         @endif
@@ -114,11 +120,14 @@
         @if (Session::has('warning'))
             toastr.options = {
                 "closeButton": true,
-                "progressBar": true
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000",
             }
             toastr.warning("{{ session('warning') }}");
         @endif
     </script>
+
     <script>
         $(document).ready(function() {
 
@@ -203,6 +212,28 @@
                     }
                 });
             }
+            // clear-all-notification
+            $(document).on('click', '.clear-all-notification', function() {
+                var $this = $(this);
+                var $notification = $('#show-notification');
+                var $notificationCount = $('#show-notification-count-{{auth()->user()->id}}');
+                var $notificationDropdown = $('.notification-dropdown');
+                var $notificationDropdownContent = $notificationDropdown.find('.message-body');
+
+                $.ajax({
+                    url: "{{ route('notification.clear') }}",
+                    success: function(data) {
+                        if (data.status === true) {
+                            $notification.html('');
+                            $notificationCount.html('0');
+                            $notificationDropdownContent.html('');
+                            $notificationDropdown.removeClass('show');
+                            notification_page = 1;
+                            toastr.success(data.message);
+                        }
+                    }
+                });
+            });
         });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
@@ -1482,6 +1513,27 @@
                     });
                 } else {
                     return false;
+                }
+            });
+
+            $(document).on('click', '.clear-all-conversation', function() {
+                var teamId = $(this).data('team-id');
+                r = confirm("Are you sure you want to clear all conversation?");
+                if (r == true) {
+                    $.ajax({
+                        url: "{{ route('team-chats.clear-all-conversation') }}",
+                        type: 'POST',
+                        data: {
+                            team_id: teamId
+                        },
+                        success: function(response) {
+                            if (response.status == true) {
+                                $('#team-chat-container-' + teamId).html('');
+                                groupList(sender_id);
+                                toastr.success(response.message);
+                            }
+                        }
+                    });
                 }
             });
 

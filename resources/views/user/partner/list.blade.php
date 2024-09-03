@@ -101,7 +101,7 @@
         $(document).on('click', '#delete', function(e) {
             swal({
                     title: "Are you sure?",
-                    text: "To delete this Role.",
+                    text: "To delete this Member.",
                     type: "warning",
                     confirmButtonText: "Yes",
                     showCancelButton: true

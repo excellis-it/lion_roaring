@@ -31,7 +31,7 @@
                     aria-labelledby="drop2" data-bs-popper="static">
                     <div class="d-flex align-items-center justify-content-between py-3 px-7">
                         <h5 class="mb-0 fs-5 fw-semibold">Notifications</h5>
-                        <span class="badge bg-primary rounded-4 px-3 py-1 lh-sm">5 new</span>
+                        <span class="badge bg-primary rounded-4 px-3 py-1 lh-sm clear-all-notification" style="color: red; font-size:medium; cursor:pointer">Clear All</span>
                     </div>
                     <ul class="message-body srl" data-simplebar="" id="show-notification">
                         @include('user.includes.notification')

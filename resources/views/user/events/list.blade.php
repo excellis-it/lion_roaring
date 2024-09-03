@@ -86,7 +86,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Save changes</button>
-                            <button type="button" class="btn btn-danger" id="deleteEventBtn" style="color: white; background:red"><i class="fas fa-trash"></i> Delete</button>
+                            <button type="button" class="btn btn-danger" id="deleteEventBtn"
+                                style="color: white; background:red"><i class="fas fa-trash"></i> Delete</button>
                         </div>
                     </form>
                 </div>
@@ -120,7 +121,8 @@
 
     {{-- add event model --}}
     @if (auth()->user()->can('Create Event'))
-        <div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -201,13 +203,21 @@
                         url: '{{ route('events.calender') }}',
                         method: 'GET',
                         success: function(data) {
-                            var events = data.map(event => ({
-                                id: event.id,
-                                title: event.title,
-                                start: event.start,
-                                end: event.end,
-                                description: event.description
-                            }));
+                            console.log(data);
+
+                            var events = data.map(event => {
+                                var title = event
+                                .title; // No need to include time in title here
+
+                                return {
+                                    id: event.id,
+                                    title: title,
+                                    main_title: event.title,
+                                    start: event.start,
+                                    end: event.end,
+                                    description: event.description
+                                };
+                            });
                             successCallback(events);
                         },
                         error: function() {
@@ -217,10 +227,18 @@
                 },
                 eventClick: function(info) {
                     @if (auth()->user()->can('Edit Event'))
+                        const formatDateForInput = (date) => {
+                            if (!date) return '';
+                            return moment(date).format(
+                            'YYYY-MM-DDTHH:mm'); // 'datetime-local' input format
+                        };
+
+                        const formattedStart = formatDateForInput(info.event.start);
+                        const formattedEnd = formatDateForInput(info.event.end);
+
                         $('#modalTitleEdit').val(info.event.title);
-                        $('#modalStartEdit').val(info.event.start.toISOString().slice(0, 16));
-                        $('#modalEndEdit').val(info.event.end ? info.event.end.toISOString().slice(0,
-                            16) : '');
+                        $('#modalStartEdit').val(formattedStart);
+                        $('#modalEndEdit').val(formattedEnd);
                         $('#modalDescriptionEdit').val(info.event.extendedProps.description);
                         $('#event-edit').attr('action', '{{ route('events.update', '') }}/' + info.event
                             .id);
@@ -232,7 +250,8 @@
                                         .event.id,
                                     method: 'DELETE',
                                     success: function() {
-                                        toastr.success('Event deleted successfully.');
+                                        toastr.success(
+                                            'Event deleted successfully.');
                                         info.event.remove();
                                         $('#eventModal').modal('hide');
                                     },
@@ -246,8 +265,9 @@
                         $('#deleteEventBtn').show();
                     @else
                         $('#modalTitle').text(info.event.title);
-                        $('#modalStart').text(info.event.start.toLocaleString());
-                        $('#modalEnd').text(info.event.end ? info.event.end.toLocaleString() : 'N/A');
+                        $('#modalStart').text(moment(info.event.start).format('MMM D, YYYY h:mm A'));
+                        $('#modalEnd').text(info.event.end ? moment(info.event.end).format(
+                            'MMM D, YYYY h:mm A') : 'N/A');
                         $('#modalDescription').text(info.event.extendedProps.description);
 
                         $('#deleteEventBtn').hide();
@@ -257,12 +277,13 @@
                 eventTimeFormat: {
                     hour: '2-digit',
                     minute: '2-digit',
-                    meridiem: false
+                    meridiem: true // This enables AM/PM format
                 }
             });
             calendar.render();
         });
     </script>
+
 
     <script>
         // validation

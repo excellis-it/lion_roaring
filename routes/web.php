@@ -263,6 +263,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::post('/change-password-update', [UserDashboardController::class, 'passwordUpdate'])->name('user.password.update');
     Route::get('/notifications', [UserDashboardController::class, 'notifications'])->name('notification.list');
     Route::get('/notification-read/{type}/{id}', [UserDashboardController::class, 'notificationRead'])->name('notification.read');
+    // notification.clear
+    Route::get('/notification-clear', [UserDashboardController::class, 'notificationClear'])->name('notification.clear');
 
     Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
 
@@ -294,8 +296,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/make-admin', [TeamChatController::class, 'makeAdmin'])->name('make-admin');
         Route::post('/seen', [TeamChatController::class, 'seen'])->name('seen');
         Route::post('/notification', [TeamChatController::class, 'notification'])->name('notification');
-        // remove-chat
         Route::post('/remove-chat', [TeamChatController::class, 'removeChat'])->name('remove-chat');
+        // clear-all-conversation
+        Route::post('/clear-all-conversation', [TeamChatController::class, 'clearAllConversation'])->name('clear-all-conversation');
     });
 
     Route::prefix('strategy')->group(function () {

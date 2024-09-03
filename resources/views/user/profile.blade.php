@@ -285,7 +285,7 @@
 
         function setPhoneNumber() {
             const phoneInput = $("#mobile_code");
-            const fullNumber = "{{ Auth::user()->phone }}";
+            const fullNumber = "{{ Auth::user()->phone ?? old('full_phone_number') }}";
 
             if (fullNumber) {
                 phoneInput.intlTelInput("setNumber", fullNumber);

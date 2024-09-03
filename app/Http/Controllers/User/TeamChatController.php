@@ -20,7 +20,7 @@ class TeamChatController extends Controller
 
     public function userLastMessage($team_id, $user_id)
     {
-       return TeamChat::where('team_id', $team_id)->whereHas('chatMembers', function ($query) use ($user_id) {
+        return TeamChat::where('team_id', $team_id)->whereHas('chatMembers', function ($query) use ($user_id) {
             $query->where('user_id', $user_id);
         })->latest()->first();
     }
@@ -509,7 +509,6 @@ class TeamChatController extends Controller
                 $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->count();
                 return response()->json(['message' => 'Notification sent successfully.', 'status' => true, 'notification' => $notification, 'notification_count' => $notification_count]);
             }
-
         }
 
         return abort(404); // Optional: return a 404 response if not an AJAX request
@@ -544,4 +543,13 @@ class TeamChatController extends Controller
         return response()->json(['message' => 'Chat removed successfully.', 'status' => true, 'chat_id' => $chat_id, 'last_message' => $last_message]);
     }
 
+    public function clearAllConversation(Request $request)
+    {
+        $team_id = $request->team_id;
+        ChatMember::whereHas('chat', function ($query) use ($team_id) {
+            $query->where('team_id', $team_id);
+        })->delete();
+        TeamChat::where('team_id', $team_id)->delete();
+        return response()->json(['message' => 'All conversation cleared successfully.', 'status' => true]);
+    }
 }

@@ -12,20 +12,34 @@
                 id="all-member-{{ $team['id'] }}">{{ $team_member_name ? (strlen($team_member_name) > 60 ? substr($team_member_name, 0, 60) . '...' : $team_member_name) : '' }}</span>
         </div>
         <div class="group_text_right">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item group-info" data-team-id="{{ $team['id'] }}">Group
-                            info</a></li>
-                    @if (auth()->user()->can('Delete Team') && Helper::checkRemovedFromTeam($team['id'], auth()->user()->id) == false)
-                        <li><a class="dropdown-item delete-group" data-team-id="{{ $team['id'] }}">Delete Group</a>
-                        </li>
-                    @endif
+            <div class="d-flex align-items-center">
+                <div class="search-field w-100 mb-0">
+                    <input type="text" name="search" id="search-chat" placeholder="search..." required=""
+                        class="form-control rounded_search">
+                    <button class="submit_search" id="search-button"> <span class=""><i
+                                class="fa fa-search"></i></span></button>
+                </div>
+                <div class="dropdown ms-4">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item group-info" data-team-id="{{ $team['id'] }}">Group
+                                info</a></li>
+                        @if (auth()->user()->can('Delete Team') && Helper::checkRemovedFromTeam($team['id'], auth()->user()->id) == false)
+                            <li><a class="dropdown-item delete-group" data-team-id="{{ $team['id'] }}">Delete
+                                    group</a>
+                            </li>
+                        @endif
 
-                </ul>
+                        @if (auth()->user()->hasRole('ADMIN') && Helper::checkRemovedFromTeam($team['id'], auth()->user()->id) == false)
+                            <li><a class="dropdown-item clear-all-conversation" data-team-id="{{ $team['id'] }}">Clear all historical conversation </a>
+                            </li>
+                        @endif
+
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

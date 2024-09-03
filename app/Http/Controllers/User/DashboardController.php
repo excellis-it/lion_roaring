@@ -138,4 +138,10 @@ class DashboardController extends Controller
 
         return abort(404);
     }
+
+    public function notificationClear()
+    {
+        Notification::where('user_id', Auth::user()->id)->delete();
+        return response()->json(['message' => 'Notification deleted successfully.', 'status' => true]);
+    }
 }

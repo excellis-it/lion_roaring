@@ -39,7 +39,7 @@
                                         <div class="box_label">
                                             <label>Phone *</label>
                                             <input type="tel" class="form-control" name="phone" id="mobile_code"
-                                                value="{{ old('phone') }}" placeholder="">
+                                                value="{{ old('full_phone_number') }}" placeholder="">
                                             @if ($errors->has('phone'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('phone') }}
@@ -277,75 +277,83 @@
 @endsection
 
 @push('scripts')
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput-jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/utils.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput-jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/utils.min.js"></script>
 
-<script>
-function validate() {
-    var number = $("#mobile_code").intlTelInput('getNumber');
-    var iso = $("#mobile_code").intlTelInput('getSelectedCountryData').iso2;
+    <script>
+        function initializeIntlTelInput() {
+            const phoneInput = $("#mobile_code");
 
-    var isValidNumber = intlTelInputUtils.isValidNumber(number, iso);
-    var validationError = intlTelInputUtils.getValidationError(number, iso);
+            phoneInput.intlTelInput({
+                geoIpLookup: function(callback) {
+                    $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                        const countryCode = (resp && resp.country) ? resp.country : "US";
+                        callback(countryCode);
+                    });
+                },
+                initialCountry: "auto",
+                separateDialCode: true,
+            });
 
-    console.log(number);
-    console.log(intlTelInputUtils.formatNumber(number, iso, intlTelInputUtils.numberFormat.INTERNATIONAL));
-    console.log(isValidNumber);
-    console.log(validationError);
+            const selectedCountry = phoneInput.intlTelInput('getSelectedCountryData');
+            const dialCode = selectedCountry.dialCode;
+            const exampleNumber = intlTelInputUtils.getExampleNumber(selectedCountry.iso2, 0, 0);
 
-    // You can add custom validation logic here if needed
-}
+            let maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
+            maskNumber = maskNumber.replace('+' + dialCode + ' ', '');
 
-$("#mobile_code").intlTelInput({
-    geoIpLookup: function(callback) {
-        $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-            var countryCode = (resp && resp.country) ? resp.country : "US";
-            callback(countryCode);
+            const mask = maskNumber.replace(/[0-9+]/g, '0');
+            phoneInput.mask(mask, { placeholder: maskNumber });
+
+            phoneInput.on('countrychange', function() {
+                $(this).val('');
+                const newSelectedCountry = $(this).intlTelInput('getSelectedCountryData');
+                const newDialCode = newSelectedCountry.dialCode;
+                const newExampleNumber = intlTelInputUtils.getExampleNumber(newSelectedCountry.iso2, 0, 0);
+
+                let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
+                newMaskNumber = newMaskNumber.replace('+' + newDialCode + ' ', '');
+
+                const newMask = newMaskNumber.replace(/[0-9+]/g, '0');
+                phoneInput.mask(newMask, { placeholder: newMaskNumber });
+            });
+        }
+
+        function setPhoneNumber() {
+            const phoneInput = $("#mobile_code");
+            const fullNumber = "{{ old('full_phone_number') }}";
+
+            if (fullNumber) {
+                phoneInput.intlTelInput("setNumber", fullNumber);
+            }
+        }
+
+        $(document).ready(function() {
+            initializeIntlTelInput();
+            setPhoneNumber();
+
+            $('form').on('submit', function() {
+                const phoneInput = $("#mobile_code");
+                const fullNumber = phoneInput.intlTelInput('getNumber');
+                const countryCode = phoneInput.intlTelInput('getSelectedCountryData').dialCode;
+
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'full_phone_number',
+                    value: fullNumber
+                }).appendTo('form');
+
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'country_code',
+                    value: countryCode
+                }).appendTo('form');
+            });
         });
-    },
-    initialCountry: "auto",
-    separateDialCode: true,
-});
-
-$('#mobile_code').on('countrychange', function(e) {
-    $(this).val('');
-
-    var selectedCountry = $(this).intlTelInput('getSelectedCountryData');
-    var dialCode = selectedCountry.dialCode;
-    var exampleNumber = intlTelInputUtils.getExampleNumber(selectedCountry.iso2, 0, 0);
-
-    var maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
-    maskNumber = maskNumber.replace('+' + dialCode + ' ', '');
-
-    var mask = maskNumber.replace(/[0-9+]/g, '0');
-    $('#mobile_code').mask(mask, { placeholder: maskNumber });
-});
-
-// Example to submit the form
-$('form').on('submit', function(e) {
-    // Get the full number including the country code
-    var fullNumber = $("#mobile_code").intlTelInput('getNumber');
-    var countryCode = $("#mobile_code").intlTelInput('getSelectedCountryData').dialCode;
-
-    // Store the full number in a hidden input field
-    $('<input>').attr({
-        type: 'hidden',
-        name: 'full_phone_number',
-        value: fullNumber
-    }).appendTo('form');
-
-    // Store the country code in a hidden input field
-    $('<input>').attr({
-        type: 'hidden',
-        name: 'country_code',
-        value: countryCode
-    }).appendTo('form');
-});
-</script>
-     <script>
+    </script>
+    <script>
         $(document).ready(function() {
             getStates($('#country').val());
 
@@ -363,10 +371,11 @@ $('form').on('submit', function(e) {
                         country: country
                     },
                     success: function(response) {
-                       var states = response;
+                        var states = response;
                         var html = '<option value="">Select State</option>';
                         states.forEach(state => {
-                            html += '<option value="' + state.id + '">' + state.name + '</option>';
+                            html += '<option value="' + state.id + '">' + state.name +
+                                '</option>';
                         });
                         $('#state').html(html);
                     }
