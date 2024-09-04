@@ -5,7 +5,7 @@
             <td>{{ $job->job_title ? $job->job_title : '-' }}</td>
             <td>{{ $job->job_type ? $job->job_type : '-' }}</td>
             <td>{{ $job->job_location ? $job->job_location : '-' }}</td>
-            <td> {{ $job->job_salary  ? $job->currency : '' }} {{ $job->job_salary ? $job->job_salary : 0 }}</td>
+            <td> {{ $job->job_salary  ? $job->currency  : '' }} {{ $job->job_salary ? $job->job_salary .'/': 0 .'/'}} {{ $job->list_of_values ? $job->list_of_values : '' }}</td>
             <td>{{ $job->job_experience ? $job->job_experience : 0 }} {{ $job->job_experience > 1 ? 'years' : 'year' }}</td>
             {{-- contact_person --}}
             <td>
@@ -13,6 +13,9 @@
             </td>
             <td>
                 {{ $job->contact_email ? $job->contact_email : '-' }}
+            </td>
+            <td>
+                {{ date('d M, Y', strtotime($job->created_at)) }}
             </td>
             <td>
                 <div class="d-flex">
@@ -37,7 +40,7 @@
         </tr>
     @endforeach
     <tr class="toxic">
-        <td colspan="7">
+        <td colspan="10">
             <div class="d-flex justify-content-center">
                 {!! $jobs->links() !!}
             </div>
@@ -45,6 +48,6 @@
     </tr>
 @else
     <tr>
-        <td colspan="7" class="text-center">No data found</td>
+        <td colspan="10" class="text-center">No data found</td>
     </tr>
 @endif

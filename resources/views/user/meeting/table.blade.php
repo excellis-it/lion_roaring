@@ -3,8 +3,8 @@
         <tr>
             <td>{{ $meetings->firstItem() + $key }}</td>
             <td>{{ $meeting->title ? $meeting->title : '-' }}</td>
-            <td>{{ $meeting->start_time ? date('m-d-Y h:i A', strtotime($meeting->start_time)) : '-' }}</td>
-            <td>{{ $meeting->end_time ? date('m-d-Y h:i A', strtotime($meeting->end_time)) : '-' }}</td>
+            <td>{{ $meeting->start_time ? date('d M Y h:i A', strtotime($meeting->start_time)) : '-' }}</td>
+            <td>{{ $meeting->end_time ? date('d M Y h:i A', strtotime($meeting->end_time)) : '-' }}</td>
             <td>{{ $meeting->meeting_link ? $meeting->meeting_link : '-' }}</td>
             <td>
                 <div class="d-flex">

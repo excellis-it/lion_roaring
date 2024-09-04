@@ -86,6 +86,14 @@ class PartnerController extends Controller
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
         ]);
 
+          $phone_number = $request->full_phone_number;
+          $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
+
+          $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->count();
+        if ($check > 0) {
+            return redirect()->back()->withErrors(['phone' => 'Phone number already exists'])->withInput();
+        }
+
         $data = new User();
         $data->created_id = Auth::user()->id;
         $data->user_name = $request->user_name;
@@ -185,6 +193,12 @@ class PartnerController extends Controller
                 'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             ]);
 
+            $phone_number = $request->full_phone_number;
+            $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
+            $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->where('id', '!=', $id)->count();
+            if ($check > 0) {
+                return redirect()->back()->withErrors(['phone' => 'Phone number already exists'])->withInput();
+            }
 
             $data = User::find($id);
             $data->first_name = $request->first_name;

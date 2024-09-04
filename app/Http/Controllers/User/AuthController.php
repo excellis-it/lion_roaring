@@ -110,6 +110,13 @@ class AuthController extends Controller
                 ->withInput();
         }
 
+        $phone_number = $request->full_phone_number;
+        $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
+
+        $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->count();
+        if ($check > 0) {
+            return redirect()->back()->withErrors(['phone_number' => 'Phone number already exists'])->withInput();
+        }
 
         $user = new User();
         $user->user_name = $request->user_name;
@@ -150,4 +157,6 @@ class AuthController extends Controller
         $states = State::where('country_id', $request->country)->get();
         return response()->json($states);
     }
+
+
 }

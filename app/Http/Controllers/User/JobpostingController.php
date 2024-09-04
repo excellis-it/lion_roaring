@@ -58,6 +58,7 @@ class JobpostingController extends Controller
                 'job_experience' => 'nullable|numeric',
                 'contact_person' => 'nullable',
                 'contact_email' => 'nullable|email',
+                'list_of_values' => 'nullable|required_with:job_salary',
             ]);
 
             $job = new Job();
@@ -71,6 +72,7 @@ class JobpostingController extends Controller
             $job->job_experience = $request->job_experience;
             $job->contact_person = $request->contact_person;
             $job->contact_email = $request->contact_email;
+            $job->list_of_values = $request->list_of_values;
             $job->save();
 
             return redirect()->route('jobs.index')->with('message', 'Job has been created successfully.');
@@ -131,6 +133,7 @@ class JobpostingController extends Controller
                 'contact_person' => 'nullable',
                 'contact_email' => 'nullable|email',
                 'currency' => 'nullable',
+                'list_of_values' => 'nullable|required_with:job_salary',
             ]);
 
             $job = Job::findOrFail($id);
@@ -143,6 +146,7 @@ class JobpostingController extends Controller
             $job->job_experience = $request->job_experience;
             $job->contact_person = $request->contact_person;
             $job->contact_email = $request->contact_email;
+            $job->list_of_values = $request->list_of_values;
             $job->save();
 
             return redirect()->route('jobs.index')->with('message', 'Job has been updated successfully.');

@@ -5,7 +5,7 @@
     {{ env('APP_NAME') }} - Contact Us
 @endsection
 @push('styles')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
 @endpush
 
 @section('content')
@@ -137,8 +137,87 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput-jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput-jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/utils.min.js"></script>
+    <script>
+        function initializeIntlTelInput() {
+            const phoneInput = $("#mobile_code");
+
+            phoneInput.intlTelInput({
+                geoIpLookup: function(callback) {
+                    $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                        const countryCode = (resp && resp.country) ? resp.country : "US";
+                        callback(countryCode);
+                    });
+                },
+                initialCountry: "auto",
+                separateDialCode: true,
+            });
+
+            const selectedCountry = phoneInput.intlTelInput('getSelectedCountryData');
+            const dialCode = selectedCountry.dialCode;
+            const exampleNumber = intlTelInputUtils.getExampleNumber(selectedCountry.iso2, 0, 0);
+
+            let maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils
+                .numberFormat.NATIONAL);
+            maskNumber = maskNumber.replace('+' + dialCode + ' ', '');
+
+            const mask = maskNumber.replace(/[0-9+]/g, '0');
+            phoneInput.mask(mask, {
+                placeholder: maskNumber
+            });
+
+            phoneInput.on('countrychange', function() {
+                $(this).val('');
+                const newSelectedCountry = $(this).intlTelInput('getSelectedCountryData');
+                const newDialCode = newSelectedCountry.dialCode;
+                const newExampleNumber = intlTelInputUtils.getExampleNumber(newSelectedCountry.iso2, 0, 0);
+
+                let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry.iso2,
+                    intlTelInputUtils.numberFormat.NATIONAL);
+                newMaskNumber = newMaskNumber.replace('+' + newDialCode + ' ', '');
+
+                const newMask = newMaskNumber.replace(/[0-9+]/g, '0');
+                phoneInput.mask(newMask, {
+                    placeholder: newMaskNumber
+                });
+            });
+        }
+
+        function setPhoneNumber() {
+            const phoneInput = $("#mobile_code");
+            const fullNumber = "{{ old('full_phone_number') }}";
+
+            if (fullNumber) {
+                phoneInput.intlTelInput("setNumber", fullNumber);
+            }
+        }
+
+        $(document).ready(function() {
+            initializeIntlTelInput();
+            setPhoneNumber();
+
+            $('form').on('submit', function() {
+                const phoneInput = $("#mobile_code");
+                const fullNumber = phoneInput.intlTelInput('getNumber');
+                const countryCode = phoneInput.intlTelInput('getSelectedCountryData').dialCode;
+
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'full_phone_number',
+                    value: fullNumber
+                }).appendTo('form');
+
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'country_code',
+                    value: countryCode
+                }).appendTo('form');
+            });
+        });
+    </script>
     <script>
         $(document).ready(function() {
             $("#mobile_code").intlTelInput({
@@ -151,12 +230,11 @@
                 e.preventDefault();
                 var form = $(this);
                 var url = form.attr('action');
-                var countryData = $("#mobile_code").intlTelInput("getSelectedCountryData");
                 $.ajax({
                     type: "POST",
                     url: url,
-                    data: form.serialize() + '&phone_code=' + countryData.dialCode,
-                    success: function(response) {
+                    data: form.serialize(),
+                    success: function(response) {   
                         window.location.reload();
                     },
                     error: function(xhr) {

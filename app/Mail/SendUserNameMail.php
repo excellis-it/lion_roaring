@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class ActiveUserMail extends Mailable
+class SendUserNameMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -16,11 +16,12 @@ class ActiveUserMail extends Mailable
      *
      * @return void
      */
-    Public $maildata; 
-
-    public function __construct($maildata)
+     protected $check;
+     protected $details;
+    public function __construct($check, $details)
     {
-        $this->maildata = $maildata;
+        $this->check = $check;
+        $this->details = $details;
     }
 
     /**
@@ -30,6 +31,6 @@ class ActiveUserMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('user.emails.ActiveUserMail')->subject('Active User Mail')->with('maildata', $this->maildata);
+        return $this->markdown('user.emails.SendUserNameMail')->with(['check' => $this->check, 'details' => $this->details]);
     }
 }

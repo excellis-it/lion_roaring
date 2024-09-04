@@ -140,8 +140,8 @@ class CmsController extends Controller
             $contact->first_name = $request->first_name;
             $contact->last_name = $request->last_name;
             $contact->email = $request->email;
-            if ($request->phone_code) {
-                $contact->phone = '+'. $request->phone_code . $request->phone;
+            if ($request->country_code) {
+                $contact->phone = '+' . $request->country_code . ' ' . $request->phone;
             } else {
                 $contact->phone = $request->phone;
             }

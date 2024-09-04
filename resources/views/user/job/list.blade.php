@@ -73,6 +73,8 @@
                                                     data-sorting_type="desc" data-column_name="contact_email"
                                                     style="cursor: pointer">Contact Email <span id="contact_email_icon"><i
                                                             class="fa fa-arrow-down"></i></span></th>
+                                                            {{-- post date --}}
+                                                <th >Post Date </th>
                                                 <th></th>
                                             </tr>
                                         </thead>

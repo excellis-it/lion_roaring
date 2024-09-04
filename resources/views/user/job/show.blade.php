@@ -24,13 +24,13 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="col-md-6">
-                                            <h5 class="card-title">{{ $job->job_title }}</h5>
-                                            <h6 class="card-subtitle mb-2 text-muted">
-                                                {{ $job->job_type ? $job->job_type : 'N/A' }}</h6>
+                                            <h4 class="card-title"><b>{{ $job->job_title }}</b></h4>
+                                            <p class="card-subtitle mb-2 text-muted">
+                                                {{ $job->job_type ? $job->job_type : 'N/A' }}</p>
                                             <p class="card-text"><strong>Location:</strong>
                                                 {{ $job->job_location ? $job->job_location : 'N/A' }}</p>
                                             <p class="card-text"><strong>Salary:</strong>
-                                                {{ $job->job_salary ? $job->currency . ' ' . $job->job_salary : 'N/A' }}</p>
+                                                {{ $job->job_salary ? $job->currency . ' ' . $job->job_salary .'/' : '0'.'/' }} {{ $job->list_of_values ? $job->list_of_values : 'N/A' }}</p>
                                             <p class="card-text"><strong>Experience:</strong>
                                                 {{ $job->job_experience ? ($job->job_experience > 1 ? $job->job_experience . ' years' : $job->job_experience . ' year') : 'N/A' }}
                                             </p>
@@ -46,6 +46,11 @@
                                         <div class="col-md-6 text-right">
                                             <p class="card-text"><strong>Job posted By:</strong>
                                                 {{ $job->user ? $job->user->full_name : 'N/A' }}</p>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                            <p class="card-text"><strong>Job Post Date:</strong>
+                                                {{ date('d M, Y', strtotime($job->created_at)) }} 
                                             </p>
                                         </div>
                                     </div>

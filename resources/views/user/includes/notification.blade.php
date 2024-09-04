@@ -10,7 +10,7 @@
         @endforeach
     @else
         <li>
-            <a href="#" class="top-text-block">
+            <a href="#" class="top-text-block showing">
                 <div class="top-text-heading">No new notifications</div>
                 {{-- <div class="top-text-light">Just now</div> --}}
             </a>

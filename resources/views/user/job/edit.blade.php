@@ -55,6 +55,17 @@
                                     @endif
                                 </div>
                             </div>
+                            {{-- job_experience --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="job_experience"> Job Experience </label>
+                                    <input type="text" name="job_experience" id="job_experience" class="form-control"
+                                        placeholder="Enter Job Experience" value="{{ $job->job_experience }}">
+                                    @if ($errors->has('job_experience'))
+                                        <span class="text-danger" style="color:red !important;">{{ $errors->first('job_experience') }}</span>
+                                    @endif
+                                </div>
+                            </div>
                             {{-- job_salary --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -106,18 +117,28 @@
                                     @endif
                                 </div>
                             </div>
-
-                            {{-- job_experience --}}
-                            <div class="col-md-6 mb-2">
+                             {{-- list_of_values --}}
+                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="job_experience"> Job Experience </label>
-                                    <input type="text" name="job_experience" id="job_experience" class="form-control"
-                                        placeholder="Enter Job Experience" value="{{ $job->job_experience }}">
-                                    @if ($errors->has('job_experience'))
-                                        <span class="text-danger" style="color:red !important;">{{ $errors->first('job_experience') }}</span>
+                                    <label for="list_of_values"> List of Values </label>
+                                    <select name="list_of_values" id="list_of_values" class="form-control">
+                                        <option value="">Select List of Values</option>
+                                        <option value="Hourly" @if ($job->list_of_values == 'Hourly') selected @endif>Hourly
+                                        </option>
+                                        <option value="Weekly" @if ($job->list_of_values == 'Weekly') selected @endif>Weekly
+                                        </option>
+                                        <option value="Monthly" @if ($job->list_of_values == 'Monthly') selected @endif>Monthly
+                                        </option>
+                                        <option value="Annually" @if ($job->list_of_values == 'Annually') selected @endif>
+                                            Annually</option>
+                                    </select>
+                                    @if ($errors->has('list_of_values'))
+                                        <span class="text-danger"
+                                            style="color:red !important;">{{ $errors->first('list_of_values') }}</span>
                                     @endif
                                 </div>
                             </div>
+
                             {{-- contact_person --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -167,13 +188,22 @@
 
     @push('scripts')
         <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
-        <script type="text/javascript">
-            Dropzone.options.imageUpload = {
-                maxFilesize: 1,
-                acceptedFiles: ".jpeg,.jpg,.png,.gif,.webp"
-            };
-        </script>
+
         <script>
-            ClassicEditor.create(document.querySelector("#description"));
+            ClassicEditor.create(document.querySelector("#description"), {
+                toolbar: {
+                    items: [
+                        'bold',
+                        'italic',
+                        'underline',
+                        'link',
+                        'bulletedList',
+                        'numberedList',
+                        'blockQuote',
+                        'undo',
+                        'redo'
+                    ]
+                },
+            });
         </script>
     @endpush

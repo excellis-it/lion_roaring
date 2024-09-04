@@ -294,6 +294,8 @@
                                     Lion
                                     Roaring Member</a> | <a href="{{ route('user.forget.password.show') }}">Forgot
                                     password
+                                </a> | <a href="{{ route('user.forget.username.show') }}">Forgot
+                                    username
                                 </a>
                                 <br>
                                 <a href="{{ route('member-privacy-policy') }}"

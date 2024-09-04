@@ -13,6 +13,9 @@
     </style>
 @endpush
 @section('content')
+    @php
+        use App\Helpers\Helper;
+    @endphp
     <div class="container-fluid">
         <div class="bg_white_border">
             <div class="row">
@@ -55,7 +58,7 @@
         </div>
     </div>
     <!-- Event view model -->
-    @if (auth()->user()->can('Edit Event'))
+    {{-- @if (auth()->user()->can('Edit Event')) --}}
         <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -93,12 +96,12 @@
                 </div>
             </div>
         </div>
-    @else
-        <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+    {{-- @else --}}
+        <div class="modal fade" id="eventModalDetails" tabindex="-1" aria-labelledby="eventModalDetailsLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="eventModalLabel">Event Details</h5>
+                        <h5 class="modal-title" id="eventModalDetailsLabel">Event Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -113,7 +116,7 @@
                 </div>
             </div>
         </div>
-    @endif
+    {{-- @endif --}}
 
 
 
@@ -211,6 +214,7 @@
 
                                 return {
                                     id: event.id,
+                                    user_id: event.user_id,
                                     title: title,
                                     main_title: event.title,
                                     start: event.start,
@@ -226,11 +230,64 @@
                     });
                 },
                 eventClick: function(info) {
-                    @if (auth()->user()->can('Edit Event'))
+                    var id = info.event.id;
+
+                    //     const formatDateForInput = (date) => {
+                    //         if (!date) return '';
+                    //         return moment(date).format(
+                    //         'YYYY-MM-DDTHH:mm'); // 'datetime-local' input format
+                    //     };
+
+                    //     const formattedStart = formatDateForInput(info.event.start);
+                    //     const formattedEnd = formatDateForInput(info.event.end);
+
+                    //     $('#modalTitleEdit').val(info.event.title);
+                    //     $('#modalStartEdit').val(formattedStart);
+                    //     $('#modalEndEdit').val(formattedEnd);
+                    //     $('#modalDescriptionEdit').val(info.event.extendedProps.description);
+                    //     $('#event-edit').attr('action', '{{ route('events.update', '') }}/' + info.event
+                    //         .id);
+
+                    //     $('#deleteEventBtn').off('click').on('click', function() {
+                    //         if (confirm('Are you sure you want to delete this event?')) {
+                    //             $.ajax({
+                    //                 url: '{{ route('events.destroy', '') }}/' + info
+                    //                     .event.id,
+                    //                 method: 'DELETE',
+                    //                 success: function() {
+                    //                     toastr.success(
+                    //                         'Event deleted successfully.');
+                    //                     info.event.remove();
+                    //                     $('#eventModal').modal('hide');
+                    //                 },
+                    //                 error: function() {
+                    //                     alert('Failed to delete event.');
+                    //                 }
+                    //             });
+                    //         }
+                    //     });
+
+                    //     $('#deleteEventBtn').show();
+
+                    //     $('#modalTitle').text(info.event.title);
+                    //     $('#modalStart').text(moment(info.event.start).format('MMM D, YYYY h:mm A'));
+                    //     $('#modalEnd').text(info.event.end ? moment(info.event.end).format(
+                    //         'MMM D, YYYY h:mm A') : 'N/A');
+                    //     $('#modalDescription').text(info.event.extendedProps.description);
+
+                    //     $('#deleteEventBtn').hide();
+
+
+                    var permission = @json(auth()->user()->can('Edit Event'));
+                    var admin = @json(auth()->user()->hasRole('ADMIN'));
+                    var user = {{ auth()->user()->id }};
+                    console.log(permission, admin, user, info.event.extendedProps.user_id);
+
+                    if (permission && info.event.extendedProps.user_id == user || admin) {
                         const formatDateForInput = (date) => {
                             if (!date) return '';
                             return moment(date).format(
-                            'YYYY-MM-DDTHH:mm'); // 'datetime-local' input format
+                                'YYYY-MM-DDTHH:mm'); // 'datetime-local' input format
                         };
 
                         const formattedStart = formatDateForInput(info.event.start);
@@ -263,7 +320,8 @@
                         });
 
                         $('#deleteEventBtn').show();
-                    @else
+                        $('#eventModal').modal('show');
+                    } else {
                         $('#modalTitle').text(info.event.title);
                         $('#modalStart').text(moment(info.event.start).format('MMM D, YYYY h:mm A'));
                         $('#modalEnd').text(info.event.end ? moment(info.event.end).format(
@@ -271,8 +329,10 @@
                         $('#modalDescription').text(info.event.extendedProps.description);
 
                         $('#deleteEventBtn').hide();
-                    @endif
-                    $('#eventModal').modal('show');
+                        $('#eventModalDetails').modal('show');
+                    }
+
+
                 },
                 eventTimeFormat: {
                     hour: '2-digit',

@@ -244,7 +244,15 @@ Route::post('forget-password', [UserForgetPasswordController::class, 'forgetPass
 Route::post('password-change', [UserForgetPasswordController::class, 'changePassword'])->name('user.password-change');
 Route::get('forget-password/show', [UserForgetPasswordController::class, 'forgetPasswordShow'])->name('user.forget.password.show');
 Route::get('reset-password/{id}/{token}', [UserForgetPasswordController::class, 'resetPassword'])->name('user.reset.password');
-// member privacy policy
+// user.forget.username.show
+Route::get('forget-username/show', [UserForgetPasswordController::class, 'forgetUsernameShow'])->name('user.forget.username.show');
+Route::post('forget-username', [UserForgetPasswordController::class, 'forgetUsername'])->name('user.forget.username');
+// show confirmation email page
+Route::get('/confirmation-email/{id}', [UserForgetPasswordController::class, 'confirmationEmail'])->name('forget-username-confirmation');
+Route::get('reset-username/{id}/{token}', [UserForgetPasswordController::class, 'resetUsername'])->name('user.reset.username');
+// user.username-change
+Route::post('username-change', [UserForgetPasswordController::class, 'changeUsername'])->name('user.username-change');
+
 Route::get('/member-privacy-policy', [UserCmsController::class, 'memberPrivacyPolicy'])->name('member-privacy-policy');
 
 // get.states

@@ -44,11 +44,12 @@ class DashboardController extends Controller
         if (auth()->user()->can('Manage Password')) {
             $request->validate([
                 'old_password' => 'required|min:8|password',
-                'new_password' => 'required|min:8|different:old_password',
+                'new_password' => ['required', 'different:old_password', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
                 'confirm_password' => 'required|min:8|same:new_password',
 
             ], [
                 'old_password.password' => 'Old password is not correct',
+                'new_password.regex' => 'Password must be at least 8 characters and must contain at least one special character.',
             ]);
 
             $data = ModelsUser::find(Auth::user()->id);
@@ -75,6 +76,14 @@ class DashboardController extends Controller
             'zip' => 'required',
         ]);
         if (auth()->user()->can('Manage Profile')) {
+            $phone_number = $request->full_phone_number;
+            $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
+            $check = ModelsUser::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])
+                ->where('id', '!=', Auth::user()->id)
+                ->count();
+            if ($check > 0) {
+                return redirect()->back()->with('error', 'Phone number already exists.');
+            }
             $data = ModelsUser::find(Auth::user()->id);
             $data->first_name = $request->first_name;
             $data->last_name = $request->last_name;

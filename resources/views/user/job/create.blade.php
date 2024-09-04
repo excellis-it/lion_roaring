@@ -3,13 +3,7 @@
     Job - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/min/dropzone.min.css" rel="stylesheet">
-    <style>
-        .ck-placeholder {
-            color: #a1a1a1;
-            height: 250px !important;
-        }
-    </style>
+
 @endpush
 @section('content')
     <div class="container-fluid">
@@ -61,6 +55,18 @@
                                     @if ($errors->has('job_location'))
                                         <span class="text-danger"
                                             style="color:red !important;">{{ $errors->first('job_location') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            {{-- job_experience --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="job_experience"> Job Experience (Year) </label>
+                                    <input type="number" name="job_experience" id="job_experience" class="form-control"
+                                        value="{{ old('job_experience') }}" placeholder="Enter Job Experience">
+                                    @if ($errors->has('job_experience'))
+                                        <span class="text-danger"
+                                            style="color:red !important;">{{ $errors->first('job_experience') }}</span>
                                     @endif
                                 </div>
                             </div>
@@ -149,18 +155,28 @@
                                     @endif
                                 </div>
                             </div>
-                            {{-- job_experience --}}
+                            {{-- list_of_values --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="job_experience"> Job Experience (Year) </label>
-                                    <input type="number" name="job_experience" id="job_experience" class="form-control"
-                                        value="{{ old('job_experience') }}" placeholder="Enter Job Experience">
-                                    @if ($errors->has('job_experience'))
+                                    <label for="list_of_values"> List of Values </label>
+                                    <select name="list_of_values" id="list_of_values" class="form-control">
+                                        <option value="">Select List of Values</option>
+                                        <option value="Hourly" @if (old('list_of_values') == 'Hourly') selected @endif>Hourly
+                                        </option>
+                                        <option value="Weekly" @if (old('list_of_values') == 'Weekly') selected @endif>Weekly
+                                        </option>
+                                        <option value="Monthly" @if (old('list_of_values') == 'Monthly') selected @endif>Monthly
+                                        </option>
+                                        <option value="Annually" @if (old('list_of_values') == 'Annually') selected @endif>
+                                            Annually</option>
+                                    </select>
+                                    @if ($errors->has('list_of_values'))
                                         <span class="text-danger"
-                                            style="color:red !important;">{{ $errors->first('job_experience') }}</span>
+                                            style="color:red !important;">{{ $errors->first('list_of_values') }}</span>
                                     @endif
                                 </div>
                             </div>
+
                             {{-- contact_person --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -211,16 +227,25 @@
     @endsection
 
     @push('scripts')
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js"></script>
         <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
-        <script type="text/javascript">
-            Dropzone.options.imageUpload = {
-                maxFilesize: 1,
-                acceptedFiles: ".jpeg,.jpg,.png,.gif,.webp"
-            };
-        </script>
+
         <script>
-            ClassicEditor.create(document.querySelector("#description"));
-            ClassicEditor.create(document.querySelector("#specification"));
+            // ClassicEditor.create(document.querySelector("#description"));
+            // remove heading1, heading2, heading3, heading4, heading5, heading6 from toolbar
+            ClassicEditor.create(document.querySelector("#description"), {
+                toolbar: {
+                    items: [
+                        'bold',
+                        'italic',
+                        'underline',
+                        'link',
+                        'bulletedList',
+                        'numberedList',
+                        'blockQuote',
+                        'undo',
+                        'redo'
+                    ]
+                },
+            });
         </script>
     @endpush

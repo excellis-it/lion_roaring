@@ -19,6 +19,7 @@ class Job extends Model
         'job_experience',
         'contact_person',
         'contact_email',
+        'list_of_values',
     ];
 
     public function user()

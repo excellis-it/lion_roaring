@@ -22,7 +22,7 @@ class LiveEventController extends Controller
 
     public function calender(Request $request)
     {
-        $events = Event::orderBy('id', 'desc')->get(['id', 'title', 'description', 'start', 'end']);
+        $events = Event::orderBy('id', 'desc')->get(['id', 'user_id' ,'title', 'description', 'start', 'end']);
         return response()->json($events);
     }
 
