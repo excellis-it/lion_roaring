@@ -109,13 +109,21 @@
                         <div class="message you" id="team-chat-message-{{ $chat->id }}">
                             <div class="d-flex">
                                 <div class="member_image">
-                                    <span><img
-                                            src="{{ $chat->user->profile_picture ? Storage::url($chat->user->profile_picture) : asset('user_assets/images/profile_dummy.png') }}"
-                                            alt=""></span>
+                                    <span>
+                                        @if ($chat->user)
+                                        <img
+                                        src="{{ $chat->user->profile_picture ? Storage::url($chat->user->profile_picture) : asset('user_assets/images/profile_dummy.png') }}"
+                                        alt="">
+                                        @else
+                                        <img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">
+                                        @endif
+
+
+                                        </span>
                                 </div>
                                 <div class="message_group">
                                     <p class="messageContent">
-                                        <span class="namemember">{{ $chat->user->full_name }}</span>
+                                        <span class="namemember">{{ $chat->user ? $chat->user->full_name : '' }}</span>
                                         @if ($chat->message != null)
                                             {{ $chat->message }}
                                         @else
