@@ -106,6 +106,11 @@ io.on('connection', (socket) => {
         console.log('team-remove-chat: ' + msg);
         io.sockets.emit('team-remove-chat', msg);
     });
+    // clearAllConversation
+    socket.on('clearAllConversation', (msg) => {
+        console.log('clearAllConversation: ' + msg);
+        io.sockets.emit('clearAllConversation', msg);
+    });
 
     // sendAdminNotification
     socket.on('sendAdminNotification', (msg) => {

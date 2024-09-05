@@ -165,8 +165,11 @@
                                 <div class="col-md-12">
                                     <label for="card-element">Card Number</label>
                                     <div style="position: relative;">
-                                        <input class="form-control card-number" aria-hidden="true" aria-label=" " name="card_number" id="card-number" autocomplete="off">
-                                        <img id="card-type-image" src="{{asset('frontend_assets/images/unknown.webp')}}" alt="Card Type" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); max-height: 24px;">
+                                        <input class="form-control card-number" aria-hidden="true" aria-label=" "
+                                            name="card_number" id="card-number" autocomplete="off">
+                                        <img id="card-type-image"
+                                            src="{{ asset('frontend_assets/images/unknown.webp') }}" alt="Card Type"
+                                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); max-height: 24px;">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -275,11 +278,16 @@
                                         class="input" value="" size="20">
                                     <span class="text-danger"></span>
                                 </p>
-                                <p class="login-password">
+                                <p class="login-password" style="position: relative;
+                            ">
                                     <label for="user_password">Password</label>
                                     <input type="password" name="password" id="user_password"
                                         autocomplete="current-password" spellcheck="false" class="input"
                                         value="" size="20">
+                                    <span class="eye-btn-1" id="eye-button-1"
+                                        style="position: absolute; right: 10px; top: 41px;">
+                                        <i class="fa fa-eye-slash" aria-hidden="true" id="togglePassword"></i>
+                                    </span>
                                     <span class="text-danger"></span>
                                 </p>
                                 <p class="login-submit">
@@ -581,47 +589,47 @@
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
     </script>
 
-<script>
-    @if (Session::has('message'))
-        toastr.options = {
-            "closeButton": true,
-            "progressBar": true,
-            "positionClass": "toast-bottom-right", // Change position to bottom right
-            "timeOut": "3000", // Duration before it auto-closes
-        }
-        toastr.success("{{ session('message') }}");
-    @endif
+    <script>
+        @if (Session::has('message'))
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000", // Duration before it auto-closes
+            }
+            toastr.success("{{ session('message') }}");
+        @endif
 
-    @if (Session::has('error'))
-        toastr.options = {
-            "closeButton": true,
-            "progressBar": true,
-            "positionClass": "toast-bottom-right", // Change position to bottom right
-            "timeOut": "3000",
-        }
-        toastr.error("{{ session('error') }}");
-    @endif
+        @if (Session::has('error'))
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000",
+            }
+            toastr.error("{{ session('error') }}");
+        @endif
 
-    @if (Session::has('info'))
-        toastr.options = {
-            "closeButton": true,
-            "progressBar": true,
-            "positionClass": "toast-bottom-right", // Change position to bottom right
-            "timeOut": "3000",
-        }
-        toastr.info("{{ session('info') }}");
-    @endif
+        @if (Session::has('info'))
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000",
+            }
+            toastr.info("{{ session('info') }}");
+        @endif
 
-    @if (Session::has('warning'))
-        toastr.options = {
-            "closeButton": true,
-            "progressBar": true,
-            "positionClass": "toast-bottom-right", // Change position to bottom right
-            "timeOut": "3000",
-        }
-        toastr.warning("{{ session('warning') }}");
-    @endif
-</script>
+        @if (Session::has('warning'))
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000",
+            }
+            toastr.warning("{{ session('warning') }}");
+        @endif
+    </script>
 
 
     <script>
@@ -726,10 +734,10 @@
     <script>
         $(document).ready(function() {
             var cardTypeImages = {
-               'visa': '{{("frontend_assets/images/visa.png")}}',
-                'mastercard': '{{("frontend_assets/images/mastercard.png")}}',
-                'amex': '{{("frontend_assets/images/amex.png")}}',
-                'unknown': '{{("frontend_assets/images/unknown.webp")}}'
+                'visa': '{{ 'frontend_assets/images/visa.png' }}',
+                'mastercard': '{{ 'frontend_assets/images/mastercard.png' }}',
+                'amex': '{{ 'frontend_assets/images/amex.png' }}',
+                'unknown': '{{ 'frontend_assets/images/unknown.webp' }}'
             };
 
             $('#card-number').on('keyup change', function() {
@@ -1018,6 +1026,14 @@
                     }
                 });
             }
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#eye-button-1').click(function() {
+                $('#user_password').attr('type', $('#user_password').is(':password') ? 'text' : 'password');
+                $(this).find('i').toggleClass('fa-eye-slash fa-eye');
+            });
         });
     </script>
     @stack('scripts')

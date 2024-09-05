@@ -27,13 +27,13 @@
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         <li><a class="dropdown-item group-info" data-team-id="{{ $team['id'] }}">Group
                                 info</a></li>
-                        @if (auth()->user()->can('Delete Team') && Helper::checkRemovedFromTeam($team['id'], auth()->user()->id) == false)
+                        @if (Helper::checkAdminTeam(auth()->user()->id, $team['id']) == true)
                             <li><a class="dropdown-item delete-group" data-team-id="{{ $team['id'] }}">Delete
                                     group</a>
                             </li>
                         @endif
 
-                        @if (auth()->user()->hasRole('ADMIN') && Helper::checkRemovedFromTeam($team['id'], auth()->user()->id) == false)
+                        @if (Helper::checkAdminTeam(auth()->user()->id, $team['id']) == true)
                             <li><a class="dropdown-item clear-all-conversation" data-team-id="{{ $team['id'] }}">Clear all historical conversation </a>
                             </li>
                         @endif

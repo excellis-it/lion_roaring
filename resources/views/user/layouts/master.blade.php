@@ -1531,9 +1531,23 @@
                                 $('#team-chat-container-' + teamId).html('');
                                 groupList(sender_id);
                                 toastr.success(response.message);
+
+                                // socket emit
+                                socket.emit('clearAllConversation', {
+                                    team_id: teamId,
+                                    user_id: sender_id
+                                });
                             }
                         }
                     });
+                }
+            });
+
+            // clearAllConversation
+            socket.on('clearAllConversation', function(data) {
+                if (data.user_id != sender_id) {
+                    $('#team-chat-container-' + data.team_id).html('');
+                    groupList(sender_id);
                 }
             });
 

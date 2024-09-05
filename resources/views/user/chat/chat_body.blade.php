@@ -1,7 +1,7 @@
 @if (isset($is_chat))
 <div class="row align-items-center">
-    <div class="col-lg-3"></div>
-    <div class="col-lg-6">
+    <div class="col-xxl-3"></div>
+    <div class="col-xxl-5">
         <div class="ChatHead">
             <div class="main_avtar">
                 @if ($reciver->profile_picture)
@@ -13,7 +13,7 @@
             <p class="GroupName">{{ $reciver->full_name }}</p>
         </div>
     </div>
-    <div class="col-lg-3">
+    <div class="col-xxl-4">
         <div class="d-flex align-items-center">
 
         <div class="search-field w-100 mb-0">

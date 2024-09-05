@@ -105,10 +105,10 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p><strong>Title:</strong> <span id="modalTitle"></span></p>
-                        <p><strong>Start:</strong> <span id="modalStart"></span></p>
-                        <p><strong>End:</strong> <span id="modalEnd"></span></p>
-                        <p><strong>Description:</strong> <span id="modalDescription"></span></p>
+                        <p><strong>Title:</strong> <span id="formmodalTitle"></span></p>
+                        <p><strong>Start:</strong> <span id="formmodalStart"></span></p>
+                        <p><strong>End:</strong> <span id="formmodalEnd"></span></p>
+                        <p><strong>Description:</strong> <span id="formmodalDescription"></span></p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="print_btn" data-bs-dismiss="modal">Close</button>
@@ -231,53 +231,6 @@
                 },
                 eventClick: function(info) {
                     var id = info.event.id;
-
-                    //     const formatDateForInput = (date) => {
-                    //         if (!date) return '';
-                    //         return moment(date).format(
-                    //         'YYYY-MM-DDTHH:mm'); // 'datetime-local' input format
-                    //     };
-
-                    //     const formattedStart = formatDateForInput(info.event.start);
-                    //     const formattedEnd = formatDateForInput(info.event.end);
-
-                    //     $('#modalTitleEdit').val(info.event.title);
-                    //     $('#modalStartEdit').val(formattedStart);
-                    //     $('#modalEndEdit').val(formattedEnd);
-                    //     $('#modalDescriptionEdit').val(info.event.extendedProps.description);
-                    //     $('#event-edit').attr('action', '{{ route('events.update', '') }}/' + info.event
-                    //         .id);
-
-                    //     $('#deleteEventBtn').off('click').on('click', function() {
-                    //         if (confirm('Are you sure you want to delete this event?')) {
-                    //             $.ajax({
-                    //                 url: '{{ route('events.destroy', '') }}/' + info
-                    //                     .event.id,
-                    //                 method: 'DELETE',
-                    //                 success: function() {
-                    //                     toastr.success(
-                    //                         'Event deleted successfully.');
-                    //                     info.event.remove();
-                    //                     $('#eventModal').modal('hide');
-                    //                 },
-                    //                 error: function() {
-                    //                     alert('Failed to delete event.');
-                    //                 }
-                    //             });
-                    //         }
-                    //     });
-
-                    //     $('#deleteEventBtn').show();
-
-                    //     $('#modalTitle').text(info.event.title);
-                    //     $('#modalStart').text(moment(info.event.start).format('MMM D, YYYY h:mm A'));
-                    //     $('#modalEnd').text(info.event.end ? moment(info.event.end).format(
-                    //         'MMM D, YYYY h:mm A') : 'N/A');
-                    //     $('#modalDescription').text(info.event.extendedProps.description);
-
-                    //     $('#deleteEventBtn').hide();
-
-
                     var permission = @json(auth()->user()->can('Edit Event'));
                     var admin = @json(auth()->user()->hasRole('ADMIN'));
                     var user = {{ auth()->user()->id }};
@@ -322,11 +275,11 @@
                         $('#deleteEventBtn').show();
                         $('#eventModal').modal('show');
                     } else {
-                        $('#modalTitle').text(info.event.title);
-                        $('#modalStart').text(moment(info.event.start).format('MMM D, YYYY h:mm A'));
-                        $('#modalEnd').text(info.event.end ? moment(info.event.end).format(
+                        $('#formmodalTitle').text(info.event.title);
+                        $('#formmodalStart').text(moment(info.event.start).format('MMM D, YYYY h:mm A'));
+                        $('#formmodalEnd').text(info.event.end ? moment(info.event.end).format(
                             'MMM D, YYYY h:mm A') : 'N/A');
-                        $('#modalDescription').text(info.event.extendedProps.description);
+                        $('#formmodalDescription').text(info.event.extendedProps.description);
 
                         $('#deleteEventBtn').hide();
                         $('#eventModalDetails').modal('show');
