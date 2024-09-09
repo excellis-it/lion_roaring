@@ -13,6 +13,7 @@
                 <div class="col-lg-12">
                     <form action="{{ route('becoming-sovereign.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                      
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">

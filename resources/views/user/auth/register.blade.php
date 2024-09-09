@@ -30,6 +30,11 @@
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        .eye-btn-1 {
+            top: 29px;
+        }
+    </style>
 </head>
 
 <body style="background: #643271">
@@ -198,10 +203,11 @@
                                             <div class="col-lg-4 mb-3">
                                                 <div class="login-username">
                                                     <label for="user_login">Phone Number</label>
-                                                    <input type="text" name="phone_number" id="mobile_code" class="input"
-                                                        value="{{ old('full_phone_number') }}">
+                                                    <input type="text" name="phone_number" id="mobile_code"
+                                                        class="input" value="{{ old('full_phone_number') }}">
                                                     @if ($errors->has('phone_number'))
-                                                        <div class="error" style="color:red;">{{ $errors->first('phone_number') }}</div>
+                                                        <div class="error" style="color:red;">
+                                                            {{ $errors->first('phone_number') }}</div>
                                                     @endif
                                                 </div>
                                             </div>
@@ -232,10 +238,14 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-lg-6 mb-3">
-                                                <div class="login-username">
-                                                    <label for="user_login">Password</label>
-                                                    <input type="password" name="password" id="user_login"
+                                                <div class="login-username position-relative">
+                                                    <label for="password">Password</label>
+                                                    <input type="password" name="password" id="password"
                                                         class="input" value="{{ old('password') }}">
+                                                    <span class="eye-btn-1" id="eye-button-1">
+                                                        <i class="fa fa-eye-slash" aria-hidden="true"
+                                                            id="togglePassword"></i>
+                                                    </span>
                                                     @if ($errors->has('password'))
                                                         <div class="error" style="color:red;">
                                                             {{ $errors->first('password') }}</div>
@@ -243,11 +253,15 @@
                                                 </div>
                                             </div>
                                             <div class="col-lg-6 mb-3">
-                                                <div class="login-username">
-                                                    <label for="user_login">Confirm Password</label>
+                                                <div class="login-username position-relative">
+                                                    <label for="confirm_password">Confirm Password</label>
                                                     <input type="password" name="password_confirmation"
-                                                        id="user_login" class="input"
+                                                        id="confirm_password" class="input"
                                                         value="{{ old('password_confirmation') }}">
+                                                    <span class="eye-btn-1" id="eye-button-2">
+                                                        <i class="fa fa-eye-slash" aria-hidden="true"
+                                                            id="togglePassword"></i>
+                                                    </span>
                                                     @if ($errors->has('password_confirmation'))
                                                         <div class="error" style="color:red;">
                                                             {{ $errors->first('password_confirmation') }}</div>
@@ -300,10 +314,24 @@
     <script src="https://unpkg.com/popper.js@1"></script>
     <script src="https://unpkg.com/tippy.js@5"></script>
     <script>
+        $(document).ready(function() {
+            $('#eye-button-1').click(function() {
+                $('#password').attr('type', $('#password').is(':password') ? 'text' : 'password');
+                $(this).find('i').toggleClass('fa-eye-slash fa-eye');
+            });
+            $('#eye-button-2').click(function() {
+                $('#confirm_password').attr('type', $('#confirm_password').is(':password') ? 'text' : 'password');
+                $(this).find('i').toggleClass('fa-eye-slash fa-eye');
+            });
+        });
+    </script>
+       <script>
         @if (Session::has('message'))
             toastr.options = {
                 "closeButton": true,
-                "progressBar": true
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000", // Duration before it auto-closes
             }
             toastr.success("{{ session('message') }}");
         @endif
@@ -311,7 +339,9 @@
         @if (Session::has('error'))
             toastr.options = {
                 "closeButton": true,
-                "progressBar": true
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000",
             }
             toastr.error("{{ session('error') }}");
         @endif
@@ -319,7 +349,9 @@
         @if (Session::has('info'))
             toastr.options = {
                 "closeButton": true,
-                "progressBar": true
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000",
             }
             toastr.info("{{ session('info') }}");
         @endif
@@ -327,7 +359,9 @@
         @if (Session::has('warning'))
             toastr.options = {
                 "closeButton": true,
-                "progressBar": true
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000",
             }
             toastr.warning("{{ session('warning') }}");
         @endif
@@ -406,11 +440,14 @@
             const dialCode = selectedCountry.dialCode;
             const exampleNumber = intlTelInputUtils.getExampleNumber(selectedCountry.iso2, 0, 0);
 
-            let maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
+            let maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils
+                .numberFormat.NATIONAL);
             maskNumber = maskNumber.replace('+' + dialCode + ' ', '');
 
             const mask = maskNumber.replace(/[0-9+]/g, '0');
-            phoneInput.mask(mask, { placeholder: maskNumber });
+            phoneInput.mask(mask, {
+                placeholder: maskNumber
+            });
 
             phoneInput.on('countrychange', function() {
                 $(this).val('');
@@ -418,11 +455,14 @@
                 const newDialCode = newSelectedCountry.dialCode;
                 const newExampleNumber = intlTelInputUtils.getExampleNumber(newSelectedCountry.iso2, 0, 0);
 
-                let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
+                let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry.iso2,
+                    intlTelInputUtils.numberFormat.NATIONAL);
                 newMaskNumber = newMaskNumber.replace('+' + newDialCode + ' ', '');
 
                 const newMask = newMaskNumber.replace(/[0-9+]/g, '0');
-                phoneInput.mask(newMask, { placeholder: newMaskNumber });
+                phoneInput.mask(newMask, {
+                    placeholder: newMaskNumber
+                });
             });
         }
 

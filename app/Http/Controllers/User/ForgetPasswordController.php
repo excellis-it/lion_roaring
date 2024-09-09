@@ -134,38 +134,38 @@ class ForgetPasswordController extends Controller
         return view('user.auth.confirmation-email')->with(compact('user'));
     }
 
-    public function resetUsername($id, $token)
-    {
-        $user = User::findOrFail(Crypt::decrypt($id));
-        $resetPassword = PasswordReset::where('email', $user->email)->first();
-        $newTime =  date('h:i A', strtotime($resetPassword->created_at->addHour()));
+    // public function resetUsername($id, $token)
+    // {
+    //     $user = User::findOrFail(Crypt::decrypt($id));
+    //     $resetPassword = PasswordReset::where('email', $user->email)->first();
+    //     $newTime =  date('h:i A', strtotime($resetPassword->created_at->addHour()));
 
-        if ($resetPassword->token == $token && $resetPassword->created_at->addHour() > Carbon::now()) {
-            $id = $id;
-            return view('user.auth.reset-username')->with(compact('id'));
-        } else {
-            return redirect()->route('login')->with('error', 'Link has been expired!');
-        }
-    }
+    //     if ($resetPassword->token == $token && $resetPassword->created_at->addHour() > Carbon::now()) {
+    //         $id = $id;
+    //         return view('user.auth.reset-username')->with(compact('id'));
+    //     } else {
+    //         return redirect()->route('login')->with('error', 'Link has been expired!');
+    //     }
+    // }
 
-    public function changeUsername(Request $request)
-    {
-        $request->validate([
-            'username' => 'required|string|max:255|unique:users,user_name',
-            'confirm_username' => 'required|string|max:255|same:username'
-        ]);
+    // public function changeUsername(Request $request)
+    // {
+    //     $request->validate([
+    //         'username' => 'required|string|max:255|unique:users,user_name',
+    //         'confirm_username' => 'required|string|max:255|same:username'
+    //     ]);
 
-        try {
-            if ($request->id != '') {
-                $id = Crypt::decrypt($request->id);
-                // dd($id);
-                User::where('id', $id)->update(['user_name' => $request->username]);
-                return redirect()->route('home')->with('message', 'Username has been changed successfully.');
-            } else {
-                abort(404);
-            }
-        } catch (\Throwable $th) {
-            return redirect()->route('home')->with('message', 'Something went wrong.');
-        }
-    }
+    //     try {
+    //         if ($request->id != '') {
+    //             $id = Crypt::decrypt($request->id);
+    //             // dd($id);
+    //             User::where('id', $id)->update(['user_name' => $request->username]);
+    //             return redirect()->route('home')->with('message', 'Username has been changed successfully.');
+    //         } else {
+    //             abort(404);
+    //         }
+    //     } catch (\Throwable $th) {
+    //         return redirect()->route('home')->with('message', 'Something went wrong.');
+    //     }
+    // }
 }

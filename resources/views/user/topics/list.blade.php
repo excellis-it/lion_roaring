@@ -18,8 +18,11 @@
                                         {{-- <h3 class="mb-3">Partners List</h3> --}}
                                     </div>
                                     <div class="col-md-2 float-right">
-                                        <a href="{{ route('topics.create') }}" class="btn btn-primary w-100">+ Add
-                                            Topic</a>
+                                        @if (Auth::user()->can('Create Topic'))
+                                            <a href="{{ route('topics.create') }}" class="btn btn-primary w-100">+ Add
+                                                Topic</a>
+                                        @endif
+
                                     </div>
                                 </div>
                                 <div class="row ">
@@ -49,38 +52,46 @@
                                         </thead>
                                         <tbody>
                                             @if (count($topics) > 0)
-                                            @foreach ($topics as $key => $topic)
-                                                <tr>
-                                                    <td>
-                                                        {{ $topics->firstItem() + $key }}
-                                                    </td>
-                                                    <td>{{ $topic->topic_name }}</td>
-                                                    <td>{{ $topic->education_type }}</td>
-                                                    <td>
-                                                        <div class="d-flex">
-                                                            <a href="{{route('topics.edit', Crypt::encrypt($topic->id))}}" class="edit_icon me-2">
-                                                                <i class="ti ti-edit"></i>
-                                                            </a>
-                                                            <a href="javascript:void(0);" data-route="{{ route('topics.delete', Crypt::encrypt($topic->id)) }}" class="delete_icon" id="delete">
-                                                                <i class="ti ti-trash"></i>
-                                                            </a>
+                                                @foreach ($topics as $key => $topic)
+                                                    <tr>
+                                                        <td>
+                                                            {{ $topics->firstItem() + $key }}
+                                                        </td>
+                                                        <td>{{ $topic->topic_name }}</td>
+                                                        <td>{{ $topic->education_type }}</td>
+                                                        <td>
+                                                            <div class="d-flex">
+                                                                @if (Auth::user()->can('Edit Topic'))
+                                                                    <a href="{{ route('topics.edit', Crypt::encrypt($topic->id)) }}"
+                                                                        class="edit_icon me-2">
+                                                                        <i class="ti ti-edit"></i>
+                                                                    </a>
+                                                                @endif
+                                                                @if (Auth::user()->can('Delete Topic'))
+                                                                    <a href="javascript:void(0);"
+                                                                        data-route="{{ route('topics.delete', Crypt::encrypt($topic->id)) }}"
+                                                                        class="delete_icon" id="delete">
+                                                                        <i class="ti ti-trash"></i>
+                                                                    </a>
+                                                                @endif
+
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                {{-- pagination --}}
+                                                <tr class="toxic">
+                                                    <td colspan="4">
+                                                        <div class="d-flex justify-content-center">
+                                                            {!! $topics->links() !!}
                                                         </div>
                                                     </td>
                                                 </tr>
-                                            @endforeach
-                                            {{-- pagination --}}
-                                            <tr class="toxic">
-                                                <td colspan="4" >
-                                                    <div class="d-flex justify-content-center">
-                                                        {!! $topics->links() !!}
-                                                    </div>
-                                                </td>
-                                            </tr>
                                             @else
-                                            <tr class="toxic">
-                                                <td colspan="4" class="text-center">No Data Found</td>
-                                            </tr>
-                                        @endif
+                                                <tr class="toxic">
+                                                    <td colspan="4" class="text-center">No Data Found</td>
+                                                </tr>
+                                            @endif
 
                                         </tbody>
                                     </table>

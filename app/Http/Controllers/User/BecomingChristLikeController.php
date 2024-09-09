@@ -13,12 +13,19 @@ class BecomingChristLikeController extends Controller
 {
     use ImageTrait;
 
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->can('Manage Becoming Christ Like')) {
-            $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->paginate(15);
+            if (isset($request->topic)) {
+                $new_topic = $request->topic;
+                $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->where('topic_id', $request->topic)->paginate(15);
+            } else {
+                $files = File::orderBy('id', 'desc')->where('type', 'Becoming Christ Like')->paginate(15);
+                $new_topic = '';
+            }
+
             $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->get();
-            return view('user.becoming-christ-link.list')->with(compact('files', 'topics'));
+            return view('user.becoming-christ-link.list')->with(compact('files', 'topics', 'new_topic'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -70,17 +77,23 @@ class BecomingChristLikeController extends Controller
         return redirect()->route('becoming-christ-link.index')->with('message', 'File uploaded successfully.');
     }
 
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
         if (auth()->user()->can('Delete Becoming Christ Like')) {
             $file = File::find($id);
+            if (isset($request->topic)) {
+                $new_topic = $request->topic;
+            } else {
+                $new_topic = '';
+            }
             if ($file) {
                 $file->delete();
                 // delete file from storage
                 Storage::disk('public')->delete($file->file);
-                return redirect()->route('becoming-christ-link.index')->with('message', 'File deleted successfully.');
+
+                return redirect()->route('becoming-christ-link.index', ['topic'=>  $new_topic])->with('message', 'File deleted successfully.');
             } else {
-                return redirect()->route('becoming-christ-link.index')->with('error', 'File not found.');
+                return redirect()->route('becoming-christ-link.index', ['topic'=>  $new_topic])->with('error', 'File not found.');
             }
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -121,25 +134,33 @@ class BecomingChristLikeController extends Controller
                 $files->whereHas('topic', function ($q) use ($request) {
                     $q->where('id', $request->topic_id);
                 });
+                $new_topic = $request->topic_id;
+            } else {
+                $new_topic = '';
             }
 
             $files = $files->where('type', 'Becoming Christ Like')
                 ->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 
-            return response()->json(['data' => view('user.becoming-christ-link.table', compact('files'))->render()]);
+            return response()->json(['data' => view('user.becoming-christ-link.table', compact('files', 'new_topic'))->render()]);
         }
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         if (auth()->user()->can('Edit Becoming Christ Like')) {
-            $file = File::findOrFail($id);
+            $file = File::find($id);
+            if (isset($request->topic)) {
+                $new_topic = $request->topic;
+            } else {
+                $new_topic = '';
+            }
             if ($file) {
                 $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Christ Like')->get();
-                return view('user.becoming-christ-link.edit')->with(compact('file', 'topics'));
+                return view('user.becoming-christ-link.edit')->with(compact('file', 'topics', 'new_topic'));
             } else {
-                return redirect()->route('becoming-christ-link.index')->with('error', 'File not found.');
+                return redirect()->route('becoming-christ-link.index', ['topic'=>  $new_topic])->with('error', 'File not found.');
             }
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -190,15 +211,26 @@ class BecomingChristLikeController extends Controller
         $file->save();
 
         // Redirect with success message
-        return redirect()->route('becoming-christ-link.index')->with('message', 'File updated successfully.');
+        if (isset($request->new_topic)) {
+            $new_topic = $request->new_topic;
+        } else {
+            $new_topic = '';
+        }
+
+        return redirect()->route('becoming-christ-link.index', ['topic' => $new_topic])->with('message', 'File updated successfully.');
     }
 
-    public function view($id)
+    public function view(Request $request, $id)
     {
         if (auth()->user()->can('View Becoming Christ Like')) {
             $file = File::findOrFail($id);
+            if (isset($request->topic)) {
+                $new_topic = $request->topic;
+            } else {
+                $new_topic = '';
+            }
             if ($file) {
-                return view('user.becoming-christ-link.view')->with('file', $file);
+                return view('user.becoming-christ-link.view')->with(compact('file', 'new_topic'));
             } else {
                 return redirect()->route('becoming-christ-link.index')->with('error', 'File not found.');
             }

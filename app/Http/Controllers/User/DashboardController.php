@@ -49,7 +49,7 @@ class DashboardController extends Controller
 
             ], [
                 'old_password.password' => 'Old password is not correct',
-                'new_password.regex' => 'Password must be at least 8 characters and must contain at least one special character.',
+                'new_password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&',
             ]);
 
             $data = ModelsUser::find(Auth::user()->id);

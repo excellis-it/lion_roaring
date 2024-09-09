@@ -7,6 +7,7 @@ use App\Models\Topic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Validation\Rule;
 
 class TopicController extends Controller
 {
@@ -17,7 +18,7 @@ class TopicController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->can('Manage Topic')) {
             $topics = Topic::orderBy('id', 'desc')->paginate(15);
             return view('user.topics.list')->with('topics', $topics);
         } else {
@@ -32,7 +33,7 @@ class TopicController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->can('Create Topic')) {
             return view('user.topics.create');
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -48,7 +49,14 @@ class TopicController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'topic_name' => 'required|string|max:255',
+            'topic_name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('topics')->where(function ($query) use ($request) {
+                    return $query->where('education_type', $request->education_type);
+                }),
+            ],
             'education_type' => 'required|string|max:255',
         ]);
 
@@ -79,7 +87,7 @@ class TopicController extends Controller
      */
     public function edit($id)
     {
-        if (Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->can('Edit Topic')) {
             $topic = Topic::findOrFail(Crypt::decrypt($id));
             return view('user.topics.edit')->with('topic', $topic);
         } else {
@@ -96,9 +104,16 @@ class TopicController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->can('Edit Topic')) {
             $request->validate([
-                'topic_name' => 'required|string|max:255',
+                'topic_name' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('topics')->ignore($id)->where(function ($query) use ($request) {
+                        return $query->where('education_type', $request->education_type);
+                    }),
+                ],
                 'education_type' => 'required|string|max:255',
             ]);
 
@@ -126,7 +141,7 @@ class TopicController extends Controller
 
     public function delete($id)
     {
-        if (Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->can('Delete Topic')) {
             $topic = Topic::findOrFail(Crypt::decrypt($id));
             $topic->delete();
             return redirect()->route('topics.index')->with('message', 'Topic deleted successfully.');

@@ -87,39 +87,47 @@
          theme: 'light-theme',
      });
  </script>
-    <script>
-        @if (Session::has('message'))
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true
-            }
-            toastr.success("{{ session('message') }}");
-        @endif
+   <script>
+    @if (Session::has('message'))
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right", // Change position to bottom right
+            "timeOut": "3000", // Duration before it auto-closes
+        }
+        toastr.success("{{ session('message') }}");
+    @endif
 
-        @if (Session::has('error'))
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true
-            }
-            toastr.error("{{ session('error') }}");
-        @endif
+    @if (Session::has('error'))
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right", // Change position to bottom right
+            "timeOut": "3000",
+        }
+        toastr.error("{{ session('error') }}");
+    @endif
 
-        @if (Session::has('info'))
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true
-            }
-            toastr.info("{{ session('info') }}");
-        @endif
+    @if (Session::has('info'))
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right", // Change position to bottom right
+            "timeOut": "3000",
+        }
+        toastr.info("{{ session('info') }}");
+    @endif
 
-        @if (Session::has('warning'))
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true
-            }
-            toastr.warning("{{ session('warning') }}");
-        @endif
-    </script>
+    @if (Session::has('warning'))
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right", // Change position to bottom right
+            "timeOut": "3000",
+        }
+        toastr.warning("{{ session('warning') }}");
+    @endif
+</script>
 
 
 

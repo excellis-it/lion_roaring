@@ -28,7 +28,7 @@ Becoming a Leader View - {{ env('APP_NAME') }}
                                     <h3 class="mb-3 float-left">Becoming a Leader File</h3>
                                 </div>
                                 <div class="col-md-2">
-                                    <a href="{{ route('leadership-development.index') }}" class="btn btn-primary w-100">< Back</a>
+                                    <a href="{{ route('leadership-development.index') . '?topic=' . ($new_topic ?? '')}}" class="btn btn-primary w-100">< Back</a>
                                 </div>
                             </div>
                             <div >

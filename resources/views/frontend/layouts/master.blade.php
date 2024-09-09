@@ -878,7 +878,11 @@
                     $(element).removeClass('is-invalid');
                 },
 
+
+
                 submitHandler: function(form) {
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
                     var $form = $(form),
                         inputSelector = ['input[type=email]', 'input[type=password]',
                             'input[type=text]', 'input[type=file]',
@@ -914,10 +918,13 @@
 
             function stripeResponseHandler(status, response) {
                 if (response.error) {
+                    $('#loading').removeClass('loading');
+                    $('#loading-content').removeClass('loading-content');
                     toastr.error(response.error.message);
+
                 } else {
-                    $('#loading').addClass('loading');
-                    $('#loading-content').addClass('loading-content');
+                    // $('#loading').removeClass('loading');
+                    // $('#loading-content').removeClass('loading-content');
                     var token = response['id'];
                     $form.find('input[type=text]').empty();
                     $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");

@@ -32,6 +32,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
         type="text/css" />
+        <style>
+            .eye-btn-1 {
+                top: 29px;
+            }
+        </style>
 </head>
 
 <body style="background: #643271">
@@ -50,10 +55,14 @@
                                         @csrf
                                         <input type="hidden" name="id" value="{{ $id }}">
                                         {{-- new password --}}
-                                        <p class="login-username">
+                                        <p class="login-username position-relative">
                                             <label for="user_login">New Password</label>
                                             <input type="password" name="password" id="password" class="input"
                                                 value="{{ old('password') }}">
+                                                <span class="eye-btn-1" id="eye-button-1">
+                                                    <i class="fa fa-eye-slash" aria-hidden="true"
+                                                        id="togglePassword"></i>
+                                                </span>
                                             @if ($errors->has('password'))
                                                 @foreach ($errors->get('password') as $error)
                                                     <p class="error" style="color:red;">{{ $error }}</p>
@@ -62,10 +71,14 @@
                                         </p>
 
                                             {{-- confirm password --}}
-                                        <p class="login-username">
+                                        <p class="login-username position-relative">
                                             <label for="user_login">Confirm Password</label>
                                             <input type="password" name="confirm_password" id="confirm_password" class="input"
                                                 value="{{ old('confirm_password') }}">
+                                                <span class="eye-btn-1" id="eye-button-2">
+                                                    <i class="fa fa-eye-slash" aria-hidden="true"
+                                                        id="togglePassword"></i>
+                                                </span>
                                             @if ($errors->has('confirm_password'))
                                                 @foreach ($errors->get('confirm_password') as $error)
                                                     <p class="error" style="color:red;">{{ $error }}</p>
@@ -145,7 +158,9 @@
         @if (Session::has('message'))
             toastr.options = {
                 "closeButton": true,
-                "progressBar": true
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000", // Duration before it auto-closes
             }
             toastr.success("{{ session('message') }}");
         @endif
@@ -153,7 +168,9 @@
         @if (Session::has('error'))
             toastr.options = {
                 "closeButton": true,
-                "progressBar": true
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000",
             }
             toastr.error("{{ session('error') }}");
         @endif
@@ -161,7 +178,9 @@
         @if (Session::has('info'))
             toastr.options = {
                 "closeButton": true,
-                "progressBar": true
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000",
             }
             toastr.info("{{ session('info') }}");
         @endif
@@ -169,10 +188,24 @@
         @if (Session::has('warning'))
             toastr.options = {
                 "closeButton": true,
-                "progressBar": true
+                "progressBar": true,
+                "positionClass": "toast-bottom-right", // Change position to bottom right
+                "timeOut": "3000",
             }
             toastr.warning("{{ session('warning') }}");
         @endif
+    </script>
+     <script>
+        $(document).ready(function() {
+            $('#eye-button-1').click(function() {
+                $('#password').attr('type', $('#password').is(':password') ? 'text' : 'password');
+                $(this).find('i').toggleClass('fa-eye-slash fa-eye');
+            });
+            $('#eye-button-2').click(function() {
+                $('#confirm_password').attr('type', $('#confirm_password').is(':password') ? 'text' : 'password');
+                $(this).find('i').toggleClass('fa-eye-slash fa-eye');
+            });
+        });
     </script>
     <script>
         $(document).ready(function() {

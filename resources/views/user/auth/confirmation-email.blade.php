@@ -47,7 +47,7 @@
                                         $email = $user->email;
                                         // show the email address swarna****@****llisit.net
                                         $email = substr($email, 0, 6) . '****@****' . substr($email, strpos($email, '@') + 1);
-                                        echo 'A confirmation email has been sent to ' . $email . '. Please check your email to change your username.';
+                                        echo 'A confirmation email has been sent to ' . $email . '. Please check your email to get your username.';
                                     @endphp
                                 </h4>
 

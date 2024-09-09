@@ -14,12 +14,18 @@ class BecomingSovereignController extends Controller
 {
     use ImageTrait;
 
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->can('Manage Becoming Sovereigns')) {
-            $files = File::orderBy('id', 'desc')->where('type', 'Becoming Sovereign')->paginate(15);
+            if (isset($request->topic)) {
+                $new_topic = $request->topic;
+                $files = File::orderBy('id', 'desc')->where('type', 'Becoming Sovereign')->where('topic_id', $request->topic)->paginate(15);
+            } else {
+                $files = File::orderBy('id', 'desc')->where('type', 'Becoming Sovereign')->paginate(15);
+                $new_topic = '';
+            }
             $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->get();
-            return view('user.becoming-sovereign.list')->with(compact('files', 'topics'));
+            return view('user.becoming-sovereign.list')->with(compact('files', 'topics', 'new_topic'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -76,17 +82,22 @@ class BecomingSovereignController extends Controller
         return redirect()->route('becoming-sovereign.index')->with('message', 'File uploaded successfully.');
     }
 
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
         if (auth()->user()->can('Delete Becoming Sovereigns')) {
             $file = File::find($id);
+            if (isset($request->topic)) {
+                $new_topic = $request->topic;
+            } else {
+                $new_topic = '';
+            }
             if ($file) {
                 $file->delete();
                 // delete file from storage
                 Storage::disk('public')->delete($file->file);
-                return redirect()->route('becoming-sovereign.index')->with('message', 'File deleted successfully.');
+                return redirect()->route('becoming-sovereign.index', ['topic'=>  $new_topic])->with('message', 'File deleted successfully.');
             } else {
-                return redirect()->route('becoming-sovereign.index')->with('error', 'File not found.');
+                return redirect()->route('becoming-sovereign.index', ['topic'=>  $new_topic])->with('error', 'File not found.');
             }
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -95,7 +106,7 @@ class BecomingSovereignController extends Controller
 
     public function download($id)
     {
-        
+
         $file = File::where('id', $id)->first();
         if ($file) {
             $filePath = Storage::disk('public')->path($file->file); // ensure using 'public' disk
@@ -128,25 +139,35 @@ class BecomingSovereignController extends Controller
                 $files->whereHas('topic', function ($q) use ($request) {
                     $q->where('id', $request->topic_id);
                 });
+                $new_topic = $request->topic_id;
+            } else {
+                $new_topic = '';
             }
 
             $files = $files->where('type', 'Becoming Sovereign')
                 ->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 
-            return response()->json(['data' => view('user.becoming-sovereign.table', compact('files'))->render()]);
+            return response()->json(['data' => view('user.becoming-sovereign.table', compact('files', 'new_topic'))->render()]);
         }
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         if (auth()->user()->can('Edit Becoming Sovereigns')) {
-            $file = File::findOrFail($id);
+            $file = File::find($id);
+
+            if (isset($request->topic)) {
+                $new_topic = $request->topic;
+            } else {
+                $new_topic = '';
+            }
+
             if ($file) {
                 $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->get();
-                return view('user.becoming-sovereign.edit')->with(compact('file', 'topics'));
+                return view('user.becoming-sovereign.edit')->with(compact('file', 'topics', 'new_topic'));
             } else {
-                return redirect()->route('becoming-sovereign.index')->with('error', 'File not found.');
+                return redirect()->route('becoming-sovereign.index', ['topic'=>  $new_topic])->with('error', 'File not found.');
             }
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -187,18 +208,26 @@ class BecomingSovereignController extends Controller
         // Update topic_id
         $file->topic_id = $request->topic_id;
         $file->save();
-
+        if (isset($request->new_topic)) {
+            $new_topic = $request->new_topic;
+        } else {
+            $new_topic = '';
+        }
         // Redirect with success message
-        return redirect()->route('becoming-sovereign.index')->with('message', 'File updated successfully.');
-
+        return redirect()->route('becoming-sovereign.index', ['topic' => $new_topic])->with('message', 'File updated successfully.');
     }
 
-    public function view($id)
+    public function view(Request $request, $id)
     {
         if (auth()->user()->can('View Becoming Sovereigns')) {
             $file = File::findOrFail($id);
+            if (isset($request->topic)) {
+                $new_topic = $request->topic;
+            } else {
+                $new_topic = '';
+            }
             if ($file) {
-                return view('user.becoming-sovereign.view')->with('file', $file);
+                return view('user.becoming-sovereign.view')->with(compact('file', 'new_topic'));
             } else {
                 return redirect()->route('becoming-sovereign.index')->with('error', 'File not found.');
             }

@@ -31,7 +31,9 @@ Becoming a Leader List - {{ env('APP_NAME') }}
                                             <select name="topic_id" id="topics" class="form-select">
                                                 <option value="">Select Topics</option>
                                                 @foreach ($topics as $topic)
-                                                    <option value="{{ $topic->id }}">{{ $topic->topic_name }}</option>
+                                                <option value="{{ $topic->id }}"
+                                                    {{ isset($_GET['topic']) && $_GET['topic'] == $topic->id ? 'selected' : '' }}>
+                                                    {{ $topic->topic_name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -190,6 +192,11 @@ Becoming a Leader List - {{ env('APP_NAME') }}
                 var sort_type = $('#hidden_sort_type').val();
                 var page = $('#hidden_page').val();
                 var topic_id = $(this).val();
+                var newUrl = window.location.protocol + "//" + window.location.host + window.location
+                    .pathname + '?topic=' + topic_id;
+                window.history.pushState({
+                    path: newUrl
+                }, '', newUrl);
                 fetch_data(page, sort_type, column_name, query, topic_id);
             });
 

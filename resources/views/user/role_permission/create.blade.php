@@ -42,6 +42,7 @@
                                                 'Chat',
                                                 'Team',
                                                 'Email',
+                                                'Topic',
                                                 'Becoming Sovereigns',
                                                 'Becoming Christ Like',
                                                 'Becoming a Leader',

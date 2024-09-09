@@ -31,7 +31,9 @@
                                             <select name="topic_id" id="topics" class="form-select">
                                                 <option value="">Select Topics</option>
                                                 @foreach ($topics as $topic)
-                                                    <option value="{{ $topic->id }}">{{ $topic->topic_name }}</option>
+                                                    <option value="{{ $topic->id }}"
+                                                        {{ isset($_GET['topic']) && $_GET['topic'] == $topic->id ? 'selected' : '' }}>
+                                                        {{ $topic->topic_name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -74,8 +76,7 @@
                                     <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
                                     <input type="hidden" name="hidden_column_name" id="hidden_column_name"
                                         value="id" />
-                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type"
-                                        value="asc" />
+                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="asc" />
                                 </div>
                             </div>
                         </div>
@@ -190,9 +191,13 @@
                 var sort_type = $('#hidden_sort_type').val();
                 var page = $('#hidden_page').val();
                 var topic_id = $(this).val();
+                var newUrl = window.location.protocol + "//" + window.location.host + window.location
+                    .pathname + '?topic=' + topic_id;
+                window.history.pushState({
+                    path: newUrl
+                }, '', newUrl);
                 fetch_data(page, sort_type, column_name, query, topic_id);
             });
-
         });
     </script>
 @endpush

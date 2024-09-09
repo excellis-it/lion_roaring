@@ -28,7 +28,7 @@ Becoming Sovereigns View - {{ env('APP_NAME') }}
                                     <h3 class="mb-3 float-left">Becoming Sovereigns File</h3>
                                 </div>
                                 <div class="col-md-2">
-                                    <a href="{{ route('becoming-sovereign.index') }}" class="btn btn-primary w-100">< Back</a>
+                                    <a href="{{ route('becoming-sovereign.index'). '?topic=' . ($new_topic ?? '') }}" class="btn btn-primary w-100">< Back</a>
                                 </div>
                             </div>
                             <div >

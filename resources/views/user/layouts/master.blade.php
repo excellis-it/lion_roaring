@@ -216,7 +216,7 @@
             $(document).on('click', '.clear-all-notification', function() {
                 var $this = $(this);
                 var $notification = $('#show-notification');
-                var $notificationCount = $('#show-notification-count-{{auth()->user()->id}}');
+                var $notificationCount = $('#show-notification-count-{{ auth()->user()->id }}');
                 var $notificationDropdown = $('.notification-dropdown');
                 var $notificationDropdownContent = $notificationDropdown.find('.message-body');
 
@@ -977,7 +977,8 @@
                             let timeZome = 'America/New_York';
                             let time_format_12 = moment.tz(created_at, timeZome).format(
                                 "hh:mm A");
-                            let html = `<div class="message me" id="team-chat-message-${res.chat.id}">`;
+                            let html =
+                                `<div class="message me" id="team-chat-message-${res.chat.id}">`;
                             if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
                                 html +=
                                     `<div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank"><img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a></p>`;
@@ -1254,7 +1255,7 @@
                                 socket.emit('removeMemberFromGroup', {
                                     team_id: team_id,
                                     user_id: user_id,
-                                    sender_id : sender_id,
+                                    sender_id: sender_id,
                                     notification: resp.notification
                                 });
 
@@ -1400,7 +1401,7 @@
                             team_member_name: resp.team_member_name,
                             chat_member_id: resp.chat_member_id,
                             already_member_arr: resp.already_member_arr,
-                            only_added_members : resp.only_added_members
+                            only_added_members: resp.only_added_members
                         });
 
                     },
@@ -1589,8 +1590,8 @@
                 }
 
                 if (data.only_added_members.includes(sender_id)) {
-                     //  get count notification
-                     var count = $('#show-notification-count-' + sender_id).text();
+                    //  get count notification
+                    var count = $('#show-notification-count-' + sender_id).text();
                     count = parseInt(count);
                     count += 1;
                     $('#show-notification-count-' + sender_id).text(count);
@@ -1671,13 +1672,13 @@
                     $('#show-notification').prepend(html);
                     loadChat(data.team_id);
 
-        //             $('#group-member-form-' + data.team_id + '-' + data.user_id).html(`
-        //           <div class="justify-content-center">
-        //     <div class="text-center">
-        //         <h4 style="color:#be2020 !important; front-size:1.25rem;">Sorry! you are not able to send message in this group.</h4>
-        //     </div>
-        // </div>
-        //         `);
+                    //             $('#group-member-form-' + data.team_id + '-' + data.user_id).html(`
+                //           <div class="justify-content-center">
+                //     <div class="text-center">
+                //         <h4 style="color:#be2020 !important; front-size:1.25rem;">Sorry! you are not able to send message in this group.</h4>
+                //     </div>
+                // </div>
+                //         `);
 
                 }
 
@@ -1808,35 +1809,35 @@
                         }
                     } else {
                         $.ajax({
-                                type: "POST",
-                                url: "{{ route('team-chats.notification') }}",
-                                data: {
-                                    user_id: sender_id,
-                                    team_id: data.chat.team_id,
-                                    chat_id: data.chat.id,
-                                    _token: "{{ csrf_token() }}"
-                                },
-                                success: function(res) {
-                                    if (res.status == true) {
-                                        $('#show-notification-count-' + sender_id).html(res
-                                            .notification_count);
-                                        var route =
-                                            `{{ route('notification.read', ['type' => 'Team', 'id' => '__ID__']) }}`
-                                            .replace('__ID__', res.notification.id);
-                                        var html = `<li>
+                            type: "POST",
+                            url: "{{ route('team-chats.notification') }}",
+                            data: {
+                                user_id: sender_id,
+                                team_id: data.chat.team_id,
+                                chat_id: data.chat.id,
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function(res) {
+                                if (res.status == true) {
+                                    $('#show-notification-count-' + sender_id).html(res
+                                        .notification_count);
+                                    var route =
+                                        `{{ route('notification.read', ['type' => 'Team', 'id' => '__ID__']) }}`
+                                        .replace('__ID__', res.notification.id);
+                                    var html = `<li>
                                                  <a href="${route}" class="top-text-block">
                                                      <div class="top-text-heading">${res.notification.message}</div>
                                                      <div class="top-text-light">${moment(res.notification.created_at).fromNow()}</div>
                                                  </a>
                                              </li>`;
-                                        $('#show-notification').prepend(
-                                            html
-                                        ); // Use prepend to add new notification at the top
-                                    } else {
-                                        console.log(res.msg);
-                                    }
+                                    $('#show-notification').prepend(
+                                        html
+                                    ); // Use prepend to add new notification at the top
+                                } else {
+                                    console.log(res.msg);
                                 }
-                            });
+                            }
+                        });
                     }
                     groupList(sender_id, data.chat.team_id);
                 }

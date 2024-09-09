@@ -113,7 +113,7 @@
             <div class="ftr_line_link">
                 <ul>
                     <li><a href="{{ route('e-store') }}">Home</a></li>
-                    <li><a href="{{ route('all-products') }}">Our Products</a></li>
+                    <li><a href="{{ route('all-products') }}">Our Collections</a></li>
                     <li><a href="{{ route('contact-us') }}">Contact us</a></li>
                     @if (Helper::getCmsPages() && count(Helper::getCmsPages()) > 0)
                         @foreach (Helper::getCmsPages() as $page)

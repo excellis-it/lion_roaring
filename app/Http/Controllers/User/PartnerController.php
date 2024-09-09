@@ -218,7 +218,7 @@ class PartnerController extends Controller
             }
             $data->save();
             $data->syncRoles([$request->role]);
-            return redirect()->route('partners.index')->with('message', 'Partner updated successfully.');
+            return redirect()->route('partners.index')->with('message', 'Member updated successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -311,7 +311,7 @@ class PartnerController extends Controller
             $id = Crypt::decrypt($id);
             $user = User::findOrFail($id);
             $user->delete();
-            return redirect()->route('partners.index')->with('error', 'Partner has been deleted successfully.');
+            return redirect()->route('partners.index')->with('error', 'Member has been deleted successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

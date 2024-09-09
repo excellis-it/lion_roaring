@@ -51,10 +51,14 @@
 
                                     {{-- password --}}
                                     <div class="col-md-6 mb-2">
-                                        <div class="box_label">
+                                        <div class="box_label position-relative">
                                             <label>Password</label>
-                                            <input type="password" class="form-control" name="password"
+                                            <input type="password" class="form-control" name="password" id="password"
                                                 value="{{ old('password') }}" placeholder="">
+                                                <span class="eye-btn-1" id="eye-button-1">
+                                                    <i class="fa fa-eye-slash" aria-hidden="true"
+                                                        id="togglePassword"></i>
+                                                </span>
                                             @if ($errors->has('password'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('password') }}
@@ -64,10 +68,14 @@
                                     </div>
                                     {{-- confirm_password --}}
                                     <div class="col-md-6 mb-2">
-                                        <div class="box_label">
+                                        <div class="box_label position-relative">
                                             <label>Confirm Password</label>
-                                            <input type="password" class="form-control" name="confirm_password"
+                                            <input type="password" class="form-control" name="confirm_password" id="confirm_password"
                                                 value="{{ old('confirm_password') }}" placeholder="">
+                                                <span class="eye-btn-1" id="eye-button-2">
+                                                    <i class="fa fa-eye-slash" aria-hidden="true"
+                                                        id="togglePassword"></i>
+                                                </span>
                                             @if ($errors->has('confirm_password'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('confirm_password') }}
@@ -281,6 +289,18 @@
 @endsection
 
 @push('scripts')
+<script>
+    $(document).ready(function() {
+        $('#eye-button-1').click(function() {
+            $('#password').attr('type', $('#password').is(':password') ? 'text' : 'password');
+            $(this).find('i').toggleClass('fa-eye-slash fa-eye');
+        });
+        $('#eye-button-2').click(function() {
+            $('#confirm_password').attr('type', $('#confirm_password').is(':password') ? 'text' : 'password');
+            $(this).find('i').toggleClass('fa-eye-slash fa-eye');
+        });
+    });
+</script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput-jquery.min.js"></script>

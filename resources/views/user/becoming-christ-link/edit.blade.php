@@ -13,6 +13,7 @@
                 <div class="col-lg-12">
                     <form action="{{ route('becoming-christ-link.update', $file->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        <input type="hidden" name="new_topic" value="{{$new_topic ?? ''}}">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
@@ -50,7 +51,7 @@
 
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                                 <button type="submit" class="print_btn me-2">Reupload</button>
-                                <a href="{{ route('becoming-christ-link.index') }}" class="print_btn print_btn_vv"
+                                <a href="{{ route('becoming-christ-link.index') . '?topic=' . ($new_topic ?? '')  }}" class="print_btn print_btn_vv"
                                     >Cancel</a>
                             </div>
                         </div>
