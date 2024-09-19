@@ -52,7 +52,7 @@
                             href="javascript:void(0);" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExample">
                             <span>
-                                <img src="{{ asset('user_assets/images/Messaging.png') }}" alt="">
+                                <img src="{{ asset('user_assets/images/ICON/Messaging/Messaging.svg') }}" alt="">
                             </span>
                             <span class="hide-menu">Messaging</span>
                         </a>
@@ -63,7 +63,7 @@
                                 @if (Gate::check('Manage Chat'))
                                     <a href="{{ route('chats.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/chat.png') }}" alt="">
+                                            <img src="{{ asset('user_assets/images/ICON/Messaging/chat.svg') }}" alt="">
                                         </span>
                                         <span>Chats</span>
                                     </a>
@@ -72,7 +72,7 @@
                                     <a
                                         href="{{ route('team-chats.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/Team.png') }}" alt="">
+                                            <img src="{{ asset('user_assets/images/ICON/Messaging/Team.svg') }}" alt="">
 
                                         </span>
                                         <span class="hide-menu">Team</span>
@@ -97,7 +97,7 @@
                                 @if (Gate::check('Manage Email'))
                                     <a href="{{ route('mail.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/Mail.png') }}" alt="">
+                                            <img src="{{ asset('user_assets/images/ICON/Messaging/Mail.svg') }}" alt="">
                                         </span>
                                         <span>Mail</span>
                                     </a>
@@ -181,7 +181,7 @@
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExample4">
                             <span>
-                                <img src="{{ asset('user_assets/images/Bulletine.png') }}" alt="">
+                                <img src="{{ asset('user_assets/images/ICON/Bulletin/Bulletin.svg') }}" alt="">
                             </span>
                             <span class="hide-menu">Bulletins</span>
                         </a>
@@ -192,7 +192,7 @@
                                 {{-- bulletins --}}
                                 <a href="{{ route('bulletin-board.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/Meeting Schedule.png') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Bulletin/Meeting_Schedule.svg') }}"
                                             alt="">
                                     </span>
                                     <span>Bulletins Board</span>
@@ -200,7 +200,7 @@
                                 @if (Gate::check('Manage Bulletin'))
                                     <a href="{{ route('bulletins.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/Bulletine.png') }}" alt="">
+                                            <img src="{{ asset('user_assets/images/ICON/Bulletin/Create_Bulletins.svg') }}" alt="">
                                         </span>
                                         <span>Create Bulletins</span>
                                     </a>
@@ -208,7 +208,7 @@
                                 @if (Gate::check('Manage Job Postings'))
                                     <a href="{{ route('jobs.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/Job Posting.png') }}"
+                                            <img src="{{ asset('user_assets/images/ICON/Bulletin/Job_Posting.svg') }}"
                                                 alt="">
                                         </span>
                                         <span>Job Posting</span>
@@ -217,7 +217,7 @@
                                 @if (Gate::check('Manage Meeting Schedule'))
                                     <a href="{{ route('meetings.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/Meeting Schedule.png') }}"
+                                            <img src="{{ asset('user_assets/images/ICON/Bulletin/Meeting_Schedule.svg') }}"
                                                 alt="">
                                         </span>
                                         <span>Meeting Schedule</span>
@@ -232,7 +232,7 @@
                                 @if (Gate::check('Manage Event'))
                                     <a href="{{ route('events.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/Live Events.png') }}"
+                                            <img src="{{ asset('user_assets/images/ICON/Bulletin/Live_Event.svg') }}"
                                                 alt="">
                                         </span>
                                         <span>Live Events</span>
@@ -256,7 +256,7 @@
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExample10">
                             <span>
-                                <img src="{{ asset('user_assets/images/Lion Roaring Store.png') }}" alt="">
+                                <img src="{{ asset('user_assets/images/ICON/Store/Store.svg') }}" alt="">
                             </span>
                             <span class="hide-menu">Store</span>
                         </a>
@@ -267,7 +267,7 @@
                                 {{-- bulletins --}}
                                 <a href="{{ route('user.cms.dashboard') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/Activity.png') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Store/E-store_Dashboard.svg') }}"
                                             alt="">
                                     </span>
                                     <span>E-store Dashboard</span>
@@ -275,14 +275,14 @@
 
                                 <a href="{{ route('categories.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/Meeting Schedule.png') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Product_Categories.svg') }}"
                                             alt="">
                                     </span>
                                     <span>Product Categories</span>
                                 </a>
                                 <a href="{{ route('products.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/Bulletine.png') }}" alt="">
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}" alt="">
                                     </span>
                                     <span>Products</span>
                                 </a>
@@ -295,7 +295,7 @@
                         <a class="sidebar-link {{ Request::is('user/roles') ? 'active' : '' }}"
                             href="{{ route('roles.index') }}" aria-expanded="false">
                             <span>
-                                <img src="{{ asset('user_assets/images/Team.png') }}" alt="">
+                                <img src="{{ asset('user_assets/images/ICON/Role_Permission.svg') }}" alt="">
                             </span>
                             <span class="hide-menu">Role Permission</span>
                         </a>
@@ -306,7 +306,7 @@
                         <a class="sidebar-link {{ Request::is('user/partners/*') ? 'active' : '' }}"
                             href="{{ route('partners.index') }}" aria-expanded="false">
                             <span>
-                                <img src="{{ asset('user_assets/images/partner.png') }}" alt="">
+                                <img src="{{ asset('user_assets/images/ICON/All_Member.svg') }}" alt="">
                             </span>
                             <span class="hide-menu">All Members</span>
                         </a>
@@ -317,7 +317,7 @@
                         <a class="sidebar-link {{ Request::is('user/ecclesias/*') ? 'active' : '' }}"
                             href="{{ route('ecclesias.index') }}" aria-expanded="false">
                             <span>
-                                <img src="{{ asset('user_assets/images/Team.png') }}" alt="">
+                                <img src="{{ asset('user_assets/images/ICON/Ecclesias.svg') }}" alt="">
                             </span>
                             <span class="hide-menu">Ecclesias</span>
                         </a>
@@ -329,7 +329,7 @@
                             href="{{ route('strategy.index') }}"
                             aria-expanded="false">
                             <span>
-                                <img src="{{ asset('user_assets/images/Sovereign.png') }}" alt="">
+                                <img src="{{ asset('user_assets/images/ICON/Strategy.svg') }}" alt="">
                             </span>
                             <span class="hide-menu">Strategy</span>
                         </a>
@@ -341,7 +341,7 @@
                             href="{{ route('user.page', ['name' => 'Help', 'permission' => 'Manage Help']) }}"
                             aria-expanded="false">
                             <span>
-                                <img src="{{ asset('user_assets/images/Help.png') }}" alt="">
+                                <img src="{{ asset('user_assets/images/ICON/Help.svg') }}" alt="">
                             </span>
                             <span class="hide-menu">Help</span>
                         </a>
