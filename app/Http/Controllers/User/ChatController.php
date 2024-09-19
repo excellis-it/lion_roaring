@@ -22,9 +22,9 @@ class ChatController extends Controller
             // return user orderBy latest message
             $users = array_map(function ($user) {
                 $user['last_message'] = Chat::where(function ($query) use ($user) {
-                    $query->where('sender_id', $user['id'])->where('reciver_id', auth()->id())->where('deleted_for_reciver', 0);
+                    $query->where('sender_id', $user['id'])->where('reciver_id', auth()->id())->where('deleted_for_reciver', 0)->where('delete_from_receiver_id', 0);
                 })->orWhere(function ($query) use ($user) {
-                    $query->where('sender_id', auth()->id())->where('reciver_id', $user['id'])->where('deleted_for_sender', 0);
+                    $query->where('sender_id', auth()->id())->where('reciver_id', $user['id'])->where('deleted_for_sender', 0)->where('delete_from_sender_id', 0);
                 })->orderBy('created_at', 'desc')->first();
                 return $user;
             }, $users);
@@ -53,12 +53,14 @@ class ChatController extends Controller
             $chats = Chat::where(function ($query) use ($request) {
                 $query->where('sender_id', $request->sender_id)
                     ->where('reciver_id', $request->reciver_id)
-                    ->where('deleted_for_sender', 0);
+                    ->where('deleted_for_sender', 0)
+                    ->where('delete_from_sender_id', 0);
             })
                 ->orWhere(function ($query) use ($request) {
                     $query->where('sender_id', $request->reciver_id)
                         ->where('reciver_id', $request->sender_id)
-                        ->where('deleted_for_reciver', 0);
+                        ->where('deleted_for_reciver', 0)
+                        ->where('delete_from_receiver_id', 0);
                 })
                 ->orderBy('created_at', 'asc') // Assuming you want to order chats by timestamp
                 ->get();
@@ -196,15 +198,11 @@ class ChatController extends Controller
         $sender_id = $request->sender_id;
         $reciver_id = $request->reciver_id;
 
-        $chats = Chat::where(function ($query) use ($sender_id, $reciver_id) {
-            $query->where('sender_id', $sender_id)
-                ->where('reciver_id', $reciver_id);
-        })
-            ->orWhere(function ($query) use ($sender_id, $reciver_id) {
-                $query->where('sender_id', $reciver_id)
-                    ->where('reciver_id', $sender_id);
-            })
-            ->delete();
+        Chat::where('sender_id', $sender_id)
+            ->update(['delete_from_sender_id' => 1]);
+
+        Chat::where('reciver_id', $sender_id)
+            ->update(['delete_from_receiver_id' => 1]);
 
         return response()->json(['msg' => 'Chat cleared successfully', 'success' => true]);
     }
@@ -240,17 +238,17 @@ class ChatController extends Controller
     public function notification(Request $request)
     {
         if ($request->ajax()) {
-           $user_id = $request->user_id;
-           $sender_id = $request->sender_id;
-           $sender = User::find($sender_id);
+            $user_id = $request->user_id;
+            $sender_id = $request->sender_id;
+            $sender = User::find($sender_id);
 
-           $notification = new Notification();
-           $notification->user_id =  $user_id;
-           $notification->message = 'You have a <b>new message</b> from ' . $sender->full_name;
-           $notification->type = 'Chat';
-           $notification->save();
-           $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->count();
-           return response()->json(['msg' => 'Notification sent successfully', 'status' => true, 'notification_count' => $notification_count, 'notification' => $notification]);
+            $notification = new Notification();
+            $notification->user_id =  $user_id;
+            $notification->message = 'You have a <b>new message</b> from ' . $sender->full_name;
+            $notification->type = 'Chat';
+            $notification->save();
+            $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->count();
+            return response()->json(['msg' => 'Notification sent successfully', 'status' => true, 'notification_count' => $notification_count, 'notification' => $notification]);
         }
 
         return abort(404); // Optional: return a 404 response if not an AJAX request

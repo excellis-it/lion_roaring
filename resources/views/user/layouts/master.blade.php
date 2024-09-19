@@ -550,12 +550,11 @@
                             if (res.success) {
                                 $("#chat-container-" + receiver_id).html("");
                                 $("#message-app-" + receiver_id).html("");
-                                // loadChats();
-                                // socket.emit("chat", {
-                                socket.emit("clear-chat", {
-                                    receiver_id: receiver_id,
-                                    sender_id: sender_id,
-                                });
+                                
+                                //socket.emit("clear-chat", {
+                                //   receiver_id: receiver_id,
+                                // sender_id: sender_id,
+                                // });
 
                             } else {
                                 console.log(res.msg);
