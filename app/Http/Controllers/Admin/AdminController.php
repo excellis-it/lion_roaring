@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\TeamMember;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -95,6 +96,11 @@ class AdminController extends Controller
     {
 
         User::findOrFail($id)->delete();
+         //check if user teamMember
+         $teamMember = TeamMember::where('user_id', $id)->get();
+         if ($teamMember) {
+             $teamMember->each->delete();
+         }
         return redirect()->back()->with('error', 'Admin has been deleted!');
     }
 }

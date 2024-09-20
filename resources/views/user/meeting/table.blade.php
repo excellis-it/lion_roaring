@@ -8,7 +8,7 @@
             <td>{{ $meeting->meeting_link ? $meeting->meeting_link : '-' }}</td>
             <td>
                 <div class="d-flex">
-                    @if (auth()->user()->can('Edit Meeting Schedule') && $meeting->created_by == auth()->user()->id || auth()->user()->hasRole('ADMIN'))
+                    @if ((auth()->user()->can('Edit Meeting Schedule') && $meeting->user_id == auth()->user()->id) || auth()->user()->hasRole('ADMIN'))
                     <a href="{{ route('meetings.edit', $meeting->id) }}" class="delete_icon">
                         <i class="fa-solid fa-edit"></i>
                     </a> &nbsp; &nbsp;
@@ -18,7 +18,7 @@
                         <i class="fa-solid fa-eye"></i>
                     </a> &nbsp; &nbsp;
                     @endif
-                    @if (auth()->user()->can('Delete Meeting Schedule') && $meeting->created_by == auth()->user()->id || auth()->user()->hasRole('ADMIN'))
+                    @if ((auth()->user()->can('Delete Meeting Schedule') && $meeting->user_id == auth()->user()->id) || auth()->user()->hasRole('ADMIN'))
                     <a href="javascript:void(0)" id="delete"
                         data-route="{{ route('meetings.delete', $meeting->id) }}" class="delete_icon">
                         <i class="fa-solid fa-trash"></i>

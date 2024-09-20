@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Mail\ActiveUserMail;
 use App\Mail\InactiveUserMail;
 use App\Mail\RegistrationMail;
+use App\Models\ChatMember;
 use App\Models\Country;
 use App\Models\Ecclesia;
+use App\Models\Team;
+use App\Models\TeamMember;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -311,6 +314,12 @@ class PartnerController extends Controller
             $id = Crypt::decrypt($id);
             $user = User::findOrFail($id);
             $user->delete();
+
+            //check if user teamMember
+            $teamMember = TeamMember::where('user_id', $id)->get();
+            if ($teamMember) {
+                $teamMember->each->delete();
+            }
             return redirect()->route('partners.index')->with('error', 'Member has been deleted successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');

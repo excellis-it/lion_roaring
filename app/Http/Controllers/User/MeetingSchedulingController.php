@@ -165,7 +165,7 @@ class MeetingSchedulingController extends Controller
 
 
             $meetings->orderBy($sort_by, $sort_type);
-            $meetings = $meetings->paginate(10);
+            $meetings = $meetings->paginate(15);
 
             return response()->json(['data' => view('user.meeting.table', compact('meetings'))->render()]);
         }

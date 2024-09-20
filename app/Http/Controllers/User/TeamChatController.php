@@ -346,27 +346,22 @@ class TeamChatController extends Controller
         }
         $team_member_name = rtrim($team_member_name, ', ');
 
-        // // remove message sent by this user
-        // $team_chat = new TeamChat();
-        // $team_chat->team_id = $team_id;
-        // $team_chat->user_id = $user_id;
-        // $team_chat->message = $team_member->user->first_name . ' ' . $team_member->user->last_name . ' has left the group.';
-        // $team_chat->save();
+        // team member count
+        $team_member_count = TeamMember::where('team_id', $team_id)->where('is_removed', false)->get();
 
-        // $members = TeamMember::where('team_id', $team_id)->where('is_removed', false)->get();
+        // delete team is no member in group
+        if ($team_member_count->count() == 0) {
+            $team = Team::find($team_id);
+            $team->delete();
 
-        // foreach ($members as $team) {
-        //     $chat_member = new ChatMember();
-        //     $chat_member->chat_id = $team_chat->id;
-        //     $chat_member->user_id = $team->user_id;
-        //     $chat_member->save();
-        // }
+            $team_delete = true;
+        } else {
+            $team_delete = false;
+        }
 
-        // $chat_member_id = ChatMember::where('chat_id', $team_chat->id)->pluck('user_id')->toArray();
+        $team_member_id = TeamMember::where('team_id', $team_id)->pluck('user_id')->toArray();
 
-        // $chat = TeamChat::where('id', $team_chat->id)->with('user')->first();
-
-        return response()->json(['message' => 'You have left the group successfully.', 'status' => true, 'team_id' => $team_id, 'user_id' => $user_id, 'team_member_name' => $team_member_name]);
+        return response()->json(['message' => 'You have left the group successfully.', 'status' => true, 'team_id' => $team_id, 'user_id' => $user_id, 'team_member_name' => $team_member_name, 'team_delete' => $team_delete, 'team_member_id' => $team_member_id]);
     }
 
     public function addMemberTeam(Request $request)

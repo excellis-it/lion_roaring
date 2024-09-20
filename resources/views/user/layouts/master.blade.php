@@ -550,7 +550,7 @@
                             if (res.success) {
                                 $("#chat-container-" + receiver_id).html("");
                                 $("#message-app-" + receiver_id).html("");
-                                
+
                                 //socket.emit("clear-chat", {
                                 //   receiver_id: receiver_id,
                                 // sender_id: sender_id,
@@ -1348,16 +1348,34 @@
                         success: function(resp) {
                             if (resp.status == true) {
                                 toastr.success(resp.message);
-                                loadChat(team_id);
-                                $('#group-member-' + resp.team_id + '-' + resp.user_id)
-                                    .remove();
-                                $('#groupInfo').modal('hide');
+                                if (resp.team_delete == true) {
+                                    groupList(sender_id);
+                                    $('#group-member-' + resp.team_id + '-' + resp.user_id)
+                                        .remove();
+                                    $('#groupInfo').modal('hide');
+                                    html = `<div class="icon_chat">
+                                        <span><img src="{{ asset('user_assets/images/icon-chat.png') }}" alt=""></span>
+                                        <h4>Seamless Real-Time Chat | Connect Instantly</h4>
+                                        <p>Join our dynamic chat platform, where real-time communication is effortless. Engage in private and group
+                                            conversations, manage your contacts, and stay connected with instant updates. Experience a secure and
+                                            responsive interface, perfect for personal or professional use.</p>
+                                    </div>`;
+                                    $('.chat-body').html(html);
+                                } else {
+                                    loadChat(team_id);
+                                    $('#group-member-' + resp.team_id + '-' + resp.user_id)
+                                        .remove();
+                                    $('#groupInfo').modal('hide');
+                                }
+
 
                                 // socket emit
                                 socket.emit('exitFromGroup', {
                                     team_id: team_id,
                                     user_id: resp.user_id,
-                                    team_member_name: resp.team_member_name
+                                    team_member_name: resp.team_member_name,
+                                    team_delete: resp.team_delete,
+                                    team_member_id: resp.team_member_id
                                 });
                             } else {
                                 toastr.error(resp.message);
@@ -1638,6 +1656,21 @@
                         data.team_member_name.substring(0, 60) + '...' :
                         data.team_member_name
                     );
+                }
+
+                if (data.team_delete == true && data.team_member_id.includes(sender_id) && data.user_id !=
+                    sender_id) {
+                    groupList(sender_id);
+                    if ($('#team-chat-container-' + data.team_id).length > 0) {
+                        html = `<div class="icon_chat">
+                                        <span><img src="{{ asset('user_assets/images/icon-chat.png') }}" alt=""></span>
+                                        <h4>Seamless Real-Time Chat | Connect Instantly</h4>
+                                        <p>Join our dynamic chat platform, where real-time communication is effortless. Engage in private and group
+                                            conversations, manage your contacts, and stay connected with instant updates. Experience a secure and
+                                            responsive interface, perfect for personal or professional use.</p>
+                                    </div>`;
+                        $('.chat-body').html(html);
+                    }
                 }
             });
 
