@@ -68,55 +68,96 @@
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.js'></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                // change to dayGridWeek or timeGridWeek for week view
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
                 },
-                // change color for each meeting
-                eventColor: '#7851a9',
-
-                events: function(fetchInfo, successCallback, failureCallback) {
-                    $.ajax({
-                        url: '{{ route('meetings.calender-fetch-data') }}',
-                        method: 'GET',
-                        success: function(data) {
-                            var meetings = data.map(meeting => ({
-                                id: meeting.id,
-                                title: meeting.title,
-                                start: meeting.start,
-                                end: meeting.end,
-                                description: meeting.description,
-                                meeting_link: meeting.meeting_link
-                            }));
-                            successCallback(meetings);
-                        },
-                        error: function() {
-                            failureCallback();
-                        }
-                    });
-                },
-                eventClick: function(info) {
-                    // Format the start and end times to match 'MM-DD-YYYY HH:mm A'
-                    $('#modalTitle').text(info.event.title);
-                    $('#modalStart').text(info.event.start ? moment(info.event.start).format('DD MMM YYYY h:mm A') : 'N/A');
-                    $('#modalEnd').text(info.event.end ? moment(info.event.end).format('DD MMM YYYY h:mm A') : 'N/A');
-                    $('#modalDescription').text(info.event.extendedProps.description);
-                    $('#modalLink').text(info.event.extendedProps.meeting_link ? info.event.extendedProps.meeting_link : 'N/A');
-                    $('#eventModal').modal('show');
-                },
-                eventTimeFormat: { // format for times in the calendar view
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    meridiem: true // Show AM/PM
-                }
             });
-            calendar.render();
+
+            // Define WebSocket connection
+            let ip_address = "{{ env('IP_ADDRESS') }}";
+            let socket_port = '3000';
+            let socket = io(ip_address + ':' + socket_port);
+
+            var calendar;
+            loadCalender();
+
+            function loadCalender() {
+                var calendarEl = document.getElementById('calendar');
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    // change to dayGridWeek or timeGridWeek for week view
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    // change color for each meeting
+                    eventColor: '#7851a9',
+
+                    events: function(fetchInfo, successCallback, failureCallback) {
+                        $.ajax({
+                            url: '{{ route('meetings.calender-fetch-data') }}',
+                            method: 'GET',
+                            success: function(data) {
+                                var meetings = data.map(meeting => ({
+                                    id: meeting.id,
+                                    title: meeting.title,
+                                    start: meeting.start,
+                                    end: meeting.end,
+                                    description: meeting
+                                        .description,
+                                    meeting_link: meeting
+                                        .meeting_link
+                                }));
+                                successCallback(meetings);
+                            },
+                            error: function() {
+                                failureCallback();
+                            }
+                        });
+                    },
+                    eventClick: function(info) {
+                        // Format the start and end times to match 'MM-DD-YYYY HH:mm A'
+                        $('#modalTitle').text(info.event.title);
+                        $('#modalStart').text(info.event.start ? moment(info.event.start)
+                            .format(
+                                'DD MMM YYYY h:mm A') : 'N/A');
+                        $('#modalEnd').text(info.event.end ? moment(info.event.end).format(
+                            'DD MMM YYYY h:mm A') : 'N/A');
+                        $('#modalDescription').text(info.event.extendedProps.description);
+                        $('#modalLink').text(info.event.extendedProps.meeting_link ? info
+                            .event
+                            .extendedProps.meeting_link : 'N/A');
+                        $('#eventModal').modal('show');
+                    },
+                    eventTimeFormat: { // format for times in the calendar view
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        meridiem: true // Show AM/PM
+                    }
+                });
+                calendar.render();
+            }
+
+            // Listen for the 'meeting' event and update the calendar
+            socket.on('delete_meeting', function(data) {
+                var calendar;
+                loadCalender();
+            });
+
+            // meeting_updated
+            socket.on('meeting_updated', function(data) {
+                var calendar;
+                loadCalender();
+            });
+
+            // meeting_created
+            socket.on('meeting_created', function(data) {
+                var calendar;
+                loadCalender();
+            });
         });
     </script>
 @endpush

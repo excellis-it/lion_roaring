@@ -385,6 +385,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::prefix('meetings')->group(function () {
         Route::get('/meeting-delete/{id}', [MeetingSchedulingController::class, 'delete'])->name('meetings.delete');
     });
+    // show-single-meeting
+    Route::get('/show-single-meeting', [MeetingSchedulingController::class, 'showSingleMeeting'])->name('meetings.show-single-meeting');
     // calender ajax fetch data
     Route::get('/view-calender', [MeetingSchedulingController::class, 'viewCalender'])->name('meetings.view-calender');
     Route::get('/meetings-calender-fetch-data', [MeetingSchedulingController::class, 'fetchCalenderData'])->name('meetings.calender-fetch-data');

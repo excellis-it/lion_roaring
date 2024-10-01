@@ -142,6 +142,24 @@ io.on('connection', (socket) => {
         io.sockets.emit('event_store_update_delete', msg);
     });
 
+    // delete_meeting
+    socket.on('delete_meeting', (msg) => {
+        console.log('delete_meeting: ' + msg);
+        io.sockets.emit('delete_meeting', msg);
+    });
+
+    // meeting_updated
+    socket.on('meeting_updated', (msg) => {
+        console.log('meeting_updated: ' + msg);
+        io.sockets.emit('meeting_updated', msg);
+    });
+
+    // meeting_created
+    socket.on('meeting_created', (msg) => {
+        console.log('meeting_created: ' + msg);
+        io.sockets.emit('meeting_created', msg);
+    });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });

@@ -51,7 +51,7 @@ class MeetingSchedulingController extends Controller
                 'title' => 'required',
                 'description' => 'required',
                 'start_time' => 'required',
-                'end_time' => 'required',
+                'end_time' => 'required|after:start_time',
                 'meeting_link' => 'nullable',
             ]);
 
@@ -64,7 +64,9 @@ class MeetingSchedulingController extends Controller
             $meeting->meeting_link = $request->meeting_link;
             $meeting->save();
 
-            return redirect()->route('meetings.index')->with('success', 'Meeting scheduled successfully.');
+            session()->flash('message', 'Meeting scheduled successfully.');
+
+            return response()->json(['status' => true, 'message' => 'Meeting scheduled successfully.', 'meeting' => $meeting]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -116,7 +118,7 @@ class MeetingSchedulingController extends Controller
                 'title' => 'required',
                 'description' => 'required',
                 'start_time' => 'required',
-                'end_time' => 'required',
+                'end_time' => 'required|after:start_time',
                 'meeting_link' => 'nullable',
             ]);
 
@@ -128,7 +130,8 @@ class MeetingSchedulingController extends Controller
             $meeting->meeting_link = $request->meeting_link;
             $meeting->save();
 
-            return redirect()->route('meetings.index')->with('success', 'Meeting updated successfully.');
+            session()->flash('message', 'Meeting updated successfully.');
+            return response()->json(['status' => true, 'message' => 'Meeting updated successfully.', 'id' => $id]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -175,9 +178,9 @@ class MeetingSchedulingController extends Controller
         if (Auth::user()->can('Delete Meeting Schedule') && Auth::user()->id == Meeting::find($id)->user_id || Auth::user()->hasRole('ADMIN')) {
             $meeting = Meeting::findOrFail($id);
             $meeting->delete();
-            return redirect()->route('meetings.index')->with('error', 'Meeting has been deleted successfully.');
+            return response()->json(['message' => 'Meeting deleted successfully.', 'status' => true, 'id' => $id]);
         } else {
-            abort(403, 'You do not have permission to access this page.');
+            return response()->json(['message' => 'You do not have permission to delete this meeting.', 'status' => false]);
         }
     }
 
@@ -199,5 +202,11 @@ class MeetingSchedulingController extends Controller
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
+    }
+
+    public function showSingleMeeting(Request $request)
+    {
+        $meeting = Meeting::find($request->meeting_id);
+        return response()->json(['status' => true, 'view' => view('user.meeting.show-single-meeting', compact('meeting'))->render()]);
     }
 }
