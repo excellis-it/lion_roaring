@@ -11,7 +11,7 @@
             <!--  Row 1 -->
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('bulletins.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('bulletins.store') }}" method="POST" enctype="multipart/form-data" id="create-bulletin">
                         @csrf
                         <div class="row">
                             <div class="col-md-12">

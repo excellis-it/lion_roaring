@@ -422,10 +422,14 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::get('/bulletin-delete/{id}', [BulletinController::class, 'delete'])->name('bulletins.delete');
     });
     Route::get('/bulletins-fetch-data', [BulletinController::class, 'fetchData'])->name('bulletins.fetch-data');
-
+    // bulletins.load-table
+    Route::post('/bulletins-load-table', [BulletinController::class, 'loadTable'])->name('bulletins.load-table');
+    Route::post('/bulletins-single', [BulletinController::class, 'single'])->name('bulletins.single');
 
     Route::prefix('bulletin-board')->group(function () {
         Route::get('/', [BulletinBoardController::class, 'list'])->name('bulletin-board.index');
+        // load bulletin board
+        Route::post('/load', [BulletinBoardController::class, 'load'])->name('bulletin-board.load');
     });
 
     Route::prefix('roles')->group(function () {

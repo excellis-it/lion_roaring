@@ -11,7 +11,7 @@
             <!--  Row 1 -->
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('bulletins.update', $bulletin->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('bulletins.update', $bulletin->id) }}" method="POST" enctype="multipart/form-data" id="update-bulletin">
                         @method('PUT')
                         @csrf
                         <div class="row">

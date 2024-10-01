@@ -13,4 +13,10 @@ class BulletinBoardController extends Controller
         $bulletins = Bulletin::orderBy('id', 'desc')->get();
         return view('user.bulletin-board.list')->with('bulletins', $bulletins);
     }
+
+    public function load(Request $request)
+    {
+        $bulletins = Bulletin::orderBy('id', 'desc')->get();
+        return response()->json(['view' => view('user.bulletin-board.show-bulletin')->with('bulletins', $bulletins)->render()]);
+    }
 }

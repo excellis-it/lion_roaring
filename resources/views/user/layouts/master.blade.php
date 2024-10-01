@@ -87,6 +87,14 @@
         });
     </script>
     <script>
+        toastr.options = {
+            "positionClass": "toast-bottom-right", // Position the toaster at the bottom right
+            "timeOut": "5000", // Duration for the message to stay (5 seconds)
+            "closeButton": true, // Option to show the close button
+            "progressBar": true, // Show a progress bar
+        }
+    </script>
+    <script>
         @if (Session::has('message'))
             toastr.options = {
                 "closeButton": true,
@@ -836,6 +844,11 @@
             let socket_port = '3000';
             let socket = io(ip_address + ':' + socket_port);
             var sender_id = {{ auth()->user()->id }};
+            @if (auth()->user()->hasRole('ADMIN'))
+                var role = 'admin';
+            @else
+                var role = 'user';
+            @endif
 
             $('#create-team').submit(function(e) {
                 e.preventDefault();
@@ -1559,6 +1572,212 @@
                         }
                     });
                 }
+            });
+
+            // create bulletin
+            $(document).on('submit', '#create-bulletin', function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    success: function(resp) {
+                        $('#create-bulletin')[0].reset();
+                        socket.emit('showBulletin', {
+                            'user_id': sender_id,
+                        });
+                        window.location.href = "{{ route('bulletins.index') }}";
+                    },
+                    error: function(xhr) {
+                        $('.text-danger').html('');
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                            if (key.includes('.')) {
+                                var fieldName = key.split('.')[0];
+                                // Display errors for array fields
+                                var num = key.match(/\d+/)[0];
+                                toastr.error(value[0]);
+                            } else {
+                                // after text danger span
+                                toastr.error(value[0]);
+                            }
+                        });
+                    }
+                });
+            });
+
+            // update bulletin
+            $(document).on('submit', '#update-bulletin', function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    success: function(resp) {
+                        $('#update-bulletin')[0].reset();
+                        socket.emit('updateBulletin', {
+                            'bulletin': resp.bulletin,
+                        });
+                        window.location.href = "{{ route('bulletins.index') }}";
+                    },
+                    error: function(xhr) {
+                        $('.text-danger').html('');
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                            if (key.includes('.')) {
+                                var fieldName = key.split('.')[0];
+                                // Display errors for array fields
+                                var num = key.match(/\d+/)[0];
+                                toastr.error(value[0]);
+                            } else {
+                                // after text danger span
+                                toastr.error(value[0]);
+                            }
+                        });
+                    }
+                });
+            });
+
+            $(document).on('click', '#bulletin-delete', function(e) {
+                swal({
+                        title: "Are you sure?",
+                        text: "To remove this bulletin from the bulletin board",
+                        type: "warning",
+                        confirmButtonText: "Yes",
+                        showCancelButton: true
+                    })
+                    .then((result) => {
+                        if (result.value) {
+                            var bulletin_id = $(this).data('bulletin-id');
+                            var url = $(this).data('route');
+                            $.ajax({
+                                type: "GET",
+                                url: url,
+                                data: {
+                                    bulletin_id: bulletin_id,
+                                    _token: "{{ csrf_token() }}"
+                                },
+                                success: function(resp) {
+                                    if (resp.status == true) {
+                                        $('#single-bulletin-' + bulletin_id).remove();
+
+                                        // socket emit
+                                        socket.emit('deleteBulletin', {
+                                            'bulletin': resp.bulletin,
+                                        });
+
+                                        swal(
+                                            'Deleted!',
+                                            'Bulletin has been deleted.',
+                                            'success'
+                                        )
+                                    } else {
+                                        swal(
+                                            'Error!',
+                                            'Something went wrong',
+                                            'error'
+                                        )
+                                    }
+                                },
+                                error: function(xhr) {
+                                    swal(
+                                        'Error!',
+                                        'Something went wrong',
+                                        'error'
+                                    )
+                                }
+                            });
+                        } else if (result.dismiss === 'cancel') {
+                            swal(
+                                'Cancelled',
+                                'Your stay here :)',
+                                'error'
+                            )
+                        }
+                    })
+            });
+
+            // load bulletin
+
+            function loadBulletin() {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('bulletin-board.load') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(resp) {
+                        $('#show-bulletin').html(resp.view);
+                    },
+                    error: function(xhr) {
+                        toastr.error('Something went wrong');
+                    }
+                });
+            }
+
+            function loadBulletinTable() {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('bulletins.load-table') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(resp) {
+                        $('#bulletin-table').html(resp.view);
+                    },
+                    error: function(xhr) {
+                        toastr.error('Something went wrong');
+                    }
+                });
+            }
+
+            function loadSingleBulletin(bulletin_id) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('bulletins.single') }}",
+                    data: {
+                        bulletin_id: bulletin_id,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(resp) {
+                        $('#single-bulletin-' + bulletin_id).html(resp.view);
+                    },
+                    error: function(xhr) {
+                        toastr.error('Something went wrong');
+                    }
+                });
+            }
+
+            // showBulletin
+            socket.on('showBulletin', function(data) {
+                loadBulletin();
+
+                if (role == 'admin') {
+                    loadBulletinTable();
+                }
+            });
+
+            // updateBulletin
+            socket.on('updateBulletin', function(data) {
+                loadBulletin();
+                if (role == 'admin' || data.bulletin.user_id == sender_id) {
+                    $('#bulletin-title-' + data.bulletin.id).html(data.bulletin.title);
+                    $('#bulletin-description-' + data.bulletin.id).html(data.bulletin.description);
+                }
+            });
+
+            // deleteBulletin
+            socket.on('deleteBulletin', function(data) {
+                $('#single-bulletin-' + data.bulletin.id).remove();
+                loadBulletin();
             });
 
             // clearAllConversation

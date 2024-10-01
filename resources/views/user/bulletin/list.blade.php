@@ -56,9 +56,8 @@
                                                 <th></th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="bulletin-table">
                                             @include('user.bulletin.table', ['bulletins' => $bulletins])
-
                                         </tbody>
                                     </table>
                                     <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
@@ -77,7 +76,7 @@
 @endsection
 
 @push('scripts')
-    <script>
+    {{-- <script>
         $(document).on('click', '#delete', function(e) {
             swal({
                     title: "Are you sure?",
@@ -98,7 +97,7 @@
                     }
                 })
         });
-    </script>
+    </script> --}}
 
     <script>
         $(document).ready(function() {

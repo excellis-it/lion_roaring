@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Bulletin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 
 class BulletinController extends Controller
 {
@@ -66,8 +67,8 @@ class BulletinController extends Controller
             $bulletin->title = $request->title;
             $bulletin->description = $request->description;
             $bulletin->save();
-
-            return redirect()->route('bulletins.index')->with('message', 'Bulletin created successfully');
+            session()->flash('message', 'Bulletin created successfully');
+            return response()->json(['message' => 'Bulletin created successfully', 'status' =>true]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -135,7 +136,8 @@ class BulletinController extends Controller
                 $bulletin->description = $request->description;
                 $bulletin->save();
 
-                return redirect()->route('bulletins.index')->with('message', 'Bulletin updated successfully');
+                session()->flash('message', 'Bulletin updated successfully');
+                return response()->json(['message' => 'Bulletin updated successfully', 'status' => true, 'bulletin' => $bulletin]);
             }
             return redirect()->back()->with('error', 'Bulletin not found');
         } else {
@@ -164,9 +166,9 @@ class BulletinController extends Controller
             }
             if ($bulletin) {
                 $bulletin->delete();
-                return redirect()->back()->with('message', 'Bulletin deleted successfully');
+                return response()->json(['message' => 'Bulletin deleted successfully', 'status' => true, 'bulletin' => $bulletin]);
             }
-            return redirect()->back()->with('error', 'Bulletin not found');
+            return response()->json(['message' => 'Bulletin not found', 'status' => false]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -211,5 +213,27 @@ class BulletinController extends Controller
 
             return response()->json(['data' => view('user.bulletin.table', compact('bulletins'))->render()]);
         }
+    }
+
+    public function loadTable(Request $request)
+    {
+        if (Auth::user()->hasRole('ADMIN')) {
+            $bulletins = Bulletin::orderBy('id', 'desc')->paginate(15);
+        } else {
+            $bulletins = Bulletin::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(15);
+        }
+
+        return response()->json(['view' => view('user.bulletin.table', compact('bulletins'))->render()]);
+    }
+
+    public function single(Request $request)
+    {
+        if (Auth::user()->hasRole('ADMIN')) {
+            $bulletins = Bulletin::orderBy('id', 'desc')->paginate(15);
+        } else {
+            $bulletins = Bulletin::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(15);
+        }
+        $bulletin = Bulletin::find($request->bulletin_id);
+        return response()->json(['view' => view('user.bulletin.show-single-bulletin', compact('bulletin', 'bulletins'))->render()]);
     }
 }

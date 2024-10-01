@@ -118,6 +118,24 @@ io.on('connection', (socket) => {
         io.sockets.emit('sendAdminNotification', msg);
     });
 
+    // showBulletin
+    socket.on('showBulletin', (msg) => {
+        console.log('showBulletin: ' + msg);
+        io.sockets.emit('showBulletin', msg);
+    });
+
+    // updateBulletin
+    socket.on('updateBulletin', (msg) => {
+        console.log('updateBulletin: ' + msg);
+        io.sockets.emit('updateBulletin', msg);
+    });
+
+    // deleteBulletin
+    socket.on('deleteBulletin', (msg) => {
+        console.log('deleteBulletin: ' + msg);
+        io.sockets.emit('deleteBulletin', msg);
+    });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
