@@ -34,6 +34,21 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div style="display:none !important;" id="load-bulletin">
+                                    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center justify-content-between"
+                                        role="alert" style="background:antiquewhite; ">
+                                        <div>
+                                            <strong>Success:</strong> New bulletin has been added.
+                                            Do you want to see the new bulletin?
+                                        </div>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-primary btn-sm"
+                                                id="reloadPageBtn">Reload</button>
+                                        </div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
+                                </div>
                                 <div class="table-responsive">
                                     <table class="table align-middle bg-white color_body_text">
                                         <thead class="color_head">
@@ -167,6 +182,12 @@
                 $('li').removeClass('active');
                 $(this).parent().addClass('active');
                 fetch_data(page, sort_type, column_name, query);
+            });
+
+            // Reload page
+            $(document).on('click', '#reloadPageBtn', function() {
+                fetch_data(1, 'desc', 'id', '');
+                $('#load-bulletin').hide();
             });
 
         });

@@ -68,7 +68,7 @@ class BulletinController extends Controller
             $bulletin->description = $request->description;
             $bulletin->save();
             session()->flash('message', 'Bulletin created successfully');
-            return response()->json(['message' => 'Bulletin created successfully', 'status' =>true]);
+            return response()->json(['message' => 'Bulletin created successfully', 'status' =>true, 'bulletin' => $bulletin]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

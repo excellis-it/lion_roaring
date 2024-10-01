@@ -1588,7 +1588,7 @@
                     success: function(resp) {
                         $('#create-bulletin')[0].reset();
                         socket.emit('showBulletin', {
-                            'user_id': sender_id,
+                            'bulletin': resp.bulletin,
                         });
                         window.location.href = "{{ route('bulletins.index') }}";
                     },
@@ -1759,9 +1759,9 @@
             // showBulletin
             socket.on('showBulletin', function(data) {
                 loadBulletin();
-
-                if (role == 'admin') {
-                    loadBulletinTable();
+                if (role == 'admin' && data.bulletin.user_id != sender_id) {
+                    console.log('ads');
+                    $('#load-bulletin').css('display', 'block');
                 }
             });
 
