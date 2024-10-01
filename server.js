@@ -136,6 +136,12 @@ io.on('connection', (socket) => {
         io.sockets.emit('deleteBulletin', msg);
     });
 
+    // event_store_update
+    socket.on('event_store_update_delete', (msg) => {
+        console.log('event_store_update_delete: ' + msg);
+        io.sockets.emit('event_store_update_delete', msg);
+    });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });

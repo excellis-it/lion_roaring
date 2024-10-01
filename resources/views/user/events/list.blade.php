@@ -59,63 +59,64 @@
     </div>
     <!-- Event view model -->
     {{-- @if (auth()->user()->can('Edit Event')) --}}
-        <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="eventModalLabel">Edit Event</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form method="POST" action="javascript:void(0);" id="event-edit">
-                        @csrf
-                        @method('PUT')
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="modalTitleEdit" class="col-form-label">Title:</label>
-                                <input type="text" class="form-control" id="modalTitleEdit" name="title">
-                            </div>
-                            <div class="mb-3">
-                                <label for="modalStartEdit" class="col-form-label">Start:</label>
-                                <input type="datetime-local" class="form-control" id="modalStartEdit" name="start">
-                            </div>
-                            <div class="mb-3">
-                                <label for="modalEndEdit" class="col-form-label">End:</label>
-                                <input type="datetime-local" class="form-control" id="modalEndEdit" name="end">
-                            </div>
-                            <div class="mb-3">
-                                <label for="modalDescriptionEdit" class="col-form-label">Description:</label>
-                                <textarea class="form-control" id="modalDescriptionEdit" name="description"></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                            <button type="button" class="btn btn-danger" id="deleteEventBtn"
-                                style="color: white; background:red"><i class="fas fa-trash"></i> Delete</button>
-                        </div>
-                    </form>
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventModalLabel">Edit Event</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            </div>
-        </div>
-    {{-- @else --}}
-        <div class="modal fade" id="eventModalDetails" tabindex="-1" aria-labelledby="eventModalDetailsLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="eventModalDetailsLabel">Event Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
+                <form method="POST" action="javascript:void(0);" id="event-edit">
+                    @csrf
+                    @method('PUT')
                     <div class="modal-body">
-                        <p><strong>Title:</strong> <span id="formmodalTitle"></span></p>
-                        <p><strong>Start:</strong> <span id="formmodalStart"></span></p>
-                        <p><strong>End:</strong> <span id="formmodalEnd"></span></p>
-                        <p><strong>Description:</strong> <span id="formmodalDescription"></span></p>
+                        <div class="mb-3">
+                            <label for="modalTitleEdit" class="col-form-label">Title:</label>
+                            <input type="text" class="form-control" id="modalTitleEdit" name="title">
+                        </div>
+                        <div class="mb-3">
+                            <label for="modalStartEdit" class="col-form-label">Start:</label>
+                            <input type="datetime-local" class="form-control" id="modalStartEdit" name="start">
+                        </div>
+                        <div class="mb-3">
+                            <label for="modalEndEdit" class="col-form-label">End:</label>
+                            <input type="datetime-local" class="form-control" id="modalEndEdit" name="end">
+                        </div>
+                        <div class="mb-3">
+                            <label for="modalDescriptionEdit" class="col-form-label">Description:</label>
+                            <textarea class="form-control" id="modalDescriptionEdit" name="description"></textarea>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="print_btn" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-danger" id="deleteEventBtn"
+                            style="color: white; background:red"><i class="fas fa-trash"></i> Delete</button>
                     </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{-- @else --}}
+    <div class="modal fade" id="eventModalDetails" tabindex="-1" aria-labelledby="eventModalDetailsLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventModalDetailsLabel">Event Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Title:</strong> <span id="formmodalTitle"></span></p>
+                    <p><strong>Start:</strong> <span id="formmodalStart"></span></p>
+                    <p><strong>End:</strong> <span id="formmodalEnd"></span></p>
+                    <p><strong>Description:</strong> <span id="formmodalDescription"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="print_btn" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
+    </div>
     {{-- @endif --}}
 
 
@@ -191,117 +192,130 @@
         });
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
                 },
-                eventColor: '#7851a9',
-                events: function(fetchInfo, successCallback, failureCallback) {
-                    $.ajax({
-                        url: '{{ route('events.calender') }}',
-                        method: 'GET',
-                        success: function(data) {
-                            console.log(data);
+            });
 
-                            var events = data.map(event => {
-                                var title = event
-                                .title; // No need to include time in title here
+            // Define WebSocket connection
+            let ip_address = "{{ env('IP_ADDRESS') }}";
+            let socket_port = '3000';
+            let socket = io(ip_address + ':' + socket_port);
 
-                                return {
-                                    id: event.id,
-                                    user_id: event.user_id,
-                                    title: title,
-                                    main_title: event.title,
-                                    start: event.start,
-                                    end: event.end,
-                                    description: event.description
-                                };
-                            });
-                            successCallback(events);
-                        },
-                        error: function() {
-                            failureCallback();
-                        }
-                    });
-                },
-                eventClick: function(info) {
-                    var id = info.event.id;
-                    var permission = @json(auth()->user()->can('Edit Event'));
-                    var admin = @json(auth()->user()->hasRole('ADMIN'));
-                    var user = {{ auth()->user()->id }};
-                    console.log(permission, admin, user, info.event.extendedProps.user_id);
+            // Initialize FullCalendar
+            var calendar;
 
-                    if (permission && info.event.extendedProps.user_id == user || admin) {
-                        const formatDateForInput = (date) => {
-                            if (!date) return '';
-                            return moment(date).format(
-                                'YYYY-MM-DDTHH:mm'); // 'datetime-local' input format
-                        };
+            function initializeFullCalendar() {
+                var calendarEl = document.getElementById('calendar');
+                calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    eventColor: '#7851a9',
 
-                        const formattedStart = formatDateForInput(info.event.start);
-                        const formattedEnd = formatDateForInput(info.event.end);
-
-                        $('#modalTitleEdit').val(info.event.title);
-                        $('#modalStartEdit').val(formattedStart);
-                        $('#modalEndEdit').val(formattedEnd);
-                        $('#modalDescriptionEdit').val(info.event.extendedProps.description);
-                        $('#event-edit').attr('action', '{{ route('events.update', '') }}/' + info.event
-                            .id);
-
-                        $('#deleteEventBtn').off('click').on('click', function() {
-                            if (confirm('Are you sure you want to delete this event?')) {
-                                $.ajax({
-                                    url: '{{ route('events.destroy', '') }}/' + info
-                                        .event.id,
-                                    method: 'DELETE',
-                                    success: function() {
-                                        toastr.success(
-                                            'Event deleted successfully.');
-                                        info.event.remove();
-                                        $('#eventModal').modal('hide');
-                                    },
-                                    error: function() {
-                                        alert('Failed to delete event.');
-                                    }
+                    // Load events dynamically from the server
+                    events: function(fetchInfo, successCallback, failureCallback) {
+                        $.ajax({
+                            url: '{{ route('events.calender') }}',
+                            method: 'GET',
+                            success: function(data) {
+                                var events = data.map(event => {
+                                    return {
+                                        id: event.id,
+                                        user_id: event.user_id,
+                                        title: event.title,
+                                        start: event.start,
+                                        end: event.end,
+                                        description: event.description
+                                    };
                                 });
+                                successCallback(events);
+                            },
+                            error: function() {
+                                failureCallback();
                             }
                         });
+                    },
 
-                        $('#deleteEventBtn').show();
-                        $('#eventModal').modal('show');
-                    } else {
-                        $('#formmodalTitle').text(info.event.title);
-                        $('#formmodalStart').text(moment(info.event.start).format('MMM D, YYYY h:mm A'));
-                        $('#formmodalEnd').text(info.event.end ? moment(info.event.end).format(
-                            'MMM D, YYYY h:mm A') : 'N/A');
-                        $('#formmodalDescription').text(info.event.extendedProps.description);
+                    // Handle event click
+                    eventClick: function(info) {
+                        var event = info.event;
+                        var permission = @json(auth()->user()->can('Edit Event'));
+                        var admin = @json(auth()->user()->hasRole('ADMIN'));
+                        var currentUser = {{ auth()->user()->id }};
 
-                        $('#deleteEventBtn').hide();
-                        $('#eventModalDetails').modal('show');
+                        // Check if the user has permission or is an admin
+                        if (permission && event.extendedProps.user_id == currentUser || admin) {
+                            // Helper function to format date for input fields
+                            const formatDateForInput = (date) => date ? moment(date).format(
+                                'YYYY-MM-DDTHH:mm') : '';
+
+                            // Set modal fields with event data
+                            $('#modalTitleEdit').val(event.title);
+                            $('#modalStartEdit').val(formatDateForInput(event.start));
+                            $('#modalEndEdit').val(formatDateForInput(event.end));
+                            $('#modalDescriptionEdit').val(event.extendedProps.description);
+                            $('#event-edit').attr('action',
+                                '{{ route('events.update', '') }}/' + event.id);
+
+                            // Handle event deletion
+                            $('#deleteEventBtn').off('click').on('click', function() {
+                                if (confirm('Are you sure you want to delete this event?')) {
+                                    $.ajax({
+                                        url: '{{ route('events.destroy', '') }}/' +
+                                            event.id,
+                                        method: 'DELETE',
+                                        success: function() {
+                                            toastr.success(
+                                                'Event deleted successfully.');
+                                            event
+                                                .remove(); // Remove event from calendar
+                                            $('#eventModal').modal('hide');
+                                            socket.emit(
+                                            'event_store_update_delete', {
+                                                'message': 'Event updated'
+                                            });
+                                        },
+                                        error: function() {
+                                            alert('Failed to delete event.');
+                                        }
+                                    });
+                                }
+                            });
+
+                            $('#deleteEventBtn').show();
+                            $('#eventModal').modal('show'); // Open edit modal
+                        } else {
+                            // Display event details if user lacks permissions
+                            $('#formmodalTitle').text(event.title);
+                            $('#formmodalStart').text(moment(event.start).format('MMM D, YYYY h:mm A'));
+                            $('#formmodalEnd').text(event.end ? moment(event.end).format(
+                                'MMM D, YYYY h:mm A') : 'N/A');
+                            $('#formmodalDescription').text(event.extendedProps.description);
+
+                            $('#deleteEventBtn').hide();
+                            $('#eventModalDetails').modal('show'); // Open view-only modal
+                        }
+                    },
+
+                    eventTimeFormat: {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        meridiem: true // AM/PM format
                     }
+                });
 
+                calendar.render(); // Render the calendar
+            }
 
-                },
-                eventTimeFormat: {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    meridiem: true // This enables AM/PM format
-                }
-            });
-            calendar.render();
-        });
-    </script>
+            // Call to initialize the calendar
+            initializeFullCalendar();
 
-
-    <script>
-        // validation
-        $(document).ready(function() {
-            // Add custom validation method
             $.validator.addMethod("greaterThan", function(value, element, params) {
                 var startDate = $(params).val();
                 if (!/Invalid|NaN/.test(new Date(value))) {
@@ -342,22 +356,35 @@
                     },
                 },
                 submitHandler: function(form) {
-                    form.submit();
+                    // Submit form data via AJAX
+                    $.ajax({
+                        url: $(form).attr('action'),
+                        method: 'POST',
+                        data: $(form).serialize(),
+                        success: function(response) {
+                            if (response.status == true) {
+                                console.log(response);
+                                toastr.success(response.message);
+                                $('#addEventModal').modal('hide');
+                                var calendar;
+                                initializeFullCalendar();
+                                socket.emit('event_store_update_delete', {
+                                    'message': 'Event updated'
+                                });
+                            } else {
+                                toastr.error('Failed to add event.');
+                            }
+                        },
+                        error: function(xhr) {
+                            $('.text-danger').html('');
+                            var errors = xhr.responseJSON.errors;
+                            $.each(errors, function(key, value) {
+                                toastr.error(value[0]);
+                            });
+                        }
+                    });
                 }
             });
-        });
-    </script>
-    <script>
-        // validation
-        $(document).ready(function() {
-            $.validator.addMethod("greaterThan", function(value, element, params) {
-                var startDate = $(params).val();
-                if (!/Invalid|NaN/.test(new Date(value))) {
-                    return new Date(value) > new Date(startDate);
-                }
-                return isNaN(value) && isNaN(startDate) || (Number(value) > Number(startDate));
-            }, 'End date must be greater than start date.');
-
 
             $('#event-edit').validate({
                 rules: {
@@ -390,8 +417,41 @@
                     },
                 },
                 submitHandler: function(form) {
-                    form.submit();
+                    // Submit form data via AJAX
+                    $.ajax({
+                        url: $(form).attr('action'),
+                        method: 'POST',
+                        data: $(form).serialize(),
+                        success: function(response) {
+                            if (response.status == true) {
+                                toastr.success(response.message);
+                                $('#eventModal').modal('hide');
+                                var calendar;
+                                initializeFullCalendar();
+
+                                socket.emit('event_store_update_delete', {
+                                    'message': 'Event updated'
+                                });
+
+                            } else {
+                                toastr.error('Failed to update event.');
+                            }
+                        },
+                        error: function(xhr) {
+                            $('.text-danger').html('');
+                            var errors = xhr.responseJSON.errors;
+                            $.each(errors, function(key, value) {
+                                toastr.error(value[0]);
+                            });
+                        }
+                    });
                 }
+            });
+
+            // event_store_update
+            socket.on('event_store_update_delete', function(data) {
+                var calendar;
+                initializeFullCalendar();
             });
         });
     </script>

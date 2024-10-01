@@ -43,7 +43,7 @@ class LiveEventController extends Controller
         $event->end = $request->end;
         $event->save();
 
-        return redirect()->route('events.index')->with('message', 'Event created successfully.');
+        return response()->json(['message' => 'Event created successfully.', 'event' => $event, 'status' => true]);
     }
 
     public function update(Request $request, $id)
@@ -62,7 +62,7 @@ class LiveEventController extends Controller
         $event->end = $request->end;
         $event->update();
 
-        return redirect()->route('events.index')->with('message', 'Event updated successfully.');
+        return response()->json(['message' => 'Event updated successfully.', 'event' => $event, 'status' => true]);
     }
 
     public function destroy($id)
