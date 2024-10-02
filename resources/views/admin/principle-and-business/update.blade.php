@@ -243,14 +243,42 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
 <script>
-    ClassicEditor.create(document.querySelector("#description"));
-    ClassicEditor.create(document.querySelector("#description1"));
-    ClassicEditor.create(document.querySelector("#description2"));
-    ClassicEditor.create(document.querySelector("#description3"));
-    ClassicEditor.create(document.querySelector("#description4"));
+    $('#description').summernote({
+        placeholder: 'Description',
+        tabsize: 2,
+        height: 500
+    });
+    $('#description1').summernote({
+        placeholder: 'Description1',
+        tabsize: 2,
+        height: 500
+    });
+    $('#description2').summernote({
+        placeholder: 'Description2',
+        tabsize: 2,
+        height: 500
+    });
+    $('#description3').summernote({
+        placeholder: 'Description3',
+        tabsize: 2,
+        height: 500
+    });
+    $('#description4').summernote({
+        placeholder: 'Description4',
+        tabsize: 2,
+        height: 500
+    });
+    $('#meta_description').summernote({
+        placeholder: 'Meta Description',
+        tabsize: 2,
+        height: 500
+    });
 </script>
+
 
 <script>
     $(document).ready(function() {
@@ -268,7 +296,7 @@
 <script>
     $(document).ready(function() {
         $('#image').change(function() {
-           
+
             let reader = new FileReader();
             reader.onload = (e) => {
                 $('#preview_image').show();
