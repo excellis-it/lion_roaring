@@ -113,7 +113,7 @@ class DashboardController extends Controller
             $page = $request->get('page', 1);
             $offset = ($page - 1) * $perPage;
 
-            $notifications = Notification::where('user_id', Auth::user()->id)
+            $notifications = Notification::where('user_id', Auth::user()->id)->where('is_delete', 0)
                 ->orderBy('created_at', 'desc')
                 ->skip($offset)
                 ->take($perPage)

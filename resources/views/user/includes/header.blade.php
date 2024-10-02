@@ -33,7 +33,7 @@
                         <h5 class="mb-0 fs-5 fw-semibold">Notifications</h5>
                         <span class="badge bg-primary rounded-4 px-3 py-1 lh-sm clear-all-notification" style="color: red; font-size:medium; cursor:pointer">Clear All</span>
                     </div>
-                    <ul class="message-body srl" data-simplebar="" id="show-notification">
+                    <ul class="message-body srl" data-simplebar="" id="show-notification-{{auth()->user()->id}}">
                         @include('user.includes.notification')
                     </ul>
                 </div>

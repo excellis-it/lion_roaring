@@ -144,10 +144,10 @@
 
             // remove notification dropdown when clicked outside
             $(document).on('click', function(e) {
-                if ($('#show-notification .showing').length > 0) {
-                    if (!$(e.target).closest('#show-notification').length) {
+                if ($('#show-notification-{{ auth()->user()->id }} .showing').length > 0) {
+                    if (!$(e.target).closest('#show-notification-{{ auth()->user()->id }}').length) {
                         $('.notification-dropdown').removeClass('show');
-                        $('#show-notification').html(''); // Clear the notifications
+                        $('#show-notification-{{ auth()->user()->id }}').html(''); // Clear the notifications
                         notification_page = 1;
                     }
                 }
@@ -158,7 +158,7 @@
                 if ($dropdown.hasClass('show')) {
                     // If the dropdown is already shown, hide it
                     $dropdown.removeClass('show');
-                    $('#show-notification').html(''); // Clear the notifications
+                    $('#show-notification-{{ auth()->user()->id }}').html(''); // Clear the notifications
                     notification_page = 1;
                 } else {
                     $dropdown.addClass('show');
@@ -166,14 +166,14 @@
                 }
             });
 
-            $('#show-notification').on('scroll', function() {
+            $('#show-notification-{{ auth()->user()->id }}').on('scroll', function() {
                 loadingNotification();
             });
 
             function loadingNotification() {
                 if (loading) return; // Exit if a load is already in progress
 
-                var $container = $('#show-notification');
+                var $container = $('#show-notification-{{ auth()->user()->id }}');
                 var lastItem = $('.message-body').last();
                 var lastItemOffset = lastItem.offset().top + lastItem.outerHeight();
                 var containerOffset = $container.scrollTop() + $container.innerHeight();
@@ -188,7 +188,7 @@
             function loadMoreNotification(page, initialLoad) {
                 loading = true;
                 if (!initialLoad) {
-                    $('#show-notification').append('<div class="loader-topbar"></div>');
+                    $('#show-notification-{{ auth()->user()->id }}').append('<div class="loader-topbar"></div>');
                 }
                 $.ajax({
                     url: "{{ route('notification.list') }}",
@@ -197,16 +197,16 @@
                     },
                     success: function(data) {
                         if (page === 1) {
-                            $('#show-notification').html(data.view);
+                            $('#show-notification-{{ auth()->user()->id }}').html(data.view);
                         } else {
-                            $('#show-notification').append(data.view);
+                            $('#show-notification-{{ auth()->user()->id }}').append(data.view);
                         }
 
                         if (data.count < 8) {
                             // Stop loading if there are fewer items than the threshold
-                            $('#show-notification').off('scroll');
+                            $('#show-notification-{{ auth()->user()->id }}').off('scroll');
                         } else {
-                            $('#show-notification').on('scroll', function() {
+                            $('#show-notification-{{ auth()->user()->id }}').on('scroll', function() {
                                 loadingNotification();
                             });
                         }
@@ -223,7 +223,7 @@
             // clear-all-notification
             $(document).on('click', '.clear-all-notification', function() {
                 var $this = $(this);
-                var $notification = $('#show-notification');
+                var $notification = $('#show-notification-{{ auth()->user()->id }}');
                 var $notificationCount = $('#show-notification-count-{{ auth()->user()->id }}');
                 var $notificationDropdown = $('.notification-dropdown');
                 var $notificationDropdownContent = $notificationDropdown.find('.message-body');
@@ -735,10 +735,22 @@
 
                 if (data.receiver_id == sender_id) {
                     if ($(".chat-module").length > 0) {
-                        console.log("Seen");
-
                         if ($("#chat-container-" + data.sender_id).length > 0) {
                             $('#count-unseen-' + data.sender_id).remove();
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ route('chats.notification') }}",
+                                data: {
+                                    _token: $("input[name=_token]").val(),
+                                    user_id: sender_id,
+                                    sender_id: data.sender_id, // sender_id
+                                    chat_id: data.chat_id,
+                                    is_delete: true
+                                },
+                                success: function(res) {
+                                }
+                            });
+
                         } else {
                             $.ajax({
                                 type: "POST",
@@ -747,8 +759,11 @@
                                     _token: $("input[name=_token]").val(),
                                     user_id: sender_id,
                                     sender_id: data.sender_id, // sender_id
+                                    chat_id: data.chat_id
                                 },
                                 success: function(res) {
+                                    console.log('go');
+
                                     if (res.status == true) {
                                         $('#show-notification-count-' + sender_id).html(res
                                             .notification_count);
@@ -761,7 +776,7 @@
                                                      <div class="top-text-light">${moment(res.notification.created_at).fromNow()}</div>
                                                  </a>
                                              </li>`;
-                                        $('#show-notification').prepend(
+                                        $('#show-notification-' + sender_id).prepend(
                                             html
                                         ); // Use prepend to add new notification at the top
                                     } else {
@@ -773,8 +788,6 @@
                             });
                         }
                     } else {
-                        console.log("Not seen");
-
                         $.ajax({
                             type: "POST",
                             url: "{{ route('chats.notification') }}",
@@ -782,8 +795,11 @@
                                 _token: $("input[name=_token]").val(),
                                 user_id: sender_id,
                                 sender_id: data.sender_id, // sender_id
+                                chat_id: data.chat_id,
                             },
                             success: function(res) {
+                                console.log('yes');
+
                                 if (res.status == true) {
                                     $('#show-notification-count-' + sender_id).html(res
                                         .notification_count);
@@ -796,7 +812,7 @@
                                                      <div class="top-text-light">${moment(res.notification.created_at).fromNow()}</div>
                                                  </a>
                                              </li>`;
-                                    $('#show-notification').prepend(
+                                    $('#show-notification-' + sender_id).prepend(
                                         html
                                     ); // Use prepend to add new notification at the top
                                 } else {
@@ -807,6 +823,36 @@
                             }
                         });
                     }
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('chats.notification') }}",
+                        data: {
+                            _token: $("input[name=_token]").val(),
+                            user_id: data.receiver_id,
+                            sender_id: data.sender_id, // sender_id
+                            chat_id: data.chat_id,
+                        },
+                        success: function(res) {
+                            if (res.status == true) {
+                                $('#show-notification-count-' + res.notification.user_id).html(res
+                                    .notification_count);
+                                var route =
+                                    `{{ route('notification.read', ['type' => 'Chat', 'id' => '__ID__']) }}`
+                                    .replace('__ID__', res.notification.id);
+                                var html = `<li>
+                                                 <a href="${route}" class="top-text-block">
+                                                     <div class="top-text-heading">${res.notification.message}</div>
+                                                     <div class="top-text-light">${moment(res.notification.created_at).fromNow()}</div>
+                                                 </a>
+                                             </li>`;
+                                $('#show-notification-' + res.notification.user_id).prepend(
+                                    html
+                                ); // Use prepend to add new notification at the top
+                            }
+
+                        }
+                    });
                 }
             });
 
@@ -1920,7 +1966,7 @@
                                         <div class="top-text-light">${moment(data.notification.created_at).fromNow()}</div>
                                     </a>
                                 </li>`;
-                    $('#show-notification').prepend(html);
+                    $('#show-notification-' + sender_id).prepend(html);
                     loadChat(data.team_id);
 
                     //             $('#group-member-form-' + data.team_id + '-' + data.user_id).html(`
@@ -2004,11 +2050,7 @@
                 if (data.chat.user_id != sender_id && chat_member_id_array.includes(sender_id)) {
                     if ($(".chat-body").length > 0) {
                         if ($("#team-chat-container-" + data.chat.team_id).length > 0) {
-                            console.log('chat-body');
-
-                            // remove count seen
                             $('#count-team-unseen-' + data.chat.team_id).html('');
-                            // seen team message
                             $.ajax({
                                 type: "POST",
                                 url: "{{ route('team-chats.seen') }}",
@@ -2024,6 +2066,21 @@
                                     } else {
                                         console.log(res.msg);
                                     }
+                                }
+                            });
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ route('team-chats.notification') }}",
+                                data: {
+                                    user_id: sender_id,
+                                    team_id: data.chat.team_id,
+                                    chat_id: data.chat.id,
+                                    is_delete: 1,
+                                    _token: "{{ csrf_token() }}"
+                                },
+                                success: function(res) {
+                                    console.log(res);
+
                                 }
                             });
                         } else {
@@ -2049,7 +2106,7 @@
                                                      <div class="top-text-light">${moment(res.notification.created_at).fromNow()}</div>
                                                  </a>
                                              </li>`;
-                                        $('#show-notification').prepend(
+                                        $('#show-notification-' + sender_id).prepend(
                                             html
                                         ); // Use prepend to add new notification at the top
                                     } else {
@@ -2081,7 +2138,7 @@
                                                      <div class="top-text-light">${moment(res.notification.created_at).fromNow()}</div>
                                                  </a>
                                              </li>`;
-                                    $('#show-notification').prepend(
+                                    $('#show-notification-' + sender_id).prepend(
                                         html
                                     ); // Use prepend to add new notification at the top
                                 } else {
@@ -2112,7 +2169,7 @@
                                         <div class="top-text-light">${moment(data.notification.created_at).fromNow()}</div>
                                     </a>
                                 </li>`;
-                    $('#show-notification').prepend(html);
+                    $('#show-notification-' + sender_id).prepend(html);
                 }
             });
 

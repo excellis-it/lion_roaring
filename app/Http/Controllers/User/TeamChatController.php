@@ -167,6 +167,7 @@ class TeamChatController extends Controller
         }
         $team_chat->save();
         $teams = TeamMember::where('team_id', $request->team_id)->where('is_removed', false)->get();
+        $team = Team::find($request->team_id);
 
         foreach ($teams as $team) {
             $chat_member = new ChatMember();
@@ -178,8 +179,19 @@ class TeamChatController extends Controller
                 $chat_member->is_seen = false;
             }
             $chat_member->save();
+
+            if ($team->user_id != auth()->id()) {
+                $notification = new Notification();
+                $notification->user_id = $team->user_id;
+                $notification->chat_id = $team_chat->id;
+                $notification->message = 'You have a new message in <b>' . $team->name . '</b> group.';
+                $notification->type = 'Team';
+                $notification->save();
+            }
         }
         $chat_member_id = ChatMember::where('chat_id', $team_chat->id)->pluck('user_id')->toArray();
+
+
 
         $chat = TeamChat::where('id', $team_chat->id)->with('user', 'chatMembers')->first();
 
@@ -491,8 +503,13 @@ class TeamChatController extends Controller
             $chat_id = $request->chat_id;
             $user_id = auth()->id();
             $notification_check = Notification::where('user_id', $user_id)->where('chat_id', $chat_id)->where('type', 'Team')->first();
+            if (isset($request->is_delete)) {
+                $notification_check->is_read = 1;
+                $notification_check->is_delete = 1;
+                $notification_check->update();
+            }
             if ($notification_check) {
-                $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->count();
+                $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->where('is_delete', 0)->count();
                 return response()->json(['message' => 'Notification read successfully.', 'status' => true, 'notification' => $notification_check, 'notification_count' => $notification_count]);
             } else {
                 $notification = new Notification();
@@ -501,7 +518,7 @@ class TeamChatController extends Controller
                 $notification->message = 'You have a new message in <b>' . Team::find($team_id)->name . '</b> group.';
                 $notification->type = 'Team';
                 $notification->save();
-                $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->count();
+                $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->where('is_delete', 0)->count();
                 return response()->json(['message' => 'Notification sent successfully.', 'status' => true, 'notification' => $notification, 'notification_count' => $notification_count]);
             }
         }

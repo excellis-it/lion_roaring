@@ -240,15 +240,32 @@ class ChatController extends Controller
         if ($request->ajax()) {
             $user_id = $request->user_id;
             $sender_id = $request->sender_id;
+            $chat_id = $request->chat_id;
             $sender = User::find($sender_id);
+            // return $request->is_delete;
+            if (isset($request->is_delete)) {
+                Notification::where('user_id', $user_id)->where('chat_id', $chat_id)->update(['is_delete' => 1]);
+                return response()->json(['msg' => 'Notification deleted successfully', 'status' => true]);
+            }
 
-            $notification = new Notification();
-            $notification->user_id =  $user_id;
-            $notification->message = 'You have a <b>new message</b> from ' . $sender->full_name;
-            $notification->type = 'Chat';
-            $notification->save();
-            $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->count();
-            return response()->json(['msg' => 'Notification sent successfully', 'status' => true, 'notification_count' => $notification_count, 'notification' => $notification]);
+            $count = Notification::where(function ($query) use ($request) {
+                $query->where('user_id', $request->user_id)->where('is_read', 0)->where('chat_id', $request->chat_id)->where('type', 'Chat');
+            })->count();
+            if ($count > 0) {
+                $notification = Notification::where('user_id', $request->user_id)->where('is_read', 0)->where('chat_id', $request->chat_id)->where('type', 'Chat')->first();
+                $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->where('is_delete', 0)->count();
+                return response()->json(['msg' => 'Notification already sent', 'status' => true, 'notification_count' => $notification_count, 'notification' => $notification]);
+            } else {
+                $notification = new Notification();
+                $notification->user_id =  $user_id;
+                $notification->chat_id = $chat_id;
+                $notification->message = 'You have a <b>new message</b> from ' . $sender->full_name;
+                $notification->type = 'Chat';
+                $notification->save();
+                $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->where('is_delete', 0)->count();
+                return response()->json(['msg' => 'Notification sent successfully', 'status' => true, 'notification_count' => $notification_count, 'notification' => $notification]);
+            }
+
         }
 
         return abort(404); // Optional: return a 404 response if not an AJAX request

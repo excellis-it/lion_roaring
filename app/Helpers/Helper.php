@@ -176,7 +176,7 @@ class Helper
     public static function notificationCount()
     {
         if (auth()->check()) {
-            $notifications = Notification::where('user_id', auth()->user()->id)->where('is_read', 0)->count();
+            $notifications = Notification::where('user_id', auth()->user()->id)->where('is_read', 0)->where('is_delete', 0)->count();
             return $notifications;
         } else {
             return 0;
