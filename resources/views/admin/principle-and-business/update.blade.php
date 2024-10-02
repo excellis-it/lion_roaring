@@ -272,11 +272,6 @@
         tabsize: 2,
         height: 500
     });
-    $('#meta_description').summernote({
-        placeholder: 'Meta Description',
-        tabsize: 2,
-        height: 500
-    });
 </script>
 
 
