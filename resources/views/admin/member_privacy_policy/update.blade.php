@@ -48,8 +48,14 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 <script>
-    ClassicEditor.create(document.querySelector("#description"));
+    // ClassicEditor.create(document.querySelector("#description"));
+    $('#description').summernote({
+        placeholder: 'Description*',
+        tabsize: 2,
+        height: 600
+    });
 </script>
 @endpush

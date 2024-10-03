@@ -17,6 +17,7 @@ use App\Models\OrganizationCenter;
 use App\Models\OurGovernance;
 use App\Models\OurOrganization;
 use App\Models\PrincipalAndBusiness;
+use App\Models\PrincipleBusinessImage;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -54,7 +55,8 @@ class CmsController extends Controller
     public function principleAndBusiness()
     {
         $principleAndBusiness = PrincipalAndBusiness::orderBy('id', 'desc')->first();
-        return view('frontend.principle-and-business')->with('principleAndBusiness', $principleAndBusiness);
+        $principle_images = PrincipleBusinessImage::get();
+        return view('frontend.principle-and-business')->with(compact('principleAndBusiness', 'principle_images'));
     }
 
     public function ecclesiaAssociations()

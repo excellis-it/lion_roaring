@@ -21,7 +21,7 @@
                         </div>
                         <div class="row justify-content-between">
                             {{-- courses --}}
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
@@ -37,7 +37,7 @@
                             </div>
                             {{-- view footer logo --}}
 
-                                <div class="col-md-2">
+                                <div class="col-md-6">
                                     <div class="form-group-div">
                                         <div class="form-group">
                                         @if (isset($footer->footer_logo))
@@ -45,6 +45,37 @@
                                                 style="width: 180px; height: 100px;">
                                         @else
                                         <img src="" id="footer_logo_preview" alt="Footer Logo"
+                                                style="width: 180px; height: 100px; display:none;">
+                                        @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                  {{-- courses --}}
+                            <div class="col-md-6">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        {{-- banner_title --}}
+                                        <label for="floatingInputValue">Footer Flag</label>
+                                        <input type="file" class="form-control" id="footer_flag"
+                                            name="footer_flag" value="{{ old('footer_flag') }}" placeholder="Footer Logo">
+                                        @if ($errors->has('footer_flag'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('footer_flag') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- view footer logo --}}
+
+                                <div class="col-md-6">
+                                    <div class="form-group-div">
+                                        <div class="form-group">
+                                        @if (isset($footer->footer_flag))
+                                            <img src="{{ Storage::url($footer->footer_flag) }}" id="footer_flag_preview" alt="Footer Logo"
+                                                style="width: 180px; height: 100px;">
+                                        @else
+                                        <img src="" id="footer_flag_preview" alt="Footer Logo"
                                                 style="width: 180px; height: 100px; display:none;">
                                         @endif
                                         </div>
@@ -345,10 +376,23 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 <script>
-    ClassicEditor.create(document.querySelector("#footer_address"));
-    ClassicEditor.create(document.querySelector("#footer_title"));
+    // ClassicEditor.create(document.querySelector("#footer_address"));
+    // ClassicEditor.create(document.querySelector("#footer_title"));
+
+    $('#footer_title').summernote({
+        placeholder: 'Footer Title*',
+        tabsize: 2,
+        height: 100
+    });
+
+    $('#footer_address').summernote({
+        placeholder: 'Footer Address*',
+        tabsize: 2,
+        height: 100
+    });
 </script>
     <script>
         $(document).on("click", ".add-more", function() {
@@ -401,6 +445,15 @@
                 reader.onload = (e) => {
                     $('#footer_logo_preview').show();
                     $('#footer_logo_preview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            });
+
+            $('#footer_flag').change(function() {
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    $('#footer_flag_preview').show();
+                    $('#footer_flag_preview').attr('src', e.target.result);
                 }
                 reader.readAsDataURL(this.files[0]);
             });

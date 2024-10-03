@@ -101,7 +101,8 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#eye-button-1').click(function() {
@@ -118,7 +119,12 @@
 
 <script>
     $(document).ready(function() {
-        ClassicEditor.create(document.querySelector("#plan_description"));
+        // ClassicEditor.create(document.querySelector("#plan_description"));
+        $('#plan_description').summernote({
+            placeholder: 'Plan Description*',
+            tabsize: 2,
+            height: 500
+        });
     });
 </script>
 @endpush

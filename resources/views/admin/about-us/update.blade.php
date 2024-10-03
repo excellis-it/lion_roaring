@@ -44,9 +44,9 @@
                                         @if (isset($about_us->banner_image))
                                             <img src="{{ Storage::url($about_us->banner_image) }}" id="banner_image_preview" alt="Footer Logo"
                                                 style="width: 180px; height: 100px;">
-                                        @else    
+                                        @else
                                         <img src="" id="banner_image_preview" alt="Footer Logo"
-                                                style="width: 180px; height: 100px; display:none;">    
+                                                style="width: 180px; height: 100px; display:none;">
                                         @endif
                                         </div>
                                     </div>
@@ -158,10 +158,15 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 <script>
-    ClassicEditor.create(document.querySelector("#description"));
- 
+    // ClassicEditor.create(document.querySelector("#description"));
+    $('#description').summernote({
+        placeholder: 'Description*',
+        tabsize: 2,
+        height: 400
+    });
 </script>
 
 <script>

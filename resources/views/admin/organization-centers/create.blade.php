@@ -101,7 +101,7 @@
                                     </div>
                                 </div>
                             </div>
-                           
+
                             <div class="col-md-2">
                                 <div class="form-group-div">
                                     <div class="form-group">
@@ -191,7 +191,8 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script>
          $(".select2").select2({
             placeholder: "Select a Course",
@@ -201,10 +202,15 @@
 
     <script>
         $(document).ready(function() {
-            ClassicEditor.create(document.querySelector("#description"));
+            // ClassicEditor.create(document.querySelector("#description"));
+            $('#description').summernote({
+                placeholder: 'Description*',
+                tabsize: 2,
+                height: 400
+            });
         });
     </script>
-    
+
     <script>
         $(document).ready(function() {
             $('#banner-image').change(function() {

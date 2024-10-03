@@ -14,6 +14,7 @@ use App\Models\OrganizationCenter;
 use App\Models\OurGovernance;
 use App\Models\OurOrganization;
 use App\Models\PrincipalAndBusiness;
+use App\Models\PrincipleBusinessImage;
 use App\Transformers\EcclesiaAssociationTransformers;
 use App\Transformers\FaqTransformers;
 use App\Transformers\FooterTransformers;
@@ -125,7 +126,8 @@ class CmsController extends Controller
             $principleAndBusiness = PrincipalAndBusiness::orderBy('id', 'desc')->first();
             if ($principleAndBusiness) {
                 $principleAndBusiness = fractal($principleAndBusiness, new PrincipalTransformers())->toArray()['data'];
-                return response()->json(['message' => 'Principal and Business', 'status' => true, 'principleAndBusiness' => $principleAndBusiness], $this->successStatus);
+                $principle_images = PrincipleBusinessImage::get();
+                return response()->json(['message' => 'Principal and Business', 'status' => true, 'principleAndBusiness' => $principleAndBusiness, 'principle_images' => $principle_images], $this->successStatus);
             } else {
                 return response()->json(['message' => 'No Principal and Business found', 'status' => false], 201);
             }

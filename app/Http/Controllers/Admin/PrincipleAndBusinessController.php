@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PrincipalAndBusiness;
+use App\Models\PrincipleBusinessImage;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PrincipleAndBusinessController extends Controller
 {
@@ -19,7 +21,8 @@ class PrincipleAndBusinessController extends Controller
     public function index()
     {
         $business = PrincipalAndBusiness::orderBy('id', 'desc')->first();
-        return view('admin.principle-and-business.update')->with(compact('business'));
+        $principle_images = PrincipleBusinessImage::get();
+        return view('admin.principle-and-business.update')->with(compact('business', 'principle_images'));
     }
 
     /**
@@ -70,15 +73,18 @@ class PrincipleAndBusinessController extends Controller
             ]);
             $business->banner_image = $this->imageUpload($request->file('banner_image'), 'principle-and-business');
         }
+        $business->save();
 
         if ($request->hasFile('image')) {
-            $request->validate([
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
-            ]);
-            $business->image = $this->imageUpload($request->file('image'), 'principle-and-business');
+            foreach ($request->file('image') as $image) {
+                $request->validate([
+                    'image.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+                ]);
+                $principle_image = new PrincipleBusinessImage();
+                $principle_image->image = $this->imageUpload($image, 'principle-and-business');
+                $principle_image->save();
+            }
         }
-
-        $business->save();
 
         return redirect()->back()->with('message', 'Principle and Business updated successfully');
     }
@@ -126,5 +132,16 @@ class PrincipleAndBusinessController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function imageDelete(Request $request)
+    {
+        $principle_image = PrincipleBusinessImage::find($request->id);
+        if (!empty($principle_image->image) && Storage::exists($principle_image->image)) {
+            Storage::delete($principle_image->image);
+        }
+
+        $principle_image->delete();
+        return response()->json(['success' => 'Product image deleted successfully.']);
     }
 }

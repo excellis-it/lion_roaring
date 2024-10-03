@@ -184,7 +184,8 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         ]);
 
 
-
+        // principle-and-business.image.delete
+        Route::get('/principle-and-business-image-delete', [PrincipleAndBusinessController::class, 'imageDelete'])->name('principle-and-business.image.delete');
         Route::get('/newsletter-fetch-data', [NewsletterController::class, 'fetchData'])->name('newsletters.fetch-data');
         // delete newsletter
         Route::get('/newsletter-delete/{id}', [NewsletterController::class, 'delete'])->name('newsletters.delete');

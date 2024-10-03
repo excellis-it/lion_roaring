@@ -41,7 +41,8 @@
                                             <div class="form-group">
                                                 {{-- banner_title --}}
                                                 <label for="floatingInputValue">Content</label>
-                                                <textarea name="content[]" id="content_{{$key}}" cols="30" rows="10" placeholder="Content" class="form-control content">{{ $item->content }}</textarea>
+                                                <textarea name="content[]" id="content_{{ $key }}" cols="30" rows="10" placeholder="Content"
+                                                    class="form-control content">{{ $item->content }}</textarea>
                                                 <span class="text-danger" id="job_opportunity_description_0"></span>
                                             </div>
                                         </div>
@@ -106,7 +107,8 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.remove-image').click(function() {
@@ -134,8 +136,13 @@
     </script>
     <script>
         $(document).ready(function() {
+            // Initialize Summernote for existing elements
             $(".content").each(function(index, element) {
-                ClassicEditor.create(document.getElementById("content_" + index));
+                $(element).summernote({
+                    placeholder: 'Content',
+                    tabsize: 2,
+                    height: 400
+                });
             });
 
             $(document).on("click", ".add-more", function() {
@@ -145,41 +152,53 @@
                 $('#column_count').val(column_count);
 
                 var html = `
-                    <div class="col-xl-5 col-md-5 mt-4">
-                        <div class="form-group-div">
-                            <div class="form-group">
-                                <label for="floatingInputValue"> Image</label>
-                                <input type="file" class="form-control" id="floatingInputValue"  name="image[]" value=""  accept="image/*" placeholder=" Title">
-                                <span class="text-danger" id="job_opportunity_title_${count}"></span>
-                                <input type="hidden" name="image_id[]" value="">
-                            </div>
-                        </div>
+            <div class="col-xl-5 col-md-5 mt-4">
+                <div class="form-group-div">
+                    <div class="form-group">
+                        <label for="floatingInputValue"> Image</label>
+                        <input type="file" class="form-control" name="image[]" accept="image/*" placeholder="Title">
+                        <span class="text-danger" id="job_opportunity_title_${count}"></span>
+                        <input type="hidden" name="image_id[]" value="">
                     </div>
-                    <div class="col-md-5 mt-4">
-                        <div class="form-group-div">
-                            <div class="form-group">
-                                <label for="floatingInputValue"> Content</label>
-                                <textarea name="content[]" cols="30" rows="10" placeholder=" Content"  class="form-control content"></textarea>
-                                <span class="text-danger" id="job_opportunity_description_${count}"></span>
-                            </div>
-                        </div>
+                </div>
+            </div>
+            <div class="col-md-5 mt-4">
+                <div class="form-group-div">
+                    <div class="form-group">
+                        <label for="floatingInputValue"> Content</label>
+                        <textarea name="content[]" cols="30" rows="10" class="form-control content" placeholder="Content"></textarea>
+                        <span class="text-danger" id="job_opportunity_description_${count}"></span>
                     </div>
-                    <div class="col-xl-2 mt-4">
-                                <div class="btn-1">
-                                    <button type="button" class="remove"><i class="ph ph-minus"></i> </button>
-                                </div>
-                            </div>`;
+                </div>
+            </div>
+            <div class="col-xl-2 mt-4">
+                <div class="btn-1">
+                    <button type="button" class="remove"><i class="ph ph-minus"></i> </button>
+                </div>
+            </div>`;
+
+                // Append the new elements
                 $("#add-more").append(html);
-                ClassicEditor.create(document.querySelectorAll('.content')[count]);
+
+                // Initialize Summernote only on the newly added textarea
+                $("#add-more .content").last().summernote({
+                    placeholder: 'Content',
+                    tabsize: 2,
+                    height: 400
+                });
             });
 
             $(document).on("click", ".remove", function() {
-                $(this).parent().parent().prev().remove();
-                $(this).parent().parent().prev().remove();
-                $(this).parent().parent().remove();
+                // Traverse from the remove button to the parent `.col-xl-2` and find its previous siblings
+                $(this).closest('.col-xl-2').prev('.col-md-5').remove(); // Remove content column
+                $(this).closest('.col-xl-2').prev('.col-xl-5').remove(); // Remove image column
+                $(this).closest('.col-xl-2').remove(); // Remove the button column
+
+                // Decrement the column count
                 var column_count = $('#column_count').val();
                 $('#column_count').val(column_count - 1);
             });
+
         });
     </script>
 @endpush

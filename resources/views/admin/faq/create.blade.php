@@ -20,7 +20,7 @@
                         </div>
 
                         <div class="row justify-content-between">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- question --}}
@@ -34,7 +34,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- name --}}
@@ -64,8 +64,13 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script>
-        ClassicEditor.create(document.querySelector("#description"));
+        $('#description').summernote({
+            placeholder: 'Description',
+            tabsize: 2,
+            height: 400
+        });
     </script>
 @endpush

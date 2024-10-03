@@ -37,21 +37,21 @@
                                     </div>
                                 </div>
                             </div>
-                           
+
                             <div class="col-md-2">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                     @if (isset($home->banner_image))
                                         <img src="{{ Storage::url($home->banner_image) }}" id="banner_image_preview" alt="Footer Logo"
                                             style="width: 180px; height: 100px;">
-                                    @else    
+                                    @else
                                     <img src="" id="banner_image_preview" alt="Footer Logo"
-                                            style="width: 180px; height: 100px; display:none;">    
+                                            style="width: 180px; height: 100px; display:none;">
                                     @endif
                                     </div>
                                 </div>
                             </div>
-                        
+
                             {{-- banner_video --}}
                             <div class="col-md-4">
                                 <div class="form-group-div">
@@ -67,7 +67,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-2">
                                 <div class="form-group-div">
                                     <div class="form-group">
@@ -76,12 +76,12 @@
                                             <source src="{{ Storage::url($home->banner_video) }}" type="video/mp4" >
                                             Your browser does not support the video tag.
                                         </video>
-                                    @else    
+                                    @else
                                     @endif
                                     </div>
                                 </div>
                             </div>
-                            
+
                             {{-- our_organization_id --}}
                             <div class="col-md-12">
                                 <div class="form-group-div">
@@ -161,13 +161,13 @@
                                             <source src="{{ Storage::url($home->section_1_video) }}" type="video/mp4" >
                                             Your browser does not support the video tag.
                                         </video>
-                                    @else    
+                                    @else
                                     @endif
                                     </div>
                                 </div>
                             </div>
 
-                           
+
                             {{-- section_1_description --}}
                             <div class="col-md-6">
                                 <div class="form-group-div">
@@ -227,14 +227,14 @@
                                     @if (isset($home->section_2_left_image))
                                         <img src="{{ Storage::url($home->section_2_left_image) }}" id="section_2_left_preview" alt="Footer Logo"
                                             style="width: 180px; height: 100px;">
-                                    @else    
+                                    @else
                                     <img src="" id="section_2_left_preview" alt="Footer Logo"
-                                            style="width: 180px; height: 100px; display:none;">    
+                                            style="width: 180px; height: 100px; display:none;">
                                     @endif
                                     </div>
                                 </div>
                             </div>
-                            
+
                             {{-- section_2_left_description --}}
                             <div class="col-md-12">
                                 <div class="form-group-div">
@@ -287,14 +287,14 @@
                                     @if (isset($home->section_2_right_image))
                                         <img src="{{ Storage::url($home->section_2_right_image) }}" id="section_2_right_image_preview" alt="Footer Logo"
                                             style="width: 180px; height: 100px;">
-                                    @else    
+                                    @else
                                     <img src="" id="section_2_right_image_preview" alt="Footer Logo"
-                                            style="width: 180px; height: 100px; display:none;">    
+                                            style="width: 180px; height: 100px; display:none;">
                                     @endif
                                     </div>
                                 </div>
                             </div>
-                           
+
                             {{-- section_2_right_description --}}
                             <div class="col-md-12">
                                 <div class="form-group-div">
@@ -480,15 +480,46 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 <script>
     $(document).ready(function() {
-        ClassicEditor.create(document.querySelector("#section1_des"));
-        ClassicEditor.create(document.querySelector("#section2_left_des"));
-        ClassicEditor.create(document.querySelector("#section2_right_des"));
-        ClassicEditor.create(document.querySelector("#section3_des"));
-        ClassicEditor.create(document.querySelector("#section4_des"));
-        
+        // ClassicEditor.create(document.querySelector("#section1_des"));
+        // ClassicEditor.create(document.querySelector("#section2_left_des"));
+        // ClassicEditor.create(document.querySelector("#section2_right_des"));
+        // ClassicEditor.create(document.querySelector("#section3_des"));
+        // ClassicEditor.create(document.querySelector("#section4_des"));
+
+        $('#section1_des').summernote({
+            placeholder: 'Section 1 Description*',
+            tabsize: 2,
+            height: 400
+        });
+
+        $('#section2_left_des').summernote({
+            placeholder: 'Section 2 Left Description*',
+            tabsize: 2,
+            height: 400
+        });
+
+        $('#section2_right_des').summernote({
+            placeholder: 'Section 2 Right Description*',
+            tabsize: 2,
+            height: 400
+        });
+
+        $('#section3_des').summernote({
+            placeholder: 'Section 3 Description*',
+            tabsize: 2,
+            height: 400
+        });
+
+        $('#section4_des').summernote({
+            placeholder: 'Section 4 Description*',
+            tabsize: 2,
+            height: 400
+        });
+
     });
 </script>
 
@@ -539,7 +570,7 @@
                 reader.readAsDataURL(this.files[0]);
             });
         });
-        
+
         </script>
 
 @endpush

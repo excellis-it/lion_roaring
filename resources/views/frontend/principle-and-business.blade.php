@@ -31,8 +31,13 @@
 
                 <div class="col-xl-10 col-lg-12 aos-init aos-animate" data-aos="fade-up" data-aos-duration="1000">
                     <div class="lion_aducation">
-                        <img src="{{ isset($principleAndBusiness['image']) ? Storage::url($principleAndBusiness['image']) : '' }}"
-                            alt="">
+                        @if ($principle_images->count() > 0)
+                            <div class="row">
+                                @foreach ($principle_images as $item)
+                                            <img src="{{ isset($item->image) ? Storage::url($item->image) : '' }}" alt="">
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
                     <div class="about_text heading_hp">
                         {!! $principleAndBusiness['description'] ?? 'Description' !!}

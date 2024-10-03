@@ -16,7 +16,7 @@ class FooterController extends Controller
     {
         $footer = Footer::orderBy('id', 'desc')->first();
         $social_links = FooterSocialLink::get();
-        return view('admin.footer.update')->with(compact('footer','social_links'));
+        return view('admin.footer.update')->with(compact('footer', 'social_links'));
     }
 
     public function update(Request $request)
@@ -66,6 +66,13 @@ class FooterController extends Controller
                 'footer_appstore_icon' => 'mimes:jpeg,jpg,png,gif|required',
             ]);
             $footer->footer_appstore_icon = $this->imageUpload($request->file('footer_appstore_icon'), 'footer');
+        }
+
+        if ($request->hasFile('footer_flag')) {
+            $request->validate([
+                'footer_flag' => 'mimes:jpeg,jpg,png,gif|required',
+            ]);
+            $footer->footer_flag = $this->imageUpload($request->file('footer_flag'), 'footer');
         }
         $footer->save();
 

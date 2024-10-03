@@ -3,6 +3,50 @@
     {{ env('APP_NAME') }} | Update Principle and Business Page
 @endsection
 @push('styles')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/min/dropzone.min.css" rel="stylesheet">
+    <style>
+        .image-area {
+            position: relative;
+            width: 15%;
+            background: #333;
+        }
+
+        .image-area img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .remove-image {
+            display: none;
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            border-radius: 10em;
+            padding: 2px 6px 3px;
+            text-decoration: none;
+            font: 700 21px/20px sans-serif;
+            background: #555;
+            border: 3px solid #fff;
+            color: #FFF;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            -webkit-transition: background 0.5s;
+            transition: background 0.5s;
+        }
+
+        .remove-image:hover {
+            background: #E54E4E;
+            padding: 3px 7px 5px;
+            top: -11px;
+            right: -11px;
+        }
+
+        .remove-image:active {
+            background: #E54E4E;
+            top: -10px;
+            right: -11px;
+        }
+    </style>
 @endpush
 @section('head')
     Update Principle and Business Page
@@ -73,14 +117,12 @@
 
                         <div class="row">
                             {{-- Image --}}
-                            <div class="col-md-4">
+                            <div class="col-xl-12 col-md-12">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                        {{-- banner_title --}}
-                                        <label for="floatingInputValue">Image</label>
-                                        <input type="file" class="form-control" id="image"
-                                            name="image" value="{{ old('image') }}"
-                                            placeholder="Image">
+                                        <label for="floatingInputValue">Image (Multiple Image Upload)</label>
+                                        <input type="file" class="form-control dropzone" id="floatingInputValue"
+                                            name="image[]" value="{{ old('image') }}" placeholder="Image" multiple>
                                         @if ($errors->has('image'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('image') }}</div>
@@ -88,18 +130,19 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="form-group-div">
-                                    <div class="form-group">
-                                        @if(isset($business->image))
-                                        <img src="{{ Storage::url($business->image) }}" alt="banner_image" id="preview_image" style="width: 180px; height: 100px;">
-                                        @else
-                                        <img src="" alt="banner_image" id="preview_image" style="width: 180px; height: 100px;display:none;">
-                                        @endif
-                                    </div>
+                            @if (isset($principle_images) && count($principle_images) > 0)
+                                <div class="row mb-6">
+                                    @foreach ($principle_images as $image)
+                                        <div class="image-area m-4" id="{{ $image->id }}">
+                                            <img src="{{ Storage::url($image->image) }}" alt="Preview">
+                                            <a class="remove-image" href="javascript:void(0);"
+                                                data-id="{{ $image->id }}" style="display: inline;">&#215;</a>
+                                        </div>
+                                    @endforeach
                                 </div>
-                            </div>
-                            <div class="col-xl-6 col-md-6">
+                            @endif
+
+                            <div class="col-xl-12 col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- meta description --}}
@@ -245,6 +288,13 @@
 @push('scripts')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js"></script>
+<script type="text/javascript">
+    Dropzone.options.imageUpload = {
+        maxFilesize: 1,
+        acceptedFiles: ".jpeg,.jpg,.png,.gif,.webp"
+    };
+</script>
 
 <script>
     $('#description').summernote({
@@ -301,4 +351,30 @@
         });
     });
     </script>
+
+<script>
+    $(document).ready(function() {
+        $('.remove-image').click(function() {
+            var id = $(this).data('id');
+            var token = $("meta[name='csrf-token']").attr("content");
+            // show confirm alert
+            if (!confirm("Do you really want to delete this image?")) {
+                return false;
+            } else {
+                $.ajax({
+                    url: "{{ route('principle-and-business.image.delete') }}",
+                    type: 'GET',
+                    data: {
+                        "id": id,
+                        "_token": token,
+                    },
+                    success: function() {
+                        toastr.success('Image Deleted Successfully');
+                        $('#' + id).remove();
+                    }
+                });
+            }
+        });
+    });
+</script>
 @endpush

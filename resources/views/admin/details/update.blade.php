@@ -21,38 +21,31 @@
                                     <div class="col-xl-5 col-md-5 mt-4">
                                         <div class="form-group-div">
                                             <div class="form-group">
-                                                {{-- meta title --}}
                                                 <label for="floatingInputValue">Image</label>
-                                                <input type="file" class="form-control" id="floatingInputValue"
-                                                    accept="image/*" name="image[]" value="{{ $item->image }}"
-                                                    placeholder="Image">
-                                                    <input type="hidden" name="image_id[]" value="{{ $item->id }}">
+                                                <input type="file" class="form-control" id="floatingInputValue" accept="image/*" name="image[]" value="{{ $item->image }}" placeholder="Image">
+                                                <input type="hidden" name="image_id[]" value="{{ $item->id }}">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-5 mt-4">
                                         <div class="form-group-div">
                                             <div class="form-group">
-                                                {{-- banner_title --}}
                                                 <label for="floatingInputValue">Description*</label>
-                                                <textarea name="description[]" id="content_{{$key}}"  cols="30" rows="10" required placeholder="Description"
-                                                    class="form-control description">{{ $item->description }}</textarea>
-                                                <span class="text-danger" id="job_opportunity_description_0"></span>
+                                                <textarea name="description[]" id="content_{{ $key }}" cols="30" rows="10" required placeholder="Description" class="form-control description">{{ $item->description }}</textarea>
+                                                <span class="text-danger" id="job_opportunity_description_{{ $key }}"></span>
                                             </div>
                                         </div>
                                     </div>
                                     @if ($key == 0)
                                         <div class="col-xl-2 mt-4">
                                             <div class="btn-1">
-                                                <button type="button" class="add-more"><i class="ph ph-plus"></i>
-                                                </button>
+                                                <button type="button" class="add-more"><i class="ph ph-plus"></i></button>
                                             </div>
                                         </div>
                                     @else
                                         <div class="col-xl-2 mt-4">
                                             <div class="btn-1">
-                                                <button type="button" class="remove"><i class="ph ph-minus"></i>
-                                                </button>
+                                                <button type="button" class="remove"><i class="ph ph-minus"></i></button>
                                             </div>
                                         </div>
                                     @endif
@@ -61,28 +54,24 @@
                                 <div class="col-xl-5 col-md-5 mt-4">
                                     <div class="form-group-div">
                                         <div class="form-group">
-                                            {{-- meta title --}}
-                                            <label for="floatingInputValue"> Image*</label>
-                                            <input type="file" class="form-control" id="floatingInputValue" required accept="image/*"
-                                                name="image[]" value="" placeholder=" Title">
-                                                <input type="hidden" name="image_id[]" value="">
+                                            <label for="floatingInputValue">Image*</label>
+                                            <input type="file" class="form-control" id="floatingInputValue" required accept="image/*" name="image[]" value="" placeholder="Title">
+                                            <input type="hidden" name="image_id[]" value="">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-5 mt-4">
                                     <div class="form-group-div">
                                         <div class="form-group">
-                                            {{-- banner_title --}}
-                                            <label for="floatingInputValue"> Description*</label>
-                                            <textarea name="description[]" id="card_description_0" cols="30" rows="10" placeholder=" Description" required
-                                                class="form-control description"></textarea>
+                                            <label for="floatingInputValue">Description*</label>
+                                            <textarea name="description[]" id="card_description_0" cols="30" rows="10" placeholder="Description" required class="form-control description"></textarea>
                                             <span class="text-danger" id="job_opportunity_description_0"></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-xl-2 mt-4">
                                     <div class="btn-1">
-                                        <button type="button" class="add-more"><i class="ph ph-plus"></i> </button>
+                                        <button type="button" class="add-more"><i class="ph ph-plus"></i></button>
                                     </div>
                                 </div>
                             @endif
@@ -101,7 +90,8 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.remove-image').click(function() {
@@ -127,63 +117,66 @@
             });
         });
     </script>
-    @if (isset($details) && count($details) > 0)
-        @foreach ($details as $key => $item)
-            <script>
-                ClassicEditor.create(document.querySelector('#content_{{$key}}'));
-            </script>
-        @endforeach
-    @else
-        <script>
-            ClassicEditor.create(document.querySelector('.description'));
-        </script>
-
-    @endif
-    <script>
-        $(document).ready(function() {
-            // ckeditor for description
-            // ClassicEditor.create(document.querySelector('.description'));
-
-            $(document).on("click", ".add-more", function() {
-                var count = $("#add-more .col-xl-5").length;
-                var html = `
-                    <div class="col-xl-5 col-md-5 mt-4">
-                        <div class="form-group-div">
-                            <div class="form-group">
-                                <label for="floatingInputValue"> Image*</label>
-                                <input type="file" class="form-control" id="floatingInputValue" required name="image[]" value="" required accept="image/*" placeholder=" Title">
-                                <span class="text-danger" id="job_opportunity_title_${count}"></span>
-                                <input type="hidden" name="image_id[]" value="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-5 mt-4">
-                        <div class="form-group-div">
-                            <div class="form-group">
-                                <label for="floatingInputValue"> Description*</label>
-                                <textarea name="description[]" cols="30" rows="10" placeholder="Description" required class="form-control description"></textarea>
-                                <span class="text-danger" id="job_opportunity_description_${count}"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-2 mt-4">
-                                <div class="btn-1">
-                                    <button type="button" class="remove"><i class="ph ph-minus"></i> </button>
-                                </div>
-                            </div>`;
-                $("#add-more").append(html);
-
-                ClassicEditor.create(document.querySelectorAll('.description')[count]);
-
-            });
-
-            $(document).on("click", ".remove", function() {
-                $(this).parent().parent().prev().remove();
-                $(this).parent().parent().prev().remove();
-                $(this).parent().parent().remove();
+   <script>
+    $(document).ready(function() {
+        // Initialize Summernote for existing description fields
+        $(".description").each(function(index, element) {
+            $(element).summernote({
+                placeholder: 'Description*',
+                tabsize: 2,
+                height: 400
             });
         });
-    </script>
+
+        // Function to handle the add-more button click
+        $(document).on("click", ".add-more", function() {
+            var count = $("#add-more .col-xl-5").length;
+
+            var html = `
+                <div class="col-xl-5 col-md-5 mt-4">
+                    <div class="form-group-div">
+                        <div class="form-group">
+                            <label for="floatingInputValue">Image*</label>
+                            <input type="file" class="form-control" name="image[]" accept="image/*" placeholder="Title">
+                            <span class="text-danger" id="job_opportunity_title_${count}"></span>
+                            <input type="hidden" name="image_id[]" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 mt-4">
+                    <div class="form-group-div">
+                        <div class="form-group">
+                            <label for="floatingInputValue">Description*</label>
+                            <textarea name="description[]" cols="30" rows="10" class="form-control description" placeholder="Description*"></textarea>
+                            <span class="text-danger" id="job_opportunity_description_${count}"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2 mt-4">
+                    <div class="btn-1">
+                        <button type="button" class="remove"><i class="ph ph-minus"></i></button>
+                    </div>
+                </div>`;
+
+            // Append the new fields
+            $("#add-more").append(html);
+
+            // Initialize Summernote for the newly added description field
+            $("#add-more .description").last().summernote({
+                placeholder: 'Description*',
+                tabsize: 2,
+                height: 400
+            });
+        });
+
+        // Remove functionality
+        $(document).on("click", ".remove", function() {
+            $(this).closest('.col-xl-2').prev('.col-md-5').remove(); // Remove description column
+            $(this).closest('.col-xl-2').prev('.col-xl-5').remove();  // Remove image column
+            $(this).closest('.col-xl-2').remove();                    // Remove button column
+        });
+    });
+</script>
 
 
 

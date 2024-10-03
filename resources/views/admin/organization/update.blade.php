@@ -71,9 +71,8 @@
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Banner Image</label>
-                                        <input type="file" class="form-control" id="banner_image"
-                                            name="banner_image" value="{{ old('banner_image') }}"
-                                            placeholder="Banner Image">
+                                        <input type="file" class="form-control" id="banner_image" name="banner_image"
+                                            value="{{ old('banner_image') }}" placeholder="Banner Image">
                                         @if ($errors->has('banner_image'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('banner_image') }}</div>
@@ -82,18 +81,19 @@
                                 </div>
                             </div>
                             <div class="col-md-2">
-                                    <div class="form-group-div">
-                                        <div class="form-group">
+                                <div class="form-group-div">
+                                    <div class="form-group">
                                         @if (isset($organization->banner_image))
-                                            <img src="{{ Storage::url($organization->banner_image) }}" id="banner_image_preview" alt="Footer Logo"
+                                            <img src="{{ Storage::url($organization->banner_image) }}"
+                                                id="banner_image_preview" alt="Footer Logo"
                                                 style="width: 180px; height: 100px;">
-                                        @else    
-                                        <img src="" id="banner_image_preview" alt="Footer Logo"
-                                                style="width: 180px; height: 100px; display:none;">    
+                                        @else
+                                            <img src="" id="banner_image_preview" alt="Footer Logo"
+                                                style="width: 180px; height: 100px; display:none;">
                                         @endif
-                                        </div>
                                     </div>
                                 </div>
+                            </div>
                             {{-- our_organization_id --}}
                             <div class="col-md-6">
                                 <div class="form-group-div">
@@ -115,8 +115,8 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Banner Description*</label>
-                                        <textarea name="banner_description" id="banner_description" 
-                                            placeholder="Banner Description" class="form-control banner_desc_">{{ isset($organization->banner_description) ? $organization->banner_description : old('banner_description') }}</textarea>
+                                        <textarea name="banner_description" id="banner_description" placeholder="Banner Description"
+                                            class="form-control banner_desc_">{{ isset($organization->banner_description) ? $organization->banner_description : old('banner_description') }}</textarea>
                                         @if ($errors->has('banner_description'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('banner_description') }}</div>
@@ -359,7 +359,8 @@
             acceptedFiles: ".jpeg,.jpg,.png,.gif,.webp"
         };
     </script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.remove-image').click(function() {
@@ -385,59 +386,87 @@
             });
         });
     </script>
-    <script>
-        $(document).ready(function() {
-            $(".card_description").each(function(index, element) {
-                ClassicEditor.create(document.getElementById("card_description_" + index));
-            });
-            $(document).on("click", ".add-more", function() {
-                var count = $("#add-more .col-xl-5").length;
-                var html = `
-                    <div class="col-xl-5 col-md-5 mt-4">
-                        <div class="form-group-div">
-                            <div class="form-group">
-                                <label for="floatingInputValue">Card Title*</label>
-                                <input type="text" class="form-control" id="floatingInputValue" required name="card_title[]" value="" placeholder="Card Title">
-                                <span class="text-danger" id="job_opportunity_title_${count}"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-5 mt-4">
-                        <div class="form-group-div">
-                            <div class="form-group">
-                                <label for="floatingInputValue">Card Description*</label>
-                                <textarea name="card_description[]" cols="30" rows="10" placeholder="Card Description" class="form-control card_description"></textarea>
-                                <span class="text-danger" id="job_opportunity_description_${count}"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-2 mt-4">
-                                <div class="btn-1">
-                                    <button type="button" class="remove"><i class="ph ph-minus"></i> </button>
-                                </div>
-                            </div>`;
-                $("#add-more").append(html);
-                // Initialize CKEditor on the newly added textarea
-                ClassicEditor.create(document.querySelectorAll('.card_description')[count]);
-            });
-
-            $(document).on("click", ".remove", function() {
-                $(this).parent().parent().prev().remove();
-                $(this).parent().parent().prev().remove();
-                $(this).parent().parent().remove();
+  <script>
+    $(document).ready(function() {
+        // Initialize Summernote for existing card descriptions
+        $(".card_description").each(function(index, element) {
+            $('#card_description_' + index).summernote({
+                placeholder: 'Card Description',
+                tabsize: 2,
+                height: 400
             });
         });
-    </script>
 
-<script>
-    $(document).ready(function() {
-        ClassicEditor.create(document.querySelector("#banner_description"));
-        ClassicEditor.create(document.querySelector("#project_section_description"));
-    
+        // Add more functionality
+        $(document).on("click", ".add-more", function() {
+            var count = $("#add-more .col-xl-5").length; // Get the current count of card entries
+
+            // Create new card entry HTML
+            var html = `
+                <div class="col-xl-5 col-md-5 mt-4">
+                    <div class="form-group-div">
+                        <div class="form-group">
+                            <label for="floatingInputValue">Card Title*</label>
+                            <input type="text" class="form-control" name="card_title[]" value="" required placeholder="Card Title">
+                            <span class="text-danger" id="job_opportunity_title_${count}"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 mt-4">
+                    <div class="form-group-div">
+                        <div class="form-group">
+                            <label for="floatingInputValue">Card Description*</label>
+                            <textarea name="card_description[]" id="card_description_${count}" cols="30" rows="10" class="form-control card_description" placeholder="Card Description"></textarea>
+                            <span class="text-danger" id="job_opportunity_description_${count}"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2 mt-4">
+                    <div class="btn-1">
+                        <button type="button" class="remove"><i class="ph ph-minus"></i> </button>
+                    </div>
+                </div>`;
+
+            // Append the new fields
+            $("#add-more").append(html);
+
+            // Initialize Summernote for the newly added card description textarea
+            $('#card_description_' + count).summernote({
+                placeholder: 'Card Description',
+                tabsize: 2,
+                height: 400
+            });
+        });
+
+        // Remove functionality
+        $(document).on("click", ".remove", function() {
+            $(this).closest('.col-xl-2').prev('.col-md-5').remove(); // Remove description column
+            $(this).closest('.col-xl-2').prev('.col-xl-5').remove(); // Remove title column
+            $(this).closest('.col-xl-2').remove(); // Remove button column
+        });
     });
 </script>
 
-<script>
+
+    <script>
+        $(document).ready(function() {
+            // ClassicEditor.create(document.querySelector("#banner_description"));
+            // ClassicEditor.create(document.querySelector("#project_section_description"));
+            $('#banner_description').summernote({
+                placeholder: 'Banner Description*',
+                tabsize: 2,
+                height: 400
+            });
+            $('#project_section_description').summernote({
+                placeholder: 'Project Section Description*',
+                tabsize: 2,
+                height: 400
+            });
+
+        });
+    </script>
+
+    <script>
         $(document).ready(function() {
             $('#banner_image').change(function() {
                 let reader = new FileReader();
