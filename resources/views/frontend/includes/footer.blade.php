@@ -7,13 +7,27 @@
             <div class="row justify-content-between">
                 <div class="col-lg-5">
                     <div class="ftr_logo_sec">
-                        <a  class="ftr_logo">
-                            @if (isset(Helper::getFooter()['footer_logo']))
-                                <img src="{{Storage::url(Helper::getFooter()['footer_logo'])}}" alt="">
-                            @else
-                            <img src="{{asset('frontend_assets/uploads/2024/02/Group-2029.png')}}" alt="">
-                            @endif
-                        </a>
+                        <div class="d-flex align-items-center">
+                            <div>
+                                <a  class="ftr_logo">
+                                    @if (isset(Helper::getFooter()['footer_logo']))
+                                        <img src="{{Storage::url(Helper::getFooter()['footer_logo'])}}" alt="">
+                                    @else
+                                    <img src="{{asset('frontend_assets/uploads/2024/02/Group-2029.png')}}" alt="">
+                                    @endif
+                                </a>
+                            </div>
+                            <div>
+                                <a  class="ftr_logo_right">
+                                    @if (isset(Helper::getFooter()['footer_flag']))
+                                        <img src="{{Storage::url(Helper::getFooter()['footer_flag'])}}" alt="">
+                                    @else
+                                    <img src="{{asset('frontend_assets/uploads/2024/02/Group-2029.png')}}" alt="">
+                                    @endif
+                                </a>
+                            </div>
+                        </div>
+
                         <p>
                             {!! Helper::getFooter()['footer_title'] ?? 'Our main focus is to restore our various communities, villages, cities, states,
                             and
