@@ -115,7 +115,7 @@
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExampleEducation">
                             <span>
-                                <img src="{{ asset('user_assets/images/Education.png') }}" alt="">
+                                <img src="{{ asset('user_assets/images/Education.svg') }}" alt="">
                             </span>
                             <span class="hide-menu">Education</span>
                         </a>
@@ -126,7 +126,7 @@
                                 @if (Gate::check('Manage Topic'))
                                     <a href="{{ route('topics.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/Education.png') }}" alt="">
+                                            <img src="{{ asset('user_assets/images/Education.svg') }}" alt="">
                                         </span>
                                         <span>Topics</span>
                                     </a>
@@ -134,7 +134,7 @@
                                 @if (Gate::check('Manage Becoming Sovereigns'))
                                     <a href="{{ route('becoming-sovereign.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/Becoming Sovereign.png') }}"
+                                            <img src="{{ asset('user_assets/images/Becoming Sovereign.svg') }}"
                                                 alt="">
                                         </span>
                                         <span>Becoming Sovereign</span>
@@ -143,7 +143,7 @@
                                 @if (Gate::check('Manage Becoming Christ Like'))
                                     <a href="{{ route('becoming-christ-link.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/Becoming Christ Like.png') }}"
+                                            <img src="{{ asset('user_assets/images/Becoming Christ Like.svg') }}"
                                                 alt="">
                                         </span>
                                         <span>Becoming Christ Like</span>
@@ -152,7 +152,7 @@
                                 @if (Gate::check('Manage Becoming a Leader'))
                                     <a href="{{ route('leadership-development.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/Leadership Development.png') }}"
+                                            <img src="{{ asset('user_assets/images/Leadership Development.svg') }}"
                                                 alt="">
                                         </span>
                                         <span>Becoming a Leader</span>
@@ -161,7 +161,7 @@
                                 @if (Gate::check('Manage File'))
                                     <a href="{{ route('file.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/Files.png') }}" alt="">
+                                            <img src="{{ asset('user_assets/images/Files.svg') }}" alt="">
                                         </span>
                                         <span class="hide-menu">Files</span>
                                     </a>
