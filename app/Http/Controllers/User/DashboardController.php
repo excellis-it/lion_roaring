@@ -143,6 +143,11 @@ class DashboardController extends Controller
             $notification->is_read = 1;
             $notification->update();
             return redirect()->route('team-chats.index');
+        } elseif ($type == 'Mail') {
+            $notification = Notification::find($id);
+            $notification->is_read = 1;
+            $notification->update();
+            return redirect()->route('mail.index');
         }
 
         return abort(404);

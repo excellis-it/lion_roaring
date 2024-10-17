@@ -160,6 +160,12 @@ io.on('connection', (socket) => {
         io.sockets.emit('meeting_created', msg);
     });
 
+    // send_mail
+    socket.on('send_mail', (msg) => {
+        console.log('send_mail: ' + msg);
+        io.sockets.emit('send_mail', msg);
+    });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });

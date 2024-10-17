@@ -4,7 +4,10 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Mail\SendMail as MailSendMail;
+use App\Models\MailUser;
+use App\Models\Notification;
 use App\Models\SendMail;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -12,7 +15,7 @@ class SendMailController extends Controller
 {
     public function list()
     {
-        if (auth()->user()->can('Manage Email')){
+        if (auth()->user()->can('Manage Email')) {
             $mails = SendMail::where('form_id', auth()->id())->orderBy('id', 'desc')->paginate(15);
             return view('user.mail.list')->with('mails', $mails);
         } else {
@@ -31,22 +34,21 @@ class SendMailController extends Controller
             $mails = SendMail::where('form_id', auth()->id())
                 ->where(function ($q) use ($query) {
                     $q->where('to', 'like', '%' . $query . '%')
-                      ->orWhere('cc', 'like', '%' . $query . '%')
-                      ->orWhere('subject', 'like', '%' . $query . '%');
+                        ->orWhere('cc', 'like', '%' . $query . '%')
+                        ->orWhere('subject', 'like', '%' . $query . '%');
                 })
                 ->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 
             return response()->json(['data' => view('user.mail.table', compact('mails'))->render()]);
         }
-
-
     }
 
     public function compose()
     {
-        if (auth()->user()->can('Manage Email')){
-            return view('user.mail.compose');
+        if (auth()->user()->can('Manage Email')) {
+            $users = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']); // Adjust fields as needed
+            return view('user.mail.compose')->with(compact('users'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -60,43 +62,89 @@ class SendMailController extends Controller
             'message' => 'required',
         ]);
 
+        // Decode the JSON strings for 'to' and 'cc' fields
+        $toEmails = json_decode($request->to, true);
+        // Extract email addresses from the decoded arrays
+        $to = array_column($toEmails, 'value');
         if ($request->cc) {
-            // check the cc email is valid or not
-            $cc = explode(',', $request->cc);
-            foreach ($cc as $email) {
-                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    return redirect()->back()->with('error', 'CC email is not valid.');
-                }
+            $ccEmails = json_decode($request->cc, true);
+            $cc = array_column($ccEmails, 'value');
+        } else {
+            $cc = [];
+        }
+
+        // Validate TO and CC emails, and check for duplicates
+        $invalidEmails = [];
+        foreach (array_merge($to, $cc) as $email) {
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $invalidEmails[] = $email; // Collect invalid emails
             }
         }
 
-        if ($request->to) {
-            // check the to email is valid or not
-            $to = explode(',', $request->to);
-            foreach ($to as $email) {
-                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    return redirect()->back()->with('error', 'To email is not valid.');
-                }
-            }
+        if (!empty($invalidEmails)) {
+            return response()->json(['message' => 'Invalid email(s): ' . implode(', ', $invalidEmails), 'status' => false]);
         }
 
-        // dd($request->all());
+        // Remove duplicates from CC that are also in TO
+        $cc = array_diff($cc, $to); // Remove duplicates from CC
+
+        // Create and save the mail
         $mail = new SendMail();
         $mail->form_id = auth()->id();
-        $mail->to = $request->to;
-        $mail->cc = $request->cc;
+        $mail->to = implode(',', $to);  // Convert to a comma-separated string
+        $mail->cc = empty($cc) ? null : implode(',', $cc);  // Convert to a comma-separated string
         $mail->subject = $request->subject;
         $mail->message = $request->message;
         $mail->save();
 
-        // Mail::to($request->to)->send(new MailSendMail($mail));
-        // send multiple mail to cc at a time
-        $cc = explode(',', $request->cc);
-        $to = explode(',', $request->to);
-        Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
+        // Save users associated with CC
+        $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->email;
+        $cc_id = [];
+        if ($cc) {
+            foreach ($cc as $email) {
+                $user = User::where('email', $email)->first();
+                if ($user) {
+                    $cc_id[] =  $user->id;
+                    $mail_user = new MailUser();
+                    $mail_user->user_id = $user->id;
+                    $mail_user->send_mail_id = $mail->id;
+                    $mail_user->save();
 
-        return redirect()->route('mail.index')->with('message', 'Mail sent successfully.');
+                    $notification = new Notification();
+                    $notification->user_id =  $user->id;
+                    $notification->message = $notification_message;
+                    $notification->type = 'Mail';
+                    $notification->save();
+                }
+            }
+        }
+
+
+        // Save users associated with TO
+        $to_id = [];
+        foreach ($to as $email) {
+            $user = User::where('email', $email)->first();
+            if ($user) {
+                $to_id[] =  $user->id;
+                $mail_user = new MailUser();
+                $mail_user->user_id = $user->id;
+                $mail_user->send_mail_id = $mail->id;
+                $mail_user->save();
+
+                $notification = new Notification();
+                $notification->user_id =  $user->id;
+                $notification->message = $notification_message;
+                $notification->type = 'Mail';
+                $notification->save();
+            }
+        }
+
+        session()->flash('message', 'Your mail has been sent Successfully');
+
+        return response()->json(['message' => 'Mail sent successfully.', 'status' => true, 'send_to_ids' => array_merge($cc_id, $to_id), 'notification_message' => $notification_message]);
     }
+
+
 
     public function view(Request $request)
     {
@@ -107,7 +155,7 @@ class SendMailController extends Controller
     // delete
     public function delete($id)
     {
-        if (auth()->user()->can('Manage Email')){
+        if (auth()->user()->can('Manage Email')) {
             $id = $id;
             $mail = SendMail::findOrFail($id);
             $mail->delete();

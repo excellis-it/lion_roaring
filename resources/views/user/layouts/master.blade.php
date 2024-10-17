@@ -147,7 +147,8 @@
                 if ($('#show-notification-{{ auth()->user()->id }} .showing').length > 0) {
                     if (!$(e.target).closest('#show-notification-{{ auth()->user()->id }}').length) {
                         $('.notification-dropdown').removeClass('show');
-                        $('#show-notification-{{ auth()->user()->id }}').html(''); // Clear the notifications
+                        $('#show-notification-{{ auth()->user()->id }}').html(
+                        ''); // Clear the notifications
                         notification_page = 1;
                     }
                 }
@@ -747,8 +748,7 @@
                                     chat_id: data.chat_id,
                                     is_delete: true
                                 },
-                                success: function(res) {
-                                }
+                                success: function(res) {}
                             });
 
                         } else {
@@ -835,7 +835,8 @@
                         },
                         success: function(res) {
                             if (res.status == true) {
-                                $('#show-notification-count-' + res.notification.user_id).html(res
+                                $('#show-notification-count-' + res.notification.user_id).html(
+                                    res
                                     .notification_count);
                                 var route =
                                     `{{ route('notification.read', ['type' => 'Chat', 'id' => '__ID__']) }}`
@@ -2109,9 +2110,7 @@
                                         $('#show-notification-' + sender_id).prepend(
                                             html
                                         ); // Use prepend to add new notification at the top
-                                    } else {
-                                        console.log(res.msg);
-                                    }
+                                    } 
                                 }
                             });
                         }
@@ -2174,6 +2173,21 @@
             });
 
 
+            socket.on('send_mail', function(data) {
+                var send_to_ids = data.send_to_ids;
+                var notification_message = data.notification_message;
+
+                // Check if sender_id exists in send_to_ids array
+                if (send_to_ids.includes(sender_id)) {
+                    // Get the current count of notifications for the sender
+                    var countElement = $('#show-notification-count-' + sender_id);
+                    var count = parseInt(countElement.text()) ||
+                        0;
+
+                    count += 1;
+                    countElement.text(count);
+                }
+            });
 
         });
     </script>
