@@ -110,6 +110,8 @@ class SendMailController extends Controller
                     $mail_user->send_mail_id = $mail->id;
                     $mail_user->save();
 
+
+
                     $notification = new Notification();
                     $notification->user_id =  $user->id;
                     $notification->message = $notification_message;
@@ -138,6 +140,8 @@ class SendMailController extends Controller
                 $notification->save();
             }
         }
+
+        Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
 
         session()->flash('message', 'Your mail has been sent Successfully');
 
