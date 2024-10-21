@@ -45202,3 +45202,337 @@ ul {
 
 
 
+
+/* Sidebar */
+.sidebar {
+    flex: 0.3;
+    max-width: 300px;
+    padding-right: 20px;
+  }
+  
+  .sidebar__compose {
+    margin-top: 15px;
+    margin-left: 10px;
+    margin-bottom: 15px;
+    text-transform: capitalize;
+    color: gray;
+    padding: 13px 30px;
+    border-radius: 30px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    box-shadow: 0px 2px 5px -2px rgba(0, 0, 0, 0.75);
+  }
+  .sidebar__compose:focus{
+    box-shadow: 0px 2px 5px -2px rgba(0, 0, 0, 0.75) !important;
+  }
+  .sidebar__compose span {
+    margin-right: 5px;
+  }
+  
+  .sidebarOption {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 10px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    cursor: pointer;
+    color: #818181;
+  }
+  
+  .sidebarOption .material-icons {
+    padding: 5px;
+  }
+  
+  .sidebarOption h3 {
+    flex: 1;
+    margin-left: 10px;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: "Roboto", sans-serif;
+    margin-bottom: 0;
+  }
+  
+  .sidebarOption:hover,
+  .sidebarOption:hover h3,
+  .sidebarOption:hover .material-icons,
+  .sidebarOption__active,
+  .sidebarOption__active h3,
+  .sidebarOption__active .material-icons {
+    background-color: #efe2ff;
+    color: #5e3591;
+    font-weight: 800;
+  }
+  
+  .sidebar__footer {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .sidebar__footerIcons .material-icons {
+    margin: 7px;
+    cursor: pointer;
+  }
+  
+  /* main body */
+  .main__body {
+    display: flex;
+    height: 80vh;
+  }
+  
+  /* email list */
+  .emailList {
+    flex: 1;
+    overflow: hidden;
+    overflow-y: auto;
+  }
+  .emailList::-webkit-scrollbar-track{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 0px;
+	background-color: #D9D9D9;
+}
+.emailList::-webkit-scrollbar{
+	width: 5px;
+	background-color: #D9D9D9;
+}
+.emailList::-webkit-scrollbar-thumb{
+	border-radius: 0px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #643271;
+}
+  .emailList__settings {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid whitesmoke;
+    background-color: white;
+    z-index: 1;
+    padding: 8px;
+  }
+  
+  .emailList__settingsLeft {
+    display: flex;
+    align-items: center;
+  }
+  
+  .emailList__settings .material-icons {
+    margin: 5px;
+    cursor: pointer;
+  }
+  
+  .section {
+    display: flex;
+    align-items: center;
+    border-bottom-width: 2px;
+    padding: 15px;
+    min-width: 200px;
+    cursor: pointer;
+    color: grey;
+    border-width: 0;
+  }
+  
+  .emailList__sections {
+    position: sticky;
+    top: 0;
+    display: flex;
+    background-color: white;
+    border-bottom: 1px solid whitesmoke;
+    z-index: 1;
+  }
+  
+  .section__selected {
+    background-color: whitesmoke;
+    border-width: 3px;
+    color: #5e3591;
+    border-bottom: 3px solid #5e3591;
+  }
+  
+  .section__selected .material-icons {
+    color: #5e3591;
+  }
+  
+  .section:hover {
+    background-color: whitesmoke;
+    border-width: 3px;
+  }
+  
+  .section h4 {
+    font-size: 14px;
+    margin-left: 15px;
+    margin-bottom: 0;
+  }
+  
+  .emailRow__options {
+    display: flex;
+    align-items: center;
+  }
+  
+  .emailRow__options .material-icons,
+  input {
+    margin: 5px;
+  }
+  
+  .emailRow {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    border-bottom: 1px solid whitesmoke;
+    cursor: pointer;
+    z-index: 999;
+  }
+  
+  .emailRow:hover {
+    border-top: 1px solid whitesmoke;
+    box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.24);
+  }
+  
+  .emailRow__message {
+    display: flex;
+    flex: 0.8;
+    align-items: center;
+    font-size: 13px;
+  }
+  
+  .emailRow__message h4 {
+    width: 400px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 14px;
+    margin-bottom: 0;
+  }
+  
+  .emailRow__title {
+    font-size: 13px;
+    flex: 0.3;
+    margin-bottom: 0;
+    font-family: "Roboto", sans-serif;
+  }
+  
+  .emailRow__time {
+    padding-right: 15px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+  
+  .emailRow__description {
+    font-weight: 400;
+    color: gray;
+  }
+
+  .popup-window .title {
+    padding: 0.6rem 0.8rem;
+    background: #7851a9;
+    color: #ffffff;
+  }
+  .popup-window .menu {
+    padding: 0.4rem;
+    background: #eeeeee;
+    color: #999;
+  }
+  .popup-window .menu .button-silver {
+    border-radius: 0;
+    border: none;
+    color: #000;
+  }
+  .popup-window .menu .button-silver:hover {
+    box-shadow: 0 0 1px #484848;
+  }
+.input-large, .min-hide_textera{
+    width: 100%;
+    display: block;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    box-shadow: inset 0 0 1px #999;
+    margin: 0;
+    border: none;
+    padding: 13px;
+}
+  
+.box_slae {
+    width: 600px;
+    height: 0px;
+    background: white;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    overflow: hidden;
+    transition: all ease-in 0.3s;
+    z-index: 1;
+    box-shadow: 0 0 39px rgb(0 0 0 / 20%);
+    border-radius: 6px;
+  }
+  
+  .box_slae.active {
+    height: auto;
+    padding: 0px;
+    transition: all ease-in 0.3s;
+  }
+  
+  #deletebtn {
+    width: 40px;
+    height: 40px;
+    background: none;
+    text-align: center;
+    cursor: pointer;
+    position: absolute;
+    right: 0px;
+    top: 3px;
+    color: #fff;
+    font-size: 22px;
+  }
+  
+  .box_slae h6 i {
+    color: #FFBF1C;
+  }
+
+  .button-blue {
+    background: #643271;
+    color: #fff;
+    border-radius: 6px;
+    padding: 5px 15px;
+    border: none;
+}
+
+.trash_btn {
+    display: inline-block;
+    float: right;
+}
+
+
+
+.file-input__input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+  
+  .file-input__label {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 4px;
+    font-weight: 600;
+    color: #000000;
+    font-size: 19px;
+    padding: 2px 8px;
+  }
+.file-input{
+    display: inline-block;
+}
+
+
+
+
