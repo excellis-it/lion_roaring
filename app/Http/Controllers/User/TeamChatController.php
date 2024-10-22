@@ -65,68 +65,87 @@ class TeamChatController extends Controller
 
     public function create(Request $request)
     {
+        // Validate the incoming request
         $request->validate([
             'name' => 'required|max:100',
             'description' => 'required|max:255',
-            'members' => 'required',
-            'members.*' => 'required',
+            'members' => 'required|array|min:1', // Ensure members is an array with at least one member
+            'members.*' => 'required|exists:users,id', // Ensure each member is a valid user
             'group_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
+        // Create the new team
         $team = new Team();
         $team->name = $request->name;
         $team->description = $request->description;
         $team->group_image = $this->imageUpload($request->file('group_image'), 'team');
         $team->save();
 
-        $team_member = new TeamMember();
-        $team_member->team_id = $team->id;
-        $team_member->user_id = auth()->id();
-        $team_member->is_admin = true;
-        $team_member->save();
+        // Add the authenticated user as the team admin
+        $admin_member = new TeamMember();
+        $admin_member->team_id = $team->id;
+        $admin_member->user_id = auth()->id();
+        $admin_member->is_admin = true;
+        $admin_member->save();
 
-        if ($request->members) {
-            foreach ($request->members as $member) {
-                $team_member = new TeamMember();
-                $team_member->team_id = $team->id;
-                $team_member->user_id = $member;
-                $team_member->is_admin = false;
-                $team_member->save();
-            }
+        // Add other members to the team
+        $count =0;
+        foreach ($request->members as $member_id) {
+
+            $team_member = new TeamMember();
+            $team_member->team_id = $team->id;
+            $team_member->user_id = $member_id;
+            $team_member->is_admin = false;
+            $team_member->save();
+            $count++;
         }
 
+
+
+        // Create a team chat and a welcome message
         $team_chat = new TeamChat();
         $team_chat->team_id = $team->id;
         $team_chat->user_id = auth()->id();
         $team_chat->message = 'Welcome to ' . $team->name . ' group.';
         $team_chat->save();
 
-        foreach ($request->members as $member) {
+        // Add chat members and notifications
+        foreach ($request->members as $member_id) {
+            // Add each member to the chat
             $chat_member = new ChatMember();
             $chat_member->chat_id = $team_chat->id;
-            $chat_member->user_id = $member;
+            $chat_member->user_id = $member_id;
             $chat_member->save();
 
+            // Create a notification for each member
             $notification = new Notification();
-            $notification->user_id = $member;
+            $notification->user_id = $member_id;
             $notification->message = 'You have been added to <b>' . $team->name . '</b> group.';
             $notification->type = 'Team';
             $notification->save();
         }
 
-        // $notification['message'] = 'You have been added to ' . $team->name . ' group.';
-        // $notification['created_at'] = now();
+        // Add the admin to the chat as well
+        $admin_chat_member = new ChatMember();
+        $admin_chat_member->chat_id = $team_chat->id;
+        $admin_chat_member->user_id = auth()->id();
+        $admin_chat_member->save();
 
-        $admin_add_chat = new ChatMember();
-        $admin_add_chat->chat_id = $team_chat->id;
-        $admin_add_chat->user_id = auth()->id();
-        $admin_add_chat->save();
-
-
+        // Fetch the newly created team with the last message
         $team = Team::with('lastMessage')->find($team->id);
+
+        // Get the IDs of the chat members
         $chat_member_id = ChatMember::where('chat_id', $team_chat->id)->pluck('user_id')->toArray();
-        return response()->json(['message' => 'Team created successfully.', 'status' => true, 'team' => $team, 'chat_member_id' => $chat_member_id]);
+
+        // Return a JSON response with the team and chat member IDs
+        return response()->json([
+            'message' => 'Team created successfully.',
+            'status' => true,
+            'team' => $team,
+            'chat_member_id' => $chat_member_id
+        ]);
     }
+
 
     public function load(Request $request)
     {
@@ -141,6 +160,7 @@ class TeamChatController extends Controller
             })->update(['is_seen' => true]);
             // team member name with comma separated
             $team_members = TeamMember::where('team_id', $team_id)->where('is_removed', false)->with('user')->get();
+
             $team_member_name = '';
             foreach ($team_members as $member) {
                 $team_member_name .= ($member['user']['first_name'] ?? '') . ' ' .
@@ -463,6 +483,10 @@ class TeamChatController extends Controller
 
         $team_member_id = TeamMember::where('team_id', $team_id)->pluck('user_id')->toArray();
         $team->delete();
+
+        TeamMember::where('team_id', $team_id)->delete();
+        TeamChat::where('team_id', $team_id)->delete();
+
 
         return response()->json(['message' => 'Group deleted successfully.', 'status' => true, 'team_id' => $team_id, 'team_member_id' => $team_member_id]);
     }

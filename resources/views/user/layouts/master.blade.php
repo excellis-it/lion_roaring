@@ -14,7 +14,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
         rel="stylesheet">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <!-- Bootstrap core CSS -->
     <link href="{{ asset('user_assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css"
@@ -149,7 +149,7 @@
                     if (!$(e.target).closest('#show-notification-{{ auth()->user()->id }}').length) {
                         $('.notification-dropdown').removeClass('show');
                         $('#show-notification-{{ auth()->user()->id }}').html(
-                        ''); // Clear the notifications
+                            ''); // Clear the notifications
                         notification_page = 1;
                     }
                 }
@@ -913,29 +913,33 @@
                         // append new team to the list
                         var data = resp.team;
                         var group_image = data.group_image;
-                        var time = data.last_message ?
-                            "{{ date('h:i A', strtotime('" + data.last_message.created_at + "')) }}" :
-                            '';
-                        html = `<li class="group group-data" data-id="${data.id}">
-                                    <div class="avatar">`
+                        // var time = data.last_message ?
+                        //     "{{ date('h:i A', strtotime('" + data.last_message.created_at + "')) }}" :
+                        //     '';
+                        // html = `<li class="group group-data" data-id="${data.id}">
+                    //             <div class="avatar">`
 
-                        if (group_image) {
-                            html +=
-                                `<img src="{{ Storage::url('${data.group_image}') }}" alt="">`;
-                        } else {
-                            html +=
-                                `<img src="{{ asset('user_assets/images/group.jpg') }}" alt="">`;
+                        // if (group_image) {
+                        //     html +=
+                        //         `<img src="{{ Storage::url('${data.group_image}') }}" alt="">`;
+                        // } else {
+                        //     html +=
+                        //         `<img src="{{ asset('user_assets/images/group.jpg') }}" alt="">`;
 
-                        }
-                        html += `</div><p class="GroupName">${data.name}</p>
-                                    <p class="GroupDescrp">${data.last_message ? data.last_message.message : ''}</p>
-                                    <div class="time_online">${time ? time : ''}</div>
-                                </li>`;
-                        $('.group-list').prepend(html);
-                        $('#exampleModalToggle').modal('hide');
+                        // }
+                        // html += `</div><p class="GroupName">${data.name}</p>
+                    //             <p class="GroupDescrp">${data.last_message ? data.last_message.message : ''}</p>
+                    //             <div class="time_online">${time ? time : ''}</div>
+                    //         </li>`;
+                        // $('.group-list').prepend(html);
+
+
+                        groupList(sender_id);
                         // reset form
                         $('#create-team')[0].reset();
 
+                        $('#previewImage01').attr('src', '{{asset("user_assets/images/group.jpg")}}');
+                        $('#exampleModalToggle').modal('hide');
                         // Send message to socket
                         socket.emit('createTeam', {
                             user_id: sender_id,
@@ -2111,7 +2115,7 @@
                                         $('#show-notification-' + sender_id).prepend(
                                             html
                                         ); // Use prepend to add new notification at the top
-                                    } 
+                                    }
                                 }
                             });
                         }

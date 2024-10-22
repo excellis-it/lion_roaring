@@ -55,7 +55,7 @@
                 <div class="col-xl-5 col-lg-6" data-aos="fade-up" data-aos-duration="1000">
                     <div class="about_text heading_hp text_white">
                         <h6>{{ $home['section_1_title'] ?? 'title' }}</h6>
-                        <h2> {{ $home['section_1_sub_title'] ?? 'title' }}</h2>
+                        <h2 class="text-start"> {{ $home['section_1_sub_title'] ?? 'title' }}</h2>
                         <p style="font-weight: 400;">
                             <strong>{!! $home['section_1_description'] ?? 'description' !!}</strong>
                         </p>

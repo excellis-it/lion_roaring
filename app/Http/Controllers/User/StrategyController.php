@@ -84,9 +84,7 @@ class StrategyController extends Controller
                 // delete strategy from storage folder if exists
                 if (Storage::disk('public')->exists($strategy->file)) {
                     Storage::disk('public')->delete($strategy->file);
-                } else {
-                    return redirect()->route('strategy.index')->with('error', 'Strategy not found.');
-                }
+                } 
                 $strategy->delete();
 
                 return redirect()->route('strategy.index')->with('message', 'Strategy deleted successfully.');
