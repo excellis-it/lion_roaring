@@ -68,18 +68,32 @@
         <div class="mail_subject">
             <div class="row">
                 <div class="col-lg-7">
-                    <h4 class="subject_text_h4">Re: Lorem ipsum dolor sit, amet consectetur adipisicing elit....
-                        <span class="inbox_box">inbox <span class="material-icons">close</span></span>
-                    </h4>
+                    <div class="d-flex">
+                        <div class="man_img">
+                            <span>
+                                <img src="http://127.0.0.1:8000/user_assets/images/logo.png" alt="user" class="user_img">
+                            </span>
+                        </div>
+                        <div class="name_text_p">
+                            <h5>Swarnadip Nath</h5>
+                            <span class="time_text">To Me</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-lg-5 text-end">
-
-                    <span class="time_text">7:10PM (10minutes ago)</span>
-                    <a href=""><span class="material-icons">reply</span></a>
-                    <a href=""><span class="material-icons">grade</span></a>
+                    <div class="d-flex justify-content-end">
+                        <span class="time_text">7:10PM (10minutes ago)</span>
+                        <a href=""><span class="material-icons">reply</span></a>
+                        <a href=""><span class="material-icons">grade</span></a>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="mail_text">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam tempora iure sed, libero sunt, cumque alias porro inventore dolorem, consequuntur culpa nihil iusto rem! Optio reiciendis in dignissimos vel necessitatibus.</p>
+        </div>
+
         <!-- Email List rows Ends -->
       </div>
       <!-- Email List Ends -->

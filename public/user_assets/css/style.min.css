@@ -45554,3 +45554,23 @@ ul {
 .time_text{
     font-size: 14px;
 }
+
+.man_img span{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: inline-block;
+    margin-right:10px;
+}
+.man_img span img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: inline-block;
+    object-fit: cover;
+}
+.name_text_p h5{
+    font-family: 'Roboto', sans-serif;
+    margin-bottom: 5px;
+}
