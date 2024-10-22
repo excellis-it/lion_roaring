@@ -45533,6 +45533,44 @@ ul {
     display: inline-block;
 }
 
+.inbox_box{
+    background: #e6d2ff;
+    color: #7851a9;
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 4px;
+    display: inline-flex;
+}
+.inbox_box .material-icons{
+    font-size: 14px;
+}
 
+.subject_text_h4{
+    margin-bottom: 0;
+}
+.mail_subject{
+    padding: 15px 15px;
+}
+.time_text{
+    font-size: 14px;
+}
 
-
+.man_img span{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: inline-block;
+    margin-right:10px;
+}
+.man_img span img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: inline-block;
+    object-fit: cover;
+}
+.name_text_p h5{
+    font-family: 'Roboto', sans-serif;
+    margin-bottom: 5px;
+}
