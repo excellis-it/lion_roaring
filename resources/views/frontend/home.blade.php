@@ -16,7 +16,7 @@
             <div class="slide">
                 <a href="{{route('details')}}" tabindex="0">
                     <div class="slide__img">
-                        <video autoplay="" muted="" loop="" class="video_part">
+                        <video autoplay="" muted="" loop="" class="video_part" playsInline>
                             <source src="{{ isset($home['banner_video']) ? Storage::url($home['banner_video']) : 'https://via.placeholder.com/150' }}"
                                 type="video/mp4">
                             Your browser does not support the video tag.
