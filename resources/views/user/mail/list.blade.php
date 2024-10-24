@@ -58,7 +58,7 @@
                         <!-- Email Row Starts -->
                         @if ($mails->count() > 0)
                             @foreach ($mails as $mail)
-                                <div class="emailRow view-mail" data-route="{{ route('mail.view') }}">
+                                <div class="emailRow view-mail mail_read" data-route="{{ route('mail.view') }}">
                                     <div class="emailRow__options">
                                         <input type="checkbox" name="" id="" />
                                           <span class="material-symbols-outlined"> star_border </span>

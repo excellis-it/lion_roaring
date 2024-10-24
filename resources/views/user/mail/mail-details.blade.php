@@ -21,20 +21,17 @@
         <!-- Settings Starts -->
         <div class="emailList__settings">
           <div class="emailList__settingsLeft">
-          <a href="">  <span class="material-symbols-outlined"> arrow_back</span></a>
-          <a href="">  <span class="material-symbols-outlined"> refresh </span></a>
-          <a href="">  <span class="material-symbols-outlined"> delete </span></a>
+            <a href="">  <span class="material-symbols-outlined"> arrow_back</span></a>
+            <a href="">  <span class="material-symbols-outlined"> refresh </span></a>
+            <a href="">  <span class="material-symbols-outlined"> delete </span></a>
           </div>
           <div class="emailList__settingsRight">
-          <a href="">  <span class="material-symbols-outlined"> chevron_left </span></a>
-          <a href="">  <span class="material-symbols-outlined"> chevron_right </span></a>
-          <a href="">  <span class="material-symbols-outlined"> settings </span></a>
+            <a href="">  <span class="material-symbols-outlined"> chevron_left </span></a>
+            <a href="">  <span class="material-symbols-outlined"> chevron_right </span></a>
+            <a href="">  <span class="material-symbols-outlined"> settings </span></a>
           </div>
         </div>
         <!-- Settings Ends -->
-
-        <!-- Section Ends -->
-
         <!-- Email List rows starts -->
         <div class="mail_subject">
             <div class="row">
@@ -48,6 +45,7 @@
                 </div>
             </div>
         </div>
+
         <div class="mail_subject">
             <div class="row">
                 <div class="col-lg-7">
@@ -81,10 +79,12 @@
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam tempora iure sed, libero sunt, cumque alias porro inventore dolorem, consequuntur culpa nihil iusto rem! Optio reiciendis in dignissimos vel necessitatibus.</p>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam tempora iure sed, libero sunt, cumque alias porro inventore dolorem, consequuntur culpa nihil iusto rem! Optio reiciendis in dignissimos vel necessitatibus.</p>
         </div>
+
         <div class="mail_reply">
             <a href=""><span class="material-symbols-outlined">reply</span> Reply</a>
             <a href=""><span class="material-symbols-outlined">forward</span> Forward</a>
         </div>
+
         <div class="reply_sec">
             <div class="reply_img_box">
                 <span>
@@ -96,7 +96,7 @@
                     <div class="d-flex align-items-center"><span class="material-symbols-outlined">reply</span> &nbsp;&nbsp; | &nbsp;&nbsp; subhasiskoley@gmail.com</div>
                 </div>
                 <div class="big_textara">
-                    <textarea name="" id="" cols="30" rows="10" placeholder="Message"></textarea>
+                    <textarea name="" id="" rows="10" placeholder="Message"></textarea>
                 </div>
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -113,6 +113,7 @@
                 </div>
             </div>
         </div>
+
         <div class="reply_sec">
             <div class="reply_img_box">
                 <span>
@@ -124,7 +125,7 @@
                     <div class="d-flex align-items-center"><span class="material-symbols-outlined">forward</span> &nbsp;&nbsp; | &nbsp;&nbsp; <input type="text" class="text_box"/></div>
                 </div>
                 <div class="big_textara">
-                    <textarea name="" id="" cols="30" rows="5" placeholder="Message"></textarea>
+                    <textarea name="" id="" rows="5" placeholder="Message"></textarea>
                 </div>
                 <div class="fowroad">
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam tempora iure sed, libero sunt, cumque alias porro inventore dolorem, consequuntur culpa nihil iusto rem! Optio reiciendis in dignissimos vel necessitatibus.</p>
@@ -157,38 +158,27 @@
     <!-- Main Body Ends -->
 
     <div class="box_slae" id="box1">
-    <div id="deletebtn" onclick="dltFun();"><i class="fas fa-times"></i></div>
-    <div class='popup-window new-mail'>
-        <div class='header'>
-            <div class='title'>New Message
+        <div id="deletebtn" onclick="dltFun();"><i class="fas fa-times"></i></div>
+        <div class='popup-window new-mail'>
+            <div class='header'>
+                <div class='title'>New Message</div>
             </div>
-        </div>
-        <div class='min-hide'>
+            <div class='min-hide'>
                 <input class='receiver input-large' type='text' placeholder='Recipients' value=''/>
                 <input class='input-large' type='text' placeholder='Subject'/>
             </div>
-        <textarea class='min-hide_textera' rows="6" placeholder='Message'></textarea>
-        <div class='menu min-hide'>
-            <button class='button-large button-blue'>Send</button>
-            <div class="file-input">
-                <input
-                    type="file"
-                    name="file-input"
-                    id="file-input"
-                    class="file-input__input"
-                />
-                <label class="file-input__label" for="file-input">
-                    <span><i class='fa fa-paperclip'></i></span></label
-                >
+            <textarea class='min-hide_textera' rows="6" placeholder='Message'></textarea>
+            <div class='menu min-hide'>
+                <button class='button-large button-blue'>Send</button>
+                <div class="file-input">
+                    <input type="file" name="file-input" id="file-input" class="file-input__input"/>
+                    <label class="file-input__label" for="file-input">
+                        <span><i class='fa fa-paperclip'></i></span></label>
                 </div>
                 <div class='trash_btn'>
                     <button class='button-large button-silver'><i class='fa fa-trash'></i></button>
                 </div>
             </div>
-        </div>
-    </div>
-
-
         </div>
     </div>
     <!-- Modal -->

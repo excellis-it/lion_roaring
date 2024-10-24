@@ -45282,6 +45282,7 @@ ul {
   .main__body {
     display: flex;
     height: 80vh;
+    overflow: hidden;
   }
   
   /* email list */
@@ -45383,9 +45384,11 @@ ul {
     height: 50px;
     border-bottom: 1px solid whitesmoke;
     cursor: pointer;
-    z-index: 999;
   }
-  
+  .mail_read{
+    background: #f8f8f8;
+  }
+
   .emailRow:hover {
     border-top: 1px solid whitesmoke;
     box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.24);
@@ -45541,7 +45544,7 @@ ul {
     border-radius: 4px;
     display: inline-flex;
 }
-.inbox_box .material-icons{
+.inbox_box span{
     font-size: 14px;
 }
 
