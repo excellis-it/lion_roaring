@@ -2201,7 +2201,10 @@
         $(document).ready(function() {
             $('.sidebarOption').click(function() {
                 var route = $(this).data('route');
-                window.location.href = route;
+                if (route) {
+                    window.location.href = route;
+                }
+
             });
         });
     </script>
