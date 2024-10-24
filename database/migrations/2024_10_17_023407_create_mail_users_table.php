@@ -18,6 +18,7 @@ class CreateMailUsersTable extends Migration
             $table->foreignId('send_mail_id')->references('id')->on('send_mails')->onDelete('cascade')->nullable();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade')->nullable();
             $table->boolean('is_read')->default(0);
+            $table->boolean('is_starred')->default(0);
             $table->boolean('is_delete')->default(0);
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();

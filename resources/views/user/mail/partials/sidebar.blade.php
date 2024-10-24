@@ -6,16 +6,18 @@
         <h3>Inbox</h3>
     </div>
     <div class="sidebarOption">
-        <span class="material-icons"> label_important </span>
-        <h3>Important</h3>
+        <span class="material-icons"> star_border </span>
+        <h3>Starred</h3>
     </div>
     <div class="sidebarOption">
         <span class="material-icons"> near_me </span>
         <h3>Sent</h3>
     </div>
     <div class="sidebarOption">
-        <span class="material-icons"> note </span>
-        <h3>Drafts</h3>
+        <span class="material-symbols-outlined">
+            delete
+            </span>
+        <h3>Trash</h3>
     </div>
 </div>
 

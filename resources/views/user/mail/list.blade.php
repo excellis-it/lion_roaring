@@ -63,7 +63,6 @@
                                     <div class="emailRow__options">
                                         <input type="checkbox" name="" id="" />
                                         <span class="material-icons"> star_border </span>
-                                        <span class="material-icons"> label_important </span>
                                     </div>
 
                                     <h3 class="emailRow__title">YouTube</h3>
