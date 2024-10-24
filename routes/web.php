@@ -451,9 +451,11 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::get('/', [SendMailController::class, 'list'])->name('mail.index');
         Route::get('/compose', [SendMailController::class, 'compose'])->name('mail.compose');
         Route::post('/send', [SendMailController::class, 'sendMail'])->name('mail.send');
-        Route::get('/view', [SendMailController::class, 'view'])->name('mail.view');
-        Route::get('/mail-delete/{id}', [SendMailController::class, 'delete'])->name('mail.delete');
+        Route::get('/view/{id}', [SendMailController::class, 'view'])->name('mail.view');
+        Route::post('/mail-delete', [SendMailController::class, 'delete'])->name('mail.delete');
         Route::get('/sent', [SendMailController::class, 'sent'])->name('mail.sent');
+        Route::get('/sent-mail-view/{id}', [SendMailController::class, 'sentMailView'])->name('mail.sent.view');
+        Route::get('/inbox-email-list', [SendMailController::class, 'inboxEmailList'])->name('mail.inbox-email-list');
     });
 
     // live-event

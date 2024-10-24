@@ -5,9 +5,9 @@
 @push('styles')
 @endpush
 @section('content')
-@php
-    use App\Helpers\Helper;
-@endphp
+    @php
+        use App\Helpers\Helper;
+    @endphp
     <div class="container-fluid">
         <div class="bg_white_border">
 
@@ -48,22 +48,24 @@
                         <!-- Email Row Starts -->
                         @if ($mails->count() > 0)
                             @foreach ($mails as $mail)
-                                <div class="emailRow view-mail" data-route="{{ route('mail.view') }}">
+
+                                <div class="emailRow "
+                                    >
                                     <div class="emailRow__options">
                                         <input type="checkbox" name="" id="" />
                                         <span class="material-symbols-outlined"> star_border </span>
                                     </div>
 
-                                    <h3 class="emailRow__title">To: {{ Helper::getMailTo($mail->id) }}</h3>
+                                    <h3 class="emailRow__title view-mail" data-route="{{ route('mail.sent.view', base64_encode($mail->id)) }}">{{ $mail->user->full_name ?? '' }}</h3>
 
-                                    <div class="emailRow__message">
+                                    <div class="emailRow__message view-mail" data-route="{{ route('mail.sent.view', base64_encode($mail->id)) }}">
                                         <h4>
                                             {{ $mail->subject }}
-                                            <span class="emailRow__description"> - {!! $mail->message !!} </span>
+                                            <span class="emailRow__description view-mail" data-route="{{ route('mail.sent.view', base64_encode($mail->id)) }}"> - {!! $mail->message !!} </span>
                                         </h4>
                                     </div>
 
-                                    <p class="emailRow__time">{{ $mail->created_at->diffForHumans() }}</p>
+                                    <p class="emailRow__time view-mail" data-route="{{ route('mail.sent.view', base64_encode($mail->id)) }}">{{ $mail->created_at->diffForHumans() }}</p>
                                 </div>
                             @endforeach
                         @else

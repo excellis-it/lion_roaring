@@ -25,6 +25,14 @@ class SendMailController extends Controller
         }
     }
 
+    public function inboxEmailList()
+    {
+        $mails = SendMail::whereHas('mailUsers', function ($q) {
+            $q->where('user_id', auth()->id())->where('is_delete', 0);
+        })->orderBy('created_at', 'desc')->paginate(15);
+        return response()->json(['data' => view('user.mail.partials.inbox-email-list', compact('mails'))->render()]);
+    }
+
     public function sent()
     {
         if (auth()->user()->can('Manage Email')) {
@@ -164,18 +172,41 @@ class SendMailController extends Controller
 
 
 
-    public function view(Request $request)
+    public function view($id)
     {
-        return view('user.mail.mail-details');
+        $id = base64_decode($id);
+        $mail = MailUser::where('send_mail_id', $id)->where('user_id', auth()->id())->first();
+        if ($mail) {
+            $mail->is_read = 1;
+            $mail->save();
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+        $mail = SendMail::findOrFail($id);
+        return view('user.mail.mail-details')->with(compact('mail'));
+    }
+
+    // sentMailView
+    public function sentMailView($id)
+    {
+        $id = base64_decode($id);
+        $mail = SendMail::findOrFail($id);
+        return view('user.mail.mail-details')->with(compact('mail'));
     }
     // delete
-    public function delete($id)
+    public function delete(Request $request)
     {
         if (auth()->user()->can('Manage Email')) {
-            $id = $id;
-            $mail = SendMail::findOrFail($id);
-            $mail->delete();
-            return redirect()->back()->with('message', 'Mail deleted successfully.');
+            $mailIds = $request->mailIds;
+            foreach ($mailIds as $mailId) {
+                $mail = MailUser::where('send_mail_id', $mailId)->where('user_id', auth()->id())->first();
+                if ($mail) {
+                    $mail->is_delete = 1;
+                    $mail->deleted_at = now();
+                    $mail->save();
+                }
+            }
+            return response()->json(['message' => 'Mail deleted successfully.', 'status' => true]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
