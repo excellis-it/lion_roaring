@@ -452,8 +452,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::get('/compose', [SendMailController::class, 'compose'])->name('mail.compose');
         Route::post('/send', [SendMailController::class, 'sendMail'])->name('mail.send');
         Route::get('/view', [SendMailController::class, 'view'])->name('mail.view');
-        // mail.delete
         Route::get('/mail-delete/{id}', [SendMailController::class, 'delete'])->name('mail.delete');
+        Route::get('/sent', [SendMailController::class, 'sent'])->name('mail.sent');
     });
 
     // live-event

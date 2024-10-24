@@ -45209,7 +45209,7 @@ ul {
     max-width: 300px;
     padding-right: 20px;
   }
-  
+
   .sidebar__compose {
     margin-top: 15px;
     margin-left: 10px;
@@ -45232,7 +45232,7 @@ ul {
   .sidebar__compose span {
     margin-right: 5px;
   }
-  
+
   .sidebarOption {
     display: flex;
     align-items: center;
@@ -45243,11 +45243,11 @@ ul {
     cursor: pointer;
     color: #818181;
   }
-  
+
   .sidebarOption .material-icons {
     padding: 5px;
   }
-  
+
   .sidebarOption h3 {
     flex: 1;
     margin-left: 10px;
@@ -45256,7 +45256,7 @@ ul {
     font-family: "Roboto", sans-serif;
     margin-bottom: 0;
   }
-  
+
   .sidebarOption:hover,
   .sidebarOption:hover h3,
   .sidebarOption:hover .material-icons,
@@ -45267,23 +45267,23 @@ ul {
     color: #5e3591;
     font-weight: 800;
   }
-  
+
   .sidebar__footer {
     display: flex;
     justify-content: center;
   }
-  
+
   .sidebar__footerIcons .material-icons {
     margin: 7px;
     cursor: pointer;
   }
-  
+
   /* main body */
   .main__body {
     display: flex;
     height: 80vh;
   }
-  
+
   /* email list */
   .emailList {
     flex: 1;
@@ -45314,17 +45314,17 @@ ul {
     z-index: 1;
     padding: 8px;
   }
-  
+
   .emailList__settingsLeft {
     display: flex;
     align-items: center;
   }
-  
+
   .emailList__settings .material-icons {
     margin: 5px;
     cursor: pointer;
   }
-  
+
   .section {
     display: flex;
     align-items: center;
@@ -45335,7 +45335,7 @@ ul {
     color: grey;
     border-width: 0;
   }
-  
+
   .emailList__sections {
     position: sticky;
     top: 0;
@@ -45344,39 +45344,39 @@ ul {
     border-bottom: 1px solid whitesmoke;
     z-index: 1;
   }
-  
+
   .section__selected {
     background-color: whitesmoke;
     border-width: 3px;
     color: #5e3591;
     border-bottom: 3px solid #5e3591;
   }
-  
+
   .section__selected .material-icons {
     color: #5e3591;
   }
-  
+
   .section:hover {
     background-color: whitesmoke;
     border-width: 3px;
   }
-  
+
   .section h4 {
     font-size: 14px;
     margin-left: 15px;
     margin-bottom: 0;
   }
-  
+
   .emailRow__options {
     display: flex;
     align-items: center;
   }
-  
+
   .emailRow__options .material-icons,
   input {
     margin: 5px;
   }
-  
+
   .emailRow {
     display: flex;
     align-items: center;
@@ -45385,21 +45385,21 @@ ul {
     cursor: pointer;
     z-index: 999;
   }
-  
+
   .emailRow:hover {
     border-top: 1px solid whitesmoke;
     box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.24);
   }
-  
+
   .emailRow__message {
     display: flex;
     flex: 0.8;
     align-items: center;
     font-size: 13px;
   }
-  
+
   .emailRow__message h4 {
-    width: 400px;
+    width: 593px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -45408,21 +45408,21 @@ ul {
     font-size: 14px;
     margin-bottom: 0;
   }
-  
+
   .emailRow__title {
     font-size: 13px;
     flex: 0.3;
     margin-bottom: 0;
     font-family: "Roboto", sans-serif;
   }
-  
+
   .emailRow__time {
     padding-right: 15px;
     font-size: 10px;
     font-weight: bold;
     margin-bottom: 0;
   }
-  
+
   .emailRow__description {
     font-weight: 400;
     color: gray;
@@ -45457,7 +45457,7 @@ ul {
     border: none;
     padding: 13px;
 }
-  
+
 .box_slae {
     width: 600px;
     height: 0px;
@@ -45471,13 +45471,13 @@ ul {
     box-shadow: 0 0 39px rgb(0 0 0 / 20%);
     border-radius: 6px;
   }
-  
+
   .box_slae.active {
     height: auto;
     padding: 0px;
     transition: all ease-in 0.3s;
   }
-  
+
   #deletebtn {
     width: 40px;
     height: 40px;
@@ -45490,7 +45490,7 @@ ul {
     color: #fff;
     font-size: 22px;
   }
-  
+
   .box_slae h6 i {
     color: #FFBF1C;
   }
@@ -45518,7 +45518,7 @@ ul {
     position: absolute;
     z-index: -1;
   }
-  
+
   .file-input__label {
     cursor: pointer;
     display: inline-flex;

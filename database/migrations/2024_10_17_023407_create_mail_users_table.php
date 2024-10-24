@@ -20,6 +20,8 @@ class CreateMailUsersTable extends Migration
             $table->boolean('is_read')->default(0);
             $table->boolean('is_starred')->default(0);
             $table->boolean('is_delete')->default(0);
+            $table->boolean('is_to')->default(0);
+            $table->boolean('is_cc')->default(0);
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });

@@ -16,8 +16,20 @@ class SendMailController extends Controller
     public function list()
     {
         if (auth()->user()->can('Manage Email')) {
-            $mails = SendMail::where('form_id', auth()->id())->orderBy('id', 'desc')->paginate(15);
+            $mails = SendMail::whereHas('mailUsers', function ($q) {
+                $q->where('user_id', auth()->id())->where('is_delete', 0);
+            })->orderBy('created_at', 'desc')->paginate(15);
             return view('user.mail.list')->with('mails', $mails);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    public function sent()
+    {
+        if (auth()->user()->can('Manage Email')) {
+            $mails = SendMail::where('form_id', auth()->id())->where('is_delete', 0)->orderBy('created_at', 'desc')->paginate(15);
+            return view('user.mail.sent')->with('mails', $mails);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -108,6 +120,7 @@ class SendMailController extends Controller
                     $mail_user = new MailUser();
                     $mail_user->user_id = $user->id;
                     $mail_user->send_mail_id = $mail->id;
+                    $mail_user->is_cc = 1;
                     $mail_user->save();
 
 
@@ -131,6 +144,7 @@ class SendMailController extends Controller
                 $mail_user = new MailUser();
                 $mail_user->user_id = $user->id;
                 $mail_user->send_mail_id = $mail->id;
+                $mail_user->is_to = 1;
                 $mail_user->save();
 
                 $notification = new Notification();

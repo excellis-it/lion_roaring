@@ -9,6 +9,7 @@ use App\Models\Country;
 use App\Models\EcomCmsPage;
 use App\Models\EcomFooterCms;
 use App\Models\Footer;
+use App\Models\MailUser;
 use App\Models\Notification;
 use App\Models\Organization;
 use App\Models\OurOrganization;
@@ -206,5 +207,19 @@ class Helper
         } else {
             return false;
         }
+    }
+
+    public static function getMailTo($mail_id)
+    {
+        $mail_to = MailUser::where('send_mail_id', $mail_id)->where('is_to', 1)->get();
+
+        $to = [];
+        foreach ($mail_to as $mail) {
+            if (!empty($mail->user->full_name)) {
+                $to[] = $mail->user->full_name;
+            }
+        }
+
+        return implode(', ', $to);
     }
 }

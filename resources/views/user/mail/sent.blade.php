@@ -1,10 +1,13 @@
 @extends('user.layouts.master')
 @section('title')
-    Email List - {{ env('APP_NAME') }}
+    Sent Mail - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
 @section('content')
+@php
+    use App\Helpers\Helper;
+@endphp
     <div class="container-fluid">
         <div class="bg_white_border">
 
@@ -34,20 +37,7 @@
 
                     <!-- Section Starts -->
                     <div class="emailList__sections">
-                        <div class="section section__selected">
-                            <span class="material-symbols-outlined"> inbox </span>
-                            <h4>Primary</h4>
-                        </div>
 
-                        <!-- <div class="section">
-                                  <span class="material-symbols-outlined"> people </span>
-                                <h4>Social</h4>
-                              </div>
-
-                              <div class="section">
-                                  <span class="material-symbols-outlined"> local_offer </span>
-                                <h4>Promotions</h4>
-                              </div> -->
 
 
                     </div>
@@ -64,7 +54,7 @@
                                         <span class="material-symbols-outlined"> star_border </span>
                                     </div>
 
-                                    <h3 class="emailRow__title">{{ $mail->user->full_name ?? '' }}</h3>
+                                    <h3 class="emailRow__title">To: {{ Helper::getMailTo($mail->id) }}</h3>
 
                                     <div class="emailRow__message">
                                         <h4>
