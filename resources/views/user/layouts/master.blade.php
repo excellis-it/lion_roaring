@@ -2196,6 +2196,15 @@
 
         });
     </script>
+    <script>
+        $(document).ready(function() {
+            $('.sidebarOption').click(function() {
+                var route = $(this).data('route');
+                window.location.href = route;
+            });
+        });
+    </script>
+
 
     @stack('scripts')
 </body>
