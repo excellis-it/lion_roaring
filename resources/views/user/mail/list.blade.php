@@ -21,14 +21,13 @@
                     <div class="emailList__settings">
                         <div class="emailList__settingsLeft">
                             <input type="checkbox" />
-                            <span class="material-icons"> arrow_drop_down </span>
-                            <span class="material-icons"> redo </span>
-                            <span class="material-icons"> delete </span>
+                              <span class="material-symbols-outlined"> arrow_drop_down </span>
+                              <span class="material-symbols-outlined"> redo </span>
+                              <span class="material-symbols-outlined"> delete </span>
                         </div>
                         <div class="emailList__settingsRight">
-                            <span class="material-icons"> chevron_left </span>
-                            <span class="material-icons"> chevron_right </span>
-                            <span class="material-icons"> settings </span>
+                              <span class="material-symbols-outlined"> chevron_left </span>
+                              <span class="material-symbols-outlined"> chevron_right </span>
                         </div>
                     </div>
                     <!-- Settings Ends -->
@@ -36,17 +35,17 @@
                     <!-- Section Starts -->
                     <div class="emailList__sections">
                         <div class="section section__selected">
-                            <span class="material-icons"> inbox </span>
+                              <span class="material-symbols-outlined"> inbox </span>
                             <h4>Primary</h4>
                         </div>
 
                         <!-- <div class="section">
-                    <span class="material-icons"> people </span>
+                      <span class="material-symbols-outlined"> people </span>
                     <h4>Social</h4>
                   </div>
 
                   <div class="section">
-                    <span class="material-icons"> local_offer </span>
+                      <span class="material-symbols-outlined"> local_offer </span>
                     <h4>Promotions</h4>
                   </div> -->
 
@@ -62,7 +61,7 @@
                                 <div class="emailRow view-mail" data-route="{{ route('mail.view') }}">
                                     <div class="emailRow__options">
                                         <input type="checkbox" name="" id="" />
-                                        <span class="material-icons"> star_border </span>
+                                          <span class="material-symbols-outlined"> star_border </span>
                                     </div>
 
                                     <h3 class="emailRow__title">YouTube</h3>

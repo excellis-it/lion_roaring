@@ -21,14 +21,14 @@
         <!-- Settings Starts -->
         <div class="emailList__settings">
           <div class="emailList__settingsLeft">
-          <a href=""><span class="material-icons"> arrow_back</span></a>
-          <a href=""><span class="material-icons"> refresh </span></a>
-          <a href=""><span class="material-icons"> delete </span></a>
+          <a href="">  <span class="material-symbols-outlined"> arrow_back</span></a>
+          <a href="">  <span class="material-symbols-outlined"> refresh </span></a>
+          <a href="">  <span class="material-symbols-outlined"> delete </span></a>
           </div>
           <div class="emailList__settingsRight">
-          <a href=""><span class="material-icons"> chevron_left </span></a>
-          <a href=""><span class="material-icons"> chevron_right </span></a>
-          <a href=""><span class="material-icons"> settings </span></a>
+          <a href="">  <span class="material-symbols-outlined"> chevron_left </span></a>
+          <a href="">  <span class="material-symbols-outlined"> chevron_right </span></a>
+          <a href="">  <span class="material-symbols-outlined"> settings </span></a>
           </div>
         </div>
         <!-- Settings Ends -->
@@ -40,11 +40,11 @@
             <div class="row">
                 <div class="col-lg-9">
                     <h4 class="subject_text_h4">Re: Lorem ipsum dolor sit, amet consectetur adipisicing elit....
-                        <span class="inbox_box">inbox <span class="material-icons">close</span></span>
+                        <span class="inbox_box">inbox   <span class="material-symbols-outlined">close</span></span>
                     </h4>
                 </div>
                 <div class="col-lg-3 text-end">
-                    <a href=""><span class="material-icons">print</span></a>
+                    <a href="">  <span class="material-symbols-outlined">print</span></a>
                 </div>
             </div>
         </div>
@@ -66,8 +66,8 @@
                 <div class="col-lg-5 text-end">
                     <div class="d-flex justify-content-end">
                         <span class="time_text">7:10PM (10minutes ago)</span>
-                        <a href=""><span class="material-icons">reply</span></a>
-                        <a href=""><span class="material-icons">grade</span></a>
+                        <a href="">  <span class="material-symbols-outlined">reply</span></a>
+                        <a href="">  <span class="material-symbols-outlined">grade</span></a>
                     </div>
                 </div>
             </div>
