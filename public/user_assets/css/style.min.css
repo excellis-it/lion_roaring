@@ -45467,7 +45467,7 @@ ul {
     background: white;
     position: absolute;
     right: 10px;
-    bottom: 10px;
+    bottom: 25px;
     overflow: hidden;
     transition: all ease-in 0.3s;
     z-index: 1;

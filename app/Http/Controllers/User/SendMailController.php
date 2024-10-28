@@ -19,7 +19,10 @@ class SendMailController extends Controller
             $mails = SendMail::whereHas('mailUsers', function ($q) {
                 $q->where('user_id', auth()->id())->where('is_delete', 0);
             })->orderBy('created_at', 'desc')->paginate(15);
-            return view('user.mail.list')->with('mails', $mails);
+            $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+           // dd($to_users);
+           // return view('user.mail.list')->with('mails', $mails);
+           return view('user.mail.list', ['mails' => $mails, 'allMailIds' => $allMailIds]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -37,7 +40,9 @@ class SendMailController extends Controller
     {
         if (auth()->user()->can('Manage Email')) {
             $mails = SendMail::where('form_id', auth()->id())->where('is_delete', 0)->orderBy('created_at', 'desc')->paginate(15);
-            return view('user.mail.sent')->with('mails', $mails);
+            $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+           // return view('user.mail.sent')->with('mails', $mails);
+           return view('user.mail.sent', ['mails' => $mails, 'allMailIds' => $allMailIds]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -163,11 +168,36 @@ class SendMailController extends Controller
             }
         }
 
-        Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
+        // Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
 
-        session()->flash('message', 'Your mail has been sent Successfully');
+        // session()->flash('message', 'Your mail has been sent Successfully');
 
-        return response()->json(['message' => 'Mail sent successfully.', 'status' => true, 'send_to_ids' => array_merge($cc_id, $to_id), 'notification_message' => $notification_message]);
+        // return response()->json(['message' => 'Mail sent successfully.', 'status' => true, 'send_to_ids' => array_merge($cc_id, $to_id), 'notification_message' => $notification_message]);
+
+        try {
+            
+            Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
+            
+            
+            session()->flash('message', 'Your mail has been sent Successfully');
+        
+            return response()->json([
+                'message' => 'Mail sent successfully.',
+                'status' => true,
+                'send_to_ids' => array_merge($cc_id, $to_id),
+                'notification_message' => $notification_message
+            ]);
+        } catch (\Exception $e) {
+            
+            \Log::error('Mail sending failed: ' . $e->getMessage());
+        
+            
+            return response()->json([
+                'message' => 'Failed to send mail. Please try again later.',
+                'status' => false,
+                'error' => $e->getMessage() // Optionally include the error message
+            ], 500);
+        }
     }
 
 

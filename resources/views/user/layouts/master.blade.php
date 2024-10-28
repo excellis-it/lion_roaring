@@ -2157,6 +2157,20 @@
 
             });
 
+            function fetchLatestEmails() {
+            $.ajax({
+                url: '{{ route('mail.inbox-email-list') }}', 
+                method: 'GET',
+                success: function(response) {
+                    
+                    $('#inbox-email-list-{{auth()->id()}}').html(response.data);
+                },
+                error: function(xhr) {
+                    toastr.error('Failed to fetch latest emails.');
+                }
+            });
+        }
+
             // sendAdminNotification
             socket.on('sendAdminNotification', function(data) {
                 if (data.user_id == sender_id) {
@@ -2192,10 +2206,73 @@
 
                     count += 1;
                     countElement.text(count);
+                    fetchLatestEmails();
                 }
+                
             });
 
+
+            $(document).on('submit', '#sendUserEMailForm', function(e) {
+            e.preventDefault(); 
+
+            var formData = new FormData(this);
+
+            
+            $('#loading').addClass('loading');
+            $('#loading-content').addClass('loading-content');
+
+            
+           // $('#create_mail_box1').html('<p>Wait... sending email</p>');
+           dltFun();
+
+            $.ajax({
+                url: $(this).attr('action'), 
+                method: 'POST',
+                data: formData,
+                contentType: false, 
+                processData: false, // Set to false for file upload
+                success: function(response) {
+                    $('#loading').removeClass('loading');
+                    $('#loading-content').removeClass('loading-content');
+
+                    if (response.status == true) {
+                        
+                        socket.emit("send_mail", {
+                            send_to_ids: response.send_to_ids,
+                            notification_message: response.notification_message
+                        });
+                        
+                        fetchLatestEmails();                        
+                        toastr.success(response.message);                        
+                        $('#sendUserEMailForm')[0].reset();                        
+                        
+                    } else {
+                        
+                        toastr.error(response.message);                        
+                        
+                    }
+                },
+                error: function(xhr) {
+                    $('#loading').removeClass('loading');
+                    $('#loading-content').removeClass('loading-content');                  
+                
+
+                    
+                    const errors = xhr.responseJSON.errors;
+                    if (errors) {
+                        $.each(errors, function(key, value) {
+                            toastr.error(value[0]);
+                        });
+                    } else {
+                        toastr.error('An error occurred while sending the email.');
+                    }
+                }
+            });
         });
+
+        });
+
+
     </script>
     <script>
         $(document).ready(function() {
