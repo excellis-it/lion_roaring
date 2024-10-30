@@ -10,6 +10,7 @@ class SendMail extends Model
     use HasFactory;
 
     protected $fillable = [
+        'reply_of',
         'form_id',
         'to',
         'cc',
@@ -19,6 +20,7 @@ class SendMail extends Model
         'is_draft',
         'is_delete',
         'deleted_at',
+
     ];
 
 
@@ -32,4 +34,13 @@ class SendMail extends Model
         return $this->belongsTo(User::class, 'form_id');
     }
 
+    public function replies()
+    {
+        return $this->hasMany(SendMail::class, 'reply_of');
+    }
+
+    public function mainMail()
+    {
+        return $this->belongsTo(SendMail::class, 'reply_of');
+    }
 }

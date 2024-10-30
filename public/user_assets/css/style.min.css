@@ -45652,4 +45652,6 @@ ul {
     border: none;
 }
 
-
+.bg-badge-dark {
+    background-color: #dee7f5;
+}

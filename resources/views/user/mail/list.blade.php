@@ -21,9 +21,9 @@ Email List - {{ env('APP_NAME') }}
                 <div class="emailList__settings">
                     <div class="emailList__settingsLeft">
                         <input type="checkbox" id="selectAll" />
-                        <span class="material-symbols-outlined"> arrow_drop_down </span>
-                        <span class="material-symbols-outlined"> redo </span>
-                        <span class="material-symbols-outlined" id="delete"> delete </span>
+                        <span type="button" class="material-symbols-outlined"> arrow_drop_down </span>
+                        <span type="button" class="material-symbols-outlined"> refresh </span>
+                        <span type="button" class="material-symbols-outlined" id="delete"> delete </span>
                     </div>
                     <div class="emailList__settingsRight">
                         <span class="material-symbols-outlined"> chevron_left </span>

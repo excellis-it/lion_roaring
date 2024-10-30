@@ -248,7 +248,8 @@
         });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js">
+    </script>
 
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
     <script>
@@ -2212,66 +2213,264 @@
             });
 
 
-            $(document).on('submit', '#sendUserEMailForm', function(e) {
-            e.preventDefault(); 
+            // $(document).on('submit', '#sendUserEMailForm', function(e) {
+            //     e.preventDefault(); 
 
-            var formData = new FormData(this);
+            //     var formData = new FormData(this);
 
-            
-            $('#loading').addClass('loading');
-            $('#loading-content').addClass('loading-content');
-
-            
-           // $('#create_mail_box1').html('<p>Wait... sending email</p>');
-           dltFun();
-
-            $.ajax({
-                url: $(this).attr('action'), 
-                method: 'POST',
-                data: formData,
-                contentType: false, 
-                processData: false, // Set to false for file upload
-                success: function(response) {
-                    $('#loading').removeClass('loading');
-                    $('#loading-content').removeClass('loading-content');
-
-                    if (response.status == true) {
-                        
-                        socket.emit("send_mail", {
-                            send_to_ids: response.send_to_ids,
-                            notification_message: response.notification_message
-                        });
-                        
-                        fetchLatestEmails();                        
-                        toastr.success(response.message);                        
-                        $('#sendUserEMailForm')[0].reset();                        
-                        
-                    } else {
-                        
-                        toastr.error(response.message);                        
-                        
-                    }
-                },
-                error: function(xhr) {
-                    $('#loading').removeClass('loading');
-                    $('#loading-content').removeClass('loading-content');                  
                 
+            //     $('#loading').addClass('loading');
+            //     $('#loading-content').addClass('loading-content');
 
+                
+            //     // $('#create_mail_box1').html('<p>Wait... sending email</p>');
+            //     dltFun();
+
+            //     $.ajax({
+            //         url: $(this).attr('action'), 
+            //         method: 'POST',
+            //         data: formData,
+            //         contentType: false, 
+            //         processData: false, // Set to false for file upload
+            //         success: function(response) {
+            //             $('#loading').removeClass('loading');
+            //             $('#loading-content').removeClass('loading-content');
+
+            //             if (response.status == true) {
+                            
+            //                 socket.emit("send_mail", {
+            //                     send_to_ids: response.send_to_ids,
+            //                     notification_message: response.notification_message
+            //                 });
+                            
+            //                 fetchLatestEmails();                        
+            //                 toastr.success(response.message);                        
+            //                 $('#sendUserEMailForm')[0].reset();                        
+                            
+            //             } else {
+                            
+            //                 toastr.error(response.message);                        
+                            
+            //             }
+            //         },
+            //         error: function(xhr) {
+            //             $('#loading').removeClass('loading');
+            //             $('#loading-content').removeClass('loading-content');                  
                     
-                    const errors = xhr.responseJSON.errors;
-                    if (errors) {
-                        $.each(errors, function(key, value) {
-                            toastr.error(value[0]);
-                        });
-                    } else {
-                        toastr.error('An error occurred while sending the email.');
-                    }
-                }
+
+                        
+            //             const errors = xhr.responseJSON.errors;
+            //             if (errors) {
+            //                 $.each(errors, function(key, value) {
+            //                     toastr.error(value[0]);
+            //                 });
+            //             } else {
+            //                 toastr.error('An error occurred while sending the email.');
+            //             }
+            //         }
+            //     });
+            // });
+
+            $(document).on('change', '#create-mail-file-input', function() {
+                const fileNames = Array.from(this.files).map(file => {
+                    return `<span><i class="fa fa-paperclip"></i> ${file.name}</span>`; // Prepend icon to each file name
+                });
+                $('#create-mail-selected-file-names').html(fileNames.join('<br>')); // Display file names with icons
             });
-        });
+
+
+            $(document).on('submit', '#sendUserEMailForm', function(e) {
+                e.preventDefault();                 
+
+                var formData = new FormData(this); // Gather form data
+
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
+
+                dltFun(); // Call your custom function (if needed)
+
+                $.ajax({
+                    url: $(this).attr('action'), 
+                    method: 'POST',
+                    data: formData,
+                    contentType: false, 
+                    processData: false, // Set to false for file upload
+                    success: function(response) {
+                        $('#loading').removeClass('loading');
+                        $('#loading-content').removeClass('loading-content');
+
+                        if (response.status == true) {
+                            socket.emit("send_mail", {
+                                send_to_ids: response.send_to_ids,
+                                notification_message: response.notification_message
+                            });
+
+                            fetchLatestEmails();                        
+                            toastr.success(response.message);                        
+                            $('#sendUserEMailForm')[0].reset();                        
+                            $('#selected-file-names').empty(); 
+                            
+                            
+                        } else {
+                            toastr.error(response.message);                        
+                        }
+                    },
+                    error: function(xhr) {
+                        $('#loading').removeClass('loading');
+                        $('#loading-content').removeClass('loading-content');                  
+
+                        const errors = xhr.responseJSON.errors;
+                        if (errors) {
+                            $.each(errors, function(key, value) {
+                                toastr.error(value[0]);
+                            });
+                        } else {
+                            toastr.error('An error occurred while sending the email.');
+                        }
+                    }
+                });
+            });
+
+
+            $(document).on('submit', '#sendUserEMailReply', function(e) {
+                e.preventDefault();                 
+
+                var formData = new FormData(this); // Gather form data
+
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
+
+                dltFun(); // Call your custom function (if needed)
+
+                $.ajax({
+                    url: $(this).attr('action'), 
+                    method: 'POST',
+                    data: formData,
+                    contentType: false, 
+                    processData: false, // Set to false for file upload
+                    success: function(response) {
+                        $('#loading').removeClass('loading');
+                        $('#loading-content').removeClass('loading-content');
+
+                        if (response.status == true) {
+                            socket.emit("send_mail", {
+                                send_to_ids: response.send_to_ids,
+                                notification_message: response.notification_message
+                            });
+
+                            fetchLatestEmails();                        
+                            toastr.success(response.message);                        
+                            $('#sendUserEMailReplay')[0].reset();                        
+                            $('#reply-mail-selected-file-names').empty();                             
+                           
+                            window.location.reload();
+                            
+                        } else {
+                            toastr.error(response.message);                        
+                        }
+                    },
+                    error: function(xhr) {
+                        $('#loading').removeClass('loading');
+                        $('#loading-content').removeClass('loading-content');                  
+
+                        const errors = xhr.responseJSON.errors;
+                        if (errors) {
+                            $.each(errors, function(key, value) {
+                                toastr.error(value[0]);
+                            });
+                        } else {
+                            toastr.error('An error occurred while sending the email.');
+                        }
+                    }
+                });
+            });
+
+
+            $(document).on('submit', '#sendUserEMailForward', function(e) {
+                e.preventDefault();                 
+
+                var formData = new FormData(this); // Gather form data
+
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
+
+                dltFun(); // Call your custom function (if needed)
+
+                $.ajax({
+                    url: $(this).attr('action'), 
+                    method: 'POST',
+                    data: formData,
+                    contentType: false, 
+                    processData: false, // Set to false for file upload
+                    success: function(response) {
+                        $('#loading').removeClass('loading');
+                        $('#loading-content').removeClass('loading-content');
+
+                        if (response.status == true) {
+                            socket.emit("send_mail", {
+                                send_to_ids: response.send_to_ids,
+                                notification_message: response.notification_message
+                            });
+
+                            fetchLatestEmails();                        
+                            toastr.success(response.message);                        
+                            $('#sendUserEMailForward')[0].reset();                        
+                            $('#forward-mail-selected-file-names').empty();                             
+                            $('.mail_forward_reply_box').hide(); 
+                            $('.mail_forward_reply_box').find('textarea').val('');
+                          //  window.location.reload();
+                            
+                        } else {
+                            toastr.error(response.message);                        
+                        }
+                    },
+                    error: function(xhr) {
+                        $('#loading').removeClass('loading');
+                        $('#loading-content').removeClass('loading-content');                  
+
+                        const errors = xhr.responseJSON.errors;
+                        if (errors) {
+                            $.each(errors, function(key, value) {
+                                toastr.error(value[0]);
+                            });
+                        } else {
+                            toastr.error('An error occurred while sending the email.');
+                        }
+                    }
+                });
+            });
+
+
+            $('.open_mail_reply_box').on('click', function(event) {
+                event.preventDefault(); 
+                $('.mail_send_reply_box').show(); // Show the reply box
+                $('.mail_forward_reply_box').hide(); // Hide the forward box
+            });
+
+            $('.open_mail_forward_box').on('click', function(event) {
+                event.preventDefault(); 
+                $('.mail_forward_reply_box').show(); // Show the forward box
+                $('.mail_send_reply_box').hide(); // Hide the reply box
+            });
+
+            $('.close_mail_reply_box').on('click', function(event) {
+                event.preventDefault(); 
+                $('.mail_send_reply_box').hide(); 
+                $('.mail_send_reply_box').find('textarea').val('');
+            });
+
+            $('.close_mail_forward_box').on('click', function(event) {
+                event.preventDefault(); 
+                $('.mail_forward_reply_box').hide(); 
+                $('.mail_forward_reply_box').find('textarea').val('');
+            });
 
         });
 
+
+        function clearMailForm(){
+            $('#sendUserEMailForm')[0].reset();
+        }
 
     </script>
     <script>

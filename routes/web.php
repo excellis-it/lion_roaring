@@ -451,6 +451,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::get('/', [SendMailController::class, 'list'])->name('mail.index');
         Route::get('/compose', [SendMailController::class, 'compose'])->name('mail.compose');
         Route::post('/send', [SendMailController::class, 'sendMail'])->name('mail.send');
+        Route::post('/sendReply', [SendMailController::class, 'sendMailReply'])->name('mail.sendReply');
+        Route::post('/sendForward', [SendMailController::class, 'sendMailForward'])->name('mail.sendForward');
         Route::get('/view/{id}', [SendMailController::class, 'view'])->name('mail.view');
         Route::post('/mail-delete', [SendMailController::class, 'delete'])->name('mail.delete');
         Route::get('/sent', [SendMailController::class, 'sent'])->name('mail.sent');
