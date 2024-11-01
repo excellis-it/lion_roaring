@@ -449,15 +449,34 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     // Mail
     Route::prefix('mail')->group(function () {
         Route::get('/', [SendMailController::class, 'list'])->name('mail.index');
+        Route::get('/sent', [SendMailController::class, 'sentList'])->name('mail.sentList');
+        Route::get('/star', [SendMailController::class, 'starList'])->name('mail.starList');
+        Route::get('/trash', [SendMailController::class, 'trashList'])->name('mail.trashList');
+
+        Route::get('/inbox-email-list', [SendMailController::class, 'inboxEmailList'])->name('mail.inbox-email-list');
+        Route::get('/sent-email-list', [SendMailController::class, 'sentEmailList'])->name('mail.sent-email-list');
+        Route::get('/star-email-list', [SendMailController::class, 'starEmailList'])->name('mail.star-email-list');
+        Route::get('/trash-email-list', [SendMailController::class, 'trashEmailList'])->name('mail.trash-email-list');
+
+        Route::get('/view/{id}', [SendMailController::class, 'view'])->name('mail.view');
+        Route::get('/sent-mail-view/{id}', [SendMailController::class, 'sentMailView'])->name('mail.sent.view');
+        Route::get('/star-mail-view/{id}', [SendMailController::class, 'starMailView'])->name('mail.star.view');
+        Route::get('/trash-mail-view/{id}', [SendMailController::class, 'trashMailView'])->name('mail.trash.view');
+
         Route::get('/compose', [SendMailController::class, 'compose'])->name('mail.compose');
         Route::post('/send', [SendMailController::class, 'sendMail'])->name('mail.send');
         Route::post('/sendReply', [SendMailController::class, 'sendMailReply'])->name('mail.sendReply');
         Route::post('/sendForward', [SendMailController::class, 'sendMailForward'])->name('mail.sendForward');
-        Route::get('/view/{id}', [SendMailController::class, 'view'])->name('mail.view');
+        
         Route::post('/mail-delete', [SendMailController::class, 'delete'])->name('mail.delete');
-        Route::get('/sent', [SendMailController::class, 'sent'])->name('mail.sent');
-        Route::get('/sent-mail-view/{id}', [SendMailController::class, 'sentMailView'])->name('mail.sent.view');
-        Route::get('/inbox-email-list', [SendMailController::class, 'inboxEmailList'])->name('mail.inbox-email-list');
+        Route::post('/mail-delete-sent', [SendMailController::class, 'deleteSentsMail'])->name('mail.deleteSentsMail');
+        Route::post('/mail-restore', [SendMailController::class, 'restore'])->name('mail.restore');
+        Route::post('/mail-star', [SendMailController::class, 'star'])->name('mail.star');
+
+        Route::post('/mail-delete-single', [SendMailController::class, 'deleteSingleMail'])->name('mail.deleteSingleMail');
+        Route::post('/mail-restore-single', [SendMailController::class, 'restoreSingleMail'])->name('mail.restoreSingleMail');
+        
+        
     });
 
     // live-event

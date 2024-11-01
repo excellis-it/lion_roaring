@@ -10,103 +10,237 @@ use App\Models\SendMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 
 class SendMailController extends Controller
 {
     public function list()
     {
         if (auth()->user()->can('Manage Email')) {
-            $mails = SendMail::whereHas('mailUsers', function ($q) {
-                $q->where('user_id', auth()->id())
-                  ->where('is_delete', 0);
-            })
-            ->orWhere(function ($query) {
-                $query->where('to', auth()->id())
-                      ->whereNotNull('reply_of');
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+
             $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-            // dd($to_users);
-            // return view('user.mail.list')->with('mails', $mails);
-            return view('user.mail.list', ['mails' => $mails, 'allMailIds' => $allMailIds]);
+
+            return view('user.mail.list', ['allMailIds' => $allMailIds]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
     }
 
-    // public function list()
-    // {
-    //     if (auth()->user()->can('Manage Email')) {
-    //         $userId = auth()->id();
+    public function sentList()
+    {
+        if (auth()->user()->can('Manage Email')) {
 
-    //         // Fetch main mails and their latest replies if they exist
-    //         $mails = SendMail::whereHas('mailUsers', function ($q) use ($userId) {
-    //             $q->where('user_id', $userId)->where('is_delete', 0);
-    //         })
-    //             ->with([
-    //                 'user',
-    //                 'mailUsers' => function ($q) use ($userId) {
-    //                     $q->where('user_id', $userId);
-    //                 },
-    //                 'replies' => function ($q) use ($userId) {
-    //                     $q->whereHas('mailUsers', function ($query) use ($userId) {
-    //                         $query->where('user_id', $userId);
-    //                     })->orderBy('created_at', 'desc')->limit(1); // Only get the latest reply
-    //                 }
-    //             ])
-    //             ->orderBy('created_at', 'desc')
-    //             ->paginate(15);
+            $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
 
-    //         // Get count of unread messages per conversation
-    //         $mails->each(function ($mail) use ($userId) {
-    //             $mail->unread_count = $mail->replies()
-    //                 ->whereHas('mailUsers', function ($query) use ($userId) {
-    //                     $query->where('user_id', $userId)->where('is_read', 0);
-    //                 })
-    //                 ->count();
-    //         });
+            return view('user.mail.sent', ['allMailIds' => $allMailIds]);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
 
-    //         $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-    //         return view('user.mail.list', ['mails' => $mails, 'allMailIds' => $allMailIds]);
-    //     } else {
-    //         abort(403, 'You do not have permission to access this page.');
-    //     }
-    // }
+    public function starList()
+    {
+        if (auth()->user()->can('Manage Email')) {
 
+            $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+
+            return view('user.mail.star', ['allMailIds' => $allMailIds]);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    public function trashList()
+    {
+        if (auth()->user()->can('Manage Email')) {
+
+            $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+
+            return view('user.mail.trash', ['allMailIds' => $allMailIds]);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
 
 
     public function inboxEmailList()
     {
-        // $mails = SendMail::whereHas('mailUsers', function ($q) {
-        //     $q->where('user_id', auth()->id())->where('is_delete', 0);
-        // })->orderBy('created_at', 'desc')->paginate(15);
-        $mails = SendMail::whereHas('mailUsers', function ($q) {
+        $mails = SendMail::with(['mailUsers' => function ($q) {
+            $q->where('user_id', auth()->id())->where('is_delete', 0);
+        }])->whereHas('mailUsers', function ($q) {
             $q->where('user_id', auth()->id())
-              ->where('is_delete', 0);
+                ->where('is_delete', 0);
         })
-        ->orWhere(function ($query) {
-            $query->where('to', auth()->id())
-                  ->whereNotNull('reply_of');
-        })
-        ->orderBy('created_at', 'desc')
-        ->paginate(15);
+            ->orWhere(function ($query) {
+                $query->where('to', auth()->id())
+                    ->whereNotNull('reply_of');
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
 
-        // dd($mails);
-        return response()->json(['data' => view('user.mail.partials.inbox-email-list', compact('mails'))->render()]);
+        $mails->each(function ($mail) {
+            $mail->userMail = $mail->mailUsers->first(); // Add the MailUser instance to each mail
+        });
+
+        //  return response()->json(['data' => view('user.mail.partials.inbox-email-list', compact('mails'))->render()]);
+        return response()->json([
+            'data' => view('user.mail.partials.inbox-email-list', compact('mails'))->render(),
+            'total' => $mails->total(),
+            'perPage' => $mails->perPage(),
+            'currentPage' => $mails->currentPage(),
+            'lastPage' => $mails->lastPage()
+        ]);
     }
 
-    public function sent()
+    public function sentEmailList()
     {
-        if (auth()->user()->can('Manage Email')) {
-            $mails = SendMail::where('form_id', auth()->id())->where('is_delete', 0)->orderBy('created_at', 'desc')->paginate(15);
-            $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-            // return view('user.mail.sent')->with('mails', $mails);
-            return view('user.mail.sent', ['mails' => $mails, 'allMailIds' => $allMailIds]);
+        $mails = SendMail::where('form_id', auth()->id())
+            ->where('is_delete', 0)
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        return response()->json([
+            'data' => view('user.mail.partials.sent-email-list', compact('mails'))->render(),
+            'total' => $mails->total(),
+            'perPage' => $mails->perPage(),
+            'currentPage' => $mails->currentPage(),
+            'lastPage' => $mails->lastPage()
+        ]);
+    }
+
+    public function starEmailList()
+    {
+        $mails = SendMail::with(['mailUsers' => function ($q) {
+            $q->where('user_id', auth()->id())->where('is_delete', 0);
+        }])->whereHas('mailUsers', function ($q) {
+            $q->where('user_id', auth()->id())
+                ->where('is_delete', 0)
+                ->where('is_starred', 1);
+        })
+            ->orWhere(function ($query) {
+                $query->where('to', auth()->id())
+                    ->whereNotNull('reply_of');
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        $mails->each(function ($mail) {
+            $mail->userMail = $mail->mailUsers->first(); // Add the MailUser instance to each mail
+        });
+
+        return response()->json([
+            'data' => view('user.mail.partials.star-email-list', compact('mails'))->render(),
+            'total' => $mails->total(),
+            'perPage' => $mails->perPage(),
+            'currentPage' => $mails->currentPage(),
+            'lastPage' => $mails->lastPage()
+        ]);
+    }
+
+    public function trashEmailList()
+    {
+        // $mails = SendMail::where('form_id', auth()->id())
+        //     ->where('is_delete', 1)
+        //     ->orderBy('created_at', 'desc')
+        //     ->paginate(15);
+        $mails = SendMail::with(['mailUsers' => function ($q) {
+            $q->where('user_id', auth()->id());
+        }])->whereHas('mailUsers', function ($q) {
+            $q->where('user_id', auth()->id())
+                ->where('is_delete', 1);
+        })
+            ->orWhere(function ($query) {
+                $query->where('to', auth()->id())
+                    ->whereNotNull('reply_of');
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        $mails->each(function ($mail) {
+            $mail->userMail = $mail->mailUsers->first(); // Add the MailUser instance to each mail
+        });
+
+
+
+        return response()->json([
+            'data' => view('user.mail.partials.trash-email-list', compact('mails'))->render(),
+            'total' => $mails->total(),
+            'perPage' => $mails->perPage(),
+            'currentPage' => $mails->currentPage(),
+            'lastPage' => $mails->lastPage()
+        ]);
+    }
+
+
+    public function view($id)
+    {
+        $id = base64_decode($id);
+        $mail = MailUser::where('send_mail_id', $id)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if ($mail) {
+            $mail->is_read = 1;
+            $mail->save();
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
+
+        // Fetch the main mail details with nested replies
+        $mail_details = SendMail::with([
+            'user',
+            'mailUsers' => function ($query) {
+                $query->where('user_id', auth()->id());
+            },
+            'replies.user' => function ($query) {
+                $query->orderBy('created_at', 'asc'); // Order nested replies
+            }
+        ])->findOrFail($id);
+
+        $userMail = $mail_details->mailUsers->first();
+
+        $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+
+        return view('user.mail.mail-details')->with(compact('mail_details', 'userMail', 'allMailIds'));
     }
+
+
+
+    // sentMailView
+    public function sentMailView($id)
+    {
+        $id = base64_decode($id);
+        $mail = SendMail::findOrFail($id);
+        $mail_details = SendMail::with(['user', 'replies.user' => function ($query) {
+            $query->orderBy('created_at', 'asc'); // Order nested replies
+        }])->where('is_delete', 0)->findOrFail($id);
+
+        $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+        return view('user.mail.mail-details')->with(compact('mail', 'mail_details', 'allMailIds'));
+    }
+
+    //
+    public function trashMailView($id)
+    {
+        $id = base64_decode($id);
+        $mail = SendMail::findOrFail($id);
+        $mail_details = SendMail::with([
+            'user',
+            'mailUsers' => function ($query) {
+                $query->where('user_id', auth()->id());
+            },
+            'replies.user' => function ($query) {
+                $query->orderBy('created_at', 'asc'); // Order nested replies
+            }
+        ])->findOrFail($id);
+
+        $userMail = $mail_details->mailUsers->first();
+
+        $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+        return view('user.mail.mail-details')->with(compact('mail_details', 'userMail', 'allMailIds'));
+    }
+
+
 
     public function fetchData(Request $request)
     {
@@ -616,44 +750,11 @@ class SendMailController extends Controller
     //     return view('user.mail.mail-details')->with(compact('mail_details', 'replies'));
     // }
 
-    public function view($id)
-    {
-        $id = base64_decode($id);
-        $mail = MailUser::where('send_mail_id', $id)
-            ->where('user_id', auth()->id())
-            ->first();
-
-        if ($mail) {
-            $mail->is_read = 1;
-            $mail->save();
-        } else {
-            abort(403, 'You do not have permission to access this page.');
-        }
-
-        // Fetch the main mail details with nested replies
-        $mail_details = SendMail::with(['user', 'replies.user' => function ($query) {
-            $query->orderBy('created_at', 'asc'); // Order nested replies
-        }])->findOrFail($id);
-
-        $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-
-        return view('user.mail.mail-details')->with(compact('mail_details','allMailIds'));
-    }
 
 
 
-    // sentMailView
-    public function sentMailView($id)
-    {
-        $id = base64_decode($id);
-        $mail = SendMail::findOrFail($id);
-        $mail_details = SendMail::with(['user', 'replies.user' => function ($query) {
-            $query->orderBy('created_at', 'asc'); // Order nested replies
-        }])->findOrFail($id);
 
-        $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-        return view('user.mail.mail-details')->with(compact('mail','mail_details','allMailIds'));
-    }
+
     // delete
     public function delete(Request $request)
     {
@@ -668,6 +769,107 @@ class SendMailController extends Controller
                 }
             }
             return response()->json(['message' => 'Mail deleted successfully.', 'status' => true]);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    public function deleteSingleMail(Request $request)
+    {
+        if (auth()->user()->can('Manage Email')) {
+            $mailid = $request->mail_id;
+
+            $mail = MailUser::where('send_mail_id', $mailid)->where('user_id', auth()->id())->first();
+            if ($mail) {
+                $mail->is_delete = 1;
+                $mail->deleted_at = now();
+                $mail->save();
+            }
+
+            return response()->json(['message' => 'Mail deleted successfully.', 'status' => true]);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    public function restoreSingleMail(Request $request)
+    {
+        if (auth()->user()->can('Manage Email')) {
+            $mailid = $request->mail_id;
+
+            $mail = MailUser::where('send_mail_id', $mailid)->where('user_id', auth()->id())->first();
+            if ($mail) {
+                $mail->is_delete = 0;
+                $mail->save();
+            }
+
+            return response()->json(['message' => 'Mail restored successfully.', 'status' => true]);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+
+    // delete sent mail
+    public function deleteSentsMail(Request $request)
+    {
+        if (auth()->user()->can('Manage Email')) {
+            $mailIds = $request->mailIds;
+            foreach ($mailIds as $mailId) {
+                $mail = SendMail::where('id', $mailId)->where('form_id', auth()->id())->first();
+                if ($mail) {
+                    $mail->is_delete = 1;
+                    $mail->deleted_at = now();
+                    $mail->save();
+                }
+            }
+            return response()->json(['message' => 'Mail deleted successfully.', 'status' => true]);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+
+    public function restore(Request $request)
+    {
+        if (auth()->user()->can('Manage Email')) {
+            $mailIds = $request->mailIds;
+            foreach ($mailIds as $mailId) {
+                $mail = MailUser::where('send_mail_id', $mailId)->where('user_id', auth()->id())->first();
+                if ($mail) {
+                    $mail->is_delete = 0;
+                    $mail->save();
+                }
+            }
+            return response()->json(['message' => 'Mail restored successfully.', 'status' => true]);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+
+    // star
+    public function star(Request $request)
+    {
+        if (auth()->user()->can('Manage Email')) {
+
+            $mail_id = $request->mail_id;
+            $start_value = $request->start_value;
+            $msg = '';
+
+            $mail = MailUser::where('send_mail_id', $mail_id)->where('user_id', auth()->id())->first();
+            if ($mail) {
+                $mail->is_starred = $start_value;
+                $mail->save();
+            }
+
+            if ($start_value == 1) {
+                $msg = "Mail Starred Success!";
+            } else {
+                $msg = "Mail Star Mark Removed!";
+            }
+
+            return response()->json(['message' => $msg, 'status' => true]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

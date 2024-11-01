@@ -34,7 +34,7 @@
                             <span class="badge bg-badge-dark text-dark">{{ trim($ccEmail) }}</span>
                             @endforeach
                             @else
-                            <span>No CC emails available</span>
+                            <span hidden>No CC emails available</span>
                             @endif
                         </h6>
                         <h6>Date: {{ $reply->created_at->format('d/m/Y h:i A') }}</h6>

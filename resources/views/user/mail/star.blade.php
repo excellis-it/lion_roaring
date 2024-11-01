@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Sent - Email - {{ env('APP_NAME') }}
+    Starred - Email - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -22,9 +22,9 @@
                         <div class="emailList__settingsLeft">
                             <input type="checkbox" id="selectAll" />
                             <span type="button" class="material-symbols-outlined"> arrow_drop_down </span>
-                            <span onclick="fetchSentEmails()" type="button" class="material-symbols-outlined"> refresh
+                            <span onclick="fetchStarEmails()" type="button" class="material-symbols-outlined"> refresh
                             </span>
-                            <span type="button" class="material-symbols-outlined" id="delete-sent"> delete </span>
+                            <span type="button" class="material-symbols-outlined" id="delete"> delete </span>
                         </div>
                         <div class="emailList__settingsRight d-flex">
                             <span type="button" id="mailListPrevPage" class="material-symbols-outlined">chevron_left</span>
@@ -35,7 +35,7 @@
                     <!-- Settings Ends -->
 
 
-                    <div class="emailList__list" id="sent-email-list-{{ auth()->id() }}">
+                    <div class="emailList__list" id="star-email-list-{{ auth()->id() }}">
                         {{-- @include('user.mail.partials.inbox-email-list') --}}
 
                     </div>
@@ -55,18 +55,19 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-           // let currentMailPage_sent = 1;
-            fetchSentEmails();
+           // let currentMailPage_star = 1;
+            fetchStarEmails();
 
             $('#mailListPrevPage').on('click', function() {
-                if (currentMailPage_sent > 1) {
-                    fetchSentEmails(currentMailPage_sent - 1);
+                if (currentMailPage_star > 1) {
+                    fetchStarEmails(currentMailPage_star - 1);
                 }
             });
 
             $('#mailListNextPage').on('click', function() {
-                fetchSentEmails(currentMailPage_sent + 1);
+                fetchStarEmails(currentMailPage_star + 1);
             });
+
 
             // When the "select all" checkbox is clicked
             $(document).on('click', '#selectAll', function() {
@@ -96,7 +97,7 @@
     <script>
         // delete checked mail
         $(document).ready(function() {
-            $(document).on('click', '#delete-sent', function(e) {
+            $(document).on('click', '#delete', function(e) {
                 e.preventDefault();
                 var mailIds = [];
                 $('.selectMail:checked').each(function() {
@@ -118,7 +119,7 @@
                     .then((result) => {
                         if (result.value) {
                             $.ajax({
-                                url: "{{ route('mail.deleteSentsMail') }}",
+                                url: "{{ route('mail.delete') }}",
                                 type: 'POST',
                                 data: {
                                     mailIds: mailIds
@@ -126,7 +127,7 @@
                                 success: function(response) {
                                     if (response.status === true) {
                                         toastr.success(response.message);
-                                        fetchSentEmails();
+                                        fetchStarEmails();
                                     } else {
                                         swal('Error', response.message, 'error');
                                     }

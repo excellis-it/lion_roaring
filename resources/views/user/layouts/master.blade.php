@@ -248,8 +248,7 @@
         });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js">
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
 
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
     <script>
@@ -940,7 +939,8 @@
                         // reset form
                         $('#create-team')[0].reset();
 
-                        $('#previewImage01').attr('src', '{{asset("user_assets/images/group.jpg")}}');
+                        $('#previewImage01').attr('src',
+                            '{{ asset('user_assets/images/group.jpg') }}');
                         $('#exampleModalToggle').modal('hide');
                         // Send message to socket
                         socket.emit('createTeam', {
@@ -2158,19 +2158,19 @@
 
             });
 
-            function fetchLatestEmails() {
-            $.ajax({
-                url: '{{ route('mail.inbox-email-list') }}', 
-                method: 'GET',
-                success: function(response) {
-                    
-                    $('#inbox-email-list-{{auth()->id()}}').html(response.data);
-                },
-                error: function(xhr) {
-                    toastr.error('Failed to fetch latest emails.');
-                }
-            });
-        }
+            // function fetchLatestEmails() {
+            //     $.ajax({
+            //         url: '{{ route('mail.inbox-email-list') }}', 
+            //         method: 'GET',
+            //         success: function(response) {
+
+            //             $('#inbox-email-list-{{ auth()->id() }}').html(response.data);
+            //         },
+            //         error: function(xhr) {
+            //             toastr.error('Failed to fetch latest emails.');
+            //         }
+            //     });
+            // }
 
             // sendAdminNotification
             socket.on('sendAdminNotification', function(data) {
@@ -2209,78 +2209,22 @@
                     countElement.text(count);
                     fetchLatestEmails();
                 }
-                
+
             });
 
 
-            // $(document).on('submit', '#sendUserEMailForm', function(e) {
-            //     e.preventDefault(); 
-
-            //     var formData = new FormData(this);
-
-                
-            //     $('#loading').addClass('loading');
-            //     $('#loading-content').addClass('loading-content');
-
-                
-            //     // $('#create_mail_box1').html('<p>Wait... sending email</p>');
-            //     dltFun();
-
-            //     $.ajax({
-            //         url: $(this).attr('action'), 
-            //         method: 'POST',
-            //         data: formData,
-            //         contentType: false, 
-            //         processData: false, // Set to false for file upload
-            //         success: function(response) {
-            //             $('#loading').removeClass('loading');
-            //             $('#loading-content').removeClass('loading-content');
-
-            //             if (response.status == true) {
-                            
-            //                 socket.emit("send_mail", {
-            //                     send_to_ids: response.send_to_ids,
-            //                     notification_message: response.notification_message
-            //                 });
-                            
-            //                 fetchLatestEmails();                        
-            //                 toastr.success(response.message);                        
-            //                 $('#sendUserEMailForm')[0].reset();                        
-                            
-            //             } else {
-                            
-            //                 toastr.error(response.message);                        
-                            
-            //             }
-            //         },
-            //         error: function(xhr) {
-            //             $('#loading').removeClass('loading');
-            //             $('#loading-content').removeClass('loading-content');                  
-                    
-
-                        
-            //             const errors = xhr.responseJSON.errors;
-            //             if (errors) {
-            //                 $.each(errors, function(key, value) {
-            //                     toastr.error(value[0]);
-            //                 });
-            //             } else {
-            //                 toastr.error('An error occurred while sending the email.');
-            //             }
-            //         }
-            //     });
-            // });
 
             $(document).on('change', '#create-mail-file-input', function() {
                 const fileNames = Array.from(this.files).map(file => {
                     return `<span><i class="fa fa-paperclip"></i> ${file.name}</span>`; // Prepend icon to each file name
                 });
-                $('#create-mail-selected-file-names').html(fileNames.join('<br>')); // Display file names with icons
+                $('#create-mail-selected-file-names').html(fileNames.join(
+                    '<br>')); // Display file names with icons
             });
 
 
             $(document).on('submit', '#sendUserEMailForm', function(e) {
-                e.preventDefault();                 
+                e.preventDefault();
 
                 var formData = new FormData(this); // Gather form data
 
@@ -2290,10 +2234,10 @@
                 dltFun(); // Call your custom function (if needed)
 
                 $.ajax({
-                    url: $(this).attr('action'), 
+                    url: $(this).attr('action'),
                     method: 'POST',
                     data: formData,
-                    contentType: false, 
+                    contentType: false,
                     processData: false, // Set to false for file upload
                     success: function(response) {
                         $('#loading').removeClass('loading');
@@ -2305,19 +2249,19 @@
                                 notification_message: response.notification_message
                             });
 
-                            fetchLatestEmails();                        
-                            toastr.success(response.message);                        
-                            $('#sendUserEMailForm')[0].reset();                        
-                            $('#selected-file-names').empty(); 
-                            
-                            
+                            fetchLatestEmails();
+                            toastr.success(response.message);
+                            $('#sendUserEMailForm')[0].reset();
+                            $('#selected-file-names').empty();
+
+
                         } else {
-                            toastr.error(response.message);                        
+                            toastr.error(response.message);
                         }
                     },
                     error: function(xhr) {
                         $('#loading').removeClass('loading');
-                        $('#loading-content').removeClass('loading-content');                  
+                        $('#loading-content').removeClass('loading-content');
 
                         const errors = xhr.responseJSON.errors;
                         if (errors) {
@@ -2333,7 +2277,7 @@
 
 
             $(document).on('submit', '#sendUserEMailReply', function(e) {
-                e.preventDefault();                 
+                e.preventDefault();
 
                 var formData = new FormData(this); // Gather form data
 
@@ -2343,10 +2287,10 @@
                 dltFun(); // Call your custom function (if needed)
 
                 $.ajax({
-                    url: $(this).attr('action'), 
+                    url: $(this).attr('action'),
                     method: 'POST',
                     data: formData,
-                    contentType: false, 
+                    contentType: false,
                     processData: false, // Set to false for file upload
                     success: function(response) {
                         $('#loading').removeClass('loading');
@@ -2358,20 +2302,20 @@
                                 notification_message: response.notification_message
                             });
 
-                            fetchLatestEmails();                        
-                            toastr.success(response.message);                        
-                            $('#sendUserEMailReplay')[0].reset();                        
-                            $('#reply-mail-selected-file-names').empty();                             
-                           
+                            fetchLatestEmails();
+                            toastr.success(response.message);
+                            $('#sendUserEMailReplay')[0].reset();
+                            $('#reply-mail-selected-file-names').empty();
+
                             window.location.reload();
-                            
+
                         } else {
-                            toastr.error(response.message);                        
+                            toastr.error(response.message);
                         }
                     },
                     error: function(xhr) {
                         $('#loading').removeClass('loading');
-                        $('#loading-content').removeClass('loading-content');                  
+                        $('#loading-content').removeClass('loading-content');
 
                         const errors = xhr.responseJSON.errors;
                         if (errors) {
@@ -2387,20 +2331,20 @@
 
 
             $(document).on('submit', '#sendUserEMailForward', function(e) {
-                e.preventDefault();                 
+                e.preventDefault();
 
                 var formData = new FormData(this); // Gather form data
 
                 $('#loading').addClass('loading');
                 $('#loading-content').addClass('loading-content');
 
-                dltFun(); // Call your custom function (if needed)
+                dltFun(); 
 
                 $.ajax({
-                    url: $(this).attr('action'), 
+                    url: $(this).attr('action'),
                     method: 'POST',
                     data: formData,
-                    contentType: false, 
+                    contentType: false,
                     processData: false, // Set to false for file upload
                     success: function(response) {
                         $('#loading').removeClass('loading');
@@ -2412,21 +2356,21 @@
                                 notification_message: response.notification_message
                             });
 
-                            fetchLatestEmails();                        
-                            toastr.success(response.message);                        
-                            $('#sendUserEMailForward')[0].reset();                        
-                            $('#forward-mail-selected-file-names').empty();                             
-                            $('.mail_forward_reply_box').hide(); 
+                            fetchLatestEmails();
+                            toastr.success(response.message);
+                            $('#sendUserEMailForward')[0].reset();
+                            $('#forward-mail-selected-file-names').empty();
+                            $('.mail_forward_reply_box').hide();
                             $('.mail_forward_reply_box').find('textarea').val('');
-                          //  window.location.reload();
-                            
+                            //  window.location.reload();
+
                         } else {
-                            toastr.error(response.message);                        
+                            toastr.error(response.message);
                         }
                     },
                     error: function(xhr) {
                         $('#loading').removeClass('loading');
-                        $('#loading-content').removeClass('loading-content');                  
+                        $('#loading-content').removeClass('loading-content');
 
                         const errors = xhr.responseJSON.errors;
                         if (errors) {
@@ -2442,36 +2386,277 @@
 
 
             $('.open_mail_reply_box').on('click', function(event) {
-                event.preventDefault(); 
+                event.preventDefault();
                 $('.mail_send_reply_box').show(); // Show the reply box
                 $('.mail_forward_reply_box').hide(); // Hide the forward box
             });
 
             $('.open_mail_forward_box').on('click', function(event) {
-                event.preventDefault(); 
+                event.preventDefault();
                 $('.mail_forward_reply_box').show(); // Show the forward box
                 $('.mail_send_reply_box').hide(); // Hide the reply box
             });
 
             $('.close_mail_reply_box').on('click', function(event) {
-                event.preventDefault(); 
-                $('.mail_send_reply_box').hide(); 
+                event.preventDefault();
+                $('.mail_send_reply_box').hide();
                 $('.mail_send_reply_box').find('textarea').val('');
             });
 
             $('.close_mail_forward_box').on('click', function(event) {
-                event.preventDefault(); 
-                $('.mail_forward_reply_box').hide(); 
+                event.preventDefault();
+                $('.mail_forward_reply_box').hide();
                 $('.mail_forward_reply_box').find('textarea').val('');
             });
+
+
+            // fetchLatestEmails();
+
 
         });
 
 
-        function clearMailForm(){
-            $('#sendUserEMailForm')[0].reset();
+        let currentMailPage_inbox = 1;
+        let currentMailPage_sent = 1;
+        let currentMailPage_star = 1;
+        let currentMailPage_trash = 1;
+
+
+        function fetchLatestEmails(page = 1) {
+            $.ajax({
+                url: '{{ route('mail.inbox-email-list') }}',
+                method: 'GET',
+                data: {
+                    page: page
+                },
+                success: function(response) {
+                    $('#inbox-email-list-{{ auth()->id() }}').html(response.data);
+                   // toastr.success("Latest Emails Fetched");
+                    currentMailPage_inbox = page;
+                    console.log('the current page: ' + currentMailPage_inbox);
+                    
+                    $('#paginationInfo').text(
+                        `Page ${response.currentPage} of ${response.lastPage}`);                    
+                    if (response.currentPage <= 1) {
+                        $('#mailListPrevPage').addClass('hide');
+                    } else {
+                        $('#mailListPrevPage').removeClass('hide');
+                    }
+                    if (response.currentPage >= response.lastPage) {
+                        $('#mailListNextPage').addClass('hide');
+                    } else {
+                        $('#mailListNextPage').removeClass('hide');
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error('Failed to fetch latest emails.');
+                }
+            });
         }
 
+        function fetchSentEmails(page = 1) {
+            $.ajax({
+                url: '{{ route('mail.sent-email-list') }}',
+                method: 'GET',
+                data: {
+                    page: page
+                },
+                success: function(response) {
+
+                    $('#sent-email-list-{{ auth()->id() }}').html(response.data);
+                  //  toastr.success("Latest Emails Fetched");
+                    currentMailPage_sent = page;
+                    $('#paginationInfo').text(
+                        `Page ${response.currentPage} of ${response.lastPage}`);                    
+                    if (response.currentPage <= 1) {
+                        $('#mailListPrevPage').addClass('hide');
+                    } else {
+                        $('#mailListPrevPage').removeClass('hide');
+                    }
+                    if (response.currentPage >= response.lastPage) {
+                        $('#mailListNextPage').addClass('hide');
+                    } else {
+                        $('#mailListNextPage').removeClass('hide');
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error('Failed to fetch latest emails.');
+                }
+            });
+        }
+
+        function fetchStarEmails(page = 1) {
+            $.ajax({
+                url: '{{ route('mail.star-email-list') }}',
+                method: 'GET',
+                data: {
+                    page: page
+                },
+                success: function(response) {
+
+                    $('#star-email-list-{{ auth()->id() }}').html(response.data);
+                   // toastr.success("Latest Emails Fetched");
+                    currentMailPage_star = page;
+                    $('#paginationInfo').text(
+                        `Page ${response.currentPage} of ${response.lastPage}`);                    
+                    if (response.currentPage <= 1) {
+                        $('#mailListPrevPage').addClass('hide');
+                    } else {
+                        $('#mailListPrevPage').removeClass('hide');
+                    }
+                    if (response.currentPage >= response.lastPage) {
+                        $('#mailListNextPage').addClass('hide');
+                    } else {
+                        $('#mailListNextPage').removeClass('hide');
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error('Failed to fetch latest emails.');
+                }
+            });
+        }
+
+        function fetchTrashEmails(page = 1) {
+            $.ajax({
+                url: '{{ route('mail.trash-email-list') }}',
+                method: 'GET',
+                data: {
+                    page: page
+                },
+                success: function(response) {
+
+                    $('#trash-email-list-{{ auth()->id() }}').html(response.data);
+                   // toastr.success("Latest Emails Fetched");
+                    currentMailPage_trash = page;
+                    $('#paginationInfo').text(
+                        `Page ${response.currentPage} of ${response.lastPage}`);                    
+                    if (response.currentPage <= 1) {
+                        $('#mailListPrevPage').addClass('hide');
+                    } else {
+                        $('#mailListPrevPage').removeClass('hide');
+                    }
+                    if (response.currentPage >= response.lastPage) {
+                        $('#mailListNextPage').addClass('hide');
+                    } else {
+                        $('#mailListNextPage').removeClass('hide');
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error('Failed to fetch latest emails.');
+                }
+            });
+        }
+
+
+        function clearMailForm() {
+            $('#sendUserEMailForm')[0].reset();
+            dltFun(); 
+        }
+
+        function setMailStar(element, mailid) {
+            const icon = element.querySelector('.material-symbols-outlined');
+            var star_val = 0;
+
+            if (icon.style.color === 'orange') {
+                icon.style.color = '';
+                icon.style.fontVariationSettings = "'FILL' 0";
+                star_val = 0;
+            } else {
+                icon.style.color = 'orange';
+                icon.style.fontVariationSettings = "'FILL' 1";
+                star_val = 1;
+            }
+
+            // console.log('mail id is ' + mailid);
+            $.ajax({
+                url: "{{ route('mail.star') }}",
+                type: 'POST',
+                data: {
+                    mail_id: mailid,
+                    start_value: star_val
+                },
+                success: function(response) {
+                    if (response.status === true) {
+                        toastr.success(response.message);
+                        fetchLatestEmails();
+                        fetchStarEmails();
+                    } else {
+                        swal('Error', response.message, 'error');
+                    }
+                }
+            });
+        }
+
+
+        function deleteSingleMail(mailid) {
+            swal({
+                    title: "Are you sure?",
+                    text: "To remove this mail",
+                    type: "warning",
+                    confirmButtonText: "Yes",
+                    showCancelButton: true
+                })
+                .then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            url: "{{ route('mail.deleteSingleMail') }}",
+                            type: 'POST',
+                            data: {
+                                mail_id: mailid
+                            },
+                            success: function(response) {
+                                if (response.status === true) {
+                                    toastr.success(response.message);
+                                    window.location.href = "{{ route('mail.index') }}";
+                                } else {
+                                    swal('Error', response.message, 'error');
+                                }
+                            }
+                        });
+                    } else if (result.dismiss === 'cancel') {
+                        swal(
+                            'Cancelled',
+                            'Your stay here :)',
+                            'error'
+                        )
+                    }
+                })
+        }
+
+        function restoreSingleMail(mailid) {
+            swal({
+                    title: "Are you sure?",
+                    text: "To restore this mail",
+                    type: "warning",
+                    confirmButtonText: "Yes",
+                    showCancelButton: true
+                })
+                .then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            url: "{{ route('mail.restoreSingleMail') }}",
+                            type: 'POST',
+                            data: {
+                                mail_id: mailid
+                            },
+                            success: function(response) {
+                                if (response.status === true) {
+                                    toastr.success(response.message);
+                                    window.location.href = "{{ route('mail.index') }}";
+                                } else {
+                                    swal('Error', response.message, 'error');
+                                }
+                            }
+                        });
+                    } else if (result.dismiss === 'cancel') {
+                        swal(
+                            'Cancelled',
+                            'Your stay here :)',
+                            'error'
+                        )
+                    }
+                })
+        }
     </script>
     <script>
         $(document).ready(function() {
