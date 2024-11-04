@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class SendMailController extends Controller
 {
@@ -179,11 +180,13 @@ class SendMailController extends Controller
             ->where('user_id', auth()->id())
             ->first();
 
+        // dd($mail);
+
         if ($mail) {
             $mail->is_read = 1;
             $mail->save();
         } else {
-            abort(403, 'You do not have permission to access this page.');
+            // abort(403, 'You do not have permission to access this page.');
         }
 
         // Fetch the main mail details with nested replies
@@ -191,9 +194,6 @@ class SendMailController extends Controller
             'user',
             'mailUsers' => function ($query) {
                 $query->where('user_id', auth()->id());
-            },
-            'replies.user' => function ($query) {
-                $query->orderBy('created_at', 'asc'); // Order nested replies
             }
         ])->findOrFail($id);
 
@@ -211,9 +211,7 @@ class SendMailController extends Controller
     {
         $id = base64_decode($id);
         $mail = SendMail::findOrFail($id);
-        $mail_details = SendMail::with(['user', 'replies.user' => function ($query) {
-            $query->orderBy('created_at', 'asc'); // Order nested replies
-        }])->where('is_delete', 0)->findOrFail($id);
+        $mail_details = SendMail::with(['user'])->where('is_delete', 0)->findOrFail($id);
 
         $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
         return view('user.mail.mail-details')->with(compact('mail', 'mail_details', 'allMailIds'));
@@ -228,9 +226,6 @@ class SendMailController extends Controller
             'user',
             'mailUsers' => function ($query) {
                 $query->where('user_id', auth()->id());
-            },
-            'replies.user' => function ($query) {
-                $query->orderBy('created_at', 'asc'); // Order nested replies
             }
         ])->findOrFail($id);
 
@@ -874,4 +869,24 @@ class SendMailController extends Controller
             abort(403, 'You do not have permission to access this page.');
         }
     }
+
+
+    public function printMail($id)
+    {
+        // Retrieve the mail details based on the ID
+        // $mail_details = Mail::with('user')->findOrFail($id);
+        $mail_details = SendMail::with([
+            'user',
+            'mailUsers' => function ($query) {
+                $query->where('user_id', auth()->id());
+            }
+        ])->findOrFail($id);
+
+        // Pass the mail details to the print view
+        return view('user.mail.mail-print', compact('mail_details'));
+    }
+
+
+
+
 }

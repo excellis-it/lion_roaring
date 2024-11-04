@@ -2338,7 +2338,7 @@
                 $('#loading').addClass('loading');
                 $('#loading-content').addClass('loading-content');
 
-                dltFun(); 
+                dltFun();
 
                 $.ajax({
                     url: $(this).attr('action'),
@@ -2431,12 +2431,12 @@
                 },
                 success: function(response) {
                     $('#inbox-email-list-{{ auth()->id() }}').html(response.data);
-                   // toastr.success("Latest Emails Fetched");
+                    // toastr.success("Latest Emails Fetched");
                     currentMailPage_inbox = page;
                     console.log('the current page: ' + currentMailPage_inbox);
-                    
+
                     $('#paginationInfo').text(
-                        `Page ${response.currentPage} of ${response.lastPage}`);                    
+                        `Page ${response.currentPage} of ${response.lastPage}`);
                     if (response.currentPage <= 1) {
                         $('#mailListPrevPage').addClass('hide');
                     } else {
@@ -2464,10 +2464,10 @@
                 success: function(response) {
 
                     $('#sent-email-list-{{ auth()->id() }}').html(response.data);
-                  //  toastr.success("Latest Emails Fetched");
+                    //  toastr.success("Latest Emails Fetched");
                     currentMailPage_sent = page;
                     $('#paginationInfo').text(
-                        `Page ${response.currentPage} of ${response.lastPage}`);                    
+                        `Page ${response.currentPage} of ${response.lastPage}`);
                     if (response.currentPage <= 1) {
                         $('#mailListPrevPage').addClass('hide');
                     } else {
@@ -2495,10 +2495,10 @@
                 success: function(response) {
 
                     $('#star-email-list-{{ auth()->id() }}').html(response.data);
-                   // toastr.success("Latest Emails Fetched");
+                    // toastr.success("Latest Emails Fetched");
                     currentMailPage_star = page;
                     $('#paginationInfo').text(
-                        `Page ${response.currentPage} of ${response.lastPage}`);                    
+                        `Page ${response.currentPage} of ${response.lastPage}`);
                     if (response.currentPage <= 1) {
                         $('#mailListPrevPage').addClass('hide');
                     } else {
@@ -2526,10 +2526,10 @@
                 success: function(response) {
 
                     $('#trash-email-list-{{ auth()->id() }}').html(response.data);
-                   // toastr.success("Latest Emails Fetched");
+                    // toastr.success("Latest Emails Fetched");
                     currentMailPage_trash = page;
                     $('#paginationInfo').text(
-                        `Page ${response.currentPage} of ${response.lastPage}`);                    
+                        `Page ${response.currentPage} of ${response.lastPage}`);
                     if (response.currentPage <= 1) {
                         $('#mailListPrevPage').addClass('hide');
                     } else {
@@ -2550,7 +2550,7 @@
 
         function clearMailForm() {
             $('#sendUserEMailForm')[0].reset();
-            dltFun(); 
+            dltFun();
         }
 
         function setMailStar(element, mailid) {
@@ -2669,6 +2669,8 @@
             });
         });
     </script>
+
+    
 
 
     @stack('scripts')

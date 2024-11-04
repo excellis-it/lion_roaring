@@ -38,13 +38,15 @@
                     <div class="mail_subject">
                         <div class="row">
                             <div class="col-lg-9">
-                                <h4 class="subject_text_h4">Subject: {{ $mail_details->subject }}
+                                <h4 class="subject_text_h4">Subject: 
+                                  <a class="text-decoration-underline" href="{{ route('mail.view', base64_encode($mail_details->reply_of)) }}" target="_blank" rel="noopener noreferrer">{{ !empty($mail_details->reply_of) ? 'RE:' : '' }}</a>   
+                                    {{ $mail_details->subject }}
                                     {{-- <span class="inbox_box">inbox <span
                                             class="material-symbols-outlined">close</span></span> --}}
                                 </h4>
                             </div>
                             <div class="col-lg-3 text-end">
-                                <a href=""> <span class="material-symbols-outlined">print</span></a>
+                                <button id="printMailButton" class="btn btn-transparent" type="button"> <span class="material-symbols-outlined">print</span></button>
                             </div>
                         </div>
                     </div>
@@ -137,13 +139,7 @@
 
                     </div>
 
-                    @if ($mail_details->replies->isNotEmpty())
-                        <div class="reply-mails" hidden>
-                            @foreach ($mail_details->replies as $reply)
-                                @include('user.mail.partials.reply-mails', ['reply' => $reply])
-                            @endforeach
-                        </div>
-                    @endif
+                   
 
                     <div class="mail_reply" {{ $mail_details->form_id != auth()->id() && !Request::is('user/mail/trash-mail-view/*') ? '' : 'hidden' }}>
                         <a href="javascript:void(0);" class="open_mail_reply_box">
@@ -237,8 +233,13 @@
                     <div class="reply_sec mail_forward_reply_box" style="display: none">
                         <div class="reply_img_box">
                             <span>
-                                <img src="http://127.0.0.1:8000/user_assets/images/logo.png" alt="user"
-                                    class="reply_img" />
+                                @if (Auth::user()->profile_picture)
+                                    <img src="{{ Storage::url(Auth::user()->profile_picture) }}" alt=""
+                                        class="reply_img">
+                                @else
+                                    <img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt=""
+                                        class="reply_img" />
+                                @endif
                             </span>
                         </div>
                         <div class="reply_text_box">
@@ -346,6 +347,13 @@
                     closeOnSelect: false, // keep dropdown open after selection
                     highlight: true // highlight matched results
                 }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#printMailButton').on('click', function() {
+                window.open("{{ route('mail.print', $mail_details->id) }}", '_blank');
             });
         });
     </script>

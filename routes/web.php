@@ -476,6 +476,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/mail-delete-single', [SendMailController::class, 'deleteSingleMail'])->name('mail.deleteSingleMail');
         Route::post('/mail-restore-single', [SendMailController::class, 'restoreSingleMail'])->name('mail.restoreSingleMail');
         
+        Route::get('/print/{id}', [SendMailController::class, 'printMail'])->name('mail.print');
+
         
     });
 
