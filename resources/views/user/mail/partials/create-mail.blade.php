@@ -8,9 +8,10 @@
         <form action="{{ route('mail.send') }}" method="POST" id="sendUserEMailForm" enctype="multipart/form-data">
             @csrf
             <div class='min-hide'>
-                <input id="compose_to" name="to" class='receiver input-large' type='text' placeholder='Recipients'
+                <input id="compose_to" name="to" class='receiver input-large' type='text'
+                    placeholder='Recipients' value='' />
+                <input id="compose_cc" name="cc" class='receiver input-large' type='text' placeholder='CC'
                     value='' />
-                <input id="compose_cc" name="cc" class='receiver input-large' type='text' placeholder='CC' value='' />
                 <input class='input-large' name="subject" type='text' placeholder='Subject' />
             </div>
             <textarea class='min-hide_textera ckeditor' name="message" rows="30" placeholder='Message'></textarea>
@@ -43,36 +44,36 @@
 <script src="https://unpkg.com/@yaireo/tagify"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-            // Ensure that you are encoding this correctly
-            const userEmails = {!! json_encode($allMailIds->pluck('email')) !!};
+        // Ensure that you are encoding this correctly
+        const userEmails = {!! json_encode($allMailIds->pluck('email')) !!};
 
-            // Initialize Tagify for "To" and "CC" fields
-            const toInput = document.getElementById('compose_to');
-            const ccInput = document.getElementById('compose_cc');
+        // Initialize Tagify for "To" and "CC" fields
+        const toInput = document.getElementById('compose_to');
+        const ccInput = document.getElementById('compose_cc');
 
-            const tagifyTo = new Tagify(toInput, {
-                whitelist: userEmails,
-                enforceWhitelist: true,
-                dropdown: {
-                    maxItems: 20,
-                    maxTags: 1, 
-                    classname: "tags-dropdown",
-                    enabled: 0, // all ways to be enabled
-                    closeOnSelect: true, // keep dropdown open after selection
-                    highlight: true // highlight matched results
-                }
-            });
-
-            const tagifyCC = new Tagify(ccInput, {
-                whitelist: userEmails,
-                enforceWhitelist: true,
-                dropdown: {
-                    maxItems: 20, // Adjust the max items shown in the dropdown
-                    classname: "tags-dropdown",
-                    enabled: 0, // all ways to be enabled
-                    closeOnSelect: false, // keep dropdown open after selection
-                    highlight: true // highlight matched results
-                }
-            });
+        const tagifyTo = new Tagify(toInput, {
+            whitelist: userEmails,
+            enforceWhitelist: true,
+            dropdown: {
+                maxItems: 20,
+                maxTags: 1,
+                classname: "tags-dropdown",
+                enabled: 0, // all ways to be enabled
+                closeOnSelect: true, // keep dropdown open after selection
+                highlight: true // highlight matched results
+            }
         });
+
+        const tagifyCC = new Tagify(ccInput, {
+            whitelist: userEmails,
+            enforceWhitelist: true,
+            dropdown: {
+                maxItems: 20, // Adjust the max items shown in the dropdown
+                classname: "tags-dropdown",
+                enabled: 0, // all ways to be enabled
+                closeOnSelect: false, // keep dropdown open after selection
+                highlight: true // highlight matched results
+            }
+        });
+    });
 </script>

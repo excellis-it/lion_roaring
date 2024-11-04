@@ -2223,6 +2223,23 @@
                     '<br>')); // Display file names with icons
             });
 
+            $(document).on('change', '#reply-mail-file-input', function() {
+                const fileNames = Array.from(this.files).map(file => {
+                    return `<span><i class="fa fa-paperclip"></i> ${file.name}</span>`; // Prepend icon to each file name
+                });
+                console.log(fileNames);
+                $('#reply-mail-selected-file-names').html(fileNames.join(
+                    '<br>')); // Display file names with icons
+            });
+
+            $(document).on('change', '#forword-mail-file-input', function() {
+                const fileNames = Array.from(this.files).map(file => {
+                    return `<span><i class="fa fa-paperclip"></i> ${file.name}</span>`; // Prepend icon to each file name
+                });
+                $('#forward-mail-selected-file-names').html(fileNames.join(
+                    '<br>')); // Display file names with icons
+            });
+
 
             $(document).on('submit', '#sendUserEMailForm', function(e) {
                 e.preventDefault();
@@ -2332,9 +2349,9 @@
 
 
             $(document).on('submit', '#sendUserEMailForward', function(e) {
-                e.preventDefault();                
+                e.preventDefault();
 
-                var formData = new FormData(this); 
+                var formData = new FormData(this);
 
                 $('#loading').addClass('loading');
                 $('#loading-content').addClass('loading-content');
@@ -2679,6 +2696,25 @@
                 ClassicEditor
                     .create(textarea, {
                         // You can add configuration options here
+                        toolbar: [
+                            'heading',
+                            '|',
+                            'bold',
+                            'italic',
+                            'blockQuote',
+                            'bulletedList',
+                            'numberedList',
+                            'link',
+                            '|',
+                            'undo',
+                            'redo'
+                            // Add any other desired toolbar items here
+                        ],
+                        // removePlugins: [
+                        //     'ImageUpload', // To remove image upload feature
+                        //     'Table', // To remove table feature
+                        //     'MediaEmbed' // To remove media embed feature
+                        // ]
                     })
                     .then(editor => {
                         console.log('CKEditor initialized for:', textarea);
@@ -2691,7 +2727,7 @@
         });
     </script>
 
-    
+
 
 
     @stack('scripts')

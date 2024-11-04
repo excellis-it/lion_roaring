@@ -199,9 +199,19 @@ class SendMailController extends Controller
 
         $userMail = $mail_details->mailUsers->first();
 
+        $reply_mails = SendMail::with([
+            'user',
+            'mailUsers' => function ($query) {
+                $query->where('user_id', auth()->id());
+            }
+        ])->where('reply_of', $mail_details->id)->orderBy('created_at', 'desc')->get();
+
+       // dd($reply_mails);
+        
+
         $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
 
-        return view('user.mail.mail-details')->with(compact('mail_details', 'userMail', 'allMailIds'));
+        return view('user.mail.mail-details')->with(compact('mail_details', 'userMail', 'allMailIds', 'reply_mails'));
     }
 
 
@@ -211,10 +221,13 @@ class SendMailController extends Controller
     {
         $id = base64_decode($id);
         $mail = SendMail::findOrFail($id);
-        $mail_details = SendMail::with(['user'])->where('is_delete', 0)->findOrFail($id);
+        $mail_details = SendMail::with(['user', 'mailUsers' => function ($query) {
+                $query->where('user_id', auth()->id());
+            }])->where('is_delete', 0)->findOrFail($id);
+        $userMail = $mail_details->mailUsers->first();
 
         $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-        return view('user.mail.mail-details')->with(compact('mail', 'mail_details', 'allMailIds'));
+        return view('user.mail.mail-details')->with(compact('mail', 'mail_details', 'userMail', 'allMailIds'));
     }
 
     //

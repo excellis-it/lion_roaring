@@ -140,6 +140,10 @@
 
                     </div>
 
+
+
+                    @include('user.mail.partials.reply-mails')
+
                    
 
                     <div class="mail_reply" {{ $mail_details->form_id != auth()->id() && !Request::is('user/mail/trash-mail-view/*') ? '' : 'hidden' }}>
@@ -212,7 +216,7 @@
                                     <div class="file-input">
                                         <input type="file" name="attachments[]" id="reply-mail-file-input"
                                             class="file-input__input" multiple />
-                                        <label class="file-input__label" for="create-mail-file-input">
+                                        <label class="file-input__label" for="reply-mail-file-input">
                                             <span><i class='fa fa-paperclip'></i></span>
                                         </label>
                                     </div>
@@ -290,7 +294,7 @@
                                     <div class="file-input">
                                         <input type="file" name="attachments[]" id="forword-mail-file-input"
                                             class="file-input__input" multiple />
-                                        <label class="file-input__label" for="create-mail-file-input">
+                                        <label class="file-input__label" for="forword-mail-file-input">
                                             <span><i class='fa fa-paperclip'></i></span>
                                         </label>
                                     </div>
