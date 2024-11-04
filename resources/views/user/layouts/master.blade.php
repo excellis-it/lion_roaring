@@ -77,6 +77,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
     <script src="https://rawgit.com/mervick/emojionearea/master/dist/emojionearea.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/classic/ckeditor.js"></script>
     {{-- trippy cdn link --}}
     <script src="https://unpkg.com/popper.js@1"></script>
     <script src="https://unpkg.com/tippy.js@5"></script>
@@ -2304,7 +2305,7 @@
 
                             fetchLatestEmails();
                             toastr.success(response.message);
-                            $('#sendUserEMailReplay')[0].reset();
+                            $('#sendUserEMailReply')[0].reset();
                             $('#reply-mail-selected-file-names').empty();
 
                             window.location.reload();
@@ -2331,9 +2332,9 @@
 
 
             $(document).on('submit', '#sendUserEMailForward', function(e) {
-                e.preventDefault();
+                e.preventDefault();                
 
-                var formData = new FormData(this); // Gather form data
+                var formData = new FormData(this); 
 
                 $('#loading').addClass('loading');
                 $('#loading-content').addClass('loading-content');
@@ -2666,6 +2667,26 @@
                     window.location.href = route;
                 }
 
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Select all textarea elements with the class 'ckeditor'
+            const editors = document.querySelectorAll('textarea.ckeditor');
+
+            editors.forEach((textarea) => {
+                ClassicEditor
+                    .create(textarea, {
+                        // You can add configuration options here
+                    })
+                    .then(editor => {
+                        console.log('CKEditor initialized for:', textarea);
+                        editor.ui.view.editable.element.style.height = '250px';
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
             });
         });
     </script>

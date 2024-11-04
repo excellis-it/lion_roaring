@@ -45655,3 +45655,7 @@ ul {
 .bg-badge-dark {
     background-color: #dee7f5;
 }
+
+.ck-content {
+    height: 250px;
+}
