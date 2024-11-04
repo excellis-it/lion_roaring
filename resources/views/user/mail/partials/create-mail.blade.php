@@ -13,7 +13,7 @@
                 <input id="compose_cc" name="cc" class='receiver input-large' type='text' placeholder='CC' value='' />
                 <input class='input-large' name="subject" type='text' placeholder='Subject' />
             </div>
-            <textarea class='min-hide_textera' name="message" rows="6" placeholder='Message'></textarea>
+            <textarea class='min-hide_textera ckeditor' name="message" rows="30" placeholder='Message'></textarea>
 
             <div class="m-2" id="create-mail-selected-file-names"></div>
 

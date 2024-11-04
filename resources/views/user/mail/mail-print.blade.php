@@ -49,7 +49,7 @@
             </div>
 
             <div class="mail_text">
-                {{ $mail_details->message }}
+                {!! $mail_details->message !!}
             </div>
 
             <div class="mail_text mail_details_attachments m-2">

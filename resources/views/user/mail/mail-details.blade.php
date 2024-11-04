@@ -114,11 +114,11 @@
                             </div>
                         </div>
 
-                        <div class="mail_text">
-                            {{ $mail_details->message }}
+                        <div class="">
+                            {!! $mail_details->message !!}
                         </div>
 
-                        <div class="mail_text mail_details_attachments m-2">
+                        <div class=" mail_details_attachments m-2">
                             @if ($mail_details->attachment)
                                 @php
 
@@ -131,6 +131,7 @@
                                         <a href="{{ asset('storage/' . $attachment['encrypted_name']) }}"
                                             target="_blank">{{ $attachment['original_name'] }}</a>
                                     </div>
+                                    <input type="hidden" class="existing-attachment" data-name="{{ $attachment['original_name'] }}" data-path="{{ asset('storage/' . $attachment['encrypted_name']) }}">
                                 @endforeach
                             @else
                                 <p hidden>No attachments found.</p>
@@ -202,7 +203,7 @@
                                     </div>
 
                                 </div>
-                                <textarea class='min-hide_textera' name="message" rows="6" placeholder='Message'></textarea>
+                                <textarea class='min-hide_textera ckeditor' name="message" rows="6" placeholder='Message'></textarea>
 
                                 <div class="m-2" id="reply-mail-selected-file-names"></div>
 
@@ -253,31 +254,34 @@
                                     &nbsp;&nbsp; | &nbsp;&nbsp;
                                 </div>
                                 <div class='min-hide'>
-                                    @php
-                                        $mailtoArray = !empty($mail_details->user->email)
-                                            ? explode(',', $mail_details->user->email)
-                                            : [];
-                                        $mailtoJson = json_encode(
-                                            array_map(fn($email) => ['value' => trim($email)], $mailtoArray),
-                                        );
-
-                                        $ccArray = !empty($mail_details->cc) ? explode(',', $mail_details->cc) : [];
-                                        $ccJson = json_encode(
-                                            array_map(fn($email) => ['value' => trim($email)], $ccArray),
-                                        );
-                                    @endphp
+                                    
 
                                     <input id="fw_to" name="to" class='input-large' type=''
                                         placeholder='Recipients' value="" />
 
                                     <input id="fw_cc" name="cc" class='input-large' type=''
-                                        placeholder='CC' value="{{ $ccJson }}" />
+                                        placeholder='CC' value="" />
 
 
                                     <input readonly class='input-large' name="subject" type='text'
                                         placeholder='Subject' value="{{ $mail_details->subject }}" />
                                 </div>
-                                <textarea class='min-hide_textera' name="message" rows="6" placeholder='Message'></textarea>
+                                
+                                <textarea class='min-hide_textera ckeditor' name="message" rows="6" placeholder='Message'>{{ $mail_details->message }}
+                                @if ($mail_details->attachment)
+                                    @php
+                                        $attachments = json_decode($mail_details->attachment, true);
+                                    @endphp
+
+                                    <div>
+                                        @foreach ($attachments as $attachment)
+                                            <a href="{{ asset('storage/' . $attachment['encrypted_name']) }}" target="_blank">
+                                                {{ $attachment['original_name'] }}
+                                            </a><br>
+                                        @endforeach
+                                    </div>
+                                @endif
+                                </textarea>                                
 
                                 <div class="m-2" id="forward-mail-selected-file-names"></div>
 

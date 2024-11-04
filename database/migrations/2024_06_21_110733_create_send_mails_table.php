@@ -20,7 +20,7 @@ class CreateSendMailsTable extends Migration
             $table->string('cc')->nullable();
             $table->string('subject');
             $table->text('message');
-            $table->string('attachment')->nullable();
+            $table->longText('attachment')->nullable();
             $table->timestamps();
         });
     }
