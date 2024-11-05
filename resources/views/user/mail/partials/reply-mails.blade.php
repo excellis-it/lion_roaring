@@ -1,11 +1,11 @@
 @if ($reply_mails->count() > 0)
     @foreach ($reply_mails as $reply)
         <hr hidden class="ms-5" style="height: 20px;width:5px">
-        <div class="main-mail card card-body shadow">
-            <span>RE:</span>
+        <div class="main-mail mt-2">           
 
             <div class="mail_subject">
                 <div class="row">
+                    <span class="mail_text" hidden>RE:</span>
                     <div class="col-lg-7">
                         <div class="d-flex">
                             <div class="man_img">
@@ -20,7 +20,9 @@
 
                                 </span>
                             </div>
+                            
                             <div class="name_text_p">
+                                
                                 <h5>{{ $reply->user->full_name }}</h5>
                                 <h6><span class="time_text">From: {{ $reply->user->email }}</span></h6>
                                 <h6 hidden><span class="time_text">To: </span>
@@ -66,11 +68,11 @@
                 </div>
             </div>
 
-            <div class="">
+            <div class="mail_text">
                 {!! $reply->message !!}
             </div>
 
-            <div class=" mail_details_attachments m-2">
+            <div class="mail_text mail_details_attachments">
                 @if ($reply->attachment)
                     @php
 

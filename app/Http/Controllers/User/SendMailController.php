@@ -191,10 +191,6 @@ class SendMailController extends Controller
 
 
 
-
-
-
-
     public function fetchData(Request $request)
     {
         if ($request->ajax()) {

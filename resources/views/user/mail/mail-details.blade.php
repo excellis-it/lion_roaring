@@ -67,7 +67,7 @@
                         </div>
                     </div>
 
-                    <div class="main-mail card card-body shadow">
+                    <div class="main-mail ">
 
 
                         <div class="mail_subject">
@@ -91,9 +91,8 @@
                                             <h6><span class="time_text">From: {{ $mail_details->user->email }}</span></h6>
                                             <h6><span class="time_text">To: </span>
                                                 @foreach (explode(',', $mail_details->to) as $toEmail)
-                                                        <span
-                                                            class="badge bg-badge-dark text-dark">{{ trim($toEmail) }}</span>
-                                                    @endforeach
+                                                    <span class="badge bg-badge-dark text-dark">{{ trim($toEmail) }}</span>
+                                                @endforeach
                                             </h6>
                                             <h6>
                                                 @if ($mail_details->cc)
@@ -133,11 +132,11 @@
                             </div>
                         </div>
 
-                        <div class="">
+                        <div class="mail_text">
                             {!! $mail_details->message !!}
                         </div>
 
-                        <div class=" mail_details_attachments m-2">
+                        <div class="mail_text mail_details_attachments">
                             @if ($mail_details->attachment)
                                 @php
 
@@ -234,7 +233,7 @@
                                                 array_merge([$mail_details->user->email], $replyMailids->toArray()),
                                             )
                                             : array_unique($replyMailids->toArray());
-                                        
+
                                         $mailtoJson = json_encode(
                                             array_map(fn($email) => ['value' => trim($email)], $mailtoArray),
                                         );
@@ -318,24 +317,12 @@
                                         placeholder='CC' value="" />
 
 
-                                    <input readonly class='input-large' name="subject" type='text'
+                                    <input class='input-large' name="subject" type='text'
                                         placeholder='Subject' value="{{ $mail_details->subject }}" />
                                 </div>
 
-                                <textarea class='min-hide_textera ckeditor' name="message" rows="6" placeholder='Message'>{{ $mail_details->message }}
-                                @if ($mail_details->attachment)
-@php
-    $attachments = json_decode($mail_details->attachment, true);
-@endphp
-
-                                                                        <div>
-                                                                            @foreach ($attachments as $attachment)
-<a href="{{ asset('storage/' . $attachment['encrypted_name']) }}" target="_blank">
-                                                                                    {{ $attachment['original_name'] }}
-                                                                                </a><br>
-@endforeach
-                                                                        </div>
-@endif
+                                <textarea class='min-hide_textera ckeditor' name="message" rows="6" placeholder='Message'>
+                                    @include('user.mail.partials.forward-mail')
                                 </textarea>
 
                                 <div class="m-2" id="forward-mail-selected-file-names"></div>
