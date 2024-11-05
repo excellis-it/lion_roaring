@@ -9,14 +9,15 @@ class AddIsFromToMailUsersTable extends Migration
     public function up()
     {
         Schema::table('mail_users', function (Blueprint $table) {
-            $table->boolean('is_from')->default(false)->after('is_delete'); // Add is_from column
+            $table->boolean('is_from')->default(false)->after('is_delete'); 
         });
     }
+    
 
     public function down()
     {
         Schema::table('mail_users', function (Blueprint $table) {
-            $table->dropColumn('is_from'); // Remove is_from column
+            $table->dropColumn('is_from'); 
         });
     }
 }
