@@ -75,5 +75,50 @@
                 highlight: true // highlight matched results
             }
         });
+
+
+        // $(document).on('change', '#create-mail-file-input', function() {
+        //     const fileNames = Array.from(this.files).map(file => {
+        //         return `<span><i class="fa fa-paperclip"></i> ${file.name}</span>`; // Prepend icon to each file name
+        //     });
+        //     $('#create-mail-selected-file-names').html(fileNames.join(
+        //         '<br>')); // Display file names with icons
+        // });
+
+        // let selectedFiles = [];
+
+        // $(document).on('change', '#create-mail-file-input', function(event) {
+        //     Array.from(event.target.files).forEach(file => {
+        //         if (!selectedFiles.some(f => f.name === file.name)) {
+        //             selectedFiles.push(file);
+        //         }
+        //     });
+        //     updateFileDisplay();
+        // });
+
+        // function updateFileDisplay() {
+        //     const fileDisplay = selectedFiles.map((file, index) => {
+        //         return `<span><i class="fa fa-paperclip"></i> ${file.name} 
+        //             <button type="button" class="remove-file-btn btn btn-transparent ms-2" data-index="${index}">
+        //                 <i class="fa fa-times"></i>
+        //             </button></span>`;
+        //     }).join('<br>');
+        //     $('#create-mail-selected-file-names').html(fileDisplay);
+        // }
+
+        // $(document).on('click', '.remove-file-btn', function() {
+        //     const index = $(this).data('index');
+        //     selectedFiles.splice(index, 1);
+        //     updateFileDisplay();
+        //     resetFileInput();
+        // });
+
+        // function resetFileInput() {
+        //     const dataTransfer = new DataTransfer();
+        //     selectedFiles.forEach(file => dataTransfer.items.add(file));
+        //     document.getElementById('create-mail-file-input').files = dataTransfer.files;
+        // }
+
+
     });
 </script>

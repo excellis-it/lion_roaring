@@ -10,7 +10,7 @@
     </section>
     <div class="container-fluid">
         <div class="bg_white_border">
-            <div class="main__body" style="height: unset !important;">
+            <div class="main__body">
                 <!-- Sidebar Starts -->
                 @include('user.mail.partials.sidebar')
 
@@ -154,7 +154,7 @@
                                                 <span><img src="{{ asset('user_assets/images/atatched.png') }}"
                                                         alt="user" class="" /></span>
                                                 <div>
-                                                    <p>{{ $attachment['original_name'] }}</p>
+                                                    <p>{{ substr($attachment['original_name'], 0, 8) }}</p>
                                                 </div>
                                             </div>
                                             <div class="download_attetched_file">
