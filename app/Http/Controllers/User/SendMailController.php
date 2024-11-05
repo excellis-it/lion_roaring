@@ -66,26 +66,19 @@ class SendMailController extends Controller
 
     public function inboxEmailList()
     {
-        $mails = SendMail::with(['mailUsers' => function ($q) {
-            $q->where('user_id', auth()->id())->where('is_delete', 0);
-        }])->whereHas('mailUsers', function ($q) {
-            $q->where('user_id', auth()->id())
-                ->where('is_delete', 0);
+        $mails = SendMail::whereHas('mailUsers', function ($q) {
+            $q->where('user_id', auth()->id())->where('is_from', '!=', 1)->where('is_delete', 0);
         })
-            ->orWhere(function ($query) {
-                $query->where('to', auth()->id())
-                    ->whereNotNull('reply_of');
-            })
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
         $mails->each(function ($mail) {
-            $mail->userMail = $mail->mailUsers->first(); // Add the MailUser instance to each mail
+            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)->where('user_id', auth()->id())->first();
         });
 
         //  return response()->json(['data' => view('user.mail.partials.inbox-email-list', compact('mails'))->render()]);
         return response()->json([
-            'data' => view('user.mail.partials.inbox-email-list', compact('mails'))->render(),
+            'data' => view('user.mail.partials.main-email-list', compact('mails'))->render(),
             'total' => $mails->total(),
             'perPage' => $mails->perPage(),
             'currentPage' => $mails->currentPage(),
@@ -95,13 +88,18 @@ class SendMailController extends Controller
 
     public function sentEmailList()
     {
-        $mails = SendMail::where('form_id', auth()->id())
-            ->where('is_delete', 0)
+        $mails = SendMail::whereHas('mailUsers', function ($q) {
+            $q->where('user_id', auth()->id())->where('is_from', 1)->where('is_delete', 0);
+        })
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
+        $mails->each(function ($mail) {
+            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)->where('user_id', auth()->id())->first();
+        });
+
         return response()->json([
-            'data' => view('user.mail.partials.sent-email-list', compact('mails'))->render(),
+            'data' => view('user.mail.partials.main-email-list', compact('mails'))->render(),
             'total' => $mails->total(),
             'perPage' => $mails->perPage(),
             'currentPage' => $mails->currentPage(),
@@ -111,26 +109,18 @@ class SendMailController extends Controller
 
     public function starEmailList()
     {
-        $mails = SendMail::with(['mailUsers' => function ($q) {
-            $q->where('user_id', auth()->id())->where('is_delete', 0);
-        }])->whereHas('mailUsers', function ($q) {
-            $q->where('user_id', auth()->id())
-                ->where('is_delete', 0)
-                ->where('is_starred', 1);
+        $mails = SendMail::whereHas('mailUsers', function ($q) {
+            $q->where('user_id', auth()->id())->where('is_starred', 1)->where('is_delete', 0);
         })
-            ->orWhere(function ($query) {
-                $query->where('to', auth()->id())
-                    ->whereNotNull('reply_of');
-            })
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
         $mails->each(function ($mail) {
-            $mail->userMail = $mail->mailUsers->first(); // Add the MailUser instance to each mail
+            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)->where('user_id', auth()->id())->first();
         });
 
         return response()->json([
-            'data' => view('user.mail.partials.star-email-list', compact('mails'))->render(),
+            'data' => view('user.mail.partials.main-email-list', compact('mails'))->render(),
             'total' => $mails->total(),
             'perPage' => $mails->perPage(),
             'currentPage' => $mails->currentPage(),
@@ -140,31 +130,19 @@ class SendMailController extends Controller
 
     public function trashEmailList()
     {
-        // $mails = SendMail::where('form_id', auth()->id())
-        //     ->where('is_delete', 1)
-        //     ->orderBy('created_at', 'desc')
-        //     ->paginate(15);
-        $mails = SendMail::with(['mailUsers' => function ($q) {
-            $q->where('user_id', auth()->id());
-        }])->whereHas('mailUsers', function ($q) {
-            $q->where('user_id', auth()->id())
-                ->where('is_delete', 1);
+        $mails = SendMail::whereHas('mailUsers', function ($q) {
+            $q->where('user_id', auth()->id())->where('is_delete', 1);
         })
-            ->orWhere(function ($query) {
-                $query->where('to', auth()->id())
-                    ->whereNotNull('reply_of');
-            })
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
         $mails->each(function ($mail) {
-            $mail->userMail = $mail->mailUsers->first(); // Add the MailUser instance to each mail
+            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)->where('user_id', auth()->id())->first(); // Add the MailUser instance to each mail
         });
 
 
-
         return response()->json([
-            'data' => view('user.mail.partials.trash-email-list', compact('mails'))->render(),
+            'data' => view('user.mail.partials.main-email-list', compact('mails'))->render(),
             'total' => $mails->total(),
             'perPage' => $mails->perPage(),
             'currentPage' => $mails->currentPage(),
@@ -175,78 +153,45 @@ class SendMailController extends Controller
 
     public function view($id)
     {
+
         $id = base64_decode($id);
-        $mail = MailUser::where('send_mail_id', $id)
-            ->where('user_id', auth()->id())
-            ->first();
 
-        // dd($mail);
+        $init_mail = SendMail::findOrFail($id);
 
-        if ($mail) {
-            $mail->is_read = 1;
-            $mail->save();
+        if(!empty($init_mail->reply_of)){
+            $fetch_mailId = $init_mail->reply_of;
         } else {
-            // abort(403, 'You do not have permission to access this page.');
+            $fetch_mailId = $id;
         }
 
-        // Fetch the main mail details with nested replies
-        $mail_details = SendMail::with([
-            'user',
-            'mailUsers' => function ($query) {
-                $query->where('user_id', auth()->id());
-            }
-        ])->findOrFail($id);
+        $init_ownUserMailInfo = MailUser::where('send_mail_id', $id)->where('user_id', auth()->id())->first(); 
 
-        $userMail = $mail_details->mailUsers->first();
+        if ($init_ownUserMailInfo) {
+            $init_ownUserMailInfo->is_read = 1;
+            $init_ownUserMailInfo->save();
+        }
 
-        $reply_mails = SendMail::with([
-            'user',
-            'mailUsers' => function ($query) {
-                $query->where('user_id', auth()->id());
-            }
-        ])->where('reply_of', $mail_details->id)->orderBy('created_at', 'desc')->get();
+        $mail_details = SendMail::with('user')->findOrFail($fetch_mailId);
 
-       // dd($reply_mails);
-        
+        $ownUserMailInfo = MailUser::where('send_mail_id', $fetch_mailId)->where('user_id', auth()->id())->first(); 
+
+        $replyMailIds = [];
+
+        $reply_mails = SendMail::with('user')->where('reply_of', $fetch_mailId)->orderBy('created_at', 'asc')->get();
+        $reply_mails->each(function ($reply) {
+            $reply->ownUserMailInfo = MailUser::where('send_mail_id', $reply->id)->where('user_id', auth()->id())->first();
+        });
 
         $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-
-        return view('user.mail.mail-details')->with(compact('mail_details', 'userMail', 'allMailIds', 'reply_mails'));
+        $replyMailids = $replyMailids = collect([$mail_details->user->email])->merge($reply_mails->pluck('user.email'));
+       // dd($replyMailids);
+        return view('user.mail.mail-details')->with(compact('mail_details', 'ownUserMailInfo', 'reply_mails', 'allMailIds', 'replyMailids'));
     }
 
 
 
-    // sentMailView
-    public function sentMailView($id)
-    {
-        $id = base64_decode($id);
-        $mail = SendMail::findOrFail($id);
-        $mail_details = SendMail::with(['user', 'mailUsers' => function ($query) {
-                $query->where('user_id', auth()->id());
-            }])->where('is_delete', 0)->findOrFail($id);
-        $userMail = $mail_details->mailUsers->first();
 
-        $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-        return view('user.mail.mail-details')->with(compact('mail', 'mail_details', 'userMail', 'allMailIds'));
-    }
 
-    //
-    public function trashMailView($id)
-    {
-        $id = base64_decode($id);
-        $mail = SendMail::findOrFail($id);
-        $mail_details = SendMail::with([
-            'user',
-            'mailUsers' => function ($query) {
-                $query->where('user_id', auth()->id());
-            }
-        ])->findOrFail($id);
-
-        $userMail = $mail_details->mailUsers->first();
-
-        $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-        return view('user.mail.mail-details')->with(compact('mail_details', 'userMail', 'allMailIds'));
-    }
 
 
 
@@ -392,6 +337,13 @@ class SendMailController extends Controller
                 $notification->save();
             }
         }
+
+        // Save users associated with FROM
+        $mail_user = new MailUser();
+        $mail_user->user_id = auth()->id();
+        $mail_user->send_mail_id = $mail->id;
+        $mail_user->is_from = 1;
+        $mail_user->save();
 
         // Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
 
@@ -539,6 +491,14 @@ class SendMailController extends Controller
             }
         }
 
+
+        // Save users associated with FROM
+        $mail_user = new MailUser();
+        $mail_user->user_id = auth()->id();
+        $mail_user->send_mail_id = $mail->id;
+        $mail_user->is_from = 1;
+        $mail_user->save();
+
         // Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
 
         // session()->flash('message', 'Your mail has been sent Successfully');
@@ -683,6 +643,13 @@ class SendMailController extends Controller
                 $notification->save();
             }
         }
+
+        // Save users associated with FROM
+        $mail_user = new MailUser();
+        $mail_user->user_id = auth()->id();
+        $mail_user->send_mail_id = $mail->id;
+        $mail_user->is_from = 1;
+        $mail_user->save();
 
         // Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
 
@@ -886,20 +853,20 @@ class SendMailController extends Controller
 
     public function printMail($id)
     {
-        // Retrieve the mail details based on the ID
-        // $mail_details = Mail::with('user')->findOrFail($id);
-        $mail_details = SendMail::with([
-            'user',
-            'mailUsers' => function ($query) {
-                $query->where('user_id', auth()->id());
-            }
-        ])->findOrFail($id);
+        
+
+        $mail_details = SendMail::with('user')->findOrFail($id);
+
+        $ownUserMailInfo = MailUser::where('send_mail_id', $id)->where('user_id', auth()->id())->first(); 
+
+        $replyMailIds = [];
+
+        $reply_mails = SendMail::with('user')->where('reply_of', $id)->orderBy('created_at', 'asc')->get();
+        $reply_mails->each(function ($reply) {
+            $reply->ownUserMailInfo = MailUser::where('send_mail_id', $reply->id)->where('user_id', auth()->id())->first();
+        });
 
         // Pass the mail details to the print view
-        return view('user.mail.mail-print', compact('mail_details'));
+        return view('user.mail.mail-print', compact('mail_details', 'ownUserMailInfo', 'reply_mails'));
     }
-
-
-
-
 }

@@ -15,6 +15,7 @@ class MailUser extends Model
         'is_read',
         'is_starred',
         'is_delete',
+        'is_from',
         'is_to',
         'is_cc',
         'deleted_at',

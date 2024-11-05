@@ -2,7 +2,7 @@
     <button class="sidebar__compose btn_all_open" data-target="#create_mail_box1"> <span class="material-symbols-outlined">
             add
         </span>Compose</button>
-    <div class="sidebarOption {{ Request::is('user/mail') || Request::is('user/mail/view/*') ? 'sidebarOption__active' : '' }}"
+    <div class="sidebarOption {{ Request::is('user/mail') ? 'sidebarOption__active' : '' }}"
         data-route="{{ route('mail.index') }}">
         <span class="material-symbols-outlined"> inbox </span>
         <h3>Inbox</h3>

@@ -4,7 +4,6 @@
             // $mailUser = $mail->mailUsers()->where('user_id', auth()->id())->first();
             $mailUser = $mail->ownUserMailInfo;
             $isRead = isset($mailUser['is_read']) && $mailUser['is_read'] == 1;
-            $latestReply = $mail->replies->first();
             $isStar = $mailUser->is_starred;
         @endphp
         <div class="emailRow {{ $isRead ? '' : 'mail_read' }}">
@@ -22,19 +21,16 @@
             </div>
 
 
-            <h3 class="emailRow__title view-mail" data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
+            <h3 class="emailRow__title view-mail" data-route="{{ route('mail.view', base64_encode($mail->id)) }}">
                 {{ $mail->user->full_name ?? '' }}
             </h3>
 
-            <div class="emailRow__message view-mail" data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
+            <div class="emailRow__message view-mail" data-route="{{ route('mail.view', base64_encode($mail->id)) }}">
                 <h4>
                     {{ !empty($mail->reply_of) ? 'RE:' : '' }} {{ $mail->subject }}
-                    @if ($latestReply)
-                        {{-- <span class="emailRow__description"> - {!! $latestReply->message !!} </span> --}}
-                        <span class="emailRow__description"> - {!! $mail->message !!} </span>
-                    @else
-                        <span class="emailRow__description"> - {!! $mail->message !!} </span>
-                    @endif
+                    
+                    <span class="emailRow__description"> - {!! substr(strip_tags($mail->message), 0, 100) !!} </span>
+                   
                 </h4>
             </div>
 
@@ -44,8 +40,8 @@
                 @endif
             </div>
 
-            <p class="emailRow__time view-mail" data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
-                {{ $latestReply ? $latestReply->created_at->diffForHumans() : $mail->created_at->diffForHumans() }}
+            <p class="emailRow__time view-mail" data-route="{{ route('mail.view', base64_encode($mail->id)) }}">
+                {{ $mail->created_at->diffForHumans() }}
             </p>
         </div>
     @endforeach
