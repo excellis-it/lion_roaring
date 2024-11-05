@@ -385,6 +385,8 @@ class SendMailController extends Controller
 
         // Decode the JSON strings for 'to' and 'cc' fields
         $toEmails = json_decode($request->to, true);
+
+       // return $toEmails;
         // Extract email addresses from the decoded arrays
         $to = array_column($toEmails, 'value');
         if ($request->cc) {

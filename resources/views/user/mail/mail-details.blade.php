@@ -228,14 +228,10 @@
                                         // $mailtoArray = !empty($mail_details->user->email)
                                         //     ? explode(',', $mail_details->user->email)
                                         //     : [];
-                                        $mailtoArray = !empty($mail_details->user->email)
-                                            ? array_unique(
-                                                array_merge([$mail_details->user->email], $replyMailids->toArray()),
-                                            )
-                                            : array_unique($replyMailids->toArray());
+                                       // $mailtoArray = $uniqueEmails->toArray();
 
                                         $mailtoJson = json_encode(
-                                            array_map(fn($email) => ['value' => trim($email)], $mailtoArray),
+                                            array_map(fn($email) => ['value' => trim($email)], $uniqueEmails),
                                         );
 
                                         $ccArray = !empty($mail_details->cc) ? explode(',', $mail_details->cc) : [];
