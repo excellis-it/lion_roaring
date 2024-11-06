@@ -24,34 +24,50 @@
                                     arrow_back</span></a>
                             <a href=""> <span class="material-symbols-outlined"> refresh </span></a>
                             @if (Request::is('user/mail/trash-mail-view/*'))
-                            <a href="javascript:void(0);" onclick="restoreSingleMail({{ $mail_details->id }})"> <span class="material-symbols-outlined"> restore </span></a>
+                                <a href="javascript:void(0);" onclick="restoreSingleMail({{ $mail_details->id }})"> <span
+                                        class="material-symbols-outlined"> restore </span></a>
                             @else
-                            <a href="javascript:void(0);" onclick="deleteSingleMail({{ $mail_details->id }})"> <span class="material-symbols-outlined"> delete </span></a>
+                                <a href="javascript:void(0);" onclick="deleteSingleMail({{ $mail_details->id }})"> <span
+                                        class="material-symbols-outlined"> delete </span></a>
                             @endif
                         </div>
                         <div class="emailList__settingsRight">
-                            <a href=""> <span class="material-symbols-outlined"> chevron_left </span></a>
-                            <a href=""> <span class="material-symbols-outlined"> chevron_right </span></a>
-                            <a href=""> <span class="material-symbols-outlined"> settings </span></a>
+
+
+                            <a href="javascript:void(0);"> <span
+                                    class="material-symbols-outlined open_mail_reply_box">reply</span></a>
+                            @if ($ownUserMailInfo->is_starred == 1)
+                                <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail_details->id }})">
+                                    <span class="material-symbols-outlined"
+                                        style="color: orange; font-variation-settings: 'FILL' 1;">grade</span></a>
+                            @else
+                                <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail_details->id }})">
+                                    <span class="material-symbols-outlined">grade</span></a>
+                            @endif
+
                         </div>
                     </div>
                     <div class="mail_subject">
                         <div class="row">
                             <div class="col-lg-9">
-                                <h4 class="subject_text_h4">Subject: 
-                                  <a class="text-decoration-underline" href="{{ route('mail.view', base64_encode($mail_details->reply_of)) }}" target="_blank" rel="noopener noreferrer">{{ !empty($mail_details->reply_of) ? 'RE:' : '' }}</a>   
+                                <h4 class="subject_text_h4">Subject:
+                                    <a hidden class="text-decoration-underline"
+                                        href="{{ route('mail.view', base64_encode($mail_details->reply_of)) }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer">{{ !empty($mail_details->reply_of) ? 'RE:' : '' }}</a>
                                     {{ $mail_details->subject }}
                                     {{-- <span class="inbox_box">inbox <span
                                             class="material-symbols-outlined">close</span></span> --}}
                                 </h4>
                             </div>
                             <div class="col-lg-3 text-end">
-                                <button id="printMailButton" class="btn btn-transparent" type="button"> <span class="material-symbols-outlined">print</span></button>
+                                <button id="printMailButton" class="btn btn-transparent" type="button"> <span
+                                        class="material-symbols-outlined">print</span></button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="main-mail card card-body">
+                    <div class="main-mail ">
 
 
                         <div class="mail_subject">
@@ -73,8 +89,10 @@
                                         <div class="name_text_p">
                                             <h5>{{ $mail_details->user->full_name }}</h5>
                                             <h6><span class="time_text">From: {{ $mail_details->user->email }}</span></h6>
-                                            <h6><span class="time_text">To: <span
-                                                        class="badge bg-badge-dark text-dark">{{ $mail_details->to }}</span></span>
+                                            <h6><span class="time_text">To: </span>
+                                                @foreach (explode(',', $mail_details->to) as $toEmail)
+                                                    <span class="badge bg-badge-dark text-dark">{{ trim($toEmail) }}</span>
+                                                @endforeach
                                             </h6>
                                             <h6>
                                                 @if ($mail_details->cc)
@@ -95,10 +113,10 @@
                                     <div class="d-flex justify-content-end">
                                         <span class="time_text">{{ $mail_details->created_at->format('g:iA') }}
                                             ({{ $mail_details->created_at->diffForHumans() }})</span>
-                                        @if (($mail_details->form_id != auth()->id()) && !Request::is('user/mail/trash-mail-view/*'))
+                                        {{-- @if ($mail_details->form_id != auth()->id() && !Request::is('user/mail/trash-mail-view/*'))
                                             <a href="javascript:void(0);"> <span
                                                     class="material-symbols-outlined open_mail_reply_box">reply</span></a>
-                                            @if ($userMail->is_starred == 1)
+                                            @if ($ownUserMailInfo->is_starred == 1)
                                                 <a href="javascript:void(0);"
                                                     onclick="setMailStar(this, {{ $mail_details->id }})">
                                                     <span class="material-symbols-outlined"
@@ -108,17 +126,17 @@
                                                     onclick="setMailStar(this, {{ $mail_details->id }})">
                                                     <span class="material-symbols-outlined">grade</span></a>
                                             @endif
-                                        @endif
+                                        @endif --}}
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="">
+                        <div class="mail_text">
                             {!! $mail_details->message !!}
                         </div>
 
-                        <div class=" mail_details_attachments m-2">
+                        <div class="mail_text mail_details_attachments">
                             @if ($mail_details->attachment)
                                 @php
 
@@ -126,30 +144,48 @@
                                 @endphp
 
                                 @foreach ($attachments as $attachment)
-                                    <div class="attachment-item">
-                                        <i class="fa fa-paperclip"></i>
-                                        <a href="{{ asset('storage/' . $attachment['encrypted_name']) }}"
-                                            target="_blank">{{ $attachment['original_name'] }}</a>
+                                    <input type="hidden" class="existing-attachment"
+                                        data-name="{{ $attachment['original_name'] }}"
+                                        data-path="{{ asset('storage/' . $attachment['encrypted_name']) }}">
+                                    <div class="other_attch">
+                                        <a class="attatched_file_box"
+                                            href="{{ asset('storage/' . $attachment['encrypted_name']) }}" target="_blank">
+                                            <div class="mail_img_box">
+                                                <span><img src="{{ asset('user_assets/images/atatched.png') }}"
+                                                        alt="user" class="" /></span>
+                                                <div>
+                                                    <p>{{ substr($attachment['original_name'], 0, 8) }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="download_attetched_file">
+                                                <span class="material-symbols-outlined">download</span>
+                                            </div>
+                                        </a>
                                     </div>
-                                    <input type="hidden" class="existing-attachment" data-name="{{ $attachment['original_name'] }}" data-path="{{ asset('storage/' . $attachment['encrypted_name']) }}">
                                 @endforeach
                             @else
                                 <p hidden>No attachments found.</p>
                             @endif
+
+
+
+
+
+
+
+
+
                         </div>
 
                     </div>
 
-                   
 
-                    <div class="mail_reply" {{ $mail_details->form_id != auth()->id() && !Request::is('user/mail/trash-mail-view/*') ? '' : 'hidden' }}>
-                        <a href="javascript:void(0);" class="open_mail_reply_box">
-                            <span class="material-symbols-outlined">reply</span> Reply
-                        </a>
-                        <a href="javascript:void(0);" class="open_mail_forward_box">
-                            <span class="material-symbols-outlined">forward</span> Forward
-                        </a>
-                    </div>
+
+                    @include('user.mail.partials.reply-mails')
+
+
+
+
 
                     <div class="reply_sec mail_send_reply_box" style="display: none">
                         <div class="reply_img_box">
@@ -172,16 +208,30 @@
                                 <input type="hidden" name="reply_mail" value="1">
                                 @csrf
                                 <div class="d-flex align-items-center"><span class="material-symbols-outlined">reply</span>
-                                    &nbsp;&nbsp; | &nbsp;&nbsp; <span
-                                        class="badge bg-badge-dark text-dark">{{ $mail_details->user->email }}</span>
+                                    &nbsp;&nbsp; | &nbsp;&nbsp;
+                                    {{-- <span class="badge bg-badge-dark text-dark">{{ $mail_details->user->email }}</span> --}}
+                                    @if ($mail_details->to)
+                                        @php
+                                            // Combine 'to' emails and replied emails and remove duplicates
+                                            $toEmails = explode(',', $mail_details->to);
+                                            $replyMailsArray = !empty($replyMailids) ? $replyMailids->toArray() : [];
+                                            $uniqueEmails = array_unique(array_merge($toEmails, $replyMailsArray));
+                                        @endphp
+
+                                        @foreach ($uniqueEmails as $email)
+                                            <span class="badge bg-badge-dark text-dark ms-1">{{ trim($email) }}</span>
+                                        @endforeach
+                                    @endif
                                 </div>
                                 <div class='min-hide'>
                                     @php
-                                        $mailtoArray = !empty($mail_details->user->email)
-                                            ? explode(',', $mail_details->user->email)
-                                            : [];
+                                        // $mailtoArray = !empty($mail_details->user->email)
+                                        //     ? explode(',', $mail_details->user->email)
+                                        //     : [];
+                                       // $mailtoArray = $uniqueEmails->toArray();
+
                                         $mailtoJson = json_encode(
-                                            array_map(fn($email) => ['value' => trim($email)], $mailtoArray),
+                                            array_map(fn($email) => ['value' => trim($email)], $uniqueEmails),
                                         );
 
                                         $ccArray = !empty($mail_details->cc) ? explode(',', $mail_details->cc) : [];
@@ -190,8 +240,8 @@
                                         );
                                     @endphp
 
-                                    <input name="to" class='input-large' type='hidden' placeholder='Recipients'
-                                        value="{{ $mailtoJson }}" />
+                                    <input id="reply_to" name="to" class='input-large' type='hidden'
+                                        placeholder='Recipients' value="{{ $mailtoJson }}" />
 
                                     <input name="cc" class='input-large' type='hidden' placeholder='CC'
                                         value="{{ $ccJson }}" />
@@ -212,7 +262,7 @@
                                     <div class="file-input">
                                         <input type="file" name="attachments[]" id="reply-mail-file-input"
                                             class="file-input__input" multiple />
-                                        <label class="file-input__label" for="create-mail-file-input">
+                                        <label class="file-input__label" for="reply-mail-file-input">
                                             <span><i class='fa fa-paperclip'></i></span>
                                         </label>
                                     </div>
@@ -254,7 +304,7 @@
                                     &nbsp;&nbsp; | &nbsp;&nbsp;
                                 </div>
                                 <div class='min-hide'>
-                                    
+
 
                                     <input id="fw_to" name="to" class='input-large' type=''
                                         placeholder='Recipients' value="" />
@@ -263,25 +313,13 @@
                                         placeholder='CC' value="" />
 
 
-                                    <input readonly class='input-large' name="subject" type='text'
+                                    <input class='input-large' name="subject" type='text'
                                         placeholder='Subject' value="{{ $mail_details->subject }}" />
                                 </div>
-                                
-                                <textarea class='min-hide_textera ckeditor' name="message" rows="6" placeholder='Message'>{{ $mail_details->message }}
-                                @if ($mail_details->attachment)
-                                    @php
-                                        $attachments = json_decode($mail_details->attachment, true);
-                                    @endphp
 
-                                    <div>
-                                        @foreach ($attachments as $attachment)
-                                            <a href="{{ asset('storage/' . $attachment['encrypted_name']) }}" target="_blank">
-                                                {{ $attachment['original_name'] }}
-                                            </a><br>
-                                        @endforeach
-                                    </div>
-                                @endif
-                                </textarea>                                
+                                <textarea class='min-hide_textera ckeditor' name="message" rows="6" placeholder='Message'>
+                                    @include('user.mail.partials.forward-mail')
+                                </textarea>
 
                                 <div class="m-2" id="forward-mail-selected-file-names"></div>
 
@@ -290,7 +328,7 @@
                                     <div class="file-input">
                                         <input type="file" name="attachments[]" id="forword-mail-file-input"
                                             class="file-input__input" multiple />
-                                        <label class="file-input__label" for="create-mail-file-input">
+                                        <label class="file-input__label" for="forword-mail-file-input">
                                             <span><i class='fa fa-paperclip'></i></span>
                                         </label>
                                     </div>
@@ -302,6 +340,18 @@
                             </form>
                         </div>
                     </div>
+
+
+
+                    <div class="mail_reply">
+                        <a href="javascript:void(0);" class="open_mail_reply_box">
+                            <span class="material-symbols-outlined">reply</span> Reply
+                        </a>
+                        <a href="javascript:void(0);" class="open_mail_forward_box">
+                            <span class="material-symbols-outlined">forward</span> Forward
+                        </a>
+                    </div>
+
 
                     <!-- Email List rows Ends -->
                 </div>

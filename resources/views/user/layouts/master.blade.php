@@ -2215,13 +2215,38 @@
 
 
 
-            $(document).on('change', '#create-mail-file-input', function() {
-                const fileNames = Array.from(this.files).map(file => {
-                    return `<span><i class="fa fa-paperclip"></i> ${file.name}</span>`; // Prepend icon to each file name
-                });
-                $('#create-mail-selected-file-names').html(fileNames.join(
-                    '<br>')); // Display file names with icons
-            });
+            // $(document).on('change', '#create-mail-file-input', function() {
+            //     const fileNames = Array.from(this.files).map(file => {
+            //         return `<span><i class="fa fa-paperclip"></i> ${file.name}</span>`; // Prepend icon to each file name
+            //     });
+            //     $('#create-mail-selected-file-names').html(fileNames.join(
+            //         '<br>')); // Display file names with icons
+            // });
+
+            // $(document).on('change', '#reply-mail-file-input', function() {
+            //     const fileNames = Array.from(this.files).map(file => {
+            //         return `<span><i class="fa fa-paperclip"></i> ${file.name}</span>`; // Prepend icon to each file name
+            //     });
+            //     console.log(fileNames);
+            //     $('#reply-mail-selected-file-names').html(fileNames.join(
+            //         '<br>')); // Display file names with icons
+            // });
+
+            // $(document).on('change', '#forword-mail-file-input', function() {
+            //     const fileNames = Array.from(this.files).map(file => {
+            //         return `<span><i class="fa fa-paperclip"></i> ${file.name}</span>`; // Prepend icon to each file name
+            //     });
+            //     $('#forward-mail-selected-file-names').html(fileNames.join(
+            //         '<br>')); // Display file names with icons
+            // });
+
+
+
+
+
+
+
+
 
 
             $(document).on('submit', '#sendUserEMailForm', function(e) {
@@ -2332,9 +2357,9 @@
 
 
             $(document).on('submit', '#sendUserEMailForward', function(e) {
-                e.preventDefault();                
+                e.preventDefault();
 
-                var formData = new FormData(this); 
+                var formData = new FormData(this);
 
                 $('#loading').addClass('loading');
                 $('#loading-content').addClass('loading-content');
@@ -2679,6 +2704,25 @@
                 ClassicEditor
                     .create(textarea, {
                         // You can add configuration options here
+                        toolbar: [
+                            'heading',
+                            '|',
+                            'bold',
+                            'italic',
+                            'blockQuote',
+                            'bulletedList',
+                            'numberedList',
+                            'link',
+                            '|',
+                            'undo',
+                            'redo'
+                            // Add any other desired toolbar items here
+                        ],
+                        // removePlugins: [
+                        //     'ImageUpload', // To remove image upload feature
+                        //     'Table', // To remove table feature
+                        //     'MediaEmbed' // To remove media embed feature
+                        // ]
                     })
                     .then(editor => {
                         console.log('CKEditor initialized for:', textarea);
@@ -2691,7 +2735,73 @@
         });
     </script>
 
-    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Object to store selected files for each input, by input ID
+            const selectedFilesMap = {};
+
+            // Function to handle file input change and removal
+            function handleFileInputChange(inputId, displayId) {
+                selectedFilesMap[inputId] = []; // Initialize the selected files array for each file input
+
+                // Handle file input change (file selection)
+                document.getElementById(inputId).addEventListener('change', function(event) {
+                    const newFiles = Array.from(event.target.files);
+
+                    newFiles.forEach(file => {
+                        // Add only unique files (by name) to avoid duplicates
+                        if (!selectedFilesMap[inputId].some(f => f.name === file.name)) {
+                            selectedFilesMap[inputId].push(file);
+                        }
+                    });
+
+                    updateFileDisplay(displayId, selectedFilesMap[inputId], inputId);
+                    resetFileInput(inputId, selectedFilesMap[inputId]);
+                });
+            }
+
+            // Update the display with selected files and add remove buttons
+            function updateFileDisplay(displayId, files, inputId) {
+                const fileDisplay = files.map((file, index) => {
+                    return `<span><i class="fa fa-paperclip"></i> ${file.name} 
+<button type="button" class="remove-file-btn btn btn-transparent" data-index="${index}" data-input-id="${inputId}">
+    <i class="fa fa-times"></i>
+</button></span>`;
+                }).join('<br>');
+
+                document.getElementById(displayId).innerHTML = fileDisplay;
+
+                // Attach click event to each remove button after rendering
+                document.querySelectorAll(`#${displayId} .remove-file-btn`).forEach(button => {
+                    button.addEventListener('click', function() {
+                        const index = parseInt(button.getAttribute('data-index'));
+                        const inputId = button.getAttribute('data-input-id');
+
+                        // Remove the file from the selected files array
+                        selectedFilesMap[inputId].splice(index, 1);
+
+                        // Update display and file input
+                        updateFileDisplay(displayId, selectedFilesMap[inputId], inputId);
+                        resetFileInput(inputId, selectedFilesMap[inputId]);
+                    });
+                });
+            }
+
+            // Reset file input to match selected files (using DataTransfer)
+            function resetFileInput(inputId, files) {
+                const dataTransfer = new DataTransfer();
+                files.forEach(file => dataTransfer.items.add(file));
+                document.getElementById(inputId).files = dataTransfer.files;
+            }
+
+            // Initialize file handlers for each form
+            handleFileInputChange('create-mail-file-input', 'create-mail-selected-file-names');
+            handleFileInputChange('reply-mail-file-input', 'reply-mail-selected-file-names');
+            handleFileInputChange('forward-mail-file-input', 'forward-mail-selected-file-names');
+        });
+    </script>
+
+
 
 
     @stack('scripts')

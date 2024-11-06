@@ -22,11 +22,11 @@
             </div>
 
 
-            <h3 class="emailRow__title view-mail" data-route="{{ route('mail.view', base64_encode($mail->id)) }}">
+            <h3 class="emailRow__title view-mail" data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
                 {{ $mail->user->full_name ?? '' }}
             </h3>
 
-            <div class="emailRow__message view-mail" data-route="{{ route('mail.view', base64_encode($mail->id)) }}">
+            <div class="emailRow__message view-mail" data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
                 <h4>
                     {{ !empty($mail->reply_of) ? 'RE:' : '' }} {{ $mail->subject }}
                     @if ($latestReply)
@@ -44,7 +44,7 @@
                 @endif
             </div>
 
-            <p class="emailRow__time view-mail" data-route="{{ route('mail.view', base64_encode($mail->id)) }}">
+            <p class="emailRow__time view-mail" data-route="{{ route('mail.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
                 {{ $latestReply ? $latestReply->created_at->diffForHumans() : $mail->created_at->diffForHumans() }}
             </p>
         </div>

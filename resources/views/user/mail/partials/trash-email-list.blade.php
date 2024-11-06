@@ -8,11 +8,11 @@
     </div>
 
 
-    <h3 class="emailRow__title view-mail" data-route="{{ route('mail.trash.view', base64_encode($mail->id)) }}">
+    <h3 class="emailRow__title view-mail" data-route="{{ route('mail.trash.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
         {{ $mail->user->full_name ?? '' }}
     </h3>
 
-    <div class="emailRow__message view-mail" data-route="{{ route('mail.trash.view', base64_encode($mail->id)) }}">
+    <div class="emailRow__message view-mail" data-route="{{ route('mail.trash.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
         <h4>
             {{ $mail->subject }}
             <span class="emailRow__description"> - {!! $mail->message !!} </span>
@@ -22,7 +22,7 @@
 
     
 
-    <p class="emailRow__time view-mail" data-route="{{ route('mail.trash.view', base64_encode($mail->id)) }}">
+    <p class="emailRow__time view-mail" data-route="{{ route('mail.trash.view', base64_encode(!empty($mail->reply_of) ? $mail->reply_of : $mail->id)) }}">
         {{ $mail->created_at->diffForHumans() }}
     </p>
 </div>
