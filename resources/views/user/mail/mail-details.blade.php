@@ -10,13 +10,13 @@
     </section>
     <div class="container-fluid">
         <div class="bg_white_border">
-            <div class="main__body">
+            <div class="main__body" >
                 <!-- Sidebar Starts -->
                 @include('user.mail.partials.sidebar')
 
                 <!-- Sidebar Ends -->
                 <!-- Email List Starts -->
-                <div class="emailList">
+                <div class="emailList" id="mail_body_div">
                     <!-- Settings Starts -->
                     <div class="emailList__settings">
                         <div class="emailList__settingsLeft">
@@ -36,7 +36,7 @@
 
                             <a href="javascript:void(0);"> <span
                                     class="material-symbols-outlined open_mail_reply_box">reply</span></a>
-                            @if ($ownUserMailInfo->is_starred == 1)
+                            @if (isset($ownUserMailInfo->is_starred) && $ownUserMailInfo->is_starred == 1)
                                 <a href="javascript:void(0);" onclick="setMailStar(this, {{ $mail_details->id }})">
                                     <span class="material-symbols-outlined"
                                         style="color: orange; font-variation-settings: 'FILL' 1;">grade</span></a>
@@ -143,7 +143,7 @@
                                     $attachments = json_decode($mail_details->attachment, true);
                                 @endphp
 
-                                @foreach ($attachments as $attachment)                                    
+                                @foreach ($attachments as $attachment)
                                     <div class="other_attch">
                                         <input type="hidden" class="existing-attachment"
                                         data-name="{{ $attachment['original_name'] }}"
@@ -403,7 +403,7 @@
                 }
             });
 
-            
+
 
         });
     </script>
@@ -412,7 +412,7 @@
             $('#printMailButton').on('click', function() {
                 window.open("{{ route('mail.print', $mail_details->id) }}", '_blank');
             });
-            
+
         });
     </script>
 @endpush

@@ -2161,7 +2161,7 @@
 
             // function fetchLatestEmails() {
             //     $.ajax({
-            //         url: '{{ route('mail.inbox-email-list') }}', 
+            //         url: '{{ route('mail.inbox-email-list') }}',
             //         method: 'GET',
             //         success: function(response) {
 
@@ -2664,17 +2664,17 @@
         }
 
 
-        function downloadMailFile(event, element) {            
+        function downloadMailFile(event, element) {
             event.preventDefault();
-            
+
             const attachment = element.closest('.other_attch').querySelector('.existing-attachment');
             const fileName = attachment.getAttribute('data-name');
             const filePath = attachment.getAttribute('data-path');
-            
+
             const link = document.createElement('a');
             link.href = filePath;
             link.download = fileName;
-            
+
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -2759,7 +2759,7 @@
             // Update the display with selected files and add remove buttons
             function updateFileDisplay(displayId, files, inputId) {
                 const fileDisplay = files.map((file, index) => {
-                    return `<span><i class="fa fa-paperclip"></i> ${file.name} 
+                    return `<span><i class="fa fa-paperclip"></i> ${file.name}
                     <button type="button" class="remove-file-btn btn btn-transparent" data-index="${index}" data-input-id="${inputId}">
                         <i class="fa fa-times"></i>
                     </button></span>`;
@@ -2823,6 +2823,7 @@
                 $('.mail_send_reply_box').show(); // Show the reply box
                 $('.mail_forward_reply_box').hide(); // Hide the forward box
                 handleFileInputChange('reply-mail-file-input', 'reply-mail-selected-file-names');
+                mailBodyGoBottom();
             });
 
             $('.open_mail_forward_box').on('click', function(event) {
@@ -2830,6 +2831,7 @@
                 $('.mail_forward_reply_box').show(); // Show the forward box
                 $('.mail_send_reply_box').hide(); // Hide the reply box
                 handleFileInputChange('forword-mail-file-input', 'forward-mail-selected-file-names');
+                mailBodyGoBottom();
             });
 
             function clearMailForm() {
@@ -2862,9 +2864,14 @@
 
             // Initialize file handlers for each form
             handleFileInputChange('create-mail-file-input', 'create-mail-selected-file-names');
-            //  handleFileInputChange('reply-mail-file-input', 'reply-mail-selected-file-names'); 
+            //  handleFileInputChange('reply-mail-file-input', 'reply-mail-selected-file-names');
             //  handleFileInputChange('forword-mail-file-input', 'forward-mail-selected-file-names');
         });
+
+        function mailBodyGoBottom(){
+            var goBottom = document.getElementById("mail_body_div");
+            goBottom.scrollTop = goBottom.scrollHeight;
+        }
     </script>
 
 
