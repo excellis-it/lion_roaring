@@ -1,13 +1,184 @@
 openapi: 3.0.3
 info:
-  title: 'Lion Roaring'
+  title: Project
   description: ''
   version: 1.0.0
 servers:
   -
     url: 'http://127.0.0.1:8000'
 paths:
-  /api/v1/login:
+  /api/v3/register:
+    post:
+      summary: 'Register a new user'
+      operationId: registerANewUser
+      description: 'Registers a new user and sends an email for account pending approval.'
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Please wait for admin approval'
+                  user:
+                    id: 1
+                    user_name: johndoe
+                    email: johndoe@example.com
+                    first_name: John
+                    last_name: Doe
+                    created_at: '2024-11-06T10:00:00.000000Z'
+                    updated_at: '2024-11-06T10:00:00.000000Z'
+                properties:
+                  message:
+                    type: string
+                    example: 'Please wait for admin approval'
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      user_name:
+                        type: string
+                        example: johndoe
+                      email:
+                        type: string
+                        example: johndoe@example.com
+                      first_name:
+                        type: string
+                        example: John
+                      last_name:
+                        type: string
+                        example: Doe
+                      created_at:
+                        type: string
+                        example: '2024-11-06T10:00:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-06T10:00:00.000000Z'
+        409:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Phone number already exists'
+                properties:
+                  error:
+                    type: string
+                    example: 'Phone number already exists'
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    email:
+                      - 'The email has already been taken.'
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        example:
+                          - 'The email has already been taken.'
+                        items:
+                          type: string
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_name:
+                  type: string
+                  description: 'Unique username for the user.'
+                  example: johndoe
+                email:
+                  type: string
+                  description: 'Unique email address.'
+                  example: johndoe@example.com
+                ecclesia_id:
+                  type: integer
+                  description: 'nullable Ecclesia ID if applicable.'
+                  example: 18
+                first_name:
+                  type: string
+                  description: 'First name of the user.'
+                  example: John
+                last_name:
+                  type: string
+                  description: 'Last name of the user.'
+                  example: Doe
+                middle_name:
+                  type: string
+                  description: 'nullable Middle name of the user.'
+                  example: A.
+                address:
+                  type: string
+                  description: 'Address of the user.'
+                  example: '123 Main St'
+                phone_number:
+                  type: string
+                  description: "User's phone number."
+                  example: '1234567890'
+                city:
+                  type: string
+                  description: 'City of residence.'
+                  example: Springfield
+                state:
+                  type: string
+                  description: 'State of residence.'
+                  example: Illinois
+                address2:
+                  type: string
+                  description: 'nullable Additional address information.'
+                  example: 'Apt 4B'
+                country:
+                  type: string
+                  description: 'Country of residence.'
+                  example: USA
+                zip:
+                  type: string
+                  description: 'Zip code.'
+                  example: '62704'
+                email_confirmation:
+                  type: string
+                  description: 'Confirmation of the email address. Must match `email`.'
+                  example: johndoe@example.com
+                password:
+                  type: string
+                  description: 'Password for the user. Must be at least 8 characters and include one special character (@$%&).'
+                  example: Password@123
+                password_confirmation:
+                  type: string
+                  description: 'Confirmation of the password. Must match `password`.'
+                  example: Password@123
+              required:
+                - user_name
+                - email
+                - first_name
+                - last_name
+                - address
+                - phone_number
+                - city
+                - state
+                - country
+                - zip
+                - email_confirmation
+                - password
+                - password_confirmation
+      security: []
+  /api/v3/login:
     post:
       summary: Login
       operationId: login
@@ -42,87 +213,7 @@ paths:
                 - user_name
                 - password
       security: []
-  /api/v1/register:
-    post:
-      summary: Register
-      operationId: register
-      description: ''
-      parameters: []
-      responses:
-        200:
-          description: ''
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "{\n\"token\": \"dsdsdsd\"\n\"status\": true\n\"message\": \"Registration successful\"\n}"
-        201:
-          description: ''
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "{\n\"message\": \"The user name has already been taken.\"\n\"status\": false\n}"
-      tags:
-        - Authentication
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                user_name:
-                  type: string
-                  description: 'The username of the user.'
-                  example: john_doe
-                email:
-                  type: string
-                  description: 'The email of the user. Example:'
-                  example: moore.ruben@example.org
-                first_name:
-                  type: string
-                  description: 'The first name of the user.'
-                  example: John
-                last_name:
-                  type: string
-                  description: 'The last name of the user.'
-                  example: Doe
-                middle_name:
-                  type: string
-                  description: 'The middle name of the user.'
-                  example: Doe
-                address:
-                  type: string
-                  description: 'The address of the user.'
-                  example: '123, New York'
-                phone_number:
-                  type: numeric
-                  description: 'The phone number of the user.'
-                  example: '1234567890'
-                email_confirmation:
-                  type: string
-                  description: 'The email confirmation of the user. Example:'
-                  example: voluptatem
-                password:
-                  type: string
-                  description: 'The password of the user.'
-                  example: password
-                password_confirmation:
-                  type: string
-                  description: 'The password confirmation of the user.'
-                  example: password
-              required:
-                - user_name
-                - email
-                - first_name
-                - last_name
-                - address
-                - email_confirmation
-                - password
-                - password_confirmation
-      security: []
-  /api/v1/register-agreement:
+  /api/v3/register-agreement:
     post:
       summary: 'Register Agreement Details'
       operationId: registerAgreementDetails
@@ -139,7 +230,7 @@ paths:
       tags:
         - Authentication
       security: []
-  /api/v1/cms/home:
+  /api/v3/cms/home:
     post:
       summary: 'Get Home Page'
       operationId: getHomePage
@@ -156,7 +247,7 @@ paths:
       tags:
         - 'CMS Management'
       security: []
-  /api/v1/cms/gallery:
+  /api/v3/cms/gallery:
     post:
       summary: 'Get gallery'
       operationId: getGallery
@@ -189,7 +280,7 @@ paths:
       tags:
         - 'CMS Management'
       security: []
-  /api/v1/cms/faq:
+  /api/v3/cms/faq:
     post:
       summary: 'Get FAQ'
       operationId: getFAQ
@@ -222,7 +313,7 @@ paths:
       tags:
         - 'CMS Management'
       security: []
-  /api/v1/cms/principle-and-business:
+  /api/v3/cms/principle-and-business:
     post:
       summary: 'Get Principal and Business Model'
       operationId: getPrincipalAndBusinessModel
@@ -255,7 +346,7 @@ paths:
       tags:
         - 'CMS Management'
       security: []
-  /api/v1/cms/ecclesia-associations:
+  /api/v3/cms/ecclesia-associations:
     post:
       summary: 'Get Ecclesia Associations'
       operationId: getEcclesiaAssociations
@@ -288,7 +379,7 @@ paths:
       tags:
         - 'CMS Management'
       security: []
-  /api/v1/cms/our-organization:
+  /api/v3/cms/our-organization:
     post:
       summary: 'Get Organization'
       operationId: getOrganization
@@ -441,7 +532,7 @@ paths:
       tags:
         - 'CMS Management'
       security: []
-  /api/v1/cms/common:
+  /api/v3/cms/common:
     post:
       summary: 'Get Common'
       operationId: getCommon
@@ -539,7 +630,7 @@ paths:
       tags:
         - 'CMS Management'
       security: []
-  /api/v1/cms/our-governance:
+  /api/v3/cms/our-governance:
     post:
       summary: 'Get Our Governance'
       operationId: getOurGovernance
@@ -602,7 +693,7 @@ paths:
               required:
                 - slug
       security: []
-  /api/v1/cms/organization-center:
+  /api/v3/cms/organization-center:
     post:
       summary: 'Our organization center'
       operationId: ourOrganizationCenter
@@ -632,7 +723,7 @@ paths:
               required:
                 - slug
       security: []
-  /api/v1/cms/organization-center-details:
+  /api/v3/cms/organization-center-details:
     post:
       summary: 'Organization center details'
       operationId: organizationCenterDetails
@@ -695,7 +786,7 @@ paths:
               required:
                 - slug
       security: []
-  /api/v1/cms/members-privacy-policy:
+  /api/v3/cms/members-privacy-policy:
     post:
       summary: 'Member Privacy Policy'
       operationId: memberPrivacyPolicy
@@ -757,7 +848,7 @@ paths:
       tags:
         - 'CMS Management'
       security: []
-  /api/v1/contact-us:
+  /api/v3/contact-us:
     post:
       summary: 'Store Contact Us'
       operationId: storeContactUs
@@ -800,7 +891,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: norbert.mosciski@example.net
+                  example: beahan.emil@example.com
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -816,7 +907,7 @@ paths:
                 - phone
                 - message
       security: []
-  /api/v1/donation:
+  /api/v3/donation:
     post:
       summary: 'Donation Api'
       operationId: donationApi
@@ -871,9 +962,97 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: exercitationem
+                  example: beatae
       security: []
-  /api/v1/forget-password:
+  /api/v3/country-list:
+    post:
+      summary: 'Country List'
+      operationId: countryList
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Country list.'
+                  status: true
+                  data:
+                    -
+                      id: 1
+                      code: AF
+                      name: Afghanistan
+                      created_at: null
+                      updated_at: null
+                    -
+                      id: 2
+                      code: AX
+                      name: 'Åland Islands'
+                      created_at: null
+                      updated_at: null
+                properties:
+                  message:
+                    type: string
+                    example: 'Country list.'
+                  status:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        code: AF
+                        name: Afghanistan
+                        created_at: null
+                        updated_at: null
+                      -
+                        id: 2
+                        code: AX
+                        name: 'Åland Islands'
+                        created_at: null
+                        updated_at: null
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        code:
+                          type: string
+                          example: AF
+                        name:
+                          type: string
+                          example: Afghanistan
+                        created_at:
+                          type: string
+                          example: null
+                        updated_at:
+                          type: string
+                          example: null
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Country not found.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Country not found.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Donation
+      security: []
+  /api/v3/forget-password:
     post:
       summary: 'Forget Password'
       operationId: forgetPassword
@@ -908,11 +1087,11 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: sconroy@example.net
+                  example: gerald.lowe@example.net
               required:
                 - email
       security: []
-  /api/v1/user/profile:
+  /api/v3/user/profile:
     post:
       summary: 'Profile Details'
       operationId: profileDetails
@@ -993,7 +1172,7 @@ paths:
                         example: '2024-04-18T12:27:38.000000Z'
       tags:
         - Profile
-  /api/v1/user/update-profile:
+  /api/v3/user/update-profile:
     post:
       summary: 'Update Profile'
       operationId: updateProfile
@@ -1050,7 +1229,7 @@ paths:
                 - last_name
                 - phone
                 - address
-  /api/v1/user/profile-picture-update:
+  /api/v3/user/profile-picture-update:
     post:
       summary: 'Update Profile Picture'
       operationId: updateProfilePicture
@@ -1104,7 +1283,7 @@ paths:
                   description: 'The profile picture of the user.'
               required:
                 - profile_picture
-  /api/v1/user/change-password:
+  /api/v3/user/change-password:
     post:
       summary: 'Change Password'
       operationId: changePassword
@@ -1152,11 +1331,11 @@ paths:
                 - old_password
                 - new_password
                 - confirm_password
-  /api/v1/user/subscription/details:
+  /api/v3/user/check-role-permission:
     post:
-      summary: 'Subscription Details'
-      operationId: subscriptionDetails
-      description: ''
+      summary: 'Check User Permission'
+      operationId: checkUserPermission
+      description: 'Checks whether the authenticated user has a given permission.'
       parameters: []
       responses:
         200:
@@ -1166,189 +1345,78 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'Subscription details.'
                   status: true
-                  data:
-                    -
-                      id: 3
-                      plan_name: Gold
-                      plan_price: '299'
-                      plan_validity: '3'
-                      plan_description: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.'
-                      plan_status: 1
-                      created_at: '2024-04-25T10:49:46.000000Z'
-                      updated_at: '2024-04-25T10:49:46.000000Z'
-                    -
-                      id: 2
-                      plan_name: Platinum
-                      plan_price: '399'
-                      plan_validity: '6'
-                      plan_description: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.'
-                      plan_status: 1
-                      created_at: '2024-04-25T10:49:11.000000Z'
-                      updated_at: '2024-04-25T10:49:11.000000Z'
-                    -
-                      id: 1
-                      plan_name: Diamond
-                      plan_price: '499'
-                      plan_validity: '12'
-                      plan_description: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.'
-                      plan_status: 1
-                      created_at: '2024-04-24T09:01:31.000000Z'
-                      updated_at: '2024-04-25T10:49:28.000000Z'
+                  message: 'User has permission'
                 properties:
-                  message:
-                    type: string
-                    example: 'Subscription details.'
                   status:
                     type: boolean
                     example: true
-                  data:
-                    type: array
-                    example:
-                      -
-                        id: 3
-                        plan_name: Gold
-                        plan_price: '299'
-                        plan_validity: '3'
-                        plan_description: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.'
-                        plan_status: 1
-                        created_at: '2024-04-25T10:49:46.000000Z'
-                        updated_at: '2024-04-25T10:49:46.000000Z'
-                      -
-                        id: 2
-                        plan_name: Platinum
-                        plan_price: '399'
-                        plan_validity: '6'
-                        plan_description: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.'
-                        plan_status: 1
-                        created_at: '2024-04-25T10:49:11.000000Z'
-                        updated_at: '2024-04-25T10:49:11.000000Z'
-                      -
-                        id: 1
-                        plan_name: Diamond
-                        plan_price: '499'
-                        plan_validity: '12'
-                        plan_description: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.'
-                        plan_status: 1
-                        created_at: '2024-04-24T09:01:31.000000Z'
-                        updated_at: '2024-04-25T10:49:28.000000Z'
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                          example: 3
-                        plan_name:
-                          type: string
-                          example: Gold
-                        plan_price:
-                          type: string
-                          example: '299'
-                        plan_validity:
-                          type: string
-                          example: '3'
-                        plan_description:
-                          type: string
-                          example: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.'
-                        plan_status:
-                          type: integer
-                          example: 1
-                        created_at:
-                          type: string
-                          example: '2024-04-25T10:49:46.000000Z'
-                        updated_at:
-                          type: string
-                          example: '2024-04-25T10:49:46.000000Z'
-      tags:
-        - Subscription
-  /api/v1/user/subscription/subscribe:
-    post:
-      summary: 'Subscribe to a Plan'
-      operationId: subscribeToAPlan
-      description: ''
-      parameters: []
-      responses:
-        200:
+                  message:
+                    type: string
+                    example: 'User has permission'
+        403:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'Subscription payment initiated.'
-                  status: true
-                  url: 'https://checkout.stripe.com/c/pay/cs_test_b17uTN8wYWPUnh2q54aOSdBYOqCYaIFAFxCpTT5kf8jkyvQLo5He9ScAkM#fidkdWxOYHwnPyd1blpxYHZxWjA0SnxdZzdMXHU8MU5vZm8wPVZqSEpwQDRUXGNcXW5dT2kwREhjRlQ1RGZyTXxEVVU0UF01XFd0YUpmNE9hVjMyblxSSH9tcFR3aDx3XHY0VjBff3JIVXUyNTVdfTc3PGhSbicpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPydocGlxbFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl'
+                  status: false
+                  message: 'User does not have permission'
                 properties:
-                  message:
-                    type: string
-                    example: 'Subscription payment initiated.'
                   status:
                     type: boolean
-                    example: true
-                  url:
+                    example: false
+                  message:
                     type: string
-                    example: 'https://checkout.stripe.com/c/pay/cs_test_b17uTN8wYWPUnh2q54aOSdBYOqCYaIFAFxCpTT5kf8jkyvQLo5He9ScAkM#fidkdWxOYHwnPyd1blpxYHZxWjA0SnxdZzdMXHU8MU5vZm8wPVZqSEpwQDRUXGNcXW5dT2kwREhjRlQ1RGZyTXxEVVU0UF01XFd0YUpmNE9hVjMyblxSSH9tcFR3aDx3XHY0VjBff3JIVXUyNTVdfTc3PGhSbicpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPydocGlxbFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl'
-        201:
+                    example: 'User does not have permission'
+        422:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The plan id field is required.'
+                  message: 'The permission_name field is required.'
                   status: false
                 properties:
                   message:
                     type: string
-                    example: 'The plan id field is required.'
+                    example: 'The permission_name field is required.'
                   status:
                     type: boolean
                     example: false
-      tags:
-        - Subscription
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                plan_id:
-                  type: integer
-                  description: 'required. The id of the plan.'
-                  example: 1
-  /api/v1/user/subscription/stripe-checkout-success:
-    get:
-      summary: 'Plan Subscription Success'
-      operationId: planSubscriptionSuccess
-      description: ''
-      parameters: []
-      responses:
-        200:
+        500:
           description: ''
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-                example: "{\n   \"message\": \"Subscription success.\",\n   \"status\": true"
+                type: object
+                example:
+                  status: false
+                  message: 'An error occurred: [error_message]'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'An error occurred: [error_message]'
       tags:
-        - Subscription
+        - Profile
       requestBody:
-        required: false
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                plan_id:
-                  type: integer
-                  description: 'required. The id of the plan.'
-                  example: 1
-                session_id:
+                permission_name:
                   type: string
-                  description: 'required. The session_id of the session.'
-                  example: cs_test_b17uTN8wYWPUnh2q54aOSdBYOqCYaIFAFxCpTT5kf8jkyvQLo5He9ScAkM
+                  description: 'The name of the permission to check.'
+                  example: 'Manage Email'
+              required:
+                - permission_name
 tags:
   -
     name: Authentication
@@ -1368,6 +1436,12 @@ tags:
   -
     name: Profile
     description: ''
+components:
+  securitySchemes:
+    default:
+      type: http
+      scheme: bearer
+      description: 'You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.'
+security:
   -
-    name: Subscription
-    description: ''
+    default: []

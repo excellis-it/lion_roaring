@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * @group Profile
@@ -152,4 +154,68 @@ class ProfileController extends Controller
 
         return response()->json(['status' => true, 'message' => 'Profile picture updated successfully'], $this->successStatus);
     }
+
+
+    /**
+     * Check User Permission
+     * 
+     * Checks whether the authenticated user has a given permission.
+     * @authenticated
+     * @bodyParam permission_name string required The name of the permission to check. Example: Manage Email
+     * 
+     * @response 200 {
+     *  "status": true,
+     *  "message": "User has permission"
+     * }
+     * @response 403 {
+     *  "status": false,
+     *  "message": "User does not have permission"
+     * }
+     * @response 422 {
+     *  "message": "The permission_name field is required.",
+     *  "status": false
+     * }
+     * @response 500 {
+     *  "status": false,
+     *  "message": "An error occurred: [error_message]"
+     * }
+     */
+    public function checkUserHasPermission(Request $request)
+    {
+        $user = $request->user();
+
+        $validator = Validator::make($request->all(), [
+            'permission_name' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors()->first(),
+                'status' => false
+            ], 422);
+        }
+
+        try {
+            // Check if the user has the requested permission
+            if ($user->hasPermissionTo($request->input('permission_name'), 'web')) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'User has permission'
+                ], 200); // 200 OK
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User does not have permission'
+                ], 403); // 403 Forbidden
+            }
+        } catch (\Exception $e) {
+            // Handle any errors that occur during the permission check
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred: ' . $e->getMessage()
+            ], 500); // 500 Internal Server Error
+        }
+    }
+
+
 }

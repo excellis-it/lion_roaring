@@ -9,8 +9,8 @@
         }
     ],
     "info": {
-        "name": "Lion Roaring",
-        "_postman_id": "aa2237a2-01c5-4d14-bdbf-64078907d71e",
+        "name": "Project",
+        "_postman_id": "cf29a35a-a4a2-4db1-a9e5-c29b17dc7b3c",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -20,13 +20,63 @@
             "description": "",
             "item": [
                 {
+                    "name": "Register a new user",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/register",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/register"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":18,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                        },
+                        "description": "Registers a new user and sends an email for account pending approval.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n \"message\": \"Please wait for admin approval\",\n \"user\": {\n     \"id\": 1,\n     \"user_name\": \"johndoe\",\n     \"email\": \"johndoe@example.com\",\n     \"first_name\": \"John\",\n     \"last_name\": \"Doe\",\n     \"created_at\": \"2024-11-06T10:00:00.000000Z\",\n     \"updated_at\": \"2024-11-06T10:00:00.000000Z\"\n }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 409,
+                            "body": "{\n \"error\": \"Phone number already exists\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n \"errors\": {\n     \"email\": [\"The email has already been taken.\"]\n }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
                     "name": "Login",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/login",
+                            "path": "api\/v3\/login",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/login"
+                            "raw": "{{baseUrl}}\/api\/v3\/login"
                         },
                         "method": "POST",
                         "header": [
@@ -58,57 +108,13 @@
                     ]
                 },
                 {
-                    "name": "Register",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v1\/register",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/register"
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"user_name\":\"john_doe\",\"email\":\"moore.ruben@example.org\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"Doe\",\"address\":\"123, New York\",\"phone_number\":\"1234567890\",\"email_confirmation\":\"voluptatem\",\"password\":\"password\",\"password_confirmation\":\"password\"}"
-                        },
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\n\"token\": \"dsdsdsd\"\n\"status\": true\n\"message\": \"Registration successful\"\n}",
-                            "name": ""
-                        },
-                        {
-                            "header": [],
-                            "code": 201,
-                            "body": "{\n\"message\": \"The user name has already been taken.\"\n\"status\": false\n}",
-                            "name": ""
-                        }
-                    ]
-                },
-                {
                     "name": "Register Agreement Details",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/register-agreement",
+                            "path": "api\/v3\/register-agreement",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/register-agreement"
+                            "raw": "{{baseUrl}}\/api\/v3\/register-agreement"
                         },
                         "method": "POST",
                         "header": [
@@ -147,9 +153,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/cms\/home",
+                            "path": "api\/v3\/cms\/home",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/cms\/home"
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/home"
                         },
                         "method": "POST",
                         "header": [
@@ -182,9 +188,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/cms\/gallery",
+                            "path": "api\/v3\/cms\/gallery",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/cms\/gallery"
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/gallery"
                         },
                         "method": "POST",
                         "header": [
@@ -223,9 +229,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/cms\/faq",
+                            "path": "api\/v3\/cms\/faq",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/cms\/faq"
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/faq"
                         },
                         "method": "POST",
                         "header": [
@@ -264,9 +270,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/cms\/principle-and-business",
+                            "path": "api\/v3\/cms\/principle-and-business",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/cms\/principle-and-business"
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/principle-and-business"
                         },
                         "method": "POST",
                         "header": [
@@ -305,9 +311,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/cms\/ecclesia-associations",
+                            "path": "api\/v3\/cms\/ecclesia-associations",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/cms\/ecclesia-associations"
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/ecclesia-associations"
                         },
                         "method": "POST",
                         "header": [
@@ -346,9 +352,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/cms\/our-organization",
+                            "path": "api\/v3\/cms\/our-organization",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/cms\/our-organization"
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/our-organization"
                         },
                         "method": "POST",
                         "header": [
@@ -387,9 +393,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/cms\/common",
+                            "path": "api\/v3\/cms\/common",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/cms\/common"
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/common"
                         },
                         "method": "POST",
                         "header": [
@@ -428,9 +434,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/cms\/our-governance",
+                            "path": "api\/v3\/cms\/our-governance",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/cms\/our-governance"
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/our-governance"
                         },
                         "method": "POST",
                         "header": [
@@ -466,9 +472,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/cms\/organization-center",
+                            "path": "api\/v3\/cms\/organization-center",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/cms\/organization-center"
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/organization-center"
                         },
                         "method": "POST",
                         "header": [
@@ -504,9 +510,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/cms\/organization-center-details",
+                            "path": "api\/v3\/cms\/organization-center-details",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/cms\/organization-center-details"
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/organization-center-details"
                         },
                         "method": "POST",
                         "header": [
@@ -542,9 +548,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/cms\/members-privacy-policy",
+                            "path": "api\/v3\/cms\/members-privacy-policy",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/cms\/members-privacy-policy"
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/members-privacy-policy"
                         },
                         "method": "POST",
                         "header": [
@@ -589,9 +595,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/contact-us",
+                            "path": "api\/v3\/contact-us",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/contact-us"
+                            "raw": "{{baseUrl}}\/api\/v3\/contact-us"
                         },
                         "method": "POST",
                         "header": [
@@ -606,7 +612,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"norbert.mosciski@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"beahan.emil@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -633,9 +639,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/donation",
+                            "path": "api\/v3\/donation",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/donation"
+                            "raw": "{{baseUrl}}\/api\/v3\/donation"
                         },
                         "method": "POST",
                         "header": [
@@ -650,7 +656,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"exercitationem\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"beatae\"}"
                         },
                         "description": "",
                         "auth": {
@@ -658,6 +664,47 @@
                         }
                     },
                     "response": []
+                },
+                {
+                    "name": "Country List",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/country-list",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/country-list"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Country list.\",\n\"status\": true,\n\"data\": [\n   {\n       \"id\": 1,\n       \"code\": \"AF\",\n       \"name\": \"Afghanistan\",\n       \"created_at\": null,\n       \"updated_at\": null\n   },\n   {\n       \"id\": 2,\n       \"code\": \"AX\",\n       \"name\": \"\u00c5land Islands\",\n       \"created_at\": null,\n       \"updated_at\": null\n   }\n]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n\"message\": \"Country not found.\",\n\"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -670,9 +717,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/forget-password",
+                            "path": "api\/v3\/forget-password",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/forget-password"
+                            "raw": "{{baseUrl}}\/api\/v3\/forget-password"
                         },
                         "method": "POST",
                         "header": [
@@ -687,7 +734,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"sconroy@example.net\"}"
+                            "raw": "{\"email\":\"gerald.lowe@example.net\"}"
                         },
                         "description": "",
                         "auth": {
@@ -714,9 +761,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/user\/profile",
+                            "path": "api\/v3\/user\/profile",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/user\/profile"
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/profile"
                         },
                         "method": "POST",
                         "header": [
@@ -746,9 +793,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/user\/update-profile",
+                            "path": "api\/v3\/user\/update-profile",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/user\/update-profile"
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/update-profile"
                         },
                         "method": "POST",
                         "header": [
@@ -781,9 +828,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/user\/profile-picture-update",
+                            "path": "api\/v3\/user\/profile-picture-update",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/user\/profile-picture-update"
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/profile-picture-update"
                         },
                         "method": "POST",
                         "header": [
@@ -828,9 +875,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/user\/change-password",
+                            "path": "api\/v3\/user\/change-password",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/user\/change-password"
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/change-password"
                         },
                         "method": "POST",
                         "header": [
@@ -857,53 +904,15 @@
                             "name": ""
                         }
                     ]
-                }
-            ]
-        },
-        {
-            "name": "Subscription",
-            "description": "",
-            "item": [
-                {
-                    "name": "Subscription Details",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v1\/user\/subscription\/details",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/user\/subscription\/details"
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\n\"message\": \"Subscription details.\",\n   \"status\": true,\n   \"data\": [\n       {\n           \"id\": 3,\n           \"plan_name\": \"Gold\",\n           \"plan_price\": \"299\",\n           \"plan_validity\": \"3\",\n           \"plan_description\": \"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.\",\n           \"plan_status\": 1,\n           \"created_at\": \"2024-04-25T10:49:46.000000Z\",\n           \"updated_at\": \"2024-04-25T10:49:46.000000Z\"\n       },\n       {\n           \"id\": 2,\n           \"plan_name\": \"Platinum\",\n           \"plan_price\": \"399\",\n           \"plan_validity\": \"6\",\n           \"plan_description\": \"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.\",\n           \"plan_status\": 1,\n           \"created_at\": \"2024-04-25T10:49:11.000000Z\",\n           \"updated_at\": \"2024-04-25T10:49:11.000000Z\"\n       },\n       {\n           \"id\": 1,\n           \"plan_name\": \"Diamond\",\n           \"plan_price\": \"499\",\n           \"plan_validity\": \"12\",\n           \"plan_description\": \"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.\",\n           \"plan_status\": 1,\n           \"created_at\": \"2024-04-24T09:01:31.000000Z\",\n           \"updated_at\": \"2024-04-25T10:49:28.000000Z\"\n       }\n   ]\n}",
-                            "name": ""
-                        }
-                    ]
                 },
                 {
-                    "name": "Subscribe to a Plan",
+                    "name": "Check User Permission",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/user\/subscription\/subscribe",
+                            "path": "api\/v3\/user\/check-role-permission",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/user\/subscription\/subscribe"
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/check-role-permission"
                         },
                         "method": "POST",
                         "header": [
@@ -918,56 +927,33 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"plan_id\":1}"
+                            "raw": "{\"permission_name\":\"Manage Email\"}"
                         },
-                        "description": ""
+                        "description": "Checks whether the authenticated user has a given permission."
                     },
                     "response": [
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n   \"message\": \"Subscription payment initiated.\",\n   \"status\": true,\n   \"url\": \"https:\/\/checkout.stripe.com\/c\/pay\/cs_test_b17uTN8wYWPUnh2q54aOSdBYOqCYaIFAFxCpTT5kf8jkyvQLo5He9ScAkM#fidkdWxOYHwnPyd1blpxYHZxWjA0SnxdZzdMXHU8MU5vZm8wPVZqSEpwQDRUXGNcXW5dT2kwREhjRlQ1RGZyTXxEVVU0UF01XFd0YUpmNE9hVjMyblxSSH9tcFR3aDx3XHY0VjBff3JIVXUyNTVdfTc3PGhSbicpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPydocGlxbFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl\"\n}",
+                            "body": "{\n \"status\": true,\n \"message\": \"User has permission\"\n}",
                             "name": ""
                         },
                         {
                             "header": [],
-                            "code": 201,
-                            "body": "{\n \"message\": \"The plan id field is required.\",\n \"status\": false\n}",
+                            "code": 403,
+                            "body": "{\n \"status\": false,\n \"message\": \"User does not have permission\"\n}",
                             "name": ""
-                        }
-                    ]
-                },
-                {
-                    "name": "Plan Subscription Success",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v1\/user\/subscription\/stripe-checkout-success",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/user\/subscription\/stripe-checkout-success"
                         },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"plan_id\":1,\"session_id\":\"cs_test_b17uTN8wYWPUnh2q54aOSdBYOqCYaIFAFxCpTT5kf8jkyvQLo5He9ScAkM\"}"
-                        },
-                        "description": ""
-                    },
-                    "response": [
                         {
                             "header": [],
-                            "code": 200,
-                            "body": "{\n   \"message\": \"Subscription success.\",\n   \"status\": true",
+                            "code": 422,
+                            "body": "{\n \"message\": \"The permission_name field is required.\",\n \"status\": false\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n \"status\": false,\n \"message\": \"An error occurred: [error_message]\"\n}",
                             "name": ""
                         }
                     ]
@@ -976,6 +962,12 @@
         }
     ],
     "auth": {
-        "type": "noauth"
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "key",
+                "type": "string"
+            }
+        ]
     }
 }

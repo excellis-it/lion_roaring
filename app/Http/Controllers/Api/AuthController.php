@@ -7,6 +7,9 @@ use App\Models\RegisterAgreement;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AccountPendingApprovalMail;
 
 /**
  *  @group Authentication
@@ -16,113 +19,114 @@ class AuthController extends Controller
     protected $successStatus = 200;
 
     /**
-     * Login
-     *
-     * @bodyParam user_name string required The username or email of the user. Example: john_doe
-     * @bodyParam password string required The password of the user. Example: password
-     *
-     * @response 200{
-     * "token": "dsdsdsd"
-     * "status": true
-     * "message": "Login successful"
+     * Register a new user
+     * 
+     * Registers a new user and sends an email for account pending approval.
+     * 
+     * @bodyParam user_name string required Unique username for the user. Example: johndoe
+     * @bodyParam email string required Unique email address. Example: johndoe@example.com
+     * @bodyParam ecclesia_id integer nullable Ecclesia ID if applicable.
+     * @bodyParam first_name string required First name of the user. Example: John
+     * @bodyParam last_name string required Last name of the user. Example: Doe
+     * @bodyParam middle_name string nullable Middle name of the user. Example: A.
+     * @bodyParam address string required Address of the user. Example: 123 Main St
+     * @bodyParam phone_number string required User's phone number. Example: 1234567890
+     * @bodyParam city string required City of residence. Example: Springfield
+     * @bodyParam state string required State of residence. Example: Illinois
+     * @bodyParam address2 string nullable Additional address information. Example: Apt 4B
+     * @bodyParam country string required Country of residence. Example: USA
+     * @bodyParam zip string required Zip code. Example: 62704
+     * @bodyParam email_confirmation string required Confirmation of the email address. Must match `email`. Example: johndoe@example.com
+     * @bodyParam password string required Password for the user. Must be at least 8 characters and include one special character (@$%&). Example: Password@123
+     * @bodyParam password_confirmation string required Confirmation of the password. Must match `password`. Example: Password@123
+     * 
+     * @response 201 {
+     *  "message": "Please wait for admin approval",
+     *  "user": {
+     *      "id": 1,
+     *      "user_name": "johndoe",
+     *      "email": "johndoe@example.com",
+     *      "first_name": "John",
+     *      "last_name": "Doe",
+     *      "created_at": "2024-11-06T10:00:00.000000Z",
+     *      "updated_at": "2024-11-06T10:00:00.000000Z"
+     *  }
      * }
-     */
-
-    public function login(Request $request)
-    {
-        $validator = validator($request->all(), [
-            'user_name' => 'required',
-            'password' => 'required|min:8'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
-        }
-
-        try {
-            $fieldType = filter_var($request->user_name, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
-            $request->merge([$fieldType => $request->user_name]);
-            // return $fieldType;
-            if (auth()->attempt($request->only($fieldType, 'password'))) {
-                $user = User::where($fieldType, $request->user_name)->first();
-                if ($user->status == 1) {
-                    $token = $user->createToken('authToken')->accessToken;
-                    return response()->json(['token' => $token, 'status' => true, 'message' => 'Login successful'], 200);
-                } else {
-                    auth()->logout();
-                    return response()->json(['message' => 'Your account is not active!', 'status' => false], 201);
-                }
-            } else {
-                return response()->json(['message' => 'Email or password is invalid!', 'status' => false], 201);
-            }
-        } catch (\Throwable $th) {
-            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
-        }
-    }
-
-    /**
-     * Register
-     *
-     * @bodyParam user_name string required The username of the user. Example: john_doe
-     * @bodyParam email string required The email of the user. Example:
-     * @bodyParam first_name string required The first name of the user. Example: John
-     * @bodyParam last_name string required The last name of the user. Example: Doe
-     * @bodyParam middle_name string The middle name of the user. Example: Doe
-     * @bodyParam address string required The address of the user. Example: 123, New York
-     * @bodyParam phone_number numeric The phone number of the user. Example: 1234567890
-     * @bodyParam email_confirmation string required The email confirmation of the user. Example:
-     * @bodyParam password string required The password of the user. Example: password
-     * @bodyParam password_confirmation string required The password confirmation of the user. Example: password
-     *
-     * @response 200{
-     * "token": "dsdsdsd"
-     * "status": true
-     * "message": "Registration successful"
+     * @response 422 {
+     *  "errors": {
+     *      "email": ["The email has already been taken."]
+     *  }
      * }
-     *
-     * @response 201{
-     * "message": "The user name has already been taken."
-     * "status": false
+     * @response 409 {
+     *  "error": "Phone number already exists"
      * }
      */
 
     public function register(Request $request)
     {
-        $validator = validator($request->all(), [
+        $validator = Validator::make($request->all(), [
             'user_name' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
+            'ecclesia_id' => 'nullable',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
             'address' => 'required|string|max:255',
-            'phone_number' => 'nullable|numeric',
+            'phone_number' => 'required',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'address2' => 'nullable|string|max:255',
+            'country' => 'required|string|max:255',
+            'zip' => 'required',
             'email_confirmation' => 'required|same:email',
-            'password' => 'required|string|min:8',
+            'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
             'password_confirmation' => 'required|same:password',
+        ],[
+            'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
         ]);
-
+    
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
-
-        try {
-            $user = new User();
-            $user->user_name = $request->user_name;
-            $user->email = $request->email;
-            $user->first_name = $request->first_name;
-            $user->last_name = $request->last_name;
-            $user->middle_name = $request->middle_name;
-            $user->address = $request->address;
-            $user->phone = $request->phone_number;
-            $user->password = bcrypt($request->password);
-            $user->status = 1;
-            $user->save();
-            $user->assignRole('MEMBER');
-            $token = $user->createToken('authToken')->accessToken;
-            return response()->json(['token' => $token, 'status' => true, 'message' => 'Registration successful'], 200);
-        } catch (\Throwable $th) {
-            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+    
+        $phone_number = $request->full_phone_number;
+        $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
+    
+        $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->count();
+        if ($check > 0) {
+            return response()->json(['error' => 'Phone number already exists'], 409);
         }
+    
+        $user = new User();
+        $user->user_name = $request->user_name;
+        $user->ecclesia_id = $request->ecclesia_id;
+        $user->email = $request->email;
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->middle_name = $request->middle_name;
+        $user->address = $request->address;
+        $user->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone_number : $request->phone_number;
+        $user->city = $request->city;
+        $user->state = $request->state;
+        $user->address2 = $request->address2;
+        $user->country = $request->country;
+        $user->zip = $request->zip;
+        $user->password = bcrypt($request->password);
+        $user->email_verified_at = now();
+        $user->status = 0;
+        $user->save();
+    
+        $user->assignRole('MEMBER');
+        $maildata = [
+            'name' => $request->first_name . ' ' . $request->last_name,
+        ];
+    
+        Mail::to($request->email)->send(new AccountPendingApprovalMail($maildata));
+    
+        return response()->json([
+            'message' => 'Please wait for admin approval',
+            'user' => $user,
+        ], 201);
     }
 
     /**
@@ -153,4 +157,53 @@ class AuthController extends Controller
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
         }
     }
+
+
+    /**
+     * Login
+     *
+     * @bodyParam user_name string required The username or email of the user. Example: john_doe
+     * @bodyParam password string required The password of the user. Example: password
+     *
+     * @response 200{
+     * "token": "dsdsdsd"
+     * "status": true
+     * "message": "Login successful"
+     * }
+     */
+
+     public function login(Request $request)
+     {
+         $validator = validator($request->all(), [
+             'user_name' => 'required',
+             'password' => 'required|min:8'
+         ]);
+ 
+         if ($validator->fails()) {
+             return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
+         }
+ 
+         try {
+             $fieldType = filter_var($request->user_name, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
+             $request->merge([$fieldType => $request->user_name]);
+             // return $fieldType;
+             if (auth()->attempt($request->only($fieldType, 'password'))) {
+                 $user = User::where($fieldType, $request->user_name)->first();
+                 if ($user->status == 1) {
+                     $token = $user->createToken('authToken')->accessToken;
+                     return response()->json(['token' => $token, 'status' => true, 'message' => 'Login successful'], 200);
+                 } else {
+                     auth()->logout();
+                     return response()->json(['message' => 'Your account is not active!', 'status' => false], 201);
+                 }
+             } else {
+                 return response()->json(['message' => 'Email or password is invalid!', 'status' => false], 201);
+             }
+         } catch (\Throwable $th) {
+             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+         }
+     }
+
+
+
 }

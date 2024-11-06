@@ -6,7 +6,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/home
+    uri: api/v3/cms/home
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -108,7 +108,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/gallery
+    uri: api/v3/cms/gallery
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -163,7 +163,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/faq
+    uri: api/v3/cms/faq
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -219,7 +219,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/principle-and-business
+    uri: api/v3/cms/principle-and-business
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -276,7 +276,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/ecclesia-associations
+    uri: api/v3/cms/ecclesia-associations
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -332,7 +332,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/our-organization
+    uri: api/v3/cms/our-organization
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -430,7 +430,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/common
+    uri: api/v3/cms/common
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -496,7 +496,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/our-governance
+    uri: api/v3/cms/our-governance
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -553,7 +553,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/organization-center
+    uri: api/v3/cms/organization-center
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -618,7 +618,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/organization-center-details
+    uri: api/v3/cms/organization-center-details
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -675,7 +675,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/members-privacy-policy
+    uri: api/v3/cms/members-privacy-policy
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''

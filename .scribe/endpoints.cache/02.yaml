@@ -6,7 +6,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/donation
+    uri: api/v3/donation
     metadata:
       groupName: Donation
       groupDescription: ''
@@ -109,7 +109,7 @@ endpoints:
         name: stripeToken
         description: required.
         required: false
-        example: exercitationem
+        example: beatae
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -124,9 +124,75 @@ endpoints:
       postcode: ZP74857
       amount: 150
       country_id: 2
-      stripeToken: exercitationem
+      stripeToken: beatae
     fileParameters: []
     responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/country-list
+    metadata:
+      groupName: Donation
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Country List'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Country list.",
+          "status": true,
+          "data": [
+             {
+                 "id": 1,
+                 "code": "AF",
+                 "name": "Afghanistan",
+                 "created_at": null,
+                 "updated_at": null
+             },
+             {
+                 "id": 2,
+                 "code": "AX",
+                 "name": "Åland Islands",
+                 "created_at": null,
+                 "updated_at": null
+             }
+          ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+          "message": "Country not found.",
+          "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null

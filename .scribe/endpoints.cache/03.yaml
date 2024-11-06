@@ -6,7 +6,235 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/login
+    uri: api/v3/register
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Register a new user'
+      description: 'Registers a new user and sends an email for account pending approval.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_name:
+        name: user_name
+        description: 'Unique username for the user.'
+        required: true
+        example: johndoe
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      email:
+        name: email
+        description: 'Unique email address.'
+        required: true
+        example: johndoe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      ecclesia_id:
+        name: ecclesia_id
+        description: 'nullable Ecclesia ID if applicable.'
+        required: false
+        example: 18
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      first_name:
+        name: first_name
+        description: 'First name of the user.'
+        required: true
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      last_name:
+        name: last_name
+        description: 'Last name of the user.'
+        required: true
+        example: Doe
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      middle_name:
+        name: middle_name
+        description: 'nullable Middle name of the user.'
+        required: false
+        example: A.
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      address:
+        name: address
+        description: 'Address of the user.'
+        required: true
+        example: '123 Main St'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      phone_number:
+        name: phone_number
+        description: "User's phone number."
+        required: true
+        example: '1234567890'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      city:
+        name: city
+        description: 'City of residence.'
+        required: true
+        example: Springfield
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      state:
+        name: state
+        description: 'State of residence.'
+        required: true
+        example: Illinois
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      address2:
+        name: address2
+        description: 'nullable Additional address information.'
+        required: false
+        example: 'Apt 4B'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      country:
+        name: country
+        description: 'Country of residence.'
+        required: true
+        example: USA
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      zip:
+        name: zip
+        description: 'Zip code.'
+        required: true
+        example: '62704'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      email_confirmation:
+        name: email_confirmation
+        description: 'Confirmation of the email address. Must match `email`.'
+        required: true
+        example: johndoe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      password:
+        name: password
+        description: 'Password for the user. Must be at least 8 characters and include one special character (@$%&).'
+        required: true
+        example: Password@123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      password_confirmation:
+        name: password_confirmation
+        description: 'Confirmation of the password. Must match `password`.'
+        required: true
+        example: Password@123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      user_name: johndoe
+      email: johndoe@example.com
+      ecclesia_id: 18
+      first_name: John
+      last_name: Doe
+      middle_name: A.
+      address: '123 Main St'
+      phone_number: '1234567890'
+      city: Springfield
+      state: Illinois
+      address2: 'Apt 4B'
+      country: USA
+      zip: '62704'
+      email_confirmation: johndoe@example.com
+      password: Password@123
+      password_confirmation: Password@123
+    fileParameters: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+           "message": "Please wait for admin approval",
+           "user": {
+               "id": 1,
+               "user_name": "johndoe",
+               "email": "johndoe@example.com",
+               "first_name": "John",
+               "last_name": "Doe",
+               "created_at": "2024-11-06T10:00:00.000000Z",
+               "updated_at": "2024-11-06T10:00:00.000000Z"
+           }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 409
+        content: |-
+          {
+           "error": "Phone number already exists"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+           "errors": {
+               "email": ["The email has already been taken."]
+           }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/login
     metadata:
       groupName: Authentication
       groupDescription: ''
@@ -67,158 +295,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/register
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: Register
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      user_name:
-        name: user_name
-        description: 'The username of the user.'
-        required: true
-        example: john_doe
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      email:
-        name: email
-        description: 'The email of the user. Example:'
-        required: true
-        example: moore.ruben@example.org
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        custom: []
-      first_name:
-        name: first_name
-        description: 'The first name of the user.'
-        required: true
-        example: John
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      last_name:
-        name: last_name
-        description: 'The last name of the user.'
-        required: true
-        example: Doe
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      middle_name:
-        name: middle_name
-        description: 'The middle name of the user.'
-        required: false
-        example: Doe
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      address:
-        name: address
-        description: 'The address of the user.'
-        required: true
-        example: '123, New York'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      phone_number:
-        name: phone_number
-        description: 'The phone number of the user.'
-        required: false
-        example: '1234567890'
-        type: numeric
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      email_confirmation:
-        name: email_confirmation
-        description: 'The email confirmation of the user. Example:'
-        required: true
-        example: voluptatem
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        custom: []
-      password:
-        name: password
-        description: 'The password of the user.'
-        required: true
-        example: password
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      password_confirmation:
-        name: password_confirmation
-        description: 'The password confirmation of the user.'
-        required: true
-        example: password
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      user_name: john_doe
-      email: moore.ruben@example.org
-      first_name: John
-      last_name: Doe
-      middle_name: Doe
-      address: '123, New York'
-      phone_number: '1234567890'
-      email_confirmation: voluptatem
-      password: password
-      password_confirmation: password
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "token": "dsdsdsd"
-          "status": true
-          "message": "Registration successful"
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-          "message": "The user name has already been taken."
-          "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/register-agreement
+    uri: api/v3/register-agreement
     metadata:
       groupName: Authentication
       groupDescription: ''

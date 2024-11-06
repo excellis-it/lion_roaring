@@ -4,7 +4,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/contact-us
+    uri: api/v3/contact-us
     metadata:
       groupName: 'Contact Us'
       groupDescription: ''
@@ -44,7 +44,7 @@ endpoints:
         name: email
         description: 'Email of the user. Example:'
         required: true
-        example: norbert.mosciski@example.net
+        example: beahan.emil@example.com
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -70,7 +70,7 @@ endpoints:
     cleanBodyParameters:
       first_name: John
       last_name: Doe
-      email: norbert.mosciski@example.net
+      email: beahan.emil@example.com
       phone: '1234567890'
       message: Hello
     fileParameters: []

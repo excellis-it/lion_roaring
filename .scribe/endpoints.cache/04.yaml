@@ -6,7 +6,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/forget-password
+    uri: api/v3/forget-password
     metadata:
       groupName: 'Forget Password'
       groupDescription: ''
@@ -28,13 +28,13 @@ endpoints:
         name: email
         description: 'The email of the user. Example:'
         required: true
-        example: sconroy@example.net
+        example: gerald.lowe@example.net
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      email: sconroy@example.net
+      email: gerald.lowe@example.net
     fileParameters: []
     responses:
       -
