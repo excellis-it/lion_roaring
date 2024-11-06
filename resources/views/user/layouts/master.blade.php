@@ -2257,8 +2257,6 @@
                 $('#loading').addClass('loading');
                 $('#loading-content').addClass('loading-content');
 
-                dltFun(); // Call your custom function (if needed)
-
                 $.ajax({
                     url: $(this).attr('action'),
                     method: 'POST',
@@ -2270,6 +2268,7 @@
                         $('#loading-content').removeClass('loading-content');
 
                         if (response.status == true) {
+                            dltFun(); // Call your custom function (if needed)
                             socket.emit("send_mail", {
                                 send_to_ids: response.send_to_ids,
                                 notification_message: response.notification_message
@@ -2310,7 +2309,7 @@
                 $('#loading').addClass('loading');
                 $('#loading-content').addClass('loading-content');
 
-                dltFun(); // Call your custom function (if needed)
+
 
                 $.ajax({
                     url: $(this).attr('action'),
@@ -2323,6 +2322,7 @@
                         $('#loading-content').removeClass('loading-content');
 
                         if (response.status == true) {
+                            dltFun(); // Call your custom function (if needed)
                             socket.emit("send_mail", {
                                 send_to_ids: response.send_to_ids,
                                 notification_message: response.notification_message
@@ -2364,7 +2364,7 @@
                 $('#loading').addClass('loading');
                 $('#loading-content').addClass('loading-content');
 
-                dltFun();
+
 
                 $.ajax({
                     url: $(this).attr('action'),
@@ -2377,6 +2377,7 @@
                         $('#loading-content').removeClass('loading-content');
 
                         if (response.status == true) {
+                            dltFun();
                             socket.emit("send_mail", {
                                 send_to_ids: response.send_to_ids,
                                 notification_message: response.notification_message
