@@ -2411,35 +2411,17 @@
             });
 
 
-            $('.open_mail_reply_box').on('click', function(event) {
-                event.preventDefault();
-                $('.mail_send_reply_box').show(); // Show the reply box
-                $('.mail_forward_reply_box').hide(); // Hide the forward box
-            });
 
-            $('.open_mail_forward_box').on('click', function(event) {
-                event.preventDefault();
-                $('.mail_forward_reply_box').show(); // Show the forward box
-                $('.mail_send_reply_box').hide(); // Hide the reply box
-            });
 
-            $('.close_mail_reply_box').on('click', function(event) {
-                event.preventDefault();
-                $('.mail_send_reply_box').hide();
-                $('.mail_send_reply_box').find('textarea').val('');
-            });
 
-            $('.close_mail_forward_box').on('click', function(event) {
-                event.preventDefault();
-                $('.mail_forward_reply_box').hide();
-                $('.mail_forward_reply_box').find('textarea').val('');
-            });
 
 
             // fetchLatestEmails();
 
 
         });
+
+
 
 
         let currentMailPage_inbox = 1;
@@ -2459,7 +2441,7 @@
                     $('#inbox-email-list-{{ auth()->id() }}').html(response.data);
                     // toastr.success("Latest Emails Fetched");
                     currentMailPage_inbox = page;
-                    console.log('the current page: ' + currentMailPage_inbox);
+                    // console.log('the current page: ' + currentMailPage_inbox);
 
                     $('#paginationInfo').text(
                         `Page ${response.currentPage} of ${response.lastPage}`);
@@ -2574,10 +2556,7 @@
         }
 
 
-        function clearMailForm() {
-            $('#sendUserEMailForm')[0].reset();
-            dltFun();
-        }
+
 
         function setMailStar(element, mailid) {
             const icon = element.querySelector('.material-symbols-outlined');
@@ -2683,6 +2662,23 @@
                     }
                 })
         }
+
+
+        function downloadMailFile(event, element) {            
+            event.preventDefault();
+            
+            const attachment = element.closest('.other_attch').querySelector('.existing-attachment');
+            const fileName = attachment.getAttribute('data-name');
+            const filePath = attachment.getAttribute('data-path');
+            
+            const link = document.createElement('a');
+            link.href = filePath;
+            link.download = fileName;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     </script>
     <script>
         $(document).ready(function() {
@@ -2764,9 +2760,9 @@
             function updateFileDisplay(displayId, files, inputId) {
                 const fileDisplay = files.map((file, index) => {
                     return `<span><i class="fa fa-paperclip"></i> ${file.name} 
-<button type="button" class="remove-file-btn btn btn-transparent" data-index="${index}" data-input-id="${inputId}">
-    <i class="fa fa-times"></i>
-</button></span>`;
+                    <button type="button" class="remove-file-btn btn btn-transparent" data-index="${index}" data-input-id="${inputId}">
+                        <i class="fa fa-times"></i>
+                    </button></span>`;
                 }).join('<br>');
 
                 document.getElementById(displayId).innerHTML = fileDisplay;
@@ -2794,10 +2790,80 @@
                 document.getElementById(inputId).files = dataTransfer.files;
             }
 
+            function clearAllEmailFormFiles() {
+                const formIds = [{
+                        inputId: 'create-mail-file-input',
+                        displayId: 'create-mail-selected-file-names'
+                    },
+                    {
+                        inputId: 'reply-mail-file-input',
+                        displayId: 'reply-mail-selected-file-names'
+                    },
+                    {
+                        inputId: 'forward-mail-file-input',
+                        displayId: 'forward-mail-selected-file-names'
+                    }
+                ];
+
+                formIds.forEach(({
+                    inputId,
+                    displayId
+                }) => {
+                    // Clear the files from selectedFilesMap
+                    selectedFilesMap[inputId] = [];
+
+                    // Update display and reset file input to empty
+                    updateFileDisplay(displayId, selectedFilesMap[inputId], inputId);
+                    resetFileInput(inputId, selectedFilesMap[inputId]);
+                });
+            }
+
+            $('.open_mail_reply_box').on('click', function(event) {
+                event.preventDefault();
+                $('.mail_send_reply_box').show(); // Show the reply box
+                $('.mail_forward_reply_box').hide(); // Hide the forward box
+                handleFileInputChange('reply-mail-file-input', 'reply-mail-selected-file-names');
+            });
+
+            $('.open_mail_forward_box').on('click', function(event) {
+                event.preventDefault();
+                $('.mail_forward_reply_box').show(); // Show the forward box
+                $('.mail_send_reply_box').hide(); // Hide the reply box
+                handleFileInputChange('forword-mail-file-input', 'forward-mail-selected-file-names');
+            });
+
+            function clearMailForm() {
+                $('#sendUserEMailForm')[0].reset();
+                clearAllEmailFormFiles();
+                dltFun();
+            }
+
+            $('.close_mail_create_box').on('click', function(event) {
+                event.preventDefault();
+                $('#sendUserEMailForm')[0].reset();
+                clearAllEmailFormFiles();
+                dltFun();
+            });
+
+            $('.close_mail_reply_box').on('click', function(event) {
+                event.preventDefault();
+                $('.mail_send_reply_box').hide();
+                $('.mail_send_reply_box').find('textarea').val('');
+                clearAllEmailFormFiles();
+            });
+
+            $('.close_mail_forward_box').on('click', function(event) {
+                event.preventDefault();
+                $('.mail_forward_reply_box').hide();
+                $('.mail_forward_reply_box').find('textarea').val('');
+                clearAllEmailFormFiles();
+            });
+
+
             // Initialize file handlers for each form
             handleFileInputChange('create-mail-file-input', 'create-mail-selected-file-names');
-            handleFileInputChange('reply-mail-file-input', 'reply-mail-selected-file-names');
-            handleFileInputChange('forward-mail-file-input', 'forward-mail-selected-file-names');
+            //  handleFileInputChange('reply-mail-file-input', 'reply-mail-selected-file-names'); 
+            //  handleFileInputChange('forword-mail-file-input', 'forward-mail-selected-file-names');
         });
     </script>
 

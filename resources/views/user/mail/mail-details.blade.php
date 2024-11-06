@@ -143,11 +143,11 @@
                                     $attachments = json_decode($mail_details->attachment, true);
                                 @endphp
 
-                                @foreach ($attachments as $attachment)
-                                    <input type="hidden" class="existing-attachment"
+                                @foreach ($attachments as $attachment)                                    
+                                    <div class="other_attch">
+                                        <input type="hidden" class="existing-attachment"
                                         data-name="{{ $attachment['original_name'] }}"
                                         data-path="{{ asset('storage/' . $attachment['encrypted_name']) }}">
-                                    <div class="other_attch">
                                         <a class="attatched_file_box"
                                             href="{{ asset('storage/' . $attachment['encrypted_name']) }}" target="_blank">
                                             <div class="mail_img_box">
@@ -158,7 +158,7 @@
                                                 </div>
                                             </div>
                                             <div class="download_attetched_file">
-                                                <span class="material-symbols-outlined">download</span>
+                                                <span onclick="downloadMailFile(event, this)" class="material-symbols-outlined mail-file-download">download</span>
                                             </div>
                                         </a>
                                     </div>
@@ -228,7 +228,7 @@
                                         // $mailtoArray = !empty($mail_details->user->email)
                                         //     ? explode(',', $mail_details->user->email)
                                         //     : [];
-                                       // $mailtoArray = $uniqueEmails->toArray();
+                                        // $mailtoArray = $uniqueEmails->toArray();
 
                                         $mailtoJson = json_encode(
                                             array_map(fn($email) => ['value' => trim($email)], $uniqueEmails),
@@ -313,8 +313,8 @@
                                         placeholder='CC' value="" />
 
 
-                                    <input class='input-large' name="subject" type='text'
-                                        placeholder='Subject' value="{{ $mail_details->subject }}" />
+                                    <input class='input-large' name="subject" type='text' placeholder='Subject'
+                                        value="{{ $mail_details->subject }}" />
                                 </div>
 
                                 <textarea class='min-hide_textera ckeditor' name="message" rows="6" placeholder='Message'>
@@ -402,6 +402,9 @@
                     highlight: true // highlight matched results
                 }
             });
+
+            
+
         });
     </script>
     <script>
@@ -409,6 +412,7 @@
             $('#printMailButton').on('click', function() {
                 window.open("{{ route('mail.print', $mail_details->id) }}", '_blank');
             });
+            
         });
     </script>
 @endpush
