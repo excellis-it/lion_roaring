@@ -28,7 +28,7 @@
                     </label>
                 </div>
                 <div class='trash_btn'>
-                    <button onclick="clearMailForm()" type="button" class='button-large button-silver'><i
+                    <button type="button" class='button-large button-silver close_mail_create_box'><i
                             class='fa fa-trash'></i></button>
                 </div>
             </div>

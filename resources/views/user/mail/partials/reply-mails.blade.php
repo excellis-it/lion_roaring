@@ -1,7 +1,7 @@
 @if ($reply_mails->count() > 0)
     @foreach ($reply_mails as $reply)
         <hr hidden class="ms-5" style="height: 20px;width:5px">
-        <div class="main-mail mt-2">           
+        <div class="main-mail mt-2">
 
             <div class="mail_subject">
                 <div class="row">
@@ -20,9 +20,9 @@
 
                                 </span>
                             </div>
-                            
+
                             <div class="name_text_p">
-                                
+
                                 <h5>{{ $reply->user->full_name }}</h5>
                                 <h6><span class="time_text">From: {{ $reply->user->email }}</span></h6>
                                 <h6 hidden><span class="time_text">To: </span>
@@ -81,17 +81,21 @@
 
                     @foreach ($attachments as $attachment)
                         <div class="other_attch">
-                            <a class="attatched_file_box" href="{{ asset('storage/' . $attachment['encrypted_name']) }}"
-                                target="_blank">
+                            <input type="hidden" class="existing-attachment"
+                                data-name="{{ $attachment['original_name'] }}"
+                                data-path="{{ asset('storage/' . $attachment['encrypted_name']) }}">
+                            <a class="attatched_file_box"
+                                href="{{ asset('storage/' . $attachment['encrypted_name']) }}" target="_blank">
                                 <div class="mail_img_box">
                                     <span><img src="{{ asset('user_assets/images/atatched.png') }}" alt="user"
                                             class="" /></span>
                                     <div>
-                                        <p>{{ substr($attachment['original_name'], 0,8) }}</p>
+                                        <p>{{ substr($attachment['original_name'], 0, 8) }}</p>
                                     </div>
                                 </div>
                                 <div class="download_attetched_file">
-                                    <span class="material-symbols-outlined">download</span>
+                                    <span onclick="downloadMailFile(event, this)"
+                                        class="material-symbols-outlined">download</span>
                                 </div>
                             </a>
                         </div>
