@@ -17,10 +17,14 @@ class SendMail extends Mailable
      * @return void
      */
     protected $mail;
+    public $senderEmail;
+    public $senderName;
 
-    public function __construct($mail)
+    public function __construct($mail, $senderEmail = null, $senderName = null)
     {
         $this->mail = $mail;
+        $this->senderEmail = $senderEmail;
+        $this->senderName = $senderName;
     }
 
     /**
@@ -30,6 +34,13 @@ class SendMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('user.mails.SendMail')->subject($this->mail->subject)->with('mail', $this->mail);
+        // return $this->markdown('user.mails.SendMail')->subject($this->mail->subject)->with('mail', $this->mail);
+        return $this->from(
+            $this->senderEmail ?? env('MAIL_FROM_ADDRESS'),
+            $this->senderName ?? env('MAIL_FROM_NAME')
+        )
+            ->markdown('user.mails.SendMail')  // Use markdown email template
+            ->subject($this->mail->subject)  // Set the email subject
+            ->with('mail', $this->mail);
     }
 }

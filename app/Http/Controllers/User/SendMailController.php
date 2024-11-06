@@ -158,13 +158,13 @@ class SendMailController extends Controller
 
         $init_mail = SendMail::findOrFail($id);
 
-        if(!empty($init_mail->reply_of)){
+        if (!empty($init_mail->reply_of)) {
             $fetch_mailId = $init_mail->reply_of;
         } else {
             $fetch_mailId = $id;
         }
 
-        $init_ownUserMailInfo = MailUser::where('send_mail_id', $id)->where('user_id', auth()->id())->first(); 
+        $init_ownUserMailInfo = MailUser::where('send_mail_id', $id)->where('user_id', auth()->id())->first();
 
         if ($init_ownUserMailInfo) {
             $init_ownUserMailInfo->is_read = 1;
@@ -173,7 +173,7 @@ class SendMailController extends Controller
 
         $mail_details = SendMail::with('user')->findOrFail($fetch_mailId);
 
-        $ownUserMailInfo = MailUser::where('send_mail_id', $fetch_mailId)->where('user_id', auth()->id())->first(); 
+        $ownUserMailInfo = MailUser::where('send_mail_id', $fetch_mailId)->where('user_id', auth()->id())->first();
 
         $replyMailIds = [];
 
@@ -184,7 +184,7 @@ class SendMailController extends Controller
 
         $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
         $replyMailids = $replyMailids = collect([$mail_details->user->email])->merge($reply_mails->pluck('user.email'));
-       // dd($replyMailids);
+        // dd($replyMailids);
         return view('user.mail.mail-details')->with(compact('mail_details', 'ownUserMailInfo', 'reply_mails', 'allMailIds', 'replyMailids'));
     }
 
@@ -231,8 +231,10 @@ class SendMailController extends Controller
             'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048'
         ]);
 
-        // Decode the JSON strings for 'to' and 'cc' fields
-        $toEmails = json_decode($request->to, true);
+        $sender_user =
+
+            // Decode the JSON strings for 'to' and 'cc' fields
+            $toEmails = json_decode($request->to, true);
         // Extract email addresses from the decoded arrays
         $to = array_column($toEmails, 'value');
         if ($request->cc) {
@@ -349,7 +351,11 @@ class SendMailController extends Controller
 
         try {
 
-            Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
+            $sender_user = auth()->user();
+            $senderEmail = $sender_user->email;
+            $senderName = $sender_user->full_name;
+
+            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $senderEmail, $senderName));
 
 
             session()->flash('message', 'Your mail has been sent Successfully');
@@ -386,7 +392,7 @@ class SendMailController extends Controller
         // Decode the JSON strings for 'to' and 'cc' fields
         $toEmails = json_decode($request->to, true);
 
-       // return $toEmails;
+        // return $toEmails;
         // Extract email addresses from the decoded arrays
         $to = array_column($toEmails, 'value');
         if ($request->cc) {
@@ -505,7 +511,12 @@ class SendMailController extends Controller
 
         try {
 
-            Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
+            // Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
+            $sender_user = auth()->user();
+            $senderEmail = $sender_user->email;
+            $senderName = $sender_user->full_name;
+
+            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $senderEmail, $senderName));
 
 
             session()->flash('message', 'Your mail has been sent Successfully');
@@ -657,7 +668,12 @@ class SendMailController extends Controller
 
         try {
 
-            Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
+            // Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
+            $sender_user = auth()->user();
+            $senderEmail = $sender_user->email;
+            $senderName = $sender_user->full_name;
+
+            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $senderEmail, $senderName));
 
 
             session()->flash('message', 'Your mail has been sent Successfully');
@@ -851,11 +867,11 @@ class SendMailController extends Controller
 
     public function printMail($id)
     {
-        
+
 
         $mail_details = SendMail::with('user')->findOrFail($id);
 
-        $ownUserMailInfo = MailUser::where('send_mail_id', $id)->where('user_id', auth()->id())->first(); 
+        $ownUserMailInfo = MailUser::where('send_mail_id', $id)->where('user_id', auth()->id())->first();
 
         $replyMailIds = [];
 

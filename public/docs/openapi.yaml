@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 18
+                  example: 10
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -891,7 +891,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: beahan.emil@example.com
+                  example: phoeger@example.net
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -962,7 +962,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: beatae
+                  example: est
       security: []
   /api/v3/country-list:
     post:
@@ -1087,7 +1087,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: gerald.lowe@example.net
+                  example: nconroy@example.net
               required:
                 - email
       security: []
