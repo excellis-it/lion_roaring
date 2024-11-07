@@ -28,13 +28,13 @@ endpoints:
         name: email
         description: 'The email of the user. Example:'
         required: true
-        example: morar.rowland@example.com
+        example: jaquan50@example.com
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      email: morar.rowland@example.com
+      email: jaquan50@example.com
     fileParameters: []
     responses:
       -

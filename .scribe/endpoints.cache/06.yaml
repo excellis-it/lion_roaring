@@ -135,7 +135,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aZa6vh31gEb4VdD65fcP8ke'
+      - 'Bearer d4vb6Pk6DEefVc3ahag8Z15'
     controller: null
     method: null
     route: null
@@ -260,7 +260,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer va4Dfak3hEd61PV6c5Zb8eg'
+      - 'Bearer fD8avP5E6V3ebhg4ca16kdZ'
     controller: null
     method: null
     route: null
@@ -404,7 +404,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Dga8c36ehaZkfvdE41P5Vb'
+      - 'Bearer h5b6faV84cPvge6E3kad1ZD'
     controller: null
     method: null
     route: null
@@ -458,7 +458,152 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f6Ebvhk4ZP6aDe3185cgdaV'
+      - 'Bearer a6ZfbP68gkv1cedEaD53hV4'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/chats/seen
+    metadata:
+      groupName: Chats
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Mark Chat as Seen'
+      description: 'Marks a specific chat message as seen by updating its `seen` status.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      chat_id:
+        name: chat_id
+        description: 'The ID of the chat message to mark as seen.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      reciver_id:
+        name: reciver_id
+        description: 'The ID of the receiver user.'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      chat_id: 10
+      reciver_id: 2
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "msg": "Chat seen successfully",
+             "status": true,
+             "last_chat": {
+                 "id": 10,
+                 "sender_id": 1,
+                 "reciver_id": 2,
+                 "message": "Hello!",
+                 "seen": 1,
+                 "created_at": "2024-11-07T14:52:36.000000Z",
+                 "updated_at": "2024-11-07T15:05:12.000000Z"
+             }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 4h3DE8dafbagc51e6vZPVk6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/chats/remove
+    metadata:
+      groupName: Chats
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove Chat Message'
+      description: 'Removes a specific chat message for the authenticated user. The message can be removed for "everyone" or marked as deleted for the sender only.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      chat_id:
+        name: chat_id
+        description: 'The ID of the chat message to be removed.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      del_from:
+        name: del_from
+        description: 'Specifies if the message should be deleted for "everyone" or only for the sender ("me").'
+        required: true
+        example: '"me"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      chat_id: 10
+      del_from: '"me"'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "msg": "Chat removed successfully",
+             "status": true,
+             "chat": {
+                 "id": 10,
+                 "sender_id": 1,
+                 "reciver_id": 2,
+                 "message": "Hello!",
+                 "created_at": "2024-11-07T14:52:36.000000Z",
+                 "updated_at": "2024-11-07T15:05:12.000000Z"
+             }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eDaV5v81c3bP6hdZfEg46ak'
     controller: null
     method: null
     route: null

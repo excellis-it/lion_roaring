@@ -109,8 +109,8 @@ Route::prefix('v3')->group(function () {
             Route::post('/load', [ChatController::class, 'load'])->name('load');
             Route::post('/send', [ChatController::class, 'send'])->name('send');
             Route::post('/clear', [ChatController::class, 'clear'])->name('clear');
-            // Route::post('/seen', [ChatController::class, 'seen'])->name('seen');
-            // Route::post('/remove', [ChatController::class, 'remove'])->name('remove');
+            Route::post('/seen', [ChatController::class, 'seen'])->name('seen');
+            Route::post('/remove', [ChatController::class, 'remove'])->name('remove');
             // Route::post('/notification', [ChatController::class, 'notification'])->name('notification');
         });
 

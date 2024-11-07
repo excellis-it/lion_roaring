@@ -139,6 +139,12 @@
                                                                                 <li class="tocify-item level-2" data-unique="chats-POSTapi-v3-user-chats-clear">
                                 <a href="#chats-POSTapi-v3-user-chats-clear">Clear Chat Messages</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="chats-POSTapi-v3-user-chats-seen">
+                                <a href="#chats-POSTapi-v3-user-chats-seen">Mark Chat as Seen</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="chats-POSTapi-v3-user-chats-remove">
+                                <a href="#chats-POSTapi-v3-user-chats-remove">Remove Chat Message</a>
+                            </li>
                                                                         </ul>
                             </ul>
                     <ul id="tocify-header-contact-us" class="tocify-header">
@@ -246,7 +252,7 @@ You can switch the language used with the tabs at the top right (or from the nav
     --data "{
     \"user_name\": \"johndoe\",
     \"email\": \"johndoe@example.com\",
-    \"ecclesia_id\": 8,
+    \"ecclesia_id\": 16,
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
     \"middle_name\": \"A.\",
@@ -277,7 +283,7 @@ const headers = {
 let body = {
     "user_name": "johndoe",
     "email": "johndoe@example.com",
-    "ecclesia_id": 8,
+    "ecclesia_id": 16,
     "first_name": "John",
     "last_name": "Doe",
     "middle_name": "A.",
@@ -441,10 +447,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="ecclesia_id"                data-endpoint="POSTapi-v3-register"
-               value="8"
+               value="16"
                data-component="body">
     <br>
-<p>nullable Ecclesia ID if applicable. Example: <code>8</code></p>
+<p>nullable Ecclesia ID if applicable. Example: <code>16</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>first_name</code></b>&nbsp;&nbsp;
@@ -2961,7 +2967,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "reciver_id=2"\
     --form "message=Hello there!"\
-    --form "file=@C:\Users\Masum\AppData\Local\Temp\phpBC3C.tmp" </code></pre></div>
+    --form "file=@C:\Users\Masum\AppData\Local\Temp\php5AD6.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -3182,7 +3188,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Optional file attachment for the chat message. Example: <code>C:\Users\Masum\AppData\Local\Temp\phpBC3C.tmp</code></p>
+<p>Optional file attachment for the chat message. Example: <code>C:\Users\Masum\AppData\Local\Temp\php5AD6.tmp</code></p>
         </div>
         </form>
 
@@ -3339,6 +3345,355 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
         </form>
 
+                    <h2 id="chats-POSTapi-v3-user-chats-seen">Mark Chat as Seen</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Marks a specific chat message as seen by updating its <code>seen</code> status.</p>
+
+<span id="example-requests-POSTapi-v3-user-chats-seen">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/chats/seen" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"chat_id\": 10,
+    \"reciver_id\": 2
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/chats/seen"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "chat_id": 10,
+    "reciver_id": 2
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-chats-seen">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;msg&quot;: &quot;Chat seen successfully&quot;,
+    &quot;status&quot;: true,
+    &quot;last_chat&quot;: {
+        &quot;id&quot;: 10,
+        &quot;sender_id&quot;: 1,
+        &quot;reciver_id&quot;: 2,
+        &quot;message&quot;: &quot;Hello!&quot;,
+        &quot;seen&quot;: 1,
+        &quot;created_at&quot;: &quot;2024-11-07T14:52:36.000000Z&quot;,
+        &quot;updated_at&quot;: &quot;2024-11-07T15:05:12.000000Z&quot;
+    }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-chats-seen" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-chats-seen"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-chats-seen"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-chats-seen" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-chats-seen">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-chats-seen" data-method="POST"
+      data-path="api/v3/user/chats/seen"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-chats-seen', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-chats-seen"
+                    onclick="tryItOut('POSTapi-v3-user-chats-seen');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-chats-seen"
+                    onclick="cancelTryOut('POSTapi-v3-user-chats-seen');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-chats-seen"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/chats/seen</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-chats-seen"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-chats-seen"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-chats-seen"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>chat_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="chat_id"                data-endpoint="POSTapi-v3-user-chats-seen"
+               value="10"
+               data-component="body">
+    <br>
+<p>The ID of the chat message to mark as seen. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>reciver_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="reciver_id"                data-endpoint="POSTapi-v3-user-chats-seen"
+               value="2"
+               data-component="body">
+    <br>
+<p>The ID of the receiver user. Example: <code>2</code></p>
+        </div>
+        </form>
+
+                    <h2 id="chats-POSTapi-v3-user-chats-remove">Remove Chat Message</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Removes a specific chat message for the authenticated user. The message can be removed for &quot;everyone&quot; or marked as deleted for the sender only.</p>
+
+<span id="example-requests-POSTapi-v3-user-chats-remove">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/chats/remove" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"chat_id\": 10,
+    \"del_from\": \"\\\"me\\\"\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/chats/remove"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "chat_id": 10,
+    "del_from": "\"me\""
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-chats-remove">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;msg&quot;: &quot;Chat removed successfully&quot;,
+    &quot;status&quot;: true,
+    &quot;chat&quot;: {
+        &quot;id&quot;: 10,
+        &quot;sender_id&quot;: 1,
+        &quot;reciver_id&quot;: 2,
+        &quot;message&quot;: &quot;Hello!&quot;,
+        &quot;created_at&quot;: &quot;2024-11-07T14:52:36.000000Z&quot;,
+        &quot;updated_at&quot;: &quot;2024-11-07T15:05:12.000000Z&quot;
+    }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-chats-remove" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-chats-remove"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-chats-remove"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-chats-remove" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-chats-remove">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-chats-remove" data-method="POST"
+      data-path="api/v3/user/chats/remove"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-chats-remove', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-chats-remove"
+                    onclick="tryItOut('POSTapi-v3-user-chats-remove');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-chats-remove"
+                    onclick="cancelTryOut('POSTapi-v3-user-chats-remove');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-chats-remove"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/chats/remove</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-chats-remove"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-chats-remove"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-chats-remove"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>chat_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="chat_id"                data-endpoint="POSTapi-v3-user-chats-remove"
+               value="10"
+               data-component="body">
+    <br>
+<p>The ID of the chat message to be removed. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>del_from</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="del_from"                data-endpoint="POSTapi-v3-user-chats-remove"
+               value=""me""
+               data-component="body">
+    <br>
+<p>Specifies if the message should be deleted for &quot;everyone&quot; or only for the sender (&quot;me&quot;). Example: <code>"me"</code></p>
+        </div>
+        </form>
+
                 <h1 id="contact-us">Contact Us</h1>
 
     
@@ -3362,7 +3717,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
-    \"email\": \"abdiel99@example.net\",
+    \"email\": \"vtillman@example.com\",
     \"phone\": \"1234567890\",
     \"message\": \"Hello\"
 }"
@@ -3382,7 +3737,7 @@ const headers = {
 let body = {
     "first_name": "John",
     "last_name": "Doe",
-    "email": "abdiel99@example.net",
+    "email": "vtillman@example.com",
     "phone": "1234567890",
     "message": "Hello"
 };
@@ -3505,10 +3860,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-contact-us"
-               value="abdiel99@example.net"
+               value="vtillman@example.com"
                data-component="body">
     <br>
-<p>Email of the user. Example: Example: <code>abdiel99@example.net</code></p>
+<p>Email of the user. Example: Example: <code>vtillman@example.com</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -3564,7 +3919,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"postcode\": \"ZP74857\",
     \"amount\": 150,
     \"country_id\": 2,
-    \"stripeToken\": \"veniam\"
+    \"stripeToken\": \"iure\"
 }"
 </code></pre></div>
 
@@ -3589,7 +3944,7 @@ let body = {
     "postcode": "ZP74857",
     "amount": 150,
     "country_id": 2,
-    "stripeToken": "veniam"
+    "stripeToken": "iure"
 };
 
 fetch(url, {
@@ -3777,10 +4132,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="stripeToken"                data-endpoint="POSTapi-v3-donation"
-               value="veniam"
+               value="iure"
                data-component="body">
     <br>
-<p>required. Example: <code>veniam</code></p>
+<p>required. Example: <code>iure</code></p>
         </div>
         </form>
 
@@ -3949,7 +4304,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"email\": \"morar.rowland@example.com\"
+    \"email\": \"jaquan50@example.com\"
 }"
 </code></pre></div>
 
@@ -3965,7 +4320,7 @@ const headers = {
 };
 
 let body = {
-    "email": "morar.rowland@example.com"
+    "email": "jaquan50@example.com"
 };
 
 fetch(url, {
@@ -4064,10 +4419,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-forget-password"
-               value="morar.rowland@example.com"
+               value="jaquan50@example.com"
                data-component="body">
     <br>
-<p>The email of the user. Example: Example: <code>morar.rowland@example.com</code></p>
+<p>The email of the user. Example: Example: <code>jaquan50@example.com</code></p>
         </div>
         </form>
 
@@ -4445,7 +4800,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "profile_picture=@C:\Users\Masum\AppData\Local\Temp\phpBC0B.tmp" </code></pre></div>
+    --form "profile_picture=@C:\Users\Masum\AppData\Local\Temp\php5AA6.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -4582,7 +4937,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The profile picture of the user. Example: <code>C:\Users\Masum\AppData\Local\Temp\phpBC0B.tmp</code></p>
+<p>The profile picture of the user. Example: <code>C:\Users\Masum\AppData\Local\Temp\php5AA6.tmp</code></p>
         </div>
         </form>
 

@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 8
+                  example: 16
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1532,6 +1532,152 @@ paths:
                   example: 2
               required:
                 - reciver_id
+  /api/v3/user/chats/seen:
+    post:
+      summary: 'Mark Chat as Seen'
+      operationId: markChatAsSeen
+      description: 'Marks a specific chat message as seen by updating its `seen` status.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  msg: 'Chat seen successfully'
+                  status: true
+                  last_chat:
+                    id: 10
+                    sender_id: 1
+                    reciver_id: 2
+                    message: Hello!
+                    seen: 1
+                    created_at: '2024-11-07T14:52:36.000000Z'
+                    updated_at: '2024-11-07T15:05:12.000000Z'
+                properties:
+                  msg:
+                    type: string
+                    example: 'Chat seen successfully'
+                  status:
+                    type: boolean
+                    example: true
+                  last_chat:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 10
+                      sender_id:
+                        type: integer
+                        example: 1
+                      reciver_id:
+                        type: integer
+                        example: 2
+                      message:
+                        type: string
+                        example: Hello!
+                      seen:
+                        type: integer
+                        example: 1
+                      created_at:
+                        type: string
+                        example: '2024-11-07T14:52:36.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-07T15:05:12.000000Z'
+      tags:
+        - Chats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chat_id:
+                  type: integer
+                  description: 'The ID of the chat message to mark as seen.'
+                  example: 10
+                reciver_id:
+                  type: integer
+                  description: 'The ID of the receiver user.'
+                  example: 2
+              required:
+                - chat_id
+                - reciver_id
+  /api/v3/user/chats/remove:
+    post:
+      summary: 'Remove Chat Message'
+      operationId: removeChatMessage
+      description: 'Removes a specific chat message for the authenticated user. The message can be removed for "everyone" or marked as deleted for the sender only.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  msg: 'Chat removed successfully'
+                  status: true
+                  chat:
+                    id: 10
+                    sender_id: 1
+                    reciver_id: 2
+                    message: Hello!
+                    created_at: '2024-11-07T14:52:36.000000Z'
+                    updated_at: '2024-11-07T15:05:12.000000Z'
+                properties:
+                  msg:
+                    type: string
+                    example: 'Chat removed successfully'
+                  status:
+                    type: boolean
+                    example: true
+                  chat:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 10
+                      sender_id:
+                        type: integer
+                        example: 1
+                      reciver_id:
+                        type: integer
+                        example: 2
+                      message:
+                        type: string
+                        example: Hello!
+                      created_at:
+                        type: string
+                        example: '2024-11-07T14:52:36.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-07T15:05:12.000000Z'
+      tags:
+        - Chats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chat_id:
+                  type: integer
+                  description: 'The ID of the chat message to be removed.'
+                  example: 10
+                del_from:
+                  type: string
+                  description: 'Specifies if the message should be deleted for "everyone" or only for the sender ("me").'
+                  example: '"me"'
+              required:
+                - chat_id
+                - del_from
   /api/v3/contact-us:
     post:
       summary: 'Store Contact Us'
@@ -1575,7 +1721,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: abdiel99@example.net
+                  example: vtillman@example.com
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1646,7 +1792,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: veniam
+                  example: iure
       security: []
   /api/v3/country-list:
     post:
@@ -1771,7 +1917,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: morar.rowland@example.com
+                  example: jaquan50@example.com
               required:
                 - email
       security: []

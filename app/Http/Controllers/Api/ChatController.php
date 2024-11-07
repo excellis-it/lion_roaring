@@ -447,6 +447,86 @@ class ChatController extends Controller
     }
 
 
+    /**
+     * Mark Chat as Seen
+     * 
+     * Marks a specific chat message as seen by updating its `seen` status.
+     * @authenticated
+     * @bodyParam chat_id int required The ID of the chat message to mark as seen. Example: 10
+     * @bodyParam reciver_id int required The ID of the receiver user. Example: 2
+     * 
+     * @response {
+     *    "msg": "Chat seen successfully",
+     *    "status": true,
+     *    "last_chat": {
+     *        "id": 10,
+     *        "sender_id": 1,
+     *        "reciver_id": 2,
+     *        "message": "Hello!",
+     *        "seen": 1,
+     *        "created_at": "2024-11-07T14:52:36.000000Z",
+     *        "updated_at": "2024-11-07T15:05:12.000000Z"
+     *    }
+     * }
+     */
+    public function seen(Request $request)
+    {
+        $sender_id = auth()->id();
+        $reciver_id = $request->reciver_id;
+
+        Chat::where('id', $request->chat_id)
+            ->where('sender_id', $reciver_id)
+            ->where('reciver_id', $sender_id)
+            ->update(['seen' => 1]);
+
+        $last_chat = Chat::findOrFail($request->chat_id);
+
+        return response()->json(['msg' => 'Chat seen successfully', 'status' => true, 'last_chat' => $last_chat]);
+    }
+
+    /**
+     * Remove Chat Message
+     * 
+     * Removes a specific chat message for the authenticated user. The message can be removed for "everyone" or marked as deleted for the sender only.
+     * @authenticated
+     * @bodyParam chat_id int required The ID of the chat message to be removed. Example: 10
+     * @bodyParam del_from string required Specifies if the message should be deleted for "everyone" or only for the sender ("me"). Example: "me"
+     * 
+     * @response {
+     *    "msg": "Chat removed successfully",
+     *    "status": true,
+     *    "chat": {
+     *        "id": 10,
+     *        "sender_id": 1,
+     *        "reciver_id": 2,
+     *        "message": "Hello!",
+     *        "created_at": "2024-11-07T14:52:36.000000Z",
+     *        "updated_at": "2024-11-07T15:05:12.000000Z"
+     *    }
+     * }
+     */
+    public function remove(Request $request)
+    {
+        $chat_id = $request->chat_id;
+        $del_from = $request->del_from;
+
+        $chat = Chat::where('id', $chat_id)->first();
+
+        if ($del_from === 'everyone') {
+            Chat::where('id', $chat_id)->delete();
+        } else {
+            // Mark message as deleted for the sender if not removing for everyone
+            Chat::where('id', $chat_id)
+                ->where('sender_id', auth()->id())
+                ->update(['deleted_for_sender' => 1]);
+        }
+
+        return response()->json(['msg' => 'Chat removed successfully', 'status' => true, 'chat' => $chat]);
+    }
+
+
+
+
 
 
     //
