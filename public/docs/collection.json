@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "d3097099-4ec6-4e29-a56f-e673a2d6715d",
+        "_postman_id": "739e301b-beb2-470e-a165-9553aafc32ee",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":3,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":8,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -621,6 +621,47 @@
                             "name": ""
                         }
                     ]
+                },
+                {
+                    "name": "Chats with a specific user",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/chats\/load",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/chats\/load"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"sender_receiver_id\":1}"
+                        },
+                        "description": "Retrieves the chat history between the authenticated user and a specified recipient, marking unseen messages as seen."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Show Chat\",\n   \"status\": true,\n   \"chat_count\": 3,\n   \"unseen_chat\": [\n       {\n           \"id\": 277,\n           \"sender_id\": null,\n           \"reciver_id\": null,\n           \"message\": null,\n           \"deleted_for_sender\": 0,\n           \"deleted_for_reciver\": 0,\n           \"attachment\": \"chat\/M74Omwgv7inwepyRBswxsKeCPuKjp2jnypqeoTL5.jpg\",\n           \"seen\": 0,\n           \"created_at\": \"2024-08-20T13:00:18.000000Z\",\n           \"updated_at\": \"2024-08-20T13:00:18.000000Z\",\n           \"delete_from_sender_id\": 0,\n           \"delete_from_receiver_id\": 0\n       }\n   ],\n   \"chats\": [\n       {\n           \"id\": 549,\n           \"sender_id\": 37,\n           \"reciver_id\": 12,\n           \"message\": \"hii\",\n           \"deleted_for_sender\": 0,\n           \"deleted_for_reciver\": 0,\n           \"attachment\": null,\n           \"seen\": 1,\n           \"created_at\": \"2024-11-05T11:08:36.000000Z\",\n           \"updated_at\": \"2024-11-05T11:08:42.000000Z\",\n           \"delete_from_sender_id\": 0,\n           \"delete_from_receiver_id\": 0\n       },\n       {\n           \"id\": 550,\n           \"sender_id\": 12,\n           \"reciver_id\": 37,\n           \"message\": null,\n           \"deleted_for_sender\": 0,\n           \"deleted_for_reciver\": 0,\n           \"attachment\": \"chat\/wTFuaiG3kyE7DVDZVcQ8q3eB06Zlb5Mp0VlMeCe6.pdf\",\n           \"seen\": 1,\n           \"created_at\": \"2024-11-05T11:08:52.000000Z\",\n           \"updated_at\": \"2024-11-05T11:08:53.000000Z\",\n           \"delete_from_sender_id\": 0,\n           \"delete_from_receiver_id\": 0\n       },\n       {\n           \"id\": 551,\n           \"sender_id\": 12,\n           \"reciver_id\": 37,\n           \"message\": \"hello\",\n           \"deleted_for_sender\": 0,\n           \"deleted_for_reciver\": 0,\n           \"attachment\": null,\n           \"seen\": 1,\n           \"created_at\": \"2024-11-05T11:08:58.000000Z\",\n           \"updated_at\": \"2024-11-05T11:08:58.000000Z\",\n           \"delete_from_sender_id\": 0,\n           \"delete_from_receiver_id\": 0\n       }\n   ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n  \"msg\": \"An error occurred while loading chats.\",\n  \"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -650,7 +691,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"yadira.bauch@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"awolff@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -694,7 +735,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"itaque\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"repellendus\"}"
                         },
                         "description": "",
                         "auth": {
@@ -772,7 +813,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"jacobson.marjorie@example.net\"}"
+                            "raw": "{\"email\":\"cstiedemann@example.org\"}"
                         },
                         "description": "",
                         "auth": {

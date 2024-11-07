@@ -133,7 +133,132 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dDEa3fP854Zg1h6c6kbveVa'
+      - 'Bearer 6f5ea8bchVva36Ddk1PZE4g'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/chats/load
+    metadata:
+      groupName: Chats
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Chats with a specific user'
+      description: 'Retrieves the chat history between the authenticated user and a specified recipient, marking unseen messages as seen.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      sender_receiver_id:
+        name: sender_receiver_id
+        description: 'ID of the sender (the another user).'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      sender_receiver_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Show Chat",
+             "status": true,
+             "chat_count": 3,
+             "unseen_chat": [
+                 {
+                     "id": 277,
+                     "sender_id": null,
+                     "reciver_id": null,
+                     "message": null,
+                     "deleted_for_sender": 0,
+                     "deleted_for_reciver": 0,
+                     "attachment": "chat/M74Omwgv7inwepyRBswxsKeCPuKjp2jnypqeoTL5.jpg",
+                     "seen": 0,
+                     "created_at": "2024-08-20T13:00:18.000000Z",
+                     "updated_at": "2024-08-20T13:00:18.000000Z",
+                     "delete_from_sender_id": 0,
+                     "delete_from_receiver_id": 0
+                 }
+             ],
+             "chats": [
+                 {
+                     "id": 549,
+                     "sender_id": 37,
+                     "reciver_id": 12,
+                     "message": "hii",
+                     "deleted_for_sender": 0,
+                     "deleted_for_reciver": 0,
+                     "attachment": null,
+                     "seen": 1,
+                     "created_at": "2024-11-05T11:08:36.000000Z",
+                     "updated_at": "2024-11-05T11:08:42.000000Z",
+                     "delete_from_sender_id": 0,
+                     "delete_from_receiver_id": 0
+                 },
+                 {
+                     "id": 550,
+                     "sender_id": 12,
+                     "reciver_id": 37,
+                     "message": null,
+                     "deleted_for_sender": 0,
+                     "deleted_for_reciver": 0,
+                     "attachment": "chat/wTFuaiG3kyE7DVDZVcQ8q3eB06Zlb5Mp0VlMeCe6.pdf",
+                     "seen": 1,
+                     "created_at": "2024-11-05T11:08:52.000000Z",
+                     "updated_at": "2024-11-05T11:08:53.000000Z",
+                     "delete_from_sender_id": 0,
+                     "delete_from_receiver_id": 0
+                 },
+                 {
+                     "id": 551,
+                     "sender_id": 12,
+                     "reciver_id": 37,
+                     "message": "hello",
+                     "deleted_for_sender": 0,
+                     "deleted_for_reciver": 0,
+                     "attachment": null,
+                     "seen": 1,
+                     "created_at": "2024-11-05T11:08:58.000000Z",
+                     "updated_at": "2024-11-05T11:08:58.000000Z",
+                     "delete_from_sender_id": 0,
+                     "delete_from_receiver_id": 0
+                 }
+             ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "msg": "An error occurred while loading chats.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 8adDEkg654cbe3Pf61VahZv'
     controller: null
     method: null
     route: null

@@ -120,7 +120,7 @@ class ChatController extends Controller
      *  }
      * ]
      */
-    
+
     public function chats(Request $request)
     {
         $chat_users = User::where('id', '!=', auth()->id())
@@ -160,6 +160,134 @@ class ChatController extends Controller
 
         return response()->json($chat_users, 200);
     }
+
+
+    /**
+     * Chats with a specific user
+     * 
+     * Retrieves the chat history between the authenticated user and a specified recipient, marking unseen messages as seen.
+     * @authenticated
+     * @bodyParam sender_receiver_id integer required ID of the sender (the another user). Example: 1
+     * 
+     * @response 200 {
+     *    "message": "Show Chat",
+     *    "status": true,
+     *    "chat_count": 3,
+     *    "unseen_chat": [
+     *        {
+     *            "id": 277,
+     *            "sender_id": null,
+     *            "reciver_id": null,
+     *            "message": null,
+     *            "deleted_for_sender": 0,
+     *            "deleted_for_reciver": 0,
+     *            "attachment": "chat/M74Omwgv7inwepyRBswxsKeCPuKjp2jnypqeoTL5.jpg",
+     *            "seen": 0,
+     *            "created_at": "2024-08-20T13:00:18.000000Z",
+     *            "updated_at": "2024-08-20T13:00:18.000000Z",
+     *            "delete_from_sender_id": 0,
+     *            "delete_from_receiver_id": 0
+     *        }
+     *    ],
+     *    "chats": [
+     *        {
+     *            "id": 549,
+     *            "sender_id": 37,
+     *            "reciver_id": 12,
+     *            "message": "hii",
+     *            "deleted_for_sender": 0,
+     *            "deleted_for_reciver": 0,
+     *            "attachment": null,
+     *            "seen": 1,
+     *            "created_at": "2024-11-05T11:08:36.000000Z",
+     *            "updated_at": "2024-11-05T11:08:42.000000Z",
+     *            "delete_from_sender_id": 0,
+     *            "delete_from_receiver_id": 0
+     *        },
+     *        {
+     *            "id": 550,
+     *            "sender_id": 12,
+     *            "reciver_id": 37,
+     *            "message": null,
+     *            "deleted_for_sender": 0,
+     *            "deleted_for_reciver": 0,
+     *            "attachment": "chat/wTFuaiG3kyE7DVDZVcQ8q3eB06Zlb5Mp0VlMeCe6.pdf",
+     *            "seen": 1,
+     *            "created_at": "2024-11-05T11:08:52.000000Z",
+     *            "updated_at": "2024-11-05T11:08:53.000000Z",
+     *            "delete_from_sender_id": 0,
+     *            "delete_from_receiver_id": 0
+     *        },
+     *        {
+     *            "id": 551,
+     *            "sender_id": 12,
+     *            "reciver_id": 37,
+     *            "message": "hello",
+     *            "deleted_for_sender": 0,
+     *            "deleted_for_reciver": 0,
+     *            "attachment": null,
+     *            "seen": 1,
+     *            "created_at": "2024-11-05T11:08:58.000000Z",
+     *            "updated_at": "2024-11-05T11:08:58.000000Z",
+     *            "delete_from_sender_id": 0,
+     *            "delete_from_receiver_id": 0
+     *        }
+     *    ]
+     *}
+     * @response 500 {
+     *   "msg": "An error occurred while loading chats.",
+     *   "status": false
+     * }
+     */
+    public function load(Request $request)
+    {
+        try {
+
+            $chats = Chat::where(function ($query) use ($request) {
+                $query->where('sender_id', $request->sender_receiver_id)
+                    ->where('reciver_id', auth()->id())
+                    ->where('deleted_for_sender', 0)
+                    ->where('delete_from_sender_id', 0);
+            })
+                ->orWhere(function ($query) use ($request) {
+                    $query->where('sender_id', auth()->id())
+                        ->where('reciver_id', $request->sender_receiver_id)
+                        ->where('deleted_for_reciver', 0)
+                        ->where('delete_from_receiver_id', 0);
+                })
+                ->orderBy('created_at', 'asc')
+                ->get();
+            // return $chats;
+            // Mark unseen messages as seen
+            $chats->each(function ($chat) {
+                if ($chat->reciver_id == auth()->id() && $chat->seen == 0) {
+                    $chat->update(['seen' => 1]);
+                }
+            });
+
+            $chat_count = $chats->count();
+
+            // Get unseen chats
+            $unseen_chat = Chat::where('sender_id', $request->reciver_id)
+                ->where('reciver_id', $request->sender_id)
+                ->where('seen', 0)
+                ->get();
+
+            return response()->json([
+                'message' => 'Show Chat',
+                'status' => true,
+                'chat_count' => $chat_count,
+                'unseen_chat' => $unseen_chat,
+                'chats' => $chats,
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'msg' => 'An error occurred while loading chats.',
+                'status' => false,
+            ], 500);
+        }
+    }
+
 
 
 

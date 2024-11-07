@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 3
+                  example: 8
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -956,6 +956,254 @@ paths:
                     last_message: null
       tags:
         - Chats
+  /api/v3/user/chats/load:
+    post:
+      summary: 'Chats with a specific user'
+      operationId: chatsWithASpecificUser
+      description: 'Retrieves the chat history between the authenticated user and a specified recipient, marking unseen messages as seen.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Show Chat'
+                  status: true
+                  chat_count: 3
+                  unseen_chat:
+                    -
+                      id: 277
+                      sender_id: null
+                      reciver_id: null
+                      message: null
+                      deleted_for_sender: 0
+                      deleted_for_reciver: 0
+                      attachment: chat/M74Omwgv7inwepyRBswxsKeCPuKjp2jnypqeoTL5.jpg
+                      seen: 0
+                      created_at: '2024-08-20T13:00:18.000000Z'
+                      updated_at: '2024-08-20T13:00:18.000000Z'
+                      delete_from_sender_id: 0
+                      delete_from_receiver_id: 0
+                  chats:
+                    -
+                      id: 549
+                      sender_id: 37
+                      reciver_id: 12
+                      message: hii
+                      deleted_for_sender: 0
+                      deleted_for_reciver: 0
+                      attachment: null
+                      seen: 1
+                      created_at: '2024-11-05T11:08:36.000000Z'
+                      updated_at: '2024-11-05T11:08:42.000000Z'
+                      delete_from_sender_id: 0
+                      delete_from_receiver_id: 0
+                    -
+                      id: 550
+                      sender_id: 12
+                      reciver_id: 37
+                      message: null
+                      deleted_for_sender: 0
+                      deleted_for_reciver: 0
+                      attachment: chat/wTFuaiG3kyE7DVDZVcQ8q3eB06Zlb5Mp0VlMeCe6.pdf
+                      seen: 1
+                      created_at: '2024-11-05T11:08:52.000000Z'
+                      updated_at: '2024-11-05T11:08:53.000000Z'
+                      delete_from_sender_id: 0
+                      delete_from_receiver_id: 0
+                    -
+                      id: 551
+                      sender_id: 12
+                      reciver_id: 37
+                      message: hello
+                      deleted_for_sender: 0
+                      deleted_for_reciver: 0
+                      attachment: null
+                      seen: 1
+                      created_at: '2024-11-05T11:08:58.000000Z'
+                      updated_at: '2024-11-05T11:08:58.000000Z'
+                      delete_from_sender_id: 0
+                      delete_from_receiver_id: 0
+                properties:
+                  message:
+                    type: string
+                    example: 'Show Chat'
+                  status:
+                    type: boolean
+                    example: true
+                  chat_count:
+                    type: integer
+                    example: 3
+                  unseen_chat:
+                    type: array
+                    example:
+                      -
+                        id: 277
+                        sender_id: null
+                        reciver_id: null
+                        message: null
+                        deleted_for_sender: 0
+                        deleted_for_reciver: 0
+                        attachment: chat/M74Omwgv7inwepyRBswxsKeCPuKjp2jnypqeoTL5.jpg
+                        seen: 0
+                        created_at: '2024-08-20T13:00:18.000000Z'
+                        updated_at: '2024-08-20T13:00:18.000000Z'
+                        delete_from_sender_id: 0
+                        delete_from_receiver_id: 0
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 277
+                        sender_id:
+                          type: string
+                          example: null
+                        reciver_id:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: null
+                        deleted_for_sender:
+                          type: integer
+                          example: 0
+                        deleted_for_reciver:
+                          type: integer
+                          example: 0
+                        attachment:
+                          type: string
+                          example: chat/M74Omwgv7inwepyRBswxsKeCPuKjp2jnypqeoTL5.jpg
+                        seen:
+                          type: integer
+                          example: 0
+                        created_at:
+                          type: string
+                          example: '2024-08-20T13:00:18.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-08-20T13:00:18.000000Z'
+                        delete_from_sender_id:
+                          type: integer
+                          example: 0
+                        delete_from_receiver_id:
+                          type: integer
+                          example: 0
+                  chats:
+                    type: array
+                    example:
+                      -
+                        id: 549
+                        sender_id: 37
+                        reciver_id: 12
+                        message: hii
+                        deleted_for_sender: 0
+                        deleted_for_reciver: 0
+                        attachment: null
+                        seen: 1
+                        created_at: '2024-11-05T11:08:36.000000Z'
+                        updated_at: '2024-11-05T11:08:42.000000Z'
+                        delete_from_sender_id: 0
+                        delete_from_receiver_id: 0
+                      -
+                        id: 550
+                        sender_id: 12
+                        reciver_id: 37
+                        message: null
+                        deleted_for_sender: 0
+                        deleted_for_reciver: 0
+                        attachment: chat/wTFuaiG3kyE7DVDZVcQ8q3eB06Zlb5Mp0VlMeCe6.pdf
+                        seen: 1
+                        created_at: '2024-11-05T11:08:52.000000Z'
+                        updated_at: '2024-11-05T11:08:53.000000Z'
+                        delete_from_sender_id: 0
+                        delete_from_receiver_id: 0
+                      -
+                        id: 551
+                        sender_id: 12
+                        reciver_id: 37
+                        message: hello
+                        deleted_for_sender: 0
+                        deleted_for_reciver: 0
+                        attachment: null
+                        seen: 1
+                        created_at: '2024-11-05T11:08:58.000000Z'
+                        updated_at: '2024-11-05T11:08:58.000000Z'
+                        delete_from_sender_id: 0
+                        delete_from_receiver_id: 0
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 549
+                        sender_id:
+                          type: integer
+                          example: 37
+                        reciver_id:
+                          type: integer
+                          example: 12
+                        message:
+                          type: string
+                          example: hii
+                        deleted_for_sender:
+                          type: integer
+                          example: 0
+                        deleted_for_reciver:
+                          type: integer
+                          example: 0
+                        attachment:
+                          type: string
+                          example: null
+                        seen:
+                          type: integer
+                          example: 1
+                        created_at:
+                          type: string
+                          example: '2024-11-05T11:08:36.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-11-05T11:08:42.000000Z'
+                        delete_from_sender_id:
+                          type: integer
+                          example: 0
+                        delete_from_receiver_id:
+                          type: integer
+                          example: 0
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  msg: 'An error occurred while loading chats.'
+                  status: false
+                properties:
+                  msg:
+                    type: string
+                    example: 'An error occurred while loading chats.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Chats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sender_receiver_id:
+                  type: integer
+                  description: 'ID of the sender (the another user).'
+                  example: 1
+              required:
+                - sender_receiver_id
   /api/v3/contact-us:
     post:
       summary: 'Store Contact Us'
@@ -999,7 +1247,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: yadira.bauch@example.net
+                  example: awolff@example.com
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1070,7 +1318,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: itaque
+                  example: repellendus
       security: []
   /api/v3/country-list:
     post:
@@ -1195,7 +1443,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: jacobson.marjorie@example.net
+                  example: cstiedemann@example.org
               required:
                 - email
       security: []
