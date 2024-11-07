@@ -122,6 +122,16 @@
                             </li>
                                                                         </ul>
                             </ul>
+                    <ul id="tocify-header-chats" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="chats">
+                    <a href="#chats">Chats</a>
+                </li>
+                                    <ul id="tocify-subheader-chats" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="chats-POSTapi-v3-user-chats-list">
+                                <a href="#chats-POSTapi-v3-user-chats-list">List of Chat Users</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
                     <ul id="tocify-header-contact-us" class="tocify-header">
                 <li class="tocify-item level-1" data-unique="contact-us">
                     <a href="#contact-us">Contact Us</a>
@@ -186,7 +196,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: November 6, 2024</li>
+        <li>Last updated: November 7, 2024</li>
     </ul>
 </div>
 
@@ -227,7 +237,7 @@ You can switch the language used with the tabs at the top right (or from the nav
     --data "{
     \"user_name\": \"johndoe\",
     \"email\": \"johndoe@example.com\",
-    \"ecclesia_id\": 10,
+    \"ecclesia_id\": 3,
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
     \"middle_name\": \"A.\",
@@ -258,7 +268,7 @@ const headers = {
 let body = {
     "user_name": "johndoe",
     "email": "johndoe@example.com",
-    "ecclesia_id": 10,
+    "ecclesia_id": 3,
     "first_name": "John",
     "last_name": "Doe",
     "middle_name": "A.",
@@ -422,10 +432,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="ecclesia_id"                data-endpoint="POSTapi-v3-register"
-               value="10"
+               value="3"
                data-component="body">
     <br>
-<p>nullable Ecclesia ID if applicable. Example: <code>10</code></p>
+<p>nullable Ecclesia ID if applicable. Example: <code>3</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>first_name</code></b>&nbsp;&nbsp;
@@ -2469,6 +2479,235 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
+                <h1 id="chats">Chats</h1>
+
+    
+
+                                <h2 id="chats-POSTapi-v3-user-chats-list">List of Chat Users</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Retrieves a list of users with whom the authenticated user has chatted, sorted by the most recent message.</p>
+
+<span id="example-requests-POSTapi-v3-user-chats-list">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/chats/list" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/chats/list"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-chats-list">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">[
+    {
+        &quot;id&quot;: 12,
+        &quot;ecclesia_id&quot;: 2,
+        &quot;created_id&quot;: &quot;1&quot;,
+        &quot;user_name&quot;: &quot;swarnadwip_nath&quot;,
+        &quot;first_name&quot;: &quot;Swarnadwip&quot;,
+        &quot;middle_name&quot;: null,
+        &quot;last_name&quot;: &quot;Nath&quot;,
+        &quot;email&quot;: &quot;swarnadwip@excellisit.net&quot;,
+        &quot;phone&quot;: &quot;+1 0741202022&quot;,
+        &quot;email_verified_at&quot;: null,
+        &quot;profile_picture&quot;: &quot;profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg&quot;,
+        &quot;address&quot;: &quot;Kokata&quot;,
+        &quot;city&quot;: &quot;Kolkata&quot;,
+        &quot;state&quot;: &quot;41&quot;,
+        &quot;address2&quot;: null,
+        &quot;country&quot;: &quot;101&quot;,
+        &quot;zip&quot;: &quot;700001&quot;,
+        &quot;status&quot;: 1,
+        &quot;created_at&quot;: &quot;2024-06-21T11:31:27.000000Z&quot;,
+        &quot;updated_at&quot;: &quot;2024-09-09T11:02:59.000000Z&quot;,
+        &quot;last_message&quot;: {
+            &quot;id&quot;: 551,
+            &quot;sender_id&quot;: 12,
+            &quot;reciver_id&quot;: 37,
+            &quot;message&quot;: &quot;hello&quot;,
+            &quot;deleted_for_sender&quot;: 0,
+            &quot;deleted_for_reciver&quot;: 0,
+            &quot;attachment&quot;: null,
+            &quot;seen&quot;: 1,
+            &quot;created_at&quot;: &quot;2024-11-05T11:08:58.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2024-11-05T11:08:58.000000Z&quot;,
+            &quot;delete_from_sender_id&quot;: 0,
+            &quot;delete_from_receiver_id&quot;: 0
+        }
+    },
+    {
+        &quot;id&quot;: 26,
+        &quot;ecclesia_id&quot;: null,
+        &quot;created_id&quot;: null,
+        &quot;user_name&quot;: &quot;ss011&quot;,
+        &quot;first_name&quot;: &quot;TEST&quot;,
+        &quot;middle_name&quot;: null,
+        &quot;last_name&quot;: &quot;1&quot;,
+        &quot;email&quot;: &quot;ss011@yopmail.com&quot;,
+        &quot;phone&quot;: &quot;+1 849-804-8085&quot;,
+        &quot;email_verified_at&quot;: &quot;2024-08-03T05:53:38.000000Z&quot;,
+        &quot;profile_picture&quot;: null,
+        &quot;address&quot;: &quot;123, Main street&quot;,
+        &quot;city&quot;: &quot;santa Ana&quot;,
+        &quot;state&quot;: &quot;165&quot;,
+        &quot;address2&quot;: &quot;TEST&quot;,
+        &quot;country&quot;: &quot;4&quot;,
+        &quot;zip&quot;: &quot;98377&quot;,
+        &quot;status&quot;: 1,
+        &quot;created_at&quot;: &quot;2024-08-03T05:53:38.000000Z&quot;,
+        &quot;updated_at&quot;: &quot;2024-09-09T06:27:33.000000Z&quot;,
+        &quot;last_message&quot;: {
+            &quot;id&quot;: 548,
+            &quot;sender_id&quot;: 26,
+            &quot;reciver_id&quot;: 37,
+            &quot;message&quot;: &quot;dafad&quot;,
+            &quot;deleted_for_sender&quot;: 0,
+            &quot;deleted_for_reciver&quot;: 0,
+            &quot;attachment&quot;: null,
+            &quot;seen&quot;: 1,
+            &quot;created_at&quot;: &quot;2024-10-28T09:48:47.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2024-10-28T09:48:50.000000Z&quot;,
+            &quot;delete_from_sender_id&quot;: 0,
+            &quot;delete_from_receiver_id&quot;: 0
+        }
+    },
+    {
+        &quot;id&quot;: 30,
+        &quot;ecclesia_id&quot;: null,
+        &quot;created_id&quot;: null,
+        &quot;user_name&quot;: &quot;kalyan&quot;,
+        &quot;first_name&quot;: &quot;Kalyan&quot;,
+        &quot;middle_name&quot;: null,
+        &quot;last_name&quot;: &quot;Vaduri&quot;,
+        &quot;email&quot;: &quot;kalyan@yopmail.com&quot;,
+        &quot;phone&quot;: &quot;+1 (444) 444-4444&quot;,
+        &quot;email_verified_at&quot;: &quot;2024-08-14T11:30:31.000000Z&quot;,
+        &quot;profile_picture&quot;: null,
+        &quot;address&quot;: &quot;51 DN Block Merlin Infinite Building, 9th Floor, Unit, 907, Sector V, Bidhannagar, Kolkata, West Bengal 700091&quot;,
+        &quot;city&quot;: &quot;Kolkata&quot;,
+        &quot;state&quot;: &quot;3983&quot;,
+        &quot;address2&quot;: &quot;East Riding Of Yorkshire&quot;,
+        &quot;country&quot;: &quot;233&quot;,
+        &quot;zip&quot;: &quot;700091&quot;,
+        &quot;status&quot;: 1,
+        &quot;created_at&quot;: &quot;2024-08-14T11:30:31.000000Z&quot;,
+        &quot;updated_at&quot;: &quot;2024-08-26T15:06:47.000000Z&quot;,
+        &quot;last_message&quot;: null
+    }
+]</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-chats-list" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-chats-list"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-chats-list"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-chats-list" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-chats-list">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-chats-list" data-method="POST"
+      data-path="api/v3/user/chats/list"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-chats-list', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-chats-list"
+                    onclick="tryItOut('POSTapi-v3-user-chats-list');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-chats-list"
+                    onclick="cancelTryOut('POSTapi-v3-user-chats-list');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-chats-list"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/chats/list</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-chats-list"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-chats-list"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-chats-list"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
                 <h1 id="contact-us">Contact Us</h1>
 
     
@@ -2492,7 +2731,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
-    \"email\": \"phoeger@example.net\",
+    \"email\": \"yadira.bauch@example.net\",
     \"phone\": \"1234567890\",
     \"message\": \"Hello\"
 }"
@@ -2512,7 +2751,7 @@ const headers = {
 let body = {
     "first_name": "John",
     "last_name": "Doe",
-    "email": "phoeger@example.net",
+    "email": "yadira.bauch@example.net",
     "phone": "1234567890",
     "message": "Hello"
 };
@@ -2635,10 +2874,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-contact-us"
-               value="phoeger@example.net"
+               value="yadira.bauch@example.net"
                data-component="body">
     <br>
-<p>Email of the user. Example: Example: <code>phoeger@example.net</code></p>
+<p>Email of the user. Example: Example: <code>yadira.bauch@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -2694,7 +2933,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"postcode\": \"ZP74857\",
     \"amount\": 150,
     \"country_id\": 2,
-    \"stripeToken\": \"est\"
+    \"stripeToken\": \"itaque\"
 }"
 </code></pre></div>
 
@@ -2719,7 +2958,7 @@ let body = {
     "postcode": "ZP74857",
     "amount": 150,
     "country_id": 2,
-    "stripeToken": "est"
+    "stripeToken": "itaque"
 };
 
 fetch(url, {
@@ -2907,10 +3146,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="stripeToken"                data-endpoint="POSTapi-v3-donation"
-               value="est"
+               value="itaque"
                data-component="body">
     <br>
-<p>required. Example: <code>est</code></p>
+<p>required. Example: <code>itaque</code></p>
         </div>
         </form>
 
@@ -3079,7 +3318,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"email\": \"nconroy@example.net\"
+    \"email\": \"jacobson.marjorie@example.net\"
 }"
 </code></pre></div>
 
@@ -3095,7 +3334,7 @@ const headers = {
 };
 
 let body = {
-    "email": "nconroy@example.net"
+    "email": "jacobson.marjorie@example.net"
 };
 
 fetch(url, {
@@ -3194,10 +3433,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-forget-password"
-               value="nconroy@example.net"
+               value="jacobson.marjorie@example.net"
                data-component="body">
     <br>
-<p>The email of the user. Example: Example: <code>nconroy@example.net</code></p>
+<p>The email of the user. Example: Example: <code>jacobson.marjorie@example.net</code></p>
         </div>
         </form>
 
@@ -3575,7 +3814,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "profile_picture=@C:\Users\Masum\AppData\Local\Temp\php2569.tmp" </code></pre></div>
+    --form "profile_picture=@C:\Users\Masum\AppData\Local\Temp\php3608.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -3712,7 +3951,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The profile picture of the user. Example: <code>C:\Users\Masum\AppData\Local\Temp\php2569.tmp</code></p>
+<p>The profile picture of the user. Example: <code>C:\Users\Masum\AppData\Local\Temp\php3608.tmp</code></p>
         </div>
         </form>
 

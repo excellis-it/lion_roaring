@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SubscriptionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,6 +102,19 @@ Route::prefix('v3')->group(function () {
         Route::post('profile-picture-update', [ProfileController::class, 'profilePictureUpdate']);
         Route::post('change-password', [ProfileController::class, 'changePassword']);
         Route::post('check-role-permission', [ProfileController::class, 'checkUserHasPermission']);
+
+
+        Route::prefix('chats')->name('chats.')->group(function () {
+            Route::post('/list', [ChatController::class, 'chats'])->name('list');
+            // Route::post('/load', [ChatController::class, 'load'])->name('load');
+            // Route::post('/send', [ChatController::class, 'send'])->name('send');
+            // Route::post('/clear', [ChatController::class, 'clear'])->name('clear');
+            // Route::post('/seen', [ChatController::class, 'seen'])->name('seen');
+            // Route::post('/remove', [ChatController::class, 'remove'])->name('remove');
+            // Route::post('/notification', [ChatController::class, 'notification'])->name('notification');
+        });
+
+
     });
 
 });
