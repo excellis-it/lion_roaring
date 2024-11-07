@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 18
+                  example: 1
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1804,7 +1804,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: althea.treutel@example.org
+                  example: ewiegand@example.org
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1875,7 +1875,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: fuga
+                  example: est
       security: []
   /api/v3/country-list:
     post:
@@ -2000,7 +2000,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: runte.chesley@example.com
+                  example: ramona92@example.net
               required:
                 - email
       security: []
@@ -3017,6 +3017,145 @@ paths:
                   example: 5
               required:
                 - team_id
+  /api/v3/user/team-chats/update-group-image:
+    post:
+      summary: 'Update Group Image'
+      operationId: updateGroupImage
+      description: 'Updates the group image for a specific team.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Group image updated successfully.'
+                  status: true
+                  group_image: team/image.jpg
+                properties:
+                  message:
+                    type: string
+                    example: 'Group image updated successfully.'
+                  status:
+                    type: boolean
+                    example: true
+                  group_image:
+                    type: string
+                    example: team/image.jpg
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'An error occurred while updating the group image.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'An error occurred while updating the group image.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - 'Group Chats'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                team_id:
+                  type: integer
+                  description: 'The ID of the team whose image is being updated.'
+                  example: 5
+                group_image:
+                  type: string
+                  format: binary
+                  description: 'The new group image file (JPEG, PNG, JPG, GIF, SVG formats, max size: 2048KB).'
+              required:
+                - team_id
+                - group_image
+  /api/v3/user/team-chats/name-des-update:
+    post:
+      summary: 'Update Group Name and Description'
+      operationId: updateGroupNameAndDescription
+      description: 'Updates the name and description of a specified team group.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Group name and description updated successfully.'
+                  status: true
+                  name: 'Developers Group'
+                  description: 'A group for discussing development strategies.'
+                  team_id: 5
+                properties:
+                  message:
+                    type: string
+                    example: 'Group name and description updated successfully.'
+                  status:
+                    type: boolean
+                    example: true
+                  name:
+                    type: string
+                    example: 'Developers Group'
+                  description:
+                    type: string
+                    example: 'A group for discussing development strategies.'
+                  team_id:
+                    type: integer
+                    example: 5
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'An error occurred while updating the group name and description.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'An error occurred while updating the group name and description.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - 'Group Chats'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_id:
+                  type: integer
+                  description: 'The ID of the team whose name and description are being updated.'
+                  example: 5
+                name:
+                  type: string
+                  description: 'The new name of the team (maximum 100 characters).'
+                  example: '"Developers Group"'
+                description:
+                  type: string
+                  description: 'The new description of the team (maximum 255 characters).'
+                  example: '"A group for discussing development strategies."'
+              required:
+                - team_id
+                - name
+                - description
   /api/v3/user/profile:
     post:
       summary: 'Profile Details'

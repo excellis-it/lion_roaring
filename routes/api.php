@@ -106,25 +106,24 @@ Route::prefix('v3')->group(function () {
 
 
         Route::prefix('chats')->name('chats.')->group(function () {
-            Route::post('/list', [ChatController::class, 'chats'])->name('list');
-            Route::post('/load', [ChatController::class, 'load'])->name('load');
-            Route::post('/send', [ChatController::class, 'send'])->name('send');
-            Route::post('/clear', [ChatController::class, 'clear'])->name('clear');
-            Route::post('/seen', [ChatController::class, 'seen'])->name('seen');
-            Route::post('/remove', [ChatController::class, 'remove'])->name('remove');
-            Route::post('/notification', [ChatController::class, 'notification'])->name('notification');
+            Route::post('/list', [ChatController::class, 'chats']);
+            Route::post('/load', [ChatController::class, 'load']);
+            Route::post('/send', [ChatController::class, 'send']);
+            Route::post('/clear', [ChatController::class, 'clear']);
+            Route::post('/seen', [ChatController::class, 'seen']);
+            Route::post('/remove', [ChatController::class, 'remove']);
+            Route::post('/notification', [ChatController::class, 'notification']);
         });
 
         // Team Chat
         Route::prefix('team-chats')->name('team-chats.')->group(function () {
-            Route::post('/list', [TeamChatController::class, 'list'])->name('list');
-            Route::post('/create', [TeamChatController::class, 'create'])->name('create');
-            Route::post('/load', [TeamChatController::class, 'load'])->name('load');
-            Route::post('/send', [TeamChatController::class, 'send'])->name('send');
-            Route::post('/group-info', [TeamChatController::class, 'groupInfo'])->name('group-info');
-            // Route::post('/update-group-image', [TeamChatController::class, 'updateGroupImage'])->name('update-group-image');
-            // Route::post('/edit-name-des', [TeamChatController::class, 'editNameDes'])->name('edit-name-des');
-            // Route::post('/name-des-update', [TeamChatController::class, 'nameDesUpdate'])->name('name-des-update');
+            Route::post('/list', [TeamChatController::class, 'list']);
+            Route::post('/create', [TeamChatController::class, 'create']);
+            Route::post('/load', [TeamChatController::class, 'load']);
+            Route::post('/send', [TeamChatController::class, 'send']);
+            Route::post('/group-info', [TeamChatController::class, 'groupInfo']);
+            Route::post('/update-group-image', [TeamChatController::class, 'updateGroupImage']);
+            Route::post('/name-des-update', [TeamChatController::class, 'nameDescriptionUpdate']);
             // Route::post('/remove-member', [TeamChatController::class, 'removeMember'])->name('remove-member');
             // Route::post('/group-list', [TeamChatController::class, 'groupList'])->name('group-list');
             // Route::post('/exit-from-group', [TeamChatController::class, 'exitFromGroup'])->name('exit-from-group');

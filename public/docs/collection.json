@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "92b8d096-2da3-49da-a4d6-19161b1a50b9",
+        "_postman_id": "c19122c0-27dd-444a-9288-3a8698042a7a",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":18,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":1,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -902,7 +902,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"althea.treutel@example.org\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"ewiegand@example.org\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -946,7 +946,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"fuga\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"est\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1024,7 +1024,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"runte.chesley@example.com\"}"
+                            "raw": "{\"email\":\"ramona92@example.net\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1262,6 +1262,100 @@
                             "header": [],
                             "code": 200,
                             "body": "{\n   \"message\": \"Group information retrieved successfully.\",\n   \"status\": true,\n   \"team\": {\n       \"id\": 5,\n       \"name\": \"Project Alpha\",\n       \"description\": \"Development team for Project Alpha\",\n       \"members\": [\n           {\n               \"user_id\": 1,\n               \"first_name\": \"John\",\n               \"last_name\": \"Doe\",\n               \"email\": \"john@example.com\"\n           },\n           {\n               \"user_id\": 2,\n               \"first_name\": \"Jane\",\n               \"last_name\": \"Smith\",\n               \"email\": \"jane@example.com\"\n           }\n       ]\n   },\n   \"available_members\": [\n       {\n           \"id\": 3,\n           \"first_name\": \"Mike\",\n           \"last_name\": \"Taylor\"\n       },\n       {\n           \"id\": 4,\n           \"first_name\": \"Alice\",\n           \"last_name\": \"Brown\"\n       }\n   ]\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Group Image",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/team-chats\/update-group-image",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/team-chats\/update-group-image"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "team_id",
+                                    "value": 5,
+                                    "type": "text",
+                                    "description": "The ID of the team whose image is being updated."
+                                },
+                                {
+                                    "key": "group_image",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "Updates the group image for a specific team."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Group image updated successfully.\",\n   \"status\": true,\n   \"group_image\": \"team\/image.jpg\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n   \"message\": \"An error occurred while updating the group image.\",\n   \"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Group Name and Description",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/team-chats\/name-des-update",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/team-chats\/name-des-update"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"team_id\":5,\"name\":\"\\\"Developers Group\\\"\",\"description\":\"\\\"A group for discussing development strategies.\\\"\"}"
+                        },
+                        "description": "Updates the name and description of a specified team group."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Group name and description updated successfully.\",\n   \"status\": true,\n   \"name\": \"Developers Group\",\n   \"description\": \"A group for discussing development strategies.\",\n   \"team_id\": 5\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n   \"message\": \"An error occurred while updating the group name and description.\",\n   \"status\": false\n}",
                             "name": ""
                         }
                     ]

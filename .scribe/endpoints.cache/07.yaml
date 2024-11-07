@@ -223,7 +223,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 564dfhVaPEkbc1aDZ8gv36e'
+      - 'Bearer 3e6fP56D4agdcEVZ8kabhv1'
     controller: null
     method: null
     route: null
@@ -332,7 +332,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aakZb14vd6fcP5DEgV63eh8'
+      - 'Bearer efcdV1Ea6aDP6v345hgbZk8'
     controller: null
     method: null
     route: null
@@ -570,7 +570,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cb38a1D5Egfa6P4hd6eVZkv'
+      - 'Bearer 6vcakehgDdZ4bEa13VfP658'
     controller: null
     method: null
     route: null
@@ -708,7 +708,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gahZ3caD64VbPk1fe65Ed8v'
+      - 'Bearer vag5d4hP8f66aVke1c3EDZb'
     controller: null
     method: null
     route: null
@@ -793,7 +793,169 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ebh4f6v3kDaaPd5E6c81VZg'
+      - 'Bearer eZ3EVa6cPbf1hkgD58dav46'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/team-chats/update-group-image
+    metadata:
+      groupName: 'Group Chats'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update Group Image'
+      description: 'Updates the group image for a specific team.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      team_id:
+        name: team_id
+        description: 'The ID of the team whose image is being updated.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      group_image:
+        name: group_image
+        description: 'The new group image file (JPEG, PNG, JPG, GIF, SVG formats, max size: 2048KB).'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanBodyParameters:
+      team_id: 5
+    fileParameters:
+      group_image: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Group image updated successfully.",
+             "status": true,
+             "group_image": "team/image.jpg"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "An error occurred while updating the group image.",
+             "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer V5hebk13caad6Zg84vED6Pf'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/team-chats/name-des-update
+    metadata:
+      groupName: 'Group Chats'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update Group Name and Description'
+      description: 'Updates the name and description of a specified team group.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      team_id:
+        name: team_id
+        description: 'The ID of the team whose name and description are being updated.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      name:
+        name: name
+        description: 'The new name of the team (maximum 100 characters).'
+        required: true
+        example: '"Developers Group"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      description:
+        name: description
+        description: 'The new description of the team (maximum 255 characters).'
+        required: true
+        example: '"A group for discussing development strategies."'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      team_id: 5
+      name: '"Developers Group"'
+      description: '"A group for discussing development strategies."'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Group name and description updated successfully.",
+             "status": true,
+             "name": "Developers Group",
+             "description": "A group for discussing development strategies.",
+             "team_id": 5
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "An error occurred while updating the group name and description.",
+             "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer b4Ee3c6g6DfVhPdaav15k8Z'
     controller: null
     method: null
     route: null

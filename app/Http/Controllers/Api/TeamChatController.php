@@ -862,6 +862,115 @@ class TeamChatController extends Controller
     }
 
 
+    /**
+     * Update Group Image
+     *
+     * Updates the group image for a specific team.
+     * @authenticated
+     * @bodyParam team_id int required The ID of the team whose image is being updated. Example: 5
+     * @bodyParam group_image file required The new group image file (JPEG, PNG, JPG, GIF, SVG formats, max size: 2048KB).
+     *
+     * @response 200 {
+     *    "message": "Group image updated successfully.",
+     *    "status": true,
+     *    "group_image": "team/image.jpg"
+     * }
+     * @response 201 {
+     *    "message": "An error occurred while updating the group image.",
+     *    "status": false
+     * }
+     */
+    public function updateGroupImage(Request $request)
+    {
+        try {
+            $request->validate([
+                'group_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+
+            $team = Team::find($request->team_id);
+
+            // Check if team exists
+            if (!$team) {
+                return response()->json(['message' => 'Team not found', 'status' => false], 201);
+            }
+
+            // Update group image
+            $team->group_image = $this->imageUpload($request->file('group_image'), 'team');
+            $team->save();
+
+            return response()->json([
+                'message' => 'Group image updated successfully.',
+                'status' => true,
+                'group_image' => $team->group_image
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'An error occurred while updating the group image.',
+                'status' => false,
+                'error' => $th->getMessage()
+            ], 201);
+        }
+    }
+
+
+    /**
+     * Update Group Name and Description
+     *
+     * Updates the name and description of a specified team group.
+     * @authenticated
+     * @bodyParam team_id int required The ID of the team whose name and description are being updated. Example: 5
+     * @bodyParam name string required The new name of the team (maximum 100 characters). Example: "Developers Group"
+     * @bodyParam description string required The new description of the team (maximum 255 characters). Example: "A group for discussing development strategies."
+     *
+     * @response 200 {
+     *    "message": "Group name and description updated successfully.",
+     *    "status": true,
+     *    "name": "Developers Group",
+     *    "description": "A group for discussing development strategies.",
+     *    "team_id": 5
+     * }
+     * @response 201 {
+     *    "message": "An error occurred while updating the group name and description.",
+     *    "status": false
+     * }
+     */
+    public function nameDescriptionUpdate(Request $request)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|max:100',
+                'description' => 'required|max:255',
+            ]);
+
+            $team = Team::find($request->team_id);
+
+            // Check if the team exists
+            if (!$team) {
+                return response()->json(['message' => 'Team not found', 'status' => false], 201);
+            }
+
+            // Update team name and description
+            $team->name = $request->name;
+            $team->description = $request->description;
+            $team->save();
+
+            return response()->json([
+                'message' => 'Group name and description updated successfully.',
+                'status' => true,
+                'name' => $team->name,
+                'description' => $team->description,
+                'team_id' => $team->id
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'An error occurred while updating the group name and description.',
+                'status' => false,
+                'error' => $th->getMessage()
+            ], 201);
+        }
+    }
+
+
 
 
 
