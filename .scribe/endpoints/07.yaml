@@ -221,7 +221,116 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v5VcEghae6b6Pa1d4Z8Df3k'
+      - 'Bearer ea8Pf64vbaV5dZgEc316Dhk'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/team-chats/create
+    metadata:
+      groupName: 'Group Chats'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a New Group'
+      description: 'Creates a new group with the specified members and a welcome message. The authenticated user will be set as the group admin.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'The name of the team.'
+        required: true
+        example: '"Project Z Team"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      description:
+        name: description
+        description: 'A brief description of the team.'
+        required: true
+        example: '"Team for Project Z collaboration"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      members:
+        name: members
+        description: 'The IDs of the users to be added to the group.'
+        required: true
+        example: null
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      group_image:
+        name: group_image
+        description: 'An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB.'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanBodyParameters:
+      name: '"Project Z Team"'
+      description: '"Team for Project Z collaboration"'
+      members: null
+    fileParameters:
+      group_image: null
+    responses:
+      -
+        status: 200
+        content: |-
+          *{
+             "message": "Team created successfully.",
+             "status": true,
+             "team": {
+                 "id": 33,
+                 "created_by": null,
+                 "name": "abc",
+                 "group_image": "team/hEjqR3bR46pdpRncBqugbo9aZNC7gFVkNNi9cMzG.png",
+                 "description": "test 2",
+                 "created_at": "2024-11-07T10:32:47.000000Z",
+                 "updated_at": "2024-11-07T10:32:47.000000Z",
+                 "last_message": {
+                     "id": 283,
+                     "team_id": 33,
+                     "user_id": 37,
+                     "message": "Welcome to abc group.",
+                     "attachment": null,
+                     "is_seen": 0,
+                     "deleted_at": null,
+                     "created_at": "2024-11-07T10:32:47.000000Z",
+                     "updated_at": "2024-11-07T10:32:47.000000Z"
+                 }
+             },
+             "chat_member_id": [
+                 12,
+                 38,
+                 37
+             ]
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5ZV6PahD3caEeb84v1d6fgk'
     controller: null
     method: null
     route: null

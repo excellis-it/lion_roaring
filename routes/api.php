@@ -118,7 +118,7 @@ Route::prefix('v3')->group(function () {
         // Team Chat
         Route::prefix('team-chats')->name('team-chats.')->group(function () {
             Route::post('/list', [TeamChatController::class, 'list'])->name('list');
-            // Route::post('/create', [TeamChatController::class, 'create'])->name('create');
+            Route::post('/create', [TeamChatController::class, 'create'])->name('create');
             // Route::post('/load', [TeamChatController::class, 'load'])->name('load');
             // Route::post('/send', [TeamChatController::class, 'send'])->name('send');
             // Route::post('/group-info', [TeamChatController::class, 'groupInfo'])->name('group-info');

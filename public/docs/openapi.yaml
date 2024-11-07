@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 17
+                  example: 14
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1804,7 +1804,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: katherine.jakubowski@example.net
+                  example: marge.wisozk@example.net
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1875,7 +1875,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: assumenda
+                  example: et
       security: []
   /api/v3/country-list:
     post:
@@ -2000,7 +2000,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: clifton.kuhn@example.org
+                  example: vmurphy@example.org
               required:
                 - email
       security: []
@@ -2020,6 +2020,52 @@ paths:
                 example: "*{\n \"msg\": \"Teams listed successfully\",\n \"status\": true,\n \"teams\": [\n   {\n     \"id\": 31,\n     \"created_by\": null,\n     \"name\": \"test group\",\n     \"group_image\": \"team/mzw14lBFdUuQKRMiOSjEoZOKPIFvxXPYyJxl3CSq.png\",\n     \"description\": \"for testing\",\n     \"created_at\": \"2024-11-05T11:10:08.000000Z\",\n     \"updated_at\": \"2024-11-05T11:10:08.000000Z\",\n     \"chats\": [\n       {\n         \"id\": 279,\n         \"team_id\": 31,\n         \"user_id\": 37,\n         \"message\": \"Welcome to test group group.\",\n         \"attachment\": null,\n         \"is_seen\": 0,\n         \"deleted_at\": null,\n         \"created_at\": \"2024-11-05T11:10:08.000000Z\",\n         \"updated_at\": \"2024-11-05T11:10:08.000000Z\",\n         \"chat_members\": [\n           {\n             \"id\": 919,\n             \"chat_id\": 279,\n             \"user_id\": 38,\n             \"is_seen\": 0,\n             \"created_at\": \"2024-11-05T11:10:08.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:08.000000Z\"\n           },\n           {\n             \"id\": 920,\n             \"chat_id\": 279,\n             \"user_id\": 12,\n             \"is_seen\": 1,\n             \"created_at\": \"2024-11-05T11:10:08.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:53.000000Z\"\n           },\n           {\n             \"id\": 921,\n             \"chat_id\": 279,\n             \"user_id\": 37,\n             \"is_seen\": 1,\n             \"created_at\": \"2024-11-05T11:10:08.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:46.000000Z\"\n           }\n         ]\n       },\n       {\n         \"id\": 280,\n         \"team_id\": 31,\n         \"user_id\": 37,\n         \"message\": \"a\",\n         \"attachment\": null,\n         \"is_seen\": 0,\n         \"deleted_at\": null,\n         \"created_at\": \"2024-11-05T11:10:46.000000Z\",\n         \"updated_at\": \"2024-11-05T11:10:46.000000Z\",\n         \"chat_members\": [\n           {\n             \"id\": 922,\n             \"chat_id\": 280,\n             \"user_id\": 37,\n             \"is_seen\": 1,\n             \"created_at\": \"2024-11-05T11:10:46.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:46.000000Z\"\n           },\n           {\n             \"id\": 923,\n             \"chat_id\": 280,\n             \"user_id\": 38,\n             \"is_seen\": 0,\n             \"created_at\": \"2024-11-05T11:10:46.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:46.000000Z\"\n           },\n           {\n             \"id\": 924,\n             \"chat_id\": 280,\n             \"user_id\": 12,\n             \"is_seen\": 1,\n             \"created_at\": \"2024-11-05T11:10:46.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:53.000000Z\"\n           }\n         ]\n       },\n       {\n         \"id\": 281,\n         \"team_id\": 31,\n         \"user_id\": 12,\n         \"message\": \"b\",\n         \"attachment\": null,\n         \"is_seen\": 0,\n         \"deleted_at\": null,\n         \"created_at\": \"2024-11-05T11:10:53.000000Z\",\n         \"updated_at\": \"2024-11-05T11:10:53.000000Z\",\n         \"chat_members\": [\n           {\n             \"id\": 925,\n             \"chat_id\": 281,\n             \"user_id\": 37,\n             \"is_seen\": 1,\n             \"created_at\": \"2024-11-05T11:10:53.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:54.000000Z\"\n           },\n           {\n             \"id\": 926,\n             \"chat_id\": 281,\n             \"user_id\": 38,\n             \"is_seen\": 0,\n             \"created_at\": \"2024-11-05T11:10:53.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:53.000000Z\"\n           },\n           {\n             \"id\": 927,\n             \"chat_id\": 281,\n             \"user_id\": 12,\n             \"is_seen\": 1,\n             \"created_at\": \"2024-11-05T11:10:53.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:53.000000Z\"\n           }\n         ]\n       }\n     ],\n     \"last_message\": {\n       \"id\": 281,\n       \"team_id\": 31,\n       \"user_id\": 12,\n       \"message\": \"b\",\n       \"attachment\": null,\n       \"is_seen\": 0,\n       \"deleted_at\": null,\n       \"created_at\": \"2024-11-05T11:10:53.000000Z\",\n       \"updated_at\": \"2024-11-05T11:10:53.000000Z\"\n     }\n   }\n ],\n \"members\": [\n   {\n     \"id\": 1,\n     \"ecclesia_id\": null,\n     \"created_id\": \"0\",\n     \"user_name\": \"user1\",\n     \"first_name\": \"abc\",\n     \"middle_name\": null,\n     \"last_name\": \"def\",\n     \"email\": \"main@test.com\",\n     \"phone\": \"+36 12345\",\n     \"email_verified_at\": null,\n     \"profile_picture\": \"profile/5GI3lBuRJl6QOxp55xLpNEWwxIuedycBSF6WAT6H.png\",\n     \"address\": \"Kokata\",\n     \"city\": \"Kolkata\",\n     \"state\": \"41\",\n     \"address2\": null,\n     \"country\": \"101\",\n     \"zip\": \"700001\",\n     \"status\": 1,\n     \"created_at\": \"2024-03-05T15:36:13.000000Z\",\n     \"updated_at\": \"2024-09-04T11:09:09.000000Z\"\n   },\n   {\n     \"id\": 19,\n     \"ecclesia_id\": null,\n     \"created_id\": \"1\",\n     \"user_name\": \"Allen\",\n     \"first_name\": \"Allen\",\n     \"middle_name\": null,\n     \"last_name\": \"Allen\",\n     \"email\": \"allen@yopmail.com\",\n     \"phone\": \"516-313-5564\",\n     \"email_verified_at\": null,\n     \"profile_picture\": null,\n     \"address\": \"santa Ana\",\n     \"city\": \"Orange\",\n     \"state\": \"California\",\n     \"address2\": null,\n     \"country\": \"United States\",\n     \"zip\": \"915467\",\n     \"status\": 1,\n     \"created_at\": \"2024-07-27T07:16:03.000000Z\",\n     \"updated_at\": \"2024-07-27T07:16:03.000000Z\"\n   },\n ]\n}"
       tags:
         - 'Group Chats'
+  /api/v3/user/team-chats/create:
+    post:
+      summary: 'Create a New Group'
+      operationId: createANewGroup
+      description: 'Creates a new group with the specified members and a welcome message. The authenticated user will be set as the group admin.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "*{\n   \"message\": \"Team created successfully.\",\n   \"status\": true,\n   \"team\": {\n       \"id\": 33,\n       \"created_by\": null,\n       \"name\": \"abc\",\n       \"group_image\": \"team/hEjqR3bR46pdpRncBqugbo9aZNC7gFVkNNi9cMzG.png\",\n       \"description\": \"test 2\",\n       \"created_at\": \"2024-11-07T10:32:47.000000Z\",\n       \"updated_at\": \"2024-11-07T10:32:47.000000Z\",\n       \"last_message\": {\n           \"id\": 283,\n           \"team_id\": 33,\n           \"user_id\": 37,\n           \"message\": \"Welcome to abc group.\",\n           \"attachment\": null,\n           \"is_seen\": 0,\n           \"deleted_at\": null,\n           \"created_at\": \"2024-11-07T10:32:47.000000Z\",\n           \"updated_at\": \"2024-11-07T10:32:47.000000Z\"\n       }\n   },\n   \"chat_member_id\": [\n       12,\n       38,\n       37\n   ]\n}"
+      tags:
+        - 'Group Chats'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'The name of the team.'
+                  example: '"Project Z Team"'
+                description:
+                  type: string
+                  description: 'A brief description of the team.'
+                  example: '"Team for Project Z collaboration"'
+                members:
+                  type: array
+                  description: 'The IDs of the users to be added to the group.'
+                  example: null
+                  items:
+                    type: integer
+                group_image:
+                  type: string
+                  format: binary
+                  description: 'An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB.'
+              required:
+                - name
+                - description
+                - members
+                - group_image
   /api/v3/user/profile:
     post:
       summary: 'Profile Details'

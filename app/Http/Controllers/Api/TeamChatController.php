@@ -266,5 +266,134 @@ class TeamChatController extends Controller
 
 
 
+    /**
+     * Create a New Group
+     * 
+     * Creates a new group with the specified members and a welcome message. The authenticated user will be set as the group admin.
+     * @authenticated
+     * 
+     * @bodyParam name string required The name of the team. Example: "Project Z Team"
+     * @bodyParam description string required A brief description of the team. Example: "Team for Project Z collaboration"
+     * @bodyParam members int[] required The IDs of the users to be added to the group. Example: members[]=1 & members[]=2
+     * @bodyParam group_image file required An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB.
+     * 
+     * @response 200 *{
+     *    "message": "Team created successfully.",
+     *    "status": true,
+     *    "team": {
+     *        "id": 33,
+     *        "created_by": null,
+     *        "name": "abc",
+     *        "group_image": "team/hEjqR3bR46pdpRncBqugbo9aZNC7gFVkNNi9cMzG.png",
+     *        "description": "test 2",
+     *        "created_at": "2024-11-07T10:32:47.000000Z",
+     *        "updated_at": "2024-11-07T10:32:47.000000Z",
+     *        "last_message": {
+     *            "id": 283,
+     *            "team_id": 33,
+     *            "user_id": 37,
+     *            "message": "Welcome to abc group.",
+     *            "attachment": null,
+     *            "is_seen": 0,
+     *            "deleted_at": null,
+     *            "created_at": "2024-11-07T10:32:47.000000Z",
+     *            "updated_at": "2024-11-07T10:32:47.000000Z"
+     *        }
+     *    },
+     *    "chat_member_id": [
+     *        12,
+     *        38,
+     *        37
+     *    ]
+     * }
+     */
+    public function create(Request $request)
+    {
+        try {
+            // Validate the incoming request
+            $request->validate([
+                'name' => 'required|max:100',
+                'description' => 'required|max:255',
+                'members' => 'required|array|min:1',
+                'members.*' => 'required|exists:users,id',
+                'group_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+
+            // Create the new team
+            $team = new Team();
+            $team->name = $request->name;
+            $team->description = $request->description;
+            $team->group_image = $this->imageUpload($request->file('group_image'), 'team');
+            $team->save();
+
+            // Add the authenticated user as the team admin
+            $admin_member = new TeamMember();
+            $admin_member->team_id = $team->id;
+            $admin_member->user_id = auth()->id();
+            $admin_member->is_admin = true;
+            $admin_member->save();
+
+            // Add other members to the team
+            foreach ($request->members as $member_id) {
+                $team_member = new TeamMember();
+                $team_member->team_id = $team->id;
+                $team_member->user_id = $member_id;
+                $team_member->is_admin = false;
+                $team_member->save();
+            }
+
+            // Create a team chat and a welcome message
+            $team_chat = new TeamChat();
+            $team_chat->team_id = $team->id;
+            $team_chat->user_id = auth()->id();
+            $team_chat->message = 'Welcome to ' . $team->name . ' group.';
+            $team_chat->save();
+
+            // Add chat members and notifications
+            foreach ($request->members as $member_id) {
+                // Add each member to the chat
+                $chat_member = new ChatMember();
+                $chat_member->chat_id = $team_chat->id;
+                $chat_member->user_id = $member_id;
+                $chat_member->save();
+
+                // Create a notification for each member
+                $notification = new Notification();
+                $notification->user_id = $member_id;
+                $notification->message = 'You have been added to <b>' . $team->name . '</b> group.';
+                $notification->type = 'Team';
+                $notification->save();
+            }
+
+            // Add the admin to the chat as well
+            $admin_chat_member = new ChatMember();
+            $admin_chat_member->chat_id = $team_chat->id;
+            $admin_chat_member->user_id = auth()->id();
+            $admin_chat_member->save();
+
+            // Fetch the newly created team with the last message
+            $team = Team::with('lastMessage')->find($team->id);
+
+            // Get the IDs of the chat members
+            $chat_member_id = ChatMember::where('chat_id', $team_chat->id)->pluck('user_id')->toArray();
+
+            // Return a JSON response with the team and chat member IDs
+            return response()->json([
+                'message' => 'Team created successfully.',
+                'status' => true,
+                'team' => $team,
+                'chat_member_id' => $chat_member_id
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage(),
+                'status' => false
+            ], 201);
+        }
+    }
+
+
+
+
     //
 }
