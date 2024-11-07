@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 20
+                  example: 5
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1804,7 +1804,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: lysanne.steuber@example.net
+                  example: eturner@example.com
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1875,7 +1875,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: voluptate
+                  example: unde
       security: []
   /api/v3/country-list:
     post:
@@ -2000,7 +2000,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: mafalda.monahan@example.net
+                  example: melyssa58@example.org
               required:
                 - email
       security: []
@@ -3287,6 +3287,133 @@ paths:
               required:
                 - team_id
                 - user_id
+  /api/v3/user/team-chats/add-member-team:
+    post:
+      summary: 'Add Members to Group'
+      operationId: addMembersToGroup
+      description: 'Adds new members to a team or restores previously removed members. A message is sent to the group and notifications are generated for the added members.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Members added successfully.'
+                  status: true
+                  team_id: 10
+                  team_member_name: 'John Doe, Jane Smith'
+                  chat:
+                    id: 20
+                    user_id: 1
+                    team_id: 10
+                    message: 'New members added to the group. John Doe, Jane Smith'
+                    created_at: '2024-11-07T15:30:00.000000Z'
+                    updated_at: '2024-11-07T15:35:00.000000Z'
+                  chat_member_id:
+                    - 1
+                    - 2
+                    - 3
+                  already_member_arr:
+                    - 12
+                  only_added_members:
+                    - 5
+                    - 8
+                properties:
+                  message:
+                    type: string
+                    example: 'Members added successfully.'
+                  status:
+                    type: boolean
+                    example: true
+                  team_id:
+                    type: integer
+                    example: 10
+                  team_member_name:
+                    type: string
+                    example: 'John Doe, Jane Smith'
+                  chat:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 20
+                      user_id:
+                        type: integer
+                        example: 1
+                      team_id:
+                        type: integer
+                        example: 10
+                      message:
+                        type: string
+                        example: 'New members added to the group. John Doe, Jane Smith'
+                      created_at:
+                        type: string
+                        example: '2024-11-07T15:30:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-07T15:35:00.000000Z'
+                  chat_member_id:
+                    type: array
+                    example:
+                      - 1
+                      - 2
+                      - 3
+                    items:
+                      type: integer
+                  already_member_arr:
+                    type: array
+                    example:
+                      - 12
+                    items:
+                      type: integer
+                  only_added_members:
+                    type: array
+                    example:
+                      - 5
+                      - 8
+                    items:
+                      type: integer
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'An error occurred while adding the members.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'An error occurred while adding the members.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - 'Group Chats'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_id:
+                  type: integer
+                  description: 'The ID of the team to which members will be added.'
+                  example: 10
+                members:
+                  type: array
+                  description: 'The IDs of the users to be added to the group.'
+                  example: null
+                  items:
+                    type: integer
+              required:
+                - team_id
+                - members
   /api/v3/user/profile:
     post:
       summary: 'Profile Details'

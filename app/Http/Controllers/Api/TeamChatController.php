@@ -1075,6 +1075,125 @@ class TeamChatController extends Controller
     }
 
 
+    /**
+     * Add Members to Group
+     *
+     * Adds new members to a team or restores previously removed members. A message is sent to the group and notifications are generated for the added members.
+     * @authenticated
+     * @bodyParam team_id int required The ID of the team to which members will be added. Example: 10
+     * @bodyParam members int[] required The IDs of the users to be added to the group. Example: members[]=1 & members[]=2
+     *
+     * @response 200 {
+     *    "message": "Members added successfully.",
+     *    "status": true,
+     *    "team_id": 10,
+     *    "team_member_name": "John Doe, Jane Smith",
+     *    "chat": {
+     *        "id": 20,
+     *        "user_id": 1,
+     *        "team_id": 10,
+     *        "message": "New members added to the group. John Doe, Jane Smith",
+     *        "created_at": "2024-11-07T15:30:00.000000Z",
+     *        "updated_at": "2024-11-07T15:35:00.000000Z"
+     *    },
+     *    "chat_member_id": [1, 2, 3],
+     *    "already_member_arr": [12],
+     *    "only_added_members": [5, 8]
+     * }
+     * @response 201 {
+     *    "message": "An error occurred while adding the members.",
+     *    "status": false
+     * }
+     */
+    public function addMemberTeam(Request $request)
+    {
+        try {
+            // Validate the incoming request
+            $request->validate([
+                'members' => 'required|array',
+                'members.*' => 'required|integer',
+            ]);
+
+            $team_id = $request->team_id;
+            $only_added_members = $request->members;
+
+            $already_member_arr = [];
+            if ($only_added_members) {
+                foreach ($only_added_members as $member) {
+                    // Check if the member is already removed from the team and restore them
+                    $team_member = TeamMember::where('team_id', $team_id)->where('user_id', $member)->where('is_removed', true)->first();
+                    if ($team_member) {
+                        $team_member->is_removed = false;
+                        $team_member->is_removed_at = null;
+                        $team_member->save();
+                        $already_member_arr[] = $team_member->user_id;
+                    } else {
+                        // Add new member to the team
+                        $new_team_member = new TeamMember();
+                        $new_team_member->team_id = $team_id;
+                        $new_team_member->user_id = $member;
+                        $new_team_member->is_admin = false;
+                        $new_team_member->save();
+                    }
+
+                    // Create a notification for the newly added member
+                    $notification = new Notification();
+                    $notification->user_id = $member;
+                    $notification->message = 'You have been added to <b>' . Team::find($team_id)->name . '</b> group.';
+                    $notification->type = 'Team';
+                    $notification->save();
+                }
+            }
+
+            // Get the list of current members (not removed)
+            $team_members = TeamMember::where('team_id', $team_id)->where('is_removed', false)->with('user')->get();
+            $team_member_name = $team_members->pluck('user.first_name', 'user.middle_name', 'user.last_name')->implode(', ');
+
+            // Get names of only added members
+            $new_team_members = TeamMember::where('team_id', $team_id)->where('is_removed', false)->whereIn('user_id', $only_added_members)->with('user')->get();
+            $only_added_members_name = $new_team_members->pluck('user.first_name', 'user.middle_name', 'user.last_name')->implode(', ');
+
+            // Create a chat message about the new members added
+            $team_chat = new TeamChat();
+            $team_chat->team_id = $team_id;
+            $team_chat->user_id = auth()->id();
+            $team_chat->message = 'New members added to the group. ' . $only_added_members_name;
+            $team_chat->save();
+
+            // Add each member to the chat
+            foreach ($team_members as $member) {
+                $chat_member = new ChatMember();
+                $chat_member->chat_id = $team_chat->id;
+                $chat_member->user_id = $member->user_id;
+                $chat_member->is_seen = ($member->user_id == auth()->id()) ? true : false;
+                $chat_member->save();
+            }
+
+            // Get the chat member IDs
+            $chat_member_id = ChatMember::where('chat_id', $team_chat->id)->pluck('user_id')->toArray();
+
+            // Fetch the newly created team chat
+            $chat = TeamChat::where('id', $team_chat->id)->with('user')->first();
+
+            return response()->json([
+                'message' => 'Members added successfully.',
+                'status' => true,
+                'team_id' => $team_id,
+                'team_member_name' => $team_member_name,
+                'chat' => $chat,
+                'chat_member_id' => $chat_member_id,
+                'already_member_arr' => $already_member_arr,
+                'only_added_members' => $only_added_members
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'An error occurred while adding the members.',
+                'status' => false,
+                'error' => $th->getMessage()
+            ], 201);
+        }
+    }
+
 
 
     //

@@ -221,7 +221,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 68Zak4Decbghaf31E6Vv5Pd'
+      - 'Bearer P3VZkc4eb6fgaa86vD5d1hE'
     controller: null
     method: null
     route: null
@@ -330,7 +330,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fPhD1k6aZc4ea58dbEV63gv'
+      - 'Bearer aD43Vdvc6Ee5fbgZ68kaPh1'
     controller: null
     method: null
     route: null
@@ -568,7 +568,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c8VevZkPfd1bhga6DE3a465'
+      - 'Bearer c8Pa51veZkh46bgad6DV3fE'
     controller: null
     method: null
     route: null
@@ -706,7 +706,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Zbdf651akc4P86vhEVeDg3a'
+      - 'Bearer 6fZk6cPb85a13aDvVe4hEdg'
     controller: null
     method: null
     route: null
@@ -791,7 +791,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V5av8Zf1kd3b6g4EDPheca6'
+      - 'Bearer aP8Z6a6EV3dkf1e4vbDh5cg'
     controller: null
     method: null
     route: null
@@ -866,7 +866,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 68a6P5h1ge3vVE4DZcbfdak'
+      - 'Bearer khvV61Z8Paaceb45E3fgDd6'
     controller: null
     method: null
     route: null
@@ -953,7 +953,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vVfEP6d685gabZkh3cD4ea1'
+      - 'Bearer gV6eh3v516fkba8PEZD4adc'
     controller: null
     method: null
     route: null
@@ -1045,7 +1045,94 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5adVvk668ebgZ1E3fca4hDP'
+      - 'Bearer c6kZEe1fDhb5a84gPV6v3da'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/team-chats/add-member-team
+    metadata:
+      groupName: 'Group Chats'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Add Members to Group'
+      description: 'Adds new members to a team or restores previously removed members. A message is sent to the group and notifications are generated for the added members.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      team_id:
+        name: team_id
+        description: 'The ID of the team to which members will be added.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      members:
+        name: members
+        description: 'The IDs of the users to be added to the group.'
+        required: true
+        example: null
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      team_id: 10
+      members: null
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Members added successfully.",
+             "status": true,
+             "team_id": 10,
+             "team_member_name": "John Doe, Jane Smith",
+             "chat": {
+                 "id": 20,
+                 "user_id": 1,
+                 "team_id": 10,
+                 "message": "New members added to the group. John Doe, Jane Smith",
+                 "created_at": "2024-11-07T15:30:00.000000Z",
+                 "updated_at": "2024-11-07T15:35:00.000000Z"
+             },
+             "chat_member_id": [1, 2, 3],
+             "already_member_arr": [12],
+             "only_added_members": [5, 8]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "An error occurred while adding the members.",
+             "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer def8aZgPk645VhDE1ab36cv'
     controller: null
     method: null
     route: null

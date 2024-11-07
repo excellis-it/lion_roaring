@@ -212,6 +212,9 @@
                                                                                 <li class="tocify-item level-2" data-unique="group-chats-POSTapi-v3-user-team-chats-remove-member">
                                 <a href="#group-chats-POSTapi-v3-user-team-chats-remove-member">Remove Member from Group</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="group-chats-POSTapi-v3-user-team-chats-add-member-team">
+                                <a href="#group-chats-POSTapi-v3-user-team-chats-add-member-team">Add Members to Group</a>
+                            </li>
                                                                         </ul>
                             </ul>
                     <ul id="tocify-header-profile" class="tocify-header">
@@ -286,7 +289,7 @@ You can switch the language used with the tabs at the top right (or from the nav
     --data "{
     \"user_name\": \"johndoe\",
     \"email\": \"johndoe@example.com\",
-    \"ecclesia_id\": 20,
+    \"ecclesia_id\": 5,
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
     \"middle_name\": \"A.\",
@@ -317,7 +320,7 @@ const headers = {
 let body = {
     "user_name": "johndoe",
     "email": "johndoe@example.com",
-    "ecclesia_id": 20,
+    "ecclesia_id": 5,
     "first_name": "John",
     "last_name": "Doe",
     "middle_name": "A.",
@@ -481,10 +484,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="ecclesia_id"                data-endpoint="POSTapi-v3-register"
-               value="20"
+               value="5"
                data-component="body">
     <br>
-<p>nullable Ecclesia ID if applicable. Example: <code>20</code></p>
+<p>nullable Ecclesia ID if applicable. Example: <code>5</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>first_name</code></b>&nbsp;&nbsp;
@@ -3001,7 +3004,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "reciver_id=2"\
     --form "message=Hello there!"\
-    --form "file=@C:\Users\Masum\AppData\Local\Temp\php4A59.tmp" </code></pre></div>
+    --form "file=@C:\Users\Masum\AppData\Local\Temp\php9323.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -3222,7 +3225,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Optional file attachment for the chat message. Example: <code>C:\Users\Masum\AppData\Local\Temp\php4A59.tmp</code></p>
+<p>Optional file attachment for the chat message. Example: <code>C:\Users\Masum\AppData\Local\Temp\php9323.tmp</code></p>
         </div>
         </form>
 
@@ -3970,7 +3973,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
-    \"email\": \"lysanne.steuber@example.net\",
+    \"email\": \"eturner@example.com\",
     \"phone\": \"1234567890\",
     \"message\": \"Hello\"
 }"
@@ -3990,7 +3993,7 @@ const headers = {
 let body = {
     "first_name": "John",
     "last_name": "Doe",
-    "email": "lysanne.steuber@example.net",
+    "email": "eturner@example.com",
     "phone": "1234567890",
     "message": "Hello"
 };
@@ -4113,10 +4116,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-contact-us"
-               value="lysanne.steuber@example.net"
+               value="eturner@example.com"
                data-component="body">
     <br>
-<p>Email of the user. Example: Example: <code>lysanne.steuber@example.net</code></p>
+<p>Email of the user. Example: Example: <code>eturner@example.com</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -4172,7 +4175,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"postcode\": \"ZP74857\",
     \"amount\": 150,
     \"country_id\": 2,
-    \"stripeToken\": \"voluptate\"
+    \"stripeToken\": \"unde\"
 }"
 </code></pre></div>
 
@@ -4197,7 +4200,7 @@ let body = {
     "postcode": "ZP74857",
     "amount": 150,
     "country_id": 2,
-    "stripeToken": "voluptate"
+    "stripeToken": "unde"
 };
 
 fetch(url, {
@@ -4385,10 +4388,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="stripeToken"                data-endpoint="POSTapi-v3-donation"
-               value="voluptate"
+               value="unde"
                data-component="body">
     <br>
-<p>required. Example: <code>voluptate</code></p>
+<p>required. Example: <code>unde</code></p>
         </div>
         </form>
 
@@ -4557,7 +4560,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"email\": \"mafalda.monahan@example.net\"
+    \"email\": \"melyssa58@example.org\"
 }"
 </code></pre></div>
 
@@ -4573,7 +4576,7 @@ const headers = {
 };
 
 let body = {
-    "email": "mafalda.monahan@example.net"
+    "email": "melyssa58@example.org"
 };
 
 fetch(url, {
@@ -4672,10 +4675,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-forget-password"
-               value="mafalda.monahan@example.net"
+               value="melyssa58@example.org"
                data-component="body">
     <br>
-<p>The email of the user. Example: Example: <code>mafalda.monahan@example.net</code></p>
+<p>The email of the user. Example: Example: <code>melyssa58@example.org</code></p>
         </div>
         </form>
 
@@ -5017,7 +5020,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "name="Project Z Team""\
     --form "description="Team for Project Z collaboration""\
     --form "members="\
-    --form "group_image=@C:\Users\Masum\AppData\Local\Temp\php4A89.tmp" </code></pre></div>
+    --form "group_image=@C:\Users\Masum\AppData\Local\Temp\php9363.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -5207,7 +5210,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB. Example: <code>C:\Users\Masum\AppData\Local\Temp\php4A89.tmp</code></p>
+<p>An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB. Example: <code>C:\Users\Masum\AppData\Local\Temp\php9363.tmp</code></p>
         </div>
         </form>
 
@@ -5568,7 +5571,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "team_id=5"\
     --form "message="Hello team!""\
-    --form "file=@C:\Users\Masum\AppData\Local\Temp\php4A9A.tmp" </code></pre></div>
+    --form "file=@C:\Users\Masum\AppData\Local\Temp\php9365.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -5783,7 +5786,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The attachment file to send, if applicable (optional if a message is provided). Example: <code>C:\Users\Masum\AppData\Local\Temp\php4A9A.tmp</code></p>
+<p>The attachment file to send, if applicable (optional if a message is provided). Example: <code>C:\Users\Masum\AppData\Local\Temp\php9365.tmp</code></p>
         </div>
         </form>
 
@@ -5990,7 +5993,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "team_id=5"\
-    --form "group_image=@C:\Users\Masum\AppData\Local\Temp\php4AAB.tmp" </code></pre></div>
+    --form "group_image=@C:\Users\Masum\AppData\Local\Temp\php9376.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -6140,7 +6143,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new group image file (JPEG, PNG, JPG, GIF, SVG formats, max size: 2048KB). Example: <code>C:\Users\Masum\AppData\Local\Temp\php4AAB.tmp</code></p>
+<p>The new group image file (JPEG, PNG, JPG, GIF, SVG formats, max size: 2048KB). Example: <code>C:\Users\Masum\AppData\Local\Temp\php9376.tmp</code></p>
         </div>
         </form>
 
@@ -6534,6 +6537,206 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
         </form>
 
+                    <h2 id="group-chats-POSTapi-v3-user-team-chats-add-member-team">Add Members to Group</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Adds new members to a team or restores previously removed members. A message is sent to the group and notifications are generated for the added members.</p>
+
+<span id="example-requests-POSTapi-v3-user-team-chats-add-member-team">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/team-chats/add-member-team" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"team_id\": 10,
+    \"members\": null
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/team-chats/add-member-team"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "team_id": 10,
+    "members": null
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-team-chats-add-member-team">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Members added successfully.&quot;,
+    &quot;status&quot;: true,
+    &quot;team_id&quot;: 10,
+    &quot;team_member_name&quot;: &quot;John Doe, Jane Smith&quot;,
+    &quot;chat&quot;: {
+        &quot;id&quot;: 20,
+        &quot;user_id&quot;: 1,
+        &quot;team_id&quot;: 10,
+        &quot;message&quot;: &quot;New members added to the group. John Doe, Jane Smith&quot;,
+        &quot;created_at&quot;: &quot;2024-11-07T15:30:00.000000Z&quot;,
+        &quot;updated_at&quot;: &quot;2024-11-07T15:35:00.000000Z&quot;
+    },
+    &quot;chat_member_id&quot;: [
+        1,
+        2,
+        3
+    ],
+    &quot;already_member_arr&quot;: [
+        12
+    ],
+    &quot;only_added_members&quot;: [
+        5,
+        8
+    ]
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;An error occurred while adding the members.&quot;,
+    &quot;status&quot;: false
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-team-chats-add-member-team" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-team-chats-add-member-team"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-team-chats-add-member-team"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-team-chats-add-member-team" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-team-chats-add-member-team">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-team-chats-add-member-team" data-method="POST"
+      data-path="api/v3/user/team-chats/add-member-team"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-team-chats-add-member-team', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-team-chats-add-member-team"
+                    onclick="tryItOut('POSTapi-v3-user-team-chats-add-member-team');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-team-chats-add-member-team"
+                    onclick="cancelTryOut('POSTapi-v3-user-team-chats-add-member-team');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-team-chats-add-member-team"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/team-chats/add-member-team</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-team-chats-add-member-team"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-team-chats-add-member-team"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-team-chats-add-member-team"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>team_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="team_id"                data-endpoint="POSTapi-v3-user-team-chats-add-member-team"
+               value="10"
+               data-component="body">
+    <br>
+<p>The ID of the team to which members will be added. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>members</code></b>&nbsp;&nbsp;
+<small>integer[]</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="members[0]"                data-endpoint="POSTapi-v3-user-team-chats-add-member-team"
+               data-component="body">
+        <input type="number" style="display: none"
+               name="members[1]"                data-endpoint="POSTapi-v3-user-team-chats-add-member-team"
+               data-component="body">
+    <br>
+<p>The IDs of the users to be added to the group.</p>
+        </div>
+        </form>
+
                 <h1 id="profile">Profile</h1>
 
     
@@ -6908,7 +7111,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "profile_picture=@C:\Users\Masum\AppData\Local\Temp\php4A38.tmp" </code></pre></div>
+    --form "profile_picture=@C:\Users\Masum\AppData\Local\Temp\php9302.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -7045,7 +7248,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The profile picture of the user. Example: <code>C:\Users\Masum\AppData\Local\Temp\php4A38.tmp</code></p>
+<p>The profile picture of the user. Example: <code>C:\Users\Masum\AppData\Local\Temp\php9302.tmp</code></p>
         </div>
         </form>
 

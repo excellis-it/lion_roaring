@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "caedd353-ca2e-4302-ad4a-e511ffff6462",
+        "_postman_id": "fb8207aa-606f-4cd5-980e-823de9eaf5bd",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":20,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":5,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -902,7 +902,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"lysanne.steuber@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"eturner@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -946,7 +946,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"voluptate\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"unde\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1024,7 +1024,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"mafalda.monahan@example.net\"}"
+                            "raw": "{\"email\":\"melyssa58@example.org\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1397,6 +1397,47 @@
                             "header": [],
                             "code": 201,
                             "body": "{\n   \"message\": \"An error occurred while removing the member from the team.\",\n   \"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Add Members to Group",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/team-chats\/add-member-team",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/team-chats\/add-member-team"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"team_id\":10,\"members\":null}"
+                        },
+                        "description": "Adds new members to a team or restores previously removed members. A message is sent to the group and notifications are generated for the added members."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Members added successfully.\",\n   \"status\": true,\n   \"team_id\": 10,\n   \"team_member_name\": \"John Doe, Jane Smith\",\n   \"chat\": {\n       \"id\": 20,\n       \"user_id\": 1,\n       \"team_id\": 10,\n       \"message\": \"New members added to the group. John Doe, Jane Smith\",\n       \"created_at\": \"2024-11-07T15:30:00.000000Z\",\n       \"updated_at\": \"2024-11-07T15:35:00.000000Z\"\n   },\n   \"chat_member_id\": [1, 2, 3],\n   \"already_member_arr\": [12],\n   \"only_added_members\": [5, 8]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n   \"message\": \"An error occurred while adding the members.\",\n   \"status\": false\n}",
                             "name": ""
                         }
                     ]

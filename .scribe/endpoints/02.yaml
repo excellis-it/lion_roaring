@@ -107,7 +107,7 @@ endpoints:
         name: stripeToken
         description: required.
         required: false
-        example: voluptate
+        example: unde
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -122,7 +122,7 @@ endpoints:
       postcode: ZP74857
       amount: 150
       country_id: 2
-      stripeToken: voluptate
+      stripeToken: unde
     fileParameters: []
     responses: []
     responseFields: []
