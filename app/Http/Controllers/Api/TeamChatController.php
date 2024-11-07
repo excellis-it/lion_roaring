@@ -769,6 +769,100 @@ class TeamChatController extends Controller
     }
 
 
+    /**
+     * Get Group Information
+     *
+     * Retrieves detailed information about a team, including its active members and other available users.
+     * @authenticated
+     * @bodyParam team_id int required The ID of the team to retrieve information for. Example: 5
+     *
+     * @response {
+     *    "message": "Group information retrieved successfully.",
+     *    "status": true,
+     *    "team": {
+     *        "id": 5,
+     *        "name": "Project Alpha",
+     *        "description": "Development team for Project Alpha",
+     *        "members": [
+     *            {
+     *                "user_id": 1,
+     *                "first_name": "John",
+     *                "last_name": "Doe",
+     *                "email": "john@example.com"
+     *            },
+     *            {
+     *                "user_id": 2,
+     *                "first_name": "Jane",
+     *                "last_name": "Smith",
+     *                "email": "jane@example.com"
+     *            }
+     *        ]
+     *    },
+     *    "available_members": [
+     *        {
+     *            "id": 3,
+     *            "first_name": "Mike",
+     *            "last_name": "Taylor"
+     *        },
+     *        {
+     *            "id": 4,
+     *            "first_name": "Alice",
+     *            "last_name": "Brown"
+     *        }
+     *    ]
+     * }
+     */
+    public function groupInfo(Request $request)
+    {
+        try {
+            $team_id = $request->team_id;
+
+            // Retrieve the team and its active members
+            $team = Team::where('id', $team_id)
+                ->with(['members' => function ($query) {
+                    $query->where('is_removed', false); // Include only active members
+                }, 'members.user'])
+                ->first();
+
+            // If team not found, return error response
+            if (!$team) {
+                return response()->json(['message' => 'Team not found', 'status' => false], 201);
+            }
+
+            // Prepare team data with member details
+            $team_data = [
+                'id' => $team->id,
+                'name' => $team->name,
+                'description' => $team->description,
+                'members' => $team->members->map(function ($member) {
+                    return [
+                        'user_id' => $member->user->id,
+                        'first_name' => $member->user->first_name,
+                        'last_name' => $member->user->last_name,
+                        'email' => $member->user->email,
+                    ];
+                })
+            ];
+
+            // Retrieve additional members not in the team
+            $available_members = User::orderBy('first_name', 'asc')
+                ->where('id', '!=', auth()->id())
+                ->where('status', true)
+                ->get(['id', 'first_name', 'last_name']);
+
+            return response()->json([
+                'message' => 'Group information retrieved successfully.',
+                'status' => true,
+                'team' => $team_data,
+                'available_members' => $available_members
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage(), 'status' => false], 201);
+        }
+    }
+
+
+
 
 
     //

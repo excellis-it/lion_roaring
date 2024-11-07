@@ -121,7 +121,7 @@ Route::prefix('v3')->group(function () {
             Route::post('/create', [TeamChatController::class, 'create'])->name('create');
             Route::post('/load', [TeamChatController::class, 'load'])->name('load');
             Route::post('/send', [TeamChatController::class, 'send'])->name('send');
-            // Route::post('/group-info', [TeamChatController::class, 'groupInfo'])->name('group-info');
+            Route::post('/group-info', [TeamChatController::class, 'groupInfo'])->name('group-info');
             // Route::post('/update-group-image', [TeamChatController::class, 'updateGroupImage'])->name('update-group-image');
             // Route::post('/edit-name-des', [TeamChatController::class, 'editNameDes'])->name('edit-name-des');
             // Route::post('/name-des-update', [TeamChatController::class, 'nameDesUpdate'])->name('name-des-update');

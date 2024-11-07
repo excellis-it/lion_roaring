@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 4
+                  example: 18
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1804,7 +1804,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: mrunte@example.org
+                  example: althea.treutel@example.org
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1875,7 +1875,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: officiis
+                  example: fuga
       security: []
   /api/v3/country-list:
     post:
@@ -2000,7 +2000,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: kulas.una@example.org
+                  example: runte.chesley@example.com
               required:
                 - email
       security: []
@@ -2890,6 +2890,131 @@ paths:
                   type: string
                   format: binary
                   description: 'The attachment file to send, if applicable (optional if a message is provided).'
+              required:
+                - team_id
+  /api/v3/user/team-chats/group-info:
+    post:
+      summary: 'Get Group Information'
+      operationId: getGroupInformation
+      description: 'Retrieves detailed information about a team, including its active members and other available users.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Group information retrieved successfully.'
+                  status: true
+                  team:
+                    id: 5
+                    name: 'Project Alpha'
+                    description: 'Development team for Project Alpha'
+                    members:
+                      -
+                        user_id: 1
+                        first_name: John
+                        last_name: Doe
+                        email: john@example.com
+                      -
+                        user_id: 2
+                        first_name: Jane
+                        last_name: Smith
+                        email: jane@example.com
+                  available_members:
+                    -
+                      id: 3
+                      first_name: Mike
+                      last_name: Taylor
+                    -
+                      id: 4
+                      first_name: Alice
+                      last_name: Brown
+                properties:
+                  message:
+                    type: string
+                    example: 'Group information retrieved successfully.'
+                  status:
+                    type: boolean
+                    example: true
+                  team:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 5
+                      name:
+                        type: string
+                        example: 'Project Alpha'
+                      description:
+                        type: string
+                        example: 'Development team for Project Alpha'
+                      members:
+                        type: array
+                        example:
+                          -
+                            user_id: 1
+                            first_name: John
+                            last_name: Doe
+                            email: john@example.com
+                          -
+                            user_id: 2
+                            first_name: Jane
+                            last_name: Smith
+                            email: jane@example.com
+                        items:
+                          type: object
+                          properties:
+                            user_id:
+                              type: integer
+                              example: 1
+                            first_name:
+                              type: string
+                              example: John
+                            last_name:
+                              type: string
+                              example: Doe
+                            email:
+                              type: string
+                              example: john@example.com
+                  available_members:
+                    type: array
+                    example:
+                      -
+                        id: 3
+                        first_name: Mike
+                        last_name: Taylor
+                      -
+                        id: 4
+                        first_name: Alice
+                        last_name: Brown
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 3
+                        first_name:
+                          type: string
+                          example: Mike
+                        last_name:
+                          type: string
+                          example: Taylor
+      tags:
+        - 'Group Chats'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_id:
+                  type: integer
+                  description: 'The ID of the team to retrieve information for.'
+                  example: 5
               required:
                 - team_id
   /api/v3/user/profile:

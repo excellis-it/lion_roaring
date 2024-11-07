@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "021ff1eb-e5a4-433b-b516-cb596d8cfd9d",
+        "_postman_id": "92b8d096-2da3-49da-a4d6-19161b1a50b9",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":4,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":18,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -902,7 +902,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"mrunte@example.org\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"althea.treutel@example.org\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -946,7 +946,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"officiis\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"fuga\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1024,7 +1024,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"kulas.una@example.org\"}"
+                            "raw": "{\"email\":\"runte.chesley@example.com\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1227,6 +1227,41 @@
                             "header": [],
                             "code": 200,
                             "body": "{\n   \"message\": \"Message sent successfully.\",\n   \"status\": true,\n   \"chat\": {\n       \"id\": 289,\n       \"team_id\": 32,\n       \"user_id\": 37,\n       \"message\": \"hello teams\",\n       \"attachment\": null,\n       \"is_seen\": 0,\n       \"deleted_at\": null,\n       \"created_at\": \"2024-11-07T11:23:20.000000Z\",\n       \"updated_at\": \"2024-11-07T11:23:20.000000Z\",\n       \"user\": {\n           \"id\": 37,\n           \"ecclesia_id\": 4,\n           \"created_id\": null,\n           \"user_name\": \"masum1\",\n           \"first_name\": \"Test\",\n           \"middle_name\": null,\n           \"last_name\": \"User\",\n           \"email\": \"masum@excellisit.net\",\n           \"phone\": \"+91 9123456789\",\n           \"email_verified_at\": \"2024-10-28T08:35:17.000000Z\",\n           \"profile_picture\": \"profile_picture\\\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp\",\n           \"address\": \"kolkata\",\n           \"city\": \"kolkata\",\n           \"state\": \"41\",\n           \"address2\": \"kolkata\",\n           \"country\": \"101\",\n           \"zip\": \"700001\",\n           \"status\": 1,\n           \"created_at\": \"2024-10-28T08:35:17.000000Z\",\n           \"updated_at\": \"2024-11-06T07:42:16.000000Z\"\n       },\n       \"chat_members\": [\n           {\n               \"id\": 949,\n               \"chat_id\": 289,\n               \"user_id\": 37,\n               \"is_seen\": 1,\n               \"created_at\": \"2024-11-07T11:23:20.000000Z\",\n               \"updated_at\": \"2024-11-07T11:23:20.000000Z\"\n           },\n           {\n               \"id\": 950,\n               \"chat_id\": 289,\n               \"user_id\": 38,\n               \"is_seen\": 0,\n               \"created_at\": \"2024-11-07T11:23:20.000000Z\",\n               \"updated_at\": \"2024-11-07T11:23:20.000000Z\"\n           },\n           {\n               \"id\": 951,\n               \"chat_id\": 289,\n               \"user_id\": 12,\n               \"is_seen\": 0,\n               \"created_at\": \"2024-11-07T11:23:20.000000Z\",\n               \"updated_at\": \"2024-11-07T11:23:20.000000Z\"\n           }\n       ]\n   },\n   \"chat_member_id\": [\n       37,\n       38,\n       12\n   ]\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Group Information",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/team-chats\/group-info",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/team-chats\/group-info"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"team_id\":5}"
+                        },
+                        "description": "Retrieves detailed information about a team, including its active members and other available users."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Group information retrieved successfully.\",\n   \"status\": true,\n   \"team\": {\n       \"id\": 5,\n       \"name\": \"Project Alpha\",\n       \"description\": \"Development team for Project Alpha\",\n       \"members\": [\n           {\n               \"user_id\": 1,\n               \"first_name\": \"John\",\n               \"last_name\": \"Doe\",\n               \"email\": \"john@example.com\"\n           },\n           {\n               \"user_id\": 2,\n               \"first_name\": \"Jane\",\n               \"last_name\": \"Smith\",\n               \"email\": \"jane@example.com\"\n           }\n       ]\n   },\n   \"available_members\": [\n       {\n           \"id\": 3,\n           \"first_name\": \"Mike\",\n           \"last_name\": \"Taylor\"\n       },\n       {\n           \"id\": 4,\n           \"first_name\": \"Alice\",\n           \"last_name\": \"Brown\"\n       }\n   ]\n}",
                             "name": ""
                         }
                     ]
