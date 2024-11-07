@@ -635,6 +635,139 @@ class TeamChatController extends Controller
     }
 
 
+    /**
+     * Send Group Chat Message
+     *
+     * Sends a message or attachment to a group chat for the authenticated user. If a file is provided, it will be uploaded as an attachment; otherwise, the message text will be sent.
+     * @authenticated
+     * @bodyParam team_id int required The ID of the team to send the message to. Example: 5
+     * @bodyParam message string The text message to send (optional if a file is provided). Example: "Hello team!"
+     * @bodyParam file file The attachment file to send, if applicable (optional if a message is provided).
+     * 
+     * @response {
+     *    "message": "Message sent successfully.",
+     *    "status": true,
+     *    "chat": {
+     *        "id": 289,
+     *        "team_id": 32,
+     *        "user_id": 37,
+     *        "message": "hello teams",
+     *        "attachment": null,
+     *        "is_seen": 0,
+     *        "deleted_at": null,
+     *        "created_at": "2024-11-07T11:23:20.000000Z",
+     *        "updated_at": "2024-11-07T11:23:20.000000Z",
+     *        "user": {
+     *            "id": 37,
+     *            "ecclesia_id": 4,
+     *            "created_id": null,
+     *            "user_name": "masum1",
+     *            "first_name": "Test",
+     *            "middle_name": null,
+     *            "last_name": "User",
+     *            "email": "masum@excellisit.net",
+     *            "phone": "+91 9123456789",
+     *            "email_verified_at": "2024-10-28T08:35:17.000000Z",
+     *            "profile_picture": "profile_picture\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp",
+     *            "address": "kolkata",
+     *            "city": "kolkata",
+     *            "state": "41",
+     *            "address2": "kolkata",
+     *            "country": "101",
+     *            "zip": "700001",
+     *            "status": 1,
+     *            "created_at": "2024-10-28T08:35:17.000000Z",
+     *            "updated_at": "2024-11-06T07:42:16.000000Z"
+     *        },
+     *        "chat_members": [
+     *            {
+     *                "id": 949,
+     *                "chat_id": 289,
+     *                "user_id": 37,
+     *                "is_seen": 1,
+     *                "created_at": "2024-11-07T11:23:20.000000Z",
+     *                "updated_at": "2024-11-07T11:23:20.000000Z"
+     *            },
+     *            {
+     *                "id": 950,
+     *                "chat_id": 289,
+     *                "user_id": 38,
+     *                "is_seen": 0,
+     *                "created_at": "2024-11-07T11:23:20.000000Z",
+     *                "updated_at": "2024-11-07T11:23:20.000000Z"
+     *            },
+     *            {
+     *                "id": 951,
+     *                "chat_id": 289,
+     *                "user_id": 12,
+     *                "is_seen": 0,
+     *                "created_at": "2024-11-07T11:23:20.000000Z",
+     *                "updated_at": "2024-11-07T11:23:20.000000Z"
+     *            }
+     *        ]
+     *    },
+     *    "chat_member_id": [
+     *        37,
+     *        38,
+     *        12
+     *    ]
+     *}
+     */
+    public function send(Request $request)
+    {
+        try {
+            // Create new chat entry
+            $team_chat = new TeamChat();
+            $team_chat->team_id = $request->team_id;
+            $team_chat->user_id = auth()->id();
+
+            // Handle file or message content
+            if ($request->file) {
+                $team_chat->attachment = $this->imageUpload($request->file('file'), 'team-chat');
+            } else {
+                $team_chat->message = $request->message;
+            }
+            $team_chat->save();
+
+            // Retrieve team members and team data
+            $team_members = TeamMember::where('team_id', $request->team_id)
+                ->where('is_removed', false)
+                ->get();
+
+            foreach ($team_members as $team_member) {
+                $chat_member = new ChatMember();
+                $chat_member->chat_id = $team_chat->id;
+                $chat_member->user_id = $team_member->user_id;
+                $chat_member->is_seen = $team_member->user_id == auth()->id();
+                $chat_member->save();
+
+                // Create notifications for other members
+                if ($team_member->user_id != auth()->id()) {
+                    $notification = new Notification();
+                    $notification->user_id = $team_member->user_id;
+                    $notification->chat_id = $team_chat->id;
+                    $notification->message = 'You have a new message in <b>' . Team::find($request->team_id)->name . '</b> group.';
+                    $notification->type = 'Team';
+                    $notification->save();
+                }
+            }
+
+            // Get chat member IDs and chat details
+            $chat_member_id = ChatMember::where('chat_id', $team_chat->id)->pluck('user_id')->toArray();
+            $chat = TeamChat::where('id', $team_chat->id)->with('user', 'chatMembers')->first();
+
+            // JSON response with chat and member IDs
+            return response()->json([
+                'message' => 'Message sent successfully.',
+                'status' => true,
+                'chat' => $chat,
+                'chat_member_id' => $chat_member_id
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['msg' => $th->getMessage(), 'success' => false], 201);
+        }
+    }
+
 
 
 

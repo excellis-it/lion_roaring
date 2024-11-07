@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 10
+                  example: 4
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1804,7 +1804,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: berge.jody@example.org
+                  example: mrunte@example.org
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1875,7 +1875,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: beatae
+                  example: officiis
       security: []
   /api/v3/country-list:
     post:
@@ -2000,7 +2000,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: ayana99@example.net
+                  example: kulas.una@example.org
               required:
                 - email
       security: []
@@ -2081,125 +2081,553 @@ paths:
                 type: object
                 example:
                   team:
-                    id: 5
-                    name: 'Development Team'
-                    description: 'Team for app development'
-                    group_image: team.jpg
+                    id: 32
+                    created_by: null
+                    name: 'abc 1'
+                    group_image: team/S7oRcO09C1lQad6zaPE8JgU1vrwnRY7fhiMQLCpj.png
+                    description: 'test 1'
+                    created_at: '2024-11-07T10:16:41.000000Z'
+                    updated_at: '2024-11-07T10:16:41.000000Z'
                     members:
                       -
-                        id: 1
+                        id: 118
+                        team_id: 32
+                        user_id: 37
+                        is_removed: 0
+                        is_admin: 1
+                        is_removed_at: null
+                        created_at: '2024-11-07T10:16:41.000000Z'
+                        updated_at: '2024-11-07T10:16:41.000000Z'
+                        user:
+                          id: 37
+                          ecclesia_id: 4
+                          created_id: null
+                          user_name: masum1
+                          first_name: masum
+                          middle_name: null
+                          last_name: ali
+                          email: masum@excellisit.net
+                          phone: '+91 9123456789'
+                          email_verified_at: '2024-10-28T08:35:17.000000Z'
+                          profile_picture: profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp
+                          address: kolkata
+                          city: kolkata
+                          state: '41'
+                          address2: kolkata
+                          country: '101'
+                          zip: '700001'
+                          status: 1
+                          created_at: '2024-10-28T08:35:17.000000Z'
+                          updated_at: '2024-11-06T07:42:16.000000Z'
+                      -
+                        id: 119
+                        team_id: 32
+                        user_id: 38
+                        is_removed: 0
+                        is_admin: 0
+                        is_removed_at: null
+                        created_at: '2024-11-07T10:16:41.000000Z'
+                        updated_at: '2024-11-07T10:16:41.000000Z'
+                        user:
+                          id: 38
+                          ecclesia_id: 4
+                          created_id: null
+                          user_name: masum2
+                          first_name: Masum
+                          middle_name: null
+                          last_name: '2'
+                          email: masum2@excellisit.net
+                          phone: '+91 11 1111 1111'
+                          email_verified_at: '2024-11-05T07:17:07.000000Z'
+                          profile_picture: null
+                          address: Kolkata
+                          city: Kolkata
+                          state: '41'
+                          address2: null
+                          country: '101'
+                          zip: '700001'
+                          status: 1
+                          created_at: '2024-11-05T07:17:07.000000Z'
+                          updated_at: '2024-11-05T07:17:07.000000Z'
+                      -
+                        id: 120
+                        team_id: 32
+                        user_id: 12
+                        is_removed: 0
+                        is_admin: 0
+                        is_removed_at: null
+                        created_at: '2024-11-07T10:16:41.000000Z'
+                        updated_at: '2024-11-07T10:16:41.000000Z'
                         user:
                           id: 12
-                          first_name: John
-                          last_name: Doe
-                      -
-                        id: 2
-                        user:
-                          id: 15
-                          first_name: Jane
-                          last_name: Smith
+                          ecclesia_id: 2
+                          created_id: '1'
+                          user_name: swarnadwip_nath
+                          first_name: Swarnadwip
+                          middle_name: null
+                          last_name: Nath
+                          email: swarnadwip@excellisit.net
+                          phone: '+1 0741202022'
+                          email_verified_at: null
+                          profile_picture: profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg
+                          address: Kokata
+                          city: Kolkata
+                          state: '41'
+                          address2: null
+                          country: '101'
+                          zip: '700001'
+                          status: 1
+                          created_at: '2024-06-21T11:31:27.000000Z'
+                          updated_at: '2024-09-09T11:02:59.000000Z'
                   team_chats:
                     -
-                      id: 22
-                      user_id: 12
-                      message: 'Hello Team!'
-                      created_at: '2024-11-07T10:30:00.000000Z'
+                      id: 282
+                      team_id: 32
+                      user_id: 37
+                      message: 'Welcome to abc 1 group.'
+                      attachment: null
+                      is_seen: 0
+                      deleted_at: null
+                      created_at: '2024-11-07T10:16:41.000000Z'
+                      updated_at: '2024-11-07T10:16:41.000000Z'
                       user:
-                        id: 12
-                        first_name: John
-                        last_name: Doe
-                  team_member_names: 'John Doe, Jane Smith'
+                        id: 37
+                        ecclesia_id: 4
+                        created_id: null
+                        user_name: masum1
+                        first_name: masum
+                        middle_name: null
+                        last_name: ali
+                        email: masum@excellisit.net
+                        phone: '+91 9123456789'
+                        email_verified_at: '2024-10-28T08:35:17.000000Z'
+                        profile_picture: profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp
+                        address: kolkata
+                        city: kolkata
+                        state: '41'
+                        address2: kolkata
+                        country: '101'
+                        zip: '700001'
+                        status: 1
+                        created_at: '2024-10-28T08:35:17.000000Z'
+                        updated_at: '2024-11-06T07:42:16.000000Z'
+                    -
+                      id: 284
+                      team_id: 32
+                      user_id: 37
+                      message: good
+                      attachment: null
+                      is_seen: 0
+                      deleted_at: null
+                      created_at: '2024-11-07T10:51:54.000000Z'
+                      updated_at: '2024-11-07T10:51:54.000000Z'
+                      user:
+                        id: 37
+                        ecclesia_id: 4
+                        created_id: null
+                        user_name: masum1
+                        first_name: masum
+                        middle_name: null
+                        last_name: ali
+                        email: masum@excellisit.net
+                        phone: '+91 9123456789'
+                        email_verified_at: '2024-10-28T08:35:17.000000Z'
+                        profile_picture: profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp
+                        address: kolkata
+                        city: kolkata
+                        state: '41'
+                        address2: kolkata
+                        country: '101'
+                        zip: '700001'
+                        status: 1
+                        created_at: '2024-10-28T08:35:17.000000Z'
+                        updated_at: '2024-11-06T07:42:16.000000Z'
+                  team_member_names: 'Test User, Masum  2, Swarnadwip  Nath'
                 properties:
                   team:
                     type: object
                     properties:
                       id:
                         type: integer
-                        example: 5
+                        example: 32
+                      created_by:
+                        type: string
+                        example: null
                       name:
                         type: string
-                        example: 'Development Team'
-                      description:
-                        type: string
-                        example: 'Team for app development'
+                        example: 'abc 1'
                       group_image:
                         type: string
-                        example: team.jpg
+                        example: team/S7oRcO09C1lQad6zaPE8JgU1vrwnRY7fhiMQLCpj.png
+                      description:
+                        type: string
+                        example: 'test 1'
+                      created_at:
+                        type: string
+                        example: '2024-11-07T10:16:41.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-07T10:16:41.000000Z'
                       members:
                         type: array
                         example:
                           -
-                            id: 1
+                            id: 118
+                            team_id: 32
+                            user_id: 37
+                            is_removed: 0
+                            is_admin: 1
+                            is_removed_at: null
+                            created_at: '2024-11-07T10:16:41.000000Z'
+                            updated_at: '2024-11-07T10:16:41.000000Z'
+                            user:
+                              id: 37
+                              ecclesia_id: 4
+                              created_id: null
+                              user_name: masum1
+                              first_name: masum
+                              middle_name: null
+                              last_name: ali
+                              email: masum@excellisit.net
+                              phone: '+91 9123456789'
+                              email_verified_at: '2024-10-28T08:35:17.000000Z'
+                              profile_picture: profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp
+                              address: kolkata
+                              city: kolkata
+                              state: '41'
+                              address2: kolkata
+                              country: '101'
+                              zip: '700001'
+                              status: 1
+                              created_at: '2024-10-28T08:35:17.000000Z'
+                              updated_at: '2024-11-06T07:42:16.000000Z'
+                          -
+                            id: 119
+                            team_id: 32
+                            user_id: 38
+                            is_removed: 0
+                            is_admin: 0
+                            is_removed_at: null
+                            created_at: '2024-11-07T10:16:41.000000Z'
+                            updated_at: '2024-11-07T10:16:41.000000Z'
+                            user:
+                              id: 38
+                              ecclesia_id: 4
+                              created_id: null
+                              user_name: masum2
+                              first_name: Masum
+                              middle_name: null
+                              last_name: '2'
+                              email: masum2@excellisit.net
+                              phone: '+91 11 1111 1111'
+                              email_verified_at: '2024-11-05T07:17:07.000000Z'
+                              profile_picture: null
+                              address: Kolkata
+                              city: Kolkata
+                              state: '41'
+                              address2: null
+                              country: '101'
+                              zip: '700001'
+                              status: 1
+                              created_at: '2024-11-05T07:17:07.000000Z'
+                              updated_at: '2024-11-05T07:17:07.000000Z'
+                          -
+                            id: 120
+                            team_id: 32
+                            user_id: 12
+                            is_removed: 0
+                            is_admin: 0
+                            is_removed_at: null
+                            created_at: '2024-11-07T10:16:41.000000Z'
+                            updated_at: '2024-11-07T10:16:41.000000Z'
                             user:
                               id: 12
-                              first_name: John
-                              last_name: Doe
-                          -
-                            id: 2
-                            user:
-                              id: 15
-                              first_name: Jane
-                              last_name: Smith
+                              ecclesia_id: 2
+                              created_id: '1'
+                              user_name: swarnadwip_nath
+                              first_name: Swarnadwip
+                              middle_name: null
+                              last_name: Nath
+                              email: swarnadwip@excellisit.net
+                              phone: '+1 0741202022'
+                              email_verified_at: null
+                              profile_picture: profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg
+                              address: Kokata
+                              city: Kolkata
+                              state: '41'
+                              address2: null
+                              country: '101'
+                              zip: '700001'
+                              status: 1
+                              created_at: '2024-06-21T11:31:27.000000Z'
+                              updated_at: '2024-09-09T11:02:59.000000Z'
                         items:
                           type: object
                           properties:
                             id:
                               type: integer
+                              example: 118
+                            team_id:
+                              type: integer
+                              example: 32
+                            user_id:
+                              type: integer
+                              example: 37
+                            is_removed:
+                              type: integer
+                              example: 0
+                            is_admin:
+                              type: integer
                               example: 1
+                            is_removed_at:
+                              type: string
+                              example: null
+                            created_at:
+                              type: string
+                              example: '2024-11-07T10:16:41.000000Z'
+                            updated_at:
+                              type: string
+                              example: '2024-11-07T10:16:41.000000Z'
                             user:
                               type: object
                               properties:
                                 id:
                                   type: integer
-                                  example: 12
+                                  example: 37
+                                ecclesia_id:
+                                  type: integer
+                                  example: 4
+                                created_id:
+                                  type: string
+                                  example: null
+                                user_name:
+                                  type: string
+                                  example: masum1
                                 first_name:
                                   type: string
-                                  example: John
+                                  example: masum
+                                middle_name:
+                                  type: string
+                                  example: null
                                 last_name:
                                   type: string
-                                  example: Doe
+                                  example: ali
+                                email:
+                                  type: string
+                                  example: masum@excellisit.net
+                                phone:
+                                  type: string
+                                  example: '+91 9123456789'
+                                email_verified_at:
+                                  type: string
+                                  example: '2024-10-28T08:35:17.000000Z'
+                                profile_picture:
+                                  type: string
+                                  example: profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp
+                                address:
+                                  type: string
+                                  example: kolkata
+                                city:
+                                  type: string
+                                  example: kolkata
+                                state:
+                                  type: string
+                                  example: '41'
+                                address2:
+                                  type: string
+                                  example: kolkata
+                                country:
+                                  type: string
+                                  example: '101'
+                                zip:
+                                  type: string
+                                  example: '700001'
+                                status:
+                                  type: integer
+                                  example: 1
+                                created_at:
+                                  type: string
+                                  example: '2024-10-28T08:35:17.000000Z'
+                                updated_at:
+                                  type: string
+                                  example: '2024-11-06T07:42:16.000000Z'
                   team_chats:
                     type: array
                     example:
                       -
-                        id: 22
-                        user_id: 12
-                        message: 'Hello Team!'
-                        created_at: '2024-11-07T10:30:00.000000Z'
+                        id: 282
+                        team_id: 32
+                        user_id: 37
+                        message: 'Welcome to abc 1 group.'
+                        attachment: null
+                        is_seen: 0
+                        deleted_at: null
+                        created_at: '2024-11-07T10:16:41.000000Z'
+                        updated_at: '2024-11-07T10:16:41.000000Z'
                         user:
-                          id: 12
-                          first_name: John
-                          last_name: Doe
+                          id: 37
+                          ecclesia_id: 4
+                          created_id: null
+                          user_name: masum1
+                          first_name: masum
+                          middle_name: null
+                          last_name: ali
+                          email: masum@excellisit.net
+                          phone: '+91 9123456789'
+                          email_verified_at: '2024-10-28T08:35:17.000000Z'
+                          profile_picture: profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp
+                          address: kolkata
+                          city: kolkata
+                          state: '41'
+                          address2: kolkata
+                          country: '101'
+                          zip: '700001'
+                          status: 1
+                          created_at: '2024-10-28T08:35:17.000000Z'
+                          updated_at: '2024-11-06T07:42:16.000000Z'
+                      -
+                        id: 284
+                        team_id: 32
+                        user_id: 37
+                        message: good
+                        attachment: null
+                        is_seen: 0
+                        deleted_at: null
+                        created_at: '2024-11-07T10:51:54.000000Z'
+                        updated_at: '2024-11-07T10:51:54.000000Z'
+                        user:
+                          id: 37
+                          ecclesia_id: 4
+                          created_id: null
+                          user_name: masum1
+                          first_name: masum
+                          middle_name: null
+                          last_name: ali
+                          email: masum@excellisit.net
+                          phone: '+91 9123456789'
+                          email_verified_at: '2024-10-28T08:35:17.000000Z'
+                          profile_picture: profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp
+                          address: kolkata
+                          city: kolkata
+                          state: '41'
+                          address2: kolkata
+                          country: '101'
+                          zip: '700001'
+                          status: 1
+                          created_at: '2024-10-28T08:35:17.000000Z'
+                          updated_at: '2024-11-06T07:42:16.000000Z'
                     items:
                       type: object
                       properties:
                         id:
                           type: integer
-                          example: 22
+                          example: 282
+                        team_id:
+                          type: integer
+                          example: 32
                         user_id:
                           type: integer
-                          example: 12
+                          example: 37
                         message:
                           type: string
-                          example: 'Hello Team!'
+                          example: 'Welcome to abc 1 group.'
+                        attachment:
+                          type: string
+                          example: null
+                        is_seen:
+                          type: integer
+                          example: 0
+                        deleted_at:
+                          type: string
+                          example: null
                         created_at:
                           type: string
-                          example: '2024-11-07T10:30:00.000000Z'
+                          example: '2024-11-07T10:16:41.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-11-07T10:16:41.000000Z'
                         user:
                           type: object
                           properties:
                             id:
                               type: integer
-                              example: 12
+                              example: 37
+                            ecclesia_id:
+                              type: integer
+                              example: 4
+                            created_id:
+                              type: string
+                              example: null
+                            user_name:
+                              type: string
+                              example: masum1
                             first_name:
                               type: string
-                              example: John
+                              example: masum
+                            middle_name:
+                              type: string
+                              example: null
                             last_name:
                               type: string
-                              example: Doe
+                              example: ali
+                            email:
+                              type: string
+                              example: masum@excellisit.net
+                            phone:
+                              type: string
+                              example: '+91 9123456789'
+                            email_verified_at:
+                              type: string
+                              example: '2024-10-28T08:35:17.000000Z'
+                            profile_picture:
+                              type: string
+                              example: profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp
+                            address:
+                              type: string
+                              example: kolkata
+                            city:
+                              type: string
+                              example: kolkata
+                            state:
+                              type: string
+                              example: '41'
+                            address2:
+                              type: string
+                              example: kolkata
+                            country:
+                              type: string
+                              example: '101'
+                            zip:
+                              type: string
+                              example: '700001'
+                            status:
+                              type: integer
+                              example: 1
+                            created_at:
+                              type: string
+                              example: '2024-10-28T08:35:17.000000Z'
+                            updated_at:
+                              type: string
+                              example: '2024-11-06T07:42:16.000000Z'
                   team_member_names:
                     type: string
-                    example: 'John Doe, Jane Smith'
+                    example: 'Test User, Masum  2, Swarnadwip  Nath'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  msg: 'An error occurred while loading chats.'
+                  status: false
+                properties:
+                  msg:
+                    type: string
+                    example: 'An error occurred while loading chats.'
+                  status:
+                    type: boolean
+                    example: false
       tags:
         - 'Group Chats'
       requestBody:
@@ -2213,6 +2641,255 @@ paths:
                   type: integer
                   description: 'The ID of the team to load chats from.'
                   example: 5
+              required:
+                - team_id
+  /api/v3/user/team-chats/send:
+    post:
+      summary: 'Send Group Chat Message'
+      operationId: sendGroupChatMessage
+      description: 'Sends a message or attachment to a group chat for the authenticated user. If a file is provided, it will be uploaded as an attachment; otherwise, the message text will be sent.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Message sent successfully.'
+                  status: true
+                  chat:
+                    id: 289
+                    team_id: 32
+                    user_id: 37
+                    message: 'hello teams'
+                    attachment: null
+                    is_seen: 0
+                    deleted_at: null
+                    created_at: '2024-11-07T11:23:20.000000Z'
+                    updated_at: '2024-11-07T11:23:20.000000Z'
+                    user:
+                      id: 37
+                      ecclesia_id: 4
+                      created_id: null
+                      user_name: masum1
+                      first_name: Test
+                      middle_name: null
+                      last_name: User
+                      email: masum@excellisit.net
+                      phone: '+91 9123456789'
+                      email_verified_at: '2024-10-28T08:35:17.000000Z'
+                      profile_picture: profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp
+                      address: kolkata
+                      city: kolkata
+                      state: '41'
+                      address2: kolkata
+                      country: '101'
+                      zip: '700001'
+                      status: 1
+                      created_at: '2024-10-28T08:35:17.000000Z'
+                      updated_at: '2024-11-06T07:42:16.000000Z'
+                    chat_members:
+                      -
+                        id: 949
+                        chat_id: 289
+                        user_id: 37
+                        is_seen: 1
+                        created_at: '2024-11-07T11:23:20.000000Z'
+                        updated_at: '2024-11-07T11:23:20.000000Z'
+                      -
+                        id: 950
+                        chat_id: 289
+                        user_id: 38
+                        is_seen: 0
+                        created_at: '2024-11-07T11:23:20.000000Z'
+                        updated_at: '2024-11-07T11:23:20.000000Z'
+                      -
+                        id: 951
+                        chat_id: 289
+                        user_id: 12
+                        is_seen: 0
+                        created_at: '2024-11-07T11:23:20.000000Z'
+                        updated_at: '2024-11-07T11:23:20.000000Z'
+                  chat_member_id:
+                    - 37
+                    - 38
+                    - 12
+                properties:
+                  message:
+                    type: string
+                    example: 'Message sent successfully.'
+                  status:
+                    type: boolean
+                    example: true
+                  chat:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 289
+                      team_id:
+                        type: integer
+                        example: 32
+                      user_id:
+                        type: integer
+                        example: 37
+                      message:
+                        type: string
+                        example: 'hello teams'
+                      attachment:
+                        type: string
+                        example: null
+                      is_seen:
+                        type: integer
+                        example: 0
+                      deleted_at:
+                        type: string
+                        example: null
+                      created_at:
+                        type: string
+                        example: '2024-11-07T11:23:20.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-07T11:23:20.000000Z'
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 37
+                          ecclesia_id:
+                            type: integer
+                            example: 4
+                          created_id:
+                            type: string
+                            example: null
+                          user_name:
+                            type: string
+                            example: masum1
+                          first_name:
+                            type: string
+                            example: Test
+                          middle_name:
+                            type: string
+                            example: null
+                          last_name:
+                            type: string
+                            example: User
+                          email:
+                            type: string
+                            example: masum@excellisit.net
+                          phone:
+                            type: string
+                            example: '+91 9123456789'
+                          email_verified_at:
+                            type: string
+                            example: '2024-10-28T08:35:17.000000Z'
+                          profile_picture:
+                            type: string
+                            example: profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp
+                          address:
+                            type: string
+                            example: kolkata
+                          city:
+                            type: string
+                            example: kolkata
+                          state:
+                            type: string
+                            example: '41'
+                          address2:
+                            type: string
+                            example: kolkata
+                          country:
+                            type: string
+                            example: '101'
+                          zip:
+                            type: string
+                            example: '700001'
+                          status:
+                            type: integer
+                            example: 1
+                          created_at:
+                            type: string
+                            example: '2024-10-28T08:35:17.000000Z'
+                          updated_at:
+                            type: string
+                            example: '2024-11-06T07:42:16.000000Z'
+                      chat_members:
+                        type: array
+                        example:
+                          -
+                            id: 949
+                            chat_id: 289
+                            user_id: 37
+                            is_seen: 1
+                            created_at: '2024-11-07T11:23:20.000000Z'
+                            updated_at: '2024-11-07T11:23:20.000000Z'
+                          -
+                            id: 950
+                            chat_id: 289
+                            user_id: 38
+                            is_seen: 0
+                            created_at: '2024-11-07T11:23:20.000000Z'
+                            updated_at: '2024-11-07T11:23:20.000000Z'
+                          -
+                            id: 951
+                            chat_id: 289
+                            user_id: 12
+                            is_seen: 0
+                            created_at: '2024-11-07T11:23:20.000000Z'
+                            updated_at: '2024-11-07T11:23:20.000000Z'
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 949
+                            chat_id:
+                              type: integer
+                              example: 289
+                            user_id:
+                              type: integer
+                              example: 37
+                            is_seen:
+                              type: integer
+                              example: 1
+                            created_at:
+                              type: string
+                              example: '2024-11-07T11:23:20.000000Z'
+                            updated_at:
+                              type: string
+                              example: '2024-11-07T11:23:20.000000Z'
+                  chat_member_id:
+                    type: array
+                    example:
+                      - 37
+                      - 38
+                      - 12
+                    items:
+                      type: integer
+      tags:
+        - 'Group Chats'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                team_id:
+                  type: integer
+                  description: 'The ID of the team to send the message to.'
+                  example: 5
+                message:
+                  type: string
+                  description: 'The text message to send (optional if a file is provided).'
+                  example: '"Hello team!"'
+                file:
+                  type: string
+                  format: binary
+                  description: 'The attachment file to send, if applicable (optional if a message is provided).'
               required:
                 - team_id
   /api/v3/user/profile:

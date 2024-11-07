@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "13947c31-8b0e-403f-a8ea-fc0c84cfe5ad",
+        "_postman_id": "021ff1eb-e5a4-433b-b516-cb596d8cfd9d",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":10,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":4,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -902,7 +902,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"berge.jody@example.org\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"mrunte@example.org\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -946,7 +946,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"beatae\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"officiis\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1024,7 +1024,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"ayana99@example.net\"}"
+                            "raw": "{\"email\":\"kulas.una@example.org\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1167,7 +1167,66 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n   \"team\": {\n       \"id\": 5,\n       \"name\": \"Development Team\",\n       \"description\": \"Team for app development\",\n       \"group_image\": \"team.jpg\",\n       \"members\": [\n           {\n               \"id\": 1,\n               \"user\": {\n                   \"id\": 12,\n                   \"first_name\": \"John\",\n                   \"last_name\": \"Doe\"\n               }\n           },\n           {\n               \"id\": 2,\n               \"user\": {\n                   \"id\": 15,\n                   \"first_name\": \"Jane\",\n                   \"last_name\": \"Smith\"\n               }\n           }\n       ]\n   },\n   \"team_chats\": [\n       {\n           \"id\": 22,\n           \"user_id\": 12,\n           \"message\": \"Hello Team!\",\n           \"created_at\": \"2024-11-07T10:30:00.000000Z\",\n           \"user\": {\n               \"id\": 12,\n               \"first_name\": \"John\",\n               \"last_name\": \"Doe\"\n           }\n       }\n   ],\n   \"team_member_names\": \"John Doe, Jane Smith\"\n}",
+                            "body": "{\n   \"team\": {\n       \"id\": 32,\n       \"created_by\": null,\n       \"name\": \"abc 1\",\n       \"group_image\": \"team\\\/S7oRcO09C1lQad6zaPE8JgU1vrwnRY7fhiMQLCpj.png\",\n       \"description\": \"test 1\",\n       \"created_at\": \"2024-11-07T10:16:41.000000Z\",\n       \"updated_at\": \"2024-11-07T10:16:41.000000Z\",\n       \"members\": [\n           {\n               \"id\": 118,\n               \"team_id\": 32,\n               \"user_id\": 37,\n               \"is_removed\": 0,\n               \"is_admin\": 1,\n               \"is_removed_at\": null,\n               \"created_at\": \"2024-11-07T10:16:41.000000Z\",\n               \"updated_at\": \"2024-11-07T10:16:41.000000Z\",\n               \"user\": {\n                   \"id\": 37,\n                   \"ecclesia_id\": 4,\n                   \"created_id\": null,\n                   \"user_name\": \"masum1\",\n                   \"first_name\": \"masum\",\n                   \"middle_name\": null,\n                   \"last_name\": \"ali\",\n                   \"email\": \"masum@excellisit.net\",\n                   \"phone\": \"+91 9123456789\",\n                   \"email_verified_at\": \"2024-10-28T08:35:17.000000Z\",\n                   \"profile_picture\": \"profile_picture\\\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp\",\n                   \"address\": \"kolkata\",\n                   \"city\": \"kolkata\",\n                   \"state\": \"41\",\n                   \"address2\": \"kolkata\",\n                   \"country\": \"101\",\n                   \"zip\": \"700001\",\n                   \"status\": 1,\n                   \"created_at\": \"2024-10-28T08:35:17.000000Z\",\n                   \"updated_at\": \"2024-11-06T07:42:16.000000Z\"\n               }\n           },\n           {\n               \"id\": 119,\n               \"team_id\": 32,\n               \"user_id\": 38,\n               \"is_removed\": 0,\n               \"is_admin\": 0,\n               \"is_removed_at\": null,\n               \"created_at\": \"2024-11-07T10:16:41.000000Z\",\n               \"updated_at\": \"2024-11-07T10:16:41.000000Z\",\n               \"user\": {\n                   \"id\": 38,\n                   \"ecclesia_id\": 4,\n                   \"created_id\": null,\n                   \"user_name\": \"masum2\",\n                   \"first_name\": \"Masum\",\n                   \"middle_name\": null,\n                   \"last_name\": \"2\",\n                   \"email\": \"masum2@excellisit.net\",\n                   \"phone\": \"+91 11 1111 1111\",\n                   \"email_verified_at\": \"2024-11-05T07:17:07.000000Z\",\n                   \"profile_picture\": null,\n                   \"address\": \"Kolkata\",\n                   \"city\": \"Kolkata\",\n                   \"state\": \"41\",\n                   \"address2\": null,\n                   \"country\": \"101\",\n                   \"zip\": \"700001\",\n                   \"status\": 1,\n                   \"created_at\": \"2024-11-05T07:17:07.000000Z\",\n                   \"updated_at\": \"2024-11-05T07:17:07.000000Z\"\n               }\n           },\n           {\n               \"id\": 120,\n               \"team_id\": 32,\n               \"user_id\": 12,\n               \"is_removed\": 0,\n               \"is_admin\": 0,\n               \"is_removed_at\": null,\n               \"created_at\": \"2024-11-07T10:16:41.000000Z\",\n               \"updated_at\": \"2024-11-07T10:16:41.000000Z\",\n               \"user\": {\n                   \"id\": 12,\n                   \"ecclesia_id\": 2,\n                   \"created_id\": \"1\",\n                   \"user_name\": \"swarnadwip_nath\",\n                   \"first_name\": \"Swarnadwip\",\n                   \"middle_name\": null,\n                   \"last_name\": \"Nath\",\n                   \"email\": \"swarnadwip@excellisit.net\",\n                   \"phone\": \"+1 0741202022\",\n                   \"email_verified_at\": null,\n                   \"profile_picture\": \"profile_picture\\\/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg\",\n                   \"address\": \"Kokata\",\n                   \"city\": \"Kolkata\",\n                   \"state\": \"41\",\n                   \"address2\": null,\n                   \"country\": \"101\",\n                   \"zip\": \"700001\",\n                   \"status\": 1,\n                   \"created_at\": \"2024-06-21T11:31:27.000000Z\",\n                   \"updated_at\": \"2024-09-09T11:02:59.000000Z\"\n               }\n           }\n       ]\n   },\n   \"team_chats\": [\n       {\n           \"id\": 282,\n           \"team_id\": 32,\n           \"user_id\": 37,\n           \"message\": \"Welcome to abc 1 group.\",\n           \"attachment\": null,\n           \"is_seen\": 0,\n           \"deleted_at\": null,\n           \"created_at\": \"2024-11-07T10:16:41.000000Z\",\n           \"updated_at\": \"2024-11-07T10:16:41.000000Z\",\n           \"user\": {\n               \"id\": 37,\n               \"ecclesia_id\": 4,\n               \"created_id\": null,\n               \"user_name\": \"masum1\",\n               \"first_name\": \"masum\",\n               \"middle_name\": null,\n               \"last_name\": \"ali\",\n               \"email\": \"masum@excellisit.net\",\n               \"phone\": \"+91 9123456789\",\n               \"email_verified_at\": \"2024-10-28T08:35:17.000000Z\",\n               \"profile_picture\": \"profile_picture\\\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp\",\n               \"address\": \"kolkata\",\n               \"city\": \"kolkata\",\n               \"state\": \"41\",\n               \"address2\": \"kolkata\",\n               \"country\": \"101\",\n               \"zip\": \"700001\",\n               \"status\": 1,\n               \"created_at\": \"2024-10-28T08:35:17.000000Z\",\n               \"updated_at\": \"2024-11-06T07:42:16.000000Z\"\n           }\n       },\n       {\n           \"id\": 284,\n           \"team_id\": 32,\n           \"user_id\": 37,\n           \"message\": \"good\",\n           \"attachment\": null,\n           \"is_seen\": 0,\n           \"deleted_at\": null,\n           \"created_at\": \"2024-11-07T10:51:54.000000Z\",\n           \"updated_at\": \"2024-11-07T10:51:54.000000Z\",\n           \"user\": {\n               \"id\": 37,\n               \"ecclesia_id\": 4,\n               \"created_id\": null,\n               \"user_name\": \"masum1\",\n               \"first_name\": \"masum\",\n               \"middle_name\": null,\n               \"last_name\": \"ali\",\n               \"email\": \"masum@excellisit.net\",\n               \"phone\": \"+91 9123456789\",\n               \"email_verified_at\": \"2024-10-28T08:35:17.000000Z\",\n               \"profile_picture\": \"profile_picture\\\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp\",\n               \"address\": \"kolkata\",\n               \"city\": \"kolkata\",\n               \"state\": \"41\",\n               \"address2\": \"kolkata\",\n               \"country\": \"101\",\n               \"zip\": \"700001\",\n               \"status\": 1,\n               \"created_at\": \"2024-10-28T08:35:17.000000Z\",\n               \"updated_at\": \"2024-11-06T07:42:16.000000Z\"\n           }\n       }\n   ],\n   \"team_member_names\": \"Test User, Masum  2, Swarnadwip  Nath\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"msg\": \"An error occurred while loading chats.\",\n  \"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Send Group Chat Message",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/team-chats\/send",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/team-chats\/send"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "team_id",
+                                    "value": 5,
+                                    "type": "text",
+                                    "description": "The ID of the team to send the message to."
+                                },
+                                {
+                                    "key": "message",
+                                    "value": "\"Hello team!\"",
+                                    "type": "text",
+                                    "description": "The text message to send (optional if a file is provided)."
+                                },
+                                {
+                                    "key": "file",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "Sends a message or attachment to a group chat for the authenticated user. If a file is provided, it will be uploaded as an attachment; otherwise, the message text will be sent."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Message sent successfully.\",\n   \"status\": true,\n   \"chat\": {\n       \"id\": 289,\n       \"team_id\": 32,\n       \"user_id\": 37,\n       \"message\": \"hello teams\",\n       \"attachment\": null,\n       \"is_seen\": 0,\n       \"deleted_at\": null,\n       \"created_at\": \"2024-11-07T11:23:20.000000Z\",\n       \"updated_at\": \"2024-11-07T11:23:20.000000Z\",\n       \"user\": {\n           \"id\": 37,\n           \"ecclesia_id\": 4,\n           \"created_id\": null,\n           \"user_name\": \"masum1\",\n           \"first_name\": \"Test\",\n           \"middle_name\": null,\n           \"last_name\": \"User\",\n           \"email\": \"masum@excellisit.net\",\n           \"phone\": \"+91 9123456789\",\n           \"email_verified_at\": \"2024-10-28T08:35:17.000000Z\",\n           \"profile_picture\": \"profile_picture\\\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp\",\n           \"address\": \"kolkata\",\n           \"city\": \"kolkata\",\n           \"state\": \"41\",\n           \"address2\": \"kolkata\",\n           \"country\": \"101\",\n           \"zip\": \"700001\",\n           \"status\": 1,\n           \"created_at\": \"2024-10-28T08:35:17.000000Z\",\n           \"updated_at\": \"2024-11-06T07:42:16.000000Z\"\n       },\n       \"chat_members\": [\n           {\n               \"id\": 949,\n               \"chat_id\": 289,\n               \"user_id\": 37,\n               \"is_seen\": 1,\n               \"created_at\": \"2024-11-07T11:23:20.000000Z\",\n               \"updated_at\": \"2024-11-07T11:23:20.000000Z\"\n           },\n           {\n               \"id\": 950,\n               \"chat_id\": 289,\n               \"user_id\": 38,\n               \"is_seen\": 0,\n               \"created_at\": \"2024-11-07T11:23:20.000000Z\",\n               \"updated_at\": \"2024-11-07T11:23:20.000000Z\"\n           },\n           {\n               \"id\": 951,\n               \"chat_id\": 289,\n               \"user_id\": 12,\n               \"is_seen\": 0,\n               \"created_at\": \"2024-11-07T11:23:20.000000Z\",\n               \"updated_at\": \"2024-11-07T11:23:20.000000Z\"\n           }\n       ]\n   },\n   \"chat_member_id\": [\n       37,\n       38,\n       12\n   ]\n}",
                             "name": ""
                         }
                     ]
