@@ -221,7 +221,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ea8Pf64vbaV5dZgEc316Dhk'
+      - 'Bearer 5fP41ED36hk8egVaZa6cvbd'
     controller: null
     method: null
     route: null
@@ -330,7 +330,97 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5ZV6PahD3caEeb84v1d6fgk'
+      - 'Bearer Vef63PaZd8Egv4ka5b61cDh'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/team-chats/load
+    metadata:
+      groupName: 'Group Chats'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Load Specific Group Chats'
+      description: "Retrieves a team's information and chat history for the authenticated user, along with member details."
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      team_id:
+        name: team_id
+        description: 'The ID of the team to load chats from.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      team_id: 5
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "team": {
+                 "id": 5,
+                 "name": "Development Team",
+                 "description": "Team for app development",
+                 "group_image": "team.jpg",
+                 "members": [
+                     {
+                         "id": 1,
+                         "user": {
+                             "id": 12,
+                             "first_name": "John",
+                             "last_name": "Doe"
+                         }
+                     },
+                     {
+                         "id": 2,
+                         "user": {
+                             "id": 15,
+                             "first_name": "Jane",
+                             "last_name": "Smith"
+                         }
+                     }
+                 ]
+             },
+             "team_chats": [
+                 {
+                     "id": 22,
+                     "user_id": 12,
+                     "message": "Hello Team!",
+                     "created_at": "2024-11-07T10:30:00.000000Z",
+                     "user": {
+                         "id": 12,
+                         "first_name": "John",
+                         "last_name": "Doe"
+                     }
+                 }
+             ],
+             "team_member_names": "John Doe, Jane Smith"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer cfD1e4dE6ga3Vh6Zb5a8Pkv'
     controller: null
     method: null
     route: null

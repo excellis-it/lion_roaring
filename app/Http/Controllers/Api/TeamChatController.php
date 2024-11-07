@@ -393,6 +393,249 @@ class TeamChatController extends Controller
     }
 
 
+    /**
+     * Load Specific Group Chats
+     *
+     * Retrieves a team's information and chat history for the authenticated user, along with member details.
+     * @authenticated
+     * @bodyParam team_id int required The ID of the team to load chats from. Example: 5
+     * 
+     * @response 200 {
+     *    "team": {
+     *        "id": 32,
+     *        "created_by": null,
+     *        "name": "abc 1",
+     *        "group_image": "team\/S7oRcO09C1lQad6zaPE8JgU1vrwnRY7fhiMQLCpj.png",
+     *        "description": "test 1",
+     *        "created_at": "2024-11-07T10:16:41.000000Z",
+     *        "updated_at": "2024-11-07T10:16:41.000000Z",
+     *        "members": [
+     *            {
+     *                "id": 118,
+     *                "team_id": 32,
+     *                "user_id": 37,
+     *                "is_removed": 0,
+     *                "is_admin": 1,
+     *                "is_removed_at": null,
+     *                "created_at": "2024-11-07T10:16:41.000000Z",
+     *                "updated_at": "2024-11-07T10:16:41.000000Z",
+     *                "user": {
+     *                    "id": 37,
+     *                    "ecclesia_id": 4,
+     *                    "created_id": null,
+     *                    "user_name": "masum1",
+     *                    "first_name": "masum",
+     *                    "middle_name": null,
+     *                    "last_name": "ali",
+     *                    "email": "masum@excellisit.net",
+     *                    "phone": "+91 9123456789",
+     *                    "email_verified_at": "2024-10-28T08:35:17.000000Z",
+     *                    "profile_picture": "profile_picture\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp",
+     *                    "address": "kolkata",
+     *                    "city": "kolkata",
+     *                    "state": "41",
+     *                    "address2": "kolkata",
+     *                    "country": "101",
+     *                    "zip": "700001",
+     *                    "status": 1,
+     *                    "created_at": "2024-10-28T08:35:17.000000Z",
+     *                    "updated_at": "2024-11-06T07:42:16.000000Z"
+     *                }
+     *            },
+     *            {
+     *                "id": 119,
+     *                "team_id": 32,
+     *                "user_id": 38,
+     *                "is_removed": 0,
+     *                "is_admin": 0,
+     *                "is_removed_at": null,
+     *                "created_at": "2024-11-07T10:16:41.000000Z",
+     *                "updated_at": "2024-11-07T10:16:41.000000Z",
+     *                "user": {
+     *                    "id": 38,
+     *                    "ecclesia_id": 4,
+     *                    "created_id": null,
+     *                    "user_name": "masum2",
+     *                    "first_name": "Masum",
+     *                    "middle_name": null,
+     *                    "last_name": "2",
+     *                    "email": "masum2@excellisit.net",
+     *                    "phone": "+91 11 1111 1111",
+     *                    "email_verified_at": "2024-11-05T07:17:07.000000Z",
+     *                    "profile_picture": null,
+     *                    "address": "Kolkata",
+     *                    "city": "Kolkata",
+     *                    "state": "41",
+     *                    "address2": null,
+     *                    "country": "101",
+     *                    "zip": "700001",
+     *                    "status": 1,
+     *                    "created_at": "2024-11-05T07:17:07.000000Z",
+     *                    "updated_at": "2024-11-05T07:17:07.000000Z"
+     *                }
+     *            },
+     *            {
+     *                "id": 120,
+     *                "team_id": 32,
+     *                "user_id": 12,
+     *                "is_removed": 0,
+     *                "is_admin": 0,
+     *                "is_removed_at": null,
+     *                "created_at": "2024-11-07T10:16:41.000000Z",
+     *                "updated_at": "2024-11-07T10:16:41.000000Z",
+     *                "user": {
+     *                    "id": 12,
+     *                    "ecclesia_id": 2,
+     *                    "created_id": "1",
+     *                    "user_name": "swarnadwip_nath",
+     *                    "first_name": "Swarnadwip",
+     *                    "middle_name": null,
+     *                    "last_name": "Nath",
+     *                    "email": "swarnadwip@excellisit.net",
+     *                    "phone": "+1 0741202022",
+     *                    "email_verified_at": null,
+     *                    "profile_picture": "profile_picture\/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg",
+     *                    "address": "Kokata",
+     *                    "city": "Kolkata",
+     *                    "state": "41",
+     *                    "address2": null,
+     *                    "country": "101",
+     *                    "zip": "700001",
+     *                    "status": 1,
+     *                    "created_at": "2024-06-21T11:31:27.000000Z",
+     *                    "updated_at": "2024-09-09T11:02:59.000000Z"
+     *                }
+     *            }
+     *        ]
+     *    },
+     *    "team_chats": [
+     *        {
+     *            "id": 282,
+     *            "team_id": 32,
+     *            "user_id": 37,
+     *            "message": "Welcome to abc 1 group.",
+     *            "attachment": null,
+     *            "is_seen": 0,
+     *            "deleted_at": null,
+     *            "created_at": "2024-11-07T10:16:41.000000Z",
+     *            "updated_at": "2024-11-07T10:16:41.000000Z",
+     *            "user": {
+     *                "id": 37,
+     *                "ecclesia_id": 4,
+     *                "created_id": null,
+     *                "user_name": "masum1",
+     *                "first_name": "masum",
+     *                "middle_name": null,
+     *                "last_name": "ali",
+     *                "email": "masum@excellisit.net",
+     *                "phone": "+91 9123456789",
+     *                "email_verified_at": "2024-10-28T08:35:17.000000Z",
+     *                "profile_picture": "profile_picture\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp",
+     *                "address": "kolkata",
+     *                "city": "kolkata",
+     *                "state": "41",
+     *                "address2": "kolkata",
+     *                "country": "101",
+     *                "zip": "700001",
+     *                "status": 1,
+     *                "created_at": "2024-10-28T08:35:17.000000Z",
+     *                "updated_at": "2024-11-06T07:42:16.000000Z"
+     *            }
+     *        },
+     *        {
+     *            "id": 284,
+     *            "team_id": 32,
+     *            "user_id": 37,
+     *            "message": "good",
+     *            "attachment": null,
+     *            "is_seen": 0,
+     *            "deleted_at": null,
+     *            "created_at": "2024-11-07T10:51:54.000000Z",
+     *            "updated_at": "2024-11-07T10:51:54.000000Z",
+     *            "user": {
+     *                "id": 37,
+     *                "ecclesia_id": 4,
+     *                "created_id": null,
+     *                "user_name": "masum1",
+     *                "first_name": "masum",
+     *                "middle_name": null,
+     *                "last_name": "ali",
+     *                "email": "masum@excellisit.net",
+     *                "phone": "+91 9123456789",
+     *                "email_verified_at": "2024-10-28T08:35:17.000000Z",
+     *                "profile_picture": "profile_picture\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp",
+     *                "address": "kolkata",
+     *                "city": "kolkata",
+     *                "state": "41",
+     *                "address2": "kolkata",
+     *                "country": "101",
+     *                "zip": "700001",
+     *                "status": 1,
+     *                "created_at": "2024-10-28T08:35:17.000000Z",
+     *                "updated_at": "2024-11-06T07:42:16.000000Z"
+     *            }
+     *        }
+     *    ],
+     *    "team_member_names": "Test User, Masum  2, Swarnadwip  Nath"
+     *}
+     * @response 201 {
+     *   "msg": "An error occurred while loading chats.",
+     *   "status": false
+     * }
+     */
+    public function load(Request $request)
+    {
+        try {
+            $team_id = $request->team_id;
+
+            // Get team information with members
+            $team = Team::where('id', $team_id)
+                ->with(['members', 'members.user'])
+                ->first();
+
+            // Get team chat messages
+            $team_chats = TeamChat::where('team_id', $team_id)
+                ->whereHas('chatMembers', function ($query) {
+                    $query->where('user_id', auth()->id());
+                })
+                ->with('user')
+                ->orderBy('created_at', 'asc')
+                ->get();
+
+            // Mark chat as seen for the authenticated user
+            ChatMember::where('user_id', auth()->id())
+                ->whereHas('chat', function ($query) use ($team_id) {
+                    $query->where('team_id', $team_id);
+                })
+                ->update(['is_seen' => true]);
+
+            // Get comma-separated team member names
+            $team_members = TeamMember::where('team_id', $team_id)
+                ->where('is_removed', false)
+                ->with('user')
+                ->get();
+
+            $team_member_name = '';
+            foreach ($team_members as $member) {
+                $team_member_name .= ($member->user->first_name ?? '') . ' ' .
+                    ($member->user->middle_name ?? '') . ' ' .
+                    ($member->user->last_name ?? '') . ', ';
+            }
+            $team_member_name = rtrim($team_member_name, ', ');
+
+            // Respond with JSON data
+            return response()->json([
+                'team' => $team,
+                'team_chats' => $team_chats,
+                'team_member_names' => $team_member_name,
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['msg' => $th->getMessage(), 'status' => false], 201);
+        }
+    }
+
+
+
 
 
     //

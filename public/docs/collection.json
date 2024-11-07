@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "9f791472-3619-41cc-a3bb-ed7eaf7732bf",
+        "_postman_id": "13947c31-8b0e-403f-a8ea-fc0c84cfe5ad",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":14,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":10,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -902,7 +902,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"marge.wisozk@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"berge.jody@example.org\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -946,7 +946,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"et\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"beatae\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1024,7 +1024,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"vmurphy@example.org\"}"
+                            "raw": "{\"email\":\"ayana99@example.net\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1133,6 +1133,41 @@
                             "header": [],
                             "code": 200,
                             "body": "*{\n   \"message\": \"Team created successfully.\",\n   \"status\": true,\n   \"team\": {\n       \"id\": 33,\n       \"created_by\": null,\n       \"name\": \"abc\",\n       \"group_image\": \"team\/hEjqR3bR46pdpRncBqugbo9aZNC7gFVkNNi9cMzG.png\",\n       \"description\": \"test 2\",\n       \"created_at\": \"2024-11-07T10:32:47.000000Z\",\n       \"updated_at\": \"2024-11-07T10:32:47.000000Z\",\n       \"last_message\": {\n           \"id\": 283,\n           \"team_id\": 33,\n           \"user_id\": 37,\n           \"message\": \"Welcome to abc group.\",\n           \"attachment\": null,\n           \"is_seen\": 0,\n           \"deleted_at\": null,\n           \"created_at\": \"2024-11-07T10:32:47.000000Z\",\n           \"updated_at\": \"2024-11-07T10:32:47.000000Z\"\n       }\n   },\n   \"chat_member_id\": [\n       12,\n       38,\n       37\n   ]\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Load Specific Group Chats",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/team-chats\/load",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/team-chats\/load"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"team_id\":5}"
+                        },
+                        "description": "Retrieves a team's information and chat history for the authenticated user, along with member details."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"team\": {\n       \"id\": 5,\n       \"name\": \"Development Team\",\n       \"description\": \"Team for app development\",\n       \"group_image\": \"team.jpg\",\n       \"members\": [\n           {\n               \"id\": 1,\n               \"user\": {\n                   \"id\": 12,\n                   \"first_name\": \"John\",\n                   \"last_name\": \"Doe\"\n               }\n           },\n           {\n               \"id\": 2,\n               \"user\": {\n                   \"id\": 15,\n                   \"first_name\": \"Jane\",\n                   \"last_name\": \"Smith\"\n               }\n           }\n       ]\n   },\n   \"team_chats\": [\n       {\n           \"id\": 22,\n           \"user_id\": 12,\n           \"message\": \"Hello Team!\",\n           \"created_at\": \"2024-11-07T10:30:00.000000Z\",\n           \"user\": {\n               \"id\": 12,\n               \"first_name\": \"John\",\n               \"last_name\": \"Doe\"\n           }\n       }\n   ],\n   \"team_member_names\": \"John Doe, Jane Smith\"\n}",
                             "name": ""
                         }
                     ]
