@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 15
+                  example: 1
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1804,7 +1804,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: rbuckridge@example.com
+                  example: alice.metz@example.org
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1875,7 +1875,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: rem
+                  example: expedita
       security: []
   /api/v3/country-list:
     post:
@@ -2000,7 +2000,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: gonzalo.hamill@example.org
+                  example: hferry@example.com
               required:
                 - email
       security: []
@@ -3497,6 +3497,80 @@ paths:
                 team_id:
                   type: integer
                   description: 'The ID of the team the user is leaving.'
+                  example: 10
+              required:
+                - team_id
+  /api/v3/user/team-chats/delete-group:
+    post:
+      summary: 'Delete A Group'
+      operationId: deleteAGroup
+      description: 'Allows the deletion of a group and its associated data, such as members and chat history, only if the authenticated user is an admin.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Group deleted successfully.'
+                  status: true
+                  team_id: 10
+                  team_member_id:
+                    - 1
+                    - 2
+                    - 3
+                properties:
+                  message:
+                    type: string
+                    example: 'Group deleted successfully.'
+                  status:
+                    type: boolean
+                    example: true
+                  team_id:
+                    type: integer
+                    example: 10
+                  team_member_id:
+                    type: array
+                    example:
+                      - 1
+                      - 2
+                      - 3
+                    items:
+                      type: integer
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'An error occurred while deleting the group.'
+                  status: false
+                  error: 'Error details here'
+                properties:
+                  message:
+                    type: string
+                    example: 'An error occurred while deleting the group.'
+                  status:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: 'Error details here'
+      tags:
+        - 'Group Chats'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_id:
+                  type: integer
+                  description: 'The ID of the team to be deleted.'
                   example: 10
               required:
                 - team_id

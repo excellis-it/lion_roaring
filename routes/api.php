@@ -127,7 +127,7 @@ Route::prefix('v3')->group(function () {
             Route::post('/remove-member', [TeamChatController::class, 'removeMember']);
             Route::post('/add-member-team', [TeamChatController::class, 'addMemberTeam']);
             Route::post('/exit-from-group', [TeamChatController::class, 'exitFromGroup']);            
-            // Route::post('/delete-group', [TeamChatController::class, 'deleteGroup'])->name('delete-group');
+            Route::post('/delete-group', [TeamChatController::class, 'deleteGroup']);
             // Route::post('/make-admin', [TeamChatController::class, 'makeAdmin'])->name('make-admin');
             // Route::post('/seen', [TeamChatController::class, 'seen'])->name('seen');
             // Route::post('/notification', [TeamChatController::class, 'notification'])->name('notification');

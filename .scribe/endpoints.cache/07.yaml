@@ -223,7 +223,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer evbadc18kDVhf63gP5Z46Ea'
+      - 'Bearer 81DcVbah6d64fZvaekPE35g'
     controller: null
     method: null
     route: null
@@ -332,7 +332,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Zg613eDhaEVbd46a5kfvc8P'
+      - 'Bearer 6k1dbvf65aD8heZEc3PV4ga'
     controller: null
     method: null
     route: null
@@ -570,7 +570,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5fV3akadbcPgZh4v18DeE66'
+      - 'Bearer 1D66E3gckd5aevbVh8ZaPf4'
     controller: null
     method: null
     route: null
@@ -708,7 +708,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6VabgeP6cEDakZfd85v41h3'
+      - 'Bearer f66dZgE3Dh8eVv5P1aac4bk'
     controller: null
     method: null
     route: null
@@ -793,7 +793,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D61c3PehZ6bk54dfaEagv8V'
+      - 'Bearer ac8gevaV41P3k5EDZ6fd6bh'
     controller: null
     method: null
     route: null
@@ -868,7 +868,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer avf5ZbdV6aPE68c1gDhe3k4'
+      - 'Bearer cEagkPe61f53Dd8v4VahZb6'
     controller: null
     method: null
     route: null
@@ -955,7 +955,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fVPva4chZkE6dge5316baD8'
+      - 'Bearer 6eV1P6Dv4k5gdca83aEhbZf'
     controller: null
     method: null
     route: null
@@ -1047,7 +1047,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a184f6dDgb5hke3a6ZvPEcV'
+      - 'Bearer E1k4c6v5gD6Pad8baVf3Zeh'
     controller: null
     method: null
     route: null
@@ -1134,7 +1134,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer akeEvPb5a1hfc3DZd846gV6'
+      - 'Bearer 6akP6fa5e1h4DZ38EdgVvcb'
     controller: null
     method: null
     route: null
@@ -1204,7 +1204,84 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3PD6kacvf4VgeZh6d8E51ab'
+      - 'Bearer 5Zk6V6fDhEed3v14bgcaP8a'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/team-chats/delete-group
+    metadata:
+      groupName: 'Group Chats'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete A Group'
+      description: 'Allows the deletion of a group and its associated data, such as members and chat history, only if the authenticated user is an admin.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      team_id:
+        name: team_id
+        description: 'The ID of the team to be deleted.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      team_id: 10
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Group deleted successfully.",
+             "status": true,
+             "team_id": 10,
+             "team_member_id": [1, 2, 3]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "You must be an admin to delete this group.",
+             "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "An error occurred while deleting the group.",
+             "status": false,
+             "error": "Error details here"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hc38fa6PZadV6E51kgDb4ve'
     controller: null
     method: null
     route: null

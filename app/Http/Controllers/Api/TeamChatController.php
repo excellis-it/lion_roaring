@@ -1278,6 +1278,75 @@ class TeamChatController extends Controller
         }
     }
 
+    /**
+     * Delete A Group
+     *
+     * Allows the deletion of a group and its associated data, such as members and chat history, only if the authenticated user is an admin.
+     * @authenticated
+     * @bodyParam team_id int required The ID of the team to be deleted. Example: 10
+     *
+     * @response 200 {
+     *    "message": "Group deleted successfully.",
+     *    "status": true,
+     *    "team_id": 10,
+     *    "team_member_id": [1, 2, 3]
+     * }
+     * @response 201 {
+     *    "message": "You must be an admin to delete this group.",
+     *    "status": false
+     * }
+     * @response 201 {
+     *    "message": "An error occurred while deleting the group.",
+     *    "status": false,
+     *    "error": "Error details here"
+     * }
+     */
+    public function deleteGroup(Request $request)
+    {
+        try {
+            $team_id = $request->team_id;
+            $user_id = auth()->id();
+
+            // Check if the authenticated user is an admin of the group
+            $team_member = TeamMember::where('team_id', $team_id)
+                ->where('user_id', $user_id)
+                ->first();
+
+            if (!$team_member || !$team_member->is_admin) {
+                // If the user is not an admin, return a response with an error message
+                return response()->json([
+                    'message' => 'You must be an admin to delete this group.',
+                    'status' => false
+                ], 201);
+            }
+
+            $team = Team::find($team_id);
+
+            // Get all member IDs before deleting
+            $team_member_id = TeamMember::where('team_id', $team_id)->pluck('user_id')->toArray();
+
+            // Delete the team, its members, and chat history
+            $team->delete();
+            TeamMember::where('team_id', $team_id)->delete();
+            TeamChat::where('team_id', $team_id)->delete();
+
+            return response()->json([
+                'message' => 'Group deleted successfully.',
+                'status' => true,
+                'team_id' => $team_id,
+                'team_member_id' => $team_member_id
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'An error occurred while deleting the group.',
+                'status' => false,
+                'error' => $th->getMessage()
+            ], 201);
+        }
+    }
+
+
+
 
 
 
