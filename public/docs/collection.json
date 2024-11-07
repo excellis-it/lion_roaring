@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "2b401351-416d-4088-aeca-b54c57a9ada2",
+        "_postman_id": "e25409c5-2215-45fc-8c7f-accab7b112e4",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":16,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":11,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -657,7 +657,7 @@
                         },
                         {
                             "header": [],
-                            "code": 500,
+                            "code": 201,
                             "body": "{\n  \"msg\": \"An error occurred while loading chats.\",\n  \"status\": false\n}",
                             "name": ""
                         }
@@ -716,7 +716,7 @@
                         },
                         {
                             "header": [],
-                            "code": 500,
+                            "code": 201,
                             "body": "{\n  \"msg\": \"An error occurred while sending the message.\",\n  \"success\": false\n}",
                             "name": ""
                         }
@@ -826,6 +826,53 @@
                             "name": ""
                         }
                     ]
+                },
+                {
+                    "name": "Manage Chat Notifications",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/chats\/notification",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/chats\/notification"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"chat_id\":15,\"user_id\":5,\"is_delete\":1}"
+                        },
+                        "description": "Sends a notification to the receiver when they receive a new chat message. If `is_delete` is set, it marks the specified notification as deleted."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"msg\": \"Notification deleted successfully\",\n   \"status\": true\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"msg\": \"Notification already sent\",\n   \"status\": true,\n   \"notification_count\": 3,\n   \"notification\" : {\n       \"id\": 45,\n       \"user_id\": 3,\n       \"chat_id\": 15,\n       \"message\": \"You have a <b>new message<\/b> from John Doe\",\n       \"type\": \"Chat\",\n       \"created_at\": \"2024-11-07T14:35:29.000000Z\",\n       \"updated_at\": \"2024-11-07T14:35:29.000000Z\"\n   }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"msg\": \"Notification sent successfully\",\n   \"status\": true,\n   \"notification_count\": 4,\n   \"notification\": {\n       \"id\": 46,\n       \"user_id\": 3,\n       \"chat_id\": 15,\n       \"message\": \"You have a <b>new message<\/b> from John Doe\",\n       \"type\": \"Chat\",\n       \"created_at\": \"2024-11-07T14:35:29.000000Z\",\n       \"updated_at\": \"2024-11-07T14:35:29.000000Z\"\n   }\n}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -855,7 +902,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"vtillman@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"lucas.beier@example.org\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -899,7 +946,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"iure\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"dolorem\"}"
                         },
                         "description": "",
                         "auth": {
@@ -977,7 +1024,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"jaquan50@example.com\"}"
+                            "raw": "{\"email\":\"hhaag@example.org\"}"
                         },
                         "description": "",
                         "auth": {

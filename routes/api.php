@@ -111,7 +111,7 @@ Route::prefix('v3')->group(function () {
             Route::post('/clear', [ChatController::class, 'clear'])->name('clear');
             Route::post('/seen', [ChatController::class, 'seen'])->name('seen');
             Route::post('/remove', [ChatController::class, 'remove'])->name('remove');
-            // Route::post('/notification', [ChatController::class, 'notification'])->name('notification');
+            Route::post('/notification', [ChatController::class, 'notification'])->name('notification');
         });
 
 

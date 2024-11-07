@@ -135,7 +135,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d4vb6Pk6DEefVc3ahag8Z15'
+      - 'Bearer a66dvkb4P3VcDeaZ8fh5gE1'
     controller: null
     method: null
     route: null
@@ -247,7 +247,7 @@ endpoints:
         description: ''
         custom: []
       -
-        status: 500
+        status: 201
         content: |-
           {
             "msg": "An error occurred while loading chats.",
@@ -260,7 +260,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fD8avP5E6V3ebhg4ca16kdZ'
+      - 'Bearer aPVfD65Ea6gZ143dec8kvhb'
     controller: null
     method: null
     route: null
@@ -391,7 +391,7 @@ endpoints:
         description: ''
         custom: []
       -
-        status: 500
+        status: 201
         content: |-
           {
             "msg": "An error occurred while sending the message.",
@@ -404,7 +404,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h5b6faV84cPvge6E3kad1ZD'
+      - 'Bearer ehZc1EvkPD4V56gf6a3ab8d'
     controller: null
     method: null
     route: null
@@ -458,7 +458,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a6ZfbP68gkv1cedEaD53hV4'
+      - 'Bearer Dc61Zhb3gka5a8f4EVdPe6v'
     controller: null
     method: null
     route: null
@@ -531,7 +531,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4h3DE8dafbagc51e6vZPVk6'
+      - 'Bearer 4ahdb6c1ef65vEP3ZVDg8ak'
     controller: null
     method: null
     route: null
@@ -603,7 +603,121 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eDaV5v81c3bP6hdZfEg46ak'
+      - 'Bearer Zk5DP3e8dv6a1EVagc6bfh4'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/chats/notification
+    metadata:
+      groupName: Chats
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Manage Chat Notifications'
+      description: 'Sends a notification to the receiver when they receive a new chat message. If `is_delete` is set, it marks the specified notification as deleted.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      chat_id:
+        name: chat_id
+        description: 'The ID of the chat message related to the notification.'
+        required: true
+        example: 15
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      user_id:
+        name: user_id
+        description: 'The ID of the receiver of the chat message.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      is_delete:
+        name: is_delete
+        description: 'optional Set to 1 to mark the notification as deleted.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      chat_id: 15
+      user_id: 5
+      is_delete: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "msg": "Notification deleted successfully",
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+             "msg": "Notification already sent",
+             "status": true,
+             "notification_count": 3,
+             "notification" : {
+                 "id": 45,
+                 "user_id": 3,
+                 "chat_id": 15,
+                 "message": "You have a <b>new message</b> from John Doe",
+                 "type": "Chat",
+                 "created_at": "2024-11-07T14:35:29.000000Z",
+                 "updated_at": "2024-11-07T14:35:29.000000Z"
+             }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+             "msg": "Notification sent successfully",
+             "status": true,
+             "notification_count": 4,
+             "notification": {
+                 "id": 46,
+                 "user_id": 3,
+                 "chat_id": 15,
+                 "message": "You have a <b>new message</b> from John Doe",
+                 "type": "Chat",
+                 "created_at": "2024-11-07T14:35:29.000000Z",
+                 "updated_at": "2024-11-07T14:35:29.000000Z"
+             }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ahV6Z8P1db5eDavgfE36ck4'
     controller: null
     method: null
     route: null

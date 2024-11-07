@@ -213,7 +213,7 @@ class ProfileController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'An error occurred: ' . $e->getMessage()
-            ], 500); // 500 Internal Server Error
+            ], 201); 
         }
     }
 

@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 16
+                  example: 11
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1173,7 +1173,7 @@ paths:
                         delete_from_receiver_id:
                           type: integer
                           example: 0
-        500:
+        201:
           description: ''
           content:
             application/json:
@@ -1455,7 +1455,7 @@ paths:
                   success:
                     type: boolean
                     example: true
-        500:
+        201:
           description: ''
           content:
             application/json:
@@ -1678,6 +1678,89 @@ paths:
               required:
                 - chat_id
                 - del_from
+  /api/v3/user/chats/notification:
+    post:
+      summary: 'Manage Chat Notifications'
+      operationId: manageChatNotifications
+      description: 'Sends a notification to the receiver when they receive a new chat message. If `is_delete` is set, it marks the specified notification as deleted.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  msg: 'Notification sent successfully'
+                  status: true
+                  notification_count: 4
+                  notification:
+                    id: 46
+                    user_id: 3
+                    chat_id: 15
+                    message: 'You have a <b>new message</b> from John Doe'
+                    type: Chat
+                    created_at: '2024-11-07T14:35:29.000000Z'
+                    updated_at: '2024-11-07T14:35:29.000000Z'
+                properties:
+                  msg:
+                    type: string
+                    example: 'Notification sent successfully'
+                  status:
+                    type: boolean
+                    example: true
+                  notification_count:
+                    type: integer
+                    example: 4
+                  notification:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 46
+                      user_id:
+                        type: integer
+                        example: 3
+                      chat_id:
+                        type: integer
+                        example: 15
+                      message:
+                        type: string
+                        example: 'You have a <b>new message</b> from John Doe'
+                      type:
+                        type: string
+                        example: Chat
+                      created_at:
+                        type: string
+                        example: '2024-11-07T14:35:29.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-07T14:35:29.000000Z'
+      tags:
+        - Chats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chat_id:
+                  type: integer
+                  description: 'The ID of the chat message related to the notification.'
+                  example: 15
+                user_id:
+                  type: integer
+                  description: 'The ID of the receiver of the chat message.'
+                  example: 5
+                is_delete:
+                  type: integer
+                  description: 'optional Set to 1 to mark the notification as deleted.'
+                  example: 1
+              required:
+                - chat_id
+                - user_id
   /api/v3/contact-us:
     post:
       summary: 'Store Contact Us'
@@ -1721,7 +1804,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: vtillman@example.com
+                  example: lucas.beier@example.org
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1792,7 +1875,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: iure
+                  example: dolorem
       security: []
   /api/v3/country-list:
     post:
@@ -1917,7 +2000,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: jaquan50@example.com
+                  example: hhaag@example.org
               required:
                 - email
       security: []

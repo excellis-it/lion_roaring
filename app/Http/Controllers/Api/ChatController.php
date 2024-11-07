@@ -237,7 +237,7 @@ class ChatController extends Controller
      *        }
      *    ]
      *}
-     * @response 500 {
+     * @response 201 {
      *   "msg": "An error occurred while loading chats.",
      *   "status": false
      * }
@@ -287,7 +287,7 @@ class ChatController extends Controller
             return response()->json([
                 'msg' => 'An error occurred while loading chats.',
                 'status' => false,
-            ], 500);
+            ], 201);
         }
     }
 
@@ -366,7 +366,7 @@ class ChatController extends Controller
      *    "chat_count": 14,
      *    "success": true
      * }
-     * @response 500 {
+     * @response 201 {
      *   "msg": "An error occurred while sending the message.",
      *   "success": false
      * }
@@ -408,9 +408,9 @@ class ChatController extends Controller
                 'chat' => $chat,
                 'chat_count' => $chat_count,
                 'success' => true
-            ]);
+            ], 200);
         } catch (\Throwable $th) {
-            return response()->json(['msg' => $th->getMessage(), 'success' => false]);
+            return response()->json(['msg' => $th->getMessage(), 'success' => false], 201);
         }
     }
 
@@ -430,20 +430,24 @@ class ChatController extends Controller
      */
     public function clear(Request $request)
     {
-        $sender_id = auth()->id();
-        $reciver_id = $request->reciver_id;
+        try {
+            $sender_id = auth()->id();
+            $reciver_id = $request->reciver_id;
 
-        // Mark messages as deleted from the sender's side
-        Chat::where('sender_id', $sender_id)
-            ->where('reciver_id', $reciver_id)
-            ->update(['delete_from_sender_id' => 1]);
+            // Mark messages as deleted from the sender's side
+            Chat::where('sender_id', $sender_id)
+                ->where('reciver_id', $reciver_id)
+                ->update(['delete_from_sender_id' => 1]);
 
-        // Mark messages as deleted from the receiver's side
-        Chat::where('reciver_id', $sender_id)
-            ->where('sender_id', $reciver_id)
-            ->update(['delete_from_receiver_id' => 1]);
+            // Mark messages as deleted from the receiver's side
+            Chat::where('reciver_id', $sender_id)
+                ->where('sender_id', $reciver_id)
+                ->update(['delete_from_receiver_id' => 1]);
 
-        return response()->json(['msg' => 'Chat cleared successfully', 'success' => true]);
+            return response()->json(['msg' => 'Chat cleared successfully', 'success' => true], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['msg' => $th->getMessage(), 'success' => false], 201);
+        }
     }
 
 
@@ -471,17 +475,21 @@ class ChatController extends Controller
      */
     public function seen(Request $request)
     {
-        $sender_id = auth()->id();
-        $reciver_id = $request->reciver_id;
+        try {
+            $sender_id = auth()->id();
+            $reciver_id = $request->reciver_id;
 
-        Chat::where('id', $request->chat_id)
-            ->where('sender_id', $reciver_id)
-            ->where('reciver_id', $sender_id)
-            ->update(['seen' => 1]);
+            Chat::where('id', $request->chat_id)
+                ->where('sender_id', $reciver_id)
+                ->where('reciver_id', $sender_id)
+                ->update(['seen' => 1]);
 
-        $last_chat = Chat::findOrFail($request->chat_id);
+            $last_chat = Chat::findOrFail($request->chat_id);
 
-        return response()->json(['msg' => 'Chat seen successfully', 'status' => true, 'last_chat' => $last_chat]);
+            return response()->json(['msg' => 'Chat seen successfully', 'status' => true, 'last_chat' => $last_chat], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['msg' => $th->getMessage(), 'success' => false], 201);
+        }
     }
 
     /**
@@ -507,22 +515,134 @@ class ChatController extends Controller
      */
     public function remove(Request $request)
     {
-        $chat_id = $request->chat_id;
-        $del_from = $request->del_from;
+        try {
+            $chat_id = $request->chat_id;
+            $del_from = $request->del_from;
 
-        $chat = Chat::where('id', $chat_id)->first();
+            $chat = Chat::where('id', $chat_id)->first();
 
-        if ($del_from === 'everyone') {
-            Chat::where('id', $chat_id)->delete();
-        } else {
-            // Mark message as deleted for the sender if not removing for everyone
-            Chat::where('id', $chat_id)
-                ->where('sender_id', auth()->id())
-                ->update(['deleted_for_sender' => 1]);
+            if ($del_from === 'everyone') {
+                Chat::where('id', $chat_id)->delete();
+            } else {
+                // Mark message as deleted for the sender if not removing for everyone
+                Chat::where('id', $chat_id)
+                    ->where('sender_id', auth()->id())
+                    ->update(['deleted_for_sender' => 1]);
+            }
+
+            return response()->json(['msg' => 'Chat removed successfully', 'status' => true, 'chat' => $chat], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['msg' => $th->getMessage(), 'success' => false], 201);
         }
-
-        return response()->json(['msg' => 'Chat removed successfully', 'status' => true, 'chat' => $chat]);
     }
+
+
+    /**
+     * Manage Chat Notifications
+     * 
+     * Sends a notification to the receiver when they receive a new chat message. If `is_delete` is set, it marks the specified notification as deleted.
+     * @authenticated
+     * @bodyParam chat_id int required The ID of the chat message related to the notification. Example: 15
+     * @bodyParam user_id int required The ID of the receiver of the chat message. Example: 5
+     * @bodyParam is_delete int optional Set to 1 to mark the notification as deleted. Example: 1
+     * 
+     * @response {
+     *    "msg": "Notification deleted successfully",
+     *    "status": true
+     * }
+     * @response 200 {
+     *    "msg": "Notification already sent",
+     *    "status": true,
+     *    "notification_count": 3,
+     *    "notification" : {
+     *        "id": 45,
+     *        "user_id": 3,
+     *        "chat_id": 15,
+     *        "message": "You have a <b>new message</b> from John Doe",
+     *        "type": "Chat",
+     *        "created_at": "2024-11-07T14:35:29.000000Z",
+     *        "updated_at": "2024-11-07T14:35:29.000000Z"
+     *    }
+     * }
+     * @response 200 {
+     *    "msg": "Notification sent successfully",
+     *    "status": true,
+     *    "notification_count": 4,
+     *    "notification": {
+     *        "id": 46,
+     *        "user_id": 3,
+     *        "chat_id": 15,
+     *        "message": "You have a <b>new message</b> from John Doe",
+     *        "type": "Chat",
+     *        "created_at": "2024-11-07T14:35:29.000000Z",
+     *        "updated_at": "2024-11-07T14:35:29.000000Z"
+     *    }
+     * }
+     */
+    public function notification(Request $request)
+    {
+        try {
+            $user_id = $request->user_id;  // Receiver's ID
+            $sender_id = auth()->id();
+            $chat_id = $request->chat_id;
+            $sender = User::find($sender_id);
+
+            // Check if `is_delete` is set in the request
+            if (isset($request->is_delete)) {
+                Notification::where('user_id', $user_id)
+                    ->where('chat_id', $chat_id)
+                    ->update(['is_delete' => 1]);
+                return response()->json(['msg' => 'Notification deleted successfully', 'status' => true], 200);
+            }
+
+            // Check if a notification for the specific chat is already sent to the user
+            $count = Notification::where('user_id', $user_id)
+                ->where('is_read', 0)
+                ->where('chat_id', $chat_id)
+                ->where('type', 'Chat')
+                ->count();
+
+            if ($count > 0) {
+                $notification = Notification::where('user_id', $user_id)
+                    ->where('is_read', 0)
+                    ->where('chat_id', $chat_id)
+                    ->where('type', 'Chat')
+                    ->first();
+                $notification_count = Notification::where('user_id', $user_id)
+                    ->where('is_read', 0)
+                    ->where('is_delete', 0)
+                    ->count();
+                return response()->json([
+                    'msg' => 'Notification already sent',
+                    'status' => true,
+                    'notification_count' => $notification_count,
+                    'notification' => $notification
+                ]);
+            } else {
+                // Send a new notification if it hasn't been sent yet
+                $notification = new Notification();
+                $notification->user_id = $user_id;  // Receiver's ID
+                $notification->chat_id = $chat_id;
+                $notification->message = 'You have a <b>new message</b> from ' . $sender->full_name;
+                $notification->type = 'Chat';
+                $notification->save();
+
+                $notification_count = Notification::where('user_id', $user_id)
+                    ->where('is_read', 0)
+                    ->where('is_delete', 0)
+                    ->count();
+                return response()->json([
+                    'msg' => 'Notification sent successfully',
+                    'status' => true,
+                    'notification_count' => $notification_count,
+                    'notification' => $notification
+                ], 200);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['msg' => $th->getMessage(), 'success' => false], 201);
+        }
+    }
+
 
 
 
