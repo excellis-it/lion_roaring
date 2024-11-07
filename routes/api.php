@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\SubscriptionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\TeamChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,7 +93,7 @@ Route::prefix('v3')->group(function () {
     Route::post('country-list', [DonationController::class, 'countryList']);
 
     Route::post('register', [AuthController::class, 'register']);
-    Route::post('login', [AuthController::class, 'login']);    
+    Route::post('login', [AuthController::class, 'login']);
     Route::post('register-agreement', [AuthController::class, 'registerAgreement']);
     Route::post('forget-password', [ForgetPasswordController::class, 'forgetPassword']);
 
@@ -114,7 +115,29 @@ Route::prefix('v3')->group(function () {
             Route::post('/notification', [ChatController::class, 'notification'])->name('notification');
         });
 
+        // Team Chat
+        Route::prefix('team-chats')->name('team-chats.')->group(function () {
+            Route::post('/list', [TeamChatController::class, 'list'])->name('list');
+            // Route::post('/create', [TeamChatController::class, 'create'])->name('create');
+            // Route::post('/load', [TeamChatController::class, 'load'])->name('load');
+            // Route::post('/send', [TeamChatController::class, 'send'])->name('send');
+            // Route::post('/group-info', [TeamChatController::class, 'groupInfo'])->name('group-info');
+            // Route::post('/update-group-image', [TeamChatController::class, 'updateGroupImage'])->name('update-group-image');
+            // Route::post('/edit-name-des', [TeamChatController::class, 'editNameDes'])->name('edit-name-des');
+            // Route::post('/name-des-update', [TeamChatController::class, 'nameDesUpdate'])->name('name-des-update');
+            // Route::post('/remove-member', [TeamChatController::class, 'removeMember'])->name('remove-member');
+            // Route::post('/group-list', [TeamChatController::class, 'groupList'])->name('group-list');
+            // Route::post('/exit-from-group', [TeamChatController::class, 'exitFromGroup'])->name('exit-from-group');
+            // Route::post('/add-member-team', [TeamChatController::class, 'addMemberTeam'])->name('add-member-team');
+            // Route::post('/delete-group', [TeamChatController::class, 'deleteGroup'])->name('delete-group');
+            // Route::post('/make-admin', [TeamChatController::class, 'makeAdmin'])->name('make-admin');
+            // Route::post('/seen', [TeamChatController::class, 'seen'])->name('seen');
+            // Route::post('/notification', [TeamChatController::class, 'notification'])->name('notification');
+            // Route::post('/remove-chat', [TeamChatController::class, 'removeChat'])->name('remove-chat');
+            // // clear-all-conversation
+            // Route::post('/clear-all-conversation', [TeamChatController::class, 'clearAllConversation'])->name('clear-all-conversation');
+        });
 
+        //
     });
-
 });

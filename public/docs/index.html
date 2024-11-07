@@ -183,6 +183,16 @@
                             </li>
                                                                         </ul>
                             </ul>
+                    <ul id="tocify-header-group-chats" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="group-chats">
+                    <a href="#group-chats">Group Chats</a>
+                </li>
+                                    <ul id="tocify-subheader-group-chats" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="group-chats-POSTapi-v3-user-team-chats-list">
+                                <a href="#group-chats-POSTapi-v3-user-team-chats-list">List of Group Chats</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
                     <ul id="tocify-header-profile" class="tocify-header">
                 <li class="tocify-item level-1" data-unique="profile">
                     <a href="#profile">Profile</a>
@@ -255,7 +265,7 @@ You can switch the language used with the tabs at the top right (or from the nav
     --data "{
     \"user_name\": \"johndoe\",
     \"email\": \"johndoe@example.com\",
-    \"ecclesia_id\": 11,
+    \"ecclesia_id\": 17,
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
     \"middle_name\": \"A.\",
@@ -286,7 +296,7 @@ const headers = {
 let body = {
     "user_name": "johndoe",
     "email": "johndoe@example.com",
-    "ecclesia_id": 11,
+    "ecclesia_id": 17,
     "first_name": "John",
     "last_name": "Doe",
     "middle_name": "A.",
@@ -450,10 +460,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="ecclesia_id"                data-endpoint="POSTapi-v3-register"
-               value="11"
+               value="17"
                data-component="body">
     <br>
-<p>nullable Ecclesia ID if applicable. Example: <code>11</code></p>
+<p>nullable Ecclesia ID if applicable. Example: <code>17</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>first_name</code></b>&nbsp;&nbsp;
@@ -2970,7 +2980,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "reciver_id=2"\
     --form "message=Hello there!"\
-    --form "file=@C:\Users\Masum\AppData\Local\Temp\phpC28E.tmp" </code></pre></div>
+    --form "file=@C:\Users\Masum\AppData\Local\Temp\php5D50.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -3191,7 +3201,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Optional file attachment for the chat message. Example: <code>C:\Users\Masum\AppData\Local\Temp\phpC28E.tmp</code></p>
+<p>Optional file attachment for the chat message. Example: <code>C:\Users\Masum\AppData\Local\Temp\php5D50.tmp</code></p>
         </div>
         </form>
 
@@ -3939,7 +3949,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
-    \"email\": \"lucas.beier@example.org\",
+    \"email\": \"katherine.jakubowski@example.net\",
     \"phone\": \"1234567890\",
     \"message\": \"Hello\"
 }"
@@ -3959,7 +3969,7 @@ const headers = {
 let body = {
     "first_name": "John",
     "last_name": "Doe",
-    "email": "lucas.beier@example.org",
+    "email": "katherine.jakubowski@example.net",
     "phone": "1234567890",
     "message": "Hello"
 };
@@ -4082,10 +4092,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-contact-us"
-               value="lucas.beier@example.org"
+               value="katherine.jakubowski@example.net"
                data-component="body">
     <br>
-<p>Email of the user. Example: Example: <code>lucas.beier@example.org</code></p>
+<p>Email of the user. Example: Example: <code>katherine.jakubowski@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -4141,7 +4151,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"postcode\": \"ZP74857\",
     \"amount\": 150,
     \"country_id\": 2,
-    \"stripeToken\": \"dolorem\"
+    \"stripeToken\": \"assumenda\"
 }"
 </code></pre></div>
 
@@ -4166,7 +4176,7 @@ let body = {
     "postcode": "ZP74857",
     "amount": 150,
     "country_id": 2,
-    "stripeToken": "dolorem"
+    "stripeToken": "assumenda"
 };
 
 fetch(url, {
@@ -4354,10 +4364,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="stripeToken"                data-endpoint="POSTapi-v3-donation"
-               value="dolorem"
+               value="assumenda"
                data-component="body">
     <br>
-<p>required. Example: <code>dolorem</code></p>
+<p>required. Example: <code>assumenda</code></p>
         </div>
         </form>
 
@@ -4526,7 +4536,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"email\": \"hhaag@example.org\"
+    \"email\": \"clifton.kuhn@example.org\"
 }"
 </code></pre></div>
 
@@ -4542,7 +4552,7 @@ const headers = {
 };
 
 let body = {
-    "email": "hhaag@example.org"
+    "email": "clifton.kuhn@example.org"
 };
 
 fetch(url, {
@@ -4641,12 +4651,329 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-forget-password"
-               value="hhaag@example.org"
+               value="clifton.kuhn@example.org"
                data-component="body">
     <br>
-<p>The email of the user. Example: Example: <code>hhaag@example.org</code></p>
+<p>The email of the user. Example: Example: <code>clifton.kuhn@example.org</code></p>
         </div>
         </form>
+
+                <h1 id="group-chats">Group Chats</h1>
+
+    
+
+                                <h2 id="group-chats-POSTapi-v3-user-team-chats-list">List of Group Chats</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Retrieves the list of teams that the authenticated user is part of, ordered by the last message sent in the team. It also includes the team members.</p>
+
+<span id="example-requests-POSTapi-v3-user-team-chats-list">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/team-chats/list" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/team-chats/list"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-team-chats-list">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">*{
+ &quot;msg&quot;: &quot;Teams listed successfully&quot;,
+ &quot;status&quot;: true,
+ &quot;teams&quot;: [
+   {
+     &quot;id&quot;: 31,
+     &quot;created_by&quot;: null,
+     &quot;name&quot;: &quot;test group&quot;,
+     &quot;group_image&quot;: &quot;team/mzw14lBFdUuQKRMiOSjEoZOKPIFvxXPYyJxl3CSq.png&quot;,
+     &quot;description&quot;: &quot;for testing&quot;,
+     &quot;created_at&quot;: &quot;2024-11-05T11:10:08.000000Z&quot;,
+     &quot;updated_at&quot;: &quot;2024-11-05T11:10:08.000000Z&quot;,
+     &quot;chats&quot;: [
+       {
+         &quot;id&quot;: 279,
+         &quot;team_id&quot;: 31,
+         &quot;user_id&quot;: 37,
+         &quot;message&quot;: &quot;Welcome to test group group.&quot;,
+         &quot;attachment&quot;: null,
+         &quot;is_seen&quot;: 0,
+         &quot;deleted_at&quot;: null,
+         &quot;created_at&quot;: &quot;2024-11-05T11:10:08.000000Z&quot;,
+         &quot;updated_at&quot;: &quot;2024-11-05T11:10:08.000000Z&quot;,
+         &quot;chat_members&quot;: [
+           {
+             &quot;id&quot;: 919,
+             &quot;chat_id&quot;: 279,
+             &quot;user_id&quot;: 38,
+             &quot;is_seen&quot;: 0,
+             &quot;created_at&quot;: &quot;2024-11-05T11:10:08.000000Z&quot;,
+             &quot;updated_at&quot;: &quot;2024-11-05T11:10:08.000000Z&quot;
+           },
+           {
+             &quot;id&quot;: 920,
+             &quot;chat_id&quot;: 279,
+             &quot;user_id&quot;: 12,
+             &quot;is_seen&quot;: 1,
+             &quot;created_at&quot;: &quot;2024-11-05T11:10:08.000000Z&quot;,
+             &quot;updated_at&quot;: &quot;2024-11-05T11:10:53.000000Z&quot;
+           },
+           {
+             &quot;id&quot;: 921,
+             &quot;chat_id&quot;: 279,
+             &quot;user_id&quot;: 37,
+             &quot;is_seen&quot;: 1,
+             &quot;created_at&quot;: &quot;2024-11-05T11:10:08.000000Z&quot;,
+             &quot;updated_at&quot;: &quot;2024-11-05T11:10:46.000000Z&quot;
+           }
+         ]
+       },
+       {
+         &quot;id&quot;: 280,
+         &quot;team_id&quot;: 31,
+         &quot;user_id&quot;: 37,
+         &quot;message&quot;: &quot;a&quot;,
+         &quot;attachment&quot;: null,
+         &quot;is_seen&quot;: 0,
+         &quot;deleted_at&quot;: null,
+         &quot;created_at&quot;: &quot;2024-11-05T11:10:46.000000Z&quot;,
+         &quot;updated_at&quot;: &quot;2024-11-05T11:10:46.000000Z&quot;,
+         &quot;chat_members&quot;: [
+           {
+             &quot;id&quot;: 922,
+             &quot;chat_id&quot;: 280,
+             &quot;user_id&quot;: 37,
+             &quot;is_seen&quot;: 1,
+             &quot;created_at&quot;: &quot;2024-11-05T11:10:46.000000Z&quot;,
+             &quot;updated_at&quot;: &quot;2024-11-05T11:10:46.000000Z&quot;
+           },
+           {
+             &quot;id&quot;: 923,
+             &quot;chat_id&quot;: 280,
+             &quot;user_id&quot;: 38,
+             &quot;is_seen&quot;: 0,
+             &quot;created_at&quot;: &quot;2024-11-05T11:10:46.000000Z&quot;,
+             &quot;updated_at&quot;: &quot;2024-11-05T11:10:46.000000Z&quot;
+           },
+           {
+             &quot;id&quot;: 924,
+             &quot;chat_id&quot;: 280,
+             &quot;user_id&quot;: 12,
+             &quot;is_seen&quot;: 1,
+             &quot;created_at&quot;: &quot;2024-11-05T11:10:46.000000Z&quot;,
+             &quot;updated_at&quot;: &quot;2024-11-05T11:10:53.000000Z&quot;
+           }
+         ]
+       },
+       {
+         &quot;id&quot;: 281,
+         &quot;team_id&quot;: 31,
+         &quot;user_id&quot;: 12,
+         &quot;message&quot;: &quot;b&quot;,
+         &quot;attachment&quot;: null,
+         &quot;is_seen&quot;: 0,
+         &quot;deleted_at&quot;: null,
+         &quot;created_at&quot;: &quot;2024-11-05T11:10:53.000000Z&quot;,
+         &quot;updated_at&quot;: &quot;2024-11-05T11:10:53.000000Z&quot;,
+         &quot;chat_members&quot;: [
+           {
+             &quot;id&quot;: 925,
+             &quot;chat_id&quot;: 281,
+             &quot;user_id&quot;: 37,
+             &quot;is_seen&quot;: 1,
+             &quot;created_at&quot;: &quot;2024-11-05T11:10:53.000000Z&quot;,
+             &quot;updated_at&quot;: &quot;2024-11-05T11:10:54.000000Z&quot;
+           },
+           {
+             &quot;id&quot;: 926,
+             &quot;chat_id&quot;: 281,
+             &quot;user_id&quot;: 38,
+             &quot;is_seen&quot;: 0,
+             &quot;created_at&quot;: &quot;2024-11-05T11:10:53.000000Z&quot;,
+             &quot;updated_at&quot;: &quot;2024-11-05T11:10:53.000000Z&quot;
+           },
+           {
+             &quot;id&quot;: 927,
+             &quot;chat_id&quot;: 281,
+             &quot;user_id&quot;: 12,
+             &quot;is_seen&quot;: 1,
+             &quot;created_at&quot;: &quot;2024-11-05T11:10:53.000000Z&quot;,
+             &quot;updated_at&quot;: &quot;2024-11-05T11:10:53.000000Z&quot;
+           }
+         ]
+       }
+     ],
+     &quot;last_message&quot;: {
+       &quot;id&quot;: 281,
+       &quot;team_id&quot;: 31,
+       &quot;user_id&quot;: 12,
+       &quot;message&quot;: &quot;b&quot;,
+       &quot;attachment&quot;: null,
+       &quot;is_seen&quot;: 0,
+       &quot;deleted_at&quot;: null,
+       &quot;created_at&quot;: &quot;2024-11-05T11:10:53.000000Z&quot;,
+       &quot;updated_at&quot;: &quot;2024-11-05T11:10:53.000000Z&quot;
+     }
+   }
+ ],
+ &quot;members&quot;: [
+   {
+     &quot;id&quot;: 1,
+     &quot;ecclesia_id&quot;: null,
+     &quot;created_id&quot;: &quot;0&quot;,
+     &quot;user_name&quot;: &quot;user1&quot;,
+     &quot;first_name&quot;: &quot;abc&quot;,
+     &quot;middle_name&quot;: null,
+     &quot;last_name&quot;: &quot;def&quot;,
+     &quot;email&quot;: &quot;main@test.com&quot;,
+     &quot;phone&quot;: &quot;+36 12345&quot;,
+     &quot;email_verified_at&quot;: null,
+     &quot;profile_picture&quot;: &quot;profile/5GI3lBuRJl6QOxp55xLpNEWwxIuedycBSF6WAT6H.png&quot;,
+     &quot;address&quot;: &quot;Kokata&quot;,
+     &quot;city&quot;: &quot;Kolkata&quot;,
+     &quot;state&quot;: &quot;41&quot;,
+     &quot;address2&quot;: null,
+     &quot;country&quot;: &quot;101&quot;,
+     &quot;zip&quot;: &quot;700001&quot;,
+     &quot;status&quot;: 1,
+     &quot;created_at&quot;: &quot;2024-03-05T15:36:13.000000Z&quot;,
+     &quot;updated_at&quot;: &quot;2024-09-04T11:09:09.000000Z&quot;
+   },
+   {
+     &quot;id&quot;: 19,
+     &quot;ecclesia_id&quot;: null,
+     &quot;created_id&quot;: &quot;1&quot;,
+     &quot;user_name&quot;: &quot;Allen&quot;,
+     &quot;first_name&quot;: &quot;Allen&quot;,
+     &quot;middle_name&quot;: null,
+     &quot;last_name&quot;: &quot;Allen&quot;,
+     &quot;email&quot;: &quot;allen@yopmail.com&quot;,
+     &quot;phone&quot;: &quot;516-313-5564&quot;,
+     &quot;email_verified_at&quot;: null,
+     &quot;profile_picture&quot;: null,
+     &quot;address&quot;: &quot;santa Ana&quot;,
+     &quot;city&quot;: &quot;Orange&quot;,
+     &quot;state&quot;: &quot;California&quot;,
+     &quot;address2&quot;: null,
+     &quot;country&quot;: &quot;United States&quot;,
+     &quot;zip&quot;: &quot;915467&quot;,
+     &quot;status&quot;: 1,
+     &quot;created_at&quot;: &quot;2024-07-27T07:16:03.000000Z&quot;,
+     &quot;updated_at&quot;: &quot;2024-07-27T07:16:03.000000Z&quot;
+   },
+ ]
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-team-chats-list" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-team-chats-list"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-team-chats-list"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-team-chats-list" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-team-chats-list">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-team-chats-list" data-method="POST"
+      data-path="api/v3/user/team-chats/list"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-team-chats-list', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-team-chats-list"
+                    onclick="tryItOut('POSTapi-v3-user-team-chats-list');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-team-chats-list"
+                    onclick="cancelTryOut('POSTapi-v3-user-team-chats-list');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-team-chats-list"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/team-chats/list</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-team-chats-list"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-team-chats-list"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-team-chats-list"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
 
                 <h1 id="profile">Profile</h1>
 
@@ -5022,7 +5349,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "profile_picture=@C:\Users\Masum\AppData\Local\Temp\phpC25D.tmp" </code></pre></div>
+    --form "profile_picture=@C:\Users\Masum\AppData\Local\Temp\php5D1F.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -5159,7 +5486,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The profile picture of the user. Example: <code>C:\Users\Masum\AppData\Local\Temp\phpC25D.tmp</code></p>
+<p>The profile picture of the user. Example: <code>C:\Users\Masum\AppData\Local\Temp\php5D1F.tmp</code></p>
         </div>
         </form>
 

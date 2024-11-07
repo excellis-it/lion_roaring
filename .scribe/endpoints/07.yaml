@@ -1,0 +1,228 @@
+name: 'Group Chats'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/team-chats/list
+    metadata:
+      groupName: 'Group Chats'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List of Group Chats'
+      description: 'Retrieves the list of teams that the authenticated user is part of, ordered by the last message sent in the team. It also includes the team members.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          *{
+           "msg": "Teams listed successfully",
+           "status": true,
+           "teams": [
+             {
+               "id": 31,
+               "created_by": null,
+               "name": "test group",
+               "group_image": "team/mzw14lBFdUuQKRMiOSjEoZOKPIFvxXPYyJxl3CSq.png",
+               "description": "for testing",
+               "created_at": "2024-11-05T11:10:08.000000Z",
+               "updated_at": "2024-11-05T11:10:08.000000Z",
+               "chats": [
+                 {
+                   "id": 279,
+                   "team_id": 31,
+                   "user_id": 37,
+                   "message": "Welcome to test group group.",
+                   "attachment": null,
+                   "is_seen": 0,
+                   "deleted_at": null,
+                   "created_at": "2024-11-05T11:10:08.000000Z",
+                   "updated_at": "2024-11-05T11:10:08.000000Z",
+                   "chat_members": [
+                     {
+                       "id": 919,
+                       "chat_id": 279,
+                       "user_id": 38,
+                       "is_seen": 0,
+                       "created_at": "2024-11-05T11:10:08.000000Z",
+                       "updated_at": "2024-11-05T11:10:08.000000Z"
+                     },
+                     {
+                       "id": 920,
+                       "chat_id": 279,
+                       "user_id": 12,
+                       "is_seen": 1,
+                       "created_at": "2024-11-05T11:10:08.000000Z",
+                       "updated_at": "2024-11-05T11:10:53.000000Z"
+                     },
+                     {
+                       "id": 921,
+                       "chat_id": 279,
+                       "user_id": 37,
+                       "is_seen": 1,
+                       "created_at": "2024-11-05T11:10:08.000000Z",
+                       "updated_at": "2024-11-05T11:10:46.000000Z"
+                     }
+                   ]
+                 },
+                 {
+                   "id": 280,
+                   "team_id": 31,
+                   "user_id": 37,
+                   "message": "a",
+                   "attachment": null,
+                   "is_seen": 0,
+                   "deleted_at": null,
+                   "created_at": "2024-11-05T11:10:46.000000Z",
+                   "updated_at": "2024-11-05T11:10:46.000000Z",
+                   "chat_members": [
+                     {
+                       "id": 922,
+                       "chat_id": 280,
+                       "user_id": 37,
+                       "is_seen": 1,
+                       "created_at": "2024-11-05T11:10:46.000000Z",
+                       "updated_at": "2024-11-05T11:10:46.000000Z"
+                     },
+                     {
+                       "id": 923,
+                       "chat_id": 280,
+                       "user_id": 38,
+                       "is_seen": 0,
+                       "created_at": "2024-11-05T11:10:46.000000Z",
+                       "updated_at": "2024-11-05T11:10:46.000000Z"
+                     },
+                     {
+                       "id": 924,
+                       "chat_id": 280,
+                       "user_id": 12,
+                       "is_seen": 1,
+                       "created_at": "2024-11-05T11:10:46.000000Z",
+                       "updated_at": "2024-11-05T11:10:53.000000Z"
+                     }
+                   ]
+                 },
+                 {
+                   "id": 281,
+                   "team_id": 31,
+                   "user_id": 12,
+                   "message": "b",
+                   "attachment": null,
+                   "is_seen": 0,
+                   "deleted_at": null,
+                   "created_at": "2024-11-05T11:10:53.000000Z",
+                   "updated_at": "2024-11-05T11:10:53.000000Z",
+                   "chat_members": [
+                     {
+                       "id": 925,
+                       "chat_id": 281,
+                       "user_id": 37,
+                       "is_seen": 1,
+                       "created_at": "2024-11-05T11:10:53.000000Z",
+                       "updated_at": "2024-11-05T11:10:54.000000Z"
+                     },
+                     {
+                       "id": 926,
+                       "chat_id": 281,
+                       "user_id": 38,
+                       "is_seen": 0,
+                       "created_at": "2024-11-05T11:10:53.000000Z",
+                       "updated_at": "2024-11-05T11:10:53.000000Z"
+                     },
+                     {
+                       "id": 927,
+                       "chat_id": 281,
+                       "user_id": 12,
+                       "is_seen": 1,
+                       "created_at": "2024-11-05T11:10:53.000000Z",
+                       "updated_at": "2024-11-05T11:10:53.000000Z"
+                     }
+                   ]
+                 }
+               ],
+               "last_message": {
+                 "id": 281,
+                 "team_id": 31,
+                 "user_id": 12,
+                 "message": "b",
+                 "attachment": null,
+                 "is_seen": 0,
+                 "deleted_at": null,
+                 "created_at": "2024-11-05T11:10:53.000000Z",
+                 "updated_at": "2024-11-05T11:10:53.000000Z"
+               }
+             }
+           ],
+           "members": [
+             {
+               "id": 1,
+               "ecclesia_id": null,
+               "created_id": "0",
+               "user_name": "user1",
+               "first_name": "abc",
+               "middle_name": null,
+               "last_name": "def",
+               "email": "main@test.com",
+               "phone": "+36 12345",
+               "email_verified_at": null,
+               "profile_picture": "profile/5GI3lBuRJl6QOxp55xLpNEWwxIuedycBSF6WAT6H.png",
+               "address": "Kokata",
+               "city": "Kolkata",
+               "state": "41",
+               "address2": null,
+               "country": "101",
+               "zip": "700001",
+               "status": 1,
+               "created_at": "2024-03-05T15:36:13.000000Z",
+               "updated_at": "2024-09-04T11:09:09.000000Z"
+             },
+             {
+               "id": 19,
+               "ecclesia_id": null,
+               "created_id": "1",
+               "user_name": "Allen",
+               "first_name": "Allen",
+               "middle_name": null,
+               "last_name": "Allen",
+               "email": "allen@yopmail.com",
+               "phone": "516-313-5564",
+               "email_verified_at": null,
+               "profile_picture": null,
+               "address": "santa Ana",
+               "city": "Orange",
+               "state": "California",
+               "address2": null,
+               "country": "United States",
+               "zip": "915467",
+               "status": 1,
+               "created_at": "2024-07-27T07:16:03.000000Z",
+               "updated_at": "2024-07-27T07:16:03.000000Z"
+             },
+           ]
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer v5VcEghae6b6Pa1d4Z8Df3k'
+    controller: null
+    method: null
+    route: null
+    custom: []

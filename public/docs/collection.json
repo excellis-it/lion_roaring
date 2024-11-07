@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "e25409c5-2215-45fc-8c7f-accab7b112e4",
+        "_postman_id": "7403ef96-b75b-4dbf-8f61-160f4a032eee",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":11,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":17,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -902,7 +902,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"lucas.beier@example.org\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"katherine.jakubowski@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -946,7 +946,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"dolorem\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"assumenda\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1024,7 +1024,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"hhaag@example.org\"}"
+                            "raw": "{\"email\":\"clifton.kuhn@example.org\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1036,6 +1036,44 @@
                             "header": [],
                             "code": 200,
                             "body": "{\n\"status\": true,\n\"message\": \"Password reset link sent to your email\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Group Chats",
+            "description": "",
+            "item": [
+                {
+                    "name": "List of Group Chats",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/team-chats\/list",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/team-chats\/list"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Retrieves the list of teams that the authenticated user is part of, ordered by the last message sent in the team. It also includes the team members."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "*{\n \"msg\": \"Teams listed successfully\",\n \"status\": true,\n \"teams\": [\n   {\n     \"id\": 31,\n     \"created_by\": null,\n     \"name\": \"test group\",\n     \"group_image\": \"team\/mzw14lBFdUuQKRMiOSjEoZOKPIFvxXPYyJxl3CSq.png\",\n     \"description\": \"for testing\",\n     \"created_at\": \"2024-11-05T11:10:08.000000Z\",\n     \"updated_at\": \"2024-11-05T11:10:08.000000Z\",\n     \"chats\": [\n       {\n         \"id\": 279,\n         \"team_id\": 31,\n         \"user_id\": 37,\n         \"message\": \"Welcome to test group group.\",\n         \"attachment\": null,\n         \"is_seen\": 0,\n         \"deleted_at\": null,\n         \"created_at\": \"2024-11-05T11:10:08.000000Z\",\n         \"updated_at\": \"2024-11-05T11:10:08.000000Z\",\n         \"chat_members\": [\n           {\n             \"id\": 919,\n             \"chat_id\": 279,\n             \"user_id\": 38,\n             \"is_seen\": 0,\n             \"created_at\": \"2024-11-05T11:10:08.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:08.000000Z\"\n           },\n           {\n             \"id\": 920,\n             \"chat_id\": 279,\n             \"user_id\": 12,\n             \"is_seen\": 1,\n             \"created_at\": \"2024-11-05T11:10:08.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:53.000000Z\"\n           },\n           {\n             \"id\": 921,\n             \"chat_id\": 279,\n             \"user_id\": 37,\n             \"is_seen\": 1,\n             \"created_at\": \"2024-11-05T11:10:08.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:46.000000Z\"\n           }\n         ]\n       },\n       {\n         \"id\": 280,\n         \"team_id\": 31,\n         \"user_id\": 37,\n         \"message\": \"a\",\n         \"attachment\": null,\n         \"is_seen\": 0,\n         \"deleted_at\": null,\n         \"created_at\": \"2024-11-05T11:10:46.000000Z\",\n         \"updated_at\": \"2024-11-05T11:10:46.000000Z\",\n         \"chat_members\": [\n           {\n             \"id\": 922,\n             \"chat_id\": 280,\n             \"user_id\": 37,\n             \"is_seen\": 1,\n             \"created_at\": \"2024-11-05T11:10:46.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:46.000000Z\"\n           },\n           {\n             \"id\": 923,\n             \"chat_id\": 280,\n             \"user_id\": 38,\n             \"is_seen\": 0,\n             \"created_at\": \"2024-11-05T11:10:46.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:46.000000Z\"\n           },\n           {\n             \"id\": 924,\n             \"chat_id\": 280,\n             \"user_id\": 12,\n             \"is_seen\": 1,\n             \"created_at\": \"2024-11-05T11:10:46.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:53.000000Z\"\n           }\n         ]\n       },\n       {\n         \"id\": 281,\n         \"team_id\": 31,\n         \"user_id\": 12,\n         \"message\": \"b\",\n         \"attachment\": null,\n         \"is_seen\": 0,\n         \"deleted_at\": null,\n         \"created_at\": \"2024-11-05T11:10:53.000000Z\",\n         \"updated_at\": \"2024-11-05T11:10:53.000000Z\",\n         \"chat_members\": [\n           {\n             \"id\": 925,\n             \"chat_id\": 281,\n             \"user_id\": 37,\n             \"is_seen\": 1,\n             \"created_at\": \"2024-11-05T11:10:53.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:54.000000Z\"\n           },\n           {\n             \"id\": 926,\n             \"chat_id\": 281,\n             \"user_id\": 38,\n             \"is_seen\": 0,\n             \"created_at\": \"2024-11-05T11:10:53.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:53.000000Z\"\n           },\n           {\n             \"id\": 927,\n             \"chat_id\": 281,\n             \"user_id\": 12,\n             \"is_seen\": 1,\n             \"created_at\": \"2024-11-05T11:10:53.000000Z\",\n             \"updated_at\": \"2024-11-05T11:10:53.000000Z\"\n           }\n         ]\n       }\n     ],\n     \"last_message\": {\n       \"id\": 281,\n       \"team_id\": 31,\n       \"user_id\": 12,\n       \"message\": \"b\",\n       \"attachment\": null,\n       \"is_seen\": 0,\n       \"deleted_at\": null,\n       \"created_at\": \"2024-11-05T11:10:53.000000Z\",\n       \"updated_at\": \"2024-11-05T11:10:53.000000Z\"\n     }\n   }\n ],\n \"members\": [\n   {\n     \"id\": 1,\n     \"ecclesia_id\": null,\n     \"created_id\": \"0\",\n     \"user_name\": \"user1\",\n     \"first_name\": \"abc\",\n     \"middle_name\": null,\n     \"last_name\": \"def\",\n     \"email\": \"main@test.com\",\n     \"phone\": \"+36 12345\",\n     \"email_verified_at\": null,\n     \"profile_picture\": \"profile\/5GI3lBuRJl6QOxp55xLpNEWwxIuedycBSF6WAT6H.png\",\n     \"address\": \"Kokata\",\n     \"city\": \"Kolkata\",\n     \"state\": \"41\",\n     \"address2\": null,\n     \"country\": \"101\",\n     \"zip\": \"700001\",\n     \"status\": 1,\n     \"created_at\": \"2024-03-05T15:36:13.000000Z\",\n     \"updated_at\": \"2024-09-04T11:09:09.000000Z\"\n   },\n   {\n     \"id\": 19,\n     \"ecclesia_id\": null,\n     \"created_id\": \"1\",\n     \"user_name\": \"Allen\",\n     \"first_name\": \"Allen\",\n     \"middle_name\": null,\n     \"last_name\": \"Allen\",\n     \"email\": \"allen@yopmail.com\",\n     \"phone\": \"516-313-5564\",\n     \"email_verified_at\": null,\n     \"profile_picture\": null,\n     \"address\": \"santa Ana\",\n     \"city\": \"Orange\",\n     \"state\": \"California\",\n     \"address2\": null,\n     \"country\": \"United States\",\n     \"zip\": \"915467\",\n     \"status\": 1,\n     \"created_at\": \"2024-07-27T07:16:03.000000Z\",\n     \"updated_at\": \"2024-07-27T07:16:03.000000Z\"\n   },\n ]\n}",
                             "name": ""
                         }
                     ]
