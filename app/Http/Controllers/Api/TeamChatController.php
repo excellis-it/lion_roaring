@@ -1347,6 +1347,99 @@ class TeamChatController extends Controller
 
 
 
+    /**
+     * Make a Member an Admin
+     *
+     * Allows an existing admin to make another member an admin.
+     * @authenticated
+     * @bodyParam team_id int required The ID of the team. Example: 10
+     * @bodyParam user_id int required The ID of the user to be made an admin. Example: 5
+     *
+     * @response 200 {
+     *    "message": "Member made admin successfully.",
+     *    "status": true,
+     *    "team_id": 10,
+     *    "user_id": 5,
+     *    "notification": {
+     *        "user_id": 5,
+     *        "message": "You have been made admin of <b>ABC</b> group.",
+     *        "type": "Team",
+     *        "id": 279
+     *    }
+     * }
+     * @response 201 {
+     *    "message": "You must be an admin to make someone else an admin.",
+     *    "status": false
+     * }
+     * @response 201 {
+     *    "message": "An error occurred while making the member an admin.",
+     *    "status": false,
+     *    "error": "Error details here"
+     * }
+     */
+    public function makeAdmin(Request $request)
+    {
+        try {
+            $team_id = $request->team_id;
+            $user_id = $request->user_id;
+            $auth_user_id = auth()->id();
+
+            // Check if the authenticated user is an admin of the group
+            $auth_user_is_admin = TeamMember::where('team_id', $team_id)
+                ->where('user_id', $auth_user_id)
+                ->where('is_admin', true)
+                ->exists();
+
+            if (!$auth_user_is_admin) {
+                // If the user is not an admin, return an error response
+                return response()->json([
+                    'message' => 'You must be an admin to make someone else an admin.',
+                    'status' => false
+                ], 201);
+            }
+
+            // Check if the member exists and update to make them an admin
+            $team_member = TeamMember::where('team_id', $team_id)
+                ->where('user_id', $user_id)
+                ->first();
+
+            if (!$team_member) {
+                return response()->json([
+                    'message' => 'Member not found.',
+                    'status' => false
+                ], 201);
+            }
+
+            // Make the member an admin
+            $team_member->is_admin = true;
+            $team_member->save();
+
+            // Send a notification to the new admin
+            $notification = new Notification();
+            $notification->user_id = $user_id;
+            $notification->message = 'You have been made admin of <b>' . Team::find($team_id)->name . '</b> group.';
+            $notification->type = 'Team';
+            $notification->save();
+
+            return response()->json([
+                'message' => 'Member made admin successfully.',
+                'status' => true,
+                'team_id' => $team_id,
+                'user_id' => $user_id,
+                'notification' => $notification
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'An error occurred while making the member an admin.',
+                'status' => false,
+                'error' => $th->getMessage()
+            ], 201);
+        }
+    }
+
+
+
+
 
 
 

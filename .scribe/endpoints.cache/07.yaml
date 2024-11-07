@@ -223,7 +223,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 81DcVbah6d64fZvaekPE35g'
+      - 'Bearer 83P6ZV1gehbD56vf4ckaEad'
     controller: null
     method: null
     route: null
@@ -332,7 +332,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6k1dbvf65aD8heZEc3PV4ga'
+      - 'Bearer VvcEa836ZdkD6h4agf5ebP1'
     controller: null
     method: null
     route: null
@@ -570,7 +570,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1D66E3gckd5aevbVh8ZaPf4'
+      - 'Bearer 1V3dZ6fh846kcbDeaaPEgv5'
     controller: null
     method: null
     route: null
@@ -708,7 +708,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f66dZgE3Dh8eVv5P1aac4bk'
+      - 'Bearer 6v1kV53gPDcad4eh86afZbE'
     controller: null
     method: null
     route: null
@@ -793,7 +793,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ac8gevaV41P3k5EDZ6fd6bh'
+      - 'Bearer aD31k6hZdPEefv5ag8V6b4c'
     controller: null
     method: null
     route: null
@@ -868,7 +868,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cEagkPe61f53Dd8v4VahZb6'
+      - 'Bearer ZVcvakgah1e4E6f3D5d86Pb'
     controller: null
     method: null
     route: null
@@ -955,7 +955,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6eV1P6Dv4k5gdca83aEhbZf'
+      - 'Bearer ga38v6cDe15Vbfa4EZk6hPd'
     controller: null
     method: null
     route: null
@@ -1047,7 +1047,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E1k4c6v5gD6Pad8baVf3Zeh'
+      - 'Bearer c63Eg6D8VPbe1haak4fd5vZ'
     controller: null
     method: null
     route: null
@@ -1134,7 +1134,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6akP6fa5e1h4DZ38EdgVvcb'
+      - 'Bearer ZahPcVfb41D8ked3gav566E'
     controller: null
     method: null
     route: null
@@ -1204,7 +1204,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5Zk6V6fDhEed3v14bgcaP8a'
+      - 'Bearer fv68a6kEagZdh4De3c1PV5b'
     controller: null
     method: null
     route: null
@@ -1281,7 +1281,100 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hc38fa6PZadV6E51kgDb4ve'
+      - 'Bearer DVhk1c5Zgdaa3Pb686fevE4'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/team-chats/make-admin
+    metadata:
+      groupName: 'Group Chats'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Make a Member an Admin'
+      description: 'Allows an existing admin to make another member an admin.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      team_id:
+        name: team_id
+        description: 'The ID of the team.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      user_id:
+        name: user_id
+        description: 'The ID of the user to be made an admin.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      team_id: 10
+      user_id: 5
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Member made admin successfully.",
+             "status": true,
+             "team_id": 10,
+             "user_id": 5,
+             "notification": {
+                 "user_id": 5,
+                 "message": "You have been made admin of <b>ABC</b> group.",
+                 "type": "Team",
+                 "id": 279
+             }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "You must be an admin to make someone else an admin.",
+             "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "An error occurred while making the member an admin.",
+             "status": false,
+             "error": "Error details here"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 66bdZc4aD1ev3VaP8k5fhgE'
     controller: null
     method: null
     route: null

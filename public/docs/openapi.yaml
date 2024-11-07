@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 1
+                  example: 14
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1804,7 +1804,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: alice.metz@example.org
+                  example: xgraham@example.net
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1875,7 +1875,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: expedita
+                  example: voluptatum
       security: []
   /api/v3/country-list:
     post:
@@ -2000,7 +2000,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: hferry@example.com
+                  example: xfunk@example.net
               required:
                 - email
       security: []
@@ -3574,6 +3574,97 @@ paths:
                   example: 10
               required:
                 - team_id
+  /api/v3/user/team-chats/make-admin:
+    post:
+      summary: 'Make a Member an Admin'
+      operationId: makeAMemberAnAdmin
+      description: 'Allows an existing admin to make another member an admin.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Member made admin successfully.'
+                  status: true
+                  team_id: 10
+                  user_id: 5
+                  notification:
+                    user_id: 5
+                    message: 'You have been made admin of <b>ABC</b> group.'
+                    type: Team
+                    id: 279
+                properties:
+                  message:
+                    type: string
+                    example: 'Member made admin successfully.'
+                  status:
+                    type: boolean
+                    example: true
+                  team_id:
+                    type: integer
+                    example: 10
+                  user_id:
+                    type: integer
+                    example: 5
+                  notification:
+                    type: object
+                    properties:
+                      user_id:
+                        type: integer
+                        example: 5
+                      message:
+                        type: string
+                        example: 'You have been made admin of <b>ABC</b> group.'
+                      type:
+                        type: string
+                        example: Team
+                      id:
+                        type: integer
+                        example: 279
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'An error occurred while making the member an admin.'
+                  status: false
+                  error: 'Error details here'
+                properties:
+                  message:
+                    type: string
+                    example: 'An error occurred while making the member an admin.'
+                  status:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: 'Error details here'
+      tags:
+        - 'Group Chats'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_id:
+                  type: integer
+                  description: 'The ID of the team.'
+                  example: 10
+                user_id:
+                  type: integer
+                  description: 'The ID of the user to be made an admin.'
+                  example: 5
+              required:
+                - team_id
+                - user_id
   /api/v3/user/profile:
     post:
       summary: 'Profile Details'
