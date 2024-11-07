@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 6
+                  example: 8
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1494,6 +1494,44 @@ paths:
                   description: 'Optional file attachment for the chat message.'
               required:
                 - reciver_id
+  /api/v3/user/chats/clear:
+    post:
+      summary: 'Clear Chat Messages'
+      operationId: clearChatMessages
+      description: 'Clears chat messages between the authenticated user and a specified receiver by marking messages as deleted from each side.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  msg: 'Chat cleared successfully'
+                  success: true
+                properties:
+                  msg:
+                    type: string
+                    example: 'Chat cleared successfully'
+                  success:
+                    type: boolean
+                    example: true
+      tags:
+        - Chats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reciver_id:
+                  type: integer
+                  description: 'The ID of the user to clear chat with.'
+                  example: 2
+              required:
+                - reciver_id
   /api/v3/contact-us:
     post:
       summary: 'Store Contact Us'
@@ -1537,7 +1575,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: adams.tevin@example.com
+                  example: abdiel99@example.net
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1608,7 +1646,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: consequatur
+                  example: veniam
       security: []
   /api/v3/country-list:
     post:
@@ -1733,7 +1771,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: considine.alessandro@example.org
+                  example: morar.rowland@example.com
               required:
                 - email
       security: []

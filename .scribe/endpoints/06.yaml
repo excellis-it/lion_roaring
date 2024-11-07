@@ -133,7 +133,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5vgD31cf8EPah64adV6ebkZ'
+      - 'Bearer aZa6vh31gEb4VdD65fcP8ke'
     controller: null
     method: null
     route: null
@@ -258,7 +258,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Pa4a36e1Zd58bvDEckhgVf'
+      - 'Bearer va4Dfak3hEd61PV6c5Zb8eg'
     controller: null
     method: null
     route: null
@@ -402,7 +402,61 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eVDPbaEck653641ad8Zvghf'
+      - 'Bearer 6Dga8c36ehaZkfvdE41P5Vb'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/chats/clear
+    metadata:
+      groupName: Chats
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Clear Chat Messages'
+      description: 'Clears chat messages between the authenticated user and a specified receiver by marking messages as deleted from each side.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      reciver_id:
+        name: reciver_id
+        description: 'The ID of the user to clear chat with.'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      reciver_id: 2
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "msg": "Chat cleared successfully",
+             "success": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer f6Ebvhk4ZP6aDe3185cgdaV'
     controller: null
     method: null
     route: null

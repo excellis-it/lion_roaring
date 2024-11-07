@@ -416,6 +416,37 @@ class ChatController extends Controller
 
 
 
+    /**
+     * Clear Chat Messages
+     * 
+     * Clears chat messages between the authenticated user and a specified receiver by marking messages as deleted from each side.
+     * @authenticated
+     * @bodyParam reciver_id int required The ID of the user to clear chat with. Example: 2
+     * 
+     * @response {
+     *    "msg": "Chat cleared successfully",
+     *    "success": true
+     * }
+     */
+    public function clear(Request $request)
+    {
+        $sender_id = auth()->id();
+        $reciver_id = $request->reciver_id;
+
+        // Mark messages as deleted from the sender's side
+        Chat::where('sender_id', $sender_id)
+            ->where('reciver_id', $reciver_id)
+            ->update(['delete_from_sender_id' => 1]);
+
+        // Mark messages as deleted from the receiver's side
+        Chat::where('reciver_id', $sender_id)
+            ->where('sender_id', $reciver_id)
+            ->update(['delete_from_receiver_id' => 1]);
+
+        return response()->json(['msg' => 'Chat cleared successfully', 'success' => true]);
+    }
+
+
 
 
     //
