@@ -223,7 +223,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P3VZkc4eb6fgaa86vD5d1hE'
+      - 'Bearer evbadc18kDVhf63gP5Z46Ea'
     controller: null
     method: null
     route: null
@@ -332,7 +332,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aD43Vdvc6Ee5fbgZ68kaPh1'
+      - 'Bearer Zg613eDhaEVbd46a5kfvc8P'
     controller: null
     method: null
     route: null
@@ -570,7 +570,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c8Pa51veZkh46bgad6DV3fE'
+      - 'Bearer 5fV3akadbcPgZh4v18DeE66'
     controller: null
     method: null
     route: null
@@ -708,7 +708,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6fZk6cPb85a13aDvVe4hEdg'
+      - 'Bearer 6VabgeP6cEDakZfd85v41h3'
     controller: null
     method: null
     route: null
@@ -793,7 +793,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aP8Z6a6EV3dkf1e4vbDh5cg'
+      - 'Bearer D61c3PehZ6bk54dfaEagv8V'
     controller: null
     method: null
     route: null
@@ -868,7 +868,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer khvV61Z8Paaceb45E3fgDd6'
+      - 'Bearer avf5ZbdV6aPE68c1gDhe3k4'
     controller: null
     method: null
     route: null
@@ -955,7 +955,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gV6eh3v516fkba8PEZD4adc'
+      - 'Bearer fVPva4chZkE6dge5316baD8'
     controller: null
     method: null
     route: null
@@ -1047,7 +1047,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c6kZEe1fDhb5a84gPV6v3da'
+      - 'Bearer a184f6dDgb5hke3a6ZvPEcV'
     controller: null
     method: null
     route: null
@@ -1134,7 +1134,77 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer def8aZgPk645VhDE1ab36cv'
+      - 'Bearer akeEvPb5a1hfc3DZd846gV6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/team-chats/exit-from-group
+    metadata:
+      groupName: 'Group Chats'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Exit from Group'
+      description: 'Allows a user to exit from a group, removes from the team, checks for remaining admins, and handles the deletion of the team if no members are left.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      team_id:
+        name: team_id
+        description: 'The ID of the team the user is leaving.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      team_id: 10
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "You have left the group successfully.",
+             "status": true,
+             "team_id": 10,
+             "user_id": 1,
+             "team_member_name": "John Doe, Jane Smith",
+             "team_delete": false,
+             "team_member_id": [1, 2, 3]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "An error occurred while leaving the group.",
+             "status": false,
+             "error": "Error details here"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3PD6kacvf4VgeZh6d8E51ab'
     controller: null
     method: null
     route: null

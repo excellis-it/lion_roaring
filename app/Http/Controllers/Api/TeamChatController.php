@@ -1195,6 +1195,91 @@ class TeamChatController extends Controller
     }
 
 
+    /**
+     * Exit from Group
+     *
+     * Allows a user to exit from a group, removes from the team, checks for remaining admins, and handles the deletion of the team if no members are left.
+     * @authenticated
+     * @bodyParam team_id int required The ID of the team the user is leaving. Example: 10
+     *
+     * @response 200 {
+     *    "message": "You have left the group successfully.",
+     *    "status": true,
+     *    "team_id": 10,
+     *    "user_id": 1,
+     *    "team_member_name": "John Doe, Jane Smith",
+     *    "team_delete": false,
+     *    "team_member_id": [1, 2, 3]
+     * }
+     * @response 201 {
+     *    "message": "An error occurred while leaving the group.",
+     *    "status": false,
+     *    "error": "Error details here"
+     * }
+     */
+    public function exitFromGroup(Request $request)
+    {
+        try {
+            $team_id = $request->team_id;
+            $user_id = auth()->id();
+
+            // Remove the user from the team
+            $team_member = TeamMember::where('team_id', $team_id)->where('user_id', $user_id)->first();
+            $team_member->is_removed = true;
+            $team_member->is_removed_at = now();
+            $team_member->save();
+
+            // Check if there are any remaining admins in the group
+            $admin_count = TeamMember::where('team_id', $team_id)->where('is_admin', true)->where('is_removed', false)->count();
+
+            // If no admins remain, assign the first available member as an admin
+            if ($admin_count == 0) {
+                $team_member = TeamMember::where('team_id', $team_id)->where('is_removed', false)->first();
+                if ($team_member) {
+                    $team_member->is_admin = true;
+                    $team_member->save();
+                }
+            }
+
+            // Get remaining members in the team
+            $team_members = TeamMember::where('team_id', $team_id)->where('is_removed', false)->with('user')->get();
+            $team_member_name = $team_members->pluck('user.first_name', 'user.middle_name', 'user.last_name')->implode(', ');
+
+            // Get total count of remaining team members
+            $team_member_count = TeamMember::where('team_id', $team_id)->where('is_removed', false)->get();
+
+            // If no members remain, delete the team
+            if ($team_member_count->count() == 0) {
+                $team = Team::find($team_id);
+                $team->delete();
+                $team_delete = true;
+            } else {
+                $team_delete = false;
+            }
+
+            // Get the IDs of remaining team members
+            $team_member_id = TeamMember::where('team_id', $team_id)->pluck('user_id')->toArray();
+
+            return response()->json([
+                'message' => 'You have left the group successfully.',
+                'status' => true,
+                'team_id' => $team_id,
+                'user_id' => $user_id,
+                'team_member_name' => $team_member_name,
+                'team_delete' => $team_delete,
+                'team_member_id' => $team_member_id
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'An error occurred while leaving the group.',
+                'status' => false,
+                'error' => $th->getMessage()
+            ], 201);
+        }
+    }
+
+
+
 
     //
 }

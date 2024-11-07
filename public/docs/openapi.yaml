@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 5
+                  example: 15
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1804,7 +1804,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: eturner@example.com
+                  example: rbuckridge@example.com
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1875,7 +1875,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: unde
+                  example: rem
       security: []
   /api/v3/country-list:
     post:
@@ -2000,7 +2000,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: melyssa58@example.org
+                  example: gonzalo.hamill@example.org
               required:
                 - email
       security: []
@@ -3414,6 +3414,92 @@ paths:
               required:
                 - team_id
                 - members
+  /api/v3/user/team-chats/exit-from-group:
+    post:
+      summary: 'Exit from Group'
+      operationId: exitFromGroup
+      description: 'Allows a user to exit from a group, removes from the team, checks for remaining admins, and handles the deletion of the team if no members are left.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'You have left the group successfully.'
+                  status: true
+                  team_id: 10
+                  user_id: 1
+                  team_member_name: 'John Doe, Jane Smith'
+                  team_delete: false
+                  team_member_id:
+                    - 1
+                    - 2
+                    - 3
+                properties:
+                  message:
+                    type: string
+                    example: 'You have left the group successfully.'
+                  status:
+                    type: boolean
+                    example: true
+                  team_id:
+                    type: integer
+                    example: 10
+                  user_id:
+                    type: integer
+                    example: 1
+                  team_member_name:
+                    type: string
+                    example: 'John Doe, Jane Smith'
+                  team_delete:
+                    type: boolean
+                    example: false
+                  team_member_id:
+                    type: array
+                    example:
+                      - 1
+                      - 2
+                      - 3
+                    items:
+                      type: integer
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'An error occurred while leaving the group.'
+                  status: false
+                  error: 'Error details here'
+                properties:
+                  message:
+                    type: string
+                    example: 'An error occurred while leaving the group.'
+                  status:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: 'Error details here'
+      tags:
+        - 'Group Chats'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_id:
+                  type: integer
+                  description: 'The ID of the team the user is leaving.'
+                  example: 10
+              required:
+                - team_id
   /api/v3/user/profile:
     post:
       summary: 'Profile Details'
