@@ -972,6 +972,109 @@ class TeamChatController extends Controller
 
 
 
+    /**
+     * Remove Member from Group
+     *
+     * Removes a member from a team and sends a notification to the removed user. A chat message is also created to notify the group.
+     * @authenticated
+     * @bodyParam team_id int required The ID of the team from which the member will be removed. Example: 10
+     * @bodyParam user_id int required The ID of the user to be removed from the team. Example: 5
+     *
+     * @response 200 {
+     *    "message": "Member removed successfully.",
+     *    "status": true,
+     *    "team_id": 10,
+     *    "user_id": 5,
+     *    "chat": {
+     *        "id": 15,
+     *        "user_id": 1,
+     *        "team_id": 10,
+     *        "message": "John Doe has been removed from the group.",
+     *        "created_at": "2024-11-07T14:52:36.000000Z",
+     *        "updated_at": "2024-11-07T15:05:12.000000Z"
+     *    },
+     *    "chat_member_id": [1, 2, 3],
+     *    "notification": {
+     *        "id": 18,
+     *        "user_id": 5,
+     *        "message": "You have been removed from Developers group.",
+     *        "type": "Team",
+     *        "created_at": "2024-11-07T15:05:12.000000Z"
+     *    }
+     * }
+     * @response 201 {
+     *    "message": "An error occurred while removing the member from the team.",
+     *    "status": false
+     * }
+     */
+    public function removeMember(Request $request)
+    {
+        try {
+            $team_id = $request->team_id;
+            $user_id = $request->user_id;
+
+            $team_member = TeamMember::where('team_id', $team_id)->where('user_id', $user_id)->first();
+
+            // If team member does not exist
+            if (!$team_member) {
+                return response()->json(['message' => 'Team member not found', 'status' => false], 201);
+            }
+
+            $team_member->is_removed = true;
+            $team_member->is_removed_at = now();
+            $team_member->save();
+
+            // Create a message about the member removal
+            $team_chat = new TeamChat();
+            $team_chat->team_id = $team_id;
+            $team_chat->user_id = auth()->id();
+            $team_chat->message = $team_member->user->first_name . ' ' . $team_member->user->last_name . ' has been removed from the group.';
+            $team_chat->save();
+
+            // Get remaining active members in the team
+            $members = TeamMember::where('team_id', $team_id)->where('is_removed', false)->get();
+
+            // Create notification for the removed user
+            $notification = new Notification();
+            $notification->user_id = $user_id;
+            $notification->message = 'You have been removed from <b>' . Team::find($team_id)->name . '</b> group.';
+            $notification->type = 'Team';
+            $notification->save();
+
+            // Add chat members and mark their status
+            foreach ($members as $team) {
+                $chat_member = new ChatMember();
+                $chat_member->chat_id = $team_chat->id;
+                $chat_member->user_id = $team->user_id;
+                $chat_member->is_seen = ($team->user_id == auth()->id()) ? true : false;
+                $chat_member->save();
+            }
+
+            // Fetch all chat member IDs
+            $chat_member_id = ChatMember::where('chat_id', $team_chat->id)->pluck('user_id')->toArray();
+
+            // Fetch the newly created team chat
+            $chat = TeamChat::where('id', $team_chat->id)->with('user')->first();
+
+            return response()->json([
+                'message' => 'Member removed successfully.',
+                'status' => true,
+                'team_id' => $team_id,
+                'user_id' => $user_id,
+                'chat' => $chat,
+                'chat_member_id' => $chat_member_id,
+                'notification' => $notification
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'An error occurred while removing the member from the team.',
+                'status' => false,
+                'error' => $th->getMessage()
+            ], 201);
+        }
+    }
+
+
 
 
     //

@@ -221,7 +221,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3e6fP56D4agdcEVZ8kabhv1'
+      - 'Bearer 68Zak4Decbghaf31E6Vv5Pd'
     controller: null
     method: null
     route: null
@@ -330,7 +330,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer efcdV1Ea6aDP6v345hgbZk8'
+      - 'Bearer fPhD1k6aZc4ea58dbEV63gv'
     controller: null
     method: null
     route: null
@@ -568,7 +568,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6vcakehgDdZ4bEa13VfP658'
+      - 'Bearer c8VevZkPfd1bhga6DE3a465'
     controller: null
     method: null
     route: null
@@ -706,7 +706,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vag5d4hP8f66aVke1c3EDZb'
+      - 'Bearer Zbdf651akc4P86vhEVeDg3a'
     controller: null
     method: null
     route: null
@@ -791,7 +791,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eZ3EVa6cPbf1hkgD58dav46'
+      - 'Bearer V5av8Zf1kd3b6g4EDPheca6'
     controller: null
     method: null
     route: null
@@ -866,7 +866,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V5hebk13caad6Zg84vED6Pf'
+      - 'Bearer 68a6P5h1ge3vVE4DZcbfdak'
     controller: null
     method: null
     route: null
@@ -953,7 +953,99 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b4Ee3c6g6DfVhPdaav15k8Z'
+      - 'Bearer vVfEP6d685gabZkh3cD4ea1'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/team-chats/remove-member
+    metadata:
+      groupName: 'Group Chats'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove Member from Group'
+      description: 'Removes a member from a team and sends a notification to the removed user. A chat message is also created to notify the group.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      team_id:
+        name: team_id
+        description: 'The ID of the team from which the member will be removed.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      user_id:
+        name: user_id
+        description: 'The ID of the user to be removed from the team.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      team_id: 10
+      user_id: 5
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Member removed successfully.",
+             "status": true,
+             "team_id": 10,
+             "user_id": 5,
+             "chat": {
+                 "id": 15,
+                 "user_id": 1,
+                 "team_id": 10,
+                 "message": "John Doe has been removed from the group.",
+                 "created_at": "2024-11-07T14:52:36.000000Z",
+                 "updated_at": "2024-11-07T15:05:12.000000Z"
+             },
+             "chat_member_id": [1, 2, 3],
+             "notification": {
+                 "id": 18,
+                 "user_id": 5,
+                 "message": "You have been removed from Developers group.",
+                 "type": "Team",
+                 "created_at": "2024-11-07T15:05:12.000000Z"
+             }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "An error occurred while removing the member from the team.",
+             "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5adVvk668ebgZ1E3fca4hDP'
     controller: null
     method: null
     route: null

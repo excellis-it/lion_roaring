@@ -124,7 +124,7 @@ Route::prefix('v3')->group(function () {
             Route::post('/group-info', [TeamChatController::class, 'groupInfo']);
             Route::post('/update-group-image', [TeamChatController::class, 'updateGroupImage']);
             Route::post('/name-des-update', [TeamChatController::class, 'nameDescriptionUpdate']);
-            // Route::post('/remove-member', [TeamChatController::class, 'removeMember'])->name('remove-member');
+            Route::post('/remove-member', [TeamChatController::class, 'removeMember'])->name('remove-member');
             // Route::post('/group-list', [TeamChatController::class, 'groupList'])->name('group-list');
             // Route::post('/exit-from-group', [TeamChatController::class, 'exitFromGroup'])->name('exit-from-group');
             // Route::post('/add-member-team', [TeamChatController::class, 'addMemberTeam'])->name('add-member-team');

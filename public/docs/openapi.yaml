@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 1
+                  example: 20
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1804,7 +1804,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: ewiegand@example.org
+                  example: lysanne.steuber@example.net
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1875,7 +1875,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: est
+                  example: voluptate
       security: []
   /api/v3/country-list:
     post:
@@ -2000,7 +2000,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: ramona92@example.net
+                  example: mafalda.monahan@example.net
               required:
                 - email
       security: []
@@ -3156,6 +3156,137 @@ paths:
                 - team_id
                 - name
                 - description
+  /api/v3/user/team-chats/remove-member:
+    post:
+      summary: 'Remove Member from Group'
+      operationId: removeMemberFromGroup
+      description: 'Removes a member from a team and sends a notification to the removed user. A chat message is also created to notify the group.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Member removed successfully.'
+                  status: true
+                  team_id: 10
+                  user_id: 5
+                  chat:
+                    id: 15
+                    user_id: 1
+                    team_id: 10
+                    message: 'John Doe has been removed from the group.'
+                    created_at: '2024-11-07T14:52:36.000000Z'
+                    updated_at: '2024-11-07T15:05:12.000000Z'
+                  chat_member_id:
+                    - 1
+                    - 2
+                    - 3
+                  notification:
+                    id: 18
+                    user_id: 5
+                    message: 'You have been removed from Developers group.'
+                    type: Team
+                    created_at: '2024-11-07T15:05:12.000000Z'
+                properties:
+                  message:
+                    type: string
+                    example: 'Member removed successfully.'
+                  status:
+                    type: boolean
+                    example: true
+                  team_id:
+                    type: integer
+                    example: 10
+                  user_id:
+                    type: integer
+                    example: 5
+                  chat:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 15
+                      user_id:
+                        type: integer
+                        example: 1
+                      team_id:
+                        type: integer
+                        example: 10
+                      message:
+                        type: string
+                        example: 'John Doe has been removed from the group.'
+                      created_at:
+                        type: string
+                        example: '2024-11-07T14:52:36.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-07T15:05:12.000000Z'
+                  chat_member_id:
+                    type: array
+                    example:
+                      - 1
+                      - 2
+                      - 3
+                    items:
+                      type: integer
+                  notification:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 18
+                      user_id:
+                        type: integer
+                        example: 5
+                      message:
+                        type: string
+                        example: 'You have been removed from Developers group.'
+                      type:
+                        type: string
+                        example: Team
+                      created_at:
+                        type: string
+                        example: '2024-11-07T15:05:12.000000Z'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'An error occurred while removing the member from the team.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'An error occurred while removing the member from the team.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - 'Group Chats'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_id:
+                  type: integer
+                  description: 'The ID of the team from which the member will be removed.'
+                  example: 10
+                user_id:
+                  type: integer
+                  description: 'The ID of the user to be removed from the team.'
+                  example: 5
+              required:
+                - team_id
+                - user_id
   /api/v3/user/profile:
     post:
       summary: 'Profile Details'

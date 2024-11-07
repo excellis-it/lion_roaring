@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "c19122c0-27dd-444a-9288-3a8698042a7a",
+        "_postman_id": "caedd353-ca2e-4302-ad4a-e511ffff6462",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":1,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":20,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -902,7 +902,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"ewiegand@example.org\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"lysanne.steuber@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -946,7 +946,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"est\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"voluptate\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1024,7 +1024,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"ramona92@example.net\"}"
+                            "raw": "{\"email\":\"mafalda.monahan@example.net\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1356,6 +1356,47 @@
                             "header": [],
                             "code": 201,
                             "body": "{\n   \"message\": \"An error occurred while updating the group name and description.\",\n   \"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Remove Member from Group",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/team-chats\/remove-member",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/team-chats\/remove-member"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"team_id\":10,\"user_id\":5}"
+                        },
+                        "description": "Removes a member from a team and sends a notification to the removed user. A chat message is also created to notify the group."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Member removed successfully.\",\n   \"status\": true,\n   \"team_id\": 10,\n   \"user_id\": 5,\n   \"chat\": {\n       \"id\": 15,\n       \"user_id\": 1,\n       \"team_id\": 10,\n       \"message\": \"John Doe has been removed from the group.\",\n       \"created_at\": \"2024-11-07T14:52:36.000000Z\",\n       \"updated_at\": \"2024-11-07T15:05:12.000000Z\"\n   },\n   \"chat_member_id\": [1, 2, 3],\n   \"notification\": {\n       \"id\": 18,\n       \"user_id\": 5,\n       \"message\": \"You have been removed from Developers group.\",\n       \"type\": \"Team\",\n       \"created_at\": \"2024-11-07T15:05:12.000000Z\"\n   }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n   \"message\": \"An error occurred while removing the member from the team.\",\n   \"status\": false\n}",
                             "name": ""
                         }
                     ]
