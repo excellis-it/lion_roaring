@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "739e301b-beb2-470e-a165-9553aafc32ee",
+        "_postman_id": "4993b5d6-e09c-490c-bbdd-e95c3cea26df",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":8,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":6,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -662,6 +662,65 @@
                             "name": ""
                         }
                     ]
+                },
+                {
+                    "name": "Send a chat message",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/chats\/send",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/chats\/send"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "reciver_id",
+                                    "value": 2,
+                                    "type": "text",
+                                    "description": "ID of the receiver (chat partner)."
+                                },
+                                {
+                                    "key": "message",
+                                    "value": "Hello there!",
+                                    "type": "text",
+                                    "description": "Optional message text if sending a text message."
+                                },
+                                {
+                                    "key": "file",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "Allows the authenticated user to send a message or attachment to a specified receiver. Returns the latest message and message counts."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"msg\": \"Message sent successfully\",\n   \"chat\": {\n       \"id\": 564,\n       \"sender_id\": 37,\n       \"reciver_id\": 12,\n       \"message\": \"hello testing\",\n       \"deleted_for_sender\": 0,\n       \"deleted_for_reciver\": 0,\n       \"attachment\": \"chat\/wXKPA5V0cft8m66c3nR1QWdHnmxgZWv4NBj07zhL.pdf\",\n       \"seen\": 0,\n       \"created_at\": \"2024-11-07T07:25:54.000000Z\",\n       \"updated_at\": \"2024-11-07T07:25:54.000000Z\",\n       \"delete_from_sender_id\": 0,\n       \"delete_from_receiver_id\": 0,\n       \"created_at_formatted\": \"2024-11-07 02:25:54\",\n       \"sender\": {\n           \"id\": 37,\n           \"ecclesia_id\": 4,\n           \"created_id\": null,\n           \"user_name\": \"masum1\",\n           \"first_name\": \"masum\",\n           \"middle_name\": null,\n           \"last_name\": \"ali\",\n           \"email\": \"masum@excellisit.net\",\n           \"phone\": \"+91 96470 38098\",\n           \"email_verified_at\": \"2024-10-28T08:35:17.000000Z\",\n           \"profile_picture\": \"profile_picture\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp\",\n           \"address\": \"kolkata\",\n           \"city\": \"kolkata\",\n           \"state\": \"41\",\n           \"address2\": \"kolkata\",\n           \"country\": \"101\",\n           \"zip\": \"700001\",\n           \"status\": 1,\n           \"created_at\": \"2024-10-28T08:35:17.000000Z\",\n           \"updated_at\": \"2024-11-06T07:42:16.000000Z\"\n       },\n       \"reciver\": {\n           \"id\": 12,\n           \"ecclesia_id\": 2,\n           \"created_id\": \"1\",\n           \"user_name\": \"swarnadwip_nath\",\n           \"first_name\": \"Swarnadwip\",\n           \"middle_name\": null,\n           \"last_name\": \"Nath\",\n           \"email\": \"swarnadwip@excellisit.net\",\n           \"phone\": \"+1 0741202022\",\n           \"email_verified_at\": null,\n           \"profile_picture\": \"profile_picture\/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg\",\n           \"address\": \"Kokata\",\n           \"city\": \"Kolkata\",\n           \"state\": \"41\",\n           \"address2\": null,\n           \"country\": \"101\",\n           \"zip\": \"700001\",\n           \"status\": 1,\n           \"created_at\": \"2024-06-21T11:31:27.000000Z\",\n           \"updated_at\": \"2024-09-09T11:02:59.000000Z\"\n       }\n   },\n   \"chat_count\": 14,\n   \"success\": true\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n  \"msg\": \"An error occurred while sending the message.\",\n  \"success\": false\n}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -691,7 +750,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"awolff@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"adams.tevin@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -735,7 +794,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"repellendus\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"consequatur\"}"
                         },
                         "description": "",
                         "auth": {
@@ -813,7 +872,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"cstiedemann@example.org\"}"
+                            "raw": "{\"email\":\"considine.alessandro@example.org\"}"
                         },
                         "description": "",
                         "auth": {

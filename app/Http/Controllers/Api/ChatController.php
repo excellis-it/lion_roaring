@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Chat;
 use App\Models\Notification;
 use App\Models\User;
+use App\Traits\ImageTrait;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @group Chats
@@ -17,6 +19,7 @@ class ChatController extends Controller
 {
 
     protected $successStatus = 200;
+    use ImageTrait;
     /**
      * List of Chat Users
      * 
@@ -285,6 +288,129 @@ class ChatController extends Controller
                 'msg' => 'An error occurred while loading chats.',
                 'status' => false,
             ], 500);
+        }
+    }
+
+
+
+    /**
+     * Send a chat message
+     * 
+     * Allows the authenticated user to send a message or attachment to a specified receiver. Returns the latest message and message counts.
+     * @authenticated
+     * @bodyParam reciver_id integer required ID of the receiver (chat partner). Example: 2
+     * @bodyParam message string Optional message text if sending a text message. Example: Hello there!
+     * @bodyParam file file Optional file attachment for the chat message.
+     * 
+     * @response 200 {
+     *    "msg": "Message sent successfully",
+     *    "chat": {
+     *        "id": 564,
+     *        "sender_id": 37,
+     *        "reciver_id": 12,
+     *        "message": "hello testing",
+     *        "deleted_for_sender": 0,
+     *        "deleted_for_reciver": 0,
+     *        "attachment": "chat/wXKPA5V0cft8m66c3nR1QWdHnmxgZWv4NBj07zhL.pdf",
+     *        "seen": 0,
+     *        "created_at": "2024-11-07T07:25:54.000000Z",
+     *        "updated_at": "2024-11-07T07:25:54.000000Z",
+     *        "delete_from_sender_id": 0,
+     *        "delete_from_receiver_id": 0,
+     *        "created_at_formatted": "2024-11-07 02:25:54",
+     *        "sender": {
+     *            "id": 37,
+     *            "ecclesia_id": 4,
+     *            "created_id": null,
+     *            "user_name": "masum1",
+     *            "first_name": "masum",
+     *            "middle_name": null,
+     *            "last_name": "ali",
+     *            "email": "masum@excellisit.net",
+     *            "phone": "+91 96470 38098",
+     *            "email_verified_at": "2024-10-28T08:35:17.000000Z",
+     *            "profile_picture": "profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp",
+     *            "address": "kolkata",
+     *            "city": "kolkata",
+     *            "state": "41",
+     *            "address2": "kolkata",
+     *            "country": "101",
+     *            "zip": "700001",
+     *            "status": 1,
+     *            "created_at": "2024-10-28T08:35:17.000000Z",
+     *            "updated_at": "2024-11-06T07:42:16.000000Z"
+     *        },
+     *        "reciver": {
+     *            "id": 12,
+     *            "ecclesia_id": 2,
+     *            "created_id": "1",
+     *            "user_name": "swarnadwip_nath",
+     *            "first_name": "Swarnadwip",
+     *            "middle_name": null,
+     *            "last_name": "Nath",
+     *            "email": "swarnadwip@excellisit.net",
+     *            "phone": "+1 0741202022",
+     *            "email_verified_at": null,
+     *            "profile_picture": "profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg",
+     *            "address": "Kokata",
+     *            "city": "Kolkata",
+     *            "state": "41",
+     *            "address2": null,
+     *            "country": "101",
+     *            "zip": "700001",
+     *            "status": 1,
+     *            "created_at": "2024-06-21T11:31:27.000000Z",
+     *            "updated_at": "2024-09-09T11:02:59.000000Z"
+     *        }
+     *    },
+     *    "chat_count": 14,
+     *    "success": true
+     * }
+     * @response 500 {
+     *   "msg": "An error occurred while sending the message.",
+     *   "success": false
+     * }
+     */
+    public function send(Request $request)
+    {
+        try {
+            // Count chat
+            $chat_count = Chat::where(function ($query) use ($request) {
+                $query->where('sender_id', auth()->id())
+                    ->where('reciver_id', $request->reciver_id);
+            })->orWhere(function ($query) use ($request) {
+                $query->where('sender_id', $request->reciver_id)
+                    ->where('reciver_id', auth()->id());
+            })->count();
+
+            if ($request->file) {
+                $file = $this->imageUpload($request->file('file'), 'chat');
+                $chatData = Chat::create([
+                    'sender_id' => auth()->id(),
+                    'reciver_id' => $request->reciver_id,
+                    'message' => $request->message,
+                    'attachment' => $file
+                ]);
+            } else {
+                $chatData = Chat::create([
+                    'sender_id' => auth()->id(),
+                    'reciver_id' => $request->reciver_id,
+                    'message' => $request->message
+                ]);
+            }
+
+            // Get chat data with sender and receiver
+            $chat = Chat::with('sender', 'reciver')->find($chatData->id);
+            $chat->created_at_formatted = $chat->created_at->setTimezone('America/New_York')->format('Y-m-d H:i:s');
+
+            return response()->json([
+                'msg' => 'Message sent successfully',
+                'chat' => $chat,
+                'chat_count' => $chat_count,
+                'success' => true
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['msg' => $th->getMessage(), 'success' => false]);
         }
     }
 

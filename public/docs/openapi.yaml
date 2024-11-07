@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 8
+                  example: 6
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1204,6 +1204,296 @@ paths:
                   example: 1
               required:
                 - sender_receiver_id
+  /api/v3/user/chats/send:
+    post:
+      summary: 'Send a chat message'
+      operationId: sendAChatMessage
+      description: 'Allows the authenticated user to send a message or attachment to a specified receiver. Returns the latest message and message counts.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  msg: 'Message sent successfully'
+                  chat:
+                    id: 564
+                    sender_id: 37
+                    reciver_id: 12
+                    message: 'hello testing'
+                    deleted_for_sender: 0
+                    deleted_for_reciver: 0
+                    attachment: chat/wXKPA5V0cft8m66c3nR1QWdHnmxgZWv4NBj07zhL.pdf
+                    seen: 0
+                    created_at: '2024-11-07T07:25:54.000000Z'
+                    updated_at: '2024-11-07T07:25:54.000000Z'
+                    delete_from_sender_id: 0
+                    delete_from_receiver_id: 0
+                    created_at_formatted: '2024-11-07 02:25:54'
+                    sender:
+                      id: 37
+                      ecclesia_id: 4
+                      created_id: null
+                      user_name: masum1
+                      first_name: masum
+                      middle_name: null
+                      last_name: ali
+                      email: masum@excellisit.net
+                      phone: '+91 96470 38098'
+                      email_verified_at: '2024-10-28T08:35:17.000000Z'
+                      profile_picture: profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp
+                      address: kolkata
+                      city: kolkata
+                      state: '41'
+                      address2: kolkata
+                      country: '101'
+                      zip: '700001'
+                      status: 1
+                      created_at: '2024-10-28T08:35:17.000000Z'
+                      updated_at: '2024-11-06T07:42:16.000000Z'
+                    reciver:
+                      id: 12
+                      ecclesia_id: 2
+                      created_id: '1'
+                      user_name: swarnadwip_nath
+                      first_name: Swarnadwip
+                      middle_name: null
+                      last_name: Nath
+                      email: swarnadwip@excellisit.net
+                      phone: '+1 0741202022'
+                      email_verified_at: null
+                      profile_picture: profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg
+                      address: Kokata
+                      city: Kolkata
+                      state: '41'
+                      address2: null
+                      country: '101'
+                      zip: '700001'
+                      status: 1
+                      created_at: '2024-06-21T11:31:27.000000Z'
+                      updated_at: '2024-09-09T11:02:59.000000Z'
+                  chat_count: 14
+                  success: true
+                properties:
+                  msg:
+                    type: string
+                    example: 'Message sent successfully'
+                  chat:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 564
+                      sender_id:
+                        type: integer
+                        example: 37
+                      reciver_id:
+                        type: integer
+                        example: 12
+                      message:
+                        type: string
+                        example: 'hello testing'
+                      deleted_for_sender:
+                        type: integer
+                        example: 0
+                      deleted_for_reciver:
+                        type: integer
+                        example: 0
+                      attachment:
+                        type: string
+                        example: chat/wXKPA5V0cft8m66c3nR1QWdHnmxgZWv4NBj07zhL.pdf
+                      seen:
+                        type: integer
+                        example: 0
+                      created_at:
+                        type: string
+                        example: '2024-11-07T07:25:54.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-07T07:25:54.000000Z'
+                      delete_from_sender_id:
+                        type: integer
+                        example: 0
+                      delete_from_receiver_id:
+                        type: integer
+                        example: 0
+                      created_at_formatted:
+                        type: string
+                        example: '2024-11-07 02:25:54'
+                      sender:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 37
+                          ecclesia_id:
+                            type: integer
+                            example: 4
+                          created_id:
+                            type: string
+                            example: null
+                          user_name:
+                            type: string
+                            example: masum1
+                          first_name:
+                            type: string
+                            example: masum
+                          middle_name:
+                            type: string
+                            example: null
+                          last_name:
+                            type: string
+                            example: ali
+                          email:
+                            type: string
+                            example: masum@excellisit.net
+                          phone:
+                            type: string
+                            example: '+91 96470 38098'
+                          email_verified_at:
+                            type: string
+                            example: '2024-10-28T08:35:17.000000Z'
+                          profile_picture:
+                            type: string
+                            example: profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp
+                          address:
+                            type: string
+                            example: kolkata
+                          city:
+                            type: string
+                            example: kolkata
+                          state:
+                            type: string
+                            example: '41'
+                          address2:
+                            type: string
+                            example: kolkata
+                          country:
+                            type: string
+                            example: '101'
+                          zip:
+                            type: string
+                            example: '700001'
+                          status:
+                            type: integer
+                            example: 1
+                          created_at:
+                            type: string
+                            example: '2024-10-28T08:35:17.000000Z'
+                          updated_at:
+                            type: string
+                            example: '2024-11-06T07:42:16.000000Z'
+                      reciver:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 12
+                          ecclesia_id:
+                            type: integer
+                            example: 2
+                          created_id:
+                            type: string
+                            example: '1'
+                          user_name:
+                            type: string
+                            example: swarnadwip_nath
+                          first_name:
+                            type: string
+                            example: Swarnadwip
+                          middle_name:
+                            type: string
+                            example: null
+                          last_name:
+                            type: string
+                            example: Nath
+                          email:
+                            type: string
+                            example: swarnadwip@excellisit.net
+                          phone:
+                            type: string
+                            example: '+1 0741202022'
+                          email_verified_at:
+                            type: string
+                            example: null
+                          profile_picture:
+                            type: string
+                            example: profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg
+                          address:
+                            type: string
+                            example: Kokata
+                          city:
+                            type: string
+                            example: Kolkata
+                          state:
+                            type: string
+                            example: '41'
+                          address2:
+                            type: string
+                            example: null
+                          country:
+                            type: string
+                            example: '101'
+                          zip:
+                            type: string
+                            example: '700001'
+                          status:
+                            type: integer
+                            example: 1
+                          created_at:
+                            type: string
+                            example: '2024-06-21T11:31:27.000000Z'
+                          updated_at:
+                            type: string
+                            example: '2024-09-09T11:02:59.000000Z'
+                  chat_count:
+                    type: integer
+                    example: 14
+                  success:
+                    type: boolean
+                    example: true
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  msg: 'An error occurred while sending the message.'
+                  success: false
+                properties:
+                  msg:
+                    type: string
+                    example: 'An error occurred while sending the message.'
+                  success:
+                    type: boolean
+                    example: false
+      tags:
+        - Chats
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                reciver_id:
+                  type: integer
+                  description: 'ID of the receiver (chat partner).'
+                  example: 2
+                message:
+                  type: string
+                  description: 'Optional message text if sending a text message.'
+                  example: 'Hello there!'
+                file:
+                  type: string
+                  format: binary
+                  description: 'Optional file attachment for the chat message.'
+              required:
+                - reciver_id
   /api/v3/contact-us:
     post:
       summary: 'Store Contact Us'
@@ -1247,7 +1537,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: awolff@example.com
+                  example: adams.tevin@example.com
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1318,7 +1608,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: repellendus
+                  example: consequatur
       security: []
   /api/v3/country-list:
     post:
@@ -1443,7 +1733,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: cstiedemann@example.org
+                  example: considine.alessandro@example.org
               required:
                 - email
       security: []
