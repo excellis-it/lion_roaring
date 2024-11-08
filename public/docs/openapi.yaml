@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 14
+                  example: 10
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1804,7 +1804,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: xgraham@example.net
+                  example: kirsten.grant@example.com
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1875,7 +1875,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: voluptatum
+                  example: et
       security: []
   /api/v3/country-list:
     post:
@@ -1965,6 +1965,22 @@ paths:
       tags:
         - Donation
       security: []
+  /api/v3/user/mail/inbox-email-list:
+    post:
+      summary: 'Inbox Email List'
+      operationId: inboxEmailList
+      description: 'Retrieves a paginated list of emails for the authenticated user, excluding sent emails, and returns the data in JSON format.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n   \"data\": [\n       {\n           \"id\": 1,\n           \"subject\": \"Sample Email Subject\",\n           \"body\": \"Sample email body content\",\n           \"created_at\": \"2024-11-07T14:35:06.000000Z\",\n           \"ownUserMailInfo\": {\n               \"is_read\": false,\n               \"is_delete\": false\n           }\n       },\n       // additional emails\n   ],\n   \"total\": 45,\n   \"perPage\": 15,\n   \"currentPage\": 1,\n   \"lastPage\": 3\n}"
+      tags:
+        - Email
   /api/v3/forget-password:
     post:
       summary: 'Forget Password'
@@ -2000,7 +2016,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: xfunk@example.net
+                  example: lindgren.burley@example.net
               required:
                 - email
       security: []
@@ -3665,6 +3681,268 @@ paths:
               required:
                 - team_id
                 - user_id
+  /api/v3/user/team-chats/seen:
+    post:
+      summary: 'Mark Group Message as Seen'
+      operationId: markGroupMessageAsSeen
+      description: 'Marks the specified chat message as seen by the authenticated user.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Message seen successfully.'
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'Message seen successfully.'
+                  status:
+                    type: boolean
+                    example: true
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'An error occurred while marking the message as seen.'
+                  status: false
+                  error: 'Error details here'
+                properties:
+                  message:
+                    type: string
+                    example: 'An error occurred while marking the message as seen.'
+                  status:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: 'Error details here'
+      tags:
+        - 'Group Chats'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chat_id:
+                  type: integer
+                  description: 'The ID of the chat message to mark as seen.'
+                  example: 15
+              required:
+                - chat_id
+  /api/v3/user/team-chats/remove-chat:
+    post:
+      summary: 'Remove Group Chat Message'
+      operationId: removeGroupChatMessage
+      description: 'Deletes a chat message from the group. If `del_from` is set to `everyone`, the message is deleted for all members; otherwise, it is deleted only for the authenticated user.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Chat removed successfully.'
+                  status: true
+                  chat_id: 25
+                  last_message: true
+                properties:
+                  message:
+                    type: string
+                    example: 'Chat removed successfully.'
+                  status:
+                    type: boolean
+                    example: true
+                  chat_id:
+                    type: integer
+                    example: 25
+                  last_message:
+                    type: boolean
+                    example: true
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'An error occurred while removing the chat message.'
+                  status: false
+                  error: 'Error details here'
+                properties:
+                  message:
+                    type: string
+                    example: 'An error occurred while removing the chat message.'
+                  status:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: 'Error details here'
+      tags:
+        - 'Group Chats'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chat_id:
+                  type: integer
+                  description: 'The ID of the chat message to be removed.'
+                  example: 25
+                del_from:
+                  type: string
+                  description: 'Determines if the chat should be deleted for `everyone` or just for the authenticated user.'
+                  example: everyone
+                team_id:
+                  type: integer
+                  description: 'The ID of the team to which the chat belongs.'
+                  example: 10
+              required:
+                - chat_id
+                - del_from
+                - team_id
+  /api/v3/user/team-chats/clear-all-conversation:
+    post:
+      summary: 'Clear All Conversation'
+      operationId: clearAllConversation
+      description: 'Clears all chat messages for a specified group. Only admins are permitted to perform this action.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'All conversation cleared successfully.'
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'All conversation cleared successfully.'
+                  status:
+                    type: boolean
+                    example: true
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'An error occurred while clearing the conversation.'
+                  status: false
+                  error: 'Error details here'
+                properties:
+                  message:
+                    type: string
+                    example: 'An error occurred while clearing the conversation.'
+                  status:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: 'Error details here'
+      tags:
+        - 'Group Chats'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_id:
+                  type: integer
+                  description: 'The ID of the team for which to clear the conversation.'
+                  example: 10
+              required:
+                - team_id
+  /api/v3/user/team-chats/notification:
+    post:
+      summary: 'Notification for Group Chat'
+      operationId: notificationForGroupChat
+      description: "Manages notifications for group chat messages. If the user has a new message, it sends a notification;\notherwise, it marks the notification as read."
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n   \"message\": \"Notification sent successfully.\",\n   \"status\": true,\n   \"notification\": {\n       // New notification object details here\n   },\n   \"notification_count\": 6\n}"
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Notification not found or could not be processed.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Notification not found or could not be processed.'
+                  status:
+                    type: boolean
+                    example: false
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Invalid request type.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Invalid request type.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - 'Group Chats'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_id:
+                  type: integer
+                  description: 'The ID of the team associated with the notification.'
+                  example: 10
+                chat_id:
+                  type: integer
+                  description: 'The ID of the chat message.'
+                  example: 25
+                is_delete:
+                  type: integer
+                  description: 'optional Indicates if the notification should be marked as read and deleted.'
+                  example: 19
+              required:
+                - team_id
+                - chat_id
   /api/v3/user/profile:
     post:
       summary: 'Profile Details'
@@ -4006,6 +4284,9 @@ tags:
     description: ''
   -
     name: Donation
+    description: ''
+  -
+    name: Email
     description: ''
   -
     name: 'Forget Password'

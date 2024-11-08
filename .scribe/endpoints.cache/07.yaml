@@ -223,7 +223,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 83P6ZV1gehbD56vf4ckaEad'
+      - 'Bearer DagaP63e6fv54Zbdk8EVh1c'
     controller: null
     method: null
     route: null
@@ -332,7 +332,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VvcEa836ZdkD6h4agf5ebP1'
+      - 'Bearer 548gDf3VaebPa1h6v6kdEcZ'
     controller: null
     method: null
     route: null
@@ -570,7 +570,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1V3dZ6fh846kcbDeaaPEgv5'
+      - 'Bearer vdcZa4eaf1bhD68P563VgkE'
     controller: null
     method: null
     route: null
@@ -708,7 +708,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6v1kV53gPDcad4eh86afZbE'
+      - 'Bearer Eg56vV1haP6eDaZb3ck4df8'
     controller: null
     method: null
     route: null
@@ -793,7 +793,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aD31k6hZdPEefv5ag8V6b4c'
+      - 'Bearer bEDva3h66VcekfZad18P54g'
     controller: null
     method: null
     route: null
@@ -868,7 +868,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZVcvakgah1e4E6f3D5d86Pb'
+      - 'Bearer akfePvEDb15ag3Zhd68cV46'
     controller: null
     method: null
     route: null
@@ -955,7 +955,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ga38v6cDe15Vbfa4EZk6hPd'
+      - 'Bearer Zb6k1VD58aPch3gvfEea46d'
     controller: null
     method: null
     route: null
@@ -1047,7 +1047,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c63Eg6D8VPbe1haak4fd5vZ'
+      - 'Bearer hedb5DgcfaP1vk8E636Va4Z'
     controller: null
     method: null
     route: null
@@ -1134,7 +1134,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZahPcVfb41D8ked3gav566E'
+      - 'Bearer 1veDcdPEbf4V6Zhaga386k5'
     controller: null
     method: null
     route: null
@@ -1204,7 +1204,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fv68a6kEagZdh4De3c1PV5b'
+      - 'Bearer V4cd5fZakg316abhe68EvDP'
     controller: null
     method: null
     route: null
@@ -1281,7 +1281,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DVhk1c5Zgdaa3Pb686fevE4'
+      - 'Bearer hbea4g51faDvkVcZ6d368EP'
     controller: null
     method: null
     route: null
@@ -1374,7 +1374,378 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 66bdZc4aD1ev3VaP8k5fhgE'
+      - 'Bearer D6hf846vd3abZgkE5Vec1Pa'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/team-chats/seen
+    metadata:
+      groupName: 'Group Chats'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Mark Group Message as Seen'
+      description: 'Marks the specified chat message as seen by the authenticated user.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      chat_id:
+        name: chat_id
+        description: 'The ID of the chat message to mark as seen.'
+        required: true
+        example: 15
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      chat_id: 15
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Message seen successfully.",
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "Chat member not found.",
+             "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "An error occurred while marking the message as seen.",
+             "status": false,
+             "error": "Error details here"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer kaVe6d36fcvPa8hbZ15EDg4'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/team-chats/remove-chat
+    metadata:
+      groupName: 'Group Chats'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove Group Chat Message'
+      description: 'Deletes a chat message from the group. If `del_from` is set to `everyone`, the message is deleted for all members; otherwise, it is deleted only for the authenticated user.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      chat_id:
+        name: chat_id
+        description: 'The ID of the chat message to be removed.'
+        required: true
+        example: 25
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      del_from:
+        name: del_from
+        description: 'Determines if the chat should be deleted for `everyone` or just for the authenticated user.'
+        required: true
+        example: everyone
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      team_id:
+        name: team_id
+        description: 'The ID of the team to which the chat belongs.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      chat_id: 25
+      del_from: everyone
+      team_id: 10
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Chat removed successfully.",
+             "status": true,
+             "chat_id": 25,
+             "last_message": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "Chat message not found.",
+             "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "Chat member not found for the authenticated user.",
+             "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "An error occurred while removing the chat message.",
+             "status": false,
+             "error": "Error details here"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 8bvEkc3f6h4V5eadgaD6ZP1'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/team-chats/clear-all-conversation
+    metadata:
+      groupName: 'Group Chats'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Clear All Conversation'
+      description: 'Clears all chat messages for a specified group. Only admins are permitted to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      team_id:
+        name: team_id
+        description: 'The ID of the team for which to clear the conversation.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      team_id: 10
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "All conversation cleared successfully.",
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "You do not have permission to clear the conversation.",
+             "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "An error occurred while clearing the conversation.",
+             "status": false,
+             "error": "Error details here"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 34D16kdvZ6aVc8fhPabgE5e'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/team-chats/notification
+    metadata:
+      groupName: 'Group Chats'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Notification for Group Chat'
+      description: |-
+        Manages notifications for group chat messages. If the user has a new message, it sends a notification;
+        otherwise, it marks the notification as read.
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      team_id:
+        name: team_id
+        description: 'The ID of the team associated with the notification.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      chat_id:
+        name: chat_id
+        description: 'The ID of the chat message.'
+        required: true
+        example: 25
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      is_delete:
+        name: is_delete
+        description: 'optional Indicates if the notification should be marked as read and deleted.'
+        required: false
+        example: 19
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanBodyParameters:
+      team_id: 10
+      chat_id: 25
+      is_delete: 19
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Notification read successfully.",
+             "status": true,
+             "notification": {
+                 // Notification object details here
+             },
+             "notification_count": 5
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Notification sent successfully.",
+             "status": true,
+             "notification": {
+                 // New notification object details here
+             },
+             "notification_count": 6
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "Notification not found or could not be processed.",
+             "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+             "message": "Invalid request type.",
+             "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 1df8E5PgvV6a3b6ZkcaDhe4'
     controller: null
     method: null
     route: null

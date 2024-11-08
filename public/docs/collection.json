@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "2fd408e5-8272-4830-a6fd-7e6ef26ac001",
+        "_postman_id": "a57b427b-6e87-42bb-86db-bf8810c3dd0d",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":14,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":10,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -902,7 +902,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"xgraham@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"kirsten.grant@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -946,7 +946,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"voluptatum\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"et\"}"
                         },
                         "description": "",
                         "auth": {
@@ -999,6 +999,44 @@
             ]
         },
         {
+            "name": "Email",
+            "description": "",
+            "item": [
+                {
+                    "name": "Inbox Email List",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/inbox-email-list",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/inbox-email-list"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Retrieves a paginated list of emails for the authenticated user, excluding sent emails, and returns the data in JSON format."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"data\": [\n       {\n           \"id\": 1,\n           \"subject\": \"Sample Email Subject\",\n           \"body\": \"Sample email body content\",\n           \"created_at\": \"2024-11-07T14:35:06.000000Z\",\n           \"ownUserMailInfo\": {\n               \"is_read\": false,\n               \"is_delete\": false\n           }\n       },\n       \/\/ additional emails\n   ],\n   \"total\": 45,\n   \"perPage\": 15,\n   \"currentPage\": 1,\n   \"lastPage\": 3\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "Forget Password",
             "description": "",
             "item": [
@@ -1024,7 +1062,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"xfunk@example.net\"}"
+                            "raw": "{\"email\":\"lindgren.burley@example.net\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1573,6 +1611,206 @@
                             "header": [],
                             "code": 201,
                             "body": "{\n   \"message\": \"An error occurred while making the member an admin.\",\n   \"status\": false,\n   \"error\": \"Error details here\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Mark Group Message as Seen",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/team-chats\/seen",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/team-chats\/seen"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"chat_id\":15}"
+                        },
+                        "description": "Marks the specified chat message as seen by the authenticated user."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Message seen successfully.\",\n   \"status\": true\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n   \"message\": \"Chat member not found.\",\n   \"status\": false\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n   \"message\": \"An error occurred while marking the message as seen.\",\n   \"status\": false,\n   \"error\": \"Error details here\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Remove Group Chat Message",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/team-chats\/remove-chat",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/team-chats\/remove-chat"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"chat_id\":25,\"del_from\":\"everyone\",\"team_id\":10}"
+                        },
+                        "description": "Deletes a chat message from the group. If `del_from` is set to `everyone`, the message is deleted for all members; otherwise, it is deleted only for the authenticated user."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Chat removed successfully.\",\n   \"status\": true,\n   \"chat_id\": 25,\n   \"last_message\": true\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n   \"message\": \"Chat message not found.\",\n   \"status\": false\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n   \"message\": \"Chat member not found for the authenticated user.\",\n   \"status\": false\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n   \"message\": \"An error occurred while removing the chat message.\",\n   \"status\": false,\n   \"error\": \"Error details here\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Clear All Conversation",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/team-chats\/clear-all-conversation",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/team-chats\/clear-all-conversation"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"team_id\":10}"
+                        },
+                        "description": "Clears all chat messages for a specified group. Only admins are permitted to perform this action."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"All conversation cleared successfully.\",\n   \"status\": true\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n   \"message\": \"You do not have permission to clear the conversation.\",\n   \"status\": false\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n   \"message\": \"An error occurred while clearing the conversation.\",\n   \"status\": false,\n   \"error\": \"Error details here\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Notification for Group Chat",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/team-chats\/notification",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/team-chats\/notification"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":19}"
+                        },
+                        "description": "Manages notifications for group chat messages. If the user has a new message, it sends a notification;\notherwise, it marks the notification as read."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Notification read successfully.\",\n   \"status\": true,\n   \"notification\": {\n       \/\/ Notification object details here\n   },\n   \"notification_count\": 5\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Notification sent successfully.\",\n   \"status\": true,\n   \"notification\": {\n       \/\/ New notification object details here\n   },\n   \"notification_count\": 6\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n   \"message\": \"Notification not found or could not be processed.\",\n   \"status\": false\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n   \"message\": \"Invalid request type.\",\n   \"status\": false\n}",
                             "name": ""
                         }
                     ]

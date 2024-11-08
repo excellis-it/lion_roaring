@@ -1438,6 +1438,324 @@ class TeamChatController extends Controller
     }
 
 
+    /**
+     * Mark Group Message as Seen
+     *
+     * Marks the specified chat message as seen by the authenticated user.
+     * @authenticated
+     * @bodyParam chat_id int required The ID of the chat message to mark as seen. Example: 15
+     *
+     * @response 200 {
+     *    "message": "Message seen successfully.",
+     *    "status": true
+     * }
+     * @response 201 {
+     *    "message": "Chat member not found.",
+     *    "status": false
+     * }
+     * @response 201 {
+     *    "message": "An error occurred while marking the message as seen.",
+     *    "status": false,
+     *    "error": "Error details here"
+     * }
+     */
+    public function seen(Request $request)
+    {
+        try {
+            $chat_id = $request->chat_id;
+
+            // Retrieve the chat member for the authenticated user
+            $chat_member = ChatMember::where('chat_id', $chat_id)
+                ->where('user_id', auth()->id())
+                ->first();
+
+            // If the chat member does not exist, return an error response
+            if (!$chat_member) {
+                return response()->json([
+                    'message' => 'Chat member not found.',
+                    'status' => false
+                ], 201);
+            }
+
+            // Mark the message as seen
+            $chat_member->is_seen = true;
+            $chat_member->save();
+
+            return response()->json([
+                'message' => 'Message seen successfully.',
+                'status' => true
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'An error occurred while marking the message as seen.',
+                'status' => false,
+                'error' => $th->getMessage()
+            ], 201);
+        }
+    }
+
+
+    /**
+     * Remove Group Chat Message
+     *
+     * Deletes a chat message from the group. If `del_from` is set to `everyone`, the message is deleted for all members; otherwise, it is deleted only for the authenticated user.
+     * @authenticated
+     * @bodyParam chat_id int required The ID of the chat message to be removed. Example: 25
+     * @bodyParam del_from string required Determines if the chat should be deleted for `everyone` or just for the authenticated user. Example: everyone
+     * @bodyParam team_id int required The ID of the team to which the chat belongs. Example: 10
+     *
+     * @response 200 {
+     *    "message": "Chat removed successfully.",
+     *    "status": true,
+     *    "chat_id": 25,
+     *    "last_message": true
+     * }
+     * @response 201 {
+     *    "message": "Chat message not found.",
+     *    "status": false
+     * }
+     * @response 201 {
+     *    "message": "Chat member not found for the authenticated user.",
+     *    "status": false
+     * }
+     * @response 201 {
+     *    "message": "An error occurred while removing the chat message.",
+     *    "status": false,
+     *    "error": "Error details here"
+     * }
+     */
+    public function removeChat(Request $request)
+    {
+        try {
+            $chat_id = $request->chat_id;
+            $del_from = $request->del_from;
+            $team_id = $request->team_id;
+
+            // Find the chat message
+            $team_chat = TeamChat::find($chat_id);
+            if (!$team_chat) {
+                return response()->json([
+                    'message' => 'Chat message not found.',
+                    'status' => false
+                ], 201);
+            }
+
+            // Determine if this is the user's last message in the team
+            $last_message = Helper::userLastMessage($team_id, auth()->id());
+            $is_last_message = $last_message && $last_message->id == $chat_id;
+
+            if ($del_from == 'everyone') {
+                $team_chat->delete();
+            } else {
+                // Retrieve the chat member record for the user
+                $chat_member = ChatMember::where('chat_id', $chat_id)
+                    ->where('user_id', auth()->id())
+                    ->first();
+
+                if (!$chat_member) {
+                    return response()->json([
+                        'message' => 'Chat member not found for the authenticated user.',
+                        'status' => false
+                    ], 201);
+                }
+
+                $chat_member->delete();
+            }
+
+            return response()->json([
+                'message' => 'Chat removed successfully.',
+                'status' => true,
+                'chat_id' => $chat_id,
+                'last_message' => $is_last_message
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'An error occurred while removing the chat message.',
+                'status' => false,
+                'error' => $th->getMessage()
+            ], 201);
+        }
+    }
+
+
+    /**
+     * Clear All Conversation
+     *
+     * Clears all chat messages for a specified group. Only admins are permitted to perform this action.
+     * @authenticated
+     * @bodyParam team_id int required The ID of the team for which to clear the conversation. Example: 10
+     *
+     * @response 200 {
+     *    "message": "All conversation cleared successfully.",
+     *    "status": true
+     * }
+     * @response 201 {
+     *    "message": "You do not have permission to clear the conversation.",
+     *    "status": false
+     * }
+     * @response 201 {
+     *    "message": "An error occurred while clearing the conversation.",
+     *    "status": false,
+     *    "error": "Error details here"
+     * }
+     */
+    public function clearAllConversation(Request $request)
+    {
+        try {
+            $team_id = $request->team_id;
+            $user_id = auth()->id();
+
+            // Check if the user is an admin of the team
+            $isAdmin = TeamMember::where('team_id', $team_id)
+                ->where('user_id', $user_id)
+                ->where('is_admin', true)
+                ->exists();
+
+            if (!$isAdmin) {
+                return response()->json([
+                    'message' => 'You do not have permission to clear the conversation.',
+                    'status' => false
+                ], 201);
+            }
+
+            // Delete chat members associated with the team's chats
+            ChatMember::whereHas('chat', function ($query) use ($team_id) {
+                $query->where('team_id', $team_id);
+            })->delete();
+
+            // Delete all chats associated with the team
+            TeamChat::where('team_id', $team_id)->delete();
+
+            return response()->json([
+                'message' => 'All conversation cleared successfully.',
+                'status' => true
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'An error occurred while clearing the conversation.',
+                'status' => false,
+                'error' => $th->getMessage()
+            ], 201);
+        }
+    }
+
+
+    /**
+     * Notification for Group Chat
+     *
+     * Manages notifications for group chat messages. If the user has a new message, it sends a notification; 
+     * otherwise, it marks the notification as read.
+     * @authenticated
+     * @bodyParam team_id int required The ID of the team associated with the notification. Example: 10
+     * @bodyParam chat_id int required The ID of the chat message. Example: 25
+     * @bodyParam is_delete int optional Indicates if the notification should be marked as read and deleted.
+     *
+     * @response 200 {
+     *    "message": "Notification read successfully.",
+     *    "status": true,
+     *    "notification": {
+     *        // Notification object details here
+     *    },
+     *    "notification_count": 5
+     * }
+     * @response 200 {
+     *    "message": "Notification sent successfully.",
+     *    "status": true,
+     *    "notification": {
+     *        // New notification object details here
+     *    },
+     *    "notification_count": 6
+     * }
+     * @response 201 {
+     *    "message": "Notification not found or could not be processed.",
+     *    "status": false
+     * }
+     * @response 404 {
+     *    "message": "Invalid request type.",
+     *    "status": false
+     * }
+     */
+    public function notification(Request $request)
+    {
+
+        try {
+            $team_id = $request->team_id;
+            $chat_id = $request->chat_id;
+            $user_id = auth()->id();
+
+            // Check if the user is a member of the team
+            $isMember = TeamMember::where('team_id', $team_id)
+                ->where('user_id', $user_id)
+                ->where('is_removed', false)
+                ->exists();
+
+            if (!$isMember) {
+                return response()->json([
+                    'message' => 'User is not a member of this group.',
+                    'status' => false
+                ], 201);
+            }
+
+            $notification_check = Notification::where('user_id', $user_id)
+                ->where('chat_id', $chat_id)
+                ->where('type', 'Team')
+                ->first();
+
+            if ($notification_check) {
+                if (isset($request->is_delete)) {
+                    $notification_check->is_read = 1;
+                    $notification_check->is_delete = 1;
+                    $notification_check->save();
+                }
+                $notification_count = Notification::where('user_id', $user_id)
+                    ->where('is_read', 0)
+                    ->where('is_delete', 0)
+                    ->count();
+
+                return response()->json([
+                    'message' => 'Notification read successfully.',
+                    'status' => true,
+                    'notification' => $notification_check,
+                    'notification_count' => $notification_count
+                ], 200);
+            } else {
+                // Create a new notification
+                $team = Team::find($team_id);
+                if (!$team) {
+                    return response()->json([
+                        'message' => 'Team not found.',
+                        'status' => false
+                    ], 201);
+                }
+
+                $notification = new Notification();
+                $notification->user_id = $user_id;
+                $notification->chat_id = $chat_id;
+                $notification->message = 'You have a new message in <b>' . $team->name . '</b> group.';
+                $notification->type = 'Team';
+                $notification->save();
+
+                $notification_count = Notification::where('user_id', $user_id)
+                    ->where('is_read', 0)
+                    ->where('is_delete', 0)
+                    ->count();
+
+                return response()->json([
+                    'message' => 'Notification sent successfully.',
+                    'status' => true,
+                    'notification' => $notification,
+                    'notification_count' => $notification_count
+                ], 200);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Notification not found or could not be processed.',
+                'status' => false,
+                'error' => $th->getMessage()
+            ], 201);
+        }
+    }
+
 
 
 

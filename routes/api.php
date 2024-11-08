@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\TeamChatController;
+use App\Http\Controllers\Api\EmailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -128,13 +129,46 @@ Route::prefix('v3')->group(function () {
             Route::post('/add-member-team', [TeamChatController::class, 'addMemberTeam']);
             Route::post('/exit-from-group', [TeamChatController::class, 'exitFromGroup']);            
             Route::post('/delete-group', [TeamChatController::class, 'deleteGroup']);
-            Route::post('/make-admin', [TeamChatController::class, 'makeAdmin'])->name('make-admin');
-            // Route::post('/seen', [TeamChatController::class, 'seen'])->name('seen');
-            // Route::post('/notification', [TeamChatController::class, 'notification'])->name('notification');
-            // Route::post('/remove-chat', [TeamChatController::class, 'removeChat'])->name('remove-chat');
-            // // clear-all-conversation
-            // Route::post('/clear-all-conversation', [TeamChatController::class, 'clearAllConversation'])->name('clear-all-conversation');
+            Route::post('/make-admin', [TeamChatController::class, 'makeAdmin']);
+            Route::post('/seen', [TeamChatController::class, 'seen']);            
+            Route::post('/remove-chat', [TeamChatController::class, 'removeChat']);
+            Route::post('/clear-all-conversation', [TeamChatController::class, 'clearAllConversation']);
+            Route::post('/notification', [TeamChatController::class, 'notification']);
         });
+
+
+        Route::prefix('mail')->group(function () {
+    
+            Route::post('/inbox-email-list', [EmailController::class, 'inboxEmailList']);
+            // Route::post('/sent-email-list', [EmailController::class, 'sentEmailList']);
+            // Route::post('/star-email-list', [EmailController::class, 'starEmailList']);
+            // Route::post('/trash-email-list', [EmailController::class, 'trashEmailList']);
+    
+            // Route::post('/view/{id}', [EmailController::class, 'view'])->name('mail.view');
+            // Route::post('/sent-mail-view/{id}', [EmailController::class, 'sentMailView']);
+            // Route::post('/star-mail-view/{id}', [EmailController::class, 'starMailView']);
+            // Route::post('/trash-mail-view/{id}', [EmailController::class, 'trashMailView']);
+    
+            // Route::post('/compose', [EmailController::class, 'compose']);
+            // Route::post('/send', [EmailController::class, 'sendMail']);
+            // Route::post('/sendReply', [EmailController::class, 'sendMailReply']);
+            // Route::post('/sendForward', [EmailController::class, 'sendMailForward']);
+            
+            // Route::post('/mail-delete', [EmailController::class, 'delete']);
+            // Route::post('/mail-delete-sent', [EmailController::class, 'deleteSentsMail']);
+            // Route::post('/mail-restore', [EmailController::class, 'restore']);
+            // Route::post('/mail-star', [EmailController::class, 'star']);
+    
+            // Route::post('/mail-delete-single', [EmailController::class, 'deleteSingleMail']);
+            // Route::post('/mail-restore-single', [EmailController::class, 'restoreSingleMail']);
+            
+            // Route::get('/print/{id}', [EmailController::class, 'printMail']);
+    
+            
+        });
+
+
+
 
         //
     });
