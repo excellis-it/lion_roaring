@@ -1,0 +1,440 @@
+name: Education
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/topics
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: Topics
+      subgroupDescription: 'APIs for managing topics in the system.'
+      title: 'Topic Lists'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "data": {
+                 "current_page": 1,
+                 "data": [
+                     {
+                         "id": 11,
+                         "topic_name": "Third Topic",
+                         "education_type": "Becoming a Leader",
+                         "created_at": "2024-09-09T11:10:22.000000Z",
+                         "updated_at": "2024-09-09T11:10:22.000000Z"
+                     },
+                     {
+                         "id": 10,
+                         "topic_name": "Third Topic",
+                         "education_type": "Becoming Christ Like",
+                         "created_at": "2024-09-09T11:05:52.000000Z",
+                         "updated_at": "2024-09-09T11:10:04.000000Z"
+                     },
+                 ],
+                 "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/topics?page=1",
+                 "from": 1,
+                 "last_page": 1,
+                 "last_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/topics?page=1",
+                 "links": [
+                     {
+                         "url": null,
+                         "label": "&laquo; Previous",
+                         "active": false
+                     },
+                     {
+                         "url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/topics?page=1",
+                         "label": "1",
+                         "active": true
+                     },
+                     {
+                         "url": null,
+                         "label": "Next &raquo;",
+                         "active": false
+                     }
+                 ],
+                 "next_page_url": null,
+                 "path": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/topics",
+                 "per_page": 15,
+                 "prev_page_url": null,
+                 "to": 8,
+                 "total": 8
+             },
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 51v3ge4PfaDd86hVZbc6Eak'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/topics
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: Topics
+      subgroupDescription: 'APIs for managing topics in the system.'
+      title: 'Create Topic'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      topic_name:
+        name: topic_name
+        description: 'The name of the topic.'
+        required: true
+        example: '"Sample Topic"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      education_type:
+        name: education_type
+        description: 'The type of education.'
+        required: true
+        example: '"General"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      topic_name: '"Sample Topic"'
+      education_type: '"General"'
+    fileParameters: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Topic created successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+            "message": "Validation failed for the provided data.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer d3a6Pbfg8Vhvk6eDEac541Z'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/topics/{topic}/edit'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: Topics
+      subgroupDescription: 'APIs for managing topics in the system.'
+      title: 'View Topic'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      topic:
+        name: topic
+        description: 'The topic.'
+        required: true
+        example: corrupti
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      id:
+        name: id
+        description: 'The ID of the topic.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      topic: corrupti
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": {
+              "id": 1,
+              "topic_name": "Sample Topic",
+              "education_type": "General"
+            },
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ahDvd668fecEV5bZk3gP14a'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/v3/user/topics/{id}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: Topics
+      subgroupDescription: 'APIs for managing topics in the system.'
+      title: 'Update Topic'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the topic to update.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      topic_name:
+        name: topic_name
+        description: 'The name of the topic.'
+        required: true
+        example: '"Updated Topic"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      education_type:
+        name: education_type
+        description: 'The type of education.'
+        required: true
+        example: '"General"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      topic_name: '"Updated Topic"'
+      education_type: '"General"'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Topic updated successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+            "message": "Validation failed for the provided data.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 665cZPhEgaa1fvVbDke43d8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/becoming-sovereign
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Sovereign'
+      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
+      title: 'Becoming Sovereigns List'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      topic:
+        name: topic
+        description: 'The ID of the topic to filter by.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      topic: 1
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 1,
+                "file_name": "Sample File",
+                "topic_name": "Sample Topic",
+                "file_extension": "pdf"
+              }
+            ],
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer EeDh6V485a1PfZ3c6kgbvad'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/becoming-sovereign/topics
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Sovereign'
+      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
+      title: 'Get List of Topics'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 1,
+                "topic_name": "Sample Topic",
+                "education_type": "Becoming Sovereign"
+              }
+            ],
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to fetch topics. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer E1k68vDa3ePfhdVc46gaZb5'
+    controller: null
+    method: null
+    route: null
+    custom: []

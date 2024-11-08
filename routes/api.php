@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BecomingSovereignController;
 use App\Http\Controllers\Api\CmsController;
 use App\Http\Controllers\Api\ContactUsController;
 use App\Http\Controllers\Api\DonationController;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\TeamChatController;
 use App\Http\Controllers\Api\EmailController;
+use App\Http\Controllers\Api\TopicController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -162,6 +165,31 @@ Route::prefix('v3')->group(function () {
             Route::get('/print/{id}', [EmailController::class, 'printMail']);
     
             
+        });
+
+
+        Route::resources([
+            // 'roles' => RolePermissionsController::class,
+            // 'partners' => PartnerController::class,
+            // 'bulletins' => BulletinController::class,
+               'topics' => TopicController::class,
+            // 'categories' => CategoryController::class,
+            // 'products' => ProductController::class,
+            // 'ecclesias' => EcclesiaContorller::class,
+            // 'jobs' => JobpostingController::class,
+            // 'meetings' => MeetingSchedulingController::class,
+        ]);
+
+        Route::prefix('becoming-sovereign')->group(function () {
+            Route::get('/', [BecomingSovereignController::class, 'index']);
+            Route::get('/topics', [BecomingSovereignController::class, 'topics']);
+            // Route::post('/store', [BecomingSovereignController::class, 'store']);
+            // Route::get('/edit/{id}', [BecomingSovereignController::class, 'edit']);
+            // Route::post('/update/{id}', [BecomingSovereignController::class, 'update']);
+            // Route::get('/delete/{id}', [BecomingSovereignController::class, 'delete']);
+            // Route::get('/download/{file}', [BecomingSovereignController::class, 'download']);
+            // Route::get('/fetch-data', [BecomingSovereignController::class, 'fetchData']);
+            // Route::get('/view/{id}', [BecomingSovereignController::class, 'view']);
         });
 
 

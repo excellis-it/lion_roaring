@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 11
+                  example: 14
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1804,7 +1804,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: deion.murazik@example.net
+                  example: littel.dawson@example.com
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1875,7 +1875,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: totam
+                  example: asperiores
       security: []
   /api/v3/country-list:
     post:
@@ -1965,6 +1965,323 @@ paths:
       tags:
         - Donation
       security: []
+  /api/v3/user/topics:
+    get:
+      summary: 'Topic Lists'
+      operationId: topicLists
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n   \"data\": {\n       \"current_page\": 1,\n       \"data\": [\n           {\n               \"id\": 11,\n               \"topic_name\": \"Third Topic\",\n               \"education_type\": \"Becoming a Leader\",\n               \"created_at\": \"2024-09-09T11:10:22.000000Z\",\n               \"updated_at\": \"2024-09-09T11:10:22.000000Z\"\n           },\n           {\n               \"id\": 10,\n               \"topic_name\": \"Third Topic\",\n               \"education_type\": \"Becoming Christ Like\",\n               \"created_at\": \"2024-09-09T11:05:52.000000Z\",\n               \"updated_at\": \"2024-09-09T11:10:04.000000Z\"\n           },\n       ],\n       \"first_page_url\": \"http:\\/\\/127.0.0.1:8000\\/api\\/v3\\/user\\/topics?page=1\",\n       \"from\": 1,\n       \"last_page\": 1,\n       \"last_page_url\": \"http:\\/\\/127.0.0.1:8000\\/api\\/v3\\/user\\/topics?page=1\",\n       \"links\": [\n           {\n               \"url\": null,\n               \"label\": \"&laquo; Previous\",\n               \"active\": false\n           },\n           {\n               \"url\": \"http:\\/\\/127.0.0.1:8000\\/api\\/v3\\/user\\/topics?page=1\",\n               \"label\": \"1\",\n               \"active\": true\n           },\n           {\n               \"url\": null,\n               \"label\": \"Next &raquo;\",\n               \"active\": false\n           }\n       ],\n       \"next_page_url\": null,\n       \"path\": \"http:\\/\\/127.0.0.1:8000\\/api\\/v3\\/user\\/topics\",\n       \"per_page\": 15,\n       \"prev_page_url\": null,\n       \"to\": 8,\n       \"total\": 8\n   },\n   \"status\": true\n}"
+      tags:
+        - Education
+    post:
+      summary: 'Create Topic'
+      operationId: createTopic
+      description: ''
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Topic created successfully.'
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'Topic created successfully.'
+                  status:
+                    type: boolean
+                    example: true
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Validation failed for the provided data.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Validation failed for the provided data.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Education
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                topic_name:
+                  type: string
+                  description: 'The name of the topic.'
+                  example: '"Sample Topic"'
+                education_type:
+                  type: string
+                  description: 'The type of education.'
+                  example: '"General"'
+              required:
+                - topic_name
+                - education_type
+  '/api/v3/user/topics/{topic}/edit':
+    get:
+      summary: 'View Topic'
+      operationId: viewTopic
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    topic_name: 'Sample Topic'
+                    education_type: General
+                  status: true
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      topic_name:
+                        type: string
+                        example: 'Sample Topic'
+                      education_type:
+                        type: string
+                        example: General
+                  status:
+                    type: boolean
+                    example: true
+      tags:
+        - Education
+    parameters:
+      -
+        in: path
+        name: topic
+        description: 'The topic.'
+        example: corrupti
+        required: true
+        schema:
+          type: string
+      -
+        in: path
+        name: id
+        description: 'The ID of the topic.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v3/user/topics/{id}':
+    put:
+      summary: 'Update Topic'
+      operationId: updateTopic
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Topic updated successfully.'
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'Topic updated successfully.'
+                  status:
+                    type: boolean
+                    example: true
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Validation failed for the provided data.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Validation failed for the provided data.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Education
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                topic_name:
+                  type: string
+                  description: 'The name of the topic.'
+                  example: '"Updated Topic"'
+                education_type:
+                  type: string
+                  description: 'The type of education.'
+                  example: '"General"'
+              required:
+                - topic_name
+                - education_type
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the topic to update.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/v3/user/becoming-sovereign:
+    get:
+      summary: 'Becoming Sovereigns List'
+      operationId: becomingSovereignsList
+      description: ''
+      parameters:
+        -
+          in: query
+          name: topic
+          description: 'The ID of the topic to filter by.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'The ID of the topic to filter by.'
+            example: 1
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      file_name: 'Sample File'
+                      topic_name: 'Sample Topic'
+                      file_extension: pdf
+                  status: true
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        file_name: 'Sample File'
+                        topic_name: 'Sample Topic'
+                        file_extension: pdf
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        file_name:
+                          type: string
+                          example: 'Sample File'
+                        topic_name:
+                          type: string
+                          example: 'Sample Topic'
+                        file_extension:
+                          type: string
+                          example: pdf
+                  status:
+                    type: boolean
+                    example: true
+      tags:
+        - Education
+  /api/v3/user/becoming-sovereign/topics:
+    get:
+      summary: 'Get List of Topics'
+      operationId: getListOfTopics
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      topic_name: 'Sample Topic'
+                      education_type: 'Becoming Sovereign'
+                  status: true
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        topic_name: 'Sample Topic'
+                        education_type: 'Becoming Sovereign'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        topic_name:
+                          type: string
+                          example: 'Sample Topic'
+                        education_type:
+                          type: string
+                          example: 'Becoming Sovereign'
+                  status:
+                    type: boolean
+                    example: true
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Failed to fetch topics. Please try again later.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Failed to fetch topics. Please try again later.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Education
   /api/v3/user/mail/inbox-email-list:
     post:
       summary: 'Inbox Email List'
@@ -2641,19 +2958,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
-                  example: praesentium
+                  example: voluptas
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: nisi
+                  example: tempora
                 subject:
                   type: string
                   description: 'The subject of the email.'
-                  example: expedita
+                  example: aperiam
                 message:
                   type: string
                   description: 'The body content of the email.'
-                  example: sit
+                  example: et
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -2783,19 +3100,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: accusamus
+                  example: veniam
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: est
+                  example: libero
                 subject:
                   type: string
                   description: 'The subject of the reply email.'
-                  example: voluptas
+                  example: totam
                 message:
                   type: string
                   description: 'The body content of the reply email.'
-                  example: eum
+                  example: praesentium
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -2805,7 +3122,7 @@ paths:
                 main_mail_id:
                   type: integer
                   description: 'The ID of the main email thread being replied to.'
-                  example: 11
+                  example: 16
               required:
                 - to
                 - subject
@@ -2922,15 +3239,15 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: nihil
+                  example: quod
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: temporibus
+                  example: nemo
                 subject:
                   type: string
                   description: 'The subject of the forwarded email.'
-                  example: consequuntur
+                  example: est
                 message:
                   type: string
                   description: 'The body content of the forwarded email.'
@@ -3422,7 +3739,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: holly.gerlach@example.org
+                  example: vmohr@example.net
               required:
                 - email
       security: []
@@ -5345,7 +5662,7 @@ paths:
                 is_delete:
                   type: integer
                   description: 'optional Indicates if the notification should be marked as read and deleted.'
-                  example: 6
+                  example: 9
               required:
                 - team_id
                 - chat_id
@@ -5690,6 +6007,9 @@ tags:
     description: ''
   -
     name: Donation
+    description: ''
+  -
+    name: Education
     description: ''
   -
     name: Email

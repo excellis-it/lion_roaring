@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "3f3a64ec-e672-4a27-948a-fde8552b6731",
+        "_postman_id": "c2e3f844-af56-4a36-9abf-93007e2b4795",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":11,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":14,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -902,7 +902,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"deion.murazik@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"littel.dawson@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -946,7 +946,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"totam\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"asperiores\"}"
                         },
                         "description": "",
                         "auth": {
@@ -993,6 +993,269 @@
                             "code": 201,
                             "body": "{\n\"message\": \"Country not found.\",\n\"status\": false\n}",
                             "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Education",
+            "description": "",
+            "item": [
+                {
+                    "name": "Topics",
+                    "description": "APIs for managing topics in the system.",
+                    "item": [
+                        {
+                            "name": "Topic Lists",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v3\/user\/topics",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/topics"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n   \"data\": {\n       \"current_page\": 1,\n       \"data\": [\n           {\n               \"id\": 11,\n               \"topic_name\": \"Third Topic\",\n               \"education_type\": \"Becoming a Leader\",\n               \"created_at\": \"2024-09-09T11:10:22.000000Z\",\n               \"updated_at\": \"2024-09-09T11:10:22.000000Z\"\n           },\n           {\n               \"id\": 10,\n               \"topic_name\": \"Third Topic\",\n               \"education_type\": \"Becoming Christ Like\",\n               \"created_at\": \"2024-09-09T11:05:52.000000Z\",\n               \"updated_at\": \"2024-09-09T11:10:04.000000Z\"\n           },\n       ],\n       \"first_page_url\": \"http:\\\/\\\/127.0.0.1:8000\\\/api\\\/v3\\\/user\\\/topics?page=1\",\n       \"from\": 1,\n       \"last_page\": 1,\n       \"last_page_url\": \"http:\\\/\\\/127.0.0.1:8000\\\/api\\\/v3\\\/user\\\/topics?page=1\",\n       \"links\": [\n           {\n               \"url\": null,\n               \"label\": \"&laquo; Previous\",\n               \"active\": false\n           },\n           {\n               \"url\": \"http:\\\/\\\/127.0.0.1:8000\\\/api\\\/v3\\\/user\\\/topics?page=1\",\n               \"label\": \"1\",\n               \"active\": true\n           },\n           {\n               \"url\": null,\n               \"label\": \"Next &raquo;\",\n               \"active\": false\n           }\n       ],\n       \"next_page_url\": null,\n       \"path\": \"http:\\\/\\\/127.0.0.1:8000\\\/api\\\/v3\\\/user\\\/topics\",\n       \"per_page\": 15,\n       \"prev_page_url\": null,\n       \"to\": 8,\n       \"total\": 8\n   },\n   \"status\": true\n}",
+                                    "name": ""
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Create Topic",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v3\/user\/topics",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/topics"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"topic_name\":\"\\\"Sample Topic\\\"\",\"education_type\":\"\\\"General\\\"\"}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 201,
+                                    "body": "{\n  \"message\": \"Topic created successfully.\",\n  \"status\": true\n}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 400,
+                                    "body": "{\n  \"message\": \"Validation failed for the provided data.\",\n  \"status\": false\n}",
+                                    "name": ""
+                                }
+                            ]
+                        },
+                        {
+                            "name": "View Topic",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v3\/user\/topics\/:topic\/edit",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/topics\/:topic\/edit",
+                                    "variable": [
+                                        {
+                                            "id": "topic",
+                                            "key": "topic",
+                                            "value": "corrupti",
+                                            "description": "The topic."
+                                        },
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "The ID of the topic."
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n  \"data\": {\n    \"id\": 1,\n    \"topic_name\": \"Sample Topic\",\n    \"education_type\": \"General\"\n  },\n  \"status\": true\n}",
+                                    "name": ""
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Update Topic",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v3\/user\/topics\/:id",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/topics\/:id",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "The ID of the topic to update."
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"topic_name\":\"\\\"Updated Topic\\\"\",\"education_type\":\"\\\"General\\\"\"}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n  \"message\": \"Topic updated successfully.\",\n  \"status\": true\n}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 400,
+                                    "body": "{\n  \"message\": \"Validation failed for the provided data.\",\n  \"status\": false\n}",
+                                    "name": ""
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Becoming Sovereign",
+                    "description": "APIs for managing becoming sovereign files and topics.",
+                    "item": [
+                        {
+                            "name": "Becoming Sovereigns List",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v3\/user\/becoming-sovereign",
+                                    "query": [
+                                        {
+                                            "key": "topic",
+                                            "value": "1",
+                                            "description": "The ID of the topic to filter by.",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign?topic=1"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"file_name\": \"Sample File\",\n      \"topic_name\": \"Sample Topic\",\n      \"file_extension\": \"pdf\"\n    }\n  ],\n  \"status\": true\n}",
+                                    "name": ""
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Get List of Topics",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v3\/user\/becoming-sovereign\/topics",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/topics"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"topic_name\": \"Sample Topic\",\n      \"education_type\": \"Becoming Sovereign\"\n    }\n  ],\n  \"status\": true\n}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 201,
+                                    "body": "{\n  \"message\": \"Failed to fetch topics. Please try again later.\",\n  \"status\": false\n}",
+                                    "name": ""
+                                }
+                            ]
                         }
                     ]
                 }
@@ -1234,25 +1497,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "praesentium",
+                                    "value": "voluptas",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"masum2@excellisit.net\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "nisi",
+                                    "value": "tempora",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "expedita",
+                                    "value": "aperiam",
                                     "type": "text",
                                     "description": "The subject of the email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "sit",
+                                    "value": "et",
                                     "type": "text",
                                     "description": "The body content of the email."
                                 },
@@ -1311,31 +1574,31 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "accusamus",
+                                    "value": "veniam",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "est",
+                                    "value": "libero",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "voluptas",
+                                    "value": "totam",
                                     "type": "text",
                                     "description": "The subject of the reply email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "eum",
+                                    "value": "praesentium",
                                     "type": "text",
                                     "description": "The body content of the reply email."
                                 },
                                 {
                                     "key": "main_mail_id",
-                                    "value": 11,
+                                    "value": 16,
                                     "type": "text",
                                     "description": "The ID of the main email thread being replied to."
                                 },
@@ -1394,19 +1657,19 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "nihil",
+                                    "value": "quod",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "temporibus",
+                                    "value": "nemo",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "consequuntur",
+                                    "value": "est",
                                     "type": "text",
                                     "description": "The subject of the forwarded email."
                                 },
@@ -1784,7 +2047,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"holly.gerlach@example.org\"}"
+                            "raw": "{\"email\":\"vmohr@example.net\"}"
                         },
                         "description": "",
                         "auth": {
@@ -2506,7 +2769,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":6}"
+                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":9}"
                         },
                         "description": "Manages notifications for group chat messages. If the user has a new message, it sends a notification;\notherwise, it marks the notification as read."
                     },
