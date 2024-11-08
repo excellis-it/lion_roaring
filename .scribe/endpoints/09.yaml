@@ -85,7 +85,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 51v3ge4PfaDd86hVZbc6Eak'
+      - 'Bearer kvdV5P866a3DbgEa4efcZ1h'
     controller: null
     method: null
     route: null
@@ -159,7 +159,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d3a6Pbfg8Vhvk6eDEac541Z'
+      - 'Bearer DcZaPe1Ed656gV48hvbfka3'
     controller: null
     method: null
     route: null
@@ -186,7 +186,7 @@ endpoints:
         name: topic
         description: 'The topic.'
         required: true
-        example: corrupti
+        example: necessitatibus
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -201,7 +201,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
-      topic: corrupti
+      topic: necessitatibus
       id: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -227,7 +227,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ahDvd668fecEV5bZk3gP14a'
+      - 'Bearer 3d4fe8EDk6vhZc51VgaP6ab'
     controller: null
     method: null
     route: null
@@ -312,7 +312,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 665cZPhEgaa1fvVbDke43d8'
+      - 'Bearer g6ZVPfca5Dbd84Ev6h1ake3'
     controller: null
     method: null
     route: null
@@ -355,16 +355,91 @@ endpoints:
       -
         status: 200
         content: |-
-          {
-            "data": [
-              {
-                "id": 1,
-                "file_name": "Sample File",
-                "topic_name": "Sample Topic",
-                "file_extension": "pdf"
-              }
-            ],
-            "status": true
+          *{
+             "data": {
+                 "current_page": 1,
+                 "data": [
+
+                     {
+                         "id": 60,
+                         "user_id": 1,
+                         "file_name": "topic- Back to the Basics Description and Outline.docx",
+                         "file_extension": "docx",
+                         "topic_id": 4,
+                         "type": "Becoming Sovereign",
+                         "file": "files\/qm5d3aJ5Z6esEep7WZAs19BLo4KRsjXp9w1RITYv.docx",
+                         "created_at": "2024-08-02T09:32:31.000000Z",
+                         "updated_at": "2024-08-02T09:32:31.000000Z"
+                     },
+                     {
+                         "id": 59,
+                         "user_id": 1,
+                         "file_name": "topic-Back to the Basics Part 1.pptx",
+                         "file_extension": "pptx",
+                         "topic_id": 4,
+                         "type": "Becoming Sovereign",
+                         "file": "files\/bv7C4BiH0N1s8WXrVZpPV2s6YTWN5sVUQs5PE584.pptx",
+                         "created_at": "2024-08-02T09:31:40.000000Z",
+                         "updated_at": "2024-08-02T09:31:40.000000Z"
+                     },
+                     {
+                         "id": 57,
+                         "user_id": 1,
+                         "file_name": "topic-Back to the Basics Part 3.pptx",
+                         "file_extension": "pptx",
+                         "topic_id": 4,
+                         "type": "Becoming Sovereign",
+                         "file": "files\/BDp5AHtA4ZIsqziYPUxCbRL91bcbSvAVv4m8S9Zs.pptx",
+                         "created_at": "2024-08-02T09:29:56.000000Z",
+                         "updated_at": "2024-08-02T09:29:56.000000Z"
+                     }
+                 ],
+                 "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
+                 "from": 1,
+                 "last_page": 1,
+                 "last_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
+                 "links": [
+                     {
+                         "url": null,
+                         "label": "&laquo; Previous",
+                         "active": false
+                     },
+                     {
+                         "url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
+                         "label": "1",
+                         "active": true
+                     },
+                     {
+                         "url": null,
+                         "label": "Next &raquo;",
+                         "active": false
+                     }
+                 ],
+                 "next_page_url": null,
+                 "path": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign",
+                 "per_page": 15,
+                 "prev_page_url": null,
+                 "to": 11,
+                 "total": 11
+             },
+             "topics": [
+                 {
+                     "id": 12,
+                     "topic_name": "abcd",
+                     "education_type": "Becoming Sovereign",
+                     "created_at": "2024-11-08T09:42:48.000000Z",
+                     "updated_at": "2024-11-08T09:42:48.000000Z"
+                 },
+                 {
+                     "id": 6,
+                     "topic_name": "Leadership Development",
+                     "education_type": "Becoming Sovereign",
+                     "created_at": "2024-08-02T09:17:16.000000Z",
+                     "updated_at": "2024-08-16T08:58:34.000000Z"
+                 },
+             ],
+             "new_topic": "",
+             "status": true
           }
         headers: []
         description: ''
@@ -373,7 +448,110 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EeDh6V485a1PfZ3c6kgbvad'
+      - 'Bearer 6v3D1V4a5bgZadc68ePhEkf'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/becoming-sovereign/list-by-topics
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Sovereign'
+      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
+      title: 'List by Topic'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      sortby:
+        name: sortby
+        description: 'The column to sort by (optional, default: id).'
+        required: false
+        example: deleniti
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      sorttype:
+        name: sorttype
+        description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
+        required: false
+        example: dolorem
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      query:
+        name: query
+        description: 'The search query to filter files by ID, file name, or file extension (optional).'
+        required: false
+        example: ad
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      topic_id:
+        name: topic_id
+        description: 'The ID of the topic to filter files by (optional).'
+        required: false
+        example: 12
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanQueryParameters:
+      sortby: deleniti
+      sorttype: dolorem
+      query: ad
+      topic_id: 12
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Files retrieved successfully.",
+             "data": [
+                 {
+                     "id": 77,
+                     "user_id": 37,
+                     "file_name": "image.png",
+                     "file_extension": "png",
+                     "topic_id": 13,
+                     "type": "Becoming Sovereign",
+                     "file": "files\/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
+                     "created_at": "2024-11-08T11:01:16.000000Z",
+                     "updated_at": "2024-11-08T11:01:16.000000Z"
+                 }
+             ],
+             "pagination": {
+                 "total": 1,
+                 "per_page": 15,
+                 "current_page": 1,
+                 "last_page": 1
+             },
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3hP6a6fkac45gbZ8eV1EDvd'
     controller: null
     method: null
     route: null
@@ -411,7 +589,9 @@ endpoints:
               {
                 "id": 1,
                 "topic_name": "Sample Topic",
-                "education_type": "Becoming Sovereign"
+                "education_type": "Becoming Sovereign",
+                "created_at": "2024-09-09T11:02:39.000000Z",
+                "updated_at": "2024-09-09T11:02:39.000000Z"
               }
             ],
             "status": true
@@ -433,7 +613,451 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E1k68vDa3ePfhdVc46gaZb5'
+      - 'Bearer PVd51fa48DgEh6c63Zbekav'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/becoming-sovereign/store
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Sovereign'
+      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
+      title: 'Create New'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      file:
+        name: file
+        description: 'The file to upload.'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      topic_id:
+        name: topic_id
+        description: 'The ID of the topic to associate the file with.'
+        required: true
+        example: 0
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      topic_id: 0
+    fileParameters:
+      file: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "File uploaded successfully.",
+             "data": {
+                 "user_id": 37,
+                 "file_name": "image.png",
+                 "file_extension": "png",
+                 "topic_id": "13",
+                 "type": "Becoming Sovereign",
+                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
+                 "updated_at": "2024-11-08T11:01:16.000000Z",
+                 "created_at": "2024-11-08T11:01:16.000000Z",
+                 "id": 77
+             },
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+            "message": "The file name has already been taken.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "Validation errors occurred.",
+            "errors": {
+              "file": ["The file field is required."],
+              "topic_id": ["The topic id field is required."]
+            },
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer D46afaPg3dk58Vhvbec6E1Z'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/becoming-sovereign/view/{id}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Sovereign'
+      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
+      title: 'View File'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the file to view.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters:
+      topic:
+        name: topic
+        description: 'The ID of the topic to filter by (optional).'
+        required: false
+        example: 19
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanQueryParameters:
+      topic: 19
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "File details retrieved successfully.",
+             "data": {
+                 "id": 77,
+                 "user_id": 37,
+                 "file_name": "image.png",
+                 "file_extension": "png",
+                 "topic_id": 13,
+                 "type": "Becoming Sovereign",
+                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
+                 "created_at": "2024-11-08T11:01:16.000000Z",
+                 "updated_at": "2024-11-08T11:01:16.000000Z"
+             },
+             "new_topic": "",
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 4veD6EhbcZgf1VkP538daa6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v3/user/becoming-sovereign/update/{id}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Sovereign'
+      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
+      title: 'Update File'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the update.'
+        required: true
+        example: quibusdam
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanUrlParameters:
+      id: quibusdam
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      file:
+        name: file
+        description: 'The new file to replace the existing one (optional).'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      topic_id:
+        name: topic_id
+        description: 'The ID of the topic to associate with the file.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      topic_id: 1
+    fileParameters:
+      file: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "File updated successfully.",
+            "data": {
+              "id": 1,
+              "file_name": "updated_sample.pdf",
+              "file_extension": "pdf",
+              "topic_id": 1,
+              "user_id": 1,
+              "file": "updated_file_path_here"
+            },
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+            "message": "Validation failed.",
+            "errors": {
+              "file": ["The file name has already been taken."]
+            },
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer avD48dVga6hbe16fZc3kE5P'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/becoming-sovereign/delete/{id}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Sovereign'
+      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
+      title: 'Delete File'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the file to delete.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "File deleted successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer c1faeD5h8P6v4ZaV6dgE3kb'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/becoming-sovereign/download/{file}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Sovereign'
+      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
+      title: 'Download file'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      file:
+        name: file
+        description: ''
+        required: true
+        example: perferendis
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanUrlParameters:
+      file: perferendis
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: 'A downloadable file response with the specified file.'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hPcVEaf3e1bDd6kav456Zg8'
     controller: null
     method: null
     route: null

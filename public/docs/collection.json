@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "c2e3f844-af56-4a36-9abf-93007e2b4795",
+        "_postman_id": "1aea89e8-b012-4d4a-9c2a-6c9bfffe8081",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":14,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":12,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -902,7 +902,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"littel.dawson@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"madge06@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -946,7 +946,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"asperiores\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"ipsa\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1091,7 +1091,7 @@
                                         {
                                             "id": "topic",
                                             "key": "topic",
-                                            "value": "corrupti",
+                                            "value": "necessitatibus",
                                             "description": "The topic."
                                         },
                                         {
@@ -1214,7 +1214,64 @@
                                 {
                                     "header": [],
                                     "code": 200,
-                                    "body": "{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"file_name\": \"Sample File\",\n      \"topic_name\": \"Sample Topic\",\n      \"file_extension\": \"pdf\"\n    }\n  ],\n  \"status\": true\n}",
+                                    "body": "*{\n   \"data\": {\n       \"current_page\": 1,\n       \"data\": [\n\n           {\n               \"id\": 60,\n               \"user_id\": 1,\n               \"file_name\": \"topic- Back to the Basics Description and Outline.docx\",\n               \"file_extension\": \"docx\",\n               \"topic_id\": 4,\n               \"type\": \"Becoming Sovereign\",\n               \"file\": \"files\\\/qm5d3aJ5Z6esEep7WZAs19BLo4KRsjXp9w1RITYv.docx\",\n               \"created_at\": \"2024-08-02T09:32:31.000000Z\",\n               \"updated_at\": \"2024-08-02T09:32:31.000000Z\"\n           },\n           {\n               \"id\": 59,\n               \"user_id\": 1,\n               \"file_name\": \"topic-Back to the Basics Part 1.pptx\",\n               \"file_extension\": \"pptx\",\n               \"topic_id\": 4,\n               \"type\": \"Becoming Sovereign\",\n               \"file\": \"files\\\/bv7C4BiH0N1s8WXrVZpPV2s6YTWN5sVUQs5PE584.pptx\",\n               \"created_at\": \"2024-08-02T09:31:40.000000Z\",\n               \"updated_at\": \"2024-08-02T09:31:40.000000Z\"\n           },\n           {\n               \"id\": 57,\n               \"user_id\": 1,\n               \"file_name\": \"topic-Back to the Basics Part 3.pptx\",\n               \"file_extension\": \"pptx\",\n               \"topic_id\": 4,\n               \"type\": \"Becoming Sovereign\",\n               \"file\": \"files\\\/BDp5AHtA4ZIsqziYPUxCbRL91bcbSvAVv4m8S9Zs.pptx\",\n               \"created_at\": \"2024-08-02T09:29:56.000000Z\",\n               \"updated_at\": \"2024-08-02T09:29:56.000000Z\"\n           }\n       ],\n       \"first_page_url\": \"http:\\\/\\\/127.0.0.1:8000\\\/api\\\/v3\\\/user\\\/becoming-sovereign?page=1\",\n       \"from\": 1,\n       \"last_page\": 1,\n       \"last_page_url\": \"http:\\\/\\\/127.0.0.1:8000\\\/api\\\/v3\\\/user\\\/becoming-sovereign?page=1\",\n       \"links\": [\n           {\n               \"url\": null,\n               \"label\": \"&laquo; Previous\",\n               \"active\": false\n           },\n           {\n               \"url\": \"http:\\\/\\\/127.0.0.1:8000\\\/api\\\/v3\\\/user\\\/becoming-sovereign?page=1\",\n               \"label\": \"1\",\n               \"active\": true\n           },\n           {\n               \"url\": null,\n               \"label\": \"Next &raquo;\",\n               \"active\": false\n           }\n       ],\n       \"next_page_url\": null,\n       \"path\": \"http:\\\/\\\/127.0.0.1:8000\\\/api\\\/v3\\\/user\\\/becoming-sovereign\",\n       \"per_page\": 15,\n       \"prev_page_url\": null,\n       \"to\": 11,\n       \"total\": 11\n   },\n   \"topics\": [\n       {\n           \"id\": 12,\n           \"topic_name\": \"abcd\",\n           \"education_type\": \"Becoming Sovereign\",\n           \"created_at\": \"2024-11-08T09:42:48.000000Z\",\n           \"updated_at\": \"2024-11-08T09:42:48.000000Z\"\n       },\n       {\n           \"id\": 6,\n           \"topic_name\": \"Leadership Development\",\n           \"education_type\": \"Becoming Sovereign\",\n           \"created_at\": \"2024-08-02T09:17:16.000000Z\",\n           \"updated_at\": \"2024-08-16T08:58:34.000000Z\"\n       },\n   ],\n   \"new_topic\": \"\",\n   \"status\": true\n}",
+                                    "name": ""
+                                }
+                            ]
+                        },
+                        {
+                            "name": "List by Topic",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v3\/user\/becoming-sovereign\/list-by-topics",
+                                    "query": [
+                                        {
+                                            "key": "sortby",
+                                            "value": "deleniti",
+                                            "description": "The column to sort by (optional, default: id).",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "sorttype",
+                                            "value": "dolorem",
+                                            "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "query",
+                                            "value": "ad",
+                                            "description": "The search query to filter files by ID, file name, or file extension (optional).",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "topic_id",
+                                            "value": "12",
+                                            "description": "The ID of the topic to filter files by (optional).",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=deleniti&sorttype=dolorem&query=ad&topic_id=12"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n   \"message\": \"Files retrieved successfully.\",\n   \"data\": [\n       {\n           \"id\": 77,\n           \"user_id\": 37,\n           \"file_name\": \"image.png\",\n           \"file_extension\": \"png\",\n           \"topic_id\": 13,\n           \"type\": \"Becoming Sovereign\",\n           \"file\": \"files\\\/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png\",\n           \"created_at\": \"2024-11-08T11:01:16.000000Z\",\n           \"updated_at\": \"2024-11-08T11:01:16.000000Z\"\n       }\n   ],\n   \"pagination\": {\n       \"total\": 1,\n       \"per_page\": 15,\n       \"current_page\": 1,\n       \"last_page\": 1\n   },\n   \"status\": true\n}",
                                     "name": ""
                                 }
                             ]
@@ -1246,13 +1303,302 @@
                                 {
                                     "header": [],
                                     "code": 200,
-                                    "body": "{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"topic_name\": \"Sample Topic\",\n      \"education_type\": \"Becoming Sovereign\"\n    }\n  ],\n  \"status\": true\n}",
+                                    "body": "{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"topic_name\": \"Sample Topic\",\n      \"education_type\": \"Becoming Sovereign\",\n      \"created_at\": \"2024-09-09T11:02:39.000000Z\",\n      \"updated_at\": \"2024-09-09T11:02:39.000000Z\"\n    }\n  ],\n  \"status\": true\n}",
                                     "name": ""
                                 },
                                 {
                                     "header": [],
                                     "code": 201,
                                     "body": "{\n  \"message\": \"Failed to fetch topics. Please try again later.\",\n  \"status\": false\n}",
+                                    "name": ""
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Create New",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v3\/user\/becoming-sovereign\/store",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/store"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "multipart\/form-data"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "topic_id",
+                                            "value": 0,
+                                            "type": "text",
+                                            "description": "The ID of the topic to associate the file with."
+                                        },
+                                        {
+                                            "key": "file",
+                                            "src": [],
+                                            "type": "file"
+                                        }
+                                    ]
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n   \"message\": \"File uploaded successfully.\",\n   \"data\": {\n       \"user_id\": 37,\n       \"file_name\": \"image.png\",\n       \"file_extension\": \"png\",\n       \"topic_id\": \"13\",\n       \"type\": \"Becoming Sovereign\",\n       \"file\": \"files\/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png\",\n       \"updated_at\": \"2024-11-08T11:01:16.000000Z\",\n       \"created_at\": \"2024-11-08T11:01:16.000000Z\",\n       \"id\": 77\n   },\n   \"status\": true\n}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 400,
+                                    "body": "{\n  \"message\": \"The file name has already been taken.\",\n  \"status\": false\n}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{\n  \"message\": \"Validation errors occurred.\",\n  \"errors\": {\n    \"file\": [\"The file field is required.\"],\n    \"topic_id\": [\"The topic id field is required.\"]\n  },\n  \"status\": false\n}",
+                                    "name": ""
+                                }
+                            ]
+                        },
+                        {
+                            "name": "View File",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v3\/user\/becoming-sovereign\/view\/:id",
+                                    "query": [
+                                        {
+                                            "key": "topic",
+                                            "value": "19",
+                                            "description": "The ID of the topic to filter by (optional).",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=19",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "The ID of the file to view."
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n   \"message\": \"File details retrieved successfully.\",\n   \"data\": {\n       \"id\": 77,\n       \"user_id\": 37,\n       \"file_name\": \"image.png\",\n       \"file_extension\": \"png\",\n       \"topic_id\": 13,\n       \"type\": \"Becoming Sovereign\",\n       \"file\": \"files\/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png\",\n       \"created_at\": \"2024-11-08T11:01:16.000000Z\",\n       \"updated_at\": \"2024-11-08T11:01:16.000000Z\"\n   },\n   \"new_topic\": \"\",\n   \"status\": true\n}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "{\n  \"message\": \"File not found.\",\n  \"status\": false\n}",
+                                    "name": ""
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Update File",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v3\/user\/becoming-sovereign\/update\/:id",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/update\/:id",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "quibusdam",
+                                            "description": "The ID of the update."
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "multipart\/form-data"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "topic_id",
+                                            "value": 1,
+                                            "type": "text",
+                                            "description": "The ID of the topic to associate with the file."
+                                        },
+                                        {
+                                            "key": "file",
+                                            "src": [],
+                                            "type": "file"
+                                        }
+                                    ]
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n  \"message\": \"File updated successfully.\",\n  \"data\": {\n    \"id\": 1,\n    \"file_name\": \"updated_sample.pdf\",\n    \"file_extension\": \"pdf\",\n    \"topic_id\": 1,\n    \"user_id\": 1,\n    \"file\": \"updated_file_path_here\"\n  },\n  \"status\": true\n}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 400,
+                                    "body": "{\n  \"message\": \"Validation failed.\",\n  \"errors\": {\n    \"file\": [\"The file name has already been taken.\"]\n  },\n  \"status\": false\n}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "{\n  \"message\": \"File not found.\",\n  \"status\": false\n}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\n  \"message\": \"Something went wrong. Please try again later.\",\n  \"status\": false\n}",
+                                    "name": ""
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Delete File",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v3\/user\/becoming-sovereign\/delete\/:id",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/delete\/:id",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "The ID of the file to delete."
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n  \"message\": \"File deleted successfully.\",\n  \"status\": true\n}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "{\n  \"message\": \"File not found.\",\n  \"status\": false\n}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 500,
+                                    "body": "{\n  \"message\": \"Something went wrong. Please try again later.\",\n  \"status\": false\n}",
+                                    "name": ""
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Download file",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v3\/user\/becoming-sovereign\/download\/:file",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/download\/:file",
+                                    "variable": [
+                                        {
+                                            "id": "file",
+                                            "key": "file",
+                                            "value": "perferendis",
+                                            "description": ""
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "A downloadable file response with the specified file.",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 201,
+                                    "body": "{\n  \"message\": \"File not found.\",\n  \"status\": false\n}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 201,
+                                    "body": "{\n  \"message\": \"Something went wrong. Please try again later.\",\n  \"status\": false\n}",
                                     "name": ""
                                 }
                             ]
@@ -1497,25 +1843,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "voluptas",
+                                    "value": "et",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"masum2@excellisit.net\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "tempora",
+                                    "value": "fuga",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "aperiam",
+                                    "value": "ut",
                                     "type": "text",
                                     "description": "The subject of the email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "et",
+                                    "value": "ut",
                                     "type": "text",
                                     "description": "The body content of the email."
                                 },
@@ -1574,25 +1920,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "veniam",
+                                    "value": "in",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "libero",
+                                    "value": "qui",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "totam",
+                                    "value": "officiis",
                                     "type": "text",
                                     "description": "The subject of the reply email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "praesentium",
+                                    "value": "aut",
                                     "type": "text",
                                     "description": "The body content of the reply email."
                                 },
@@ -1657,19 +2003,19 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "quod",
+                                    "value": "perferendis",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "nemo",
+                                    "value": "reiciendis",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "est",
+                                    "value": "voluptatibus",
                                     "type": "text",
                                     "description": "The subject of the forwarded email."
                                 },
@@ -2047,7 +2393,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"vmohr@example.net\"}"
+                            "raw": "{\"email\":\"whickle@example.com\"}"
                         },
                         "description": "",
                         "auth": {
@@ -2769,7 +3115,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":9}"
+                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":11}"
                         },
                         "description": "Manages notifications for group chat messages. If the user has a new message, it sends a notification;\notherwise, it marks the notification as read."
                     },

@@ -182,14 +182,13 @@ Route::prefix('v3')->group(function () {
 
         Route::prefix('becoming-sovereign')->group(function () {
             Route::get('/', [BecomingSovereignController::class, 'index']);
+            Route::get('/list-by-topics', [BecomingSovereignController::class, 'listByTopic']);
             Route::get('/topics', [BecomingSovereignController::class, 'topics']);
-            // Route::post('/store', [BecomingSovereignController::class, 'store']);
-            // Route::get('/edit/{id}', [BecomingSovereignController::class, 'edit']);
-            // Route::post('/update/{id}', [BecomingSovereignController::class, 'update']);
-            // Route::get('/delete/{id}', [BecomingSovereignController::class, 'delete']);
-            // Route::get('/download/{file}', [BecomingSovereignController::class, 'download']);
-            // Route::get('/fetch-data', [BecomingSovereignController::class, 'fetchData']);
-            // Route::get('/view/{id}', [BecomingSovereignController::class, 'view']);
+            Route::post('/store', [BecomingSovereignController::class, 'store']);
+            Route::get('/view/{id}', [BecomingSovereignController::class, 'view']);
+            Route::post('/update/{id}', [BecomingSovereignController::class, 'update']);
+            Route::get('/delete/{id}', [BecomingSovereignController::class, 'delete']);
+            Route::get('/download/{file}', [BecomingSovereignController::class, 'download']);
         });
 
 
