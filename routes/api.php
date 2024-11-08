@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BecomingChristLikeController;
 use App\Http\Controllers\Api\BecomingSovereignController;
 use App\Http\Controllers\Api\CmsController;
 use App\Http\Controllers\Api\ContactUsController;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\TeamChatController;
 use App\Http\Controllers\Api\EmailController;
+use App\Http\Controllers\Api\LeadershipDevelopmentController;
 use App\Http\Controllers\Api\TopicController;
 
 
@@ -190,6 +192,30 @@ Route::prefix('v3')->group(function () {
             Route::get('/delete/{id}', [BecomingSovereignController::class, 'delete']);
             Route::get('/download/{file}', [BecomingSovereignController::class, 'download']);
         });
+
+        Route::prefix('becoming-christ-link')->group(function () {
+            Route::get('/', [BecomingChristLikeController::class, 'index']);
+            Route::get('/list-by-topics', [BecomingChristLikeController::class, 'listByTopic']);
+            Route::get('/topics', [BecomingChristLikeController::class, 'topics']);
+            Route::post('/store', [BecomingChristLikeController::class, 'store']);
+            Route::get('/view/{id}', [BecomingChristLikeController::class, 'view']);
+            Route::post('/update/{id}', [BecomingChristLikeController::class, 'update']);
+            Route::get('/delete/{id}', [BecomingChristLikeController::class, 'delete']);
+            Route::get('/download/{file}', [BecomingChristLikeController::class, 'download']);
+        });
+
+        Route::prefix('leadership-development')->group(function () {
+            Route::get('/', [LeadershipDevelopmentController::class, 'index']);
+            Route::get('/list-by-topics', [LeadershipDevelopmentController::class, 'listByTopic']);
+            Route::get('/topics', [LeadershipDevelopmentController::class, 'topics']);
+            Route::post('/store', [LeadershipDevelopmentController::class, 'store']);
+            Route::get('/view/{id}', [LeadershipDevelopmentController::class, 'view']);
+            Route::post('/update/{id}', [LeadershipDevelopmentController::class, 'update']);
+            Route::get('/delete/{id}', [LeadershipDevelopmentController::class, 'delete']);
+            Route::get('/download/{file}', [LeadershipDevelopmentController::class, 'download']);
+        });
+
+        
 
 
 

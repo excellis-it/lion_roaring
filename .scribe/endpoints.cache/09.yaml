@@ -87,7 +87,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kvdV5P866a3DbgEa4efcZ1h'
+      - 'Bearer ed65cEagZ1a4b3D8v6kVPhf'
     controller: null
     method: null
     route: null
@@ -161,7 +161,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DcZaPe1Ed656gV48hvbfka3'
+      - 'Bearer d6DEkghZcbe35a46Pa1v8fV'
     controller: null
     method: null
     route: null
@@ -188,7 +188,7 @@ endpoints:
         name: topic
         description: 'The topic.'
         required: true
-        example: necessitatibus
+        example: omnis
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -203,7 +203,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
-      topic: necessitatibus
+      topic: omnis
       id: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -229,7 +229,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3d4fe8EDk6vhZc51VgaP6ab'
+      - 'Bearer cEvZe8635g1PaV4bhD6afkd'
     controller: null
     method: null
     route: null
@@ -314,7 +314,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g6ZVPfca5Dbd84Ev6h1ake3'
+      - 'Bearer e5b4E86vaPg1ZfcD3hk6Vda'
     controller: null
     method: null
     route: null
@@ -450,7 +450,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6v3D1V4a5bgZadc68ePhEkf'
+      - 'Bearer k6VgZdf856hPca4vae31bDE'
     controller: null
     method: null
     route: null
@@ -479,7 +479,7 @@ endpoints:
         name: sortby
         description: 'The column to sort by (optional, default: id).'
         required: false
-        example: deleniti
+        example: minus
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -488,7 +488,7 @@ endpoints:
         name: sorttype
         description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
         required: false
-        example: dolorem
+        example: quia
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -497,7 +497,7 @@ endpoints:
         name: query
         description: 'The search query to filter files by ID, file name, or file extension (optional).'
         required: false
-        example: ad
+        example: aliquid
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -506,16 +506,16 @@ endpoints:
         name: topic_id
         description: 'The ID of the topic to filter files by (optional).'
         required: false
-        example: 12
+        example: 18
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      sortby: deleniti
-      sorttype: dolorem
-      query: ad
-      topic_id: 12
+      sortby: minus
+      sorttype: quia
+      query: aliquid
+      topic_id: 18
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -553,7 +553,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3hP6a6fkac45gbZ8eV1EDvd'
+      - 'Bearer de3b56favaZP68hE1DgVc4k'
     controller: null
     method: null
     route: null
@@ -615,7 +615,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PVd51fa48DgEh6c63Zbekav'
+      - 'Bearer DEeZ43chPadaf6g6Vbv5k81'
     controller: null
     method: null
     route: null
@@ -714,7 +714,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D46afaPg3dk58Vhvbec6E1Z'
+      - 'Bearer c6gZDa15bvaE8f4kPVeh36d'
     controller: null
     method: null
     route: null
@@ -753,13 +753,13 @@ endpoints:
         name: topic
         description: 'The ID of the topic to filter by (optional).'
         required: false
-        example: 19
+        example: 17
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      topic: 19
+      topic: 17
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -800,7 +800,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4veD6EhbcZgf1VkP538daa6'
+      - 'Bearer bgh48DPVEfevd6a6k3cZa51'
     controller: null
     method: null
     route: null
@@ -827,13 +827,13 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: quibusdam
+        example: vel
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: quibusdam
+      id: vel
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -915,7 +915,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer avD48dVga6hbe16fZc3kE5P'
+      - 'Bearer afgk5dEZ8c6bP1vV43Dhae6'
     controller: null
     method: null
     route: null
@@ -989,7 +989,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c1faeD5h8P6v4ZaV6dgE3kb'
+      - 'Bearer VPaD6k4c3gbahf8evEZ61d5'
     controller: null
     method: null
     route: null
@@ -1016,13 +1016,13 @@ endpoints:
         name: file
         description: ''
         required: true
-        example: perferendis
+        example: qui
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      file: perferendis
+      file: qui
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -1059,7 +1059,1497 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hPcVEaf3e1bDd6kav456Zg8'
+      - 'Bearer f5a6DgcEeaPhV6vdk81Zb43'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/becoming-christ-link
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Christ Like'
+      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
+      title: 'Becoming Christ Likes List'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      topic:
+        name: topic
+        description: 'The ID of the topic to filter by.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      topic: 1
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          *{
+             "data": {
+                 "current_page": 1,
+                 "data": [
+
+                     {
+                         "id": 60,
+                         "user_id": 1,
+                         "file_name": "topic- Back to the Basics Description and Outline.docx",
+                         "file_extension": "docx",
+                         "topic_id": 4,
+                         "type": "Becoming Christ Like",
+                         "file": "files\/qm5d3aJ5Z6esEep7WZAs19BLo4KRsjXp9w1RITYv.docx",
+                         "created_at": "2024-08-02T09:32:31.000000Z",
+                         "updated_at": "2024-08-02T09:32:31.000000Z"
+                     },
+                     {
+                         "id": 59,
+                         "user_id": 1,
+                         "file_name": "topic-Back to the Basics Part 1.pptx",
+                         "file_extension": "pptx",
+                         "topic_id": 4,
+                         "type": "Becoming Christ Like",
+                         "file": "files\/bv7C4BiH0N1s8WXrVZpPV2s6YTWN5sVUQs5PE584.pptx",
+                         "created_at": "2024-08-02T09:31:40.000000Z",
+                         "updated_at": "2024-08-02T09:31:40.000000Z"
+                     },
+                     {
+                         "id": 57,
+                         "user_id": 1,
+                         "file_name": "topic-Back to the Basics Part 3.pptx",
+                         "file_extension": "pptx",
+                         "topic_id": 4,
+                         "type": "Becoming Christ Like",
+                         "file": "files\/BDp5AHtA4ZIsqziYPUxCbRL91bcbSvAVv4m8S9Zs.pptx",
+                         "created_at": "2024-08-02T09:29:56.000000Z",
+                         "updated_at": "2024-08-02T09:29:56.000000Z"
+                     }
+                 ],
+                 "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
+                 "from": 1,
+                 "last_page": 1,
+                 "last_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
+                 "links": [
+                     {
+                         "url": null,
+                         "label": "&laquo; Previous",
+                         "active": false
+                     },
+                     {
+                         "url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
+                         "label": "1",
+                         "active": true
+                     },
+                     {
+                         "url": null,
+                         "label": "Next &raquo;",
+                         "active": false
+                     }
+                 ],
+                 "next_page_url": null,
+                 "path": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign",
+                 "per_page": 15,
+                 "prev_page_url": null,
+                 "to": 11,
+                 "total": 11
+             },
+             "topics": [
+                 {
+                     "id": 12,
+                     "topic_name": "abcd",
+                     "education_type": "Becoming Christ Like",
+                     "created_at": "2024-11-08T09:42:48.000000Z",
+                     "updated_at": "2024-11-08T09:42:48.000000Z"
+                 },
+                 {
+                     "id": 6,
+                     "topic_name": "Leadership Development",
+                     "education_type": "Becoming Christ Like",
+                     "created_at": "2024-08-02T09:17:16.000000Z",
+                     "updated_at": "2024-08-16T08:58:34.000000Z"
+                 },
+             ],
+             "new_topic": "",
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer gk5e63avfdaEV6Pc8Zbh1D4'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/becoming-christ-link/list-by-topics
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Christ Like'
+      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
+      title: 'List by Topic'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      sortby:
+        name: sortby
+        description: 'The column to sort by (optional, default: id).'
+        required: false
+        example: quibusdam
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      sorttype:
+        name: sorttype
+        description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
+        required: false
+        example: magnam
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      query:
+        name: query
+        description: 'The search query to filter files by ID, file name, or file extension (optional).'
+        required: false
+        example: totam
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      topic_id:
+        name: topic_id
+        description: 'The ID of the topic to filter files by (optional).'
+        required: false
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanQueryParameters:
+      sortby: quibusdam
+      sorttype: magnam
+      query: totam
+      topic_id: 2
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Files retrieved successfully.",
+             "data": [
+                 {
+                     "id": 77,
+                     "user_id": 37,
+                     "file_name": "image.png",
+                     "file_extension": "png",
+                     "topic_id": 13,
+                     "type": "Becoming Christ Like",
+                     "file": "files\/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
+                     "created_at": "2024-11-08T11:01:16.000000Z",
+                     "updated_at": "2024-11-08T11:01:16.000000Z"
+                 }
+             ],
+             "pagination": {
+                 "total": 1,
+                 "per_page": 15,
+                 "current_page": 1,
+                 "last_page": 1
+             },
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer k861P5fed3V6chbvDZaEag4'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/becoming-christ-link/topics
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Christ Like'
+      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
+      title: 'Get List of Topics'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 1,
+                "topic_name": "Sample Topic",
+                "education_type": "Becoming Christ Like",
+                "created_at": "2024-09-09T11:02:39.000000Z",
+                "updated_at": "2024-09-09T11:02:39.000000Z"
+              }
+            ],
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to fetch topics. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer h1b8dV5ZEkfv4DPa6c6ge3a'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/becoming-christ-link/store
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Christ Like'
+      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
+      title: 'Create New'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      file:
+        name: file
+        description: 'The file to upload.'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      topic_id:
+        name: topic_id
+        description: 'The ID of the topic to associate the file with.'
+        required: true
+        example: 0
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      topic_id: 0
+    fileParameters:
+      file: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "File uploaded successfully.",
+             "data": {
+                 "user_id": 37,
+                 "file_name": "image.png",
+                 "file_extension": "png",
+                 "topic_id": "13",
+                 "type": "Becoming Christ Like",
+                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
+                 "updated_at": "2024-11-08T11:01:16.000000Z",
+                 "created_at": "2024-11-08T11:01:16.000000Z",
+                 "id": 77
+             },
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+            "message": "The file name has already been taken.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "Validation errors occurred.",
+            "errors": {
+              "file": ["The file field is required."],
+              "topic_id": ["The topic id field is required."]
+            },
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 81E54P3Dkbaevhdac6gf6ZV'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/becoming-christ-link/view/{id}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Christ Like'
+      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
+      title: 'View File'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the file to view.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters:
+      topic:
+        name: topic
+        description: 'The ID of the topic to filter by (optional).'
+        required: false
+        example: 7
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanQueryParameters:
+      topic: 7
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "File details retrieved successfully.",
+             "data": {
+                 "id": 77,
+                 "user_id": 37,
+                 "file_name": "image.png",
+                 "file_extension": "png",
+                 "topic_id": 13,
+                 "type": "Becoming Christ Like",
+                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
+                 "created_at": "2024-11-08T11:01:16.000000Z",
+                 "updated_at": "2024-11-08T11:01:16.000000Z"
+             },
+             "new_topic": "",
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 4be66Z5afa8EhkgVdP1vDc3'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v3/user/becoming-christ-link/update/{id}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Christ Like'
+      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
+      title: 'Update File'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the update.'
+        required: true
+        example: inventore
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanUrlParameters:
+      id: inventore
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      file:
+        name: file
+        description: 'The new file to replace the existing one (optional).'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      topic_id:
+        name: topic_id
+        description: 'The ID of the topic to associate with the file.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      topic_id: 1
+    fileParameters:
+      file: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "File updated successfully.",
+            "data": {
+              "id": 1,
+              "file_name": "updated_sample.pdf",
+              "file_extension": "pdf",
+              "topic_id": 1,
+              "user_id": 1,
+              "file": "updated_file_path_here"
+            },
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+            "message": "Validation failed.",
+            "errors": {
+              "file": ["The file name has already been taken."]
+            },
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 4VkfZhP8ecDEgb656av3ad1'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/becoming-christ-link/delete/{id}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Christ Like'
+      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
+      title: 'Delete File'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the file to delete.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "File deleted successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 56b1eEgZkca43VvD8daPfh6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/becoming-christ-link/download/{file}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming Christ Like'
+      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
+      title: 'Download file'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      file:
+        name: file
+        description: ''
+        required: true
+        example: ut
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanUrlParameters:
+      file: ut
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: 'A downloadable file response with the specified file.'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer vak64Pg5fE3aDdVe8Zch61b'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/leadership-development
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming a Leader'
+      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
+      title: 'Becoming a Leaders List'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      topic:
+        name: topic
+        description: 'The ID of the topic to filter by.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      topic: 1
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          *{
+             "data": {
+                 "current_page": 1,
+                 "data": [
+
+                     {
+                         "id": 60,
+                         "user_id": 1,
+                         "file_name": "topic- Back to the Basics Description and Outline.docx",
+                         "file_extension": "docx",
+                         "topic_id": 4,
+                         "type": "Becoming a Leader",
+                         "file": "files\/qm5d3aJ5Z6esEep7WZAs19BLo4KRsjXp9w1RITYv.docx",
+                         "created_at": "2024-08-02T09:32:31.000000Z",
+                         "updated_at": "2024-08-02T09:32:31.000000Z"
+                     },
+                     {
+                         "id": 59,
+                         "user_id": 1,
+                         "file_name": "topic-Back to the Basics Part 1.pptx",
+                         "file_extension": "pptx",
+                         "topic_id": 4,
+                         "type": "Becoming a Leader",
+                         "file": "files\/bv7C4BiH0N1s8WXrVZpPV2s6YTWN5sVUQs5PE584.pptx",
+                         "created_at": "2024-08-02T09:31:40.000000Z",
+                         "updated_at": "2024-08-02T09:31:40.000000Z"
+                     },
+                     {
+                         "id": 57,
+                         "user_id": 1,
+                         "file_name": "topic-Back to the Basics Part 3.pptx",
+                         "file_extension": "pptx",
+                         "topic_id": 4,
+                         "type": "Becoming a Leader",
+                         "file": "files\/BDp5AHtA4ZIsqziYPUxCbRL91bcbSvAVv4m8S9Zs.pptx",
+                         "created_at": "2024-08-02T09:29:56.000000Z",
+                         "updated_at": "2024-08-02T09:29:56.000000Z"
+                     }
+                 ],
+                 "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
+                 "from": 1,
+                 "last_page": 1,
+                 "last_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
+                 "links": [
+                     {
+                         "url": null,
+                         "label": "&laquo; Previous",
+                         "active": false
+                     },
+                     {
+                         "url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
+                         "label": "1",
+                         "active": true
+                     },
+                     {
+                         "url": null,
+                         "label": "Next &raquo;",
+                         "active": false
+                     }
+                 ],
+                 "next_page_url": null,
+                 "path": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign",
+                 "per_page": 15,
+                 "prev_page_url": null,
+                 "to": 11,
+                 "total": 11
+             },
+             "topics": [
+                 {
+                     "id": 12,
+                     "topic_name": "abcd",
+                     "education_type": "Becoming a Leader",
+                     "created_at": "2024-11-08T09:42:48.000000Z",
+                     "updated_at": "2024-11-08T09:42:48.000000Z"
+                 },
+                 {
+                     "id": 6,
+                     "topic_name": "Leadership Development",
+                     "education_type": "Becoming a Leader",
+                     "created_at": "2024-08-02T09:17:16.000000Z",
+                     "updated_at": "2024-08-16T08:58:34.000000Z"
+                 },
+             ],
+             "new_topic": "",
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aV1k3ZPv5cag86hE6f4ebDd'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/leadership-development/list-by-topics
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming a Leader'
+      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
+      title: 'List by Topic'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      sortby:
+        name: sortby
+        description: 'The column to sort by (optional, default: id).'
+        required: false
+        example: quia
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      sorttype:
+        name: sorttype
+        description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
+        required: false
+        example: odit
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      query:
+        name: query
+        description: 'The search query to filter files by ID, file name, or file extension (optional).'
+        required: false
+        example: occaecati
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      topic_id:
+        name: topic_id
+        description: 'The ID of the topic to filter files by (optional).'
+        required: false
+        example: 13
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanQueryParameters:
+      sortby: quia
+      sorttype: odit
+      query: occaecati
+      topic_id: 13
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Files retrieved successfully.",
+             "data": [
+                 {
+                     "id": 77,
+                     "user_id": 37,
+                     "file_name": "image.png",
+                     "file_extension": "png",
+                     "topic_id": 13,
+                     "type": "Becoming a Leader",
+                     "file": "files\/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
+                     "created_at": "2024-11-08T11:01:16.000000Z",
+                     "updated_at": "2024-11-08T11:01:16.000000Z"
+                 }
+             ],
+             "pagination": {
+                 "total": 1,
+                 "per_page": 15,
+                 "current_page": 1,
+                 "last_page": 1
+             },
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer f64ecd8ZaagV3bPDEh16vk5'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/leadership-development/topics
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming a Leader'
+      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
+      title: 'Get List of Topics'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 1,
+                "topic_name": "Sample Topic",
+                "education_type": "Becoming a Leader",
+                "created_at": "2024-09-09T11:02:39.000000Z",
+                "updated_at": "2024-09-09T11:02:39.000000Z"
+              }
+            ],
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to fetch topics. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 86Z1Dcedgv56PbkEVfah4a3'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/leadership-development/store
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming a Leader'
+      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
+      title: 'Create New'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      file:
+        name: file
+        description: 'The file to upload.'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      topic_id:
+        name: topic_id
+        description: 'The ID of the topic to associate the file with.'
+        required: true
+        example: 0
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      topic_id: 0
+    fileParameters:
+      file: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "File uploaded successfully.",
+             "data": {
+                 "user_id": 37,
+                 "file_name": "image.png",
+                 "file_extension": "png",
+                 "topic_id": "13",
+                 "type": "Becoming a Leader",
+                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
+                 "updated_at": "2024-11-08T11:01:16.000000Z",
+                 "created_at": "2024-11-08T11:01:16.000000Z",
+                 "id": 77
+             },
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+            "message": "The file name has already been taken.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "Validation errors occurred.",
+            "errors": {
+              "file": ["The file field is required."],
+              "topic_id": ["The topic id field is required."]
+            },
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer c68k5Ea4bDghfdVeZ31P6av'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/leadership-development/view/{id}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming a Leader'
+      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
+      title: 'View File'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the file to view.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters:
+      topic:
+        name: topic
+        description: 'The ID of the topic to filter by (optional).'
+        required: false
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanQueryParameters:
+      topic: 2
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "File details retrieved successfully.",
+             "data": {
+                 "id": 77,
+                 "user_id": 37,
+                 "file_name": "image.png",
+                 "file_extension": "png",
+                 "topic_id": 13,
+                 "type": "Becoming a Leader",
+                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
+                 "created_at": "2024-11-08T11:01:16.000000Z",
+                 "updated_at": "2024-11-08T11:01:16.000000Z"
+             },
+             "new_topic": "",
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer P61bf3v4acEaehZg8k56DdV'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v3/user/leadership-development/update/{id}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming a Leader'
+      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
+      title: 'Update File'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the update.'
+        required: true
+        example: voluptatem
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanUrlParameters:
+      id: voluptatem
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      file:
+        name: file
+        description: 'The new file to replace the existing one (optional).'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      topic_id:
+        name: topic_id
+        description: 'The ID of the topic to associate with the file.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      topic_id: 1
+    fileParameters:
+      file: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "File updated successfully.",
+            "data": {
+              "id": 1,
+              "file_name": "updated_sample.pdf",
+              "file_extension": "pdf",
+              "topic_id": 1,
+              "user_id": 1,
+              "file": "updated_file_path_here"
+            },
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+            "message": "Validation failed.",
+            "errors": {
+              "file": ["The file name has already been taken."]
+            },
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 4dhveDbaZ5g6c8a16PkV3fE'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/leadership-development/delete/{id}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming a Leader'
+      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
+      title: 'Delete File'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the file to delete.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "File deleted successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fv564edkEhbZaP1gD638acV'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/leadership-development/download/{file}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: 'Becoming a Leader'
+      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
+      title: 'Download file'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      file:
+        name: file
+        description: ''
+        required: true
+        example: autem
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanUrlParameters:
+      file: autem
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: 'A downloadable file response with the specified file.'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Vakecb6a65dv8EZP34Dh1fg'
     controller: null
     method: null
     route: null

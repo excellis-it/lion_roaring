@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 12
+                  example: 1
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -1804,7 +1804,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: madge06@example.com
+                  example: hermann.dicki@example.org
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1875,7 +1875,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: ipsa
+                  example: eum
       security: []
   /api/v3/country-list:
     post:
@@ -2081,7 +2081,7 @@ paths:
         in: path
         name: topic
         description: 'The topic.'
-        example: necessitatibus
+        example: omnis
         required: true
         schema:
           type: string
@@ -2197,42 +2197,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: deleniti
+          example: minus
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: deleniti
+            example: minus
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: dolorem
+          example: quia
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: dolorem
+            example: quia
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: ad
+          example: aliquid
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: ad
+            example: aliquid
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 12
+          example: 18
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 12
+            example: 18
       responses:
         200:
           description: ''
@@ -2542,12 +2542,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 19
+          example: 17
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 19
+            example: 17
       responses:
         200:
           description: ''
@@ -2771,7 +2771,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: quibusdam
+        example: vel
         required: true
         schema:
           type: string
@@ -2878,7 +2878,1449 @@ paths:
         in: path
         name: file
         description: ''
-        example: perferendis
+        example: qui
+        required: true
+        schema:
+          type: string
+  /api/v3/user/becoming-christ-link:
+    get:
+      summary: 'Becoming Christ Likes List'
+      operationId: becomingChristLikesList
+      description: ''
+      parameters:
+        -
+          in: query
+          name: topic
+          description: 'The ID of the topic to filter by.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'The ID of the topic to filter by.'
+            example: 1
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "*{\n   \"data\": {\n       \"current_page\": 1,\n       \"data\": [\n\n           {\n               \"id\": 60,\n               \"user_id\": 1,\n               \"file_name\": \"topic- Back to the Basics Description and Outline.docx\",\n               \"file_extension\": \"docx\",\n               \"topic_id\": 4,\n               \"type\": \"Becoming Christ Like\",\n               \"file\": \"files\\/qm5d3aJ5Z6esEep7WZAs19BLo4KRsjXp9w1RITYv.docx\",\n               \"created_at\": \"2024-08-02T09:32:31.000000Z\",\n               \"updated_at\": \"2024-08-02T09:32:31.000000Z\"\n           },\n           {\n               \"id\": 59,\n               \"user_id\": 1,\n               \"file_name\": \"topic-Back to the Basics Part 1.pptx\",\n               \"file_extension\": \"pptx\",\n               \"topic_id\": 4,\n               \"type\": \"Becoming Christ Like\",\n               \"file\": \"files\\/bv7C4BiH0N1s8WXrVZpPV2s6YTWN5sVUQs5PE584.pptx\",\n               \"created_at\": \"2024-08-02T09:31:40.000000Z\",\n               \"updated_at\": \"2024-08-02T09:31:40.000000Z\"\n           },\n           {\n               \"id\": 57,\n               \"user_id\": 1,\n               \"file_name\": \"topic-Back to the Basics Part 3.pptx\",\n               \"file_extension\": \"pptx\",\n               \"topic_id\": 4,\n               \"type\": \"Becoming Christ Like\",\n               \"file\": \"files\\/BDp5AHtA4ZIsqziYPUxCbRL91bcbSvAVv4m8S9Zs.pptx\",\n               \"created_at\": \"2024-08-02T09:29:56.000000Z\",\n               \"updated_at\": \"2024-08-02T09:29:56.000000Z\"\n           }\n       ],\n       \"first_page_url\": \"http:\\/\\/127.0.0.1:8000\\/api\\/v3\\/user\\/becoming-sovereign?page=1\",\n       \"from\": 1,\n       \"last_page\": 1,\n       \"last_page_url\": \"http:\\/\\/127.0.0.1:8000\\/api\\/v3\\/user\\/becoming-sovereign?page=1\",\n       \"links\": [\n           {\n               \"url\": null,\n               \"label\": \"&laquo; Previous\",\n               \"active\": false\n           },\n           {\n               \"url\": \"http:\\/\\/127.0.0.1:8000\\/api\\/v3\\/user\\/becoming-sovereign?page=1\",\n               \"label\": \"1\",\n               \"active\": true\n           },\n           {\n               \"url\": null,\n               \"label\": \"Next &raquo;\",\n               \"active\": false\n           }\n       ],\n       \"next_page_url\": null,\n       \"path\": \"http:\\/\\/127.0.0.1:8000\\/api\\/v3\\/user\\/becoming-sovereign\",\n       \"per_page\": 15,\n       \"prev_page_url\": null,\n       \"to\": 11,\n       \"total\": 11\n   },\n   \"topics\": [\n       {\n           \"id\": 12,\n           \"topic_name\": \"abcd\",\n           \"education_type\": \"Becoming Christ Like\",\n           \"created_at\": \"2024-11-08T09:42:48.000000Z\",\n           \"updated_at\": \"2024-11-08T09:42:48.000000Z\"\n       },\n       {\n           \"id\": 6,\n           \"topic_name\": \"Leadership Development\",\n           \"education_type\": \"Becoming Christ Like\",\n           \"created_at\": \"2024-08-02T09:17:16.000000Z\",\n           \"updated_at\": \"2024-08-16T08:58:34.000000Z\"\n       },\n   ],\n   \"new_topic\": \"\",\n   \"status\": true\n}"
+      tags:
+        - Education
+  /api/v3/user/becoming-christ-link/list-by-topics:
+    get:
+      summary: 'List by Topic'
+      operationId: listByTopic
+      description: ''
+      parameters:
+        -
+          in: query
+          name: sortby
+          description: 'The column to sort by (optional, default: id).'
+          example: quibusdam
+          required: false
+          schema:
+            type: string
+            description: 'The column to sort by (optional, default: id).'
+            example: quibusdam
+        -
+          in: query
+          name: sorttype
+          description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
+          example: magnam
+          required: false
+          schema:
+            type: string
+            description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
+            example: magnam
+        -
+          in: query
+          name: query
+          description: 'The search query to filter files by ID, file name, or file extension (optional).'
+          example: totam
+          required: false
+          schema:
+            type: string
+            description: 'The search query to filter files by ID, file name, or file extension (optional).'
+            example: totam
+        -
+          in: query
+          name: topic_id
+          description: 'The ID of the topic to filter files by (optional).'
+          example: 2
+          required: false
+          schema:
+            type: integer
+            description: 'The ID of the topic to filter files by (optional).'
+            example: 2
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Files retrieved successfully.'
+                  data:
+                    -
+                      id: 77
+                      user_id: 37
+                      file_name: image.png
+                      file_extension: png
+                      topic_id: 13
+                      type: 'Becoming Christ Like'
+                      file: files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png
+                      created_at: '2024-11-08T11:01:16.000000Z'
+                      updated_at: '2024-11-08T11:01:16.000000Z'
+                  pagination:
+                    total: 1
+                    per_page: 15
+                    current_page: 1
+                    last_page: 1
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'Files retrieved successfully.'
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 77
+                        user_id: 37
+                        file_name: image.png
+                        file_extension: png
+                        topic_id: 13
+                        type: 'Becoming Christ Like'
+                        file: files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png
+                        created_at: '2024-11-08T11:01:16.000000Z'
+                        updated_at: '2024-11-08T11:01:16.000000Z'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 77
+                        user_id:
+                          type: integer
+                          example: 37
+                        file_name:
+                          type: string
+                          example: image.png
+                        file_extension:
+                          type: string
+                          example: png
+                        topic_id:
+                          type: integer
+                          example: 13
+                        type:
+                          type: string
+                          example: 'Becoming Christ Like'
+                        file:
+                          type: string
+                          example: files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png
+                        created_at:
+                          type: string
+                          example: '2024-11-08T11:01:16.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-11-08T11:01:16.000000Z'
+                  pagination:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 1
+                      per_page:
+                        type: integer
+                        example: 15
+                      current_page:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 1
+                  status:
+                    type: boolean
+                    example: true
+      tags:
+        - Education
+  /api/v3/user/becoming-christ-link/topics:
+    get:
+      summary: 'Get List of Topics'
+      operationId: getListOfTopics
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      topic_name: 'Sample Topic'
+                      education_type: 'Becoming Christ Like'
+                      created_at: '2024-09-09T11:02:39.000000Z'
+                      updated_at: '2024-09-09T11:02:39.000000Z'
+                  status: true
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        topic_name: 'Sample Topic'
+                        education_type: 'Becoming Christ Like'
+                        created_at: '2024-09-09T11:02:39.000000Z'
+                        updated_at: '2024-09-09T11:02:39.000000Z'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        topic_name:
+                          type: string
+                          example: 'Sample Topic'
+                        education_type:
+                          type: string
+                          example: 'Becoming Christ Like'
+                        created_at:
+                          type: string
+                          example: '2024-09-09T11:02:39.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-09-09T11:02:39.000000Z'
+                  status:
+                    type: boolean
+                    example: true
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Failed to fetch topics. Please try again later.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Failed to fetch topics. Please try again later.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Education
+  /api/v3/user/becoming-christ-link/store:
+    post:
+      summary: 'Create New'
+      operationId: createNew
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'File uploaded successfully.'
+                  data:
+                    user_id: 37
+                    file_name: image.png
+                    file_extension: png
+                    topic_id: '13'
+                    type: 'Becoming Christ Like'
+                    file: files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png
+                    updated_at: '2024-11-08T11:01:16.000000Z'
+                    created_at: '2024-11-08T11:01:16.000000Z'
+                    id: 77
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'File uploaded successfully.'
+                  data:
+                    type: object
+                    properties:
+                      user_id:
+                        type: integer
+                        example: 37
+                      file_name:
+                        type: string
+                        example: image.png
+                      file_extension:
+                        type: string
+                        example: png
+                      topic_id:
+                        type: string
+                        example: '13'
+                      type:
+                        type: string
+                        example: 'Becoming Christ Like'
+                      file:
+                        type: string
+                        example: files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png
+                      updated_at:
+                        type: string
+                        example: '2024-11-08T11:01:16.000000Z'
+                      created_at:
+                        type: string
+                        example: '2024-11-08T11:01:16.000000Z'
+                      id:
+                        type: integer
+                        example: 77
+                  status:
+                    type: boolean
+                    example: true
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'The file name has already been taken.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'The file name has already been taken.'
+                  status:
+                    type: boolean
+                    example: false
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Validation errors occurred.'
+                  errors:
+                    file:
+                      - 'The file field is required.'
+                    topic_id:
+                      - 'The topic id field is required.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Validation errors occurred.'
+                  errors:
+                    type: object
+                    properties:
+                      file:
+                        type: array
+                        example:
+                          - 'The file field is required.'
+                        items:
+                          type: string
+                      topic_id:
+                        type: array
+                        example:
+                          - 'The topic id field is required.'
+                        items:
+                          type: string
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Education
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 'The file to upload.'
+                topic_id:
+                  type: integer
+                  description: 'The ID of the topic to associate the file with.'
+                  example: 0
+              required:
+                - file
+                - topic_id
+  '/api/v3/user/becoming-christ-link/view/{id}':
+    get:
+      summary: 'View File'
+      operationId: viewFile
+      description: ''
+      parameters:
+        -
+          in: query
+          name: topic
+          description: 'The ID of the topic to filter by (optional).'
+          example: 7
+          required: false
+          schema:
+            type: integer
+            description: 'The ID of the topic to filter by (optional).'
+            example: 7
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'File details retrieved successfully.'
+                  data:
+                    id: 77
+                    user_id: 37
+                    file_name: image.png
+                    file_extension: png
+                    topic_id: 13
+                    type: 'Becoming Christ Like'
+                    file: files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png
+                    created_at: '2024-11-08T11:01:16.000000Z'
+                    updated_at: '2024-11-08T11:01:16.000000Z'
+                  new_topic: ''
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'File details retrieved successfully.'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 77
+                      user_id:
+                        type: integer
+                        example: 37
+                      file_name:
+                        type: string
+                        example: image.png
+                      file_extension:
+                        type: string
+                        example: png
+                      topic_id:
+                        type: integer
+                        example: 13
+                      type:
+                        type: string
+                        example: 'Becoming Christ Like'
+                      file:
+                        type: string
+                        example: files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png
+                      created_at:
+                        type: string
+                        example: '2024-11-08T11:01:16.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-08T11:01:16.000000Z'
+                  new_topic:
+                    type: string
+                    example: ''
+                  status:
+                    type: boolean
+                    example: true
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'File not found.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'File not found.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Education
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the file to view.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v3/user/becoming-christ-link/update/{id}':
+    post:
+      summary: 'Update File'
+      operationId: updateFile
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'File updated successfully.'
+                  data:
+                    id: 1
+                    file_name: updated_sample.pdf
+                    file_extension: pdf
+                    topic_id: 1
+                    user_id: 1
+                    file: updated_file_path_here
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'File updated successfully.'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      file_name:
+                        type: string
+                        example: updated_sample.pdf
+                      file_extension:
+                        type: string
+                        example: pdf
+                      topic_id:
+                        type: integer
+                        example: 1
+                      user_id:
+                        type: integer
+                        example: 1
+                      file:
+                        type: string
+                        example: updated_file_path_here
+                  status:
+                    type: boolean
+                    example: true
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Validation failed.'
+                  errors:
+                    file:
+                      - 'The file name has already been taken.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Validation failed.'
+                  errors:
+                    type: object
+                    properties:
+                      file:
+                        type: array
+                        example:
+                          - 'The file name has already been taken.'
+                        items:
+                          type: string
+                  status:
+                    type: boolean
+                    example: false
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'File not found.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'File not found.'
+                  status:
+                    type: boolean
+                    example: false
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Something went wrong. Please try again later.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Something went wrong. Please try again later.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Education
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 'The new file to replace the existing one (optional).'
+                topic_id:
+                  type: integer
+                  description: 'The ID of the topic to associate with the file.'
+                  example: 1
+              required:
+                - topic_id
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the update.'
+        example: inventore
+        required: true
+        schema:
+          type: string
+  '/api/v3/user/becoming-christ-link/delete/{id}':
+    get:
+      summary: 'Delete File'
+      operationId: deleteFile
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'File deleted successfully.'
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'File deleted successfully.'
+                  status:
+                    type: boolean
+                    example: true
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'File not found.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'File not found.'
+                  status:
+                    type: boolean
+                    example: false
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Something went wrong. Please try again later.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Something went wrong. Please try again later.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Education
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the file to delete.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v3/user/becoming-christ-link/download/{file}':
+    get:
+      summary: 'Download file'
+      operationId: downloadFile
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'A downloadable file response with the specified file.'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Something went wrong. Please try again later.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Something went wrong. Please try again later.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Education
+    parameters:
+      -
+        in: path
+        name: file
+        description: ''
+        example: ut
+        required: true
+        schema:
+          type: string
+  /api/v3/user/leadership-development:
+    get:
+      summary: 'Becoming a Leaders List'
+      operationId: becomingALeadersList
+      description: ''
+      parameters:
+        -
+          in: query
+          name: topic
+          description: 'The ID of the topic to filter by.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'The ID of the topic to filter by.'
+            example: 1
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "*{\n   \"data\": {\n       \"current_page\": 1,\n       \"data\": [\n\n           {\n               \"id\": 60,\n               \"user_id\": 1,\n               \"file_name\": \"topic- Back to the Basics Description and Outline.docx\",\n               \"file_extension\": \"docx\",\n               \"topic_id\": 4,\n               \"type\": \"Becoming a Leader\",\n               \"file\": \"files\\/qm5d3aJ5Z6esEep7WZAs19BLo4KRsjXp9w1RITYv.docx\",\n               \"created_at\": \"2024-08-02T09:32:31.000000Z\",\n               \"updated_at\": \"2024-08-02T09:32:31.000000Z\"\n           },\n           {\n               \"id\": 59,\n               \"user_id\": 1,\n               \"file_name\": \"topic-Back to the Basics Part 1.pptx\",\n               \"file_extension\": \"pptx\",\n               \"topic_id\": 4,\n               \"type\": \"Becoming a Leader\",\n               \"file\": \"files\\/bv7C4BiH0N1s8WXrVZpPV2s6YTWN5sVUQs5PE584.pptx\",\n               \"created_at\": \"2024-08-02T09:31:40.000000Z\",\n               \"updated_at\": \"2024-08-02T09:31:40.000000Z\"\n           },\n           {\n               \"id\": 57,\n               \"user_id\": 1,\n               \"file_name\": \"topic-Back to the Basics Part 3.pptx\",\n               \"file_extension\": \"pptx\",\n               \"topic_id\": 4,\n               \"type\": \"Becoming a Leader\",\n               \"file\": \"files\\/BDp5AHtA4ZIsqziYPUxCbRL91bcbSvAVv4m8S9Zs.pptx\",\n               \"created_at\": \"2024-08-02T09:29:56.000000Z\",\n               \"updated_at\": \"2024-08-02T09:29:56.000000Z\"\n           }\n       ],\n       \"first_page_url\": \"http:\\/\\/127.0.0.1:8000\\/api\\/v3\\/user\\/becoming-sovereign?page=1\",\n       \"from\": 1,\n       \"last_page\": 1,\n       \"last_page_url\": \"http:\\/\\/127.0.0.1:8000\\/api\\/v3\\/user\\/becoming-sovereign?page=1\",\n       \"links\": [\n           {\n               \"url\": null,\n               \"label\": \"&laquo; Previous\",\n               \"active\": false\n           },\n           {\n               \"url\": \"http:\\/\\/127.0.0.1:8000\\/api\\/v3\\/user\\/becoming-sovereign?page=1\",\n               \"label\": \"1\",\n               \"active\": true\n           },\n           {\n               \"url\": null,\n               \"label\": \"Next &raquo;\",\n               \"active\": false\n           }\n       ],\n       \"next_page_url\": null,\n       \"path\": \"http:\\/\\/127.0.0.1:8000\\/api\\/v3\\/user\\/becoming-sovereign\",\n       \"per_page\": 15,\n       \"prev_page_url\": null,\n       \"to\": 11,\n       \"total\": 11\n   },\n   \"topics\": [\n       {\n           \"id\": 12,\n           \"topic_name\": \"abcd\",\n           \"education_type\": \"Becoming a Leader\",\n           \"created_at\": \"2024-11-08T09:42:48.000000Z\",\n           \"updated_at\": \"2024-11-08T09:42:48.000000Z\"\n       },\n       {\n           \"id\": 6,\n           \"topic_name\": \"Leadership Development\",\n           \"education_type\": \"Becoming a Leader\",\n           \"created_at\": \"2024-08-02T09:17:16.000000Z\",\n           \"updated_at\": \"2024-08-16T08:58:34.000000Z\"\n       },\n   ],\n   \"new_topic\": \"\",\n   \"status\": true\n}"
+      tags:
+        - Education
+  /api/v3/user/leadership-development/list-by-topics:
+    get:
+      summary: 'List by Topic'
+      operationId: listByTopic
+      description: ''
+      parameters:
+        -
+          in: query
+          name: sortby
+          description: 'The column to sort by (optional, default: id).'
+          example: quia
+          required: false
+          schema:
+            type: string
+            description: 'The column to sort by (optional, default: id).'
+            example: quia
+        -
+          in: query
+          name: sorttype
+          description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
+          example: odit
+          required: false
+          schema:
+            type: string
+            description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
+            example: odit
+        -
+          in: query
+          name: query
+          description: 'The search query to filter files by ID, file name, or file extension (optional).'
+          example: occaecati
+          required: false
+          schema:
+            type: string
+            description: 'The search query to filter files by ID, file name, or file extension (optional).'
+            example: occaecati
+        -
+          in: query
+          name: topic_id
+          description: 'The ID of the topic to filter files by (optional).'
+          example: 13
+          required: false
+          schema:
+            type: integer
+            description: 'The ID of the topic to filter files by (optional).'
+            example: 13
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Files retrieved successfully.'
+                  data:
+                    -
+                      id: 77
+                      user_id: 37
+                      file_name: image.png
+                      file_extension: png
+                      topic_id: 13
+                      type: 'Becoming a Leader'
+                      file: files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png
+                      created_at: '2024-11-08T11:01:16.000000Z'
+                      updated_at: '2024-11-08T11:01:16.000000Z'
+                  pagination:
+                    total: 1
+                    per_page: 15
+                    current_page: 1
+                    last_page: 1
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'Files retrieved successfully.'
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 77
+                        user_id: 37
+                        file_name: image.png
+                        file_extension: png
+                        topic_id: 13
+                        type: 'Becoming a Leader'
+                        file: files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png
+                        created_at: '2024-11-08T11:01:16.000000Z'
+                        updated_at: '2024-11-08T11:01:16.000000Z'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 77
+                        user_id:
+                          type: integer
+                          example: 37
+                        file_name:
+                          type: string
+                          example: image.png
+                        file_extension:
+                          type: string
+                          example: png
+                        topic_id:
+                          type: integer
+                          example: 13
+                        type:
+                          type: string
+                          example: 'Becoming a Leader'
+                        file:
+                          type: string
+                          example: files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png
+                        created_at:
+                          type: string
+                          example: '2024-11-08T11:01:16.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-11-08T11:01:16.000000Z'
+                  pagination:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 1
+                      per_page:
+                        type: integer
+                        example: 15
+                      current_page:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 1
+                  status:
+                    type: boolean
+                    example: true
+      tags:
+        - Education
+  /api/v3/user/leadership-development/topics:
+    get:
+      summary: 'Get List of Topics'
+      operationId: getListOfTopics
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      topic_name: 'Sample Topic'
+                      education_type: 'Becoming a Leader'
+                      created_at: '2024-09-09T11:02:39.000000Z'
+                      updated_at: '2024-09-09T11:02:39.000000Z'
+                  status: true
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        topic_name: 'Sample Topic'
+                        education_type: 'Becoming a Leader'
+                        created_at: '2024-09-09T11:02:39.000000Z'
+                        updated_at: '2024-09-09T11:02:39.000000Z'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        topic_name:
+                          type: string
+                          example: 'Sample Topic'
+                        education_type:
+                          type: string
+                          example: 'Becoming a Leader'
+                        created_at:
+                          type: string
+                          example: '2024-09-09T11:02:39.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-09-09T11:02:39.000000Z'
+                  status:
+                    type: boolean
+                    example: true
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Failed to fetch topics. Please try again later.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Failed to fetch topics. Please try again later.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Education
+  /api/v3/user/leadership-development/store:
+    post:
+      summary: 'Create New'
+      operationId: createNew
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'File uploaded successfully.'
+                  data:
+                    user_id: 37
+                    file_name: image.png
+                    file_extension: png
+                    topic_id: '13'
+                    type: 'Becoming a Leader'
+                    file: files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png
+                    updated_at: '2024-11-08T11:01:16.000000Z'
+                    created_at: '2024-11-08T11:01:16.000000Z'
+                    id: 77
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'File uploaded successfully.'
+                  data:
+                    type: object
+                    properties:
+                      user_id:
+                        type: integer
+                        example: 37
+                      file_name:
+                        type: string
+                        example: image.png
+                      file_extension:
+                        type: string
+                        example: png
+                      topic_id:
+                        type: string
+                        example: '13'
+                      type:
+                        type: string
+                        example: 'Becoming a Leader'
+                      file:
+                        type: string
+                        example: files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png
+                      updated_at:
+                        type: string
+                        example: '2024-11-08T11:01:16.000000Z'
+                      created_at:
+                        type: string
+                        example: '2024-11-08T11:01:16.000000Z'
+                      id:
+                        type: integer
+                        example: 77
+                  status:
+                    type: boolean
+                    example: true
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'The file name has already been taken.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'The file name has already been taken.'
+                  status:
+                    type: boolean
+                    example: false
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Validation errors occurred.'
+                  errors:
+                    file:
+                      - 'The file field is required.'
+                    topic_id:
+                      - 'The topic id field is required.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Validation errors occurred.'
+                  errors:
+                    type: object
+                    properties:
+                      file:
+                        type: array
+                        example:
+                          - 'The file field is required.'
+                        items:
+                          type: string
+                      topic_id:
+                        type: array
+                        example:
+                          - 'The topic id field is required.'
+                        items:
+                          type: string
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Education
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 'The file to upload.'
+                topic_id:
+                  type: integer
+                  description: 'The ID of the topic to associate the file with.'
+                  example: 0
+              required:
+                - file
+                - topic_id
+  '/api/v3/user/leadership-development/view/{id}':
+    get:
+      summary: 'View File'
+      operationId: viewFile
+      description: ''
+      parameters:
+        -
+          in: query
+          name: topic
+          description: 'The ID of the topic to filter by (optional).'
+          example: 2
+          required: false
+          schema:
+            type: integer
+            description: 'The ID of the topic to filter by (optional).'
+            example: 2
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'File details retrieved successfully.'
+                  data:
+                    id: 77
+                    user_id: 37
+                    file_name: image.png
+                    file_extension: png
+                    topic_id: 13
+                    type: 'Becoming a Leader'
+                    file: files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png
+                    created_at: '2024-11-08T11:01:16.000000Z'
+                    updated_at: '2024-11-08T11:01:16.000000Z'
+                  new_topic: ''
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'File details retrieved successfully.'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 77
+                      user_id:
+                        type: integer
+                        example: 37
+                      file_name:
+                        type: string
+                        example: image.png
+                      file_extension:
+                        type: string
+                        example: png
+                      topic_id:
+                        type: integer
+                        example: 13
+                      type:
+                        type: string
+                        example: 'Becoming a Leader'
+                      file:
+                        type: string
+                        example: files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png
+                      created_at:
+                        type: string
+                        example: '2024-11-08T11:01:16.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-08T11:01:16.000000Z'
+                  new_topic:
+                    type: string
+                    example: ''
+                  status:
+                    type: boolean
+                    example: true
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'File not found.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'File not found.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Education
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the file to view.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v3/user/leadership-development/update/{id}':
+    post:
+      summary: 'Update File'
+      operationId: updateFile
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'File updated successfully.'
+                  data:
+                    id: 1
+                    file_name: updated_sample.pdf
+                    file_extension: pdf
+                    topic_id: 1
+                    user_id: 1
+                    file: updated_file_path_here
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'File updated successfully.'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      file_name:
+                        type: string
+                        example: updated_sample.pdf
+                      file_extension:
+                        type: string
+                        example: pdf
+                      topic_id:
+                        type: integer
+                        example: 1
+                      user_id:
+                        type: integer
+                        example: 1
+                      file:
+                        type: string
+                        example: updated_file_path_here
+                  status:
+                    type: boolean
+                    example: true
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Validation failed.'
+                  errors:
+                    file:
+                      - 'The file name has already been taken.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Validation failed.'
+                  errors:
+                    type: object
+                    properties:
+                      file:
+                        type: array
+                        example:
+                          - 'The file name has already been taken.'
+                        items:
+                          type: string
+                  status:
+                    type: boolean
+                    example: false
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'File not found.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'File not found.'
+                  status:
+                    type: boolean
+                    example: false
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Something went wrong. Please try again later.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Something went wrong. Please try again later.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Education
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 'The new file to replace the existing one (optional).'
+                topic_id:
+                  type: integer
+                  description: 'The ID of the topic to associate with the file.'
+                  example: 1
+              required:
+                - topic_id
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the update.'
+        example: voluptatem
+        required: true
+        schema:
+          type: string
+  '/api/v3/user/leadership-development/delete/{id}':
+    get:
+      summary: 'Delete File'
+      operationId: deleteFile
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'File deleted successfully.'
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'File deleted successfully.'
+                  status:
+                    type: boolean
+                    example: true
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'File not found.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'File not found.'
+                  status:
+                    type: boolean
+                    example: false
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Something went wrong. Please try again later.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Something went wrong. Please try again later.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Education
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the file to delete.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v3/user/leadership-development/download/{file}':
+    get:
+      summary: 'Download file'
+      operationId: downloadFile
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'A downloadable file response with the specified file.'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Something went wrong. Please try again later.'
+                  status: false
+                properties:
+                  message:
+                    type: string
+                    example: 'Something went wrong. Please try again later.'
+                  status:
+                    type: boolean
+                    example: false
+      tags:
+        - Education
+    parameters:
+      -
+        in: path
+        name: file
+        description: ''
+        example: autem
         required: true
         schema:
           type: string
@@ -3558,19 +5000,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
-                  example: et
+                  example: eligendi
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: fuga
+                  example: qui
                 subject:
                   type: string
                   description: 'The subject of the email.'
-                  example: ut
+                  example: saepe
                 message:
                   type: string
                   description: 'The body content of the email.'
-                  example: ut
+                  example: cum
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -3700,15 +5142,15 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: in
+                  example: a
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: qui
+                  example: perferendis
                 subject:
                   type: string
                   description: 'The subject of the reply email.'
-                  example: officiis
+                  example: non
                 message:
                   type: string
                   description: 'The body content of the reply email.'
@@ -3722,7 +5164,7 @@ paths:
                 main_mail_id:
                   type: integer
                   description: 'The ID of the main email thread being replied to.'
-                  example: 16
+                  example: 14
               required:
                 - to
                 - subject
@@ -3839,19 +5281,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: perferendis
+                  example: consectetur
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: reiciendis
+                  example: eum
                 subject:
                   type: string
                   description: 'The subject of the forwarded email.'
-                  example: voluptatibus
+                  example: voluptas
                 message:
                   type: string
                   description: 'The body content of the forwarded email.'
-                  example: et
+                  example: nemo
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -4339,7 +5781,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: whickle@example.com
+                  example: jacobs.melody@example.com
               required:
                 - email
       security: []
@@ -6262,7 +7704,7 @@ paths:
                 is_delete:
                   type: integer
                   description: 'optional Indicates if the notification should be marked as read and deleted.'
-                  example: 11
+                  example: 18
               required:
                 - team_id
                 - chat_id
