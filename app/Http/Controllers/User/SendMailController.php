@@ -231,8 +231,6 @@ class SendMailController extends Controller
             'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048'
         ]);
 
-        $sender_user =
-
             // Decode the JSON strings for 'to' and 'cc' fields
             $toEmails = json_decode($request->to, true);
         // Extract email addresses from the decoded arrays
