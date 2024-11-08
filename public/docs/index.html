@@ -181,6 +181,51 @@
                                                     <li class="tocify-item level-2" data-unique="email-POSTapi-v3-user-mail-inbox-email-list">
                                 <a href="#email-POSTapi-v3-user-mail-inbox-email-list">Inbox Email List</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="email-POSTapi-v3-user-mail-sent-email-list">
+                                <a href="#email-POSTapi-v3-user-mail-sent-email-list">Sent Email List</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="email-POSTapi-v3-user-mail-star-email-list">
+                                <a href="#email-POSTapi-v3-user-mail-star-email-list">Starred Email List</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="email-POSTapi-v3-user-mail-trash-email-list">
+                                <a href="#email-POSTapi-v3-user-mail-trash-email-list">Trash Email List</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="email-POSTapi-v3-user-mail-view">
+                                <a href="#email-POSTapi-v3-user-mail-view">View Email Details</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="email-POSTapi-v3-user-mail-compose-mail-users">
+                                <a href="#email-POSTapi-v3-user-mail-compose-mail-users">Compose Emails</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="email-POSTapi-v3-user-mail-send">
+                                <a href="#email-POSTapi-v3-user-mail-send">Send New Email</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="email-POSTapi-v3-user-mail-sendReply">
+                                <a href="#email-POSTapi-v3-user-mail-sendReply">Send Reply Email</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="email-POSTapi-v3-user-mail-sendForward">
+                                <a href="#email-POSTapi-v3-user-mail-sendForward">Forward Email</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="email-POSTapi-v3-user-mail-mail-delete">
+                                <a href="#email-POSTapi-v3-user-mail-mail-delete">Delete Emails</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="email-POSTapi-v3-user-mail-mail-delete-sent">
+                                <a href="#email-POSTapi-v3-user-mail-mail-delete-sent">Delete Sent Emails</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="email-POSTapi-v3-user-mail-mail-restore">
+                                <a href="#email-POSTapi-v3-user-mail-mail-restore">Restore Deleted Mails</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="email-POSTapi-v3-user-mail-mail-star">
+                                <a href="#email-POSTapi-v3-user-mail-mail-star">Star Mark on a Mail</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="email-POSTapi-v3-user-mail-mail-delete-single">
+                                <a href="#email-POSTapi-v3-user-mail-mail-delete-single">Delete Single Email</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="email-POSTapi-v3-user-mail-mail-restore-single">
+                                <a href="#email-POSTapi-v3-user-mail-mail-restore-single">Restore Single Email</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="email-GETapi-v3-user-mail-print--id-">
+                                <a href="#email-GETapi-v3-user-mail-print--id-">Print Email</a>
+                            </li>
                                                                         </ul>
                             </ul>
                     <ul id="tocify-header-forget-password" class="tocify-header">
@@ -320,7 +365,7 @@ You can switch the language used with the tabs at the top right (or from the nav
     --data "{
     \"user_name\": \"johndoe\",
     \"email\": \"johndoe@example.com\",
-    \"ecclesia_id\": 10,
+    \"ecclesia_id\": 11,
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
     \"middle_name\": \"A.\",
@@ -351,7 +396,7 @@ const headers = {
 let body = {
     "user_name": "johndoe",
     "email": "johndoe@example.com",
-    "ecclesia_id": 10,
+    "ecclesia_id": 11,
     "first_name": "John",
     "last_name": "Doe",
     "middle_name": "A.",
@@ -515,10 +560,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="ecclesia_id"                data-endpoint="POSTapi-v3-register"
-               value="10"
+               value="11"
                data-component="body">
     <br>
-<p>nullable Ecclesia ID if applicable. Example: <code>10</code></p>
+<p>nullable Ecclesia ID if applicable. Example: <code>11</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>first_name</code></b>&nbsp;&nbsp;
@@ -3035,7 +3080,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "reciver_id=2"\
     --form "message=Hello there!"\
-    --form "file=@C:\Users\Masum\AppData\Local\Temp\phpF66C.tmp" </code></pre></div>
+    --form "file=@C:\Users\Masum\AppData\Local\Temp\php5CA8.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -3256,7 +3301,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Optional file attachment for the chat message. Example: <code>C:\Users\Masum\AppData\Local\Temp\phpF66C.tmp</code></p>
+<p>Optional file attachment for the chat message. Example: <code>C:\Users\Masum\AppData\Local\Temp\php5CA8.tmp</code></p>
         </div>
         </form>
 
@@ -4004,7 +4049,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
-    \"email\": \"kirsten.grant@example.com\",
+    \"email\": \"deion.murazik@example.net\",
     \"phone\": \"1234567890\",
     \"message\": \"Hello\"
 }"
@@ -4024,7 +4069,7 @@ const headers = {
 let body = {
     "first_name": "John",
     "last_name": "Doe",
-    "email": "kirsten.grant@example.com",
+    "email": "deion.murazik@example.net",
     "phone": "1234567890",
     "message": "Hello"
 };
@@ -4147,10 +4192,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-contact-us"
-               value="kirsten.grant@example.com"
+               value="deion.murazik@example.net"
                data-component="body">
     <br>
-<p>Email of the user. Example: Example: <code>kirsten.grant@example.com</code></p>
+<p>Email of the user. Example: Example: <code>deion.murazik@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -4206,7 +4251,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"postcode\": \"ZP74857\",
     \"amount\": 150,
     \"country_id\": 2,
-    \"stripeToken\": \"et\"
+    \"stripeToken\": \"totam\"
 }"
 </code></pre></div>
 
@@ -4231,7 +4276,7 @@ let body = {
     "postcode": "ZP74857",
     "amount": 150,
     "country_id": 2,
-    "stripeToken": "et"
+    "stripeToken": "totam"
 };
 
 fetch(url, {
@@ -4419,10 +4464,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="stripeToken"                data-endpoint="POSTapi-v3-donation"
-               value="et"
+               value="totam"
                data-component="body">
     <br>
-<p>required. Example: <code>et</code></p>
+<p>required. Example: <code>totam</code></p>
         </div>
         </form>
 
@@ -4621,14 +4666,24 @@ fetch(url, {
 <code class="language-json" style="max-height: 300px;">{
    &quot;data&quot;: [
        {
-           &quot;id&quot;: 1,
-           &quot;subject&quot;: &quot;Sample Email Subject&quot;,
-           &quot;body&quot;: &quot;Sample email body content&quot;,
-           &quot;created_at&quot;: &quot;2024-11-07T14:35:06.000000Z&quot;,
-           &quot;ownUserMailInfo&quot;: {
-               &quot;is_read&quot;: false,
-               &quot;is_delete&quot;: false
-           }
+      &quot;id&quot;: 85,
+      &quot;reply_of&quot;: 84,
+      &quot;form_id&quot;: 38,
+      &quot;to&quot;: &quot;test@mail.net&quot;,
+      &quot;cc&quot;: null,
+      &quot;subject&quot;: &quot;Test Email&quot;,
+      &quot;message&quot;: &quot;&lt;p&gt;ddddd&lt;/p&gt;&quot;,
+      &quot;attachment&quot;: null,
+      &quot;is_draft&quot;: 0,
+      &quot;is_delete&quot;: 0,
+      &quot;deleted_at&quot;: null,
+      &quot;created_at&quot;: &quot;2024-11-06T14:07:53.000000Z&quot;,
+      &quot;updated_at&quot;: &quot;2024-11-06T14:07:53.000000Z&quot;,
+      &quot;ownUserMailInfo&quot;: {
+             &quot;is_read&quot;: 0,
+             &quot;is_starred&quot;: 0,
+             &quot;is_delete&quot;: 0
+         }
        },
        // additional emails
    ],
@@ -4721,6 +4776,2852 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
+                    <h2 id="email-POSTapi-v3-user-mail-sent-email-list">Sent Email List</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Retrieves a paginated list of sent emails for the authenticated user, excluding deleted emails, and returns the data in JSON format.</p>
+
+<span id="example-requests-POSTapi-v3-user-mail-sent-email-list">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/mail/sent-email-list" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/mail/sent-email-list"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-mail-sent-email-list">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+   &quot;data&quot;: [
+       {
+      &quot;id&quot;: 85,
+      &quot;reply_of&quot;: 84,
+      &quot;form_id&quot;: 38,
+      &quot;to&quot;: &quot;test@mail.net&quot;,
+      &quot;cc&quot;: null,
+      &quot;subject&quot;: &quot;Test Email&quot;,
+      &quot;message&quot;: &quot;&lt;p&gt;ddddd&lt;/p&gt;&quot;,
+      &quot;attachment&quot;: null,
+      &quot;is_draft&quot;: 0,
+      &quot;is_delete&quot;: 0,
+      &quot;deleted_at&quot;: null,
+      &quot;created_at&quot;: &quot;2024-11-06T14:07:53.000000Z&quot;,
+      &quot;updated_at&quot;: &quot;2024-11-06T14:07:53.000000Z&quot;,
+      &quot;ownUserMailInfo&quot;: {
+             &quot;is_read&quot;: 1,
+             &quot;is_starred&quot;: 0,
+             &quot;is_delete&quot;: 0
+         }
+       },
+       // additional emails
+   ],
+   &quot;total&quot;: 30,
+   &quot;perPage&quot;: 15,
+   &quot;currentPage&quot;: 1,
+   &quot;lastPage&quot;: 2
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-mail-sent-email-list" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-mail-sent-email-list"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-mail-sent-email-list"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-mail-sent-email-list" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-mail-sent-email-list">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-mail-sent-email-list" data-method="POST"
+      data-path="api/v3/user/mail/sent-email-list"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-mail-sent-email-list', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-mail-sent-email-list"
+                    onclick="tryItOut('POSTapi-v3-user-mail-sent-email-list');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-mail-sent-email-list"
+                    onclick="cancelTryOut('POSTapi-v3-user-mail-sent-email-list');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-mail-sent-email-list"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/mail/sent-email-list</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-mail-sent-email-list"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-mail-sent-email-list"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-mail-sent-email-list"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="email-POSTapi-v3-user-mail-star-email-list">Starred Email List</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Retrieves a paginated list of starred emails for the authenticated user, excluding deleted emails, and returns the data in JSON format.</p>
+
+<span id="example-requests-POSTapi-v3-user-mail-star-email-list">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/mail/star-email-list" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/mail/star-email-list"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-mail-star-email-list">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+   &quot;data&quot;: [
+       {
+      &quot;id&quot;: 85,
+      &quot;reply_of&quot;: 84,
+      &quot;form_id&quot;: 38,
+      &quot;to&quot;: &quot;test@mail.net&quot;,
+      &quot;cc&quot;: null,
+      &quot;subject&quot;: &quot;Test Email&quot;,
+      &quot;message&quot;: &quot;&lt;p&gt;ddddd&lt;/p&gt;&quot;,
+      &quot;attachment&quot;: null,
+      &quot;is_draft&quot;: 0,
+      &quot;is_delete&quot;: 0,
+      &quot;deleted_at&quot;: null,
+      &quot;created_at&quot;: &quot;2024-11-06T14:07:53.000000Z&quot;,
+      &quot;updated_at&quot;: &quot;2024-11-06T14:07:53.000000Z&quot;,
+      &quot;ownUserMailInfo&quot;: {
+             &quot;is_read&quot;: 1,
+             &quot;is_starred&quot;: 1,
+             &quot;is_delete&quot;: 0
+         }
+       },
+       // additional emails
+   ],
+   &quot;total&quot;: 20,
+   &quot;perPage&quot;: 15,
+   &quot;currentPage&quot;: 1,
+   &quot;lastPage&quot;: 2
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-mail-star-email-list" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-mail-star-email-list"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-mail-star-email-list"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-mail-star-email-list" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-mail-star-email-list">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-mail-star-email-list" data-method="POST"
+      data-path="api/v3/user/mail/star-email-list"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-mail-star-email-list', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-mail-star-email-list"
+                    onclick="tryItOut('POSTapi-v3-user-mail-star-email-list');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-mail-star-email-list"
+                    onclick="cancelTryOut('POSTapi-v3-user-mail-star-email-list');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-mail-star-email-list"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/mail/star-email-list</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-mail-star-email-list"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-mail-star-email-list"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-mail-star-email-list"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="email-POSTapi-v3-user-mail-trash-email-list">Trash Email List</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Retrieves a paginated list of emails in the trash for the authenticated user and returns the data in JSON format.</p>
+
+<span id="example-requests-POSTapi-v3-user-mail-trash-email-list">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/mail/trash-email-list" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/mail/trash-email-list"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-mail-trash-email-list">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+   &quot;data&quot;: [
+       {
+      &quot;id&quot;: 85,
+      &quot;reply_of&quot;: 84,
+      &quot;form_id&quot;: 38,
+      &quot;to&quot;: &quot;test@mail.net&quot;,
+      &quot;cc&quot;: null,
+      &quot;subject&quot;: &quot;Test Email&quot;,
+      &quot;message&quot;: &quot;&lt;p&gt;ddddd&lt;/p&gt;&quot;,
+      &quot;attachment&quot;: null,
+      &quot;is_draft&quot;: 0,
+      &quot;is_delete&quot;: 0,
+      &quot;deleted_at&quot;: null,
+      &quot;created_at&quot;: &quot;2024-11-06T14:07:53.000000Z&quot;,
+      &quot;updated_at&quot;: &quot;2024-11-06T14:07:53.000000Z&quot;,
+      &quot;ownUserMailInfo&quot;: {
+             &quot;is_read&quot;: 1,
+             &quot;is_starred&quot;: 0,
+             &quot;is_delete&quot;: 1
+         }
+       },
+       // additional trashed emails
+   ],
+   &quot;total&quot;: 5,
+   &quot;perPage&quot;: 15,
+   &quot;currentPage&quot;: 1,
+   &quot;lastPage&quot;: 1
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-mail-trash-email-list" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-mail-trash-email-list"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-mail-trash-email-list"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-mail-trash-email-list" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-mail-trash-email-list">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-mail-trash-email-list" data-method="POST"
+      data-path="api/v3/user/mail/trash-email-list"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-mail-trash-email-list', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-mail-trash-email-list"
+                    onclick="tryItOut('POSTapi-v3-user-mail-trash-email-list');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-mail-trash-email-list"
+                    onclick="cancelTryOut('POSTapi-v3-user-mail-trash-email-list');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-mail-trash-email-list"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/mail/trash-email-list</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-mail-trash-email-list"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-mail-trash-email-list"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-mail-trash-email-list"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="email-POSTapi-v3-user-mail-view">View Email Details</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Retrieves the details of a specific email along with its replies and user-specific information for the authenticated user.</p>
+
+<span id="example-requests-POSTapi-v3-user-mail-view">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/mail/view" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"mail_id\": 1
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/mail/view"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "mail_id": 1
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-mail-view">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Email details retrieved successfully.&quot;,
+    &quot;status&quot;: true,
+    &quot;data&quot;: {
+        &quot;mail_details&quot;: {
+            &quot;id&quot;: 72,
+            &quot;reply_of&quot;: null,
+            &quot;form_id&quot;: 37,
+            &quot;to&quot;: &quot;swarnadwip@excellisit.net&quot;,
+            &quot;cc&quot;: null,
+            &quot;subject&quot;: &quot;Test Email 10&quot;,
+            &quot;message&quot;: &quot;&lt;p&gt;10 msg&lt;/p&gt;&quot;,
+            &quot;attachment&quot;: &quot;[{\&quot;original_name\&quot;:\&quot;p3.pdf\&quot;,\&quot;encrypted_name\&quot;:\&quot;email_files\\/MG0hSy05bAv8Codx59IoDWjNxvid173ie4oWOgIh.pdf\&quot;},{\&quot;original_name\&quot;:\&quot;image.png\&quot;,\&quot;encrypted_name\&quot;:\&quot;email_files\\/O5ouE0bgXqG0TDXMhaz1loGLVwUXalYGprPn62K9.png\&quot;},{\&quot;original_name\&quot;:\&quot;dummy - 2.pdf\&quot;,\&quot;encrypted_name\&quot;:\&quot;email_files\\/l6PwXoc6aGTX80y1LoVb82QadlKnCEx9W4N25zlI.pdf\&quot;}]&quot;,
+            &quot;is_draft&quot;: 0,
+            &quot;is_delete&quot;: 0,
+            &quot;deleted_at&quot;: null,
+            &quot;created_at&quot;: &quot;2024-11-06T05:27:05.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2024-11-06T05:27:05.000000Z&quot;,
+            &quot;user&quot;: {
+                &quot;id&quot;: 37,
+                &quot;ecclesia_id&quot;: 4,
+                &quot;created_id&quot;: null,
+                &quot;user_name&quot;: &quot;masum1&quot;,
+                &quot;first_name&quot;: &quot;Test&quot;,
+                &quot;middle_name&quot;: null,
+                &quot;last_name&quot;: &quot;User&quot;,
+                &quot;email&quot;: &quot;masum@excellisit.net&quot;,
+                &quot;phone&quot;: &quot;+91 9123456789&quot;,
+                &quot;email_verified_at&quot;: &quot;2024-10-28T08:35:17.000000Z&quot;,
+                &quot;profile_picture&quot;: &quot;profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp&quot;,
+                &quot;address&quot;: &quot;kolkata&quot;,
+                &quot;city&quot;: &quot;kolkata&quot;,
+                &quot;state&quot;: &quot;41&quot;,
+                &quot;address2&quot;: &quot;kolkata&quot;,
+                &quot;country&quot;: &quot;101&quot;,
+                &quot;zip&quot;: &quot;700001&quot;,
+                &quot;status&quot;: 1,
+                &quot;created_at&quot;: &quot;2024-10-28T08:35:17.000000Z&quot;,
+                &quot;updated_at&quot;: &quot;2024-11-06T07:42:16.000000Z&quot;
+            }
+        },
+        &quot;ownUserMailInfo&quot;: {
+            &quot;is_read&quot;: 1,
+            &quot;is_starred&quot;: 0,
+            &quot;is_delete&quot;: 0
+        },
+        &quot;reply_mails&quot;: [
+            {
+                &quot;id&quot;: 73,
+                &quot;reply_of&quot;: 72,
+                &quot;form_id&quot;: 37,
+                &quot;to&quot;: &quot;swarnadwip@excellisit.net,masum@excellisit.net&quot;,
+                &quot;cc&quot;: null,
+                &quot;subject&quot;: &quot;Test Email 10&quot;,
+                &quot;message&quot;: &quot;&lt;p&gt;reply own 1&lt;/p&gt;&quot;,
+                &quot;attachment&quot;: &quot;[{\&quot;original_name\&quot;:\&quot;Print Email.pdf\&quot;,\&quot;encrypted_name\&quot;:\&quot;email_files\\/zWoX12bv6XEDP2kBpU8t3sIk9Z6s5fdxz4EwLXpZ.pdf\&quot;},{\&quot;original_name\&quot;:\&quot;dummy - 2.pdf\&quot;,\&quot;encrypted_name\&quot;:\&quot;email_files\\/1lgiAan2XVrTAuSjZn6Zi6nU5d6xMU3VLLR0nAci.pdf\&quot;}]&quot;,
+                &quot;is_draft&quot;: 0,
+                &quot;is_delete&quot;: 0,
+                &quot;deleted_at&quot;: null,
+                &quot;created_at&quot;: &quot;2024-11-06T05:36:28.000000Z&quot;,
+                &quot;updated_at&quot;: &quot;2024-11-06T05:36:28.000000Z&quot;,
+                &quot;ownUserMailInfo&quot;: {
+                    &quot;is_read&quot;: 1,
+                    &quot;is_starred&quot;: 0
+                },
+                &quot;user&quot;: {
+                    &quot;id&quot;: 37,
+                    &quot;ecclesia_id&quot;: 4,
+                    &quot;created_id&quot;: null,
+                    &quot;user_name&quot;: &quot;masum1&quot;,
+                    &quot;first_name&quot;: &quot;Test&quot;,
+                    &quot;middle_name&quot;: null,
+                    &quot;last_name&quot;: &quot;User&quot;,
+                    &quot;email&quot;: &quot;masum@excellisit.net&quot;,
+                    &quot;phone&quot;: &quot;+91 9123456789&quot;,
+                    &quot;email_verified_at&quot;: &quot;2024-10-28T08:35:17.000000Z&quot;,
+                    &quot;profile_picture&quot;: &quot;profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp&quot;,
+                    &quot;address&quot;: &quot;kolkata&quot;,
+                    &quot;city&quot;: &quot;kolkata&quot;,
+                    &quot;state&quot;: &quot;41&quot;,
+                    &quot;address2&quot;: &quot;kolkata&quot;,
+                    &quot;country&quot;: &quot;101&quot;,
+                    &quot;zip&quot;: &quot;700001&quot;,
+                    &quot;status&quot;: 1,
+                    &quot;created_at&quot;: &quot;2024-10-28T08:35:17.000000Z&quot;,
+                    &quot;updated_at&quot;: &quot;2024-11-06T07:42:16.000000Z&quot;
+                }
+            }
+        ],
+        &quot;allMailIds&quot;: [
+            {
+                &quot;id&quot;: 12,
+                &quot;email&quot;: &quot;swarnadwip@excellisit.net&quot;
+            },
+            {
+                &quot;id&quot;: 13,
+                &quot;email&quot;: &quot;john@yopmail.com&quot;
+            },
+            {
+                &quot;id&quot;: 38,
+                &quot;email&quot;: &quot;masum2@excellisit.net&quot;
+            }
+        ],
+        &quot;replyMailIds&quot;: [
+            &quot;masum@excellisit.net&quot;
+        ]
+    }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-mail-view" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-mail-view"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-mail-view"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-mail-view" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-mail-view">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-mail-view" data-method="POST"
+      data-path="api/v3/user/mail/view"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-mail-view', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-mail-view"
+                    onclick="tryItOut('POSTapi-v3-user-mail-view');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-mail-view"
+                    onclick="cancelTryOut('POSTapi-v3-user-mail-view');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-mail-view"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/mail/view</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-mail-view"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-mail-view"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-mail-view"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>mail_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="mail_id"                data-endpoint="POSTapi-v3-user-mail-view"
+               value="1"
+               data-component="body">
+    <br>
+<p>The email ID to view. Example: <code>1</code></p>
+        </div>
+        </form>
+
+                    <h2 id="email-POSTapi-v3-user-mail-compose-mail-users">Compose Emails</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>This endpoint retrieves a list of active users, excluding the currently authenticated user,
+that can be recipients of a new mail.</p>
+
+<span id="example-requests-POSTapi-v3-user-mail-compose-mail-users">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/mail/compose-mail-users" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/mail/compose-mail-users"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-mail-compose-mail-users">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Users loaded successfully.&quot;,
+    &quot;status&quot;: true,
+    &quot;users&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;email&quot;: &quot;user1@example.com&quot;
+        },
+        {
+            &quot;id&quot;: 2,
+            &quot;email&quot;: &quot;user2@example.com&quot;
+        }
+    ]
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;You do not have permission to access this page.&quot;,
+    &quot;status&quot;: false
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;An error occurred while loading the compose mail users.&quot;,
+    &quot;status&quot;: false,
+    &quot;error&quot;: &quot;Exception message details&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-mail-compose-mail-users" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-mail-compose-mail-users"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-mail-compose-mail-users"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-mail-compose-mail-users" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-mail-compose-mail-users">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-mail-compose-mail-users" data-method="POST"
+      data-path="api/v3/user/mail/compose-mail-users"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-mail-compose-mail-users', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-mail-compose-mail-users"
+                    onclick="tryItOut('POSTapi-v3-user-mail-compose-mail-users');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-mail-compose-mail-users"
+                    onclick="cancelTryOut('POSTapi-v3-user-mail-compose-mail-users');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-mail-compose-mail-users"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/mail/compose-mail-users</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-mail-compose-mail-users"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-mail-compose-mail-users"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-mail-compose-mail-users"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="email-POSTapi-v3-user-mail-send">Send New Email</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>This endpoint allows the authenticated user to send an email to specified recipients,
+with the option to include CC recipients and attachments. Notifications are sent to recipients as well.</p>
+
+<span id="example-requests-POSTapi-v3-user-mail-send">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/mail/send" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "to=praesentium"\
+    --form "cc=nisi"\
+    --form "subject=expedita"\
+    --form "message=sit"\
+    --form "attachments[]=@C:\Users\Masum\AppData\Local\Temp\php5DE7.tmp" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/mail/send"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('to', 'praesentium');
+body.append('cc', 'nisi');
+body.append('subject', 'expedita');
+body.append('message', 'sit');
+body.append('attachments[]', document.querySelector('input[name="attachments[]"]').files[0]);
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-mail-send">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Mail sent successfully.&quot;,
+    &quot;status&quot;: true,
+    &quot;send_to_ids&quot;: [
+        1,
+        2,
+        3
+    ],
+    &quot;notification_message&quot;: &quot;You have a &lt;b&gt;new mail&lt;/b&gt; from sender@example.com&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Failed to send mail. Please try again later.&quot;,
+    &quot;status&quot;: false,
+    &quot;error&quot;: &quot;Error message here&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Validation error&quot;,
+    &quot;errors&quot;: {
+        &quot;to&quot;: [
+            &quot;The to field is required.&quot;
+        ],
+        &quot;subject&quot;: [
+            &quot;The subject field is required.&quot;
+        ],
+        &quot;message&quot;: [
+            &quot;The message field is required.&quot;
+        ]
+    }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-mail-send" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-mail-send"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-mail-send"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-mail-send" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-mail-send">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-mail-send" data-method="POST"
+      data-path="api/v3/user/mail/send"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-mail-send', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-mail-send"
+                    onclick="tryItOut('POSTapi-v3-user-mail-send');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-mail-send"
+                    onclick="cancelTryOut('POSTapi-v3-user-mail-send');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-mail-send"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/mail/send</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-mail-send"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-mail-send"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-mail-send"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>to</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="to"                data-endpoint="POSTapi-v3-user-mail-send"
+               value="praesentium"
+               data-component="body">
+    <br>
+<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;masum2@excellisit.net&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>praesentium</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>cc</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="cc"                data-endpoint="POSTapi-v3-user-mail-send"
+               value="nisi"
+               data-component="body">
+    <br>
+<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>nisi</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>subject</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="subject"                data-endpoint="POSTapi-v3-user-mail-send"
+               value="expedita"
+               data-component="body">
+    <br>
+<p>The subject of the email. Example: <code>expedita</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>message</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="message"                data-endpoint="POSTapi-v3-user-mail-send"
+               value="sit"
+               data-component="body">
+    <br>
+<p>The body content of the email. Example: <code>sit</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>attachments</code></b>&nbsp;&nbsp;
+<small>file[]</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="file" style="display: none"
+                              name="attachments[0]"                data-endpoint="POSTapi-v3-user-mail-send"
+               data-component="body">
+        <input type="file" style="display: none"
+               name="attachments[1]"                data-endpoint="POSTapi-v3-user-mail-send"
+               data-component="body">
+    <br>
+<p>Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.</p>
+        </div>
+        </form>
+
+                    <h2 id="email-POSTapi-v3-user-mail-sendReply">Send Reply Email</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>This endpoint allows the authenticated user to reply to an existing email thread,
+including attachments and notifications to recipients.</p>
+
+<span id="example-requests-POSTapi-v3-user-mail-sendReply">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/mail/sendReply" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "to=accusamus"\
+    --form "cc=est"\
+    --form "subject=voluptas"\
+    --form "message=eum"\
+    --form "main_mail_id=11"\
+    --form "attachments[]=@C:\Users\Masum\AppData\Local\Temp\php5DE8.tmp" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/mail/sendReply"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('to', 'accusamus');
+body.append('cc', 'est');
+body.append('subject', 'voluptas');
+body.append('message', 'eum');
+body.append('main_mail_id', '11');
+body.append('attachments[]', document.querySelector('input[name="attachments[]"]').files[0]);
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-mail-sendReply">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Mail sent successfully.&quot;,
+    &quot;status&quot;: true,
+    &quot;send_to_ids&quot;: [
+        1,
+        2,
+        3
+    ],
+    &quot;notification_message&quot;: &quot;You have a &lt;b&gt;new mail&lt;/b&gt; from sender@example.com&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Failed to send mail. Please try again later.&quot;,
+    &quot;status&quot;: false,
+    &quot;error&quot;: &quot;Error message here&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Validation error&quot;,
+    &quot;errors&quot;: {
+        &quot;to&quot;: [
+            &quot;The to field is required.&quot;
+        ],
+        &quot;subject&quot;: [
+            &quot;The subject field is required.&quot;
+        ],
+        &quot;message&quot;: [
+            &quot;The message field is required.&quot;
+        ],
+        &quot;main_mail_id&quot;: [
+            &quot;The main_mail_id field is required.&quot;
+        ]
+    }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-mail-sendReply" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-mail-sendReply"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-mail-sendReply"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-mail-sendReply" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-mail-sendReply">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-mail-sendReply" data-method="POST"
+      data-path="api/v3/user/mail/sendReply"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-mail-sendReply', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-mail-sendReply"
+                    onclick="tryItOut('POSTapi-v3-user-mail-sendReply');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-mail-sendReply"
+                    onclick="cancelTryOut('POSTapi-v3-user-mail-sendReply');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-mail-sendReply"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/mail/sendReply</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-mail-sendReply"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-mail-sendReply"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-mail-sendReply"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>to</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="to"                data-endpoint="POSTapi-v3-user-mail-sendReply"
+               value="accusamus"
+               data-component="body">
+    <br>
+<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;user1@example.com&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>accusamus</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>cc</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="cc"                data-endpoint="POSTapi-v3-user-mail-sendReply"
+               value="est"
+               data-component="body">
+    <br>
+<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>est</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>subject</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="subject"                data-endpoint="POSTapi-v3-user-mail-sendReply"
+               value="voluptas"
+               data-component="body">
+    <br>
+<p>The subject of the reply email. Example: <code>voluptas</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>message</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="message"                data-endpoint="POSTapi-v3-user-mail-sendReply"
+               value="eum"
+               data-component="body">
+    <br>
+<p>The body content of the reply email. Example: <code>eum</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>attachments</code></b>&nbsp;&nbsp;
+<small>file[]</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="file" style="display: none"
+                              name="attachments[0]"                data-endpoint="POSTapi-v3-user-mail-sendReply"
+               data-component="body">
+        <input type="file" style="display: none"
+               name="attachments[1]"                data-endpoint="POSTapi-v3-user-mail-sendReply"
+               data-component="body">
+    <br>
+<p>Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>main_mail_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="main_mail_id"                data-endpoint="POSTapi-v3-user-mail-sendReply"
+               value="11"
+               data-component="body">
+    <br>
+<p>The ID of the main email thread being replied to. Example: <code>11</code></p>
+        </div>
+        </form>
+
+                    <h2 id="email-POSTapi-v3-user-mail-sendForward">Forward Email</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>This endpoint allows the authenticated user to forward an existing email to a list of recipients,
+including optional CC recipients and attachments.</p>
+
+<span id="example-requests-POSTapi-v3-user-mail-sendForward">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/mail/sendForward" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "to=nihil"\
+    --form "cc=temporibus"\
+    --form "subject=consequuntur"\
+    --form "message=et"\
+    --form "attachments[]=@C:\Users\Masum\AppData\Local\Temp\php5DF9.tmp" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/mail/sendForward"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('to', 'nihil');
+body.append('cc', 'temporibus');
+body.append('subject', 'consequuntur');
+body.append('message', 'et');
+body.append('attachments[]', document.querySelector('input[name="attachments[]"]').files[0]);
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-mail-sendForward">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Mail sent successfully.&quot;,
+    &quot;status&quot;: true,
+    &quot;send_to_ids&quot;: [
+        1,
+        2,
+        3
+    ],
+    &quot;notification_message&quot;: &quot;You have a &lt;b&gt;new mail&lt;/b&gt; from sender@example.com&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Failed to send mail. Please try again later.&quot;,
+    &quot;status&quot;: false,
+    &quot;error&quot;: &quot;Error message here&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Validation error&quot;,
+    &quot;errors&quot;: {
+        &quot;to&quot;: [
+            &quot;The to field is required.&quot;
+        ],
+        &quot;subject&quot;: [
+            &quot;The subject field is required.&quot;
+        ],
+        &quot;message&quot;: [
+            &quot;The message field is required.&quot;
+        ]
+    }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-mail-sendForward" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-mail-sendForward"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-mail-sendForward"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-mail-sendForward" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-mail-sendForward">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-mail-sendForward" data-method="POST"
+      data-path="api/v3/user/mail/sendForward"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-mail-sendForward', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-mail-sendForward"
+                    onclick="tryItOut('POSTapi-v3-user-mail-sendForward');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-mail-sendForward"
+                    onclick="cancelTryOut('POSTapi-v3-user-mail-sendForward');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-mail-sendForward"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/mail/sendForward</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-mail-sendForward"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-mail-sendForward"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-mail-sendForward"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>to</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="to"                data-endpoint="POSTapi-v3-user-mail-sendForward"
+               value="nihil"
+               data-component="body">
+    <br>
+<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;user1@example.com&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>nihil</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>cc</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="cc"                data-endpoint="POSTapi-v3-user-mail-sendForward"
+               value="temporibus"
+               data-component="body">
+    <br>
+<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>temporibus</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>subject</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="subject"                data-endpoint="POSTapi-v3-user-mail-sendForward"
+               value="consequuntur"
+               data-component="body">
+    <br>
+<p>The subject of the forwarded email. Example: <code>consequuntur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>message</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="message"                data-endpoint="POSTapi-v3-user-mail-sendForward"
+               value="et"
+               data-component="body">
+    <br>
+<p>The body content of the forwarded email. Example: <code>et</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>attachments</code></b>&nbsp;&nbsp;
+<small>file[]</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="file" style="display: none"
+                              name="attachments[0]"                data-endpoint="POSTapi-v3-user-mail-sendForward"
+               data-component="body">
+        <input type="file" style="display: none"
+               name="attachments[1]"                data-endpoint="POSTapi-v3-user-mail-sendForward"
+               data-component="body">
+    <br>
+<p>Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.</p>
+        </div>
+        </form>
+
+                    <h2 id="email-POSTapi-v3-user-mail-mail-delete">Delete Emails</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>This endpoint allows the authenticated user to delete multiple emails by marking them as deleted.
+The emails are logically deleted by setting the <code>is_delete</code> flag and <code>deleted_at</code> timestamp.</p>
+
+<span id="example-requests-POSTapi-v3-user-mail-mail-delete">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/mail/mail-delete" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"mailIds\": [
+        1,
+        2,
+        3
+    ]
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/mail/mail-delete"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "mailIds": [
+        1,
+        2,
+        3
+    ]
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-mail-mail-delete">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Mail deleted successfully.&quot;,
+    &quot;status&quot;: true
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Mail not found.&quot;,
+    &quot;status&quot;: false
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Validation error.&quot;,
+    &quot;errors&quot;: {
+        &quot;mailIds&quot;: [
+            &quot;The mailIds field is required.&quot;
+        ]
+    }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-mail-mail-delete" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-mail-mail-delete"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-mail-mail-delete"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-mail-mail-delete" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-mail-mail-delete">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-mail-mail-delete" data-method="POST"
+      data-path="api/v3/user/mail/mail-delete"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-mail-mail-delete', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-mail-mail-delete"
+                    onclick="tryItOut('POSTapi-v3-user-mail-mail-delete');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-mail-mail-delete"
+                    onclick="cancelTryOut('POSTapi-v3-user-mail-mail-delete');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-mail-mail-delete"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/mail/mail-delete</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-mail-mail-delete"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-mail-mail-delete"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-mail-mail-delete"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>mailIds</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="mailIds[0]"                data-endpoint="POSTapi-v3-user-mail-mail-delete"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="mailIds[1]"                data-endpoint="POSTapi-v3-user-mail-mail-delete"
+               data-component="body">
+    <br>
+<p>An array of mail IDs to be deleted.</p>
+        </div>
+        </form>
+
+                    <h2 id="email-POSTapi-v3-user-mail-mail-delete-sent">Delete Sent Emails</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>This endpoint allows the authenticated user to delete multiple sent emails by marking them as deleted.
+The emails are logically deleted by setting the <code>is_delete</code> flag and <code>deleted_at</code> timestamp.</p>
+
+<span id="example-requests-POSTapi-v3-user-mail-mail-delete-sent">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/mail/mail-delete-sent" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"mailIds\": [
+        1,
+        2,
+        3
+    ]
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/mail/mail-delete-sent"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "mailIds": [
+        1,
+        2,
+        3
+    ]
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-mail-mail-delete-sent">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Mail deleted successfully.&quot;,
+    &quot;status&quot;: true
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Mail not found.&quot;,
+    &quot;status&quot;: false
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Validation error.&quot;,
+    &quot;errors&quot;: {
+        &quot;mailIds&quot;: [
+            &quot;The mailIds field is required.&quot;
+        ]
+    }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-mail-mail-delete-sent" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-mail-mail-delete-sent"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-mail-mail-delete-sent"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-mail-mail-delete-sent" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-mail-mail-delete-sent">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-mail-mail-delete-sent" data-method="POST"
+      data-path="api/v3/user/mail/mail-delete-sent"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-mail-mail-delete-sent', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-mail-mail-delete-sent"
+                    onclick="tryItOut('POSTapi-v3-user-mail-mail-delete-sent');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-mail-mail-delete-sent"
+                    onclick="cancelTryOut('POSTapi-v3-user-mail-mail-delete-sent');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-mail-mail-delete-sent"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/mail/mail-delete-sent</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-mail-mail-delete-sent"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-mail-mail-delete-sent"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-mail-mail-delete-sent"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>mailIds</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="mailIds[0]"                data-endpoint="POSTapi-v3-user-mail-mail-delete-sent"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="mailIds[1]"                data-endpoint="POSTapi-v3-user-mail-mail-delete-sent"
+               data-component="body">
+    <br>
+<p>An array of mail IDs to be deleted.</p>
+        </div>
+        </form>
+
+                    <h2 id="email-POSTapi-v3-user-mail-mail-restore">Restore Deleted Mails</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v3-user-mail-mail-restore">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/mail/mail-restore" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"mailIds\": [
+        1,
+        2,
+        3
+    ]
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/mail/mail-restore"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "mailIds": [
+        1,
+        2,
+        3
+    ]
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-mail-mail-restore">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Mail restored successfully.&quot;,
+    &quot;status&quot;: true
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Failed to restore mail. Please try again later.&quot;,
+    &quot;status&quot;: false
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-mail-mail-restore" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-mail-mail-restore"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-mail-mail-restore"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-mail-mail-restore" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-mail-mail-restore">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-mail-mail-restore" data-method="POST"
+      data-path="api/v3/user/mail/mail-restore"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-mail-mail-restore', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-mail-mail-restore"
+                    onclick="tryItOut('POSTapi-v3-user-mail-mail-restore');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-mail-mail-restore"
+                    onclick="cancelTryOut('POSTapi-v3-user-mail-mail-restore');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-mail-mail-restore"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/mail/mail-restore</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-mail-mail-restore"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-mail-mail-restore"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-mail-mail-restore"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>mailIds</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="mailIds[0]"                data-endpoint="POSTapi-v3-user-mail-mail-restore"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="mailIds[1]"                data-endpoint="POSTapi-v3-user-mail-mail-restore"
+               data-component="body">
+    <br>
+<p>The IDs of the mails to restore.</p>
+        </div>
+        </form>
+
+                    <h2 id="email-POSTapi-v3-user-mail-mail-star">Star Mark on a Mail</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v3-user-mail-mail-star">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/mail/mail-star" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"mail_id\": 1,
+    \"start_value\": 1
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/mail/mail-star"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "mail_id": 1,
+    "start_value": 1
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-mail-mail-star">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Mail Starred Success!&quot;,
+    &quot;status&quot;: true
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Mail Star Mark Removed!&quot;,
+    &quot;status&quot;: true
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Failed to update star status. Please try again later.&quot;,
+    &quot;status&quot;: false
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-mail-mail-star" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-mail-mail-star"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-mail-mail-star"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-mail-mail-star" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-mail-mail-star">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-mail-mail-star" data-method="POST"
+      data-path="api/v3/user/mail/mail-star"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-mail-mail-star', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-mail-mail-star"
+                    onclick="tryItOut('POSTapi-v3-user-mail-mail-star');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-mail-mail-star"
+                    onclick="cancelTryOut('POSTapi-v3-user-mail-mail-star');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-mail-mail-star"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/mail/mail-star</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-mail-mail-star"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-mail-mail-star"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-mail-mail-star"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>mail_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="mail_id"                data-endpoint="POSTapi-v3-user-mail-mail-star"
+               value="1"
+               data-component="body">
+    <br>
+<p>The ID of the mail to be starred or unstarred. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>start_value</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="start_value"                data-endpoint="POSTapi-v3-user-mail-mail-star"
+               value="1"
+               data-component="body">
+    <br>
+<p>The star value (1 for starred, 0 for unstarred). Example: <code>1</code></p>
+        </div>
+        </form>
+
+                    <h2 id="email-POSTapi-v3-user-mail-mail-delete-single">Delete Single Email</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v3-user-mail-mail-delete-single">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/mail/mail-delete-single" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"mail_id\": 1
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/mail/mail-delete-single"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "mail_id": 1
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-mail-mail-delete-single">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Mail deleted successfully.&quot;,
+    &quot;status&quot;: true
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Failed to delete mail. Please try again later.&quot;,
+    &quot;status&quot;: false
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-mail-mail-delete-single" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-mail-mail-delete-single"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-mail-mail-delete-single"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-mail-mail-delete-single" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-mail-mail-delete-single">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-mail-mail-delete-single" data-method="POST"
+      data-path="api/v3/user/mail/mail-delete-single"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-mail-mail-delete-single', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-mail-mail-delete-single"
+                    onclick="tryItOut('POSTapi-v3-user-mail-mail-delete-single');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-mail-mail-delete-single"
+                    onclick="cancelTryOut('POSTapi-v3-user-mail-mail-delete-single');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-mail-mail-delete-single"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/mail/mail-delete-single</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-mail-mail-delete-single"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-mail-mail-delete-single"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-mail-mail-delete-single"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>mail_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="mail_id"                data-endpoint="POSTapi-v3-user-mail-mail-delete-single"
+               value="1"
+               data-component="body">
+    <br>
+<p>The ID of the mail to be deleted. Example: <code>1</code></p>
+        </div>
+        </form>
+
+                    <h2 id="email-POSTapi-v3-user-mail-mail-restore-single">Restore Single Email</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v3-user-mail-mail-restore-single">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/mail/mail-restore-single" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"mail_id\": 1
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/mail/mail-restore-single"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "mail_id": 1
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-mail-mail-restore-single">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Mail restored successfully.&quot;,
+    &quot;status&quot;: true
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Failed to restore mail. Please try again later.&quot;,
+    &quot;status&quot;: false
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-mail-mail-restore-single" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-mail-mail-restore-single"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-mail-mail-restore-single"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-mail-mail-restore-single" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-mail-mail-restore-single">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-mail-mail-restore-single" data-method="POST"
+      data-path="api/v3/user/mail/mail-restore-single"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-mail-mail-restore-single', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-mail-mail-restore-single"
+                    onclick="tryItOut('POSTapi-v3-user-mail-mail-restore-single');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-mail-mail-restore-single"
+                    onclick="cancelTryOut('POSTapi-v3-user-mail-mail-restore-single');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-mail-mail-restore-single"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/mail/mail-restore-single</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-mail-mail-restore-single"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-mail-mail-restore-single"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-mail-mail-restore-single"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>mail_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="mail_id"                data-endpoint="POSTapi-v3-user-mail-mail-restore-single"
+               value="1"
+               data-component="body">
+    <br>
+<p>The ID of the mail to be restored. Example: <code>1</code></p>
+        </div>
+        </form>
+
+                    <h2 id="email-GETapi-v3-user-mail-print--id-">Print Email</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v3-user-mail-print--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://127.0.0.1:8000/api/v3/user/mail/print/1" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/mail/print/1"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v3-user-mail-print--id-">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Mail details fetched successfully.&quot;,
+    &quot;status&quot;: true
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Failed to fetch mail details. Please try again later.&quot;,
+    &quot;status&quot;: false
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v3-user-mail-print--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v3-user-mail-print--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v3-user-mail-print--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v3-user-mail-print--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v3-user-mail-print--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v3-user-mail-print--id-" data-method="GET"
+      data-path="api/v3/user/mail/print/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v3-user-mail-print--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v3-user-mail-print--id-"
+                    onclick="tryItOut('GETapi-v3-user-mail-print--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v3-user-mail-print--id-"
+                    onclick="cancelTryOut('GETapi-v3-user-mail-print--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v3-user-mail-print--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v3/user/mail/print/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v3-user-mail-print--id-"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v3-user-mail-print--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v3-user-mail-print--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="GETapi-v3-user-mail-print--id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>The ID of the mail to be printed. Example: <code>1</code></p>
+            </div>
+                    </form>
+
                 <h1 id="forget-password">Forget Password</h1>
 
     
@@ -4742,7 +7643,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"email\": \"lindgren.burley@example.net\"
+    \"email\": \"holly.gerlach@example.org\"
 }"
 </code></pre></div>
 
@@ -4758,7 +7659,7 @@ const headers = {
 };
 
 let body = {
-    "email": "lindgren.burley@example.net"
+    "email": "holly.gerlach@example.org"
 };
 
 fetch(url, {
@@ -4857,10 +7758,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-forget-password"
-               value="lindgren.burley@example.net"
+               value="holly.gerlach@example.org"
                data-component="body">
     <br>
-<p>The email of the user. Example: Example: <code>lindgren.burley@example.net</code></p>
+<p>The email of the user. Example: Example: <code>holly.gerlach@example.org</code></p>
         </div>
         </form>
 
@@ -5202,7 +8103,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "name="Project Z Team""\
     --form "description="Team for Project Z collaboration""\
     --form "members="\
-    --form "group_image=@C:\Users\Masum\AppData\Local\Temp\phpF69C.tmp" </code></pre></div>
+    --form "group_image=@C:\Users\Masum\AppData\Local\Temp\php5CE8.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -5392,7 +8293,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB. Example: <code>C:\Users\Masum\AppData\Local\Temp\phpF69C.tmp</code></p>
+<p>An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB. Example: <code>C:\Users\Masum\AppData\Local\Temp\php5CE8.tmp</code></p>
         </div>
         </form>
 
@@ -5753,7 +8654,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "team_id=5"\
     --form "message="Hello team!""\
-    --form "file=@C:\Users\Masum\AppData\Local\Temp\phpF6AE.tmp" </code></pre></div>
+    --form "file=@C:\Users\Masum\AppData\Local\Temp\php5CEA.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -5968,7 +8869,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The attachment file to send, if applicable (optional if a message is provided). Example: <code>C:\Users\Masum\AppData\Local\Temp\phpF6AE.tmp</code></p>
+<p>The attachment file to send, if applicable (optional if a message is provided). Example: <code>C:\Users\Masum\AppData\Local\Temp\php5CEA.tmp</code></p>
         </div>
         </form>
 
@@ -6175,7 +9076,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "team_id=5"\
-    --form "group_image=@C:\Users\Masum\AppData\Local\Temp\phpF6BE.tmp" </code></pre></div>
+    --form "group_image=@C:\Users\Masum\AppData\Local\Temp\php5CFB.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -6325,7 +9226,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new group image file (JPEG, PNG, JPG, GIF, SVG formats, max size: 2048KB). Example: <code>C:\Users\Masum\AppData\Local\Temp\phpF6BE.tmp</code></p>
+<p>The new group image file (JPEG, PNG, JPG, GIF, SVG formats, max size: 2048KB). Example: <code>C:\Users\Masum\AppData\Local\Temp\php5CFB.tmp</code></p>
         </div>
         </form>
 
@@ -8049,7 +10950,7 @@ otherwise, it marks the notification as read.</p>
     --data "{
     \"team_id\": 10,
     \"chat_id\": 25,
-    \"is_delete\": 19
+    \"is_delete\": 6
 }"
 </code></pre></div>
 
@@ -8068,7 +10969,7 @@ const headers = {
 let body = {
     "team_id": 10,
     "chat_id": 25,
-    "is_delete": 19
+    "is_delete": 6
 };
 
 fetch(url, {
@@ -8238,10 +11139,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="is_delete"                data-endpoint="POSTapi-v3-user-team-chats-notification"
-               value="19"
+               value="6"
                data-component="body">
     <br>
-<p>optional Indicates if the notification should be marked as read and deleted. Example: <code>19</code></p>
+<p>optional Indicates if the notification should be marked as read and deleted. Example: <code>6</code></p>
         </div>
         </form>
 
@@ -8619,7 +11520,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "profile_picture=@C:\Users\Masum\AppData\Local\Temp\phpF63B.tmp" </code></pre></div>
+    --form "profile_picture=@C:\Users\Masum\AppData\Local\Temp\php5C78.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -8756,7 +11657,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The profile picture of the user. Example: <code>C:\Users\Masum\AppData\Local\Temp\phpF63B.tmp</code></p>
+<p>The profile picture of the user. Example: <code>C:\Users\Masum\AppData\Local\Temp\php5C78.tmp</code></p>
         </div>
         </form>
 

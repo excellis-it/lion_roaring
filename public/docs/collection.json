@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "a57b427b-6e87-42bb-86db-bf8810c3dd0d",
+        "_postman_id": "3f3a64ec-e672-4a27-948a-fde8552b6731",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":10,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":11,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -902,7 +902,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"kirsten.grant@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"deion.murazik@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -946,7 +946,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"et\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"totam\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1029,7 +1029,729 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n   \"data\": [\n       {\n           \"id\": 1,\n           \"subject\": \"Sample Email Subject\",\n           \"body\": \"Sample email body content\",\n           \"created_at\": \"2024-11-07T14:35:06.000000Z\",\n           \"ownUserMailInfo\": {\n               \"is_read\": false,\n               \"is_delete\": false\n           }\n       },\n       \/\/ additional emails\n   ],\n   \"total\": 45,\n   \"perPage\": 15,\n   \"currentPage\": 1,\n   \"lastPage\": 3\n}",
+                            "body": "{\n   \"data\": [\n       {\n      \"id\": 85,\n      \"reply_of\": 84,\n      \"form_id\": 38,\n      \"to\": \"test@mail.net\",\n      \"cc\": null,\n      \"subject\": \"Test Email\",\n      \"message\": \"<p>ddddd<\/p>\",\n      \"attachment\": null,\n      \"is_draft\": 0,\n      \"is_delete\": 0,\n      \"deleted_at\": null,\n      \"created_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"updated_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"ownUserMailInfo\": {\n             \"is_read\": 0,\n             \"is_starred\": 0,\n             \"is_delete\": 0\n         }\n       },\n       \/\/ additional emails\n   ],\n   \"total\": 45,\n   \"perPage\": 15,\n   \"currentPage\": 1,\n   \"lastPage\": 3\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Sent Email List",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/sent-email-list",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/sent-email-list"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Retrieves a paginated list of sent emails for the authenticated user, excluding deleted emails, and returns the data in JSON format."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"data\": [\n       {\n      \"id\": 85,\n      \"reply_of\": 84,\n      \"form_id\": 38,\n      \"to\": \"test@mail.net\",\n      \"cc\": null,\n      \"subject\": \"Test Email\",\n      \"message\": \"<p>ddddd<\/p>\",\n      \"attachment\": null,\n      \"is_draft\": 0,\n      \"is_delete\": 0,\n      \"deleted_at\": null,\n      \"created_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"updated_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"ownUserMailInfo\": {\n             \"is_read\": 1,\n             \"is_starred\": 0,\n             \"is_delete\": 0\n         }\n       },\n       \/\/ additional emails\n   ],\n   \"total\": 30,\n   \"perPage\": 15,\n   \"currentPage\": 1,\n   \"lastPage\": 2\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Starred Email List",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/star-email-list",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/star-email-list"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Retrieves a paginated list of starred emails for the authenticated user, excluding deleted emails, and returns the data in JSON format."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"data\": [\n       {\n      \"id\": 85,\n      \"reply_of\": 84,\n      \"form_id\": 38,\n      \"to\": \"test@mail.net\",\n      \"cc\": null,\n      \"subject\": \"Test Email\",\n      \"message\": \"<p>ddddd<\/p>\",\n      \"attachment\": null,\n      \"is_draft\": 0,\n      \"is_delete\": 0,\n      \"deleted_at\": null,\n      \"created_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"updated_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"ownUserMailInfo\": {\n             \"is_read\": 1,\n             \"is_starred\": 1,\n             \"is_delete\": 0\n         }\n       },\n       \/\/ additional emails\n   ],\n   \"total\": 20,\n   \"perPage\": 15,\n   \"currentPage\": 1,\n   \"lastPage\": 2\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Trash Email List",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/trash-email-list",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/trash-email-list"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Retrieves a paginated list of emails in the trash for the authenticated user and returns the data in JSON format."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"data\": [\n       {\n      \"id\": 85,\n      \"reply_of\": 84,\n      \"form_id\": 38,\n      \"to\": \"test@mail.net\",\n      \"cc\": null,\n      \"subject\": \"Test Email\",\n      \"message\": \"<p>ddddd<\/p>\",\n      \"attachment\": null,\n      \"is_draft\": 0,\n      \"is_delete\": 0,\n      \"deleted_at\": null,\n      \"created_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"updated_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"ownUserMailInfo\": {\n             \"is_read\": 1,\n             \"is_starred\": 0,\n             \"is_delete\": 1\n         }\n       },\n       \/\/ additional trashed emails\n   ],\n   \"total\": 5,\n   \"perPage\": 15,\n   \"currentPage\": 1,\n   \"lastPage\": 1\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "View Email Details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/view",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/view"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"mail_id\":1}"
+                        },
+                        "description": "Retrieves the details of a specific email along with its replies and user-specific information for the authenticated user."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Email details retrieved successfully.\",\n   \"status\": true,\n   \"data\": {\n       \"mail_details\": {\n           \"id\": 72,\n           \"reply_of\": null,\n           \"form_id\": 37,\n           \"to\": \"swarnadwip@excellisit.net\",\n           \"cc\": null,\n           \"subject\": \"Test Email 10\",\n           \"message\": \"<p>10 msg<\\\/p>\",\n           \"attachment\": \"[{\\\"original_name\\\":\\\"p3.pdf\\\",\\\"encrypted_name\\\":\\\"email_files\\\\\\\/MG0hSy05bAv8Codx59IoDWjNxvid173ie4oWOgIh.pdf\\\"},{\\\"original_name\\\":\\\"image.png\\\",\\\"encrypted_name\\\":\\\"email_files\\\\\\\/O5ouE0bgXqG0TDXMhaz1loGLVwUXalYGprPn62K9.png\\\"},{\\\"original_name\\\":\\\"dummy - 2.pdf\\\",\\\"encrypted_name\\\":\\\"email_files\\\\\\\/l6PwXoc6aGTX80y1LoVb82QadlKnCEx9W4N25zlI.pdf\\\"}]\",\n           \"is_draft\": 0,\n           \"is_delete\": 0,\n           \"deleted_at\": null,\n           \"created_at\": \"2024-11-06T05:27:05.000000Z\",\n           \"updated_at\": \"2024-11-06T05:27:05.000000Z\",\n           \"user\": {\n               \"id\": 37,\n               \"ecclesia_id\": 4,\n               \"created_id\": null,\n               \"user_name\": \"masum1\",\n               \"first_name\": \"Test\",\n               \"middle_name\": null,\n               \"last_name\": \"User\",\n               \"email\": \"masum@excellisit.net\",\n               \"phone\": \"+91 9123456789\",\n               \"email_verified_at\": \"2024-10-28T08:35:17.000000Z\",\n               \"profile_picture\": \"profile_picture\\\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp\",\n               \"address\": \"kolkata\",\n               \"city\": \"kolkata\",\n               \"state\": \"41\",\n               \"address2\": \"kolkata\",\n               \"country\": \"101\",\n               \"zip\": \"700001\",\n               \"status\": 1,\n               \"created_at\": \"2024-10-28T08:35:17.000000Z\",\n               \"updated_at\": \"2024-11-06T07:42:16.000000Z\"\n           }\n       },\n       \"ownUserMailInfo\": {\n           \"is_read\": 1,\n           \"is_starred\": 0,\n           \"is_delete\": 0\n       },\n       \"reply_mails\": [\n           {\n               \"id\": 73,\n               \"reply_of\": 72,\n               \"form_id\": 37,\n               \"to\": \"swarnadwip@excellisit.net,masum@excellisit.net\",\n               \"cc\": null,\n               \"subject\": \"Test Email 10\",\n               \"message\": \"<p>reply own 1<\\\/p>\",\n               \"attachment\": \"[{\\\"original_name\\\":\\\"Print Email.pdf\\\",\\\"encrypted_name\\\":\\\"email_files\\\\\\\/zWoX12bv6XEDP2kBpU8t3sIk9Z6s5fdxz4EwLXpZ.pdf\\\"},{\\\"original_name\\\":\\\"dummy - 2.pdf\\\",\\\"encrypted_name\\\":\\\"email_files\\\\\\\/1lgiAan2XVrTAuSjZn6Zi6nU5d6xMU3VLLR0nAci.pdf\\\"}]\",\n               \"is_draft\": 0,\n               \"is_delete\": 0,\n               \"deleted_at\": null,\n               \"created_at\": \"2024-11-06T05:36:28.000000Z\",\n               \"updated_at\": \"2024-11-06T05:36:28.000000Z\",\n               \"ownUserMailInfo\": {\n                   \"is_read\": 1,\n                   \"is_starred\": 0\n               },\n               \"user\": {\n                   \"id\": 37,\n                   \"ecclesia_id\": 4,\n                   \"created_id\": null,\n                   \"user_name\": \"masum1\",\n                   \"first_name\": \"Test\",\n                   \"middle_name\": null,\n                   \"last_name\": \"User\",\n                   \"email\": \"masum@excellisit.net\",\n                   \"phone\": \"+91 9123456789\",\n                   \"email_verified_at\": \"2024-10-28T08:35:17.000000Z\",\n                   \"profile_picture\": \"profile_picture\\\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp\",\n                   \"address\": \"kolkata\",\n                   \"city\": \"kolkata\",\n                   \"state\": \"41\",\n                   \"address2\": \"kolkata\",\n                   \"country\": \"101\",\n                   \"zip\": \"700001\",\n                   \"status\": 1,\n                   \"created_at\": \"2024-10-28T08:35:17.000000Z\",\n                   \"updated_at\": \"2024-11-06T07:42:16.000000Z\"\n               }\n           }\n       ],\n       \"allMailIds\": [\n           {\n               \"id\": 12,\n               \"email\": \"swarnadwip@excellisit.net\"\n           },\n           {\n               \"id\": 13,\n               \"email\": \"john@yopmail.com\"\n           },\n           {\n               \"id\": 38,\n               \"email\": \"masum2@excellisit.net\"\n           }\n       ],\n       \"replyMailIds\": [\n           \"masum@excellisit.net\"\n       ]\n   }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Compose Emails",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/compose-mail-users",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/compose-mail-users"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "This endpoint retrieves a list of active users, excluding the currently authenticated user,\nthat can be recipients of a new mail."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Users loaded successfully.\",\n  \"status\": true,\n  \"users\": [\n    {\"id\": 1, \"email\": \"user1@example.com\"},\n    {\"id\": 2, \"email\": \"user2@example.com\"}\n  ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"message\": \"You do not have permission to access this page.\",\n  \"status\": false\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"message\": \"An error occurred while loading the compose mail users.\",\n  \"status\": false,\n  \"error\": \"Exception message details\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Send New Email",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/send",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/send"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "to",
+                                    "value": "praesentium",
+                                    "type": "text",
+                                    "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"masum2@excellisit.net\"}, {\"value\": \"user2@example.com\"}]."
+                                },
+                                {
+                                    "key": "cc",
+                                    "value": "nisi",
+                                    "type": "text",
+                                    "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
+                                },
+                                {
+                                    "key": "subject",
+                                    "value": "expedita",
+                                    "type": "text",
+                                    "description": "The subject of the email."
+                                },
+                                {
+                                    "key": "message",
+                                    "value": "sit",
+                                    "type": "text",
+                                    "description": "The body content of the email."
+                                },
+                                {
+                                    "key": "attachments[]",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "This endpoint allows the authenticated user to send an email to specified recipients,\nwith the option to include CC recipients and attachments. Notifications are sent to recipients as well."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Mail sent successfully.\",\n  \"status\": true,\n  \"send_to_ids\": [1, 2, 3],\n  \"notification_message\": \"You have a <b>new mail<\/b> from sender@example.com\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"message\": \"Failed to send mail. Please try again later.\",\n  \"status\": false,\n  \"error\": \"Error message here\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"message\": \"Validation error\",\n  \"errors\": {\n    \"to\": [\"The to field is required.\"],\n    \"subject\": [\"The subject field is required.\"],\n    \"message\": [\"The message field is required.\"]\n  }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Send Reply Email",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/sendReply",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/sendReply"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "to",
+                                    "value": "accusamus",
+                                    "type": "text",
+                                    "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
+                                },
+                                {
+                                    "key": "cc",
+                                    "value": "est",
+                                    "type": "text",
+                                    "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
+                                },
+                                {
+                                    "key": "subject",
+                                    "value": "voluptas",
+                                    "type": "text",
+                                    "description": "The subject of the reply email."
+                                },
+                                {
+                                    "key": "message",
+                                    "value": "eum",
+                                    "type": "text",
+                                    "description": "The body content of the reply email."
+                                },
+                                {
+                                    "key": "main_mail_id",
+                                    "value": 11,
+                                    "type": "text",
+                                    "description": "The ID of the main email thread being replied to."
+                                },
+                                {
+                                    "key": "attachments[]",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "This endpoint allows the authenticated user to reply to an existing email thread,\nincluding attachments and notifications to recipients."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Mail sent successfully.\",\n  \"status\": true,\n  \"send_to_ids\": [1, 2, 3],\n  \"notification_message\": \"You have a <b>new mail<\/b> from sender@example.com\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"message\": \"Failed to send mail. Please try again later.\",\n  \"status\": false,\n  \"error\": \"Error message here\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"message\": \"Validation error\",\n  \"errors\": {\n    \"to\": [\"The to field is required.\"],\n    \"subject\": [\"The subject field is required.\"],\n    \"message\": [\"The message field is required.\"],\n    \"main_mail_id\": [\"The main_mail_id field is required.\"]\n  }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Forward Email",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/sendForward",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/sendForward"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "to",
+                                    "value": "nihil",
+                                    "type": "text",
+                                    "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
+                                },
+                                {
+                                    "key": "cc",
+                                    "value": "temporibus",
+                                    "type": "text",
+                                    "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
+                                },
+                                {
+                                    "key": "subject",
+                                    "value": "consequuntur",
+                                    "type": "text",
+                                    "description": "The subject of the forwarded email."
+                                },
+                                {
+                                    "key": "message",
+                                    "value": "et",
+                                    "type": "text",
+                                    "description": "The body content of the forwarded email."
+                                },
+                                {
+                                    "key": "attachments[]",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "This endpoint allows the authenticated user to forward an existing email to a list of recipients,\nincluding optional CC recipients and attachments."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Mail sent successfully.\",\n  \"status\": true,\n  \"send_to_ids\": [1, 2, 3],\n  \"notification_message\": \"You have a <b>new mail<\/b> from sender@example.com\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"message\": \"Failed to send mail. Please try again later.\",\n  \"status\": false,\n  \"error\": \"Error message here\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"message\": \"Validation error\",\n  \"errors\": {\n    \"to\": [\"The to field is required.\"],\n    \"subject\": [\"The subject field is required.\"],\n    \"message\": [\"The message field is required.\"]\n  }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Emails",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/mail-delete",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/mail-delete"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"mailIds\":[1,2,3]}"
+                        },
+                        "description": "This endpoint allows the authenticated user to delete multiple emails by marking them as deleted.\nThe emails are logically deleted by setting the `is_delete` flag and `deleted_at` timestamp."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Mail deleted successfully.\",\n  \"status\": true\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n  \"message\": \"Mail not found.\",\n  \"status\": false\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"message\": \"Validation error.\",\n  \"errors\": {\n    \"mailIds\": [\"The mailIds field is required.\"]\n  }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Sent Emails",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/mail-delete-sent",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/mail-delete-sent"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"mailIds\":[1,2,3]}"
+                        },
+                        "description": "This endpoint allows the authenticated user to delete multiple sent emails by marking them as deleted.\nThe emails are logically deleted by setting the `is_delete` flag and `deleted_at` timestamp."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Mail deleted successfully.\",\n  \"status\": true\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n  \"message\": \"Mail not found.\",\n  \"status\": false\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"message\": \"Validation error.\",\n  \"errors\": {\n    \"mailIds\": [\"The mailIds field is required.\"]\n  }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Restore Deleted Mails",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/mail-restore",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/mail-restore"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"mailIds\":[1,2,3]}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Mail restored successfully.\",\n  \"status\": true\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"message\": \"Failed to restore mail. Please try again later.\",\n  \"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Star Mark on a Mail",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/mail-star",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/mail-star"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"mail_id\":1,\"start_value\":1}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Mail Starred Success!\",\n  \"status\": true\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Mail Star Mark Removed!\",\n  \"status\": true\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"message\": \"Failed to update star status. Please try again later.\",\n  \"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Single Email",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/mail-delete-single",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/mail-delete-single"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"mail_id\":1}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Mail deleted successfully.\",\n  \"status\": true\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n  \"message\": \"Failed to delete mail. Please try again later.\",\n  \"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Restore Single Email",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/mail-restore-single",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/mail-restore-single"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"mail_id\":1}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Mail restored successfully.\",\n  \"status\": true\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"message\": \"Failed to restore mail. Please try again later.\",\n  \"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Print Email",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/mail\/print\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/mail\/print\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the mail to be printed."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Mail details fetched successfully.\",\n  \"status\": true\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"message\": \"Failed to fetch mail details. Please try again later.\",\n  \"status\": false\n}",
                             "name": ""
                         }
                     ]
@@ -1062,7 +1784,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"lindgren.burley@example.net\"}"
+                            "raw": "{\"email\":\"holly.gerlach@example.org\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1784,7 +2506,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":19}"
+                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":6}"
                         },
                         "description": "Manages notifications for group chat messages. If the user has a new message, it sends a notification;\notherwise, it marks the notification as read."
                     },

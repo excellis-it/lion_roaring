@@ -32,14 +32,24 @@ endpoints:
           {
              "data": [
                  {
-                     "id": 1,
-                     "subject": "Sample Email Subject",
-                     "body": "Sample email body content",
-                     "created_at": "2024-11-07T14:35:06.000000Z",
-                     "ownUserMailInfo": {
-                         "is_read": false,
-                         "is_delete": false
-                     }
+                "id": 85,
+                "reply_of": 84,
+                "form_id": 38,
+                "to": "test@mail.net",
+                "cc": null,
+                "subject": "Test Email",
+                "message": "<p>ddddd</p>",
+                "attachment": null,
+                "is_draft": 0,
+                "is_delete": 0,
+                "deleted_at": null,
+                "created_at": "2024-11-06T14:07:53.000000Z",
+                "updated_at": "2024-11-06T14:07:53.000000Z",
+                "ownUserMailInfo": {
+                       "is_read": 0,
+                       "is_starred": 0,
+                       "is_delete": 0
+                   }
                  },
                  // additional emails
              ],
@@ -55,7 +65,1343 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4EhacbkgZV836veD615daPf'
+      - 'Bearer 8v6g6ebafZa34dkED1cPV5h'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/sent-email-list
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Sent Email List'
+      description: 'Retrieves a paginated list of sent emails for the authenticated user, excluding deleted emails, and returns the data in JSON format.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "data": [
+                 {
+                "id": 85,
+                "reply_of": 84,
+                "form_id": 38,
+                "to": "test@mail.net",
+                "cc": null,
+                "subject": "Test Email",
+                "message": "<p>ddddd</p>",
+                "attachment": null,
+                "is_draft": 0,
+                "is_delete": 0,
+                "deleted_at": null,
+                "created_at": "2024-11-06T14:07:53.000000Z",
+                "updated_at": "2024-11-06T14:07:53.000000Z",
+                "ownUserMailInfo": {
+                       "is_read": 1,
+                       "is_starred": 0,
+                       "is_delete": 0
+                   }
+                 },
+                 // additional emails
+             ],
+             "total": 30,
+             "perPage": 15,
+             "currentPage": 1,
+             "lastPage": 2
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer d6P6V5hDEZ1ekcfg4bava83'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/star-email-list
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Starred Email List'
+      description: 'Retrieves a paginated list of starred emails for the authenticated user, excluding deleted emails, and returns the data in JSON format.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "data": [
+                 {
+                "id": 85,
+                "reply_of": 84,
+                "form_id": 38,
+                "to": "test@mail.net",
+                "cc": null,
+                "subject": "Test Email",
+                "message": "<p>ddddd</p>",
+                "attachment": null,
+                "is_draft": 0,
+                "is_delete": 0,
+                "deleted_at": null,
+                "created_at": "2024-11-06T14:07:53.000000Z",
+                "updated_at": "2024-11-06T14:07:53.000000Z",
+                "ownUserMailInfo": {
+                       "is_read": 1,
+                       "is_starred": 1,
+                       "is_delete": 0
+                   }
+                 },
+                 // additional emails
+             ],
+             "total": 20,
+             "perPage": 15,
+             "currentPage": 1,
+             "lastPage": 2
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer kgZ1ah8DV4e3Ecav66P5fbd'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/trash-email-list
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Trash Email List'
+      description: 'Retrieves a paginated list of emails in the trash for the authenticated user and returns the data in JSON format.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "data": [
+                 {
+                "id": 85,
+                "reply_of": 84,
+                "form_id": 38,
+                "to": "test@mail.net",
+                "cc": null,
+                "subject": "Test Email",
+                "message": "<p>ddddd</p>",
+                "attachment": null,
+                "is_draft": 0,
+                "is_delete": 0,
+                "deleted_at": null,
+                "created_at": "2024-11-06T14:07:53.000000Z",
+                "updated_at": "2024-11-06T14:07:53.000000Z",
+                "ownUserMailInfo": {
+                       "is_read": 1,
+                       "is_starred": 0,
+                       "is_delete": 1
+                   }
+                 },
+                 // additional trashed emails
+             ],
+             "total": 5,
+             "perPage": 15,
+             "currentPage": 1,
+             "lastPage": 1
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer b3Vckafd4P865avhZ1ge6ED'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/view
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'View Email Details'
+      description: 'Retrieves the details of a specific email along with its replies and user-specific information for the authenticated user.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      mail_id:
+        name: mail_id
+        description: 'The email ID to view.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      mail_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Email details retrieved successfully.",
+             "status": true,
+             "data": {
+                 "mail_details": {
+                     "id": 72,
+                     "reply_of": null,
+                     "form_id": 37,
+                     "to": "swarnadwip@excellisit.net",
+                     "cc": null,
+                     "subject": "Test Email 10",
+                     "message": "<p>10 msg<\/p>",
+                     "attachment": "[{\"original_name\":\"p3.pdf\",\"encrypted_name\":\"email_files\\\/MG0hSy05bAv8Codx59IoDWjNxvid173ie4oWOgIh.pdf\"},{\"original_name\":\"image.png\",\"encrypted_name\":\"email_files\\\/O5ouE0bgXqG0TDXMhaz1loGLVwUXalYGprPn62K9.png\"},{\"original_name\":\"dummy - 2.pdf\",\"encrypted_name\":\"email_files\\\/l6PwXoc6aGTX80y1LoVb82QadlKnCEx9W4N25zlI.pdf\"}]",
+                     "is_draft": 0,
+                     "is_delete": 0,
+                     "deleted_at": null,
+                     "created_at": "2024-11-06T05:27:05.000000Z",
+                     "updated_at": "2024-11-06T05:27:05.000000Z",
+                     "user": {
+                         "id": 37,
+                         "ecclesia_id": 4,
+                         "created_id": null,
+                         "user_name": "masum1",
+                         "first_name": "Test",
+                         "middle_name": null,
+                         "last_name": "User",
+                         "email": "masum@excellisit.net",
+                         "phone": "+91 9123456789",
+                         "email_verified_at": "2024-10-28T08:35:17.000000Z",
+                         "profile_picture": "profile_picture\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp",
+                         "address": "kolkata",
+                         "city": "kolkata",
+                         "state": "41",
+                         "address2": "kolkata",
+                         "country": "101",
+                         "zip": "700001",
+                         "status": 1,
+                         "created_at": "2024-10-28T08:35:17.000000Z",
+                         "updated_at": "2024-11-06T07:42:16.000000Z"
+                     }
+                 },
+                 "ownUserMailInfo": {
+                     "is_read": 1,
+                     "is_starred": 0,
+                     "is_delete": 0
+                 },
+                 "reply_mails": [
+                     {
+                         "id": 73,
+                         "reply_of": 72,
+                         "form_id": 37,
+                         "to": "swarnadwip@excellisit.net,masum@excellisit.net",
+                         "cc": null,
+                         "subject": "Test Email 10",
+                         "message": "<p>reply own 1<\/p>",
+                         "attachment": "[{\"original_name\":\"Print Email.pdf\",\"encrypted_name\":\"email_files\\\/zWoX12bv6XEDP2kBpU8t3sIk9Z6s5fdxz4EwLXpZ.pdf\"},{\"original_name\":\"dummy - 2.pdf\",\"encrypted_name\":\"email_files\\\/1lgiAan2XVrTAuSjZn6Zi6nU5d6xMU3VLLR0nAci.pdf\"}]",
+                         "is_draft": 0,
+                         "is_delete": 0,
+                         "deleted_at": null,
+                         "created_at": "2024-11-06T05:36:28.000000Z",
+                         "updated_at": "2024-11-06T05:36:28.000000Z",
+                         "ownUserMailInfo": {
+                             "is_read": 1,
+                             "is_starred": 0
+                         },
+                         "user": {
+                             "id": 37,
+                             "ecclesia_id": 4,
+                             "created_id": null,
+                             "user_name": "masum1",
+                             "first_name": "Test",
+                             "middle_name": null,
+                             "last_name": "User",
+                             "email": "masum@excellisit.net",
+                             "phone": "+91 9123456789",
+                             "email_verified_at": "2024-10-28T08:35:17.000000Z",
+                             "profile_picture": "profile_picture\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp",
+                             "address": "kolkata",
+                             "city": "kolkata",
+                             "state": "41",
+                             "address2": "kolkata",
+                             "country": "101",
+                             "zip": "700001",
+                             "status": 1,
+                             "created_at": "2024-10-28T08:35:17.000000Z",
+                             "updated_at": "2024-11-06T07:42:16.000000Z"
+                         }
+                     }
+                 ],
+                 "allMailIds": [
+                     {
+                         "id": 12,
+                         "email": "swarnadwip@excellisit.net"
+                     },
+                     {
+                         "id": 13,
+                         "email": "john@yopmail.com"
+                     },
+                     {
+                         "id": 38,
+                         "email": "masum2@excellisit.net"
+                     }
+                 ],
+                 "replyMailIds": [
+                     "masum@excellisit.net"
+                 ]
+             }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Vh3ZkcEvd5PD1abg66e4a8f'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/compose-mail-users
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Compose Emails'
+      description: |-
+        This endpoint retrieves a list of active users, excluding the currently authenticated user,
+        that can be recipients of a new mail.
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Users loaded successfully.",
+            "status": true,
+            "users": [
+              {"id": 1, "email": "user1@example.com"},
+              {"id": 2, "email": "user2@example.com"}
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "You do not have permission to access this page.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "An error occurred while loading the compose mail users.",
+            "status": false,
+            "error": "Exception message details"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a6PvackDbhe4g35dZ1Ef8V6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/send
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Send New Email'
+      description: |-
+        This endpoint allows the authenticated user to send an email to specified recipients,
+        with the option to include CC recipients and attachments. Notifications are sent to recipients as well.
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      to:
+        name: to
+        description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
+        required: true
+        example: praesentium
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      cc:
+        name: cc
+        description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
+        required: false
+        example: nisi
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      subject:
+        name: subject
+        description: 'The subject of the email.'
+        required: true
+        example: expedita
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      message:
+        name: message
+        description: 'The body content of the email.'
+        required: true
+        example: sit
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      attachments:
+        name: attachments
+        description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
+        required: false
+        example:
+          - null
+        type: 'file[]'
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanBodyParameters:
+      to: praesentium
+      cc: nisi
+      subject: expedita
+      message: sit
+    fileParameters:
+      attachments:
+        - null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail sent successfully.",
+            "status": true,
+            "send_to_ids": [1, 2, 3],
+            "notification_message": "You have a <b>new mail</b> from sender@example.com"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to send mail. Please try again later.",
+            "status": false,
+            "error": "Error message here"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "Validation error",
+            "errors": {
+              "to": ["The to field is required."],
+              "subject": ["The subject field is required."],
+              "message": ["The message field is required."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer b84cafhaEPD5g6Z6vk3de1V'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/sendReply
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Send Reply Email'
+      description: |-
+        This endpoint allows the authenticated user to reply to an existing email thread,
+        including attachments and notifications to recipients.
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      to:
+        name: to
+        description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
+        required: true
+        example: accusamus
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      cc:
+        name: cc
+        description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
+        required: false
+        example: est
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      subject:
+        name: subject
+        description: 'The subject of the reply email.'
+        required: true
+        example: voluptas
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      message:
+        name: message
+        description: 'The body content of the reply email.'
+        required: true
+        example: eum
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      attachments:
+        name: attachments
+        description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
+        required: false
+        example:
+          - null
+        type: 'file[]'
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      main_mail_id:
+        name: main_mail_id
+        description: 'The ID of the main email thread being replied to.'
+        required: true
+        example: 11
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanBodyParameters:
+      to: accusamus
+      cc: est
+      subject: voluptas
+      message: eum
+      main_mail_id: 11
+    fileParameters:
+      attachments:
+        - null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail sent successfully.",
+            "status": true,
+            "send_to_ids": [1, 2, 3],
+            "notification_message": "You have a <b>new mail</b> from sender@example.com"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to send mail. Please try again later.",
+            "status": false,
+            "error": "Error message here"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "Validation error",
+            "errors": {
+              "to": ["The to field is required."],
+              "subject": ["The subject field is required."],
+              "message": ["The message field is required."],
+              "main_mail_id": ["The main_mail_id field is required."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ED4vZcg6dVahPfa3k158e6b'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/sendForward
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Forward Email'
+      description: |-
+        This endpoint allows the authenticated user to forward an existing email to a list of recipients,
+        including optional CC recipients and attachments.
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      to:
+        name: to
+        description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
+        required: true
+        example: nihil
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      cc:
+        name: cc
+        description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
+        required: false
+        example: temporibus
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      subject:
+        name: subject
+        description: 'The subject of the forwarded email.'
+        required: true
+        example: consequuntur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      message:
+        name: message
+        description: 'The body content of the forwarded email.'
+        required: true
+        example: et
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      attachments:
+        name: attachments
+        description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
+        required: false
+        example:
+          - null
+        type: 'file[]'
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanBodyParameters:
+      to: nihil
+      cc: temporibus
+      subject: consequuntur
+      message: et
+    fileParameters:
+      attachments:
+        - null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail sent successfully.",
+            "status": true,
+            "send_to_ids": [1, 2, 3],
+            "notification_message": "You have a <b>new mail</b> from sender@example.com"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to send mail. Please try again later.",
+            "status": false,
+            "error": "Error message here"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "Validation error",
+            "errors": {
+              "to": ["The to field is required."],
+              "subject": ["The subject field is required."],
+              "message": ["The message field is required."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer E86hd4Pfg5avcZa13kDVeb6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/mail-delete
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete Emails'
+      description: |-
+        This endpoint allows the authenticated user to delete multiple emails by marking them as deleted.
+        The emails are logically deleted by setting the `is_delete` flag and `deleted_at` timestamp.
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      mailIds:
+        name: mailIds
+        description: 'An array of mail IDs to be deleted.'
+        required: true
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      mailIds:
+        - 1
+        - 2
+        - 3
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail deleted successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "Mail not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "Validation error.",
+            "errors": {
+              "mailIds": ["The mailIds field is required."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer cEbP86a5hf1g6DkdV3avZe4'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/mail-delete-sent
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete Sent Emails'
+      description: |-
+        This endpoint allows the authenticated user to delete multiple sent emails by marking them as deleted.
+        The emails are logically deleted by setting the `is_delete` flag and `deleted_at` timestamp.
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      mailIds:
+        name: mailIds
+        description: 'An array of mail IDs to be deleted.'
+        required: true
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      mailIds:
+        - 1
+        - 2
+        - 3
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail deleted successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "Mail not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "Validation error.",
+            "errors": {
+              "mailIds": ["The mailIds field is required."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Vc5Dkegb18h6E3ava4ZdfP6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/mail-restore
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Restore Deleted Mails'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      mailIds:
+        name: mailIds
+        description: 'The IDs of the mails to restore.'
+        required: true
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      mailIds:
+        - 1
+        - 2
+        - 3
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail restored successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to restore mail. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3b86VaePadk14EvD6gfcZh5'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/mail-star
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Star Mark on a Mail'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      mail_id:
+        name: mail_id
+        description: 'The ID of the mail to be starred or unstarred.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      start_value:
+        name: start_value
+        description: 'The star value (1 for starred, 0 for unstarred).'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      mail_id: 1
+      start_value: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail Starred Success!",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail Star Mark Removed!",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to update star status. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3Dcd6vP8eZh1a5fabkVg46E'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/mail-delete-single
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete Single Email'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      mail_id:
+        name: mail_id
+        description: 'The ID of the mail to be deleted.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      mail_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail deleted successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "message": "Failed to delete mail. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Zehv6V6dc3kfDbE854gaP1a'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/mail-restore-single
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Restore Single Email'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      mail_id:
+        name: mail_id
+        description: 'The ID of the mail to be restored.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      mail_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail restored successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to restore mail. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer bP6Eakh6V34c5D1e8Zadgvf'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/mail/print/{id}'
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Print Email'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the mail to be printed.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail details fetched successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to fetch mail details. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ZakD3abd8hVc16e6vf45PEg'
     controller: null
     method: null
     route: null

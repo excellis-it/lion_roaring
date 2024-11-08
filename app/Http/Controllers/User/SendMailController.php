@@ -805,7 +805,7 @@ class SendMailController extends Controller
         if (auth()->user()->can('Manage Email')) {
             $mailIds = $request->mailIds;
             foreach ($mailIds as $mailId) {
-                $mail = SendMail::where('id', $mailId)->where('form_id', auth()->id())->first();
+                $mail = MailUser::where('send_mail_id', $mailId)->where('user_id', auth()->id())->first();
                 if ($mail) {
                     $mail->is_delete = 1;
                     $mail->deleted_at = now();

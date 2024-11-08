@@ -140,29 +140,26 @@ Route::prefix('v3')->group(function () {
         Route::prefix('mail')->group(function () {
     
             Route::post('/inbox-email-list', [EmailController::class, 'inboxEmailList']);
-            // Route::post('/sent-email-list', [EmailController::class, 'sentEmailList']);
-            // Route::post('/star-email-list', [EmailController::class, 'starEmailList']);
-            // Route::post('/trash-email-list', [EmailController::class, 'trashEmailList']);
+            Route::post('/sent-email-list', [EmailController::class, 'sentEmailList']);
+            Route::post('/star-email-list', [EmailController::class, 'starEmailList']);
+            Route::post('/trash-email-list', [EmailController::class, 'trashEmailList']);
     
-            // Route::post('/view/{id}', [EmailController::class, 'view'])->name('mail.view');
-            // Route::post('/sent-mail-view/{id}', [EmailController::class, 'sentMailView']);
-            // Route::post('/star-mail-view/{id}', [EmailController::class, 'starMailView']);
-            // Route::post('/trash-mail-view/{id}', [EmailController::class, 'trashMailView']);
-    
-            // Route::post('/compose', [EmailController::class, 'compose']);
-            // Route::post('/send', [EmailController::class, 'sendMail']);
-            // Route::post('/sendReply', [EmailController::class, 'sendMailReply']);
-            // Route::post('/sendForward', [EmailController::class, 'sendMailForward']);
+            Route::post('/view', [EmailController::class, 'view']);
+
+            Route::post('/compose-mail-users', [EmailController::class, 'composeMailUsers']);
+            Route::post('/send', [EmailController::class, 'sendMail']);
+            Route::post('/sendReply', [EmailController::class, 'sendMailReply']);
+            Route::post('/sendForward', [EmailController::class, 'sendMailForward']);
             
-            // Route::post('/mail-delete', [EmailController::class, 'delete']);
-            // Route::post('/mail-delete-sent', [EmailController::class, 'deleteSentsMail']);
-            // Route::post('/mail-restore', [EmailController::class, 'restore']);
-            // Route::post('/mail-star', [EmailController::class, 'star']);
+            Route::post('/mail-delete', [EmailController::class, 'delete']);
+            Route::post('/mail-delete-sent', [EmailController::class, 'deleteSentsMail']);
+            Route::post('/mail-restore', [EmailController::class, 'restore']);
+            Route::post('/mail-star', [EmailController::class, 'star']);
     
-            // Route::post('/mail-delete-single', [EmailController::class, 'deleteSingleMail']);
-            // Route::post('/mail-restore-single', [EmailController::class, 'restoreSingleMail']);
+            Route::post('/mail-delete-single', [EmailController::class, 'deleteSingleMail']);
+            Route::post('/mail-restore-single', [EmailController::class, 'restoreSingleMail']);
             
-            // Route::get('/print/{id}', [EmailController::class, 'printMail']);
+            Route::get('/print/{id}', [EmailController::class, 'printMail']);
     
             
         });
