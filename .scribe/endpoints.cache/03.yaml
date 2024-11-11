@@ -46,7 +46,7 @@ endpoints:
         name: ecclesia_id
         description: 'nullable Ecclesia ID if applicable.'
         required: false
-        example: 4
+        example: 15
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -171,7 +171,7 @@ endpoints:
     cleanBodyParameters:
       user_name: johndoe
       email: johndoe@example.com
-      ecclesia_id: 4
+      ecclesia_id: 15
       first_name: John
       last_name: Doe
       middle_name: A.

@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "fbb3332b-b410-44a8-b0d1-29360261a22e",
+        "_postman_id": "ad3d1d1f-f256-4550-b046-dcf70c989c57",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":4,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":15,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -1160,7 +1160,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"ymedhurst@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"breynolds@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1204,7 +1204,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"nihil\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"sit\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1349,7 +1349,7 @@
                                         {
                                             "id": "topic",
                                             "key": "topic",
-                                            "value": "quia",
+                                            "value": "aspernatur",
                                             "description": "The topic."
                                         },
                                         {
@@ -1486,30 +1486,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "enim",
+                                            "value": "adipisci",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "vel",
+                                            "value": "qui",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "dolorum",
+                                            "value": "explicabo",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "6",
+                                            "value": "17",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=enim&sorttype=vel&query=dolorum&topic_id=6"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=adipisci&sorttype=qui&query=explicabo&topic_id=17"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -1640,12 +1640,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "10",
+                                            "value": "16",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=10",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=16",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -1696,7 +1696,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "consequatur",
+                                            "value": "modi",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -1821,7 +1821,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "iusto",
+                                            "value": "omnis",
                                             "description": ""
                                         }
                                     ]
@@ -1915,30 +1915,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "labore",
+                                            "value": "nam",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "ut",
+                                            "value": "beatae",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "est",
+                                            "value": "sint",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "10",
+                                            "value": "14",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/list-by-topics?sortby=labore&sorttype=ut&query=est&topic_id=10"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/list-by-topics?sortby=nam&sorttype=beatae&query=sint&topic_id=14"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2069,12 +2069,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "13",
+                                            "value": "4",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/view\/:id?topic=13",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/view\/:id?topic=4",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2125,7 +2125,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "commodi",
+                                            "value": "quia",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2250,7 +2250,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "minus",
+                                            "value": "omnis",
                                             "description": ""
                                         }
                                     ]
@@ -2344,30 +2344,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "facere",
+                                            "value": "eos",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "sed",
+                                            "value": "et",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "repellendus",
+                                            "value": "saepe",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "14",
+                                            "value": "20",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=facere&sorttype=sed&query=repellendus&topic_id=14"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=eos&sorttype=et&query=saepe&topic_id=20"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2498,12 +2498,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "7",
+                                            "value": "17",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=7",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=17",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2554,7 +2554,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "nulla",
+                                            "value": "nostrum",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2679,7 +2679,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "cumque",
+                                            "value": "exercitationem",
                                             "description": ""
                                         }
                                     ]
@@ -2959,25 +2959,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "dicta",
+                                    "value": "dolores",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"masum2@excellisit.net\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "sit",
+                                    "value": "placeat",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "aut",
+                                    "value": "quod",
                                     "type": "text",
                                     "description": "The subject of the email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "voluptatem",
+                                    "value": "est",
                                     "type": "text",
                                     "description": "The body content of the email."
                                 },
@@ -3036,31 +3036,31 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "ut",
+                                    "value": "eaque",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "explicabo",
+                                    "value": "illum",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "vero",
+                                    "value": "nihil",
                                     "type": "text",
                                     "description": "The subject of the reply email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "cumque",
+                                    "value": "deleniti",
                                     "type": "text",
                                     "description": "The body content of the reply email."
                                 },
                                 {
                                     "key": "main_mail_id",
-                                    "value": 2,
+                                    "value": 16,
                                     "type": "text",
                                     "description": "The ID of the main email thread being replied to."
                                 },
@@ -3119,25 +3119,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "non",
+                                    "value": "tenetur",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "et",
+                                    "value": "rem",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "cumque",
+                                    "value": "suscipit",
                                     "type": "text",
                                     "description": "The subject of the forwarded email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "nisi",
+                                    "value": "sed",
                                     "type": "text",
                                     "description": "The body content of the forwarded email."
                                 },
@@ -3761,7 +3761,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"pfannerstill.waldo@example.org\"}"
+                            "raw": "{\"email\":\"qhermiston@example.org\"}"
                         },
                         "description": "",
                         "auth": {
@@ -4483,7 +4483,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":2}"
+                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":1}"
                         },
                         "description": "Manages notifications for group chat messages. If the user has a new message, it sends a notification;\notherwise, it marks the notification as read."
                     },
@@ -5061,6 +5061,235 @@
                             "code": 500,
                             "body": "{\n \"status\": false,\n \"message\": \"An error occurred: [error_message]\"\n}",
                             "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Strategy",
+            "description": "",
+            "item": [
+                {
+                    "name": "Strategies List",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/strategy\/load",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/strategy\/load"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"data\": {\n       \"current_page\": 1,\n       \"data\": [\n           {\n               \"id\": 7,\n               \"user_id\": 37,\n               \"file_name\": \"dummy (1).pdf\",\n               \"file_extension\": \"pdf\",\n               \"file\": \"strategies\/06C4cc8uACENraZzOjILXIY5QIg4QQrDESsT5Kqv.pdf\",\n               \"created_at\": \"2024-11-11T07:02:33.000000Z\",\n               \"updated_at\": \"2024-11-11T07:02:33.000000Z\"\n           },\n           {\n               \"id\": 6,\n               \"user_id\": 1,\n               \"file_name\": \"partner-Photoroom.jpg\",\n               \"file_extension\": \"jpg\",\n               \"file\": \"strategies\/L4u3mwqeGc8BuCuHXR5X9ZYOPbV2SYgQcvqDIiIN.jpg\",\n               \"created_at\": \"2024-08-27T06:34:46.000000Z\",\n               \"updated_at\": \"2024-08-27T06:34:46.000000Z\"\n           },\n           {\n               \"id\": 5,\n               \"user_id\": 1,\n               \"file_name\": \"A2ncCVFTo7T9zg1wjM9BPyX9u1PctUGVsPi8oEXb.jpg\",\n               \"file_extension\": \"jpg\",\n               \"file\": \"strategies\/1sk1WN3iEFUA3ztNYNCApyqR5jKg2RyLSBXHk1oP.jpg\",\n               \"created_at\": \"2024-08-27T06:34:46.000000Z\",\n               \"updated_at\": \"2024-08-27T06:34:46.000000Z\"\n           }\n       ],\n       \"first_page_url\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/strategy\/load?page=1\",\n       \"from\": 1,\n       \"last_page\": 1,\n       \"last_page_url\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/strategy\/load?page=1\",\n       \"links\": [\n           {\n               \"url\": null,\n               \"label\": \"&laquo; Previous\",\n               \"active\": false\n           },\n           {\n               \"url\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/strategy\/load?page=1\",\n               \"label\": \"1\",\n               \"active\": true\n           },\n           {\n               \"url\": null,\n               \"label\": \"Next &raquo;\",\n               \"active\": false\n           }\n       ],\n       \"next_page_url\": null,\n       \"path\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/strategy\/load\",\n       \"per_page\": 15,\n       \"prev_page_url\": null,\n       \"to\": 3,\n       \"total\": 3\n   }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"error\": \"Failed to fetch strategies.\"}",
+                            "name": "error"
+                        }
+                    ]
+                },
+                {
+                    "name": "Create strategies",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/strategy\/store",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/strategy\/store"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"message\": \"Strategy(s) uploaded successfully.\"}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"error\": \"Validation failed or duplicate strategy found.\"}",
+                            "name": "error"
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete strategy",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/strategy\/delete\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/strategy\/delete\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "16",
+                                    "description": "The ID of the strategy to delete."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"message\": \"Strategy deleted successfully.\"}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"error\": \"Strategy not found or permission denied.\"}",
+                            "name": "error"
+                        }
+                    ]
+                },
+                {
+                    "name": "Download strategy file",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/strategy\/download\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/strategy\/download\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "eveniet",
+                                    "description": "The ID of the download."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "The file download response.",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"error\": \"Strategy not found or permission denied.\"}",
+                            "name": "error"
+                        }
+                    ]
+                },
+                {
+                    "name": "Single Strategy details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/strategy\/view\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/strategy\/view\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "20",
+                                    "description": "The ID of the strategy to view."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"data\": {\"id\": 1, \"file_name\": \"strategy1.pdf\", \"file_extension\": \"pdf\", \"user_id\": 1, \"file\": \"strategies\/strategy1.pdf\"}}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"error\": \"Strategy not found or permission denied.\"}",
+                            "name": "error"
                         }
                     ]
                 }

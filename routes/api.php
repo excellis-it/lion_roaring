@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\API\JobController;
 use App\Http\Controllers\Api\LeadershipDevelopmentController;
 use App\Http\Controllers\API\MeetingController;
+use App\Http\Controllers\Api\StrategyController;
 use App\Http\Controllers\Api\TopicController;
 
 
@@ -202,6 +203,15 @@ Route::prefix('v3')->group(function () {
             Route::put('/edit/{id}', [EventController::class, 'update']);
             Route::delete('/delete/{id}', [EventController::class, 'destroy']);
             Route::get('/event-calender-fetch-data', [EventController::class, 'fetchCalenderData']);
+        });
+
+
+        Route::prefix('strategy')->group(function () {
+            Route::get('/load', [StrategyController::class, 'index']);
+            Route::post('/store', [StrategyController::class, 'store']);
+            Route::get('/delete/{id}', [StrategyController::class, 'delete']);
+            Route::get('/download/{id}', [StrategyController::class, 'download']);
+            Route::get('/view/{id}', [StrategyController::class, 'view']);
         });
 
 
