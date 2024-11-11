@@ -67,7 +67,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hPZE6kDef34a61cgdv5Va8b'
+      - 'Bearer Z8PbE4fVcaDg6a63he5v1dk'
     controller: null
     method: null
     route: null
@@ -180,7 +180,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PaVv6E5daghZ38k46bDc1fe'
+      - 'Bearer kaPab6VhDev8c14fZ6E35dg'
     controller: null
     method: null
     route: null
@@ -274,7 +274,145 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZgDcvEae58d6haV63kbPf14'
+      - 'Bearer gdk5ZebPvc3VDfa4hE6a618'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: 'api/v3/user/meetings/edit/{id}'
+    metadata:
+      groupName: Meetings
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update Meeting'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the meeting.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: 'The title of the meeting.'
+        required: true
+        example: 'Project Sync Update'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      description:
+        name: description
+        description: 'The description of the meeting.'
+        required: false
+        example: 'Updated project sync meeting.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      start_time:
+        name: start_time
+        description: 'The updated start time in ISO 8601 format.'
+        required: true
+        example: '2024-11-11T09:00:00.000000Z'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      end_time:
+        name: end_time
+        description: 'The updated end time in ISO 8601 format.'
+        required: true
+        example: '2024-11-11T10:00:00.000000Z'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      meeting_link:
+        name: meeting_link
+        description: 'The updated link for the meeting.'
+        required: false
+        example: 'https://meeting.example.com/updated123'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      title: 'Project Sync Update'
+      description: 'Updated project sync meeting.'
+      start_time: '2024-11-11T09:00:00.000000Z'
+      end_time: '2024-11-11T10:00:00.000000Z'
+      meeting_link: 'https://meeting.example.com/updated123'
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer P665EbcDZ1ehaf8d4kV3gav'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/v3/user/meetings/delete/{id}'
+    metadata:
+      groupName: Meetings
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete Meeting'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the meeting.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer gD6afv56V4bdea1khcZP3E8'
     controller: null
     method: null
     route: null
@@ -360,7 +498,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P5fbdEZh16eaakg8v64DV3c'
+      - 'Bearer acdVD66be1ZPaE3gfh4vk85'
     controller: null
     method: null
     route: null

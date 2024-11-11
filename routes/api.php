@@ -188,6 +188,8 @@ Route::prefix('v3')->group(function () {
             Route::get('/load', [MeetingController::class, 'index']);
             Route::post('/store', [MeetingController::class, 'store']);
             Route::get('/view/{id}', [MeetingController::class, 'show']);
+            Route::put('/edit/{id}', [MeetingController::class, 'update']);
+            Route::delete('/delete/{id}', [MeetingController::class, 'destroy']);
             Route::get('/meetings-calender-fetch-data', [MeetingController::class, 'fetchCalenderData']);
         });
 

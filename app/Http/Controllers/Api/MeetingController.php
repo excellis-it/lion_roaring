@@ -168,6 +168,57 @@ class MeetingController extends Controller
     }
 
 
+     /**
+     * Update Meeting
+     * @urlParam id int required The ID of the meeting. Example: 1
+     * @bodyParam title string required The title of the meeting. Example: Project Sync Update
+     * @bodyParam description string The description of the meeting. Example: Updated project sync meeting.
+     * @bodyParam start_time datetime required The updated start time in ISO 8601 format. Example: 2024-11-11T09:00:00.000000Z
+     * @bodyParam end_time datetime required The updated end time in ISO 8601 format. Example: 2024-11-11T10:00:00.000000Z
+     * @bodyParam meeting_link string The updated link for the meeting. Example: https://meeting.example.com/updated123
+     */
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string',
+            'description' => 'nullable|string',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+            'meeting_link' => 'nullable|url',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 201);
+        }
+
+        try {
+            $meeting = Meeting::where('user_id', auth()->id())->findOrFail($id);
+
+            $meeting->update($request->only(['title', 'description', 'start_time', 'end_time', 'meeting_link']));
+
+            return response()->json(['message' => 'Meeting updated successfully.', 'data' => $meeting], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update meeting.'], 201);
+        }
+    }
+
+    /**
+     * Delete Meeting
+     * @urlParam id int required The ID of the meeting. Example: 1
+     */
+    public function destroy($id)
+    {
+        try {
+            $meeting = Meeting::where('user_id', auth()->id())->findOrFail($id);
+            $meeting->delete();
+
+            return response()->json(['message' => 'Meeting deleted successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to delete meeting.'], 201);
+        }
+    }
+
+
     /**
      * Meetings Calender Data
      *
@@ -224,4 +275,6 @@ class MeetingController extends Controller
             return response()->json(['error' => 'Failed to load meeting calender data.'], 201);
         }
     }
+
+
 }
