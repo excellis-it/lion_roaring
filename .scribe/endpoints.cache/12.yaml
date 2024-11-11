@@ -67,7 +67,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z8PbE4fVcaDg6a63he5v1dk'
+      - 'Bearer k5ha6dga643ZDcVEPe1vb8f'
     controller: null
     method: null
     route: null
@@ -116,7 +116,7 @@ endpoints:
         name: start_time
         description: 'The start time of the meeting in ISO 8601 format.'
         required: true
-        example: '2024-11-10T09:00:00.000000Z'
+        example: '2024-11-22T01:25'
         type: datetime
         enumValues: []
         exampleWasSpecified: true
@@ -125,7 +125,7 @@ endpoints:
         name: end_time
         description: 'The end time of the meeting in ISO 8601 format.'
         required: true
-        example: '2024-11-10T10:00:00.000000Z'
+        example: '2024-11-22T02:25'
         type: datetime
         enumValues: []
         exampleWasSpecified: true
@@ -142,8 +142,8 @@ endpoints:
     cleanBodyParameters:
       title: 'Project Sync'
       description: 'Weekly project sync meeting.'
-      start_time: '2024-11-10T09:00:00.000000Z'
-      end_time: '2024-11-10T10:00:00.000000Z'
+      start_time: '2024-11-22T01:25'
+      end_time: '2024-11-22T02:25'
       meeting_link: 'https://meeting.example.com/xyz123'
     fileParameters: []
     responses:
@@ -157,8 +157,8 @@ endpoints:
                   "user_id": 2,
                   "title": "Project Sync",
                   "description": "Weekly project sync meeting.",
-                  "start_time": "2024-11-10T09:00:00.000000Z",
-                  "end_time": "2024-11-10T10:00:00.000000Z",
+                  "start_time": "2024-11-22T01:25",
+                  "end_time": "2024-11-22T02:25",
                   "meeting_link": "https://meeting.example.com/xyz123",
                   "created_at": "2024-11-08T12:00:00.000000Z",
                   "updated_at": "2024-11-08T12:00:00.000000Z"
@@ -180,7 +180,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kaPab6VhDev8c14fZ6E35dg'
+      - 'Bearer f5agca686PkZe3d4VvhD1Eb'
     controller: null
     method: null
     route: null
@@ -274,7 +274,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gdk5ZebPvc3VDfa4hE6a618'
+      - 'Bearer hd6v3kcZ1eD856baPEgVfa4'
     controller: null
     method: null
     route: null
@@ -363,12 +363,22 @@ endpoints:
       end_time: '2024-11-11T10:00:00.000000Z'
       meeting_link: 'https://meeting.example.com/updated123'
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Meeting updated successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer P665EbcDZ1ehaf8d4kV3gav'
+      - 'Bearer adcb8ke5DvZ1h6a4EPfVg36'
     controller: null
     method: null
     route: null
@@ -407,12 +417,22 @@ endpoints:
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Meeting deleted successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer gD6afv56V4bdea1khcZP3E8'
+      - 'Bearer 58hkDda6eaf1P6cE4gV3Zbv'
     controller: null
     method: null
     route: null
@@ -498,7 +518,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer acdVD66be1ZPaE3gfh4vk85'
+      - 'Bearer cf6gd4vhe8ak3D1VEaPZ5b6'
     controller: null
     method: null
     route: null

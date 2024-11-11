@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 3
+                  example: 4
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -2361,7 +2361,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: bailee17@example.com
+                  example: ymedhurst@example.net
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -2432,7 +2432,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: omnis
+                  example: nihil
       security: []
   /api/v3/country-list:
     post:
@@ -2638,7 +2638,7 @@ paths:
         in: path
         name: topic
         description: 'The topic.'
-        example: expedita
+        example: quia
         required: true
         schema:
           type: string
@@ -2754,42 +2754,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: repellendus
+          example: enim
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: repellendus
+            example: enim
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: dolor
+          example: vel
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: dolor
+            example: vel
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: reprehenderit
+          example: dolorum
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: reprehenderit
+            example: dolorum
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 1
+          example: 6
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 1
+            example: 6
       responses:
         200:
           description: ''
@@ -3099,12 +3099,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 9
+          example: 10
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 9
+            example: 10
       responses:
         200:
           description: ''
@@ -3328,7 +3328,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: magni
+        example: consequatur
         required: true
         schema:
           type: string
@@ -3435,7 +3435,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: dolores
+        example: iusto
         required: true
         schema:
           type: string
@@ -3475,42 +3475,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: ipsa
+          example: labore
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: ipsa
+            example: labore
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: magnam
+          example: ut
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: magnam
+            example: ut
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: esse
+          example: est
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: esse
+            example: est
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 9
+          example: 10
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 9
+            example: 10
       responses:
         200:
           description: ''
@@ -3820,12 +3820,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 5
+          example: 13
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 5
+            example: 13
       responses:
         200:
           description: ''
@@ -4049,7 +4049,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: dolorem
+        example: commodi
         required: true
         schema:
           type: string
@@ -4156,7 +4156,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: ipsam
+        example: minus
         required: true
         schema:
           type: string
@@ -4196,42 +4196,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: voluptates
+          example: facere
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: voluptates
+            example: facere
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: praesentium
+          example: sed
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: praesentium
+            example: sed
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: quisquam
+          example: repellendus
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: quisquam
+            example: repellendus
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 5
+          example: 14
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 5
+            example: 14
       responses:
         200:
           description: ''
@@ -4541,12 +4541,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 8
+          example: 7
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 8
+            example: 7
       responses:
         200:
           description: ''
@@ -4770,7 +4770,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: dolores
+        example: nulla
         required: true
         schema:
           type: string
@@ -4877,7 +4877,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: repellendus
+        example: cumque
         required: true
         schema:
           type: string
@@ -5557,19 +5557,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
-                  example: laborum
+                  example: dicta
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: autem
+                  example: sit
                 subject:
                   type: string
                   description: 'The subject of the email.'
-                  example: optio
+                  example: aut
                 message:
                   type: string
                   description: 'The body content of the email.'
-                  example: aperiam
+                  example: voluptatem
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -5699,19 +5699,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: eveniet
+                  example: ut
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: velit
+                  example: explicabo
                 subject:
                   type: string
                   description: 'The subject of the reply email.'
-                  example: omnis
+                  example: vero
                 message:
                   type: string
                   description: 'The body content of the reply email.'
-                  example: voluptatem
+                  example: cumque
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -5721,7 +5721,7 @@ paths:
                 main_mail_id:
                   type: integer
                   description: 'The ID of the main email thread being replied to.'
-                  example: 4
+                  example: 2
               required:
                 - to
                 - subject
@@ -5842,15 +5842,15 @@ paths:
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: nobis
+                  example: et
                 subject:
                   type: string
                   description: 'The subject of the forwarded email.'
-                  example: necessitatibus
+                  example: cumque
                 message:
                   type: string
                   description: 'The body content of the forwarded email.'
-                  example: sed
+                  example: nisi
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -6303,6 +6303,481 @@ paths:
         required: true
         schema:
           type: integer
+  /api/v3/user/events/load:
+    get:
+      summary: 'List All events'
+      operationId: listAllEvents
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      user_id: 2
+                      title: 'Project Sync'
+                      description: 'Weekly project sync event.'
+                      start: '2024-11-10T09:00:00.000000Z'
+                      end: '2024-11-10T10:00:00.000000Z'
+                      created_at: '2024-11-08T12:00:00.000000Z'
+                      updated_at: '2024-11-08T12:00:00.000000Z'
+                      user:
+                        id: 2
+                        name: 'John Doe'
+                        email: john@example.com
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        user_id: 2
+                        title: 'Project Sync'
+                        description: 'Weekly project sync event.'
+                        start: '2024-11-10T09:00:00.000000Z'
+                        end: '2024-11-10T10:00:00.000000Z'
+                        created_at: '2024-11-08T12:00:00.000000Z'
+                        updated_at: '2024-11-08T12:00:00.000000Z'
+                        user:
+                          id: 2
+                          name: 'John Doe'
+                          email: john@example.com
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        user_id:
+                          type: integer
+                          example: 2
+                        title:
+                          type: string
+                          example: 'Project Sync'
+                        description:
+                          type: string
+                          example: 'Weekly project sync event.'
+                        start:
+                          type: string
+                          example: '2024-11-10T09:00:00.000000Z'
+                        end:
+                          type: string
+                          example: '2024-11-10T10:00:00.000000Z'
+                        created_at:
+                          type: string
+                          example: '2024-11-08T12:00:00.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-11-08T12:00:00.000000Z'
+                        user:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 2
+                            name:
+                              type: string
+                              example: 'John Doe'
+                            email:
+                              type: string
+                              example: john@example.com
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Failed to load events.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Failed to load events.'
+      tags:
+        - Events
+  /api/v3/user/events/store:
+    post:
+      summary: 'Create event'
+      operationId: createEvent
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'event created successfully.'
+                  data:
+                    id: 1
+                    user_id: 2
+                    title: 'Project Sync'
+                    description: 'Weekly project sync event.'
+                    start: '2024-11-22T01:25'
+                    end: '2024-11-23T01:25'
+                    created_at: '2024-11-22T01:25'
+                    updated_at: '2024-11-22T01:25'
+                properties:
+                  message:
+                    type: string
+                    example: 'event created successfully.'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      user_id:
+                        type: integer
+                        example: 2
+                      title:
+                        type: string
+                        example: 'Project Sync'
+                      description:
+                        type: string
+                        example: 'Weekly project sync event.'
+                      start:
+                        type: string
+                        example: '2024-11-22T01:25'
+                      end:
+                        type: string
+                        example: '2024-11-23T01:25'
+                      created_at:
+                        type: string
+                        example: '2024-11-22T01:25'
+                      updated_at:
+                        type: string
+                        example: '2024-11-22T01:25'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Failed to create event.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Failed to create event.'
+      tags:
+        - Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'The title of the event.'
+                  example: 'Project Sync'
+                description:
+                  type: string
+                  description: 'The description of the event.'
+                  example: 'Weekly project sync event.'
+                start:
+                  type: datetime
+                  description: 'The start time of the event in ISO 8601 format.'
+                  example: '2024-11-22T01:25'
+                end:
+                  type: datetime
+                  description: 'The end time of the event in ISO 8601 format.'
+                  example: '2024-11-23T01:25'
+              required:
+                - title
+                - start
+                - end
+  '/api/v3/user/events/view/{id}':
+    get:
+      summary: 'Single event Details'
+      operationId: singleEventDetails
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    user_id: 2
+                    title: 'Project Sync'
+                    description: 'Weekly project sync event.'
+                    start: '2024-11-10T09:00:00.000000Z'
+                    end: '2024-11-10T10:00:00.000000Z'
+                    created_at: '2024-11-08T12:00:00.000000Z'
+                    updated_at: '2024-11-08T12:00:00.000000Z'
+                    user:
+                      id: 12
+                      ecclesia_id: 2
+                      created_id: '1'
+                      user_name: swarnadwip_nath
+                      first_name: Swarnadwip
+                      middle_name: null
+                      last_name: Nath
+                      email: swarnadwip@excellisit.net
+                      phone: '+1 0741202022'
+                      email_verified_at: null
+                      profile_picture: profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg
+                      address: Kokata
+                      city: Kolkata
+                      state: '41'
+                      address2: null
+                      country: '101'
+                      zip: '700001'
+                      status: 1
+                      created_at: '2024-06-21T11:31:27.000000Z'
+                      updated_at: '2024-09-09T11:02:59.000000Z'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      user_id:
+                        type: integer
+                        example: 2
+                      title:
+                        type: string
+                        example: 'Project Sync'
+                      description:
+                        type: string
+                        example: 'Weekly project sync event.'
+                      start:
+                        type: string
+                        example: '2024-11-10T09:00:00.000000Z'
+                      end:
+                        type: string
+                        example: '2024-11-10T10:00:00.000000Z'
+                      created_at:
+                        type: string
+                        example: '2024-11-08T12:00:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-08T12:00:00.000000Z'
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 12
+                          ecclesia_id:
+                            type: integer
+                            example: 2
+                          created_id:
+                            type: string
+                            example: '1'
+                          user_name:
+                            type: string
+                            example: swarnadwip_nath
+                          first_name:
+                            type: string
+                            example: Swarnadwip
+                          middle_name:
+                            type: string
+                            example: null
+                          last_name:
+                            type: string
+                            example: Nath
+                          email:
+                            type: string
+                            example: swarnadwip@excellisit.net
+                          phone:
+                            type: string
+                            example: '+1 0741202022'
+                          email_verified_at:
+                            type: string
+                            example: null
+                          profile_picture:
+                            type: string
+                            example: profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg
+                          address:
+                            type: string
+                            example: Kokata
+                          city:
+                            type: string
+                            example: Kolkata
+                          state:
+                            type: string
+                            example: '41'
+                          address2:
+                            type: string
+                            example: null
+                          country:
+                            type: string
+                            example: '101'
+                          zip:
+                            type: string
+                            example: '700001'
+                          status:
+                            type: integer
+                            example: 1
+                          created_at:
+                            type: string
+                            example: '2024-06-21T11:31:27.000000Z'
+                          updated_at:
+                            type: string
+                            example: '2024-09-09T11:02:59.000000Z'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'event not found.'
+                properties:
+                  error:
+                    type: string
+                    example: 'event not found.'
+      tags:
+        - Events
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the event.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v3/user/events/edit/{id}':
+    put:
+      summary: 'Update event'
+      operationId: updateEvent
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'event updated successfully.'
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'event updated successfully.'
+                  status:
+                    type: boolean
+                    example: true
+      tags:
+        - Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'The title of the event.'
+                  example: 'Project Sync Update'
+                description:
+                  type: string
+                  description: 'The description of the event.'
+                  example: 'Updated project sync event.'
+                start:
+                  type: datetime
+                  description: 'The updated start time in ISO 8601 format.'
+                  example: '2024-11-22T01:25'
+                end:
+                  type: datetime
+                  description: 'The updated end time in ISO 8601 format.'
+                  example: '2024-11-23T01:25'
+              required:
+                - title
+                - start
+                - end
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the event.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v3/user/events/delete/{id}':
+    delete:
+      summary: 'Delete event'
+      operationId: deleteEvent
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'event deleted successfully'
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'event deleted successfully'
+                  status:
+                    type: boolean
+                    example: true
+      tags:
+        - Events
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the event.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/v3/user/events/event-calender-fetch-data:
+    get:
+      summary: 'Events Calender Data'
+      operationId: eventsCalenderData
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n   \"message\": \"Calender data fetched successfully.\",\n   \"data\": [\n       {\n           \"id\": 15,\n           \"title\": \"Project Sync\",\n           \"description\": \"Weekly project sync event.\",\n           \"start\": \"2024-11-10T09:00:00.000000Z\",\n           \"end\": \"2024-11-10T10:00:00.000000Z\",\n       },\n       {\n           \"id\": 13,\n           \"title\": \"fourth event\",\n           \"description\": \"afd\",\n           \"start\": \"2024-10-01T18:57\",\n           \"end\": \"2024-10-01T18:58\",\n       },\n       {\n           \"id\": 12,\n           \"title\": \"Third event\",\n           \"description\": \"fd\",\n           \"start\": \"2024-10-01T18:57\",\n           \"end\": \"2024-10-01T18:58\",\n       },\n       {\n           \"id\": 11,\n           \"title\": \"Second event\",\n           \"description\": \"adsf\",\n           \"start\": \"2024-10-01T18:56\",\n           \"end\": \"2024-10-01T18:57\",\n       }\n   ]\n}"
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'events not found.'
+                properties:
+                  error:
+                    type: string
+                    example: 'events not found.'
+      tags:
+        - Events
   /api/v3/forget-password:
     post:
       summary: 'Forget Password'
@@ -6338,7 +6813,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: okeefe.guido@example.com
+                  example: pfannerstill.waldo@example.org
               required:
                 - email
       security: []
@@ -8261,7 +8736,7 @@ paths:
                 is_delete:
                   type: integer
                   description: 'optional Indicates if the notification should be marked as read and deleted.'
-                  example: 13
+                  example: 2
               required:
                 - team_id
                 - chat_id
@@ -8657,8 +9132,8 @@ paths:
                     user_id: 2
                     title: 'Project Sync'
                     description: 'Weekly project sync meeting.'
-                    start_time: '2024-11-10T09:00:00.000000Z'
-                    end_time: '2024-11-10T10:00:00.000000Z'
+                    start_time: '2024-11-22T01:25'
+                    end_time: '2024-11-22T02:25'
                     meeting_link: 'https://meeting.example.com/xyz123'
                     created_at: '2024-11-08T12:00:00.000000Z'
                     updated_at: '2024-11-08T12:00:00.000000Z'
@@ -8683,10 +9158,10 @@ paths:
                         example: 'Weekly project sync meeting.'
                       start_time:
                         type: string
-                        example: '2024-11-10T09:00:00.000000Z'
+                        example: '2024-11-22T01:25'
                       end_time:
                         type: string
-                        example: '2024-11-10T10:00:00.000000Z'
+                        example: '2024-11-22T02:25'
                       meeting_link:
                         type: string
                         example: 'https://meeting.example.com/xyz123'
@@ -8728,11 +9203,11 @@ paths:
                 start_time:
                   type: datetime
                   description: 'The start time of the meeting in ISO 8601 format.'
-                  example: '2024-11-10T09:00:00.000000Z'
+                  example: '2024-11-22T01:25'
                 end_time:
                   type: datetime
                   description: 'The end time of the meeting in ISO 8601 format.'
-                  example: '2024-11-10T10:00:00.000000Z'
+                  example: '2024-11-22T02:25'
                 meeting_link:
                   type: string
                   description: 'The link to join the meeting.'
@@ -8909,7 +9384,23 @@ paths:
       operationId: updateMeeting
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Meeting updated successfully.'
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'Meeting updated successfully.'
+                  status:
+                    type: boolean
+                    example: true
       tags:
         - Meetings
       requestBody:
@@ -8958,7 +9449,23 @@ paths:
       operationId: deleteMeeting
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Meeting deleted successfully.'
+                  status: true
+                properties:
+                  message:
+                    type: string
+                    example: 'Meeting deleted successfully.'
+                  status:
+                    type: boolean
+                    example: true
       tags:
         - Meetings
     parameters:
@@ -9434,6 +9941,9 @@ tags:
     description: ''
   -
     name: Email
+    description: ''
+  -
+    name: Events
     description: ''
   -
     name: 'Forget Password'

@@ -58,8 +58,8 @@ class MeetingController extends Controller
      *
      * @bodyParam title string required The title of the meeting. Example: Project Sync
      * @bodyParam description string The description of the meeting. Example: Weekly project sync meeting.
-     * @bodyParam start_time datetime required The start time of the meeting in ISO 8601 format. Example: 2024-11-10T09:00:00.000000Z
-     * @bodyParam end_time datetime required The end time of the meeting in ISO 8601 format. Example: 2024-11-10T10:00:00.000000Z
+     * @bodyParam start_time datetime required The start time of the meeting in ISO 8601 format. Example: 2024-11-22T01:25
+     * @bodyParam end_time datetime required The end time of the meeting in ISO 8601 format. Example: 2024-11-22T02:25
      * @bodyParam meeting_link string The link to join the meeting. Example: https://meeting.example.com/xyz123
      *
      * @response 200 {
@@ -69,8 +69,8 @@ class MeetingController extends Controller
      *         "user_id": 2,
      *         "title": "Project Sync",
      *         "description": "Weekly project sync meeting.",
-     *         "start_time": "2024-11-10T09:00:00.000000Z",
-     *         "end_time": "2024-11-10T10:00:00.000000Z",
+     *         "start_time": "2024-11-22T01:25",
+     *         "end_time": "2024-11-22T02:25",
      *         "meeting_link": "https://meeting.example.com/xyz123",
      *         "created_at": "2024-11-08T12:00:00.000000Z",
      *         "updated_at": "2024-11-08T12:00:00.000000Z"
@@ -176,6 +176,11 @@ class MeetingController extends Controller
      * @bodyParam start_time datetime required The updated start time in ISO 8601 format. Example: 2024-11-11T09:00:00.000000Z
      * @bodyParam end_time datetime required The updated end time in ISO 8601 format. Example: 2024-11-11T10:00:00.000000Z
      * @bodyParam meeting_link string The updated link for the meeting. Example: https://meeting.example.com/updated123
+     * 
+     * @response 200 {
+     *   "message": "Meeting updated successfully.",
+     *   "status": true
+     * }
      */
     public function update(Request $request, $id)
     {
@@ -205,6 +210,11 @@ class MeetingController extends Controller
     /**
      * Delete Meeting
      * @urlParam id int required The ID of the meeting. Example: 1
+     * 
+     * @response 200 {
+     *   "message": "Meeting deleted successfully.",
+     *   "status": true
+     * }
      */
     public function destroy($id)
     {

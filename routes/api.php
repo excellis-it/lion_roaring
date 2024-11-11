@@ -16,10 +16,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\TeamChatController;
 use App\Http\Controllers\Api\EmailController;
+use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\API\JobController;
 use App\Http\Controllers\Api\LeadershipDevelopmentController;
 use App\Http\Controllers\API\MeetingController;
 use App\Http\Controllers\Api\TopicController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -191,6 +193,15 @@ Route::prefix('v3')->group(function () {
             Route::put('/edit/{id}', [MeetingController::class, 'update']);
             Route::delete('/delete/{id}', [MeetingController::class, 'destroy']);
             Route::get('/meetings-calender-fetch-data', [MeetingController::class, 'fetchCalenderData']);
+        });
+
+        Route::prefix('events')->group(function () {
+            Route::get('/load', [EventController::class, 'index']);
+            Route::post('/store', [EventController::class, 'store']);
+            Route::get('/view/{id}', [EventController::class, 'show']);
+            Route::put('/edit/{id}', [EventController::class, 'update']);
+            Route::delete('/delete/{id}', [EventController::class, 'destroy']);
+            Route::get('/event-calender-fetch-data', [EventController::class, 'fetchCalenderData']);
         });
 
 

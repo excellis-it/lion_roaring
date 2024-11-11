@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "a3814ecd-14d3-494e-8613-704822a4ef62",
+        "_postman_id": "fbb3332b-b410-44a8-b0d1-29360261a22e",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":3,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":4,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -1160,7 +1160,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"bailee17@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"ymedhurst@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1204,7 +1204,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"omnis\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"nihil\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1349,7 +1349,7 @@
                                         {
                                             "id": "topic",
                                             "key": "topic",
-                                            "value": "expedita",
+                                            "value": "quia",
                                             "description": "The topic."
                                         },
                                         {
@@ -1486,30 +1486,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "repellendus",
+                                            "value": "enim",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "dolor",
+                                            "value": "vel",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "reprehenderit",
+                                            "value": "dolorum",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "1",
+                                            "value": "6",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=repellendus&sorttype=dolor&query=reprehenderit&topic_id=1"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=enim&sorttype=vel&query=dolorum&topic_id=6"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -1640,12 +1640,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "9",
+                                            "value": "10",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=9",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=10",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -1696,7 +1696,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "magni",
+                                            "value": "consequatur",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -1821,7 +1821,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "dolores",
+                                            "value": "iusto",
                                             "description": ""
                                         }
                                     ]
@@ -1915,30 +1915,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "ipsa",
+                                            "value": "labore",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "magnam",
+                                            "value": "ut",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "esse",
+                                            "value": "est",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "9",
+                                            "value": "10",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/list-by-topics?sortby=ipsa&sorttype=magnam&query=esse&topic_id=9"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/list-by-topics?sortby=labore&sorttype=ut&query=est&topic_id=10"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2069,12 +2069,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "5",
+                                            "value": "13",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/view\/:id?topic=5",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/view\/:id?topic=13",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2125,7 +2125,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "dolorem",
+                                            "value": "commodi",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2250,7 +2250,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "ipsam",
+                                            "value": "minus",
                                             "description": ""
                                         }
                                     ]
@@ -2344,30 +2344,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "voluptates",
+                                            "value": "facere",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "praesentium",
+                                            "value": "sed",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "quisquam",
+                                            "value": "repellendus",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "5",
+                                            "value": "14",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=voluptates&sorttype=praesentium&query=quisquam&topic_id=5"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=facere&sorttype=sed&query=repellendus&topic_id=14"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2498,12 +2498,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "8",
+                                            "value": "7",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=8",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=7",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2554,7 +2554,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "dolores",
+                                            "value": "nulla",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2679,7 +2679,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "repellendus",
+                                            "value": "cumque",
                                             "description": ""
                                         }
                                     ]
@@ -2959,25 +2959,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "laborum",
+                                    "value": "dicta",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"masum2@excellisit.net\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "autem",
+                                    "value": "sit",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "optio",
+                                    "value": "aut",
                                     "type": "text",
                                     "description": "The subject of the email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "aperiam",
+                                    "value": "voluptatem",
                                     "type": "text",
                                     "description": "The body content of the email."
                                 },
@@ -3036,31 +3036,31 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "eveniet",
+                                    "value": "ut",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "velit",
+                                    "value": "explicabo",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "omnis",
+                                    "value": "vero",
                                     "type": "text",
                                     "description": "The subject of the reply email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "voluptatem",
+                                    "value": "cumque",
                                     "type": "text",
                                     "description": "The body content of the reply email."
                                 },
                                 {
                                     "key": "main_mail_id",
-                                    "value": 4,
+                                    "value": 2,
                                     "type": "text",
                                     "description": "The ID of the main email thread being replied to."
                                 },
@@ -3125,19 +3125,19 @@
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "nobis",
+                                    "value": "et",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "necessitatibus",
+                                    "value": "cumque",
                                     "type": "text",
                                     "description": "The subject of the forwarded email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "sed",
+                                    "value": "nisi",
                                     "type": "text",
                                     "description": "The body content of the forwarded email."
                                 },
@@ -3484,6 +3484,258 @@
             ]
         },
         {
+            "name": "Events",
+            "description": "",
+            "item": [
+                {
+                    "name": "List All events",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/events\/load",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/events\/load"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"user_id\": 2,\n            \"title\": \"Project Sync\",\n            \"description\": \"Weekly project sync event.\",\n            \"start\": \"2024-11-10T09:00:00.000000Z\",\n            \"end\": \"2024-11-10T10:00:00.000000Z\",\n            \"created_at\": \"2024-11-08T12:00:00.000000Z\",\n            \"updated_at\": \"2024-11-08T12:00:00.000000Z\",\n            \"user\": {\n                \"id\": 2,\n                \"name\": \"John Doe\",\n                \"email\": \"john@example.com\"\n            }\n        }\n    ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n    \"error\": \"Failed to load events.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create event",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/events\/store",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/events\/store"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"Project Sync\",\"description\":\"Weekly project sync event.\",\"start\":\"2024-11-22T01:25\",\"end\":\"2024-11-23T01:25\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"message\": \"event created successfully.\",\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 2,\n        \"title\": \"Project Sync\",\n        \"description\": \"Weekly project sync event.\",\n        \"start\": \"2024-11-22T01:25\",\n        \"end\": \"2024-11-23T01:25\",\n        \"created_at\": \"2024-11-22T01:25\",\n        \"updated_at\": \"2024-11-22T01:25\"\n    }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n    \"error\": \"Failed to create event.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Single event Details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/events\/view\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/events\/view\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the event."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 2,\n        \"title\": \"Project Sync\",\n        \"description\": \"Weekly project sync event.\",\n        \"start\": \"2024-11-10T09:00:00.000000Z\",\n        \"end\": \"2024-11-10T10:00:00.000000Z\",\n        \"created_at\": \"2024-11-08T12:00:00.000000Z\",\n        \"updated_at\": \"2024-11-08T12:00:00.000000Z\",\n        \"user\": {\n               \"id\": 12,\n               \"ecclesia_id\": 2,\n               \"created_id\": \"1\",\n               \"user_name\": \"swarnadwip_nath\",\n               \"first_name\": \"Swarnadwip\",\n               \"middle_name\": null,\n               \"last_name\": \"Nath\",\n               \"email\": \"swarnadwip@excellisit.net\",\n               \"phone\": \"+1 0741202022\",\n               \"email_verified_at\": null,\n               \"profile_picture\": \"profile_picture\/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg\",\n               \"address\": \"Kokata\",\n               \"city\": \"Kolkata\",\n               \"state\": \"41\",\n               \"address2\": null,\n               \"country\": \"101\",\n               \"zip\": \"700001\",\n               \"status\": 1,\n               \"created_at\": \"2024-06-21T11:31:27.000000Z\",\n               \"updated_at\": \"2024-09-09T11:02:59.000000Z\"\n        }\n    }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n    \"error\": \"event not found.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update event",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/events\/edit\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/events\/edit\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the event."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"Project Sync Update\",\"description\":\"Updated project sync event.\",\"start\":\"2024-11-22T01:25\",\"end\":\"2024-11-23T01:25\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"event updated successfully.\",\n  \"status\": true\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete event",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/events\/delete\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/events\/delete\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the event."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"event deleted successfully\",\n  \"status\": true\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Events Calender Data",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/events\/event-calender-fetch-data",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/events\/event-calender-fetch-data"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Calender data fetched successfully.\",\n   \"data\": [\n       {\n           \"id\": 15,\n           \"title\": \"Project Sync\",\n           \"description\": \"Weekly project sync event.\",\n           \"start\": \"2024-11-10T09:00:00.000000Z\",\n           \"end\": \"2024-11-10T10:00:00.000000Z\",\n       },\n       {\n           \"id\": 13,\n           \"title\": \"fourth event\",\n           \"description\": \"afd\",\n           \"start\": \"2024-10-01T18:57\",\n           \"end\": \"2024-10-01T18:58\",\n       },\n       {\n           \"id\": 12,\n           \"title\": \"Third event\",\n           \"description\": \"fd\",\n           \"start\": \"2024-10-01T18:57\",\n           \"end\": \"2024-10-01T18:58\",\n       },\n       {\n           \"id\": 11,\n           \"title\": \"Second event\",\n           \"description\": \"adsf\",\n           \"start\": \"2024-10-01T18:56\",\n           \"end\": \"2024-10-01T18:57\",\n       }\n   ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n    \"error\": \"events not found.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "Forget Password",
             "description": "",
             "item": [
@@ -3509,7 +3761,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"okeefe.guido@example.com\"}"
+                            "raw": "{\"email\":\"pfannerstill.waldo@example.org\"}"
                         },
                         "description": "",
                         "auth": {
@@ -4231,7 +4483,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":13}"
+                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":2}"
                         },
                         "description": "Manages notifications for group chat messages. If the user has a new message, it sends a notification;\notherwise, it marks the notification as read."
                     },
@@ -4418,7 +4670,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"title\":\"Project Sync\",\"description\":\"Weekly project sync meeting.\",\"start_time\":\"2024-11-10T09:00:00.000000Z\",\"end_time\":\"2024-11-10T10:00:00.000000Z\",\"meeting_link\":\"https:\\\/\\\/meeting.example.com\\\/xyz123\"}"
+                            "raw": "{\"title\":\"Project Sync\",\"description\":\"Weekly project sync meeting.\",\"start_time\":\"2024-11-22T01:25\",\"end_time\":\"2024-11-22T02:25\",\"meeting_link\":\"https:\\\/\\\/meeting.example.com\\\/xyz123\"}"
                         },
                         "description": ""
                     },
@@ -4426,7 +4678,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n    \"message\": \"Meeting created successfully.\",\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 2,\n        \"title\": \"Project Sync\",\n        \"description\": \"Weekly project sync meeting.\",\n        \"start_time\": \"2024-11-10T09:00:00.000000Z\",\n        \"end_time\": \"2024-11-10T10:00:00.000000Z\",\n        \"meeting_link\": \"https:\/\/meeting.example.com\/xyz123\",\n        \"created_at\": \"2024-11-08T12:00:00.000000Z\",\n        \"updated_at\": \"2024-11-08T12:00:00.000000Z\"\n    }\n}",
+                            "body": "{\n    \"message\": \"Meeting created successfully.\",\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 2,\n        \"title\": \"Project Sync\",\n        \"description\": \"Weekly project sync meeting.\",\n        \"start_time\": \"2024-11-22T01:25\",\n        \"end_time\": \"2024-11-22T02:25\",\n        \"meeting_link\": \"https:\/\/meeting.example.com\/xyz123\",\n        \"created_at\": \"2024-11-08T12:00:00.000000Z\",\n        \"updated_at\": \"2024-11-08T12:00:00.000000Z\"\n    }\n}",
                             "name": ""
                         },
                         {
@@ -4517,7 +4769,14 @@
                         },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Meeting updated successfully.\",\n  \"status\": true\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
                     "name": "Delete Meeting",
@@ -4550,7 +4809,14 @@
                         "body": null,
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Meeting deleted successfully.\",\n  \"status\": true\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
                     "name": "Meetings Calender Data",
