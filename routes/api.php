@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BecomingChristLikeController;
 use App\Http\Controllers\Api\BecomingSovereignController;
+use App\Http\Controllers\Api\BulletinController;
 use App\Http\Controllers\Api\CmsController;
 use App\Http\Controllers\Api\ContactUsController;
 use App\Http\Controllers\Api\DonationController;
@@ -121,8 +122,6 @@ Route::prefix('v3')->group(function () {
             Route::post('/mail-restore-single', [EmailController::class, 'restoreSingleMail']);
 
             Route::get('/print/{id}', [EmailController::class, 'printMail']);
-
-
         });
 
 
@@ -130,7 +129,7 @@ Route::prefix('v3')->group(function () {
             // 'roles' => RolePermissionsController::class,
             // 'partners' => PartnerController::class,
             // 'bulletins' => BulletinController::class,
-               'topics' => TopicController::class,
+            'topics' => TopicController::class,
             // 'categories' => CategoryController::class,
             // 'products' => ProductController::class,
             // 'ecclesias' => EcclesiaContorller::class,
@@ -169,6 +168,16 @@ Route::prefix('v3')->group(function () {
             Route::post('/update/{id}', [LeadershipDevelopmentController::class, 'update']);
             Route::get('/delete/{id}', [LeadershipDevelopmentController::class, 'delete']);
             Route::get('/download/{file}', [LeadershipDevelopmentController::class, 'download']);
+        });
+
+
+        Route::prefix('bulletins')->group(function () {
+            Route::get('/load', [BulletinController::class, 'index']);
+            Route::get('/view/{id}', [BulletinController::class, 'show']);
+            Route::get('/board', [BulletinController::class, 'allBulletins']);
+            Route::post('/store', [BulletinController::class, 'store']);
+            Route::put('/edit/{id}', [BulletinController::class, 'update']);
+            Route::delete('/delete/{id}', [BulletinController::class, 'destroy']);
         });
 
 

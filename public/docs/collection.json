@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "20f8d380-9ddd-496f-922d-966139bcbdbb",
+        "_postman_id": "081fefad-ccf4-4c71-89d7-558d296d5e23",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":1,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":2,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -138,6 +138,264 @@
                             "header": [],
                             "code": 200,
                             "body": "{\n\"status\": true\n\"message\": \"Data found\"\n \"data\": {\n   \"id\": 1,\n   \"agreement_title\": \"LION ROARING PMA (PRIVATE MEMBERS ASSOCIATION) AGREEMENT\",\n   \"agreement_description\": \"<p>It is the responsibility of the members to read and review the Articles of Association of Lion Roaring PMA in its entirety and agree to adopt and comply to its belief, foundation and purpose of the Lion Roaring PMA. <a href=\\\"http:\/\/127.0.0.1:8001\/login\\\"><strong>Click here to read the full document XXXXXXXX<\/strong><\/a><\/p><h4><strong>Each member agrees to the following excerpt taken from the Articles of Association of PMA:<\/strong><\/h4><ul><li>1. Lion Roaring PMA is a Private Members Association protected under the Constitution of the United States of America and the original constitution for these united States of America and the Maryland Constitution<\/li><li>2. Member agrees and is supportive to the mission and vision of the Lion Roaring<\/li><li>3. Member strives to contribute to the purpose of the PMA to fulfill the God given call to the founding members as it is written in Section 4 through 15 in the Article of Association<\/li><li>4. Member will not hold Lion Roaring PMA liable for any materials or contents posted in the website or any paperwork, written articles, education materials or others created within the PMA for its members\u2019 benefits and private usage<\/li><li>5. Member\u2019s agreement does not entitle a member to any financial or other interest in the Private Members Association or management thereof<\/li><li>6. Information regarding details of the association, any materials produced or created by Lion Roaring PMA including all paperwork, agreements, articles, PowerPoints presentations, word parchments, coaching, and education materials are private intellectual property of the PMA and will not be shared, replicated, dispersed or distributed with anyone outside the PMA without explicit written permission from the founder<\/li><li>7. Member\u2019s due diligence is expected and member will hold harmless any member or founder of Lion Roaring PMA and any dispute shall be handled by the founder(s) with final decision for remedy made by the founder(s) and shall be accepted as a settled matter. (Article III for disputes resolution &amp; Article IV for Sovereignty in the Private)<\/li><li>8. As a private member of the Lion Roaring PMA, member is invoking its united States constitutional rights specifically the 1st, 4th, 5th, 9th and 10th and the Maryland Constitutional rights included in the Maryland Declaration of Rights Sections 1, 2, 6, 10, 24, 26, 36, 40 and 45 and as such take full responsibility for his or her behavior, such that his or her actions shall never constitute anything that can be determined to be of a \u201cclear and present danger of a substantial evil.\u201d<\/li><li>9. Any actions by the member which are not consistent with the values of the PMA can result in the founder\u2019s decision to ask the member to leave the PMA<\/li><li>10. Member is connected with each other and the actions affect one another, therefore, the Lion Roaring PMA encourages and supports one another as a family and community<\/li><li>11. Member and those who are included in this member\u2019s agreement and contract are solely responsible for member\u2019s own outcome or results from participating or receiving any education materials, counsel, coaching, training, mentoring or other services provided by Lion Roaring PMA through its websites or any other resources made available to the members<\/li><li>12. The terminology used in these articles of organization and member\u2019s agreement is used solely for clarification of the various usages for Private Members Association under universal contract law by and between free, spiritually free men and women, creations of nature and Natures God, whose lives and rights derive from God Almighty and unique Covenant of the man and\/or woman with the Creator<\/li><li>13. Any reference within the Articles of Association to the man shall also include the woman and any reference to one people may include many people. This PMA shall be construed and interpreted in the private and all decisions or disputes will be final as settled by the founders in accordance with Article III<\/li><li>14. Member agrees that the elimination of one Item or segment of this Agreement does not eliminate the entirety of the Agreement but the Agreement will remain as Agreed<\/li><\/ul><p><br>&nbsp;<\/p>\",\n   \"created_at\": \"2024-04-18T08:40:32.000000Z\",\n   \"updated_at\": \"2024-04-18T08:40:32.000000Z\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Bulletins",
+            "description": "",
+            "item": [
+                {
+                    "name": "Bulletins List",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/bulletins\/load",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/bulletins\/load"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"user_id\": 1,\n            \"title\": \"Sample Bulletin Title\",\n            \"description\": \"Sample Bulletin Description\",\n            \"created_at\": \"2024-11-08T12:00:00.000000Z\",\n            \"updated_at\": \"2024-11-08T12:00:00.000000Z\"\n        }\n    ]\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Fetch Single Bulletin",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/bulletins\/view\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/bulletins\/view\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the bulletin to retrieve."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 2,\n        \"title\": \"Sample Bulletin Title\",\n        \"description\": \"Sample bulletin description\",\n        \"created_at\": \"2024-11-08T12:00:00.000000Z\",\n        \"updated_at\": \"2024-11-08T12:00:00.000000Z\"\n    }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n    \"error\": \"Bulletin not found.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Bulletin Board",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/bulletins\/board",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/bulletins\/board"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"user_id\": 2,\n            \"title\": \"Sample Bulletin Title\",\n            \"description\": \"Sample bulletin description\",\n            \"created_at\": \"2024-11-08T12:00:00.000000Z\",\n            \"updated_at\": \"2024-11-08T12:00:00.000000Z\",\n            \"user\": {\n               \"id\": 12,\n               \"ecclesia_id\": 2,\n               \"created_id\": \"1\",\n               \"user_name\": \"swarnadwip_nath\",\n               \"first_name\": \"Swarnadwip\",\n               \"middle_name\": null,\n               \"last_name\": \"Nath\",\n               \"email\": \"swarnadwip@excellisit.net\",\n               \"phone\": \"+1 0741202022\",\n               \"email_verified_at\": null,\n               \"profile_picture\": \"profile_picture\/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg\",\n               \"address\": \"Kokata\",\n               \"city\": \"Kolkata\",\n               \"state\": \"41\",\n               \"address2\": null,\n               \"country\": \"101\",\n               \"zip\": \"700001\",\n               \"status\": 1,\n               \"created_at\": \"2024-06-21T11:31:27.000000Z\",\n               \"updated_at\": \"2024-09-09T11:02:59.000000Z\"\n            }\n        },\n        {\n            \"id\": 2,\n            \"user_id\": 3,\n            \"title\": \"Another Bulletin Title\",\n            \"description\": \"Another bulletin description\",\n            \"created_at\": \"2024-11-08T12:00:00.000000Z\",\n            \"updated_at\": \"2024-11-08T12:00:00.000000Z\",\n            \"user\": {\n               \"id\": 13,\n               \"ecclesia_id\": 2,\n               \"created_id\": \"1\",\n               \"user_name\": \"john_doe\",\n               \"first_name\": \"John\",\n               \"middle_name\": null,\n               \"last_name\": \"Chiera\",\n               \"email\": \"john@yopmail.com\",\n               \"phone\": \"07412020202\",\n               \"email_verified_at\": null,\n               \"profile_picture\": \"profile_picture\/lX7sKGrvLYx22gM1qwGKXToQbPI4ILBFQHxThou7.jpg\",\n               \"address\": \"Kokata\",\n               \"city\": \"Kolkata\",\n               \"state\": \"West Bengal\",\n               \"address2\": null,\n               \"country\": \"India\",\n               \"zip\": \"700001\",\n               \"status\": 1,\n               \"created_at\": \"2024-06-21T11:32:03.000000Z\",\n               \"updated_at\": \"2024-09-09T06:28:13.000000Z\"\n            }\n        }\n    ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n    \"error\": \"Failed to load bulletins.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Bulletin",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/bulletins\/store",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/bulletins\/store"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"\\\"New Bulletin Title\\\"\",\"description\":\"\\\"Details about the bulletin.\\\"\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"message\": \"Bulletin created successfully.\",\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"title\": \"New Bulletin Title\",\n        \"description\": \"Details about the bulletin.\",\n        \"created_at\": \"2024-11-08T12:00:00.000000Z\",\n        \"updated_at\": \"2024-11-08T12:00:00.000000Z\"\n    }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n    \"error\": \"Failed to create bulletin.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Bulletin",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/bulletins\/edit\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/bulletins\/edit\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the bulletin to update."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"\\\"Updated Bulletin Title\\\"\",\"description\":\"\\\"Updated details about the bulletin.\\\"\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"message\": \"Bulletin updated successfully.\",\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"title\": \"Updated Bulletin Title\",\n        \"description\": \"Updated details about the bulletin.\",\n        \"created_at\": \"2024-11-08T12:00:00.000000Z\",\n        \"updated_at\": \"2024-11-08T12:00:00.000000Z\"\n    }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n    \"error\": \"Bulletin not found or unauthorized.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Remove Bulletin",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/bulletins\/delete\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/bulletins\/delete\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the bulletin to delete."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"message\": \"Bulletin deleted successfully.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n    \"error\": \"Bulletin not found or unauthorized.\"\n}",
                             "name": ""
                         }
                     ]
@@ -902,7 +1160,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"hermann.dicki@example.org\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"considine.marty@example.org\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -946,7 +1204,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"eum\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"earum\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1091,7 +1349,7 @@
                                         {
                                             "id": "topic",
                                             "key": "topic",
-                                            "value": "omnis",
+                                            "value": "inventore",
                                             "description": "The topic."
                                         },
                                         {
@@ -1228,30 +1486,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "minus",
+                                            "value": "doloribus",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "quia",
+                                            "value": "cumque",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "aliquid",
+                                            "value": "quibusdam",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "18",
+                                            "value": "10",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=minus&sorttype=quia&query=aliquid&topic_id=18"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=doloribus&sorttype=cumque&query=quibusdam&topic_id=10"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -1382,12 +1640,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "17",
+                                            "value": "14",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=17",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=14",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -1438,7 +1696,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "vel",
+                                            "value": "eum",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -1563,7 +1821,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "qui",
+                                            "value": "vitae",
                                             "description": ""
                                         }
                                     ]
@@ -1657,30 +1915,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "quibusdam",
+                                            "value": "sed",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "magnam",
+                                            "value": "fuga",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "totam",
+                                            "value": "optio",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "2",
+                                            "value": "19",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/list-by-topics?sortby=quibusdam&sorttype=magnam&query=totam&topic_id=2"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/list-by-topics?sortby=sed&sorttype=fuga&query=optio&topic_id=19"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -1811,12 +2069,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "7",
+                                            "value": "4",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/view\/:id?topic=7",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/view\/:id?topic=4",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -1867,7 +2125,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "inventore",
+                                            "value": "minus",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -1992,7 +2250,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "ut",
+                                            "value": "id",
                                             "description": ""
                                         }
                                     ]
@@ -2086,30 +2344,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "quia",
+                                            "value": "necessitatibus",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "odit",
+                                            "value": "fugiat",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "occaecati",
+                                            "value": "sunt",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "13",
+                                            "value": "12",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=quia&sorttype=odit&query=occaecati&topic_id=13"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=necessitatibus&sorttype=fugiat&query=sunt&topic_id=12"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2240,12 +2498,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "2",
+                                            "value": "7",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=2",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=7",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2296,7 +2554,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "voluptatem",
+                                            "value": "animi",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2421,7 +2679,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "autem",
+                                            "value": "eos",
                                             "description": ""
                                         }
                                     ]
@@ -2701,25 +2959,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "eligendi",
+                                    "value": "voluptatibus",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"masum2@excellisit.net\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "qui",
+                                    "value": "blanditiis",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "saepe",
+                                    "value": "mollitia",
                                     "type": "text",
                                     "description": "The subject of the email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "cum",
+                                    "value": "quibusdam",
                                     "type": "text",
                                     "description": "The body content of the email."
                                 },
@@ -2778,31 +3036,31 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "a",
+                                    "value": "voluptate",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "perferendis",
+                                    "value": "deserunt",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "non",
+                                    "value": "quis",
                                     "type": "text",
                                     "description": "The subject of the reply email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "aut",
+                                    "value": "asperiores",
                                     "type": "text",
                                     "description": "The body content of the reply email."
                                 },
                                 {
                                     "key": "main_mail_id",
-                                    "value": 14,
+                                    "value": 11,
                                     "type": "text",
                                     "description": "The ID of the main email thread being replied to."
                                 },
@@ -2861,25 +3119,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "consectetur",
+                                    "value": "ut",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "eum",
+                                    "value": "molestiae",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "voluptas",
+                                    "value": "ab",
                                     "type": "text",
                                     "description": "The subject of the forwarded email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "nemo",
+                                    "value": "dolorum",
                                     "type": "text",
                                     "description": "The body content of the forwarded email."
                                 },
@@ -3251,7 +3509,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"jacobs.melody@example.com\"}"
+                            "raw": "{\"email\":\"egerhold@example.net\"}"
                         },
                         "description": "",
                         "auth": {
@@ -3973,7 +4231,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":18}"
+                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":11}"
                         },
                         "description": "Manages notifications for group chat messages. If the user has a new message, it sends a notification;\notherwise, it marks the notification as read."
                     },

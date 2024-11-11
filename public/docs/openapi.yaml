@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 1
+                  example: 2
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -230,6 +230,563 @@ paths:
       tags:
         - Authentication
       security: []
+  /api/v3/user/bulletins/load:
+    get:
+      summary: 'Bulletins List'
+      operationId: bulletinsList
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      user_id: 1
+                      title: 'Sample Bulletin Title'
+                      description: 'Sample Bulletin Description'
+                      created_at: '2024-11-08T12:00:00.000000Z'
+                      updated_at: '2024-11-08T12:00:00.000000Z'
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        user_id: 1
+                        title: 'Sample Bulletin Title'
+                        description: 'Sample Bulletin Description'
+                        created_at: '2024-11-08T12:00:00.000000Z'
+                        updated_at: '2024-11-08T12:00:00.000000Z'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        user_id:
+                          type: integer
+                          example: 1
+                        title:
+                          type: string
+                          example: 'Sample Bulletin Title'
+                        description:
+                          type: string
+                          example: 'Sample Bulletin Description'
+                        created_at:
+                          type: string
+                          example: '2024-11-08T12:00:00.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-11-08T12:00:00.000000Z'
+      tags:
+        - Bulletins
+  '/api/v3/user/bulletins/view/{id}':
+    get:
+      summary: 'Fetch Single Bulletin'
+      operationId: fetchSingleBulletin
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    user_id: 2
+                    title: 'Sample Bulletin Title'
+                    description: 'Sample bulletin description'
+                    created_at: '2024-11-08T12:00:00.000000Z'
+                    updated_at: '2024-11-08T12:00:00.000000Z'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      user_id:
+                        type: integer
+                        example: 2
+                      title:
+                        type: string
+                        example: 'Sample Bulletin Title'
+                      description:
+                        type: string
+                        example: 'Sample bulletin description'
+                      created_at:
+                        type: string
+                        example: '2024-11-08T12:00:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-08T12:00:00.000000Z'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Bulletin not found.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Bulletin not found.'
+      tags:
+        - Bulletins
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the bulletin to retrieve.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/v3/user/bulletins/board:
+    get:
+      summary: 'Bulletin Board'
+      operationId: bulletinBoard
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      user_id: 2
+                      title: 'Sample Bulletin Title'
+                      description: 'Sample bulletin description'
+                      created_at: '2024-11-08T12:00:00.000000Z'
+                      updated_at: '2024-11-08T12:00:00.000000Z'
+                      user:
+                        id: 12
+                        ecclesia_id: 2
+                        created_id: '1'
+                        user_name: swarnadwip_nath
+                        first_name: Swarnadwip
+                        middle_name: null
+                        last_name: Nath
+                        email: swarnadwip@excellisit.net
+                        phone: '+1 0741202022'
+                        email_verified_at: null
+                        profile_picture: profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg
+                        address: Kokata
+                        city: Kolkata
+                        state: '41'
+                        address2: null
+                        country: '101'
+                        zip: '700001'
+                        status: 1
+                        created_at: '2024-06-21T11:31:27.000000Z'
+                        updated_at: '2024-09-09T11:02:59.000000Z'
+                    -
+                      id: 2
+                      user_id: 3
+                      title: 'Another Bulletin Title'
+                      description: 'Another bulletin description'
+                      created_at: '2024-11-08T12:00:00.000000Z'
+                      updated_at: '2024-11-08T12:00:00.000000Z'
+                      user:
+                        id: 13
+                        ecclesia_id: 2
+                        created_id: '1'
+                        user_name: john_doe
+                        first_name: John
+                        middle_name: null
+                        last_name: Chiera
+                        email: john@yopmail.com
+                        phone: '07412020202'
+                        email_verified_at: null
+                        profile_picture: profile_picture/lX7sKGrvLYx22gM1qwGKXToQbPI4ILBFQHxThou7.jpg
+                        address: Kokata
+                        city: Kolkata
+                        state: 'West Bengal'
+                        address2: null
+                        country: India
+                        zip: '700001'
+                        status: 1
+                        created_at: '2024-06-21T11:32:03.000000Z'
+                        updated_at: '2024-09-09T06:28:13.000000Z'
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        user_id: 2
+                        title: 'Sample Bulletin Title'
+                        description: 'Sample bulletin description'
+                        created_at: '2024-11-08T12:00:00.000000Z'
+                        updated_at: '2024-11-08T12:00:00.000000Z'
+                        user:
+                          id: 12
+                          ecclesia_id: 2
+                          created_id: '1'
+                          user_name: swarnadwip_nath
+                          first_name: Swarnadwip
+                          middle_name: null
+                          last_name: Nath
+                          email: swarnadwip@excellisit.net
+                          phone: '+1 0741202022'
+                          email_verified_at: null
+                          profile_picture: profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg
+                          address: Kokata
+                          city: Kolkata
+                          state: '41'
+                          address2: null
+                          country: '101'
+                          zip: '700001'
+                          status: 1
+                          created_at: '2024-06-21T11:31:27.000000Z'
+                          updated_at: '2024-09-09T11:02:59.000000Z'
+                      -
+                        id: 2
+                        user_id: 3
+                        title: 'Another Bulletin Title'
+                        description: 'Another bulletin description'
+                        created_at: '2024-11-08T12:00:00.000000Z'
+                        updated_at: '2024-11-08T12:00:00.000000Z'
+                        user:
+                          id: 13
+                          ecclesia_id: 2
+                          created_id: '1'
+                          user_name: john_doe
+                          first_name: John
+                          middle_name: null
+                          last_name: Chiera
+                          email: john@yopmail.com
+                          phone: '07412020202'
+                          email_verified_at: null
+                          profile_picture: profile_picture/lX7sKGrvLYx22gM1qwGKXToQbPI4ILBFQHxThou7.jpg
+                          address: Kokata
+                          city: Kolkata
+                          state: 'West Bengal'
+                          address2: null
+                          country: India
+                          zip: '700001'
+                          status: 1
+                          created_at: '2024-06-21T11:32:03.000000Z'
+                          updated_at: '2024-09-09T06:28:13.000000Z'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        user_id:
+                          type: integer
+                          example: 2
+                        title:
+                          type: string
+                          example: 'Sample Bulletin Title'
+                        description:
+                          type: string
+                          example: 'Sample bulletin description'
+                        created_at:
+                          type: string
+                          example: '2024-11-08T12:00:00.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-11-08T12:00:00.000000Z'
+                        user:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 12
+                            ecclesia_id:
+                              type: integer
+                              example: 2
+                            created_id:
+                              type: string
+                              example: '1'
+                            user_name:
+                              type: string
+                              example: swarnadwip_nath
+                            first_name:
+                              type: string
+                              example: Swarnadwip
+                            middle_name:
+                              type: string
+                              example: null
+                            last_name:
+                              type: string
+                              example: Nath
+                            email:
+                              type: string
+                              example: swarnadwip@excellisit.net
+                            phone:
+                              type: string
+                              example: '+1 0741202022'
+                            email_verified_at:
+                              type: string
+                              example: null
+                            profile_picture:
+                              type: string
+                              example: profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg
+                            address:
+                              type: string
+                              example: Kokata
+                            city:
+                              type: string
+                              example: Kolkata
+                            state:
+                              type: string
+                              example: '41'
+                            address2:
+                              type: string
+                              example: null
+                            country:
+                              type: string
+                              example: '101'
+                            zip:
+                              type: string
+                              example: '700001'
+                            status:
+                              type: integer
+                              example: 1
+                            created_at:
+                              type: string
+                              example: '2024-06-21T11:31:27.000000Z'
+                            updated_at:
+                              type: string
+                              example: '2024-09-09T11:02:59.000000Z'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Failed to load bulletins.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Failed to load bulletins.'
+      tags:
+        - Bulletins
+  /api/v3/user/bulletins/store:
+    post:
+      summary: 'Create Bulletin'
+      operationId: createBulletin
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Bulletin created successfully.'
+                  data:
+                    id: 1
+                    user_id: 1
+                    title: 'New Bulletin Title'
+                    description: 'Details about the bulletin.'
+                    created_at: '2024-11-08T12:00:00.000000Z'
+                    updated_at: '2024-11-08T12:00:00.000000Z'
+                properties:
+                  message:
+                    type: string
+                    example: 'Bulletin created successfully.'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      user_id:
+                        type: integer
+                        example: 1
+                      title:
+                        type: string
+                        example: 'New Bulletin Title'
+                      description:
+                        type: string
+                        example: 'Details about the bulletin.'
+                      created_at:
+                        type: string
+                        example: '2024-11-08T12:00:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-08T12:00:00.000000Z'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Failed to create bulletin.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Failed to create bulletin.'
+      tags:
+        - Bulletins
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'The title of the bulletin.'
+                  example: '"New Bulletin Title"'
+                description:
+                  type: string
+                  description: 'The description of the bulletin.'
+                  example: '"Details about the bulletin."'
+              required:
+                - title
+                - description
+  '/api/v3/user/bulletins/edit/{id}':
+    put:
+      summary: 'Update Bulletin'
+      operationId: updateBulletin
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Bulletin updated successfully.'
+                  data:
+                    id: 1
+                    user_id: 1
+                    title: 'Updated Bulletin Title'
+                    description: 'Updated details about the bulletin.'
+                    created_at: '2024-11-08T12:00:00.000000Z'
+                    updated_at: '2024-11-08T12:00:00.000000Z'
+                properties:
+                  message:
+                    type: string
+                    example: 'Bulletin updated successfully.'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      user_id:
+                        type: integer
+                        example: 1
+                      title:
+                        type: string
+                        example: 'Updated Bulletin Title'
+                      description:
+                        type: string
+                        example: 'Updated details about the bulletin.'
+                      created_at:
+                        type: string
+                        example: '2024-11-08T12:00:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-08T12:00:00.000000Z'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Bulletin not found or unauthorized.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Bulletin not found or unauthorized.'
+      tags:
+        - Bulletins
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'The new title of the bulletin.'
+                  example: '"Updated Bulletin Title"'
+                description:
+                  type: string
+                  description: 'The new description of the bulletin.'
+                  example: '"Updated details about the bulletin."'
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the bulletin to update.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v3/user/bulletins/delete/{id}':
+    delete:
+      summary: 'Remove Bulletin'
+      operationId: removeBulletin
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Bulletin deleted successfully.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Bulletin deleted successfully.'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Bulletin not found or unauthorized.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Bulletin not found or unauthorized.'
+      tags:
+        - Bulletins
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the bulletin to delete.'
+        example: 1
+        required: true
+        schema:
+          type: integer
   /api/v3/cms/home:
     post:
       summary: 'Get Home Page'
@@ -1804,7 +2361,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: hermann.dicki@example.org
+                  example: considine.marty@example.org
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -1875,7 +2432,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: eum
+                  example: earum
       security: []
   /api/v3/country-list:
     post:
@@ -2081,7 +2638,7 @@ paths:
         in: path
         name: topic
         description: 'The topic.'
-        example: omnis
+        example: inventore
         required: true
         schema:
           type: string
@@ -2197,42 +2754,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: minus
+          example: doloribus
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: minus
+            example: doloribus
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: quia
+          example: cumque
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: quia
+            example: cumque
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: aliquid
+          example: quibusdam
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: aliquid
+            example: quibusdam
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 18
+          example: 10
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 18
+            example: 10
       responses:
         200:
           description: ''
@@ -2542,12 +3099,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 17
+          example: 14
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 17
+            example: 14
       responses:
         200:
           description: ''
@@ -2771,7 +3328,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: vel
+        example: eum
         required: true
         schema:
           type: string
@@ -2878,7 +3435,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: qui
+        example: vitae
         required: true
         schema:
           type: string
@@ -2918,42 +3475,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: quibusdam
+          example: sed
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: quibusdam
+            example: sed
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: magnam
+          example: fuga
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: magnam
+            example: fuga
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: totam
+          example: optio
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: totam
+            example: optio
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 2
+          example: 19
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 2
+            example: 19
       responses:
         200:
           description: ''
@@ -3263,12 +3820,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 7
+          example: 4
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 7
+            example: 4
       responses:
         200:
           description: ''
@@ -3492,7 +4049,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: inventore
+        example: minus
         required: true
         schema:
           type: string
@@ -3599,7 +4156,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: ut
+        example: id
         required: true
         schema:
           type: string
@@ -3639,42 +4196,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: quia
+          example: necessitatibus
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: quia
+            example: necessitatibus
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: odit
+          example: fugiat
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: odit
+            example: fugiat
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: occaecati
+          example: sunt
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: occaecati
+            example: sunt
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 13
+          example: 12
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 13
+            example: 12
       responses:
         200:
           description: ''
@@ -3984,12 +4541,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 2
+          example: 7
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 2
+            example: 7
       responses:
         200:
           description: ''
@@ -4213,7 +4770,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: voluptatem
+        example: animi
         required: true
         schema:
           type: string
@@ -4320,7 +4877,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: autem
+        example: eos
         required: true
         schema:
           type: string
@@ -5000,19 +5557,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
-                  example: eligendi
+                  example: voluptatibus
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: qui
+                  example: blanditiis
                 subject:
                   type: string
                   description: 'The subject of the email.'
-                  example: saepe
+                  example: mollitia
                 message:
                   type: string
                   description: 'The body content of the email.'
-                  example: cum
+                  example: quibusdam
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -5142,19 +5699,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: a
+                  example: voluptate
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: perferendis
+                  example: deserunt
                 subject:
                   type: string
                   description: 'The subject of the reply email.'
-                  example: non
+                  example: quis
                 message:
                   type: string
                   description: 'The body content of the reply email.'
-                  example: aut
+                  example: asperiores
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -5164,7 +5721,7 @@ paths:
                 main_mail_id:
                   type: integer
                   description: 'The ID of the main email thread being replied to.'
-                  example: 14
+                  example: 11
               required:
                 - to
                 - subject
@@ -5281,19 +5838,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: consectetur
+                  example: ut
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: eum
+                  example: molestiae
                 subject:
                   type: string
                   description: 'The subject of the forwarded email.'
-                  example: voluptas
+                  example: ab
                 message:
                   type: string
                   description: 'The body content of the forwarded email.'
-                  example: nemo
+                  example: dolorum
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -5781,7 +6338,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: jacobs.melody@example.com
+                  example: egerhold@example.net
               required:
                 - email
       security: []
@@ -7704,7 +8261,7 @@ paths:
                 is_delete:
                   type: integer
                   description: 'optional Indicates if the notification should be marked as read and deleted.'
-                  example: 18
+                  example: 11
               required:
                 - team_id
                 - chat_id
@@ -8037,6 +8594,9 @@ paths:
 tags:
   -
     name: Authentication
+    description: ''
+  -
+    name: Bulletins
     description: ''
   -
     name: 'CMS Management'
