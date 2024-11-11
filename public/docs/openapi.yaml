@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 19
+                  example: 8
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -2361,7 +2361,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: shaylee36@example.net
+                  example: cole.verner@example.com
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -2432,7 +2432,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: veritatis
+                  example: officia
       security: []
   /api/v3/country-list:
     post:
@@ -2638,7 +2638,7 @@ paths:
         in: path
         name: topic
         description: 'The topic.'
-        example: ducimus
+        example: officia
         required: true
         schema:
           type: string
@@ -2754,42 +2754,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: facilis
+          example: quidem
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: facilis
+            example: quidem
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: iure
+          example: odit
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: iure
+            example: odit
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: et
+          example: modi
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: et
+            example: modi
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 20
+          example: 4
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 20
+            example: 4
       responses:
         200:
           description: ''
@@ -3099,12 +3099,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 20
+          example: 18
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 20
+            example: 18
       responses:
         200:
           description: ''
@@ -3328,7 +3328,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: facere
+        example: distinctio
         required: true
         schema:
           type: string
@@ -3435,7 +3435,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: eligendi
+        example: enim
         required: true
         schema:
           type: string
@@ -3475,42 +3475,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: esse
+          example: illum
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: esse
+            example: illum
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: asperiores
+          example: expedita
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: asperiores
+            example: expedita
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: voluptatem
+          example: nihil
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: voluptatem
+            example: nihil
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 4
+          example: 19
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 4
+            example: 19
       responses:
         200:
           description: ''
@@ -3820,12 +3820,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 9
+          example: 2
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 9
+            example: 2
       responses:
         200:
           description: ''
@@ -4049,7 +4049,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: sint
+        example: nobis
         required: true
         schema:
           type: string
@@ -4156,7 +4156,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: pariatur
+        example: beatae
         required: true
         schema:
           type: string
@@ -4196,42 +4196,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: eum
+          example: inventore
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: eum
+            example: inventore
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: omnis
+          example: accusamus
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: omnis
+            example: accusamus
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: magnam
+          example: accusamus
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: magnam
+            example: accusamus
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 5
+          example: 19
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 5
+            example: 19
       responses:
         200:
           description: ''
@@ -4541,12 +4541,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 5
+          example: 3
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 5
+            example: 3
       responses:
         200:
           description: ''
@@ -4770,7 +4770,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: ducimus
+        example: id
         required: true
         schema:
           type: string
@@ -4877,7 +4877,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: recusandae
+        example: nisi
         required: true
         schema:
           type: string
@@ -5557,19 +5557,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
-                  example: dolorum
+                  example: voluptas
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: libero
+                  example: corporis
                 subject:
                   type: string
                   description: 'The subject of the email.'
-                  example: vel
+                  example: necessitatibus
                 message:
                   type: string
                   description: 'The body content of the email.'
-                  example: aut
+                  example: earum
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -5699,19 +5699,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: facilis
+                  example: distinctio
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: velit
+                  example: est
                 subject:
                   type: string
                   description: 'The subject of the reply email.'
-                  example: quibusdam
+                  example: sed
                 message:
                   type: string
                   description: 'The body content of the reply email.'
-                  example: et
+                  example: aut
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -5838,19 +5838,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: incidunt
+                  example: qui
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: at
+                  example: id
                 subject:
                   type: string
                   description: 'The subject of the forwarded email.'
-                  example: in
+                  example: veniam
                 message:
                   type: string
                   description: 'The body content of the forwarded email.'
-                  example: reprehenderit
+                  example: impedit
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -6338,7 +6338,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: kemmer.rowena@example.net
+                  example: eabernathy@example.com
               required:
                 - email
       security: []
@@ -8261,7 +8261,7 @@ paths:
                 is_delete:
                   type: integer
                   description: 'optional Indicates if the notification should be marked as read and deleted.'
-                  example: 1
+                  example: 4
               required:
                 - team_id
                 - chat_id
@@ -8534,6 +8534,489 @@ paths:
         required: true
         schema:
           type: integer
+  /api/v3/user/meetings/load:
+    get:
+      summary: 'List All Meetings'
+      operationId: listAllMeetings
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      user_id: 2
+                      title: 'Project Sync'
+                      description: 'Weekly project sync meeting.'
+                      start_time: '2024-11-10T09:00:00.000000Z'
+                      end_time: '2024-11-10T10:00:00.000000Z'
+                      meeting_link: 'https://meeting.example.com/xyz123'
+                      created_at: '2024-11-08T12:00:00.000000Z'
+                      updated_at: '2024-11-08T12:00:00.000000Z'
+                      user:
+                        id: 2
+                        name: 'John Doe'
+                        email: john@example.com
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        user_id: 2
+                        title: 'Project Sync'
+                        description: 'Weekly project sync meeting.'
+                        start_time: '2024-11-10T09:00:00.000000Z'
+                        end_time: '2024-11-10T10:00:00.000000Z'
+                        meeting_link: 'https://meeting.example.com/xyz123'
+                        created_at: '2024-11-08T12:00:00.000000Z'
+                        updated_at: '2024-11-08T12:00:00.000000Z'
+                        user:
+                          id: 2
+                          name: 'John Doe'
+                          email: john@example.com
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        user_id:
+                          type: integer
+                          example: 2
+                        title:
+                          type: string
+                          example: 'Project Sync'
+                        description:
+                          type: string
+                          example: 'Weekly project sync meeting.'
+                        start_time:
+                          type: string
+                          example: '2024-11-10T09:00:00.000000Z'
+                        end_time:
+                          type: string
+                          example: '2024-11-10T10:00:00.000000Z'
+                        meeting_link:
+                          type: string
+                          example: 'https://meeting.example.com/xyz123'
+                        created_at:
+                          type: string
+                          example: '2024-11-08T12:00:00.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-11-08T12:00:00.000000Z'
+                        user:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 2
+                            name:
+                              type: string
+                              example: 'John Doe'
+                            email:
+                              type: string
+                              example: john@example.com
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Failed to load meetings.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Failed to load meetings.'
+      tags:
+        - Meetings
+  /api/v3/user/meetings/store:
+    post:
+      summary: 'Create Meeting'
+      operationId: createMeeting
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Meeting created successfully.'
+                  data:
+                    id: 1
+                    user_id: 2
+                    title: 'Project Sync'
+                    description: 'Weekly project sync meeting.'
+                    start_time: '2024-11-10T09:00:00.000000Z'
+                    end_time: '2024-11-10T10:00:00.000000Z'
+                    meeting_link: 'https://meeting.example.com/xyz123'
+                    created_at: '2024-11-08T12:00:00.000000Z'
+                    updated_at: '2024-11-08T12:00:00.000000Z'
+                properties:
+                  message:
+                    type: string
+                    example: 'Meeting created successfully.'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      user_id:
+                        type: integer
+                        example: 2
+                      title:
+                        type: string
+                        example: 'Project Sync'
+                      description:
+                        type: string
+                        example: 'Weekly project sync meeting.'
+                      start_time:
+                        type: string
+                        example: '2024-11-10T09:00:00.000000Z'
+                      end_time:
+                        type: string
+                        example: '2024-11-10T10:00:00.000000Z'
+                      meeting_link:
+                        type: string
+                        example: 'https://meeting.example.com/xyz123'
+                      created_at:
+                        type: string
+                        example: '2024-11-08T12:00:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-08T12:00:00.000000Z'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Failed to create meeting.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Failed to create meeting.'
+      tags:
+        - Meetings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'The title of the meeting.'
+                  example: 'Project Sync'
+                description:
+                  type: string
+                  description: 'The description of the meeting.'
+                  example: 'Weekly project sync meeting.'
+                start_time:
+                  type: datetime
+                  description: 'The start time of the meeting in ISO 8601 format.'
+                  example: '2024-11-10T09:00:00.000000Z'
+                end_time:
+                  type: datetime
+                  description: 'The end time of the meeting in ISO 8601 format.'
+                  example: '2024-11-10T10:00:00.000000Z'
+                meeting_link:
+                  type: string
+                  description: 'The link to join the meeting.'
+                  example: 'https://meeting.example.com/xyz123'
+              required:
+                - title
+                - start_time
+                - end_time
+  '/api/v3/user/meetings/view/{id}':
+    get:
+      summary: 'Single Meeting Details'
+      operationId: singleMeetingDetails
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    user_id: 2
+                    title: 'Project Sync'
+                    description: 'Weekly project sync meeting.'
+                    start_time: '2024-11-10T09:00:00.000000Z'
+                    end_time: '2024-11-10T10:00:00.000000Z'
+                    meeting_link: 'https://meeting.example.com/xyz123'
+                    created_at: '2024-11-08T12:00:00.000000Z'
+                    updated_at: '2024-11-08T12:00:00.000000Z'
+                    user:
+                      id: 12
+                      ecclesia_id: 2
+                      created_id: '1'
+                      user_name: swarnadwip_nath
+                      first_name: Swarnadwip
+                      middle_name: null
+                      last_name: Nath
+                      email: swarnadwip@excellisit.net
+                      phone: '+1 0741202022'
+                      email_verified_at: null
+                      profile_picture: profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg
+                      address: Kokata
+                      city: Kolkata
+                      state: '41'
+                      address2: null
+                      country: '101'
+                      zip: '700001'
+                      status: 1
+                      created_at: '2024-06-21T11:31:27.000000Z'
+                      updated_at: '2024-09-09T11:02:59.000000Z'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      user_id:
+                        type: integer
+                        example: 2
+                      title:
+                        type: string
+                        example: 'Project Sync'
+                      description:
+                        type: string
+                        example: 'Weekly project sync meeting.'
+                      start_time:
+                        type: string
+                        example: '2024-11-10T09:00:00.000000Z'
+                      end_time:
+                        type: string
+                        example: '2024-11-10T10:00:00.000000Z'
+                      meeting_link:
+                        type: string
+                        example: 'https://meeting.example.com/xyz123'
+                      created_at:
+                        type: string
+                        example: '2024-11-08T12:00:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-08T12:00:00.000000Z'
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 12
+                          ecclesia_id:
+                            type: integer
+                            example: 2
+                          created_id:
+                            type: string
+                            example: '1'
+                          user_name:
+                            type: string
+                            example: swarnadwip_nath
+                          first_name:
+                            type: string
+                            example: Swarnadwip
+                          middle_name:
+                            type: string
+                            example: null
+                          last_name:
+                            type: string
+                            example: Nath
+                          email:
+                            type: string
+                            example: swarnadwip@excellisit.net
+                          phone:
+                            type: string
+                            example: '+1 0741202022'
+                          email_verified_at:
+                            type: string
+                            example: null
+                          profile_picture:
+                            type: string
+                            example: profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg
+                          address:
+                            type: string
+                            example: Kokata
+                          city:
+                            type: string
+                            example: Kolkata
+                          state:
+                            type: string
+                            example: '41'
+                          address2:
+                            type: string
+                            example: null
+                          country:
+                            type: string
+                            example: '101'
+                          zip:
+                            type: string
+                            example: '700001'
+                          status:
+                            type: integer
+                            example: 1
+                          created_at:
+                            type: string
+                            example: '2024-06-21T11:31:27.000000Z'
+                          updated_at:
+                            type: string
+                            example: '2024-09-09T11:02:59.000000Z'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Meeting not found.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Meeting not found.'
+      tags:
+        - Meetings
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the meeting.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/v3/user/meetings/meetings-calender-fetch-data:
+    get:
+      summary: 'Meetings Calender Data'
+      operationId: meetingsCalenderData
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Calender data fetched successfully.'
+                  data:
+                    -
+                      id: 15
+                      title: 'Project Sync'
+                      description: 'Weekly project sync meeting.'
+                      start: '2024-11-10T09:00:00.000000Z'
+                      end: '2024-11-10T10:00:00.000000Z'
+                      meeting_link: 'https://meeting.example.com/xyz123'
+                    -
+                      id: 13
+                      title: 'fourth meeting'
+                      description: afd
+                      start: '2024-10-01T18:57'
+                      end: '2024-10-01T18:58'
+                      meeting_link: null
+                    -
+                      id: 12
+                      title: 'Third meeting'
+                      description: fd
+                      start: '2024-10-01T18:57'
+                      end: '2024-10-01T18:58'
+                      meeting_link: null
+                    -
+                      id: 11
+                      title: 'Second meeting'
+                      description: adsf
+                      start: '2024-10-01T18:56'
+                      end: '2024-10-01T18:57'
+                      meeting_link: null
+                properties:
+                  message:
+                    type: string
+                    example: 'Calender data fetched successfully.'
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 15
+                        title: 'Project Sync'
+                        description: 'Weekly project sync meeting.'
+                        start: '2024-11-10T09:00:00.000000Z'
+                        end: '2024-11-10T10:00:00.000000Z'
+                        meeting_link: 'https://meeting.example.com/xyz123'
+                      -
+                        id: 13
+                        title: 'fourth meeting'
+                        description: afd
+                        start: '2024-10-01T18:57'
+                        end: '2024-10-01T18:58'
+                        meeting_link: null
+                      -
+                        id: 12
+                        title: 'Third meeting'
+                        description: fd
+                        start: '2024-10-01T18:57'
+                        end: '2024-10-01T18:58'
+                        meeting_link: null
+                      -
+                        id: 11
+                        title: 'Second meeting'
+                        description: adsf
+                        start: '2024-10-01T18:56'
+                        end: '2024-10-01T18:57'
+                        meeting_link: null
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 15
+                        title:
+                          type: string
+                          example: 'Project Sync'
+                        description:
+                          type: string
+                          example: 'Weekly project sync meeting.'
+                        start:
+                          type: string
+                          example: '2024-11-10T09:00:00.000000Z'
+                        end:
+                          type: string
+                          example: '2024-11-10T10:00:00.000000Z'
+                        meeting_link:
+                          type: string
+                          example: 'https://meeting.example.com/xyz123'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Meetings not found.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Meetings not found.'
+      tags:
+        - Meetings
   /api/v3/user/profile:
     post:
       summary: 'Profile Details'
@@ -8893,6 +9376,9 @@ tags:
     description: ''
   -
     name: Jobs
+    description: ''
+  -
+    name: Meetings
     description: ''
   -
     name: Profile

@@ -85,7 +85,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Zhab6a4gvk8f1ED5Ve3d6Pc'
+      - 'Bearer khbfcEP156eZag3dD4v8a6V'
     controller: null
     method: null
     route: null
@@ -159,7 +159,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZV4Db65dc18hvE3afeakPg6'
+      - 'Bearer h13Vdek4cvZ86b5EfgD6Paa'
     controller: null
     method: null
     route: null
@@ -186,7 +186,7 @@ endpoints:
         name: topic
         description: 'The topic.'
         required: true
-        example: ducimus
+        example: officia
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -201,7 +201,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
-      topic: ducimus
+      topic: officia
       id: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -227,7 +227,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer va84gPhe6VbZ3Eakd5cf16D'
+      - 'Bearer 386agdeVcbhvaf5k6PE4Z1D'
     controller: null
     method: null
     route: null
@@ -312,7 +312,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 43e8bvEadkcVaPZ165hg6Df'
+      - 'Bearer 16daghakVefZ6bvE4cD8P35'
     controller: null
     method: null
     route: null
@@ -448,7 +448,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5V6hgE4k38Pa1baZef6dDvc'
+      - 'Bearer 6b46d5c38afEe1vVPhakDZg'
     controller: null
     method: null
     route: null
@@ -477,7 +477,7 @@ endpoints:
         name: sortby
         description: 'The column to sort by (optional, default: id).'
         required: false
-        example: facilis
+        example: quidem
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -486,7 +486,7 @@ endpoints:
         name: sorttype
         description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
         required: false
-        example: iure
+        example: odit
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -495,7 +495,7 @@ endpoints:
         name: query
         description: 'The search query to filter files by ID, file name, or file extension (optional).'
         required: false
-        example: et
+        example: modi
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -504,16 +504,16 @@ endpoints:
         name: topic_id
         description: 'The ID of the topic to filter files by (optional).'
         required: false
-        example: 20
+        example: 4
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      sortby: facilis
-      sorttype: iure
-      query: et
-      topic_id: 20
+      sortby: quidem
+      sorttype: odit
+      query: modi
+      topic_id: 4
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -551,7 +551,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ba66Pevf5dhD3gk1a8EVcZ4'
+      - 'Bearer VDdva6PZ54c8Eb1hefag36k'
     controller: null
     method: null
     route: null
@@ -613,7 +613,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6dVf6kD1PEZc48v5aag3bhe'
+      - 'Bearer Ehb6e6DP581ckZ3vadV4gfa'
     controller: null
     method: null
     route: null
@@ -712,7 +712,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d36c6DbPVEegf548hkZ1ava'
+      - 'Bearer cv1a6fPgdZ3E4eDahk58bV6'
     controller: null
     method: null
     route: null
@@ -751,13 +751,13 @@ endpoints:
         name: topic
         description: 'The ID of the topic to filter by (optional).'
         required: false
-        example: 20
+        example: 18
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      topic: 20
+      topic: 18
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -798,7 +798,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d5fh3Z6cae6aEkvP184DgbV'
+      - 'Bearer bhkv3DV14dagea6Ecf685ZP'
     controller: null
     method: null
     route: null
@@ -825,13 +825,13 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: facere
+        example: distinctio
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: facere
+      id: distinctio
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -913,7 +913,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4a6VPgf63eaZ5kbcDhE8vd1'
+      - 'Bearer 1kPe3haEgv66bVf5Z48acDd'
     controller: null
     method: null
     route: null
@@ -987,7 +987,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer adbZVPhkE6c36g8veDf5a41'
+      - 'Bearer hv6E54ekZV6cgdDfP18ba3a'
     controller: null
     method: null
     route: null
@@ -1014,13 +1014,13 @@ endpoints:
         name: file
         description: ''
         required: true
-        example: eligendi
+        example: enim
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      file: eligendi
+      file: enim
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -1057,7 +1057,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6P5Z41EDkdc63fhVvaeagb8'
+      - 'Bearer v46ZdhVP3a8gbfE5kac1e6D'
     controller: null
     method: null
     route: null
@@ -1193,7 +1193,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1akab86dvgcf6eh4E3D5PZV'
+      - 'Bearer bea5chkP8ZEaVd1g643Dvf6'
     controller: null
     method: null
     route: null
@@ -1222,7 +1222,7 @@ endpoints:
         name: sortby
         description: 'The column to sort by (optional, default: id).'
         required: false
-        example: esse
+        example: illum
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1231,7 +1231,7 @@ endpoints:
         name: sorttype
         description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
         required: false
-        example: asperiores
+        example: expedita
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1240,7 +1240,7 @@ endpoints:
         name: query
         description: 'The search query to filter files by ID, file name, or file extension (optional).'
         required: false
-        example: voluptatem
+        example: nihil
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1249,16 +1249,16 @@ endpoints:
         name: topic_id
         description: 'The ID of the topic to filter files by (optional).'
         required: false
-        example: 4
+        example: 19
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      sortby: esse
-      sorttype: asperiores
-      query: voluptatem
-      topic_id: 4
+      sortby: illum
+      sorttype: expedita
+      query: nihil
+      topic_id: 19
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -1296,7 +1296,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hDfgkdcav61VZ6a3E854beP'
+      - 'Bearer cEDgb64dPVavf1aZ365k8eh'
     controller: null
     method: null
     route: null
@@ -1358,7 +1358,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V4b6dPca38gfZav51Dkeh6E'
+      - 'Bearer a468e1a5f6gDPhEvZcVkb3d'
     controller: null
     method: null
     route: null
@@ -1457,7 +1457,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PaVgD15ca3fehv8k4bE6Z6d'
+      - 'Bearer PVdbgD41E5v8fa6Zcka3h6e'
     controller: null
     method: null
     route: null
@@ -1496,13 +1496,13 @@ endpoints:
         name: topic
         description: 'The ID of the topic to filter by (optional).'
         required: false
-        example: 9
+        example: 2
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      topic: 9
+      topic: 2
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -1543,7 +1543,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8dvP361bE6VagaDfe5hckZ4'
+      - 'Bearer fvcV451hkD686PagdEba3eZ'
     controller: null
     method: null
     route: null
@@ -1570,13 +1570,13 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: sint
+        example: nobis
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: sint
+      id: nobis
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -1658,7 +1658,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 36bvgfZV584ck6hDaE1daeP'
+      - 'Bearer VbgfZv65ha6D4P1eEkc8a3d'
     controller: null
     method: null
     route: null
@@ -1732,7 +1732,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZhaPc3ED6vgkV8af46e5b1d'
+      - 'Bearer 65ga43vkPEeVDcf6b8Zahd1'
     controller: null
     method: null
     route: null
@@ -1759,13 +1759,13 @@ endpoints:
         name: file
         description: ''
         required: true
-        example: pariatur
+        example: beatae
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      file: pariatur
+      file: beatae
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -1802,7 +1802,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vbe5agk6D4PV6dcZa318hEf'
+      - 'Bearer E5a1ZPhc43gveDf8bkV66ad'
     controller: null
     method: null
     route: null
@@ -1938,7 +1938,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a5gVZPd6cDv36aEhk4b8fe1'
+      - 'Bearer D65b8E1fgPcvVedhk43aZa6'
     controller: null
     method: null
     route: null
@@ -1967,7 +1967,7 @@ endpoints:
         name: sortby
         description: 'The column to sort by (optional, default: id).'
         required: false
-        example: eum
+        example: inventore
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1976,7 +1976,7 @@ endpoints:
         name: sorttype
         description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
         required: false
-        example: omnis
+        example: accusamus
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1985,7 +1985,7 @@ endpoints:
         name: query
         description: 'The search query to filter files by ID, file name, or file extension (optional).'
         required: false
-        example: magnam
+        example: accusamus
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1994,16 +1994,16 @@ endpoints:
         name: topic_id
         description: 'The ID of the topic to filter files by (optional).'
         required: false
-        example: 5
+        example: 19
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      sortby: eum
-      sorttype: omnis
-      query: magnam
-      topic_id: 5
+      sortby: inventore
+      sorttype: accusamus
+      query: accusamus
+      topic_id: 19
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -2041,7 +2041,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Zf5dbh64VPD8E3g6cveaa1k'
+      - 'Bearer 4e1EPfg8va3hZcV5bkd6aD6'
     controller: null
     method: null
     route: null
@@ -2103,7 +2103,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1a8g34a6Vb6fcZDEkhPv5de'
+      - 'Bearer kEhdavV35aeZDP168gf64cb'
     controller: null
     method: null
     route: null
@@ -2202,7 +2202,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gZbDfhae6d1vP3k54Va6c8E'
+      - 'Bearer g1cbV4ve8f65PaZ3E6hDadk'
     controller: null
     method: null
     route: null
@@ -2241,13 +2241,13 @@ endpoints:
         name: topic
         description: 'The ID of the topic to filter by (optional).'
         required: false
-        example: 5
+        example: 3
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      topic: 5
+      topic: 3
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -2288,7 +2288,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VhbaEPf4636Zgea1Ddkcv85'
+      - 'Bearer 1dP68Ekg5Dav3ZebhVf4a6c'
     controller: null
     method: null
     route: null
@@ -2315,13 +2315,13 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: ducimus
+        example: id
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: ducimus
+      id: id
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -2403,7 +2403,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P64bkad5EeZc86fg3V1Davh'
+      - 'Bearer vbEf1kZa85eV66PhDgdc34a'
     controller: null
     method: null
     route: null
@@ -2477,7 +2477,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3PhZ664fcbv8a5VDdE1gkae'
+      - 'Bearer fv6Ehd4aa3gZeVkP6D85bc1'
     controller: null
     method: null
     route: null
@@ -2504,13 +2504,13 @@ endpoints:
         name: file
         description: ''
         required: true
-        example: recusandae
+        example: nisi
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      file: recusandae
+      file: nisi
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -2547,7 +2547,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1fDEcg6ZbdPVe54ha6kav38'
+      - 'Bearer a1D43ZEPvehfg5Vkbd8ac66'
     controller: null
     method: null
     route: null

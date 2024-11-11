@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "6308d5dc-d122-43a6-b511-e9affe1e27a1",
+        "_postman_id": "e370b27a-05b8-4ffa-b60b-401e3c7d4ba3",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":19,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":8,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone_number\":\"1234567890\",\"city\":\"Springfield\",\"state\":\"Illinois\",\"address2\":\"Apt 4B\",\"country\":\"USA\",\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -1160,7 +1160,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"shaylee36@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"cole.verner@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1204,7 +1204,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"veritatis\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"officia\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1349,7 +1349,7 @@
                                         {
                                             "id": "topic",
                                             "key": "topic",
-                                            "value": "ducimus",
+                                            "value": "officia",
                                             "description": "The topic."
                                         },
                                         {
@@ -1486,30 +1486,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "facilis",
+                                            "value": "quidem",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "iure",
+                                            "value": "odit",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "et",
+                                            "value": "modi",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "20",
+                                            "value": "4",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=facilis&sorttype=iure&query=et&topic_id=20"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=quidem&sorttype=odit&query=modi&topic_id=4"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -1640,12 +1640,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "20",
+                                            "value": "18",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=20",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=18",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -1696,7 +1696,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "facere",
+                                            "value": "distinctio",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -1821,7 +1821,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "eligendi",
+                                            "value": "enim",
                                             "description": ""
                                         }
                                     ]
@@ -1915,30 +1915,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "esse",
+                                            "value": "illum",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "asperiores",
+                                            "value": "expedita",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "voluptatem",
+                                            "value": "nihil",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "4",
+                                            "value": "19",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/list-by-topics?sortby=esse&sorttype=asperiores&query=voluptatem&topic_id=4"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/list-by-topics?sortby=illum&sorttype=expedita&query=nihil&topic_id=19"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2069,12 +2069,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "9",
+                                            "value": "2",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/view\/:id?topic=9",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/view\/:id?topic=2",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2125,7 +2125,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "sint",
+                                            "value": "nobis",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2250,7 +2250,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "pariatur",
+                                            "value": "beatae",
                                             "description": ""
                                         }
                                     ]
@@ -2344,30 +2344,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "eum",
+                                            "value": "inventore",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "omnis",
+                                            "value": "accusamus",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "magnam",
+                                            "value": "accusamus",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "5",
+                                            "value": "19",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=eum&sorttype=omnis&query=magnam&topic_id=5"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=inventore&sorttype=accusamus&query=accusamus&topic_id=19"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2498,12 +2498,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "5",
+                                            "value": "3",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=5",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=3",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2554,7 +2554,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "ducimus",
+                                            "value": "id",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2679,7 +2679,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "recusandae",
+                                            "value": "nisi",
                                             "description": ""
                                         }
                                     ]
@@ -2959,25 +2959,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "dolorum",
+                                    "value": "voluptas",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"masum2@excellisit.net\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "libero",
+                                    "value": "corporis",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "vel",
+                                    "value": "necessitatibus",
                                     "type": "text",
                                     "description": "The subject of the email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "aut",
+                                    "value": "earum",
                                     "type": "text",
                                     "description": "The body content of the email."
                                 },
@@ -3036,25 +3036,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "facilis",
+                                    "value": "distinctio",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "velit",
+                                    "value": "est",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "quibusdam",
+                                    "value": "sed",
                                     "type": "text",
                                     "description": "The subject of the reply email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "et",
+                                    "value": "aut",
                                     "type": "text",
                                     "description": "The body content of the reply email."
                                 },
@@ -3119,25 +3119,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "incidunt",
+                                    "value": "qui",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "at",
+                                    "value": "id",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "in",
+                                    "value": "veniam",
                                     "type": "text",
                                     "description": "The subject of the forwarded email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "reprehenderit",
+                                    "value": "impedit",
                                     "type": "text",
                                     "description": "The body content of the forwarded email."
                                 },
@@ -3509,7 +3509,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"kemmer.rowena@example.net\"}"
+                            "raw": "{\"email\":\"eabernathy@example.com\"}"
                         },
                         "description": "",
                         "auth": {
@@ -4231,7 +4231,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":1}"
+                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":4}"
                         },
                         "description": "Manages notifications for group chat messages. If the user has a new message, it sends a notification;\notherwise, it marks the notification as read."
                     },
@@ -4348,6 +4348,175 @@
                             "header": [],
                             "code": 404,
                             "body": "{\n    \"error\": \"Job not found.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Meetings",
+            "description": "",
+            "item": [
+                {
+                    "name": "List All Meetings",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/meetings\/load",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/meetings\/load"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"user_id\": 2,\n            \"title\": \"Project Sync\",\n            \"description\": \"Weekly project sync meeting.\",\n            \"start_time\": \"2024-11-10T09:00:00.000000Z\",\n            \"end_time\": \"2024-11-10T10:00:00.000000Z\",\n            \"meeting_link\": \"https:\/\/meeting.example.com\/xyz123\",\n            \"created_at\": \"2024-11-08T12:00:00.000000Z\",\n            \"updated_at\": \"2024-11-08T12:00:00.000000Z\",\n            \"user\": {\n                \"id\": 2,\n                \"name\": \"John Doe\",\n                \"email\": \"john@example.com\"\n            }\n        }\n    ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n    \"error\": \"Failed to load meetings.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Meeting",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/meetings\/store",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/meetings\/store"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"Project Sync\",\"description\":\"Weekly project sync meeting.\",\"start_time\":\"2024-11-10T09:00:00.000000Z\",\"end_time\":\"2024-11-10T10:00:00.000000Z\",\"meeting_link\":\"https:\\\/\\\/meeting.example.com\\\/xyz123\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"message\": \"Meeting created successfully.\",\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 2,\n        \"title\": \"Project Sync\",\n        \"description\": \"Weekly project sync meeting.\",\n        \"start_time\": \"2024-11-10T09:00:00.000000Z\",\n        \"end_time\": \"2024-11-10T10:00:00.000000Z\",\n        \"meeting_link\": \"https:\/\/meeting.example.com\/xyz123\",\n        \"created_at\": \"2024-11-08T12:00:00.000000Z\",\n        \"updated_at\": \"2024-11-08T12:00:00.000000Z\"\n    }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n    \"error\": \"Failed to create meeting.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Single Meeting Details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/meetings\/view\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/meetings\/view\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the meeting."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 2,\n        \"title\": \"Project Sync\",\n        \"description\": \"Weekly project sync meeting.\",\n        \"start_time\": \"2024-11-10T09:00:00.000000Z\",\n        \"end_time\": \"2024-11-10T10:00:00.000000Z\",\n        \"meeting_link\": \"https:\/\/meeting.example.com\/xyz123\",\n        \"created_at\": \"2024-11-08T12:00:00.000000Z\",\n        \"updated_at\": \"2024-11-08T12:00:00.000000Z\",\n        \"user\": {\n               \"id\": 12,\n               \"ecclesia_id\": 2,\n               \"created_id\": \"1\",\n               \"user_name\": \"swarnadwip_nath\",\n               \"first_name\": \"Swarnadwip\",\n               \"middle_name\": null,\n               \"last_name\": \"Nath\",\n               \"email\": \"swarnadwip@excellisit.net\",\n               \"phone\": \"+1 0741202022\",\n               \"email_verified_at\": null,\n               \"profile_picture\": \"profile_picture\/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg\",\n               \"address\": \"Kokata\",\n               \"city\": \"Kolkata\",\n               \"state\": \"41\",\n               \"address2\": null,\n               \"country\": \"101\",\n               \"zip\": \"700001\",\n               \"status\": 1,\n               \"created_at\": \"2024-06-21T11:31:27.000000Z\",\n               \"updated_at\": \"2024-09-09T11:02:59.000000Z\"\n        }\n    }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n    \"error\": \"Meeting not found.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Meetings Calender Data",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/meetings\/meetings-calender-fetch-data",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/meetings\/meetings-calender-fetch-data"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Calender data fetched successfully.\",\n   \"data\": [\n       {\n           \"id\": 15,\n           \"title\": \"Project Sync\",\n           \"description\": \"Weekly project sync meeting.\",\n           \"start\": \"2024-11-10T09:00:00.000000Z\",\n           \"end\": \"2024-11-10T10:00:00.000000Z\",\n           \"meeting_link\": \"https:\/\/meeting.example.com\/xyz123\"\n       },\n       {\n           \"id\": 13,\n           \"title\": \"fourth meeting\",\n           \"description\": \"afd\",\n           \"start\": \"2024-10-01T18:57\",\n           \"end\": \"2024-10-01T18:58\",\n           \"meeting_link\": null\n       },\n       {\n           \"id\": 12,\n           \"title\": \"Third meeting\",\n           \"description\": \"fd\",\n           \"start\": \"2024-10-01T18:57\",\n           \"end\": \"2024-10-01T18:58\",\n           \"meeting_link\": null\n       },\n       {\n           \"id\": 11,\n           \"title\": \"Second meeting\",\n           \"description\": \"adsf\",\n           \"start\": \"2024-10-01T18:56\",\n           \"end\": \"2024-10-01T18:57\",\n           \"meeting_link\": null\n       }\n   ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n    \"error\": \"Meetings not found.\"\n}",
                             "name": ""
                         }
                     ]

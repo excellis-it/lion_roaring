@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\TeamChatController;
 use App\Http\Controllers\Api\EmailController;
 use App\Http\Controllers\API\JobController;
 use App\Http\Controllers\Api\LeadershipDevelopmentController;
+use App\Http\Controllers\API\MeetingController;
 use App\Http\Controllers\Api\TopicController;
 
 /*
@@ -132,7 +133,6 @@ Route::prefix('v3')->group(function () {
             // 'categories' => CategoryController::class,
             // 'products' => ProductController::class,
             // 'ecclesias' => EcclesiaContorller::class,
-            // 'meetings' => MeetingSchedulingController::class,
         ]);
 
         Route::prefix('becoming-sovereign')->group(function () {
@@ -181,6 +181,14 @@ Route::prefix('v3')->group(function () {
         Route::prefix('jobs')->group(function () {
             Route::get('/load', [JobController::class, 'index']);
             Route::get('/view/{id}', [JobController::class, 'show']);
+        });
+
+
+        Route::prefix('meetings')->group(function () {
+            Route::get('/load', [MeetingController::class, 'index']);
+            Route::post('/store', [MeetingController::class, 'store']);
+            Route::get('/view/{id}', [MeetingController::class, 'show']);
+            Route::get('/meetings-calender-fetch-data', [MeetingController::class, 'fetchCalenderData']);
         });
 
 
