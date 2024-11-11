@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\TeamChatController;
 use App\Http\Controllers\Api\EmailController;
+use App\Http\Controllers\Api\EstoreProductController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\API\JobController;
 use App\Http\Controllers\Api\LeadershipDevelopmentController;
@@ -223,6 +224,11 @@ Route::prefix('v3')->group(function () {
         Route::prefix('roles')->group(function () {
             Route::get('/list', [RolePermissionsController::class, 'list']);
             Route::put('/edit/{id}', [RolePermissionsController::class, 'edit']);
+        });
+
+
+        Route::prefix('e-store')->group(function () {
+            Route::get('/all-products', [EstoreProductController::class, 'products']);
         });
 
 

@@ -109,7 +109,7 @@ endpoints:
         name: stripeToken
         description: required.
         required: false
-        example: corrupti
+        example: consequuntur
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -124,7 +124,7 @@ endpoints:
       postcode: ZP74857
       amount: 150
       country_id: 2
-      stripeToken: corrupti
+      stripeToken: consequuntur
     fileParameters: []
     responses: []
     responseFields: []
