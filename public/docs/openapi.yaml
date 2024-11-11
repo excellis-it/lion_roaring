@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 2
+                  example: 19
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -2361,7 +2361,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: considine.marty@example.org
+                  example: shaylee36@example.net
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -2432,7 +2432,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: earum
+                  example: veritatis
       security: []
   /api/v3/country-list:
     post:
@@ -2638,7 +2638,7 @@ paths:
         in: path
         name: topic
         description: 'The topic.'
-        example: inventore
+        example: ducimus
         required: true
         schema:
           type: string
@@ -2754,42 +2754,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: doloribus
+          example: facilis
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: doloribus
+            example: facilis
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: cumque
+          example: iure
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: cumque
+            example: iure
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: quibusdam
+          example: et
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: quibusdam
+            example: et
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 10
+          example: 20
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 10
+            example: 20
       responses:
         200:
           description: ''
@@ -3099,12 +3099,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 14
+          example: 20
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 14
+            example: 20
       responses:
         200:
           description: ''
@@ -3328,7 +3328,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: eum
+        example: facere
         required: true
         schema:
           type: string
@@ -3435,7 +3435,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: vitae
+        example: eligendi
         required: true
         schema:
           type: string
@@ -3475,42 +3475,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: sed
+          example: esse
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: sed
+            example: esse
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: fuga
+          example: asperiores
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: fuga
+            example: asperiores
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: optio
+          example: voluptatem
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: optio
+            example: voluptatem
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 19
+          example: 4
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 19
+            example: 4
       responses:
         200:
           description: ''
@@ -3820,12 +3820,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 4
+          example: 9
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 4
+            example: 9
       responses:
         200:
           description: ''
@@ -4049,7 +4049,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: minus
+        example: sint
         required: true
         schema:
           type: string
@@ -4156,7 +4156,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: id
+        example: pariatur
         required: true
         schema:
           type: string
@@ -4196,42 +4196,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: necessitatibus
+          example: eum
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: necessitatibus
+            example: eum
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: fugiat
+          example: omnis
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: fugiat
+            example: omnis
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: sunt
+          example: magnam
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: sunt
+            example: magnam
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 12
+          example: 5
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 12
+            example: 5
       responses:
         200:
           description: ''
@@ -4541,12 +4541,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 7
+          example: 5
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 7
+            example: 5
       responses:
         200:
           description: ''
@@ -4770,7 +4770,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: animi
+        example: ducimus
         required: true
         schema:
           type: string
@@ -4877,7 +4877,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: eos
+        example: recusandae
         required: true
         schema:
           type: string
@@ -5557,19 +5557,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
-                  example: voluptatibus
+                  example: dolorum
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: blanditiis
+                  example: libero
                 subject:
                   type: string
                   description: 'The subject of the email.'
-                  example: mollitia
+                  example: vel
                 message:
                   type: string
                   description: 'The body content of the email.'
-                  example: quibusdam
+                  example: aut
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -5699,19 +5699,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: voluptate
+                  example: facilis
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: deserunt
+                  example: velit
                 subject:
                   type: string
                   description: 'The subject of the reply email.'
-                  example: quis
+                  example: quibusdam
                 message:
                   type: string
                   description: 'The body content of the reply email.'
-                  example: asperiores
+                  example: et
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -5721,7 +5721,7 @@ paths:
                 main_mail_id:
                   type: integer
                   description: 'The ID of the main email thread being replied to.'
-                  example: 11
+                  example: 10
               required:
                 - to
                 - subject
@@ -5838,19 +5838,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: ut
+                  example: incidunt
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: molestiae
+                  example: at
                 subject:
                   type: string
                   description: 'The subject of the forwarded email.'
-                  example: ab
+                  example: in
                 message:
                   type: string
                   description: 'The body content of the forwarded email.'
-                  example: dolorum
+                  example: reprehenderit
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -6338,7 +6338,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: egerhold@example.net
+                  example: kemmer.rowena@example.net
               required:
                 - email
       security: []
@@ -8261,10 +8261,279 @@ paths:
                 is_delete:
                   type: integer
                   description: 'optional Indicates if the notification should be marked as read and deleted.'
-                  example: 11
+                  example: 1
               required:
                 - team_id
                 - chat_id
+  /api/v3/user/jobs/load:
+    get:
+      summary: 'All Job Posts'
+      operationId: allJobPosts
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      created_by: 2
+                      job_title: 'Software Engineer'
+                      job_description: '<p>Develop and maintain software applications.<p>'
+                      job_type: Full-time
+                      job_location: Remote
+                      job_salary: '80,000 - 100,000'
+                      job_experience: '3+ years'
+                      contact_person: 'John Doe'
+                      contact_email: johndoe@example.com
+                      list_of_values: 'Team player, Good communication'
+                      created_at: '2024-11-08T12:00:00.000000Z'
+                      updated_at: '2024-11-08T12:00:00.000000Z'
+                      user:
+                        id: 2
+                        name: 'John Doe'
+                        email: john@example.com
+                    -
+                      id: 2
+                      created_by: 3
+                      job_title: 'Project Manager'
+                      job_description: 'Manage project timelines and deliverables.'
+                      job_type: Contract
+                      job_location: On-site
+                      job_salary: '60,000 - 80,000'
+                      job_experience: '5+ years'
+                      contact_person: 'Jane Smith'
+                      contact_email: janesmith@example.com
+                      list_of_values: 'Leadership, Organizational skills'
+                      created_at: '2024-11-08T12:00:00.000000Z'
+                      updated_at: '2024-11-08T12:00:00.000000Z'
+                      user:
+                        id: 3
+                        name: 'Jane Smith'
+                        email: jane@example.com
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        created_by: 2
+                        job_title: 'Software Engineer'
+                        job_description: '<p>Develop and maintain software applications.<p>'
+                        job_type: Full-time
+                        job_location: Remote
+                        job_salary: '80,000 - 100,000'
+                        job_experience: '3+ years'
+                        contact_person: 'John Doe'
+                        contact_email: johndoe@example.com
+                        list_of_values: 'Team player, Good communication'
+                        created_at: '2024-11-08T12:00:00.000000Z'
+                        updated_at: '2024-11-08T12:00:00.000000Z'
+                        user:
+                          id: 2
+                          name: 'John Doe'
+                          email: john@example.com
+                      -
+                        id: 2
+                        created_by: 3
+                        job_title: 'Project Manager'
+                        job_description: 'Manage project timelines and deliverables.'
+                        job_type: Contract
+                        job_location: On-site
+                        job_salary: '60,000 - 80,000'
+                        job_experience: '5+ years'
+                        contact_person: 'Jane Smith'
+                        contact_email: janesmith@example.com
+                        list_of_values: 'Leadership, Organizational skills'
+                        created_at: '2024-11-08T12:00:00.000000Z'
+                        updated_at: '2024-11-08T12:00:00.000000Z'
+                        user:
+                          id: 3
+                          name: 'Jane Smith'
+                          email: jane@example.com
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        created_by:
+                          type: integer
+                          example: 2
+                        job_title:
+                          type: string
+                          example: 'Software Engineer'
+                        job_description:
+                          type: string
+                          example: '<p>Develop and maintain software applications.<p>'
+                        job_type:
+                          type: string
+                          example: Full-time
+                        job_location:
+                          type: string
+                          example: Remote
+                        job_salary:
+                          type: string
+                          example: '80,000 - 100,000'
+                        job_experience:
+                          type: string
+                          example: '3+ years'
+                        contact_person:
+                          type: string
+                          example: 'John Doe'
+                        contact_email:
+                          type: string
+                          example: johndoe@example.com
+                        list_of_values:
+                          type: string
+                          example: 'Team player, Good communication'
+                        created_at:
+                          type: string
+                          example: '2024-11-08T12:00:00.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-11-08T12:00:00.000000Z'
+                        user:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 2
+                            name:
+                              type: string
+                              example: 'John Doe'
+                            email:
+                              type: string
+                              example: john@example.com
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Failed to load jobs.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Failed to load jobs.'
+      tags:
+        - Jobs
+  '/api/v3/user/jobs/view/{id}':
+    get:
+      summary: 'Single Job Details'
+      operationId: singleJobDetails
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    created_by: 2
+                    job_title: 'Software Engineer'
+                    job_description: "<p><strong>Python </strong>is an interpreted, interactive, object-oriented programming language. It incorporates modules, dynamic typing, dynamic data types and classes. It's also portable, extensible and easy to read and code, which is a big reason it's popular.The language also focuses on designer experience and usability, and one of its largest benefits is that it has functions in many industries and organizations. You can integrate it with<strong> C</strong> and <strong>C++</strong> for more challenging tasks. Common uses of Python include:</p><ul><li>Data visualization</li><li>Artificial intelligence and machine learning</li><li>Finance</li><li>Game development</li><li>Web development</li></ul>"
+                    job_type: Full-time
+                    job_location: Remote
+                    job_salary: '80,000 - 100,000'
+                    job_experience: '3+ years'
+                    contact_person: 'John Doe'
+                    contact_email: johndoe@example.com
+                    list_of_values: 'Team player, Good communication'
+                    created_at: '2024-11-08T12:00:00.000000Z'
+                    updated_at: '2024-11-08T12:00:00.000000Z'
+                    user:
+                      id: 2
+                      name: 'John Doe'
+                      email: john@example.com
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      created_by:
+                        type: integer
+                        example: 2
+                      job_title:
+                        type: string
+                        example: 'Software Engineer'
+                      job_description:
+                        type: string
+                        example: "<p><strong>Python </strong>is an interpreted, interactive, object-oriented programming language. It incorporates modules, dynamic typing, dynamic data types and classes. It's also portable, extensible and easy to read and code, which is a big reason it's popular.The language also focuses on designer experience and usability, and one of its largest benefits is that it has functions in many industries and organizations. You can integrate it with<strong> C</strong> and <strong>C++</strong> for more challenging tasks. Common uses of Python include:</p><ul><li>Data visualization</li><li>Artificial intelligence and machine learning</li><li>Finance</li><li>Game development</li><li>Web development</li></ul>"
+                      job_type:
+                        type: string
+                        example: Full-time
+                      job_location:
+                        type: string
+                        example: Remote
+                      job_salary:
+                        type: string
+                        example: '80,000 - 100,000'
+                      job_experience:
+                        type: string
+                        example: '3+ years'
+                      contact_person:
+                        type: string
+                        example: 'John Doe'
+                      contact_email:
+                        type: string
+                        example: johndoe@example.com
+                      list_of_values:
+                        type: string
+                        example: 'Team player, Good communication'
+                      created_at:
+                        type: string
+                        example: '2024-11-08T12:00:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-08T12:00:00.000000Z'
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 2
+                          name:
+                            type: string
+                            example: 'John Doe'
+                          email:
+                            type: string
+                            example: john@example.com
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Job not found.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Job not found.'
+      tags:
+        - Jobs
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the job.'
+        example: 1
+        required: true
+        schema:
+          type: integer
   /api/v3/user/profile:
     post:
       summary: 'Profile Details'
@@ -8621,6 +8890,9 @@ tags:
     description: ''
   -
     name: 'Group Chats'
+    description: ''
+  -
+    name: Jobs
     description: ''
   -
     name: Profile

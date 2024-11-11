@@ -223,7 +223,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v8E41ghDkd3aaPf5be6cZ6V'
+      - 'Bearer ZVkDfavPda35b6ce648hE1g'
     controller: null
     method: null
     route: null
@@ -332,7 +332,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1VkPcdE654vhageDf86abZ3'
+      - 'Bearer 8fD1aVv6ZPdba35hEkce46g'
     controller: null
     method: null
     route: null
@@ -570,7 +570,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3ecPa4d16h8gavEVkDf56bZ'
+      - 'Bearer vh6aE4Pbd18kefDZ3caVg56'
     controller: null
     method: null
     route: null
@@ -708,7 +708,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dbcg8Pavh6af145E6ke3ZVD'
+      - 'Bearer 4Z5E86f16avV3ckhgPbDdea'
     controller: null
     method: null
     route: null
@@ -793,7 +793,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Ebf4gcP56VdZeh3Da86ka1v'
+      - 'Bearer DkbhE4V1Z568gPdec3fa6va'
     controller: null
     method: null
     route: null
@@ -868,7 +868,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kgbE815D3va4Zf6PhV6acde'
+      - 'Bearer h4Z3dDc1e5P8bfEkVa6vag6'
     controller: null
     method: null
     route: null
@@ -955,7 +955,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZcbE6ak163V5ePhfD4v8dag'
+      - 'Bearer 4h1656gZDPe3badafVcE8vk'
     controller: null
     method: null
     route: null
@@ -1047,7 +1047,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d6gavPEh86Dcf3Vk1a4Zb5e'
+      - 'Bearer Dda6Zhc1Pbv4gE63V8kf5ea'
     controller: null
     method: null
     route: null
@@ -1134,7 +1134,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c4Z6a8VdeE1vkfP53aDb6gh'
+      - 'Bearer a65D6k8Va1ZdcefbghEP3v4'
     controller: null
     method: null
     route: null
@@ -1204,7 +1204,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v6a6fE8bVP4ek1cZ5adDgh3'
+      - 'Bearer 65EfkbeZPh13daaV68cgv4D'
     controller: null
     method: null
     route: null
@@ -1281,7 +1281,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h8gdbefk65cZ1PV3a6EvDa4'
+      - 'Bearer 46k5abPhae13gd8DcZEfv6V'
     controller: null
     method: null
     route: null
@@ -1374,7 +1374,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 68ZvfkaVaP36eEcg5d1hDb4'
+      - 'Bearer 3Z8gEDk64ab1P6cvfVh5dae'
     controller: null
     method: null
     route: null
@@ -1449,7 +1449,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D8hfv5dcZ3VbPkae61g4E6a'
+      - 'Bearer vabgZ1DkfEeVcad4586h6P3'
     controller: null
     method: null
     route: null
@@ -1556,7 +1556,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ed6V3156fZa8PhaD4kEcvgb'
+      - 'Bearer 5gd8hD1Ea4cekvb6V3a6fZP'
     controller: null
     method: null
     route: null
@@ -1631,7 +1631,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EZc16hD4d5V6kfPegvb3aa8'
+      - 'Bearer ak6cae64ZvE3fVdg18DPb5h'
     controller: null
     method: null
     route: null
@@ -1682,7 +1682,7 @@ endpoints:
         name: is_delete
         description: 'optional Indicates if the notification should be marked as read and deleted.'
         required: false
-        example: 11
+        example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -1690,7 +1690,7 @@ endpoints:
     cleanBodyParameters:
       team_id: 10
       chat_id: 25
-      is_delete: 11
+      is_delete: 1
     fileParameters: []
     responses:
       -
@@ -1745,7 +1745,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer abh356V6cf1ZEPdag84evkD'
+      - 'Bearer ah5Pc4kaZf16E86bveD3gVd'
     controller: null
     method: null
     route: null

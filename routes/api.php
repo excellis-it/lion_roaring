@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\TeamChatController;
 use App\Http\Controllers\Api\EmailController;
+use App\Http\Controllers\API\JobController;
 use App\Http\Controllers\Api\LeadershipDevelopmentController;
 use App\Http\Controllers\Api\TopicController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -128,12 +128,10 @@ Route::prefix('v3')->group(function () {
         Route::resources([
             // 'roles' => RolePermissionsController::class,
             // 'partners' => PartnerController::class,
-            // 'bulletins' => BulletinController::class,
             'topics' => TopicController::class,
             // 'categories' => CategoryController::class,
             // 'products' => ProductController::class,
             // 'ecclesias' => EcclesiaContorller::class,
-            // 'jobs' => JobpostingController::class,
             // 'meetings' => MeetingSchedulingController::class,
         ]);
 
@@ -179,6 +177,12 @@ Route::prefix('v3')->group(function () {
             Route::put('/edit/{id}', [BulletinController::class, 'update']);
             Route::delete('/delete/{id}', [BulletinController::class, 'destroy']);
         });
+
+        Route::prefix('jobs')->group(function () {
+            Route::get('/load', [JobController::class, 'index']);
+            Route::get('/view/{id}', [JobController::class, 'show']);
+        });
+
 
 
 
