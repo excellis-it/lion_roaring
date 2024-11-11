@@ -110,7 +110,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 15
+                  example: 5
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -2361,7 +2361,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: breynolds@example.net
+                  example: vonrueden.ines@example.org
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -2432,7 +2432,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: sit
+                  example: corrupti
       security: []
   /api/v3/country-list:
     post:
@@ -2638,7 +2638,7 @@ paths:
         in: path
         name: topic
         description: 'The topic.'
-        example: aspernatur
+        example: ut
         required: true
         schema:
           type: string
@@ -2754,42 +2754,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: adipisci
+          example: architecto
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: adipisci
+            example: architecto
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: qui
+          example: quo
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: qui
+            example: quo
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: explicabo
+          example: dolor
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: explicabo
+            example: dolor
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 17
+          example: 18
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 17
+            example: 18
       responses:
         200:
           description: ''
@@ -3099,12 +3099,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 16
+          example: 15
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 16
+            example: 15
       responses:
         200:
           description: ''
@@ -3328,7 +3328,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: modi
+        example: corrupti
         required: true
         schema:
           type: string
@@ -3435,7 +3435,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: omnis
+        example: consequatur
         required: true
         schema:
           type: string
@@ -3475,42 +3475,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: nam
+          example: dolorem
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: nam
+            example: dolorem
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: beatae
+          example: illum
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: beatae
+            example: illum
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: sint
+          example: numquam
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: sint
+            example: numquam
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 14
+          example: 19
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 14
+            example: 19
       responses:
         200:
           description: ''
@@ -3820,12 +3820,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 4
+          example: 6
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 4
+            example: 6
       responses:
         200:
           description: ''
@@ -4049,7 +4049,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: quia
+        example: assumenda
         required: true
         schema:
           type: string
@@ -4156,7 +4156,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: omnis
+        example: qui
         required: true
         schema:
           type: string
@@ -4196,12 +4196,12 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: eos
+          example: exercitationem
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: eos
+            example: exercitationem
         -
           in: query
           name: sorttype
@@ -4216,22 +4216,22 @@ paths:
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: saepe
+          example: consectetur
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: saepe
+            example: consectetur
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 20
+          example: 10
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 20
+            example: 10
       responses:
         200:
           description: ''
@@ -4541,12 +4541,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 17
+          example: 6
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 17
+            example: 6
       responses:
         200:
           description: ''
@@ -4770,7 +4770,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: nostrum
+        example: possimus
         required: true
         schema:
           type: string
@@ -4877,7 +4877,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: exercitationem
+        example: voluptatem
         required: true
         schema:
           type: string
@@ -5557,19 +5557,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
-                  example: dolores
+                  example: pariatur
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: placeat
+                  example: exercitationem
                 subject:
                   type: string
                   description: 'The subject of the email.'
-                  example: quod
+                  example: corrupti
                 message:
                   type: string
                   description: 'The body content of the email.'
-                  example: est
+                  example: alias
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -5699,19 +5699,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: eaque
+                  example: placeat
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: illum
+                  example: dolor
                 subject:
                   type: string
                   description: 'The subject of the reply email.'
-                  example: nihil
+                  example: sit
                 message:
                   type: string
                   description: 'The body content of the reply email.'
-                  example: deleniti
+                  example: aut
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -5721,7 +5721,7 @@ paths:
                 main_mail_id:
                   type: integer
                   description: 'The ID of the main email thread being replied to.'
-                  example: 16
+                  example: 9
               required:
                 - to
                 - subject
@@ -5838,19 +5838,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: tenetur
+                  example: ex
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: rem
+                  example: hic
                 subject:
                   type: string
                   description: 'The subject of the forwarded email.'
-                  example: suscipit
+                  example: aut
                 message:
                   type: string
                   description: 'The body content of the forwarded email.'
-                  example: sed
+                  example: deleniti
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -6813,7 +6813,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: qhermiston@example.org
+                  example: vena02@example.net
               required:
                 - email
       security: []
@@ -8736,7 +8736,7 @@ paths:
                 is_delete:
                   type: integer
                   description: 'optional Indicates if the notification should be marked as read and deleted.'
-                  example: 1
+                  example: 17
               required:
                 - team_id
                 - chat_id
@@ -9591,6 +9591,324 @@ paths:
                     example: 'Meetings not found.'
       tags:
         - Meetings
+  /api/v3/user/partners/list:
+    get:
+      summary: 'List Of Members'
+      operationId: listOfMembers
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    current_page: 1
+                    data:
+                      -
+                        id: 39
+                        ecclesia_id: 9
+                        created_id: null
+                        user_name: johndoe
+                        first_name: John
+                        middle_name: A.
+                        last_name: Doe
+                        email: johndoe@example.com
+                        phone: '1234567890'
+                        email_verified_at: '2024-11-06T10:49:25.000000Z'
+                        profile_picture: null
+                        address: '123 Main St'
+                        city: Springfield
+                        state: Illinois
+                        address2: 'Apt 4B'
+                        country: USA
+                        zip: '62704'
+                        status: 0
+                        created_at: '2024-11-06T10:49:25.000000Z'
+                        updated_at: '2024-11-06T10:49:25.000000Z'
+                      -
+                        id: 38
+                        ecclesia_id: 4
+                        created_id: null
+                        user_name: masum2
+                        first_name: Masum
+                        middle_name: null
+                        last_name: '2'
+                        email: masum2@excellisit.net
+                        phone: '+91 11 1111 1111'
+                        email_verified_at: '2024-11-05T07:17:07.000000Z'
+                        profile_picture: null
+                        address: Kolkata
+                        city: Kolkata
+                        state: '41'
+                        address2: null
+                        country: '101'
+                        zip: '700001'
+                        status: 1
+                        created_at: '2024-11-05T07:17:07.000000Z'
+                        updated_at: '2024-11-05T07:17:07.000000Z'
+                      -
+                        id: 37
+                        ecclesia_id: 4
+                        created_id: null
+                        user_name: masum1
+                        first_name: Test
+                        middle_name: null
+                        last_name: User
+                        email: masum@excellisit.net
+                        phone: '+91 91234 56789'
+                        email_verified_at: '2024-10-28T08:35:17.000000Z'
+                        profile_picture: profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp
+                        address: kolkata
+                        city: kolkata
+                        state: '41'
+                        address2: kolkata
+                        country: '101'
+                        zip: '700001'
+                        status: 1
+                        created_at: '2024-10-28T08:35:17.000000Z'
+                        updated_at: '2024-11-08T12:59:01.000000Z'
+                    first_page_url: 'http://127.0.0.1:8000/api/v3/user/partners/list?page=1'
+                    from: 1
+                    last_page: 2
+                    last_page_url: 'http://127.0.0.1:8000/api/v3/user/partners/list?page=2'
+                    links:
+                      -
+                        url: null
+                        label: '&laquo; Previous'
+                        active: false
+                      -
+                        url: 'http://127.0.0.1:8000/api/v3/user/partners/list?page=1'
+                        label: '1'
+                        active: true
+                      -
+                        url: 'http://127.0.0.1:8000/api/v3/user/partners/list?page=2'
+                        label: '2'
+                        active: false
+                      -
+                        url: 'http://127.0.0.1:8000/api/v3/user/partners/list?page=2'
+                        label: 'Next &raquo;'
+                        active: false
+                    next_page_url: 'http://127.0.0.1:8000/api/v3/user/partners/list?page=2'
+                    path: 'http://127.0.0.1:8000/api/v3/user/partners/list'
+                    per_page: 15
+                    prev_page_url: null
+                    to: 15
+                    total: 2
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      data:
+                        type: array
+                        example:
+                          -
+                            id: 39
+                            ecclesia_id: 9
+                            created_id: null
+                            user_name: johndoe
+                            first_name: John
+                            middle_name: A.
+                            last_name: Doe
+                            email: johndoe@example.com
+                            phone: '1234567890'
+                            email_verified_at: '2024-11-06T10:49:25.000000Z'
+                            profile_picture: null
+                            address: '123 Main St'
+                            city: Springfield
+                            state: Illinois
+                            address2: 'Apt 4B'
+                            country: USA
+                            zip: '62704'
+                            status: 0
+                            created_at: '2024-11-06T10:49:25.000000Z'
+                            updated_at: '2024-11-06T10:49:25.000000Z'
+                          -
+                            id: 38
+                            ecclesia_id: 4
+                            created_id: null
+                            user_name: masum2
+                            first_name: Masum
+                            middle_name: null
+                            last_name: '2'
+                            email: masum2@excellisit.net
+                            phone: '+91 11 1111 1111'
+                            email_verified_at: '2024-11-05T07:17:07.000000Z'
+                            profile_picture: null
+                            address: Kolkata
+                            city: Kolkata
+                            state: '41'
+                            address2: null
+                            country: '101'
+                            zip: '700001'
+                            status: 1
+                            created_at: '2024-11-05T07:17:07.000000Z'
+                            updated_at: '2024-11-05T07:17:07.000000Z'
+                          -
+                            id: 37
+                            ecclesia_id: 4
+                            created_id: null
+                            user_name: masum1
+                            first_name: Test
+                            middle_name: null
+                            last_name: User
+                            email: masum@excellisit.net
+                            phone: '+91 91234 56789'
+                            email_verified_at: '2024-10-28T08:35:17.000000Z'
+                            profile_picture: profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp
+                            address: kolkata
+                            city: kolkata
+                            state: '41'
+                            address2: kolkata
+                            country: '101'
+                            zip: '700001'
+                            status: 1
+                            created_at: '2024-10-28T08:35:17.000000Z'
+                            updated_at: '2024-11-08T12:59:01.000000Z'
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 39
+                            ecclesia_id:
+                              type: integer
+                              example: 9
+                            created_id:
+                              type: string
+                              example: null
+                            user_name:
+                              type: string
+                              example: johndoe
+                            first_name:
+                              type: string
+                              example: John
+                            middle_name:
+                              type: string
+                              example: A.
+                            last_name:
+                              type: string
+                              example: Doe
+                            email:
+                              type: string
+                              example: johndoe@example.com
+                            phone:
+                              type: string
+                              example: '1234567890'
+                            email_verified_at:
+                              type: string
+                              example: '2024-11-06T10:49:25.000000Z'
+                            profile_picture:
+                              type: string
+                              example: null
+                            address:
+                              type: string
+                              example: '123 Main St'
+                            city:
+                              type: string
+                              example: Springfield
+                            state:
+                              type: string
+                              example: Illinois
+                            address2:
+                              type: string
+                              example: 'Apt 4B'
+                            country:
+                              type: string
+                              example: USA
+                            zip:
+                              type: string
+                              example: '62704'
+                            status:
+                              type: integer
+                              example: 0
+                            created_at:
+                              type: string
+                              example: '2024-11-06T10:49:25.000000Z'
+                            updated_at:
+                              type: string
+                              example: '2024-11-06T10:49:25.000000Z'
+                      first_page_url:
+                        type: string
+                        example: 'http://127.0.0.1:8000/api/v3/user/partners/list?page=1'
+                      from:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 2
+                      last_page_url:
+                        type: string
+                        example: 'http://127.0.0.1:8000/api/v3/user/partners/list?page=2'
+                      links:
+                        type: array
+                        example:
+                          -
+                            url: null
+                            label: '&laquo; Previous'
+                            active: false
+                          -
+                            url: 'http://127.0.0.1:8000/api/v3/user/partners/list?page=1'
+                            label: '1'
+                            active: true
+                          -
+                            url: 'http://127.0.0.1:8000/api/v3/user/partners/list?page=2'
+                            label: '2'
+                            active: false
+                          -
+                            url: 'http://127.0.0.1:8000/api/v3/user/partners/list?page=2'
+                            label: 'Next &raquo;'
+                            active: false
+                        items:
+                          type: object
+                          properties:
+                            url:
+                              type: string
+                              example: null
+                            label:
+                              type: string
+                              example: '&laquo; Previous'
+                            active:
+                              type: boolean
+                              example: false
+                      next_page_url:
+                        type: string
+                        example: 'http://127.0.0.1:8000/api/v3/user/partners/list?page=2'
+                      path:
+                        type: string
+                        example: 'http://127.0.0.1:8000/api/v3/user/partners/list'
+                      per_page:
+                        type: integer
+                        example: 15
+                      prev_page_url:
+                        type: string
+                        example: null
+                      to:
+                        type: integer
+                        example: 15
+                      total:
+                        type: integer
+                        example: 2
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Error occurred while fetching the partners.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Error occurred while fetching the partners.'
+      tags:
+        - Members
   /api/v3/user/profile:
     post:
       summary: 'Profile Details'
@@ -9917,6 +10235,1296 @@ paths:
                   example: 'Manage Email'
               required:
                 - permission_name
+  /api/v3/user/roles/list:
+    get:
+      summary: 'All roles with permissions'
+      operationId: allRolesWithPermissions
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 2
+                      name: MEMBER
+                      guard_name: web
+                      created_at: '2024-03-05T15:36:13.000000Z'
+                      updated_at: '2024-03-05T15:36:13.000000Z'
+                      permissions:
+                        -
+                          id: 1
+                          name: 'Manage Profile'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 1
+                        -
+                          id: 2
+                          name: 'Manage Password'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 2
+                        -
+                          id: 3
+                          name: 'Manage Chat'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 3
+                        -
+                          id: 4
+                          name: 'Create Team'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 4
+                        -
+                          id: 6
+                          name: 'Delete Team'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 6
+                        -
+                          id: 7
+                          name: 'Manage Team'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 7
+                        -
+                          id: 9
+                          name: 'Manage Email'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 9
+                        -
+                          id: 10
+                          name: 'Manage Becoming Sovereigns'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 10
+                        -
+                          id: 11
+                          name: 'View Becoming Sovereigns'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 11
+                        -
+                          id: 12
+                          name: 'Upload Becoming Sovereigns'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 12
+                        -
+                          id: 13
+                          name: 'Edit Becoming Sovereigns'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 13
+                        -
+                          id: 14
+                          name: 'Delete Becoming Sovereigns'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 14
+                        -
+                          id: 15
+                          name: 'Download Becoming Sovereigns'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 15
+                        -
+                          id: 16
+                          name: 'Manage Becoming Christ Like'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 16
+                        -
+                          id: 17
+                          name: 'View Becoming Christ Like'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 17
+                        -
+                          id: 22
+                          name: 'Manage Becoming a Leader'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 22
+                        -
+                          id: 23
+                          name: 'View Becoming a Leader'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 23
+                        -
+                          id: 33
+                          name: 'Manage Bulletin'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 33
+                        -
+                          id: 34
+                          name: 'Edit Bulletin'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 34
+                        -
+                          id: 35
+                          name: 'Create Bulletin'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 35
+                        -
+                          id: 36
+                          name: 'Delete Bulletin'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 36
+                        -
+                          id: 37
+                          name: 'Manage Job Postings'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 37
+                        -
+                          id: 38
+                          name: 'View Job Postings'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 38
+                        -
+                          id: 42
+                          name: 'Manage Meeting Schedule'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 42
+                        -
+                          id: 43
+                          name: 'View Meeting Schedule'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 43
+                        -
+                          id: 47
+                          name: 'Manage Event'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 47
+                        -
+                          id: 48
+                          name: 'Create Event'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 48
+                        -
+                          id: 49
+                          name: 'Edit Event'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 49
+                        -
+                          id: 55
+                          name: 'Manage Help'
+                          guard_name: web
+                          created_at: '2024-08-05T12:25:46.000000Z'
+                          updated_at: '2024-08-05T12:25:46.000000Z'
+                          pivot:
+                            role_id: 2
+                            permission_id: 55
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 2
+                        name: MEMBER
+                        guard_name: web
+                        created_at: '2024-03-05T15:36:13.000000Z'
+                        updated_at: '2024-03-05T15:36:13.000000Z'
+                        permissions:
+                          -
+                            id: 1
+                            name: 'Manage Profile'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 1
+                          -
+                            id: 2
+                            name: 'Manage Password'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 2
+                          -
+                            id: 3
+                            name: 'Manage Chat'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 3
+                          -
+                            id: 4
+                            name: 'Create Team'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 4
+                          -
+                            id: 6
+                            name: 'Delete Team'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 6
+                          -
+                            id: 7
+                            name: 'Manage Team'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 7
+                          -
+                            id: 9
+                            name: 'Manage Email'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 9
+                          -
+                            id: 10
+                            name: 'Manage Becoming Sovereigns'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 10
+                          -
+                            id: 11
+                            name: 'View Becoming Sovereigns'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 11
+                          -
+                            id: 12
+                            name: 'Upload Becoming Sovereigns'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 12
+                          -
+                            id: 13
+                            name: 'Edit Becoming Sovereigns'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 13
+                          -
+                            id: 14
+                            name: 'Delete Becoming Sovereigns'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 14
+                          -
+                            id: 15
+                            name: 'Download Becoming Sovereigns'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 15
+                          -
+                            id: 16
+                            name: 'Manage Becoming Christ Like'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 16
+                          -
+                            id: 17
+                            name: 'View Becoming Christ Like'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 17
+                          -
+                            id: 22
+                            name: 'Manage Becoming a Leader'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 22
+                          -
+                            id: 23
+                            name: 'View Becoming a Leader'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 23
+                          -
+                            id: 33
+                            name: 'Manage Bulletin'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 33
+                          -
+                            id: 34
+                            name: 'Edit Bulletin'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 34
+                          -
+                            id: 35
+                            name: 'Create Bulletin'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 35
+                          -
+                            id: 36
+                            name: 'Delete Bulletin'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 36
+                          -
+                            id: 37
+                            name: 'Manage Job Postings'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 37
+                          -
+                            id: 38
+                            name: 'View Job Postings'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 38
+                          -
+                            id: 42
+                            name: 'Manage Meeting Schedule'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 42
+                          -
+                            id: 43
+                            name: 'View Meeting Schedule'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 43
+                          -
+                            id: 47
+                            name: 'Manage Event'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 47
+                          -
+                            id: 48
+                            name: 'Create Event'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 48
+                          -
+                            id: 49
+                            name: 'Edit Event'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 49
+                          -
+                            id: 55
+                            name: 'Manage Help'
+                            guard_name: web
+                            created_at: '2024-08-05T12:25:46.000000Z'
+                            updated_at: '2024-08-05T12:25:46.000000Z'
+                            pivot:
+                              role_id: 2
+                              permission_id: 55
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 2
+                        name:
+                          type: string
+                          example: MEMBER
+                        guard_name:
+                          type: string
+                          example: web
+                        created_at:
+                          type: string
+                          example: '2024-03-05T15:36:13.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-03-05T15:36:13.000000Z'
+                        permissions:
+                          type: array
+                          example:
+                            -
+                              id: 1
+                              name: 'Manage Profile'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 1
+                            -
+                              id: 2
+                              name: 'Manage Password'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 2
+                            -
+                              id: 3
+                              name: 'Manage Chat'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 3
+                            -
+                              id: 4
+                              name: 'Create Team'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 4
+                            -
+                              id: 6
+                              name: 'Delete Team'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 6
+                            -
+                              id: 7
+                              name: 'Manage Team'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 7
+                            -
+                              id: 9
+                              name: 'Manage Email'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 9
+                            -
+                              id: 10
+                              name: 'Manage Becoming Sovereigns'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 10
+                            -
+                              id: 11
+                              name: 'View Becoming Sovereigns'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 11
+                            -
+                              id: 12
+                              name: 'Upload Becoming Sovereigns'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 12
+                            -
+                              id: 13
+                              name: 'Edit Becoming Sovereigns'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 13
+                            -
+                              id: 14
+                              name: 'Delete Becoming Sovereigns'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 14
+                            -
+                              id: 15
+                              name: 'Download Becoming Sovereigns'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 15
+                            -
+                              id: 16
+                              name: 'Manage Becoming Christ Like'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 16
+                            -
+                              id: 17
+                              name: 'View Becoming Christ Like'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 17
+                            -
+                              id: 22
+                              name: 'Manage Becoming a Leader'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 22
+                            -
+                              id: 23
+                              name: 'View Becoming a Leader'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 23
+                            -
+                              id: 33
+                              name: 'Manage Bulletin'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 33
+                            -
+                              id: 34
+                              name: 'Edit Bulletin'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 34
+                            -
+                              id: 35
+                              name: 'Create Bulletin'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 35
+                            -
+                              id: 36
+                              name: 'Delete Bulletin'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 36
+                            -
+                              id: 37
+                              name: 'Manage Job Postings'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 37
+                            -
+                              id: 38
+                              name: 'View Job Postings'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 38
+                            -
+                              id: 42
+                              name: 'Manage Meeting Schedule'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 42
+                            -
+                              id: 43
+                              name: 'View Meeting Schedule'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 43
+                            -
+                              id: 47
+                              name: 'Manage Event'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 47
+                            -
+                              id: 48
+                              name: 'Create Event'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 48
+                            -
+                              id: 49
+                              name: 'Edit Event'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 49
+                            -
+                              id: 55
+                              name: 'Manage Help'
+                              guard_name: web
+                              created_at: '2024-08-05T12:25:46.000000Z'
+                              updated_at: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                role_id: 2
+                                permission_id: 55
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                              name:
+                                type: string
+                                example: 'Manage Profile'
+                              guard_name:
+                                type: string
+                                example: web
+                              created_at:
+                                type: string
+                                example: '2024-08-05T12:25:46.000000Z'
+                              updated_at:
+                                type: string
+                                example: '2024-08-05T12:25:46.000000Z'
+                              pivot:
+                                type: object
+                                properties:
+                                  role_id:
+                                    type: integer
+                                    example: 2
+                                  permission_id:
+                                    type: integer
+                                    example: 1
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'You do not have permission to access this page.'
+                properties:
+                  message:
+                    type: string
+                    example: 'You do not have permission to access this page.'
+      tags:
+        - 'Role Permission'
+  '/api/v3/user/roles/edit/{id}':
+    put:
+      summary: 'Role permissions status'
+      operationId: rolePermissionsStatus
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  modules:
+                    -
+                      module: Profile
+                      permissions:
+                        manage: 1
+                        view: 0
+                        create: 0
+                        edit: 0
+                        delete: 0
+                        upload: 0
+                        download: 0
+                    -
+                      module: Password
+                      permissions:
+                        manage: 1
+                        view: 0
+                        create: 0
+                        edit: 0
+                        delete: 0
+                        upload: 0
+                        download: 0
+                    -
+                      module: Chat
+                      permissions:
+                        manage: 1
+                        view: 0
+                        create: 0
+                        edit: 0
+                        delete: 0
+                        upload: 0
+                        download: 0
+                    -
+                      module: Team
+                      permissions:
+                        manage: 1
+                        view: 0
+                        create: 1
+                        edit: 0
+                        delete: 1
+                        upload: 0
+                        download: 0
+                    -
+                      module: Email
+                      permissions:
+                        manage: 1
+                        view: 0
+                        create: 0
+                        edit: 0
+                        delete: 0
+                        upload: 0
+                        download: 0
+                    -
+                      module: Topic
+                      permissions:
+                        manage: 0
+                        view: 0
+                        create: 0
+                        edit: 0
+                        delete: 0
+                        upload: 0
+                        download: 0
+                    -
+                      module: 'Becoming Sovereigns'
+                      permissions:
+                        manage: 1
+                        view: 1
+                        create: 0
+                        edit: 1
+                        delete: 1
+                        upload: 1
+                        download: 1
+                    -
+                      module: 'Becoming Christ Like'
+                      permissions:
+                        manage: 1
+                        view: 1
+                        create: 0
+                        edit: 0
+                        delete: 0
+                        upload: 0
+                        download: 0
+                    -
+                      module: 'Becoming a Leader'
+                      permissions:
+                        manage: 1
+                        view: 1
+                        create: 0
+                        edit: 0
+                        delete: 0
+                        upload: 0
+                        download: 0
+                    -
+                      module: File
+                      permissions:
+                        manage: 0
+                        view: 0
+                        create: 0
+                        edit: 0
+                        delete: 0
+                        upload: 0
+                        download: 0
+                    -
+                      module: Bulletin
+                      permissions:
+                        manage: 1
+                        view: 0
+                        create: 1
+                        edit: 1
+                        delete: 1
+                        upload: 0
+                        download: 0
+                    -
+                      module: 'Job Postings'
+                      permissions:
+                        manage: 1
+                        view: 1
+                        create: 0
+                        edit: 0
+                        delete: 0
+                        upload: 0
+                        download: 0
+                    -
+                      module: 'Meeting Schedule'
+                      permissions:
+                        manage: 1
+                        view: 1
+                        create: 0
+                        edit: 0
+                        delete: 0
+                        upload: 0
+                        download: 0
+                    -
+                      module: Event
+                      permissions:
+                        manage: 1
+                        view: 0
+                        create: 1
+                        edit: 1
+                        delete: 0
+                        upload: 0
+                        download: 0
+                    -
+                      module: Partners
+                      permissions:
+                        manage: 0
+                        view: 0
+                        create: 0
+                        edit: 0
+                        delete: 0
+                        upload: 0
+                        download: 0
+                    -
+                      module: Strategy
+                      permissions:
+                        manage: 0
+                        view: 0
+                        create: 0
+                        edit: 0
+                        delete: 0
+                        upload: 0
+                        download: 0
+                    -
+                      module: Help
+                      permissions:
+                        manage: 1
+                        view: 0
+                        create: 0
+                        edit: 0
+                        delete: 0
+                        upload: 0
+                        download: 0
+                properties:
+                  modules:
+                    type: array
+                    example:
+                      -
+                        module: Profile
+                        permissions:
+                          manage: 1
+                          view: 0
+                          create: 0
+                          edit: 0
+                          delete: 0
+                          upload: 0
+                          download: 0
+                      -
+                        module: Password
+                        permissions:
+                          manage: 1
+                          view: 0
+                          create: 0
+                          edit: 0
+                          delete: 0
+                          upload: 0
+                          download: 0
+                      -
+                        module: Chat
+                        permissions:
+                          manage: 1
+                          view: 0
+                          create: 0
+                          edit: 0
+                          delete: 0
+                          upload: 0
+                          download: 0
+                      -
+                        module: Team
+                        permissions:
+                          manage: 1
+                          view: 0
+                          create: 1
+                          edit: 0
+                          delete: 1
+                          upload: 0
+                          download: 0
+                      -
+                        module: Email
+                        permissions:
+                          manage: 1
+                          view: 0
+                          create: 0
+                          edit: 0
+                          delete: 0
+                          upload: 0
+                          download: 0
+                      -
+                        module: Topic
+                        permissions:
+                          manage: 0
+                          view: 0
+                          create: 0
+                          edit: 0
+                          delete: 0
+                          upload: 0
+                          download: 0
+                      -
+                        module: 'Becoming Sovereigns'
+                        permissions:
+                          manage: 1
+                          view: 1
+                          create: 0
+                          edit: 1
+                          delete: 1
+                          upload: 1
+                          download: 1
+                      -
+                        module: 'Becoming Christ Like'
+                        permissions:
+                          manage: 1
+                          view: 1
+                          create: 0
+                          edit: 0
+                          delete: 0
+                          upload: 0
+                          download: 0
+                      -
+                        module: 'Becoming a Leader'
+                        permissions:
+                          manage: 1
+                          view: 1
+                          create: 0
+                          edit: 0
+                          delete: 0
+                          upload: 0
+                          download: 0
+                      -
+                        module: File
+                        permissions:
+                          manage: 0
+                          view: 0
+                          create: 0
+                          edit: 0
+                          delete: 0
+                          upload: 0
+                          download: 0
+                      -
+                        module: Bulletin
+                        permissions:
+                          manage: 1
+                          view: 0
+                          create: 1
+                          edit: 1
+                          delete: 1
+                          upload: 0
+                          download: 0
+                      -
+                        module: 'Job Postings'
+                        permissions:
+                          manage: 1
+                          view: 1
+                          create: 0
+                          edit: 0
+                          delete: 0
+                          upload: 0
+                          download: 0
+                      -
+                        module: 'Meeting Schedule'
+                        permissions:
+                          manage: 1
+                          view: 1
+                          create: 0
+                          edit: 0
+                          delete: 0
+                          upload: 0
+                          download: 0
+                      -
+                        module: Event
+                        permissions:
+                          manage: 1
+                          view: 0
+                          create: 1
+                          edit: 1
+                          delete: 0
+                          upload: 0
+                          download: 0
+                      -
+                        module: Partners
+                        permissions:
+                          manage: 0
+                          view: 0
+                          create: 0
+                          edit: 0
+                          delete: 0
+                          upload: 0
+                          download: 0
+                      -
+                        module: Strategy
+                        permissions:
+                          manage: 0
+                          view: 0
+                          create: 0
+                          edit: 0
+                          delete: 0
+                          upload: 0
+                          download: 0
+                      -
+                        module: Help
+                        permissions:
+                          manage: 1
+                          view: 0
+                          create: 0
+                          edit: 0
+                          delete: 0
+                          upload: 0
+                          download: 0
+                    items:
+                      type: object
+                      properties:
+                        module:
+                          type: string
+                          example: Profile
+                        permissions:
+                          type: object
+                          properties:
+                            manage:
+                              type: integer
+                              example: 1
+                            view:
+                              type: integer
+                              example: 0
+                            create:
+                              type: integer
+                              example: 0
+                            edit:
+                              type: integer
+                              example: 0
+                            delete:
+                              type: integer
+                              example: 0
+                            upload:
+                              type: integer
+                              example: 0
+                            download:
+                              type: integer
+                              example: 0
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'You do not have permission to access this page.'
+                properties:
+                  message:
+                    type: string
+                    example: 'You do not have permission to access this page.'
+      tags:
+        - 'Role Permission'
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the edit.'
+        example: non
+        required: true
+        schema:
+          type: string
   /api/v3/user/strategy/load:
     get:
       summary: 'Strategies List'
@@ -10231,7 +11839,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the download.'
-        example: eveniet
+        example: voluptatem
         required: true
         schema:
           type: string
@@ -10293,7 +11901,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the strategy to view.'
-        example: 20
+        example: 19
         required: true
         schema:
           type: integer
@@ -10338,7 +11946,13 @@ tags:
     name: Meetings
     description: ''
   -
+    name: Members
+    description: ''
+  -
     name: Profile
+    description: ''
+  -
+    name: 'Role Permission'
     description: ''
   -
     name: Strategy

@@ -105,7 +105,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v6Pf4e6bZE5aacdV8kDhg13'
+      - 'Bearer 14Pcfge6EZ8Vha6d3kbav5D'
     controller: null
     method: null
     route: null
@@ -161,7 +161,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1cPv6da3Ef85bZD6Vga4ekh'
+      - 'Bearer kD1fa58dhcvPEe6Zba64g3V'
     controller: null
     method: null
     route: null
@@ -217,7 +217,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4DEa3Zed8kh16f6gab5vVPc'
+      - 'Bearer cdEDeZ6hf6vaaP1b4k3g58V'
     controller: null
     method: null
     route: null
@@ -244,13 +244,13 @@ endpoints:
         name: id
         description: 'The ID of the download.'
         required: true
-        example: eveniet
+        example: voluptatem
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: eveniet
+      id: voluptatem
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -273,7 +273,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PZvf66eaEVkbdgh5134cDa8'
+      - 'Bearer adc4a65DEvPVgk1b68Z3ehf'
     controller: null
     method: null
     route: null
@@ -300,13 +300,13 @@ endpoints:
         name: id
         description: 'The ID of the strategy to view.'
         required: true
-        example: 20
+        example: 19
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: 20
+      id: 19
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -329,7 +329,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer chVf4a5bD13Za6Pk8e6dvEg'
+      - 'Bearer 36kavDPedg8E4hc6VZ5fa1b'
     controller: null
     method: null
     route: null

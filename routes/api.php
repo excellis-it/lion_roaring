@@ -20,9 +20,10 @@ use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\API\JobController;
 use App\Http\Controllers\Api\LeadershipDevelopmentController;
 use App\Http\Controllers\API\MeetingController;
+use App\Http\Controllers\Api\PartnerController;
+use App\Http\Controllers\Api\RolePermissionsController;
 use App\Http\Controllers\Api\StrategyController;
 use App\Http\Controllers\Api\TopicController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -215,6 +216,14 @@ Route::prefix('v3')->group(function () {
         });
 
 
+        Route::prefix('partners')->group(function () {
+            Route::get('/list', [PartnerController::class, 'list']);
+        });
+
+        Route::prefix('roles')->group(function () {
+            Route::get('/list', [RolePermissionsController::class, 'list']);
+            Route::put('/edit/{id}', [RolePermissionsController::class, 'edit']);
+        });
 
 
 
