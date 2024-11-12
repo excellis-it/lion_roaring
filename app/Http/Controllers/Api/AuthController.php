@@ -127,6 +127,7 @@ class AuthController extends Controller
         Mail::to($request->email)->send(new AccountPendingApprovalMail($maildata));
 
         return response()->json([
+            'status' => true,
             'message' => 'Please wait for admin approval',
             'user' => $user,
         ], 200);
