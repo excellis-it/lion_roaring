@@ -63,6 +63,7 @@ Route::prefix('v3')->group(function () {
 
     Route::post('register-ecclesi-list', [AuthController::class, 'ecclesiList']);
     Route::post('register-country-list', [AuthController::class, 'countryList']);
+    Route::post('register-states-list', [AuthController::class, 'getStates']);
 
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);

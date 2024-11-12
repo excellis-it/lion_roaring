@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\RegisterAgreement;
 use App\Models\User;
 use App\Models\Country;
+use App\Models\State;
 use App\Models\Ecclesia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,17 +33,17 @@ class AuthController extends Controller
      * @bodyParam last_name string required Last name of the user. Example: Doe
      * @bodyParam middle_name string nullable Middle name of the user. Example: A.
      * @bodyParam address string required Address of the user. Example: 123 Main St
-     * @bodyParam phone_number string required User's phone number. Example: 1234567890
+     * @bodyParam phone string required User's phone number. Example: 1234567890
      * @bodyParam city string required City of residence. Example: Springfield
-     * @bodyParam state string required State of residence. Example: Illinois
+     * @bodyParam country integer required Country of residence. 
+     * @bodyParam state integer required State of residence.
      * @bodyParam address2 string nullable Additional address information. Example: Apt 4B
-     * @bodyParam country string required Country of residence. Example: USA
      * @bodyParam zip string required Zip code. Example: 62704
      * @bodyParam email_confirmation string required Confirmation of the email address. Must match `email`. Example: johndoe@example.com
      * @bodyParam password string required Password for the user. Must be at least 8 characters and include one special character (@$%&). Example: Password@123
      * @bodyParam password_confirmation string required Confirmation of the password. Must match `password`. Example: Password@123
      * 
-     * @response 201 {
+     * @response 200 {
      *  "message": "Please wait for admin approval",
      *  "user": {
      *      "id": 1,
@@ -69,16 +70,16 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'user_name' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
-            'ecclesia_id' => 'nullable',
+            'ecclesia_id' => 'required',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
             'address' => 'required|string|max:255',
-            'phone_number' => 'required',
+            'phone' => 'required',
             'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
+            'state' => 'required|max:255',
             'address2' => 'nullable|string|max:255',
-            'country' => 'required|string|max:255',
+            'country' => 'required|max:255',
             'zip' => 'required',
             'email_confirmation' => 'required|same:email',
             'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
@@ -107,7 +108,7 @@ class AuthController extends Controller
         $user->last_name = $request->last_name;
         $user->middle_name = $request->middle_name;
         $user->address = $request->address;
-        $user->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone_number : $request->phone_number;
+        $user->phone = $request->phone;
         $user->city = $request->city;
         $user->state = $request->state;
         $user->address2 = $request->address2;
@@ -128,7 +129,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Please wait for admin approval',
             'user' => $user,
-        ], 201);
+        ], 200);
     }
 
     /**
@@ -327,4 +328,61 @@ class AuthController extends Controller
             ], 201);
         }
     }
+
+
+    /**
+     * States by country
+     *
+     * @bodyParam country integer required The ID of the country to fetch states for. Example: 1
+     *
+     * @response 200 {
+     *   "states": [
+     *     {
+     *       "id": 1,
+     *       "name": "State Name",
+     *       "country_id": 1,
+     *       "created_at": "2024-11-12T00:00:00.000000Z",
+     *       "updated_at": "2024-11-12T00:00:00.000000Z"
+     *     },
+     *     ...
+     *   ]
+     * }
+     *
+     * @response 201 {
+     *   "message": "No states found for the specified country."
+     * }
+     *
+     * @response 201 {
+     *   "message": "An error occurred while fetching states."
+     * }
+     */
+    public function getStates(Request $request)
+    {
+        try {
+            // Retrieve states based on the provided country ID
+            $states = State::where('country_id', $request->country)->get();
+
+            // Check if states are available
+            if ($states->isEmpty()) {
+                return response()->json([
+                    'message' => 'No states found for the specified country.'
+                ], 201);
+            }
+
+            // Return a successful response with the states
+            return response()->json([
+                'states' => $states
+            ], 200);
+
+        } catch (\Exception $e) {
+            // Handle any errors and return a message
+            return response()->json([
+                'message' => 'An error occurred while fetching states.'
+            ], 201);
+        }
+    }
+
+
+
+
 }
