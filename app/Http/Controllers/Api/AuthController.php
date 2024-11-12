@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\RegisterAgreement;
 use App\Models\User;
+use App\Models\Country;
+use App\Models\Ecclesia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -81,22 +83,22 @@ class AuthController extends Controller
             'email_confirmation' => 'required|same:email',
             'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
             'password_confirmation' => 'required|same:password',
-        ],[
+        ], [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-    
+
         $phone_number = $request->full_phone_number;
         $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
-    
+
         $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->count();
         if ($check > 0) {
             return response()->json(['error' => 'Phone number already exists'], 409);
         }
-    
+
         $user = new User();
         $user->user_name = $request->user_name;
         $user->ecclesia_id = $request->ecclesia_id;
@@ -115,14 +117,14 @@ class AuthController extends Controller
         $user->email_verified_at = now();
         $user->status = 0;
         $user->save();
-    
+
         $user->assignRole('MEMBER');
         $maildata = [
             'name' => $request->first_name . ' ' . $request->last_name,
         ];
-    
+
         Mail::to($request->email)->send(new AccountPendingApprovalMail($maildata));
-    
+
         return response()->json([
             'message' => 'Please wait for admin approval',
             'user' => $user,
@@ -172,38 +174,157 @@ class AuthController extends Controller
      * }
      */
 
-     public function login(Request $request)
-     {
-         $validator = validator($request->all(), [
-             'user_name' => 'required',
-             'password' => 'required|min:8'
-         ]);
- 
-         if ($validator->fails()) {
-             return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
-         }
- 
-         try {
-             $fieldType = filter_var($request->user_name, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
-             $request->merge([$fieldType => $request->user_name]);
-             // return $fieldType;
-             if (auth()->attempt($request->only($fieldType, 'password'))) {
-                 $user = User::where($fieldType, $request->user_name)->first();
-                 if ($user->status == 1) {
-                     $token = $user->createToken('authToken')->accessToken;
-                     return response()->json(['token' => $token, 'status' => true, 'message' => 'Login successful'], 200);
-                 } else {
-                     auth()->logout();
-                     return response()->json(['message' => 'Your account is not active!', 'status' => false], 201);
-                 }
-             } else {
-                 return response()->json(['message' => 'Email or password is invalid!', 'status' => false], 201);
-             }
-         } catch (\Throwable $th) {
-             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
-         }
-     }
+    public function login(Request $request)
+    {
+        $validator = validator($request->all(), [
+            'user_name' => 'required',
+            'password' => 'required|min:8'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
+        }
+
+        try {
+            $fieldType = filter_var($request->user_name, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
+            $request->merge([$fieldType => $request->user_name]);
+            // return $fieldType;
+            if (auth()->attempt($request->only($fieldType, 'password'))) {
+                $user = User::where($fieldType, $request->user_name)->first();
+                if ($user->status == 1) {
+                    $token = $user->createToken('authToken')->accessToken;
+                    return response()->json(['token' => $token, 'status' => true, 'message' => 'Login successful'], 200);
+                } else {
+                    auth()->logout();
+                    return response()->json(['message' => 'Your account is not active!', 'status' => false], 201);
+                }
+            } else {
+                return response()->json(['message' => 'Email or password is invalid!', 'status' => false], 201);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+        }
+    }
 
 
 
+    /**
+     * List of Ecclesia
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @response 200 {
+     *    "eclessias": [
+     *        {
+     *            "id": 4,
+     *            "name": "JMK",
+     *            "country": "2",
+     *            "created_at": "2024-08-02T22:44:52.000000Z",
+     *            "updated_at": "2024-08-05T15:10:55.000000Z"
+     *        },
+     *        {
+     *            "id": 3,
+     *            "name": "JMK Shelby",
+     *            "country": "5",
+     *            "created_at": "2024-08-02T11:04:31.000000Z",
+     *            "updated_at": "2024-08-05T15:11:00.000000Z"
+     *        },
+     *        {
+     *            "id": 2,
+     *            "name": "Pastor Dr. Paul Devakumar",
+     *            "country": "14",
+     *            "created_at": "2024-07-26T23:53:53.000000Z",
+     *            "updated_at": "2024-08-05T15:11:04.000000Z"
+     *        },
+     *        {
+     *            "id": 1,
+     *            "name": "Pastor German Ace",
+     *            "country": "17",
+     *            "created_at": "2024-07-26T23:53:42.000000Z",
+     *            "updated_at": "2024-08-05T15:11:08.000000Z"
+     *        }
+     *    ]
+     * }
+     *
+     * @response 201 {
+     *   "message": "No Ecclesia records found."
+     * }
+     */
+    public function ecclesiList()
+    {
+        try {
+            // Fetch Ecclesia records ordered by ID in descending order
+            $eclessias = Ecclesia::orderBy('id', 'desc')->get();
+
+            // Check if any Ecclesia records are available
+            if ($eclessias->isEmpty()) {
+                return response()->json([
+                    'message' => 'No Ecclesia records found.'
+                ], 201);
+            }
+
+            // Return a success response with the list of Ecclesia records
+            return response()->json([
+                'eclessias' => $eclessias
+            ], 200);
+        } catch (\Exception $e) {
+            // Handle any exceptions and return an error response
+            return response()->json([
+                'message' => 'An error occurred while fetching Ecclesia records.'
+            ], 201);
+        }
+    }
+
+    /**
+     * Lists Country
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @response 200 {
+     *   "countries": [
+     *     {
+     *       "id": 1,
+     *       "name": "Country Name",
+     *       "created_at": "2024-11-11T00:00:00.000000Z",
+     *       "updated_at": "2024-11-11T00:00:00.000000Z"
+     *     },
+     *     {
+     *       "id": 2,
+     *       "name": "Country Name 2",
+     *       "created_at": "2024-11-11T00:00:00.000000Z",
+     *       "updated_at": "2024-11-11T00:00:00.000000Z"
+     *     },
+     *     ...
+     *   ]
+     * }
+     *
+     * @response 201 {
+     *   "message": "No records found."
+     * }
+     */
+    public function countryList()
+    {
+        try {
+            // Fetch Country records
+
+            $countries = Country::orderBy('name', 'asc')->get();
+
+            // Check if any records are available
+            if ($countries->isEmpty()) {
+                return response()->json([
+                    'message' => 'No records found.'
+                ], 201);
+            }
+
+            // Return a success response with both lists
+            return response()->json([
+                'countries' => $countries
+            ], 200);
+        } catch (\Exception $e) {
+            // Handle any exceptions and return an error response
+            return response()->json([
+                'message' => 'An error occurred while fetching records.'
+            ], 201);
+        }
+    }
 }

@@ -6,6 +6,145 @@ endpoints:
   -
     httpMethods:
       - POST
+    uri: api/v3/register-ecclesi-list
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List of Ecclesia'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "eclessias": [
+                 {
+                     "id": 4,
+                     "name": "JMK",
+                     "country": "2",
+                     "created_at": "2024-08-02T22:44:52.000000Z",
+                     "updated_at": "2024-08-05T15:10:55.000000Z"
+                 },
+                 {
+                     "id": 3,
+                     "name": "JMK Shelby",
+                     "country": "5",
+                     "created_at": "2024-08-02T11:04:31.000000Z",
+                     "updated_at": "2024-08-05T15:11:00.000000Z"
+                 },
+                 {
+                     "id": 2,
+                     "name": "Pastor Dr. Paul Devakumar",
+                     "country": "14",
+                     "created_at": "2024-07-26T23:53:53.000000Z",
+                     "updated_at": "2024-08-05T15:11:04.000000Z"
+                 },
+                 {
+                     "id": 1,
+                     "name": "Pastor German Ace",
+                     "country": "17",
+                     "created_at": "2024-07-26T23:53:42.000000Z",
+                     "updated_at": "2024-08-05T15:11:08.000000Z"
+                 }
+             ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "No Ecclesia records found."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/register-country-list
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Lists Country'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "countries": [
+              {
+                "id": 1,
+                "name": "Country Name",
+                "created_at": "2024-11-11T00:00:00.000000Z",
+                "updated_at": "2024-11-11T00:00:00.000000Z"
+              },
+              {
+                "id": 2,
+                "name": "Country Name 2",
+                "created_at": "2024-11-11T00:00:00.000000Z",
+                "updated_at": "2024-11-11T00:00:00.000000Z"
+              },
+              ...
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "No records found."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
     uri: api/v3/register
     metadata:
       groupName: Authentication
@@ -46,7 +185,7 @@ endpoints:
         name: ecclesia_id
         description: 'nullable Ecclesia ID if applicable.'
         required: false
-        example: 3
+        example: 15
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -171,7 +310,7 @@ endpoints:
     cleanBodyParameters:
       user_name: johndoe
       email: johndoe@example.com
-      ecclesia_id: 3
+      ecclesia_id: 15
       first_name: John
       last_name: Doe
       middle_name: A.

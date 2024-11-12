@@ -61,6 +61,9 @@ Route::prefix('v3')->group(function () {
     Route::post('donation', [DonationController::class, 'donation']);
     Route::post('country-list', [DonationController::class, 'countryList']);
 
+    Route::post('register-ecclesi-list', [AuthController::class, 'ecclesiList']);
+    Route::post('register-country-list', [AuthController::class, 'countryList']);
+
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register-agreement', [AuthController::class, 'registerAgreement']);

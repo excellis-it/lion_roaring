@@ -379,7 +379,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8fD1hevV63Eak5PcgbaZ6d4'
+      - 'Bearer f48Ehb3Vg5kacZ6ed1DvaP6'
     controller: null
     method: null
     route: null
@@ -406,13 +406,13 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: fugiat
+        example: dicta
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: fugiat
+      id: dicta
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -646,7 +646,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DVvc5dkaP8Z1f6ea6Eh3b4g'
+      - 'Bearer 1EdcaVPeabfD5v48k6hZg36'
     controller: null
     method: null
     route: null
