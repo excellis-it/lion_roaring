@@ -823,7 +823,7 @@ class SendMailController extends Controller
                 $mailUsers = MailUser::where('send_mail_id', $mailId)
                     ->where('user_id', auth()->id())
                     ->get();
-                dd($mailUsers);
+              //  dd($mailUsers);
 
                 foreach ($mailUsers as $mail) {
                     $mail->is_delete = 1;
