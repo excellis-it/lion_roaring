@@ -2436,7 +2436,8 @@
                 url: '{{ route('mail.inbox-email-list') }}',
                 method: 'GET',
                 data: {
-                    page: page
+                    page: page,
+                    type: 'inbox'
                 },
                 success: function(response) {
                     $('#inbox-email-list-{{ auth()->id() }}').html(response.data);
@@ -2468,7 +2469,8 @@
                 url: '{{ route('mail.sent-email-list') }}',
                 method: 'GET',
                 data: {
-                    page: page
+                    page: page,
+                    type: 'sent'                    
                 },
                 success: function(response) {
 
@@ -2499,7 +2501,8 @@
                 url: '{{ route('mail.star-email-list') }}',
                 method: 'GET',
                 data: {
-                    page: page
+                    page: page,
+                    type: 'star'
                 },
                 success: function(response) {
 
@@ -2530,7 +2533,8 @@
                 url: '{{ route('mail.trash-email-list') }}',
                 method: 'GET',
                 data: {
-                    page: page
+                    page: page,
+                    type: 'trash'
                 },
                 success: function(response) {
 

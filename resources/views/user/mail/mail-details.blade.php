@@ -10,7 +10,7 @@
     </section>
     <div class="container-fluid">
         <div class="bg_white_border">
-            <div class="main__body" >
+            <div class="main__body">
                 <!-- Sidebar Starts -->
                 @include('user.mail.partials.sidebar')
 
@@ -146,8 +146,8 @@
                                 @foreach ($attachments as $attachment)
                                     <div class="other_attch">
                                         <input type="hidden" class="existing-attachment"
-                                        data-name="{{ $attachment['original_name'] }}"
-                                        data-path="{{ asset('storage/' . $attachment['encrypted_name']) }}">
+                                            data-name="{{ $attachment['original_name'] }}"
+                                            data-path="{{ asset('storage/' . $attachment['encrypted_name']) }}">
                                         <a class="attatched_file_box"
                                             href="{{ asset('storage/' . $attachment['encrypted_name']) }}" target="_blank">
                                             <div class="mail_img_box">
@@ -158,7 +158,8 @@
                                                 </div>
                                             </div>
                                             <div class="download_attetched_file">
-                                                <span onclick="downloadMailFile(event, this)" class="material-symbols-outlined mail-file-download">download</span>
+                                                <span onclick="downloadMailFile(event, this)"
+                                                    class="material-symbols-outlined mail-file-download">download</span>
                                             </div>
                                         </a>
                                     </div>
@@ -186,7 +187,7 @@
 
 
 
-
+                    {{-- // reply email box --}}
                     <div class="reply_sec mail_send_reply_box" style="display: none">
                         <div class="reply_img_box">
                             <span>
@@ -207,7 +208,8 @@
                                 <input type="hidden" name="main_mail_id" value="{{ $mail_details->id }}">
                                 <input type="hidden" name="reply_mail" value="1">
                                 @csrf
-                                <div class="d-flex align-items-center"><span class="material-symbols-outlined">reply</span>
+                                <div class="d-flex align-items-center"><span
+                                        class="material-symbols-outlined">reply</span>
                                     &nbsp;&nbsp; | &nbsp;&nbsp;
                                     {{-- <span class="badge bg-badge-dark text-dark">{{ $mail_details->user->email }}</span> --}}
                                     @if ($mail_details->to)
@@ -219,7 +221,7 @@
                                         @endphp
 
                                         @foreach ($uniqueEmails as $email)
-                                            <span class="badge bg-badge-dark text-dark ms-1">{{ trim($email) }}</span>
+                                            <span hidden class="badge bg-badge-dark text-dark ms-1">{{ trim($email) }}</span>
                                         @endforeach
                                     @endif
                                 </div>
@@ -240,7 +242,7 @@
                                         );
                                     @endphp
 
-                                    <input id="reply_to" name="to" class='input-large' type='hidden'
+                                    <input id="reply_to" name="to" class='input-large' type=''
                                         placeholder='Recipients' value="{{ $mailtoJson }}" />
 
                                     <input name="cc" class='input-large' type='hidden' placeholder='CC'
@@ -374,6 +376,19 @@
             // Ensure that you are encoding this correctly
             //  const userFwEmailsTo = {mailtoJson};
             //  const userFwEmailsCc = {ccJson};
+            const toInputReply = document.getElementById('reply_to');
+
+            const tagifyToReply = new Tagify(toInputReply, {
+                whitelist: userEmails,
+                enforceWhitelist: true,
+                dropdown: {
+                    maxItems: 20, // Adjust the max items shown in the dropdown
+                    classname: "tags-dropdown",
+                    enabled: 0, // all ways to be enabled
+                    closeOnSelect: false, // keep dropdown open after selection
+                    highlight: true // highlight matched results
+                }
+            });
 
             // Initialize Tagify for "To" and "CC" fields
             const toInputFw = document.getElementById('fw_to');

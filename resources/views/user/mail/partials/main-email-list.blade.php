@@ -1,3 +1,10 @@
+@if ($mails->type == 'sent')
+    <style>
+        .mail_read {
+            background: none !important;
+        }
+    </style>
+@endif
 @if ($mails->count() > 0)
     @foreach ($mails as $mail)
         @php
@@ -25,7 +32,12 @@
 
             <div class="col-3">
                 <h3 class="emailRow__title view-mail" data-route="{{ route('mail.view', base64_encode($mail->id)) }}">
-                    {{ $mail->user->full_name ?? '' }}
+                    @if ($mails->type == 'sent')
+                        {{ $mail->userToNames ?? '' }}
+                    @else
+                        {{ $mail->user->full_name ?? '' }}
+                    @endif
+
                 </h3>
             </div>
 
@@ -40,7 +52,7 @@
                     </h4>
                 </div>
             </div>
-            
+
 
             <div class="col-2">
                 <p class="emailRow__time view-mail" data-route="{{ route('mail.view', base64_encode($mail->id)) }}">

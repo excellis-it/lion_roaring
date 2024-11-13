@@ -64,8 +64,9 @@ class SendMailController extends Controller
     }
 
 
-    public function inboxEmailList()
+    public function inboxEmailList(Request $request)
     {
+        $type = $request->get('type');
         $mails = SendMail::whereHas('mailUsers', function ($q) {
             $q->where('user_id', auth()->id())->where('is_from', '!=', 1)->where('is_delete', 0);
         })
@@ -74,7 +75,20 @@ class SendMailController extends Controller
 
         $mails->each(function ($mail) {
             $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)->where('user_id', auth()->id())->first();
+            $emails = explode(',', $mail->to);
+            // Fetch the name of the sendTo
+            $names = User::whereIn('email', $emails)
+                ->select('first_name', 'middle_name', 'last_name')
+                ->get()
+                ->map(function ($user) {
+                    return trim("{$user->full_name}");
+                })
+                ->toArray();
+            // Combine the full names into a comma-separated string
+            $mail->userToNames = implode(', ', $names);
         });
+
+        $mails->type = $type;
 
         //  return response()->json(['data' => view('user.mail.partials.inbox-email-list', compact('mails'))->render()]);
         return response()->json([
@@ -86,8 +100,10 @@ class SendMailController extends Controller
         ]);
     }
 
-    public function sentEmailList()
+    public function sentEmailList(Request $request)
     {
+        $type = $request->get('type');
+        //return $type;
         $mails = SendMail::whereHas('mailUsers', function ($q) {
             $q->where('user_id', auth()->id())->where('is_from', 1)->where('is_delete', 0);
         })
@@ -96,7 +112,22 @@ class SendMailController extends Controller
 
         $mails->each(function ($mail) {
             $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)->where('user_id', auth()->id())->first();
+            $emails = explode(',', $mail->to);
+            // Fetch the name of the sendTo
+            $names = User::whereIn('email', $emails)
+                ->select('first_name', 'middle_name', 'last_name')
+                ->get()
+                ->map(function ($user) {
+                    return trim("{$user->full_name}");
+                })
+                ->toArray();
+            // Combine the full names into a comma-separated string
+            $mail->userToNames = implode(', ', $names);
         });
+        $mails->type = $type;
+
+        // return $mails;
+
 
         return response()->json([
             'data' => view('user.mail.partials.main-email-list', compact('mails'))->render(),
@@ -107,8 +138,9 @@ class SendMailController extends Controller
         ]);
     }
 
-    public function starEmailList()
+    public function starEmailList(Request $request)
     {
+        $type = $request->get('type');
         $mails = SendMail::whereHas('mailUsers', function ($q) {
             $q->where('user_id', auth()->id())->where('is_starred', 1)->where('is_delete', 0);
         })
@@ -117,7 +149,20 @@ class SendMailController extends Controller
 
         $mails->each(function ($mail) {
             $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)->where('user_id', auth()->id())->first();
+            $emails = explode(',', $mail->to);
+            // Fetch the name of the sendTo
+            $names = User::whereIn('email', $emails)
+                ->select('first_name', 'middle_name', 'last_name')
+                ->get()
+                ->map(function ($user) {
+                    return trim("{$user->full_name}");
+                })
+                ->toArray();
+            // Combine the full names into a comma-separated string
+            $mail->userToNames = implode(', ', $names);
         });
+
+        $mails->type = $type;
 
         return response()->json([
             'data' => view('user.mail.partials.main-email-list', compact('mails'))->render(),
@@ -128,8 +173,9 @@ class SendMailController extends Controller
         ]);
     }
 
-    public function trashEmailList()
+    public function trashEmailList(Request $request)
     {
+        $type = $request->get('type');
         $mails = SendMail::whereHas('mailUsers', function ($q) {
             $q->where('user_id', auth()->id())->where('is_delete', 1);
         })
@@ -138,7 +184,20 @@ class SendMailController extends Controller
 
         $mails->each(function ($mail) {
             $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)->where('user_id', auth()->id())->first(); // Add the MailUser instance to each mail
+            $emails = explode(',', $mail->to);
+            // Fetch the name of the sendTo
+            $names = User::whereIn('email', $emails)
+                ->select('first_name', 'middle_name', 'last_name')
+                ->get()
+                ->map(function ($user) {
+                    return trim("{$user->full_name}");
+                })
+                ->toArray();
+            // Combine the full names into a comma-separated string
+            $mail->userToNames = implode(', ', $names);
         });
+
+        $mails->type = $type;
 
 
         return response()->json([
@@ -182,8 +241,15 @@ class SendMailController extends Controller
             $reply->ownUserMailInfo = MailUser::where('send_mail_id', $reply->id)->where('user_id', auth()->id())->first();
         });
 
+        //return auth()->user()->email;
+
         $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-        $replyMailids = $replyMailids = collect([$mail_details->user->email])->merge($reply_mails->pluck('user.email'));
+        // $replyMailids = $replyMailids = collect([$mail_details->user->email])->merge($reply_mails->pluck('user.email'));
+        $replyMailids = collect([$mail_details->user->email])
+            ->merge($reply_mails->pluck('user.email'))
+            ->reject(function ($email) {
+                return $email === auth()->user()->email;
+            });
         // dd($replyMailids);
         return view('user.mail.mail-details')->with(compact('mail_details', 'ownUserMailInfo', 'reply_mails', 'allMailIds', 'replyMailids'));
     }
@@ -231,8 +297,8 @@ class SendMailController extends Controller
             'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048'
         ]);
 
-            // Decode the JSON strings for 'to' and 'cc' fields
-            $toEmails = json_decode($request->to, true);
+        // Decode the JSON strings for 'to' and 'cc' fields
+        $toEmails = json_decode($request->to, true);
         // Extract email addresses from the decoded arrays
         $to = array_column($toEmails, 'value');
         if ($request->cc) {
@@ -748,8 +814,18 @@ class SendMailController extends Controller
         if (auth()->user()->can('Manage Email')) {
             $mailIds = $request->mailIds;
             foreach ($mailIds as $mailId) {
-                $mail = MailUser::where('send_mail_id', $mailId)->where('user_id', auth()->id())->first();
-                if ($mail) {
+                // $mail = MailUser::where('send_mail_id', $mailId)->where('user_id', auth()->id())->first();
+                // if ($mail) {
+                //     $mail->is_delete = 1;
+                //     $mail->deleted_at = now();
+                //     $mail->save();
+                // }
+                $mailUsers = MailUser::where('send_mail_id', $mailId)
+                    ->where('user_id', auth()->id())
+                    ->get();
+                dd($mailUsers);
+
+                foreach ($mailUsers as $mail) {
                     $mail->is_delete = 1;
                     $mail->deleted_at = now();
                     $mail->save();
@@ -803,8 +879,17 @@ class SendMailController extends Controller
         if (auth()->user()->can('Manage Email')) {
             $mailIds = $request->mailIds;
             foreach ($mailIds as $mailId) {
-                $mail = MailUser::where('send_mail_id', $mailId)->where('user_id', auth()->id())->first();
-                if ($mail) {
+                // $mail = MailUser::where('send_mail_id', $mailId)->where('user_id', auth()->id())->first();
+                // if ($mail) {
+                //     $mail->is_delete = 1;
+                //     $mail->deleted_at = now();
+                //     $mail->save();
+                // }
+                $mailUsers = MailUser::where('send_mail_id', $mailId)
+                    ->where('user_id', auth()->id())
+                    ->get();
+
+                foreach ($mailUsers as $mail) {
                     $mail->is_delete = 1;
                     $mail->deleted_at = now();
                     $mail->save();
