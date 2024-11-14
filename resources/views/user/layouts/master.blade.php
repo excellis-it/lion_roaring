@@ -264,12 +264,35 @@
             let socket_port = '3000';
             let socket = io(ip_address + ':' + socket_port);
 
+            // $(document).on("click", ".user-list", function(e) {
+            //     var getUserID = $(this).attr("data-id");
+            //     receiver_id = getUserID;
+            //     loadChats();
+            //    // $(this).addClass("active").siblings().removeClass("active");
+            //    $("#chat_list_user_"+getUserID).addClass("active").siblings().removeClass("active");
+            // });
+
             $(document).on("click", ".user-list", function(e) {
                 var getUserID = $(this).attr("data-id");
                 receiver_id = getUserID;
                 loadChats();
-                $(this).addClass("active").siblings().removeClass("active");
+
+                // Remove "active" class from all user-list elements first
+                $(".user-list").removeClass("active");
+
+                // Add "active" class to the clicked element
+                $("#chat_list_user_" + getUserID).addClass("active");
+
+                $("#last_activate_user").val(getUserID);
             });
+
+            function setChatListLastActive() {
+                var lastActiveUserId = $("#last_activate_user").val();
+                if (lastActiveUserId && lastActiveUserId != '0') {
+                    $("#chat_list_user_" + lastActiveUserId).addClass("active");
+                   // alert('active set done');
+                }
+            }
 
             function loadChats() {
                 $.ajax({
@@ -708,7 +731,7 @@
                             '';
 
                         new_html += `
-         <li class="group user-list ${user.id == data.sender_id ? 'active' : ''}" data-id="${user.id}">
+         <li class="group user-list ${user.id == data.sender_id ? '' : ''}" id="chat_list_user_${user.id}" data-id="${user.id}">
              <div class="avatar">`;
 
                         if (user.profile_picture) {
@@ -734,6 +757,12 @@
                     });
 
                     $('#group-manage-' + sender_id).append(new_html);
+
+                    if (new_html) {                       
+                        setChatListLastActive();
+                    }
+
+
 
                 }
 
@@ -2470,7 +2499,7 @@
                 method: 'GET',
                 data: {
                     page: page,
-                    type: 'sent'                    
+                    type: 'sent'
                 },
                 success: function(response) {
 
@@ -2873,7 +2902,7 @@
             //  handleFileInputChange('forword-mail-file-input', 'forward-mail-selected-file-names');
         });
 
-        function mailBodyGoBottom(){
+        function mailBodyGoBottom() {
             var goBottom = document.getElementById("mail_body_div");
             goBottom.scrollTop = goBottom.scrollHeight;
         }

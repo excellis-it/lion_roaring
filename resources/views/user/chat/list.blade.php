@@ -26,12 +26,14 @@
                 <div class="SideNavhead">
                     <h2>Chat</h2>
                 </div>
+                <input type="hidden" id="last_activate_user" value="0">
                 <div class="main">
                     <div>
                         <div class="sideNav2" id="group-manage-{{ Auth::user()->id }}">
+                            
                             @if (count($users) > 0)
                                 @foreach ($users as $user)
-                                    <li class="group user-list" data-id="{{ $user['id'] }}">
+                                    <li class="group user-list" id="chat_list_user_{{ $user['id'] }}" data-id="{{ $user['id'] }}">
                                         <div class="avatar">
                                             @if ($user['profile_picture'])
                                                 <img src="{{ Storage::url($user['profile_picture']) }}" alt="">
