@@ -27,7 +27,7 @@ class ForgetPasswordController extends Controller
         // return $validator->errors();
         $count = User::where('email', $request->email)->role('ADMIN')->count();
         if ($count > 0) {
-            $user = User::where('email', $request->email)->select('id', 'name', 'email')->first();
+            $user = User::where('email', $request->email)->select('id', 'first_name', 'email')->first();
             PasswordReset::where('email', $request->email)->delete();
              $id = Crypt::encrypt($user->id);
              $token = Str::random(20) . 'pass' . $user->id;
