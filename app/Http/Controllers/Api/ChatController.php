@@ -126,10 +126,24 @@ class ChatController extends Controller
 
     public function chats(Request $request)
     {
+        // $chat_users = User::where('id', '!=', auth()->id())
+        //     ->where('status', 1)
+        //     ->get()
+        //     ->toArray();
+
         $chat_users = User::where('id', '!=', auth()->id())
             ->where('status', 1)
-            ->get()
-            ->toArray();
+            ->get();
+
+        $chat_users->each(function ($chat_user) {
+            $chat_user->chat_count = Chat::where('reciver_id', auth()->id())
+                ->where('sender_id', $chat_user->id)
+                ->where('seen', 0)
+                ->count();
+        });
+
+        $chat_users = $chat_users->toArray(); 
+
 
         // Append the last message to each user
         $chat_users = array_map(function ($user) {
