@@ -1,9 +1,24 @@
-@component('mail::message')
+{{-- @component('mail::message')
 
-{{-- {!! nl2br(e($mail['message'])) !!} --}}
-{!! nl2br(e(strip_tags($mail['message']))) !!}
+{!! nl2br(e(strip_tags($mail['message']))) !!} 
 
 
 Thanks,<br>
 {{ config('app.name') }}
-@endcomponent
+@endcomponent --}}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        
+    </style>
+</head>
+<body>
+    <p>{!! $mail->message !!}</p>
+    <!-- Add other HTML and styles as needed -->
+
+    <p>Thanks,<br>
+    {{ config('app.name') }}</p>
+</body>
+</html>

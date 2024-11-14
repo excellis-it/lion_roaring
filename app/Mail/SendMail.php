@@ -39,7 +39,7 @@ class SendMail extends Mailable
             $this->senderEmail ?? env('MAIL_FROM_ADDRESS'),
             $this->senderName ?? env('MAIL_FROM_NAME')
         )
-            ->markdown('user.mails.SendMail')  // Use markdown email template
+            ->view('user.mails.SendMail')  // Use markdown email template
             ->subject($this->mail->subject)  // Set the email subject
             ->with('mail', $this->mail);
     }
