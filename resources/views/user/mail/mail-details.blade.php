@@ -210,7 +210,7 @@
                                 @csrf
                                 <div class="d-flex align-items-center"><span
                                         class="material-symbols-outlined">reply</span>
-                                    &nbsp;&nbsp; | &nbsp;&nbsp;
+                                    &nbsp;&nbsp; | &nbsp;&nbsp; Reply To: 
                                     {{-- <span class="badge bg-badge-dark text-dark">{{ $mail_details->user->email }}</span> --}}
                                     @if ($mail_details->to)
                                         @php
