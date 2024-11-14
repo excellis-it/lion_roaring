@@ -42,7 +42,7 @@ class ProfileController extends Controller
 
     public function profile(Request $request)
     {
-        $user = $request->user();
+        $user = $request->user()->load('ecclesia', 'countries', 'states');
         return response()->json(['status' => true, 'message' => 'Profile details', 'data' => $user], $this->successStatus);
     }
 
