@@ -471,6 +471,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/mail-delete', [SendMailController::class, 'delete'])->name('mail.delete');
         Route::post('/mail-delete-sent', [SendMailController::class, 'deleteSentsMail'])->name('mail.deleteSentsMail');
         Route::post('/mail-restore', [SendMailController::class, 'restore'])->name('mail.restore');
+        Route::post('/mail-trash-empty', [SendMailController::class, 'trashEmpty'])->name('mail.trash-empty');
         Route::post('/mail-star', [SendMailController::class, 'star'])->name('mail.star');
 
         Route::post('/mail-delete-single', [SendMailController::class, 'deleteSingleMail'])->name('mail.deleteSingleMail');
