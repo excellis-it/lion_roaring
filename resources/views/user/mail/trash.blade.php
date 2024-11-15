@@ -5,6 +5,14 @@
 @push('styles')
 @endpush
 @section('content')
+    <style>
+        .btn-trash-empty {
+            color: #6c757d !important;
+            border-color: #6c757d !important;
+            font-size: 12px;
+            border: 1px solid;
+        }
+    </style>
     <section id="loading">
         <div id="loading-content"></div>
     </section>
@@ -25,11 +33,16 @@
                             <span onclick="fetchTrashEmails()" type="button" class="material-symbols-outlined"> refresh
                             </span>
                             <span type="button" class="material-symbols-outlined" id="restore-trash"> restore </span>
+                            
                         </div>
                         <div class="emailList__settingsRight d-flex">
+                            <span type="button" class="text-sm m3-2 btn btn-sm btn-trash-empty" id="empty-trash">
+                                Empty Trash </span>
+                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                             <span type="button" id="mailListPrevPage" class="material-symbols-outlined">chevron_left</span>
                             <span id="paginationInfo"></span>
-                            <span type="button" id="mailListNextPage" class="material-symbols-outlined">chevron_right</span>
+                            <span type="button" id="mailListNextPage"
+                                class="material-symbols-outlined">chevron_right</span>
                         </div>
                     </div>
                     <!-- Settings Ends -->
@@ -55,7 +68,7 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-           // let currentMailPage_trash = 1;
+            // let currentMailPage_trash = 1;
             fetchTrashEmails();
 
             $('#mailListPrevPage').on('click', function() {
@@ -120,6 +133,52 @@
                         if (result.value) {
                             $.ajax({
                                 url: "{{ route('mail.restore') }}",
+                                type: 'POST',
+                                data: {
+                                    mailIds: mailIds
+                                },
+                                success: function(response) {
+                                    if (response.status === true) {
+                                        toastr.success(response.message);
+                                        fetchTrashEmails();
+                                    } else {
+                                        swal('Error', response.message, 'error');
+                                    }
+                                }
+                            });
+                        } else if (result.dismiss === 'cancel') {
+                            swal(
+                                'Cancelled',
+                                'Your stay here :)',
+                                'error'
+                            )
+                        }
+                    })
+            });
+
+            $(document).on('click', '#empty-trash', function(e) {
+                e.preventDefault();
+                var mailIds = [];
+                $('.selectMail').each(function() {
+                    mailIds.push($(this).data('id'));
+                });
+
+                if (mailIds.length === 0) {
+                    swal('Error', 'Please select at least one mail to delete', 'error');
+                    return;
+                }
+
+                swal({
+                        title: "Are you sure?",
+                        text: "To permanent delete all trash mails",
+                        type: "warning",
+                        confirmButtonText: "Yes",
+                        showCancelButton: true
+                    })
+                    .then((result) => {
+                        if (result.value) {
+                            $.ajax({
+                                url: "{{ route('mail.trash-empty') }}",
                                 type: 'POST',
                                 data: {
                                     mailIds: mailIds

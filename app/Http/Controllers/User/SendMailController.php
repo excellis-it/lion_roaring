@@ -873,6 +873,36 @@ class SendMailController extends Controller
     }
 
 
+    public function trashEmpty(Request $request)
+    {
+        if (auth()->user()->can('Manage Email')) {
+            $mailIds = $request->mailIds;
+            foreach ($mailIds as $mailId) {
+                // $mail = MailUser::where('send_mail_id', $mailId)->where('user_id', auth()->id())->first();
+                // if ($mail) {
+                //     $mail->is_delete = 1;
+                //     $mail->deleted_at = now();
+                //     $mail->save();
+                // }
+                $mailUsers = MailUser::where('send_mail_id', $mailId)
+                    ->where('user_id', auth()->id())
+                    ->get();
+              //  dd($mailUsers);
+
+                foreach ($mailUsers as $mail) {
+                    $mail->is_delete = 2;
+                    $mail->deleted_at = now();
+                    $mail->save();
+                }
+            }
+
+            return response()->json(['message' => 'Mail deleted successfully.', 'status' => true]);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+
     // delete sent mail
     public function deleteSentsMail(Request $request)
     {
