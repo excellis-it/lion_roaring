@@ -66,9 +66,11 @@ class ChatController extends Controller
                 ->get();
 
             $unseen_chat = Chat::where('sender_id', $request->reciver_id)
+                ->where('reciver_id', $request->sender_id)
                 ->where('seen', 0)
+                ->where('delete_from_receiver_id', 0)
                 ->get();
-
+            // dd($unseen_chat);
             // seen chat
             $chats = $chats->map(function ($chat) {
                 if ($chat->reciver_id == auth()->id()) {
@@ -168,6 +170,7 @@ class ChatController extends Controller
                 // count unseen chat
                 $user['unseen_chat'] = Chat::where('sender_id',  $user['id'])
                     ->where('reciver_id', $reciver_id)
+                    ->where('delete_from_receiver_id', 0)
                     ->where('seen', 0)
                     ->count();
 
@@ -265,7 +268,6 @@ class ChatController extends Controller
                 $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->where('is_delete', 0)->count();
                 return response()->json(['msg' => 'Notification sent successfully', 'status' => true, 'notification_count' => $notification_count, 'notification' => $notification]);
             }
-
         }
 
         return abort(404); // Optional: return a 404 response if not an AJAX request

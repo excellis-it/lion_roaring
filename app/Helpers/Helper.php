@@ -170,6 +170,7 @@ class Helper
         $chats = Chat::where('reciver_id', $sender_id)
             ->where('sender_id', $reciver_id)
             ->where('seen', 0)
+            ->where('delete_from_receiver_id', 0)
             ->count();
         return $chats;
     }
