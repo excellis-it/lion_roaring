@@ -286,13 +286,7 @@
                 $("#last_activate_user").val(getUserID);
             });
 
-            function setChatListLastActive() {
-                var lastActiveUserId = $("#last_activate_user").val();
-                if (lastActiveUserId && lastActiveUserId != '0') {
-                    $("#chat_list_user_" + lastActiveUserId).addClass("active");
-                    // alert('active set done');
-                }
-            }
+
 
             function loadChats() {
                 $.ajax({
@@ -565,6 +559,46 @@
                 });
             });
 
+            function setChatListLastActive(activeid = 0) {
+                if (activeid != 0) {
+                    var lastActiveUserId = $("#last_activate_user").val();
+                } else {
+                    var lastActiveUserId = $("#last_activate_user").val();
+                }
+
+                if (lastActiveUserId && lastActiveUserId != '0') {
+                    $("#chat_list_user_" + lastActiveUserId).addClass("active");
+                    // alert('active set done');
+                }
+            }
+
+            // load left chat list
+
+            function load_chat_list() {
+                var lastActiveUserId = $("#last_activate_user").val();
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('chats.chat-list') }}",
+                    data: {
+                        _token: $("input[name=_token]").val(),
+
+                    },
+                    success: function(res) {
+                        if (res) {
+                            $(".main-sidebar-chat-list").html(res);
+
+                            setChatListLastActive(lastActiveUserId);
+
+
+
+                        } else {
+                            console.log(res.msg);
+                        }
+                    }
+                });
+            }
+
+
             // clear-chat
 
             $(document).on("click", ".clear-chat", function(e) {
@@ -630,6 +664,8 @@
                                     socket.emit("remove-chat", {
                                         chat: res.chat,
                                     });
+
+                                    //   socket.emit('chat', res.chat.message);
                                 }
                             } else {
                                 console.log(res.msg);
@@ -642,10 +678,29 @@
 
             //remove-chat
             socket.on('remove-chat', function(data) {
+                // console.log(data);
                 if (data.chat.reciver_id == sender_id) {
-                    $("#chat-message-" + data.chat.id).remove();
-                    $("#last-chat-time-" + data.chat.id).remove();
-                    $('.last-chat-' + data.chat.id).html('');
+                    // $("#chat-message-" + data.chat.id).remove();
+                    // $("#last-chat-time-" + data.chat.id).remove();
+                    // $('.last-chat-' + data.chat.id).html('');
+
+                    // let unseenCountElement = $("#count-unseen-" + data.chat.sender_id);
+                    // let unseenCount = parseInt(unseenCountElement.find('p').text().trim(), 10);
+
+                    // if (unseenCountElement.length > 0) {
+                    //     // Get the unseen count, trimming any whitespace around the text
+                    //     let unseenCount = parseInt(unseenCountElement.find('p').text().trim(), 10);
+                    //     console.log('unseen count is ' + unseenCount);
+
+                    //     // Ensure the count is valid and greater than zero
+                    //     if (!isNaN(unseenCount) && unseenCount > 0) {
+                    //         unseenCount -= 1;
+                    //         unseenCountElement.find('p').text(unseenCount);
+                    //     }
+                    // }
+
+                    load_chat_list();
+
                 }
             });
 
@@ -655,6 +710,7 @@
                 if (data.reciver_id == sender_id) {
                     $("#chat-container-" + data.sender_id).html("");
                     $("#message-app-" + data.sender_id).html("");
+                    load_chat_list();
                 }
             })
 
@@ -887,6 +943,7 @@
                         }
                     });
                 }
+                load_chat_list();
             });
 
             // seen message
@@ -895,7 +952,7 @@
                     $("#seen_" + data.last_chat.id).html(
                         '<i class="fas fa-check-double"></i>'
                     );
-
+                    load_chat_list();
                 }
             });
 
@@ -908,6 +965,7 @@
                         );
                     }
                 });
+                load_chat_list();
             });
         });
     </script>

@@ -108,11 +108,11 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
 
     // admin index
     Route::prefix('detail')->group(function () {
-        Route::get('/',[AdminController::class,'index'])->name('admin.index');
-        Route::post('/store',[AdminController::class,'store'])->name('admin.store');
+        Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+        Route::post('/store', [AdminController::class, 'store'])->name('admin.store');
         Route::post('/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
         Route::get('/delete/{id}', [AdminController::class, 'delete'])->name('admin.delete');
-        Route::post('/update',[AdminController::class, 'update'])->name('admin.update');
+        Route::post('/update', [AdminController::class, 'update'])->name('admin.update');
     });
 
     Route::resources([
@@ -285,6 +285,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/seen', [ChatController::class, 'seen'])->name('seen');
         Route::post('/remove', [ChatController::class, 'remove'])->name('remove');
         Route::post('/notification', [ChatController::class, 'notification'])->name('notification');
+        Route::get('/chat-list', [ChatController::class, 'chatsList'])->name('chat-list');
     });
 
     // Team Chat
@@ -467,7 +468,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/send', [SendMailController::class, 'sendMail'])->name('mail.send');
         Route::post('/sendReply', [SendMailController::class, 'sendMailReply'])->name('mail.sendReply');
         Route::post('/sendForward', [SendMailController::class, 'sendMailForward'])->name('mail.sendForward');
-        
+
         Route::post('/mail-delete', [SendMailController::class, 'delete'])->name('mail.delete');
         Route::post('/mail-delete-sent', [SendMailController::class, 'deleteSentsMail'])->name('mail.deleteSentsMail');
         Route::post('/mail-restore', [SendMailController::class, 'restore'])->name('mail.restore');
@@ -476,10 +477,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
 
         Route::post('/mail-delete-single', [SendMailController::class, 'deleteSingleMail'])->name('mail.deleteSingleMail');
         Route::post('/mail-restore-single', [SendMailController::class, 'restoreSingleMail'])->name('mail.restoreSingleMail');
-        
-        Route::get('/print/{id}', [SendMailController::class, 'printMail'])->name('mail.print');
 
-        
+        Route::get('/print/{id}', [SendMailController::class, 'printMail'])->name('mail.print');
     });
 
     // live-event
@@ -511,7 +510,6 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/cms-page/{page}', [UserCmsController::class, 'cms'])->name('user.cms.edit');
     Route::post('/cms/home/update', [UserCmsController::class, 'homeCmsUpdate'])->name('user.cms.home.update');
     Route::post('/cms/footer/update', [UserCmsController::class, 'footerUpdate'])->name('user.cms.footer.update');
-
 });
 // });
 

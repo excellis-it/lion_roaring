@@ -46,6 +46,38 @@ class ChatController extends Controller
         }
     }
 
+    public function chatsList()
+    {
+        if (auth()->user()->can('Manage Chat')) {
+            $users = User::with('chatSender')->where('id', '!=', auth()->id())->where('status', 1)->get()->toArray();
+            // return user orderBy latest message
+            $users = array_map(function ($user) {
+                $user['last_message'] = Chat::where(function ($query) use ($user) {
+                    $query->where('sender_id', $user['id'])->where('reciver_id', auth()->id())->where('deleted_for_reciver', 0)->where('delete_from_receiver_id', 0);
+                })->orWhere(function ($query) use ($user) {
+                    $query->where('sender_id', auth()->id())->where('reciver_id', $user['id'])->where('deleted_for_sender', 0)->where('delete_from_sender_id', 0);
+                })->orderBy('created_at', 'desc')->first();
+                return $user;
+            }, $users);
+
+            // Sort users based on the latest message
+            usort($users, function ($a, $b) {
+                if ($a['last_message'] === null) {
+                    return 1; // Move users with no messages to the end
+                }
+                if ($b['last_message'] === null) {
+                    return -1; // Move users with no messages to the end
+                }
+
+                return $b['last_message']->created_at <=> $a['last_message']->created_at; // Sort by latest message timestamp
+            });
+            return view('user.chat.chat_list')->with(compact('users'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+
     public function load(Request $request)
     {
         try {
@@ -125,9 +157,9 @@ class ChatController extends Controller
             // return user orderBy latest message
             $users = array_map(function ($user) {
                 $user['last_message'] = Chat::where(function ($query) use ($user) {
-                    $query->where('sender_id', $user['id'])->where('reciver_id', auth()->id());
+                    $query->where('sender_id', $user['id'])->where('reciver_id', auth()->id())->where('deleted_for_reciver', 0)->where('delete_from_receiver_id', 0);
                 })->orWhere(function ($query) use ($user) {
-                    $query->where('sender_id', auth()->id())->where('reciver_id', $user['id']);
+                    $query->where('sender_id', auth()->id())->where('reciver_id', $user['id'])->where('deleted_for_sender', 0)->where('delete_from_sender_id', 0);
                 })->orderBy('created_at', 'desc')->first();
 
                 if ($user['last_message']) {
@@ -159,9 +191,9 @@ class ChatController extends Controller
 
             $receiver_users = array_map(function ($user) use ($reciver_id) {
                 $user['last_message'] = Chat::where(function ($query) use ($user, $reciver_id) {
-                    $query->where('sender_id', $user['id'])->where('reciver_id', $reciver_id); // Corrected 'receiver_id' variable
+                    $query->where('sender_id', $user['id'])->where('reciver_id', $reciver_id)->where('deleted_for_reciver', 0)->where('delete_from_receiver_id', 0); // Corrected 'receiver_id' variable
                 })->orWhere(function ($query) use ($user, $reciver_id) {
-                    $query->where('sender_id', $reciver_id)->where('reciver_id', $user['id']); // Corrected 'receiver_id' variable
+                    $query->where('sender_id', $reciver_id)->where('reciver_id', $user['id'])->where('deleted_for_sender', 0)->where('delete_from_sender_id', 0); // Corrected 'receiver_id' variable
                 })->orderBy('created_at', 'desc')->first();
 
                 if ($user['last_message']) {
@@ -196,19 +228,57 @@ class ChatController extends Controller
         }
     }
 
+    // public function clear(Request $request)
+    // {
+    //     $sender_id = $request->sender_id;
+    //     $reciver_id = $request->reciver_id;
+
+    //     Chat::where('sender_id', $sender_id)
+    //         ->update(['delete_from_sender_id' => 1]);
+
+    //     Chat::where('reciver_id', $reciver_id)
+    //         ->update(['delete_from_receiver_id' => 1]);
+
+    //     return response()->json(['msg' => 'Chat cleared successfully', 'success' => true]);
+    // }
+
     public function clear(Request $request)
     {
         $sender_id = $request->sender_id;
         $reciver_id = $request->reciver_id;
+        $authUserId = auth()->id(); // Get the authenticated user's ID
 
-        Chat::where('sender_id', $sender_id)
-            ->update(['delete_from_sender_id' => 1]);
+        // If the authenticated user is the sender
+        if ($authUserId == $sender_id) {
+            // Mark all messages from sender side as deleted for the authenticated user
+            Chat::where('sender_id', $sender_id)
+                ->where('reciver_id', $reciver_id)
+                ->update(['delete_from_sender_id' => 1]);
 
-        Chat::where('reciver_id', $sender_id)
-            ->update(['delete_from_receiver_id' => 1]);
+            // Mark all messages from receiver side as deleted for the authenticated user
+            Chat::where('sender_id', $reciver_id)
+                ->where('reciver_id', $sender_id)
+                ->update(['delete_from_receiver_id' => 1]);
+        }
 
-        return response()->json(['msg' => 'Chat cleared successfully', 'success' => true]);
+        // If the authenticated user is the receiver
+        if ($authUserId == $reciver_id) {
+            // Mark all messages from sender side as deleted for the authenticated user
+            Chat::where('sender_id', $sender_id)
+                ->where('reciver_id', $reciver_id)
+                ->update(['delete_from_receiver_id' => 1]);
+
+            // Mark all messages from receiver side as deleted for the authenticated user
+            Chat::where('sender_id', $reciver_id)
+                ->where('reciver_id', $sender_id)
+                ->update(['delete_from_sender_id' => 1]);
+        }
+
+        return response()->json(['msg' => 'Chat cleared successfully for you', 'success' => true]);
     }
+
+
+
 
     public function seen(Request $request)
     {
