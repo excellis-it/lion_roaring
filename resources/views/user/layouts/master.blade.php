@@ -290,7 +290,7 @@
                 var lastActiveUserId = $("#last_activate_user").val();
                 if (lastActiveUserId && lastActiveUserId != '0') {
                     $("#chat_list_user_" + lastActiveUserId).addClass("active");
-                   // alert('active set done');
+                    // alert('active set done');
                 }
             }
 
@@ -758,7 +758,7 @@
 
                     $('#group-manage-' + sender_id).append(new_html);
 
-                    if (new_html) {                       
+                    if (new_html) {
                         setChatListLastActive();
                     }
 
@@ -2307,6 +2307,7 @@
                             toastr.success(response.message);
                             $('#sendUserEMailForm')[0].reset();
                             $('#selected-file-names').empty();
+                            window.location.reload();
 
 
                         } else {
@@ -2418,7 +2419,7 @@
                             $('#forward-mail-selected-file-names').empty();
                             $('.mail_forward_reply_box').hide();
                             $('.mail_forward_reply_box').find('textarea').val('');
-                            //  window.location.reload();
+                            window.location.reload();
 
                         } else {
                             toastr.error(response.message);

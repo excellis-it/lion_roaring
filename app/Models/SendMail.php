@@ -43,4 +43,14 @@ class SendMail extends Model
     {
         return $this->belongsTo(SendMail::class, 'reply_of');
     }
+
+    public function userSender()
+    {
+        return $this->belongsTo(User::class, 'form_id');
+    }
+
+    public function lastReply()
+    {
+        return $this->hasMany(SendMail::class, 'reply_of', 'id')->latest();
+    }
 }

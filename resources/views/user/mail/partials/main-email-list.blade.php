@@ -11,7 +11,19 @@
             // $mailUser = $mail->mailUsers()->where('user_id', auth()->id())->first();
             $mailUser = $mail->ownUserMailInfo;
             $isRead = isset($mailUser['is_read']) && $mailUser['is_read'] == 1;
-            $isStar = $mailUser->is_starred;
+
+            // $isStar = $mailUser->is_starred;
+
+            $mainMailId = $mail->reply_of ?? $mail->id;
+
+            // Fetch MailUser record for the authenticated user for the main mail
+            $mainMailUser = \App\Models\MailUser::where('send_mail_id', $mainMailId)
+                ->where('user_id', auth()->id())
+                ->first();
+
+            // Determine the read and star statuses
+            $isStar = $mainMailUser ? $mainMailUser->is_starred : false;
+
         @endphp
         <div class="emailRow {{ $isRead ? '' : 'mail_read' }}">
 
@@ -35,7 +47,7 @@
                     @if ($mails->type == 'sent')
                         {{ $mail->userToNames ?? '' }}
                     @else
-                        {{ $mail->user->full_name ?? '' }}
+                        {{ $mail->userSender->full_name ?? '' }}
                     @endif
 
                 </h3>
@@ -47,7 +59,7 @@
                     <h4>
                         {{ !empty($mail->reply_of) ? 'RE:' : '' }} {{ $mail->subject }}
 
-                        <span class="emailRow__description"> - {!! substr(strip_tags($mail->message), 0, 100) !!} </span>
+                        <span class="emailRow__description"> - {!! substr(strip_tags($mail->lastReplyMessage), 0, 100) !!} </span>
 
                     </h4>
                 </div>
