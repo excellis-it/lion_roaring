@@ -9,6 +9,7 @@ use App\Models\Notification;
 use App\Models\User;
 use App\Traits\ImageTrait;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\Helper;
 
 /**
  * @group Chats
@@ -126,56 +127,52 @@ class ChatController extends Controller
 
     public function chats(Request $request)
     {
-        // $chat_users = User::where('id', '!=', auth()->id())
-        //     ->where('status', 1)
-        //     ->get()
-        //     ->toArray();
+        try {
+            $chat_users = User::where('id', '!=', auth()->id())
+                ->where('status', 1)
+                ->get();
 
-        $chat_users = User::where('id', '!=', auth()->id())
-            ->where('status', 1)
-            ->get();
+            // Calculate unseen chat count and last message for each user
+            $chat_users->each(function ($chat_user) {
+                $chat_user->chat_count = Helper::getCountUnseenMessage(auth()->id(), $chat_user->id);
 
-        $chat_users->each(function ($chat_user) {
-            $chat_user->chat_count = Chat::where('reciver_id', auth()->id())
-                ->where('sender_id', $chat_user->id)
-                ->where('seen', 0)
-                ->count();
-        });
+                // Get the last message
+                $chat_user->last_message = Chat::where(function ($query) use ($chat_user) {
+                    $query->where(function ($subQuery) use ($chat_user) {
+                        $subQuery->where('sender_id', $chat_user->id)
+                            ->where('reciver_id', auth()->id());
+                    })->orWhere(function ($subQuery) use ($chat_user) {
+                        $subQuery->where('sender_id', auth()->id())
+                            ->where('reciver_id', $chat_user->id);
+                    });
+                })->where(function ($query) {
+                    $query->where('deleted_for_reciver', 0)
+                        ->orWhere('deleted_for_sender', 0);
+                })->orderBy('created_at', 'desc')->first();
+            });
 
-        $chat_users = $chat_users->toArray(); 
+            // Convert to array
+            $chat_users = $chat_users->toArray();
 
+            // Sort users based on the latest message timestamp, placing users with no messages at the end
+            usort($chat_users, function ($a, $b) {
+                if ($a['last_message'] === null) {
+                    return 1; // Move users with no messages to the end
+                }
+                if ($b['last_message'] === null) {
+                    return -1; // Move users with no messages to the end
+                }
 
-        // Append the last message to each user
-        $chat_users = array_map(function ($user) {
-            $user['last_message'] = Chat::where(function ($query) use ($user) {
-                $query->where(function ($subQuery) use ($user) {
-                    $subQuery->where('sender_id', $user['id'])
-                        ->where('reciver_id', auth()->id());
-                })->orWhere(function ($subQuery) use ($user) {
-                    $subQuery->where('sender_id', auth()->id())
-                        ->where('reciver_id', $user['id']);
-                });
-            })->where(function ($query) {
-                $query->where('deleted_for_reciver', 0)
-                    ->orWhere('deleted_for_sender', 0);
-            })->orderBy('created_at', 'desc')->first();
+                return strtotime($b['last_message']['created_at']) <=> strtotime($a['last_message']['created_at']);
+            });
 
-            return $user;
-        }, $chat_users);
-
-        // Sort users based on the latest message timestamp, placing users with no messages at the end
-        usort($chat_users, function ($a, $b) {
-            if ($a['last_message'] === null) {
-                return 1; // Move users with no messages to the end
-            }
-            if ($b['last_message'] === null) {
-                return -1; // Move users with no messages to the end
-            }
-
-            return $b['last_message']->created_at <=> $a['last_message']->created_at;
-        });
-
-        return response()->json($chat_users, 200);
+            return response()->json($chat_users, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error retrieving chats.',
+                'error' => $e->getMessage()
+            ], 201);
+        }
     }
 
 
