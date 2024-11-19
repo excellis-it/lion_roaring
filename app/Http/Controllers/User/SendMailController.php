@@ -1341,7 +1341,6 @@ class SendMailController extends Controller
     public function star(Request $request)
     {
         if (auth()->user()->can('Manage Email')) {
-
             $mail_id = $request->mail_id;
             $star_value = $request->start_value; // Corrected variable name for clarity
             $msg = '';
