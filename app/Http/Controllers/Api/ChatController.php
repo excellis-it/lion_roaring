@@ -140,15 +140,17 @@ class ChatController extends Controller
                 $chat_user->last_message = Chat::where(function ($query) use ($chat_user) {
                     $query->where(function ($subQuery) use ($chat_user) {
                         $subQuery->where('sender_id', $chat_user->id)
-                            ->where('reciver_id', auth()->id());
+                            ->where('reciver_id', auth()->id())->where('deleted_for_reciver', 0)->where('delete_from_receiver_id', 0);
                     })->orWhere(function ($subQuery) use ($chat_user) {
                         $subQuery->where('sender_id', auth()->id())
-                            ->where('reciver_id', $chat_user->id);
+                            ->where('reciver_id', $chat_user->id)->where('deleted_for_sender', 0)->where('delete_from_sender_id', 0);
                     });
-                })->where(function ($query) {
-                    $query->where('deleted_for_reciver', 0)
-                        ->orWhere('deleted_for_sender', 0);
-                })->orderBy('created_at', 'desc')->first();
+                })
+                    // ->where(function ($query) {
+                    //     $query->where('deleted_for_reciver', 0)
+                    //         ->orWhere('deleted_for_sender', 0);
+                    // })
+                    ->orderBy('created_at', 'desc')->first();
             });
 
             // Convert to array
@@ -258,14 +260,14 @@ class ChatController extends Controller
         try {
 
             $chats = Chat::where(function ($query) use ($request) {
-                $query->where('sender_id', $request->sender_receiver_id)
-                    ->where('reciver_id', auth()->id())
+                $query->where('sender_id', auth()->id())
+                    ->where('reciver_id', $request->sender_receiver_id)
                     ->where('deleted_for_sender', 0)
                     ->where('delete_from_sender_id', 0);
             })
                 ->orWhere(function ($query) use ($request) {
-                    $query->where('sender_id', auth()->id())
-                        ->where('reciver_id', $request->sender_receiver_id)
+                    $query->where('sender_id', $request->sender_receiver_id)
+                        ->where('reciver_id', auth()->id())
                         ->where('deleted_for_reciver', 0)
                         ->where('delete_from_receiver_id', 0);
                 })
@@ -276,6 +278,15 @@ class ChatController extends Controller
             $chats->each(function ($chat) {
                 if ($chat->reciver_id == auth()->id() && $chat->seen == 0) {
                     $chat->update(['seen' => 1]);
+                }
+                $chat->isMe = ($chat->sender_id == auth()->id()) ? true : false;
+                $chat->isSeen = ($chat->seen == 1) ? true : false;
+                if ($chat->created_at->format('d M Y') == date('d M Y')) {
+                    $chat->time = 'Today';
+                } elseif ($chat->created_at->format('d M Y') == date('d M Y', strtotime('-1 day'))) {
+                    $chat->time = 'Yesterday';
+                } else {
+                    $chat->time = $chat->created_at->format('d M Y');
                 }
             });
 
