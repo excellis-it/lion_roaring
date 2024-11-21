@@ -271,7 +271,7 @@ class ChatController extends Controller
                         ->where('deleted_for_reciver', 0)
                         ->where('delete_from_receiver_id', 0);
                 })
-                ->orderBy('created_at', 'asc')
+                ->orderBy('created_at', 'desc')
                 ->get();
             // return $chats;
             // Mark unseen messages as seen
@@ -281,12 +281,13 @@ class ChatController extends Controller
                 }
                 $chat->isMe = ($chat->sender_id == auth()->id()) ? true : false;
                 $chat->isSeen = ($chat->seen == 1) ? true : false;
+
                 if ($chat->created_at->format('d M Y') == date('d M Y')) {
-                    $chat->time = 'Today';
+                    $chat->time = $chat->created_at->format('h:iA') . ' ' . 'Today';
                 } elseif ($chat->created_at->format('d M Y') == date('d M Y', strtotime('-1 day'))) {
-                    $chat->time = 'Yesterday';
+                    $chat->time = $chat->created_at->format('h:iA') . ' ' . 'Yesterday';
                 } else {
-                    $chat->time = $chat->created_at->format('d M Y');
+                    $chat->time = $chat->created_at->format('h:iA') . ' ' . $chat->created_at->format('d M Y');
                 }
             });
 
@@ -453,18 +454,47 @@ class ChatController extends Controller
     public function clear(Request $request)
     {
         try {
+            // $sender_id = auth()->id();
+            // $reciver_id = $request->reciver_id;
+
+            // // Mark messages as deleted from the sender's side
+            // Chat::where('sender_id', $sender_id)
+            //     ->where('reciver_id', $reciver_id)
+            //     ->update(['delete_from_sender_id' => 1]);
+
+            // // Mark messages as deleted from the receiver's side
+            // Chat::where('reciver_id', $sender_id)
+            //     ->where('sender_id', $reciver_id)
+            //     ->update(['delete_from_receiver_id' => 1]);
             $sender_id = auth()->id();
             $reciver_id = $request->reciver_id;
+            $authUserId = auth()->id(); // Get the authenticated user's ID
 
-            // Mark messages as deleted from the sender's side
-            Chat::where('sender_id', $sender_id)
-                ->where('reciver_id', $reciver_id)
-                ->update(['delete_from_sender_id' => 1]);
+            // If the authenticated user is the sender
+            if ($authUserId == $sender_id) {
+                // Mark all messages from sender side as deleted for the authenticated user
+                Chat::where('sender_id', $sender_id)
+                    ->where('reciver_id', $reciver_id)
+                    ->update(['delete_from_sender_id' => 1]);
 
-            // Mark messages as deleted from the receiver's side
-            Chat::where('reciver_id', $sender_id)
-                ->where('sender_id', $reciver_id)
-                ->update(['delete_from_receiver_id' => 1]);
+                // Mark all messages from receiver side as deleted for the authenticated user
+                Chat::where('sender_id', $reciver_id)
+                    ->where('reciver_id', $sender_id)
+                    ->update(['delete_from_receiver_id' => 1]);
+            }
+
+            // If the authenticated user is the receiver
+            if ($authUserId == $reciver_id) {
+                // Mark all messages from sender side as deleted for the authenticated user
+                Chat::where('sender_id', $sender_id)
+                    ->where('reciver_id', $reciver_id)
+                    ->update(['delete_from_receiver_id' => 1]);
+
+                // Mark all messages from receiver side as deleted for the authenticated user
+                Chat::where('sender_id', $reciver_id)
+                    ->where('reciver_id', $sender_id)
+                    ->update(['delete_from_sender_id' => 1]);
+            }
 
             return response()->json(['msg' => 'Chat cleared successfully', 'success' => true], 200);
         } catch (\Throwable $th) {

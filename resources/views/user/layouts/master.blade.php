@@ -680,9 +680,9 @@
             socket.on('remove-chat', function(data) {
                 // console.log(data);
                 if (data.chat.reciver_id == sender_id) {
-                    // $("#chat-message-" + data.chat.id).remove();
-                    // $("#last-chat-time-" + data.chat.id).remove();
-                    // $('.last-chat-' + data.chat.id).html('');
+                    $("#chat-message-" + data.chat.id).remove();
+                    $("#last-chat-time-" + data.chat.id).remove();
+                    $('.last-chat-' + data.chat.id).html('');
 
                     // let unseenCountElement = $("#count-unseen-" + data.chat.sender_id);
                     // let unseenCount = parseInt(unseenCountElement.find('p').text().trim(), 10);
@@ -699,9 +699,10 @@
                     //     }
                     // }
 
-                    load_chat_list();
+                    // load_chat_list();
 
                 }
+                load_chat_list();
             });
 
             // clear-chat
@@ -718,8 +719,10 @@
             // Listen for incoming chat messages from the server
             socket.on("chat", function(data) {
                 let timeZome = 'America/New_York';
+                load_chat_list();
+                setChatListLastActive();
                 html = `
-                         <div class="message you">
+                         <div class="message you" id="chat-message-${data.chat_id}">
                              <p class="messageContent">`
                 if (data.file_url) {
                     let attachement_extention = data.file_url.split('.').pop();
@@ -778,45 +781,46 @@
                     var users = data.receiver_users;
                     $('#group-manage-' + sender_id).html('');
                     var new_html = '';
-                    users.forEach(user => {
-                        // Check if last_message exists and has a created_at property
-                        let timeZome = 'America/New_York';
-                        let time_format_13 = user.last_message && user.last_message.created_at ?
-                            moment.tz(user.last_message.created_at, timeZome).format(
-                                "hh:mm A") :
-                            '';
+                    //             users.forEach(user => {
+                    //                 // Check if last_message exists and has a created_at property
+                    //                 let timeZome = 'America/New_York';
+                    //                 let time_format_13 = user.last_message && user.last_message.created_at ?
+                    //                     moment.tz(user.last_message.created_at, timeZome).format(
+                    //                         "hh:mm A") :
+                    //                     '';
 
-                        new_html += `
-         <li class="group user-list ${user.id == data.sender_id ? '' : ''}" id="chat_list_user_${user.id}" data-id="${user.id}">
-             <div class="avatar">`;
+                    //                 new_html += `
+                //  <li class="group user-list ${user.id == data.sender_id ? '' : ''}" id="chat_list_user_${user.id}" data-id="${user.id}">
+                //      <div class="avatar">`;
 
-                        if (user.profile_picture) {
-                            new_html +=
-                                `<img src="{{ Storage::url('${user.profile_picture}') }}" alt="">`;
-                        } else {
-                            new_html +=
-                                `<img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">`;
-                        }
+                    //                 if (user.profile_picture) {
+                    //                     new_html +=
+                    //                         `<img src="{{ Storage::url('${user.profile_picture}') }}" alt="">`;
+                    //                 } else {
+                    //                     new_html +=
+                    //                         `<img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">`;
+                    //                 }
 
-                        new_html += `</div>
-         <p class="GroupName">${user.first_name} ${user.middle_name ? user.middle_name : ''} ${user.last_name ? user.last_name : ''}</p>
-         <p class="GroupDescrp last-chat-${user.last_message ? user.last_message.id : ''}">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p>
-         <div class="time_online" id="last-chat-time-${user.last_message ? user.last_message.id : ''}">
-             <p>${time_format_13}</p>
-         </div>`
-                        if (user.id == data.sender_id) {
-                            new_html += `<div class="count-unseen" id="count-unseen-${user.id}">
-             <span><p>${user.unseen_chat}</p></span>
-         </div>`;
-                        }
-                        new_html += `</li>`;
-                    });
+                    //                 new_html += `</div>
+                //  <p class="GroupName">${user.first_name} ${user.middle_name ? user.middle_name : ''} ${user.last_name ? user.last_name : ''}</p>
+                //  <p class="GroupDescrp last-chat-${user.last_message ? user.last_message.id : ''}">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p>
+                //  <div class="time_online" id="last-chat-time-${user.last_message ? user.last_message.id : ''}">
+                //      <p>${time_format_13}</p>
+                //  </div>`
+                    //                 if (user.id == data.sender_id) {
+                    //                     new_html += `<div class="count-unseen" id="count-unseen-${user.id}">
+                //      <span><p>${user.unseen_chat}</p></span>
+                //  </div>`;
+                    //                 }
+                    //                 new_html += `</li>`;
+                    //             });
 
-                    $('#group-manage-' + sender_id).append(new_html);
+                    // $('#group-manage-' + sender_id).append(new_html);
+                    // load_chat_list();
 
-                    if (new_html) {
-                        setChatListLastActive();
-                    }
+                    // if (new_html) {
+                    //     setChatListLastActive();
+                    // }
 
 
 
@@ -943,7 +947,7 @@
                         }
                     });
                 }
-                load_chat_list();
+                // load_chat_list();
             });
 
             // seen message
