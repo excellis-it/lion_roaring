@@ -144,6 +144,10 @@ Route::prefix('v3')->group(function () {
             // 'ecclesias' => EcclesiaContorller::class,
         ]);
 
+        Route::prefix('topics')->group(function () {
+            Route::get('/delete/{id}', [TopicController::class, 'delete']);
+        });
+
         Route::prefix('becoming-sovereign')->group(function () {
             Route::get('/', [BecomingSovereignController::class, 'index']);
             Route::get('/list-by-topics', [BecomingSovereignController::class, 'listByTopic']);

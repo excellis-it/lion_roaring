@@ -379,7 +379,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 56DdvZaEk3eha486fbP1Vgc'
+      - 'Bearer a51aeb6f3dcZ4kV6Ehgv8PD'
     controller: null
     method: null
     route: null
@@ -406,13 +406,13 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: officia
+        example: sunt
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: officia
+      id: sunt
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -646,7 +646,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P64aekf86Z153bhacVdgEvD'
+      - 'Bearer cV6DEav86k5hPefd1Zb3ag4'
     controller: null
     method: null
     route: null

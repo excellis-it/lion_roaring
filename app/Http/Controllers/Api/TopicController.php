@@ -78,7 +78,7 @@ class TopicController extends Controller
     {
         try {
 
-            $topics = Topic::orderBy('id', 'desc')->paginate(15);
+            $topics = Topic::orderBy('id', 'desc')->get();
             return response()->json([
                 'data' => $topics,
                 'status' => true
@@ -99,7 +99,7 @@ class TopicController extends Controller
      * @bodyParam topic_name string required The name of the topic. Example: "Sample Topic"
      * @bodyParam education_type string required The type of education. Example: "General"
      *
-     * @response 201 {
+     * @response 200 {
      *   "message": "Topic created successfully.",
      *   "status": true
      * }
@@ -132,7 +132,7 @@ class TopicController extends Controller
             return response()->json([
                 'message' => 'Topic created successfully.',
                 'status' => true
-            ], 201);
+            ], 200);
         } catch (\Exception $e) {
             Log::error('Failed to create topic: ' . $e->getMessage());
             return response()->json([
@@ -239,11 +239,11 @@ class TopicController extends Controller
      * }
      *
      */
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
         try {
 
-            $topic = Topic::findOrFail(Crypt::decrypt($id));
+            $topic = Topic::findOrFail($id);
             $topic->delete();
             return response()->json([
                 'message' => 'Topic deleted successfully.',
