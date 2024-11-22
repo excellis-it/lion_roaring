@@ -89,7 +89,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kda1bcP8eZfD4h6v53gEaV6'
+      - 'Bearer kedP6Z4ca1DaV5v3h86fEbg'
     controller: null
     method: null
     route: null
@@ -170,7 +170,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v6Va65a8k3fDEeb4gP1cZhd'
+      - 'Bearer VDZfak84P1bahcg566edv3E'
     controller: null
     method: null
     route: null
