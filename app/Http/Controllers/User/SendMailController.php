@@ -19,7 +19,8 @@ class SendMailController extends Controller
     {
         if (auth()->user()->can('Manage Email')) {
 
-            $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+            // $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+            $allMailIds = User::where('status', true)->get(['id', 'email']);
 
             return view('user.mail.list', ['allMailIds' => $allMailIds]);
         } else {
@@ -31,7 +32,8 @@ class SendMailController extends Controller
     {
         if (auth()->user()->can('Manage Email')) {
 
-            $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+            // $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+            $allMailIds = User::where('status', true)->get(['id', 'email']);
 
             return view('user.mail.sent', ['allMailIds' => $allMailIds]);
         } else {
@@ -43,7 +45,8 @@ class SendMailController extends Controller
     {
         if (auth()->user()->can('Manage Email')) {
 
-            $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+            //  $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+            $allMailIds = User::where('status', true)->get(['id', 'email']);
 
             return view('user.mail.star', ['allMailIds' => $allMailIds]);
         } else {
@@ -55,7 +58,8 @@ class SendMailController extends Controller
     {
         if (auth()->user()->can('Manage Email')) {
 
-            $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+            // $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+            $allMailIds = User::where('status', true)->get(['id', 'email']);
 
             return view('user.mail.trash', ['allMailIds' => $allMailIds]);
         } else {
