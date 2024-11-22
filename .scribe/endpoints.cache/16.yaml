@@ -379,7 +379,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8h6E3ZaP5DvagV14ecdfbk6'
+      - 'Bearer a8645P63h1kbdgVEefZvDac'
     controller: null
     method: null
     route: null
@@ -406,13 +406,13 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: possimus
+        example: ab
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: possimus
+      id: ab
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -646,7 +646,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Ed1Vk3caDf4PZvb6eg86ha5'
+      - 'Bearer a1eka6hE5f84Z3PbdgcDvV6'
     controller: null
     method: null
     route: null

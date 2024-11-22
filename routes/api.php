@@ -159,7 +159,7 @@ Route::prefix('v3')->group(function () {
             Route::get('/download/{file}', [BecomingSovereignController::class, 'download']);
         });
 
-        Route::prefix('becoming-christ-link')->group(function () {
+        Route::prefix('becoming-christ-like')->group(function () {
             Route::get('/', [BecomingChristLikeController::class, 'index']);
             Route::get('/list-by-topics', [BecomingChristLikeController::class, 'listByTopic']);
             Route::get('/topics', [BecomingChristLikeController::class, 'topics']);

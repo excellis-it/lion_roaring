@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "1ef89f77-eaa3-410e-8531-a2c2af5e4c2c",
+        "_postman_id": "f607381a-1f45-47d0-8ea2-0015b7b163d0",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -173,7 +173,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":17,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"city\":\"Springfield\",\"state\":4,\"address2\":\"Apt 4B\",\"country\":2,\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":18,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"city\":\"Springfield\",\"state\":2,\"address2\":\"Apt 4B\",\"country\":20,\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -1292,7 +1292,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"hnader@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"chowe@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1336,7 +1336,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"sint\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"eos\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1525,7 +1525,7 @@
                                         {
                                             "id": "topic",
                                             "key": "topic",
-                                            "value": "fugiat",
+                                            "value": "et",
                                             "description": "The topic."
                                         },
                                         {
@@ -1702,30 +1702,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "aspernatur",
+                                            "value": "aliquid",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "ad",
+                                            "value": "et",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "aut",
+                                            "value": "vero",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "1",
+                                            "value": "2",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=aspernatur&sorttype=ad&query=aut&topic_id=1"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=aliquid&sorttype=et&query=vero&topic_id=2"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -1912,7 +1912,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "placeat",
+                                            "value": "amet",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2037,7 +2037,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "vel",
+                                            "value": "fuga",
                                             "description": ""
                                         }
                                     ]
@@ -2088,7 +2088,7 @@
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
-                                    "path": "api\/v3\/user\/becoming-christ-link",
+                                    "path": "api\/v3\/user\/becoming-christ-like",
                                     "query": [
                                         {
                                             "key": "topic",
@@ -2097,7 +2097,7 @@
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link?topic=1"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like?topic=1"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2127,34 +2127,34 @@
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
-                                    "path": "api\/v3\/user\/becoming-christ-link\/list-by-topics",
+                                    "path": "api\/v3\/user\/becoming-christ-like\/list-by-topics",
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "consequatur",
+                                            "value": "autem",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "soluta",
+                                            "value": "nulla",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "hic",
+                                            "value": "aut",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "6",
+                                            "value": "8",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/list-by-topics?sortby=consequatur&sorttype=soluta&query=hic&topic_id=6"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/list-by-topics?sortby=autem&sorttype=nulla&query=aut&topic_id=8"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2184,9 +2184,9 @@
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
-                                    "path": "api\/v3\/user\/becoming-christ-link\/topics",
+                                    "path": "api\/v3\/user\/becoming-christ-like\/topics",
                                     "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/topics"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/topics"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2222,9 +2222,9 @@
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
-                                    "path": "api\/v3\/user\/becoming-christ-link\/store",
+                                    "path": "api\/v3\/user\/becoming-christ-like\/store",
                                     "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/store"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/store"
                                 },
                                 "method": "POST",
                                 "header": [
@@ -2281,16 +2281,16 @@
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
-                                    "path": "api\/v3\/user\/becoming-christ-link\/view\/:id",
+                                    "path": "api\/v3\/user\/becoming-christ-like\/view\/:id",
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "10",
+                                            "value": "3",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/view\/:id?topic=10",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/view\/:id?topic=3",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2334,14 +2334,14 @@
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
-                                    "path": "api\/v3\/user\/becoming-christ-link\/update\/:id",
+                                    "path": "api\/v3\/user\/becoming-christ-like\/update\/:id",
                                     "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/update\/:id",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/update\/:id",
                                     "variable": [
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "adipisci",
+                                            "value": "et",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2407,9 +2407,9 @@
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
-                                    "path": "api\/v3\/user\/becoming-christ-link\/delete\/:id",
+                                    "path": "api\/v3\/user\/becoming-christ-like\/delete\/:id",
                                     "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/delete\/:id",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/delete\/:id",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2459,14 +2459,14 @@
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
-                                    "path": "api\/v3\/user\/becoming-christ-link\/download\/:file",
+                                    "path": "api\/v3\/user\/becoming-christ-like\/download\/:file",
                                     "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-link\/download\/:file",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/download\/:file",
                                     "variable": [
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "iure",
+                                            "value": "quia",
                                             "description": ""
                                         }
                                     ]
@@ -2560,30 +2560,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "consequuntur",
+                                            "value": "magnam",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "nulla",
+                                            "value": "rerum",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "quos",
+                                            "value": "nobis",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "8",
+                                            "value": "6",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=consequuntur&sorttype=nulla&query=quos&topic_id=8"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=magnam&sorttype=rerum&query=nobis&topic_id=6"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2714,12 +2714,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "2",
+                                            "value": "11",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=2",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=11",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2770,7 +2770,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "pariatur",
+                                            "value": "deleniti",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2895,7 +2895,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "quae",
+                                            "value": "perspiciatis",
                                             "description": ""
                                         }
                                     ]
@@ -3175,25 +3175,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "repellendus",
+                                    "value": "aspernatur",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"masum2@excellisit.net\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "soluta",
+                                    "value": "autem",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "nesciunt",
+                                    "value": "a",
                                     "type": "text",
                                     "description": "The subject of the email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "quaerat",
+                                    "value": "quis",
                                     "type": "text",
                                     "description": "The body content of the email."
                                 },
@@ -3252,31 +3252,31 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "non",
+                                    "value": "in",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "neque",
+                                    "value": "possimus",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "qui",
+                                    "value": "error",
                                     "type": "text",
                                     "description": "The subject of the reply email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "omnis",
+                                    "value": "dolores",
                                     "type": "text",
                                     "description": "The body content of the reply email."
                                 },
                                 {
                                     "key": "main_mail_id",
-                                    "value": 11,
+                                    "value": 1,
                                     "type": "text",
                                     "description": "The ID of the main email thread being replied to."
                                 },
@@ -3335,25 +3335,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "adipisci",
+                                    "value": "commodi",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "quia",
+                                    "value": "debitis",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "aut",
+                                    "value": "quia",
                                     "type": "text",
                                     "description": "The subject of the forwarded email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "ipsum",
+                                    "value": "doloribus",
                                     "type": "text",
                                     "description": "The body content of the forwarded email."
                                 },
@@ -3977,7 +3977,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"arlie.abernathy@example.com\"}"
+                            "raw": "{\"email\":\"alberta60@example.org\"}"
                         },
                         "description": "",
                         "auth": {
@@ -4699,7 +4699,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":9}"
+                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":12}"
                         },
                         "description": "Manages notifications for group chat messages. If the user has a new message, it sends a notification;\notherwise, it marks the notification as read."
                     },
@@ -5380,7 +5380,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "possimus",
+                                    "value": "ab",
                                     "description": "The ID of the edit."
                                 }
                             ]
@@ -5517,7 +5517,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "10",
                                     "description": "The ID of the strategy to delete."
                                 }
                             ]
@@ -5563,7 +5563,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "aut",
+                                    "value": "voluptatem",
                                     "description": "The ID of the download."
                                 }
                             ]
@@ -5609,7 +5609,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "6",
+                                    "value": "10",
                                     "description": "The ID of the strategy to view."
                                 }
                             ]

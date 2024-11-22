@@ -85,7 +85,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bPEkg8V14vaD3hdce66faZ5'
+      - 'Bearer fZvVEh6a8ea4Pd51g6kcbD3'
     controller: null
     method: null
     route: null
@@ -159,7 +159,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gkVhD1PEvcaa6fb5634Z8ed'
+      - 'Bearer cgd3651EP4vaZf8Dekb6aVh'
     controller: null
     method: null
     route: null
@@ -186,7 +186,7 @@ endpoints:
         name: topic
         description: 'The topic.'
         required: true
-        example: fugiat
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -201,7 +201,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
-      topic: fugiat
+      topic: et
       id: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -227,7 +227,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 61da4VhZfPgv6k8Eeca3bD5'
+      - 'Bearer Ea6g3dbPZcvh6f8a1e5k4VD'
     controller: null
     method: null
     route: null
@@ -312,7 +312,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V1h6EaPvdeZDf5bgk46a38c'
+      - 'Bearer 3aeh6Va1gck4v8Pdbf5EZD6'
     controller: null
     method: null
     route: null
@@ -366,7 +366,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aEa1chdvD46Vf8PbeZ6k5g3'
+      - 'Bearer 5dPfZh64cgae6Dv1aV8kbE3'
     controller: null
     method: null
     route: null
@@ -502,7 +502,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e48hfDZkb3gE61dv6aaP5Vc'
+      - 'Bearer e4k6f5hE86bDaV1agvZdcP3'
     controller: null
     method: null
     route: null
@@ -531,7 +531,7 @@ endpoints:
         name: sortby
         description: 'The column to sort by (optional, default: id).'
         required: false
-        example: aspernatur
+        example: aliquid
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -540,7 +540,7 @@ endpoints:
         name: sorttype
         description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
         required: false
-        example: ad
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -549,7 +549,7 @@ endpoints:
         name: query
         description: 'The search query to filter files by ID, file name, or file extension (optional).'
         required: false
-        example: aut
+        example: vero
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -558,16 +558,16 @@ endpoints:
         name: topic_id
         description: 'The ID of the topic to filter files by (optional).'
         required: false
-        example: 1
+        example: 2
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      sortby: aspernatur
-      sorttype: ad
-      query: aut
-      topic_id: 1
+      sortby: aliquid
+      sorttype: et
+      query: vero
+      topic_id: 2
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -605,7 +605,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8ea5vh6dk3b4cgZPaf16VDE'
+      - 'Bearer eDV6h3EkbdP5Z6cagfv18a4'
     controller: null
     method: null
     route: null
@@ -667,7 +667,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 86cEhZ3aa1kvPDbg456Vefd'
+      - 'Bearer D43aP866cZg1Efave5kbVdh'
     controller: null
     method: null
     route: null
@@ -766,7 +766,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a1VvcbEZdg485e6Pkh6aDf3'
+      - 'Bearer ve6aDcEg1846ak53VbPfhdZ'
     controller: null
     method: null
     route: null
@@ -852,7 +852,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aEk53Vdc6D4Za861gvPehfb'
+      - 'Bearer e16D6b4Eadg53haZcPvk8Vf'
     controller: null
     method: null
     route: null
@@ -879,13 +879,13 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: placeat
+        example: amet
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: placeat
+      id: amet
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -967,7 +967,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer heDbcEk641PgaadVvf53Z86'
+      - 'Bearer v4hb5dVEfkaZgcD63Pe816a'
     controller: null
     method: null
     route: null
@@ -1041,7 +1041,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V4chg168davZP3DkaeE6fb5'
+      - 'Bearer 1dbk3Zg5V6Pce8hvEfD4a6a'
     controller: null
     method: null
     route: null
@@ -1068,13 +1068,13 @@ endpoints:
         name: file
         description: ''
         required: true
-        example: vel
+        example: fuga
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      file: vel
+      file: fuga
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -1111,7 +1111,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 46aaE13vckhdPb8Z6Vg5feD'
+      - 'Bearer 1avbVDhZdk6P3aeg84E6fc5'
     controller: null
     method: null
     route: null
@@ -1119,7 +1119,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v3/user/becoming-christ-link
+    uri: api/v3/user/becoming-christ-like
     metadata:
       groupName: Education
       groupDescription: ''
@@ -1247,7 +1247,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4vhVPZafkbec13aEg6d86D5'
+      - 'Bearer h5P3a6Dg186fVdcv4EkabeZ'
     controller: null
     method: null
     route: null
@@ -1255,7 +1255,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v3/user/becoming-christ-link/list-by-topics
+    uri: api/v3/user/becoming-christ-like/list-by-topics
     metadata:
       groupName: Education
       groupDescription: ''
@@ -1276,7 +1276,7 @@ endpoints:
         name: sortby
         description: 'The column to sort by (optional, default: id).'
         required: false
-        example: consequatur
+        example: autem
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1285,7 +1285,7 @@ endpoints:
         name: sorttype
         description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
         required: false
-        example: soluta
+        example: nulla
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1294,7 +1294,7 @@ endpoints:
         name: query
         description: 'The search query to filter files by ID, file name, or file extension (optional).'
         required: false
-        example: hic
+        example: aut
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1303,16 +1303,16 @@ endpoints:
         name: topic_id
         description: 'The ID of the topic to filter files by (optional).'
         required: false
-        example: 6
+        example: 8
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      sortby: consequatur
-      sorttype: soluta
-      query: hic
-      topic_id: 6
+      sortby: autem
+      sorttype: nulla
+      query: aut
+      topic_id: 8
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -1350,7 +1350,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a36a5kg8hcebV1DfP4EZ6vd'
+      - 'Bearer EV43gZbk1h6D6adcPae85fv'
     controller: null
     method: null
     route: null
@@ -1358,7 +1358,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v3/user/becoming-christ-link/topics
+    uri: api/v3/user/becoming-christ-like/topics
     metadata:
       groupName: Education
       groupDescription: ''
@@ -1412,7 +1412,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gZV5fhb6681aakcd4PeD3vE'
+      - 'Bearer gZEahbfd83kVev466D51caP'
     controller: null
     method: null
     route: null
@@ -1420,7 +1420,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/becoming-christ-link/store
+    uri: api/v3/user/becoming-christ-like/store
     metadata:
       groupName: Education
       groupDescription: ''
@@ -1511,7 +1511,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5egahD3bZfE8cV1kad46P6v'
+      - 'Bearer kE1a54P6abv6gc8ehVDfZ3d'
     controller: null
     method: null
     route: null
@@ -1519,7 +1519,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v3/user/becoming-christ-link/view/{id}'
+    uri: 'api/v3/user/becoming-christ-like/view/{id}'
     metadata:
       groupName: Education
       groupDescription: ''
@@ -1550,13 +1550,13 @@ endpoints:
         name: topic
         description: 'The ID of the topic to filter by (optional).'
         required: false
-        example: 10
+        example: 3
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      topic: 10
+      topic: 3
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -1597,7 +1597,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6a145DgkEhc86vbfedP3VaZ'
+      - 'Bearer b63vDVk4c56PaEadegfh1Z8'
     controller: null
     method: null
     route: null
@@ -1605,7 +1605,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: 'api/v3/user/becoming-christ-link/update/{id}'
+    uri: 'api/v3/user/becoming-christ-like/update/{id}'
     metadata:
       groupName: Education
       groupDescription: ''
@@ -1624,13 +1624,13 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: adipisci
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: adipisci
+      id: et
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -1712,7 +1712,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hE6VfdaZvD3ck456bg8aP1e'
+      - 'Bearer 5vahdcVE8kePZf16gaD36b4'
     controller: null
     method: null
     route: null
@@ -1720,7 +1720,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v3/user/becoming-christ-link/delete/{id}'
+    uri: 'api/v3/user/becoming-christ-like/delete/{id}'
     metadata:
       groupName: Education
       groupDescription: ''
@@ -1786,7 +1786,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VDvh68EZPfa56aek31g4bcd'
+      - 'Bearer Egh8b461eZf6DackVv53dPa'
     controller: null
     method: null
     route: null
@@ -1794,7 +1794,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v3/user/becoming-christ-link/download/{file}'
+    uri: 'api/v3/user/becoming-christ-like/download/{file}'
     metadata:
       groupName: Education
       groupDescription: ''
@@ -1813,13 +1813,13 @@ endpoints:
         name: file
         description: ''
         required: true
-        example: iure
+        example: quia
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      file: iure
+      file: quia
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -1856,7 +1856,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Pd83a1k54egZvaVbh6EfcD'
+      - 'Bearer dgk6Pbea186caE5vVDhZ34f'
     controller: null
     method: null
     route: null
@@ -1992,7 +1992,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3hf6164ZVDvd5EbgkPcae8a'
+      - 'Bearer ePkvaaD8fc6V43db6gh5EZ1'
     controller: null
     method: null
     route: null
@@ -2021,7 +2021,7 @@ endpoints:
         name: sortby
         description: 'The column to sort by (optional, default: id).'
         required: false
-        example: consequuntur
+        example: magnam
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -2030,7 +2030,7 @@ endpoints:
         name: sorttype
         description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
         required: false
-        example: nulla
+        example: rerum
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -2039,7 +2039,7 @@ endpoints:
         name: query
         description: 'The search query to filter files by ID, file name, or file extension (optional).'
         required: false
-        example: quos
+        example: nobis
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -2048,16 +2048,16 @@ endpoints:
         name: topic_id
         description: 'The ID of the topic to filter files by (optional).'
         required: false
-        example: 8
+        example: 6
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      sortby: consequuntur
-      sorttype: nulla
-      query: quos
-      topic_id: 8
+      sortby: magnam
+      sorttype: rerum
+      query: nobis
+      topic_id: 6
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -2095,7 +2095,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c5P4kbe8V6DZ1hv6faaEg3d'
+      - 'Bearer V6D84v1k3ZgcahEbPfd65ea'
     controller: null
     method: null
     route: null
@@ -2157,7 +2157,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gZVa6a5cEbe3h68d4fk1DvP'
+      - 'Bearer h6Dvdkb4aEVfacZ6P5e83g1'
     controller: null
     method: null
     route: null
@@ -2256,7 +2256,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v5ca1Za3f4Dk68beP6dEhVg'
+      - 'Bearer dc3v5aZf8Eb6kP6ghDVae14'
     controller: null
     method: null
     route: null
@@ -2295,13 +2295,13 @@ endpoints:
         name: topic
         description: 'The ID of the topic to filter by (optional).'
         required: false
-        example: 2
+        example: 11
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      topic: 2
+      topic: 11
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -2342,7 +2342,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a6Ve3g614d8fvPbhcED5Zak'
+      - 'Bearer cfvV8ZdahgeDab46P631Ek5'
     controller: null
     method: null
     route: null
@@ -2369,13 +2369,13 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: pariatur
+        example: deleniti
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: pariatur
+      id: deleniti
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -2457,7 +2457,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1dbek5acaE68P4Dhg63ZVfv'
+      - 'Bearer VD4khPEf1Zvdecab56a3g68'
     controller: null
     method: null
     route: null
@@ -2531,7 +2531,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d66Z1e8vb3cD4hPfEa5gkaV'
+      - 'Bearer dV6ahED5ake6c3Pg81bvfZ4'
     controller: null
     method: null
     route: null
@@ -2558,13 +2558,13 @@ endpoints:
         name: file
         description: ''
         required: true
-        example: quae
+        example: perspiciatis
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      file: quae
+      file: perspiciatis
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -2601,7 +2601,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hD6ve35bfP4kaE8gZ6d1acV'
+      - 'Bearer 3v6eZcgf54h1PEakDb8Va6d'
     controller: null
     method: null
     route: null

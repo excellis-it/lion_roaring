@@ -50,7 +50,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f3cvVb5dkEa68he4aPZg1D6'
+      - 'Bearer v6ebaE4af138kZVD65Pdcgh'
     controller: null
     method: null
     route: null
@@ -119,7 +119,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3kva81DEhe4bdPZa5Vf66cg'
+      - 'Bearer 5f6kah4vcdEDP13ebaVg8Z6'
     controller: null
     method: null
     route: null
@@ -232,7 +232,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8kfavdab61h4EPZe6Vc3gD5'
+      - 'Bearer e61a3bhavZDkfP68dV5gE4c'
     controller: null
     method: null
     route: null
@@ -312,7 +312,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z6adbP65v3gkf8Eeh41caDV'
+      - 'Bearer 6PVf8b5ca4Z1akDdveghE36'
     controller: null
     method: null
     route: null
@@ -402,7 +402,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d6Z1f4cEvbahea65kVgDP83'
+      - 'Bearer 4aPDcgfEbZdk3V6ve1a865h'
     controller: null
     method: null
     route: null
@@ -464,7 +464,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6e8PD6c5gbv3VkfZhad14aE'
+      - 'Bearer 6kbdP5gVEchaDe316Zfa84v'
     controller: null
     method: null
     route: null
