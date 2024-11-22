@@ -126,7 +126,16 @@ class BecomingSovereignController extends Controller
                 $filesQuery->where('topic_id', $new_topic);
             }
 
-            $files = $filesQuery->paginate(15);
+            // $filesQuery->each(function ($file) {
+            //     $file->topic_name = Topic::where('id', $file->topic_id)->get('topic_name');
+            // });
+            $files = $filesQuery->get()->map(function ($file) {
+                // Fetch the topic name for each file
+                $file->file_topic_name = Topic::where('id', $file->topic_id)->value('topic_name');
+                return $file;
+            });
+
+            // $files = $filesQuery->get();
             $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->get();
 
             return response()->json([
@@ -319,7 +328,7 @@ class BecomingSovereignController extends Controller
                     'message' => 'Validation errors occurred.',
                     'errors' => $validated->errors(),
                     'status' => false
-                ], 422);
+                ], 201);
             }
 
             // Get file details
@@ -337,7 +346,7 @@ class BecomingSovereignController extends Controller
                 return response()->json([
                     'message' => 'The file name has already been taken.',
                     'status' => false
-                ], 400);
+                ], 201);
             }
 
             // Save the new file details to the database
@@ -361,7 +370,7 @@ class BecomingSovereignController extends Controller
             return response()->json([
                 'message' => 'Something went wrong. Please try again later.',
                 'status' => false
-            ], 500);
+            ], 201);
         }
     }
 
