@@ -57,7 +57,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dab5V6kc3h4fDe8gaP61vEZ'
+      - 'Bearer 5kaZ8P1vfa4Vd6hEcD6beg3'
     controller: null
     method: null
     route: null
@@ -151,7 +151,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3abavhcDkE61de685VfgZ4P'
+      - 'Bearer fk46abEaVd3Zg8D5v61hePc'
     controller: null
     method: null
     route: null
@@ -215,7 +215,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vE61gVPe3h5afk48a6ZbcDd'
+      - 'Bearer kfge481vVaP6bchD5aZd3E6'
     controller: null
     method: null
     route: null
@@ -289,7 +289,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g3h1ZEbfdD5Ve4c6vaP6ka8'
+      - 'Bearer V3hf51e68a6PEaDbcdvkZg4'
     controller: null
     method: null
     route: null
@@ -373,7 +373,88 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6gca54Ee83VZP6v1hdfbaDk'
+      - 'Bearer E6h1ebfZPva6kdV8D4cga53'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/check-menu-permission
+    metadata:
+      groupName: Profile
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Check Menu Permissions'
+      description: 'This endpoint checks the menu permissions for the authenticated user.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "status": true,
+            "menus": [
+              {
+                "menu_name": "menu_a",
+                "permission_name": "permission_name_aa",
+                "active": true
+              },
+              {
+                "menu_name": "menu_b",
+                "permission_name": "permission_name_bb",
+                "active": false
+              },
+              {
+                "menu_name": "menu_c",
+                "permission_name": "permission_name_cc",
+                "active": true
+              }
+            ],
+            "message": "Menu permissions fetched successfully"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "status": false,
+            "message": "An error occurred: <error_message>"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 403
+        content: |-
+          {
+            "status": false,
+            "message": "User does not have permission"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aPvVfedkg63hE81caDbZ465'
     controller: null
     method: null
     route: null

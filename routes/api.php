@@ -77,6 +77,8 @@ Route::prefix('v3')->group(function () {
         Route::post('change-password', [ProfileController::class, 'changePassword']);
         Route::post('check-role-permission', [ProfileController::class, 'checkUserHasPermission']);
 
+        Route::post('check-menu-permission', [ProfileController::class, 'checkUserMenuPermission']);
+
 
         Route::prefix('chats')->name('chats.')->group(function () {
             Route::post('/list', [ChatController::class, 'chats']);

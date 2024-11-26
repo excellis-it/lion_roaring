@@ -213,9 +213,105 @@ class ProfileController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'An error occurred: ' . $e->getMessage()
-            ], 201); 
+            ], 201);
         }
     }
 
 
+    /**
+     * Check Menu Permissions
+     * 
+     * This endpoint checks the menu permissions for the authenticated user.
+     *
+     * @authenticated
+     *
+     * @response 200 {
+     *   "status": true,
+     *   "menus": [
+     *     {
+     *       "menu_name": "menu_a",
+     *       "permission_name": "permission_name_aa",
+     *       "active": true
+     *     },
+     *     {
+     *       "menu_name": "menu_b",
+     *       "permission_name": "permission_name_bb",
+     *       "active": false
+     *     },
+     *     {
+     *       "menu_name": "menu_c",
+     *       "permission_name": "permission_name_cc",
+     *       "active": true
+     *     }
+     *   ],
+     *   "message": "Menu permissions fetched successfully"
+     * }
+     * 
+     * @response 403 {
+     *   "status": false,
+     *   "message": "User does not have permission"
+     * }
+     * 
+     * @response 201 {
+     *   "status": false,
+     *   "message": "An error occurred: <error_message>"
+     * }
+     */
+    public function checkUserMenuPermission(Request $request)
+    {
+        $user = $request->user();
+        // Define the menu-permission mapping dynamically
+        $menus = [
+            ['menu_name' => 'Chats', 'permission_name' => 'Manage Chat'],
+            ['menu_name' => 'Team', 'permission_name' => 'Manage Team'],
+            ['menu_name' => 'Mail', 'permission_name' => 'Manage Email'],
+            ['menu_name' => 'Topics', 'permission_name' => 'Manage Topic'],
+            ['menu_name' => 'Becoming Sovereign', 'permission_name' => 'Manage Becoming Sovereigns'],
+            ['menu_name' => 'Becoming Christ Like', 'permission_name' => 'Manage Becoming Christ Like'],
+            ['menu_name' => 'Becoming a Leader', 'permission_name' => 'Manage Becoming a Leader'],
+            ['menu_name' => 'Files', 'permission_name' => 'Manage File'],
+            ['menu_name' => 'Bulletin Board', 'permission_name' => 'Manage Bulletin'],
+            ['menu_name' => 'Create Bulletin', 'permission_name' => 'Manage Bulletin'],
+            ['menu_name' => 'Job Posting', 'permission_name' => 'Manage Job Postings'],
+            ['menu_name' => 'Meeting Schedule', 'permission_name' => 'Manage Meeting Schedule'],
+            ['menu_name' => 'Live Events', 'permission_name' => 'Manage Event'],
+            ['menu_name' => 'All Members', 'permission_name' => 'Manage Partners'],
+            ['menu_name' => 'Strategy', 'permission_name' => 'Manage Strategy'],
+            ['menu_name' => 'Help', 'permission_name' => 'Manage Help'],
+        ];
+
+        try {
+            $menuPermissions = [];
+
+            foreach ($menus as $menu) {
+                // $hasPermission = $user->hasPermissionTo($menu['permission_name'], 'web');
+                try {
+                    // Check if the user has the permission
+                    $hasPermission = $user->hasPermissionTo($menu['permission_name'], 'web');
+                } catch (\Spatie\Permission\Exceptions\PermissionDoesNotExist $e) {
+                    // If the permission does not exist, set active to false
+                    $hasPermission = false;
+                }
+
+                $menuPermissions[] = [
+                    'menu_name' => $menu['menu_name'],
+                    'permission_name' => $menu['permission_name'],
+                    'active' => $hasPermission, // Set active based on the permission status
+                ];
+            }
+
+            // Return the list of menus with permission status
+            return response()->json([
+                'status' => true,
+                'menus' => $menuPermissions,
+                'message' => 'Menu permissions fetched successfully',
+            ], 200); // 200 OK
+        } catch (\Exception $e) {
+            // Handle any errors that occur during the permission check
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred: ' . $e->getMessage()
+            ], 201); // 201 Created for error handling (you may want to use 500 for internal errors)
+        }
+    }
 }
