@@ -411,7 +411,7 @@ class SendMailController extends Controller
         });
 
         // Fetch all mail IDs for other users (to avoid sending mails to yourself)
-        $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+        $allMailIds = User::where('status', true)->get(['id', 'email']);
 
         // Collect all email addresses involved in this mail thread, excluding the current user's email
         $replyMailids = collect([$mail_details->user->email])
