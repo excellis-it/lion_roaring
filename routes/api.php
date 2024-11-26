@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\PartnerController;
 use App\Http\Controllers\Api\RolePermissionsController;
 use App\Http\Controllers\Api\StrategyController;
 use App\Http\Controllers\Api\TopicController;
+use App\Http\Controllers\Api\FileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -183,6 +184,17 @@ Route::prefix('v3')->group(function () {
             Route::get('/download/{file}', [LeadershipDevelopmentController::class, 'download']);
         });
 
+        Route::prefix('files')->group(function () {
+            Route::get('/', [FileController::class, 'index']);
+            Route::get('/list-by-topics', [FileController::class, 'listByTopic']);
+            Route::get('/topics', [FileController::class, 'topics']);
+            Route::post('/store', [FileController::class, 'store']);
+            Route::get('/view/{id}', [FileController::class, 'view']);
+            Route::post('/update/{id}', [FileController::class, 'update']);
+            Route::get('/delete/{id}', [FileController::class, 'delete']);
+            Route::get('/download/{file}', [FileController::class, 'download']);
+        });
+
 
         Route::prefix('bulletins')->group(function () {
             Route::get('/load', [BulletinController::class, 'index']);
@@ -190,7 +202,7 @@ Route::prefix('v3')->group(function () {
             Route::get('/board', [BulletinController::class, 'allBulletins']);
             Route::post('/store', [BulletinController::class, 'store']);
             Route::put('/edit/{id}', [BulletinController::class, 'update']);
-            Route::delete('/delete/{id}', [BulletinController::class, 'destroy']);
+            Route::post('/delete/{id}', [BulletinController::class, 'destroy']);
         });
 
         Route::prefix('jobs')->group(function () {
@@ -203,8 +215,8 @@ Route::prefix('v3')->group(function () {
             Route::get('/load', [MeetingController::class, 'index']);
             Route::post('/store', [MeetingController::class, 'store']);
             Route::get('/view/{id}', [MeetingController::class, 'show']);
-            Route::put('/edit/{id}', [MeetingController::class, 'update']);
-            Route::delete('/delete/{id}', [MeetingController::class, 'destroy']);
+            Route::post('/edit/{id}', [MeetingController::class, 'update']);
+            Route::post('/delete/{id}', [MeetingController::class, 'destroy']);
             Route::get('/meetings-calender-fetch-data', [MeetingController::class, 'fetchCalenderData']);
         });
 
@@ -212,8 +224,8 @@ Route::prefix('v3')->group(function () {
             Route::get('/load', [EventController::class, 'index']);
             Route::post('/store', [EventController::class, 'store']);
             Route::get('/view/{id}', [EventController::class, 'show']);
-            Route::put('/edit/{id}', [EventController::class, 'update']);
-            Route::delete('/delete/{id}', [EventController::class, 'destroy']);
+            Route::post('/edit/{id}', [EventController::class, 'update']);
+            Route::post('/delete/{id}', [EventController::class, 'destroy']);
             Route::get('/event-calender-fetch-data', [EventController::class, 'fetchCalenderData']);
         });
 
@@ -233,7 +245,7 @@ Route::prefix('v3')->group(function () {
 
         Route::prefix('roles')->group(function () {
             Route::get('/list', [RolePermissionsController::class, 'list']);
-            Route::put('/edit/{id}', [RolePermissionsController::class, 'edit']);
+            Route::post('/edit/{id}', [RolePermissionsController::class, 'edit']);
         });
 
 

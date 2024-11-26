@@ -50,7 +50,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hPvkDcZ6bd685V1a3fgeE4a'
+      - 'Bearer f8abD6vhc65gP1EaZek4Vd3'
     controller: null
     method: null
     route: null
@@ -119,7 +119,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Deka1aZ4gPVE6h8c6dfb3v5'
+      - 'Bearer ZhV6fa5D641kvcEPbd8a3eg'
     controller: null
     method: null
     route: null
@@ -232,7 +232,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eD5ahb1PVavEgdk4Z8366fc'
+      - 'Bearer acDd5P3gVeZa1hv6kf6Eb48'
     controller: null
     method: null
     route: null
@@ -312,7 +312,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a6dE618kh3g4ebDcVP5fZav'
+      - 'Bearer bvV8dfkae54PZ16gaE6D3ch'
     controller: null
     method: null
     route: null
@@ -402,14 +402,14 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hv6Ec8ZdVa5b3Peagf1kD64'
+      - 'Bearer cd6va8a5DZV4EekPf1h3gb6'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - DELETE
+      - POST
     uri: 'api/v3/user/bulletins/delete/{id}'
     metadata:
       groupName: Bulletins
@@ -464,7 +464,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Va3E66d4Dhacf58bPZkv1ge'
+      - 'Bearer vfZaVb1dg36c65aED84ePkh'
     controller: null
     method: null
     route: null

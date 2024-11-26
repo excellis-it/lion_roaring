@@ -66,7 +66,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Z1c4EdV5ePkaf63hvbD8ga'
+      - 'Bearer cbP634e6VvE8daf5Dkg1Zha'
     controller: null
     method: null
     route: null
@@ -168,7 +168,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 18dZvEaePkVbcD66hg53f4a'
+      - 'Bearer 3d6PZaf8v41kVb5ehg6EacD'
     controller: null
     method: null
     route: null
@@ -261,14 +261,14 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DEac863vPkZa1eVgd4f5b6h'
+      - 'Bearer 31866aEPkdvD5fabV4geZch'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - PUT
+      - POST
     uri: 'api/v3/user/events/edit/{id}'
     metadata:
       groupName: Events
@@ -355,14 +355,14 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 18P3g4V6haDfEakvZe6cd5b'
+      - 'Bearer 3v4caPg86Vd15bafkZ6DheE'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - DELETE
+      - POST
     uri: 'api/v3/user/events/delete/{id}'
     metadata:
       groupName: Events
@@ -409,7 +409,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PE5Vv4f1Zage68hDcb3ka6d'
+      - 'Bearer bcve63aVdfa45kP6D1h8ZEg'
     controller: null
     method: null
     route: null
@@ -491,7 +491,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kvEdcg1b4386DaVhfZa6e5P'
+      - 'Bearer c4VP58e3ak6gZ16bhvEDdfa'
     controller: null
     method: null
     route: null

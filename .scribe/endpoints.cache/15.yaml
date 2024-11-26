@@ -152,7 +152,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZgDEbae5k6P1dV8cahf64v3'
+      - 'Bearer c5kh8VveEZ13d66aDbf4Pga'
     controller: null
     method: null
     route: null

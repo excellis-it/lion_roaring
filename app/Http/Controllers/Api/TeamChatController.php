@@ -233,6 +233,7 @@ class TeamChatController extends Controller
             // Get the last message sent in each team
             $teams = array_map(function ($team) {
                 $team['last_message'] = $this->userLastMessage($team['id'], auth()->id());
+                $team['unseen_chat_count'] = Helper::getTeamCountUnseenMessage(auth()->id(), $team['id']);
                 return $team;
             }, $teams);
 

@@ -261,7 +261,7 @@ endpoints:
         name: ecclesia_id
         description: 'nullable Ecclesia ID if applicable.'
         required: false
-        example: 8
+        example: 17
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -324,7 +324,7 @@ endpoints:
         name: state
         description: 'State of residence.'
         required: true
-        example: 3
+        example: 14
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -342,7 +342,7 @@ endpoints:
         name: country
         description: 'Country of residence.'
         required: true
-        example: 18
+        example: 17
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -386,16 +386,16 @@ endpoints:
     cleanBodyParameters:
       user_name: johndoe
       email: johndoe@example.com
-      ecclesia_id: 8
+      ecclesia_id: 17
       first_name: John
       last_name: Doe
       middle_name: A.
       address: '123 Main St'
       phone: '1234567890'
       city: Springfield
-      state: 3
+      state: 14
       address2: 'Apt 4B'
-      country: 18
+      country: 17
       zip: '62704'
       email_confirmation: johndoe@example.com
       password: Password@123

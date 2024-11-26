@@ -379,14 +379,14 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c6bD6ha3V4P8vEgZekfd5a1'
+      - 'Bearer 66a8efcEab4Dh31dVkvPg5Z'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - PUT
+      - POST
     uri: 'api/v3/user/roles/edit/{id}'
     metadata:
       groupName: 'Role Permission'
@@ -406,13 +406,13 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: error
+        example: temporibus
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: error
+      id: temporibus
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -646,7 +646,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5VP6a3Da61cvd8ZEebhgfk4'
+      - 'Bearer ac3heE61DVP4a6dvfgZ5bk8'
     controller: null
     method: null
     route: null

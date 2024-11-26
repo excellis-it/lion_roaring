@@ -87,7 +87,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PEg4hav538db1Zc6eVfD6ak'
+      - 'Bearer 5c1vfgd6ZeD468EkPVhaba3'
     controller: null
     method: null
     route: null
@@ -161,7 +161,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P3hdD4bk6Ve65cfgvaZa18E'
+      - 'Bearer Dbaf1EdkV658gvPaZ3e6h4c'
     controller: null
     method: null
     route: null
@@ -188,7 +188,7 @@ endpoints:
         name: topic
         description: 'The topic.'
         required: true
-        example: harum
+        example: aspernatur
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -203,7 +203,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
-      topic: harum
+      topic: aspernatur
       id: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -229,7 +229,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dgb3ecfZah1v6E4V5d8k6Pa'
+      - 'Bearer 1Pvd3gcb6fZah6EVa84De5k'
     controller: null
     method: null
     route: null
@@ -314,7 +314,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e6cDVPg6h4dZa5bf3E1k8av'
+      - 'Bearer ZcbdPgkVeEhaDv4358a16f6'
     controller: null
     method: null
     route: null
@@ -368,7 +368,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 841PgVD65Ev3hcbaefka6dZ'
+      - 'Bearer 3fc6vdVha6ZegEP5k41a8Db'
     controller: null
     method: null
     route: null
@@ -504,7 +504,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6aa1bfP4Z5de38DvVkh6Egc'
+      - 'Bearer dvbk6Df6g51eZaE3hacP84V'
     controller: null
     method: null
     route: null
@@ -533,7 +533,7 @@ endpoints:
         name: sortby
         description: 'The column to sort by (optional, default: id).'
         required: false
-        example: reiciendis
+        example: error
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -542,7 +542,7 @@ endpoints:
         name: sorttype
         description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
         required: false
-        example: qui
+        example: ex
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -551,7 +551,7 @@ endpoints:
         name: query
         description: 'The search query to filter files by ID, file name, or file extension (optional).'
         required: false
-        example: ut
+        example: sunt
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -560,16 +560,16 @@ endpoints:
         name: topic_id
         description: 'The ID of the topic to filter files by (optional).'
         required: false
-        example: 1
+        example: 8
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      sortby: reiciendis
-      sorttype: qui
-      query: ut
-      topic_id: 1
+      sortby: error
+      sorttype: ex
+      query: sunt
+      topic_id: 8
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -607,7 +607,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h3Ze6kg5aDVcE1f4aP8b6dv'
+      - 'Bearer caEVah546vDbPgf6e1Z8k3d'
     controller: null
     method: null
     route: null
@@ -669,7 +669,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3d6Echg1P8bav4VakDZf5e6'
+      - 'Bearer Veaa6dbkf5cPD1Z46Ehg38v'
     controller: null
     method: null
     route: null
@@ -768,7 +768,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5DcVEa386PZb1kdhvge4f6a'
+      - 'Bearer 4ea8DcbZa3vdPE56V1fh6gk'
     controller: null
     method: null
     route: null
@@ -807,13 +807,13 @@ endpoints:
         name: topic
         description: 'The ID of the topic to filter by (optional).'
         required: false
-        example: 8
+        example: 15
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      topic: 8
+      topic: 15
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -854,7 +854,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g6ba84ah5PkvD1ceZ36EdVf'
+      - 'Bearer Zb3Df15caEV6ePadg68kv4h'
     controller: null
     method: null
     route: null
@@ -881,13 +881,13 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: iusto
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: iusto
+      id: et
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -969,7 +969,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gV6ak8ED5ZdPhf6ab3vc14e'
+      - 'Bearer Pdbacak4gV1EZ6v68h3f5De'
     controller: null
     method: null
     route: null
@@ -1043,7 +1043,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z3Dv6badh8a4kfcPVEe5g61'
+      - 'Bearer 46hVkvacZaE3d8Db6gPef51'
     controller: null
     method: null
     route: null
@@ -1070,13 +1070,13 @@ endpoints:
         name: file
         description: ''
         required: true
-        example: ut
+        example: distinctio
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      file: ut
+      file: distinctio
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -1113,7 +1113,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cZDkeP5ha6a81bgvdE436Vf'
+      - 'Bearer 8hdZabv6Dgefa1V35EPkc46'
     controller: null
     method: null
     route: null
@@ -1249,7 +1249,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h68ZbEfevg6dPcka31aD5V4'
+      - 'Bearer hk1aZ56e6DcVEPvga8dbf34'
     controller: null
     method: null
     route: null
@@ -1278,7 +1278,7 @@ endpoints:
         name: sortby
         description: 'The column to sort by (optional, default: id).'
         required: false
-        example: non
+        example: minus
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1287,7 +1287,7 @@ endpoints:
         name: sorttype
         description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
         required: false
-        example: quia
+        example: nostrum
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1296,7 +1296,7 @@ endpoints:
         name: query
         description: 'The search query to filter files by ID, file name, or file extension (optional).'
         required: false
-        example: natus
+        example: deserunt
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1305,16 +1305,16 @@ endpoints:
         name: topic_id
         description: 'The ID of the topic to filter files by (optional).'
         required: false
-        example: 3
+        example: 9
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      sortby: non
-      sorttype: quia
-      query: natus
-      topic_id: 3
+      sortby: minus
+      sorttype: nostrum
+      query: deserunt
+      topic_id: 9
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -1352,7 +1352,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Zkf36habEg5vV6Ded184Pac'
+      - 'Bearer V6a8hED34fd5Zv1Peb6ackg'
     controller: null
     method: null
     route: null
@@ -1414,7 +1414,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ga5eD83vV1bEdafkZ4Pch66'
+      - 'Bearer 6f1DaV6d43eZ5EvckbahPg8'
     controller: null
     method: null
     route: null
@@ -1513,7 +1513,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 34E68dDhVbfce6Pgkva1a5Z'
+      - 'Bearer Dh16c854gVve6bka3aZEfdP'
     controller: null
     method: null
     route: null
@@ -1552,13 +1552,13 @@ endpoints:
         name: topic
         description: 'The ID of the topic to filter by (optional).'
         required: false
-        example: 15
+        example: 4
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      topic: 15
+      topic: 4
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -1599,7 +1599,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vf4Vg3b56akc1P6deZD8hEa'
+      - 'Bearer ZgbD36a5cPE1ehfvdkV864a'
     controller: null
     method: null
     route: null
@@ -1626,13 +1626,13 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: nesciunt
+        example: iusto
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: nesciunt
+      id: iusto
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -1714,7 +1714,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P5cf3D6EV6ahvZad8k4b1eg'
+      - 'Bearer hZ6aeakP3E5f4DbV81cvd6g'
     controller: null
     method: null
     route: null
@@ -1788,7 +1788,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vD314Zc58bVfhEP6eakdga6'
+      - 'Bearer 54Z6kbPfeavhVdgac1836ED'
     controller: null
     method: null
     route: null
@@ -1815,13 +1815,13 @@ endpoints:
         name: file
         description: ''
         required: true
-        example: accusamus
+        example: est
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      file: accusamus
+      file: est
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -1858,7 +1858,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cdZa61a36Vv45g8EkbfDPhe'
+      - 'Bearer EcVg6ekd1ZPf45b6aDh8v3a'
     controller: null
     method: null
     route: null
@@ -1994,7 +1994,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ea8dbvZhP6cfV4g6E351aDk'
+      - 'Bearer cZa6g64DhEP5de81kf3vVba'
     controller: null
     method: null
     route: null
@@ -2023,7 +2023,7 @@ endpoints:
         name: sortby
         description: 'The column to sort by (optional, default: id).'
         required: false
-        example: quis
+        example: aliquam
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -2032,7 +2032,7 @@ endpoints:
         name: sorttype
         description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
         required: false
-        example: quam
+        example: recusandae
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -2041,7 +2041,7 @@ endpoints:
         name: query
         description: 'The search query to filter files by ID, file name, or file extension (optional).'
         required: false
-        example: qui
+        example: unde
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -2050,16 +2050,16 @@ endpoints:
         name: topic_id
         description: 'The ID of the topic to filter files by (optional).'
         required: false
-        example: 4
+        example: 10
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      sortby: quis
-      sorttype: quam
-      query: qui
-      topic_id: 4
+      sortby: aliquam
+      sorttype: recusandae
+      query: unde
+      topic_id: 10
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -2097,7 +2097,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1dk8gfVZ6vhD436E5caPabe'
+      - 'Bearer hVa6g851vDd6cPkaZeE34bf'
     controller: null
     method: null
     route: null
@@ -2159,7 +2159,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d1kvefbDhcVZ48a566EP3ag'
+      - 'Bearer 6de4hZcVab8PgafD3E561vk'
     controller: null
     method: null
     route: null
@@ -2258,7 +2258,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dc6ve5Pfh3Vab86aEg1kZd4'
+      - 'Bearer a86VEZbPf1a53D6k4gevhcd'
     controller: null
     method: null
     route: null
@@ -2297,13 +2297,13 @@ endpoints:
         name: topic
         description: 'The ID of the topic to filter by (optional).'
         required: false
-        example: 19
+        example: 10
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanQueryParameters:
-      topic: 19
+      topic: 10
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -2344,7 +2344,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8V1Z5av4dDe3PbgfaEk6c6h'
+      - 'Bearer Ef18d6ca5v3Ze6gDPVhkb4a'
     controller: null
     method: null
     route: null
@@ -2371,13 +2371,13 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: atque
+        example: odit
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: atque
+      id: odit
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -2459,7 +2459,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6f5EbZcPadDgaVk68314hve'
+      - 'Bearer 6D4Vad1b3f58hakPv6EZgec'
     controller: null
     method: null
     route: null
@@ -2533,7 +2533,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5daDcPV3EkZ48g6efhb61av'
+      - 'Bearer heE351cVg6k4bfDaPd68avZ'
     controller: null
     method: null
     route: null
@@ -2560,13 +2560,13 @@ endpoints:
         name: file
         description: ''
         required: true
-        example: illo
+        example: quae
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      file: illo
+      file: quae
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -2603,7 +2603,752 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c3E8541efv6d6gbaZDVhPka'
+      - 'Bearer vV613ka8fdEcPga4Zhe6D5b'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/files
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: Files
+      subgroupDescription: 'APIs for managing files.'
+      title: 'Files List'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      topic:
+        name: topic
+        description: 'The ID of the topic to filter by.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      topic: 1
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          *{
+             "data": {
+                 "current_page": 1,
+                 "data": [
+
+                     {
+                         "id": 60,
+                         "user_id": 1,
+                         "file_name": "topic- Back to the Basics Description and Outline.docx",
+                         "file_extension": "docx",
+                         "topic_id": 4,
+                         "type": "Becoming Christ Like",
+                         "file": "files\/qm5d3aJ5Z6esEep7WZAs19BLo4KRsjXp9w1RITYv.docx",
+                         "created_at": "2024-08-02T09:32:31.000000Z",
+                         "updated_at": "2024-08-02T09:32:31.000000Z"
+                     },
+                     {
+                         "id": 59,
+                         "user_id": 1,
+                         "file_name": "topic-Back to the Basics Part 1.pptx",
+                         "file_extension": "pptx",
+                         "topic_id": 4,
+                         "type": "Becoming Christ Like",
+                         "file": "files\/bv7C4BiH0N1s8WXrVZpPV2s6YTWN5sVUQs5PE584.pptx",
+                         "created_at": "2024-08-02T09:31:40.000000Z",
+                         "updated_at": "2024-08-02T09:31:40.000000Z"
+                     },
+                     {
+                         "id": 57,
+                         "user_id": 1,
+                         "file_name": "topic-Back to the Basics Part 3.pptx",
+                         "file_extension": "pptx",
+                         "topic_id": 4,
+                         "type": "Becoming Christ Like",
+                         "file": "files\/BDp5AHtA4ZIsqziYPUxCbRL91bcbSvAVv4m8S9Zs.pptx",
+                         "created_at": "2024-08-02T09:29:56.000000Z",
+                         "updated_at": "2024-08-02T09:29:56.000000Z"
+                     }
+                 ],
+                 "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
+                 "from": 1,
+                 "last_page": 1,
+                 "last_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
+                 "links": [
+                     {
+                         "url": null,
+                         "label": "&laquo; Previous",
+                         "active": false
+                     },
+                     {
+                         "url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
+                         "label": "1",
+                         "active": true
+                     },
+                     {
+                         "url": null,
+                         "label": "Next &raquo;",
+                         "active": false
+                     }
+                 ],
+                 "next_page_url": null,
+                 "path": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign",
+                 "per_page": 15,
+                 "prev_page_url": null,
+                 "to": 11,
+                 "total": 11
+             },
+             "topics": [
+                 {
+                     "id": 12,
+                     "topic_name": "abcd",
+                     "education_type": "Becoming Christ Like",
+                     "created_at": "2024-11-08T09:42:48.000000Z",
+                     "updated_at": "2024-11-08T09:42:48.000000Z"
+                 },
+                 {
+                     "id": 6,
+                     "topic_name": "Leadership Development",
+                     "education_type": "Becoming Christ Like",
+                     "created_at": "2024-08-02T09:17:16.000000Z",
+                     "updated_at": "2024-08-16T08:58:34.000000Z"
+                 },
+             ],
+             "new_topic": "",
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3a6V1bfdeE84PaZ65Dcvkhg'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/files/list-by-topics
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: Files
+      subgroupDescription: 'APIs for managing files.'
+      title: 'List by Topic'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      sortby:
+        name: sortby
+        description: 'The column to sort by (optional, default: id).'
+        required: false
+        example: nam
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      sorttype:
+        name: sorttype
+        description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
+        required: false
+        example: possimus
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      query:
+        name: query
+        description: 'The search query to filter files by ID, file name, or file extension (optional).'
+        required: false
+        example: eveniet
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      topic_id:
+        name: topic_id
+        description: 'The ID of the topic to filter files by (optional).'
+        required: false
+        example: 19
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanQueryParameters:
+      sortby: nam
+      sorttype: possimus
+      query: eveniet
+      topic_id: 19
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Files retrieved successfully.",
+             "data": [
+                 {
+                     "id": 77,
+                     "user_id": 37,
+                     "file_name": "image.png",
+                     "file_extension": "png",
+                     "topic_id": 13,
+                     "type": "Becoming Christ Like",
+                     "file": "files\/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
+                     "created_at": "2024-11-08T11:01:16.000000Z",
+                     "updated_at": "2024-11-08T11:01:16.000000Z"
+                 }
+             ],
+             "pagination": {
+                 "total": 1,
+                 "per_page": 15,
+                 "current_page": 1,
+                 "last_page": 1
+             },
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer EcV6ahfZaegk8Pd6vb5D143'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/files/topics
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: Files
+      subgroupDescription: 'APIs for managing files.'
+      title: 'Get List of Topics'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 1,
+                "topic_name": "Sample Topic",
+                "education_type": "Becoming Christ Like",
+                "created_at": "2024-09-09T11:02:39.000000Z",
+                "updated_at": "2024-09-09T11:02:39.000000Z"
+              }
+            ],
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to fetch topics. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer f5ka6Vgv6ZhaPcDe143db8E'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/files/store
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: Files
+      subgroupDescription: 'APIs for managing files.'
+      title: 'Create New'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      file:
+        name: file
+        description: 'The file to upload.'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      topic_id:
+        name: topic_id
+        description: 'The ID of the topic to associate the file with.'
+        required: true
+        example: 0
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      topic_id: 0
+    fileParameters:
+      file: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "File uploaded successfully.",
+             "data": {
+                 "user_id": 37,
+                 "file_name": "image.png",
+                 "file_extension": "png",
+                 "topic_id": "13",
+                 "type": "Becoming Christ Like",
+                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
+                 "updated_at": "2024-11-08T11:01:16.000000Z",
+                 "created_at": "2024-11-08T11:01:16.000000Z",
+                 "id": 77
+             },
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+            "message": "The file name has already been taken.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "Validation errors occurred.",
+            "errors": {
+              "file": ["The file field is required."],
+              "topic_id": ["The topic id field is required."]
+            },
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ad3ce8hDP6Vv1fZb6k54gaE'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/files/view/{id}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: Files
+      subgroupDescription: 'APIs for managing files.'
+      title: 'View File'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the file to view.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters:
+      topic:
+        name: topic
+        description: 'The ID of the topic to filter by (optional).'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanQueryParameters:
+      topic: 1
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "File details retrieved successfully.",
+             "data": {
+                 "id": 77,
+                 "user_id": 37,
+                 "file_name": "image.png",
+                 "file_extension": "png",
+                 "topic_id": 13,
+                 "type": "Becoming Christ Like",
+                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
+                 "created_at": "2024-11-08T11:01:16.000000Z",
+                 "updated_at": "2024-11-08T11:01:16.000000Z"
+             },
+             "new_topic": "",
+             "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer akbZcg5PV3Dd16E8fvha4e6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v3/user/files/update/{id}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: Files
+      subgroupDescription: 'APIs for managing files.'
+      title: 'Update File'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the update.'
+        required: true
+        example: cumque
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanUrlParameters:
+      id: cumque
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      file:
+        name: file
+        description: 'The new file to replace the existing one (optional).'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      topic_id:
+        name: topic_id
+        description: 'The ID of the topic to associate with the file.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      topic_id: 1
+    fileParameters:
+      file: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "File updated successfully.",
+            "data": {
+              "id": 1,
+              "file_name": "updated_sample.pdf",
+              "file_extension": "pdf",
+              "topic_id": 1,
+              "user_id": 1,
+              "file": "updated_file_path_here"
+            },
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+            "message": "Validation failed.",
+            "errors": {
+              "file": ["The file name has already been taken."]
+            },
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer abve3h8gak6E1V5cDPd4fZ6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/files/delete/{id}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: Files
+      subgroupDescription: 'APIs for managing files.'
+      title: 'Delete File'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the file to delete.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "File deleted successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hV5d1ekaPa6fbv8Dg46E3cZ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/files/download/{file}'
+    metadata:
+      groupName: Education
+      groupDescription: ''
+      subgroup: Files
+      subgroupDescription: 'APIs for managing files.'
+      title: 'Download file'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      file:
+        name: file
+        description: ''
+        required: true
+        example: aspernatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanUrlParameters:
+      file: aspernatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: 'A downloadable file response with the specified file.'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "File not found.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Something went wrong. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer d8ZDb5Pcv4eak31aVg66hEf'
     controller: null
     method: null
     route: null

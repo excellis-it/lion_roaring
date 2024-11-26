@@ -67,7 +67,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PDZad6Vefa3Ebc854h6g1kv'
+      - 'Bearer d1PbD6v38gchfaZE5ekaV64'
     controller: null
     method: null
     route: null
@@ -180,7 +180,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a66v8aZDbkfeg5E13dh4cPV'
+      - 'Bearer 6cgd8vVkPeD5Zafh341baE6'
     controller: null
     method: null
     route: null
@@ -274,14 +274,14 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ev6ZP1Vahgfd65Db48akE3c'
+      - 'Bearer ck1g4PaD3d65ZbveE6Vahf8'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - PUT
+      - POST
     uri: 'api/v3/user/meetings/edit/{id}'
     metadata:
       groupName: Meetings
@@ -378,14 +378,14 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f1vaVhEbZd66ake54P83cgD'
+      - 'Bearer Ee6bhZ3vkaD4V5aPcgfd168'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - DELETE
+      - POST
     uri: 'api/v3/user/meetings/delete/{id}'
     metadata:
       groupName: Meetings
@@ -432,7 +432,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZbeDg36VEa8ha4Pdf65kcv1'
+      - 'Bearer ZaE66vDhfe5bc3d4aV8kP1g'
     controller: null
     method: null
     route: null
@@ -518,7 +518,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZaVkbcefdv1DEg658ahP346'
+      - 'Bearer EbkV431vhdDcag6Z85Paf6e'
     controller: null
     method: null
     route: null
