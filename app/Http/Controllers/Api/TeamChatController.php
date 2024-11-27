@@ -600,7 +600,7 @@ class TeamChatController extends Controller
                     $query->where('user_id', auth()->id());
                 })
                 ->with('user')
-                ->orderBy('created_at', 'asc')
+                ->orderBy('created_at', 'desc')
                 ->get();
 
             $team_chats->each(function ($chat) {
