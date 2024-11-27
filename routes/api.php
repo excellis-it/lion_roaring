@@ -208,6 +208,10 @@ Route::prefix('v3')->group(function () {
         Route::prefix('jobs')->group(function () {
             Route::get('/load', [JobController::class, 'index']);
             Route::get('/view/{id}', [JobController::class, 'show']);
+            Route::post('/store', [JobController::class, 'store']);
+            Route::post('/edit/{id}', [JobController::class, 'update']);
+            Route::post('/delete/{id}', [JobController::class, 'delete']);
+            Route::post('/search', [JobController::class, 'search']);
         });
 
 

@@ -603,6 +603,17 @@ class TeamChatController extends Controller
                 ->orderBy('created_at', 'asc')
                 ->get();
 
+            $team_chats->each(function ($chat) {
+                $chat->isMe = ($chat->user_id == auth()->id()) ? true : false;
+                if ($chat->created_at->format('d M Y') == date('d M Y')) {
+                    $chat->time = $chat->created_at->format('h:iA') . ' ' . 'Today';
+                } elseif ($chat->created_at->format('d M Y') == date('d M Y', strtotime('-1 day'))) {
+                    $chat->time = $chat->created_at->format('h:iA') . ' ' . 'Yesterday';
+                } else {
+                    $chat->time = $chat->created_at->format('h:iA') . ' ' . $chat->created_at->format('d M Y');
+                }
+            });
+
             // Mark chat as seen for the authenticated user
             ChatMember::where('user_id', auth()->id())
                 ->whereHas('chat', function ($query) use ($team_id) {

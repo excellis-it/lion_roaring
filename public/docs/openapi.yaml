@@ -281,7 +281,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 17
+                  example: 15
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -309,7 +309,7 @@ paths:
                 state:
                   type: integer
                   description: 'State of residence.'
-                  example: 14
+                  example: 15
                 address2:
                   type: string
                   description: 'nullable Additional address information.'
@@ -317,7 +317,7 @@ paths:
                 country:
                   type: integer
                   description: 'Country of residence.'
-                  example: 17
+                  example: 9
                 zip:
                   type: string
                   description: 'Zip code.'
@@ -2532,7 +2532,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: vwiegand@example.net
+                  example: trystan64@example.net
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -2603,7 +2603,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: quia
+                  example: voluptatum
       security: []
   /api/v3/country-list:
     post:
@@ -2837,7 +2837,7 @@ paths:
         in: path
         name: topic
         description: 'The topic.'
-        example: aspernatur
+        example: voluptatum
         required: true
         schema:
           type: string
@@ -2987,42 +2987,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: error
+          example: et
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: error
+            example: et
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: ex
+          example: distinctio
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: ex
+            example: distinctio
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: sunt
+          example: ipsa
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: sunt
+            example: ipsa
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 8
+          example: 19
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 8
+            example: 19
       responses:
         200:
           description: ''
@@ -3332,12 +3332,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 15
+          example: 20
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 15
+            example: 20
       responses:
         200:
           description: ''
@@ -3561,7 +3561,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: et
+        example: laboriosam
         required: true
         schema:
           type: string
@@ -3668,7 +3668,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: distinctio
+        example: quia
         required: true
         schema:
           type: string
@@ -3708,42 +3708,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: minus
+          example: nihil
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: minus
+            example: nihil
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: nostrum
+          example: sapiente
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: nostrum
+            example: sapiente
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: deserunt
+          example: possimus
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: deserunt
+            example: possimus
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 9
+          example: 16
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 9
+            example: 16
       responses:
         200:
           description: ''
@@ -4053,12 +4053,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 4
+          example: 1
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 4
+            example: 1
       responses:
         200:
           description: ''
@@ -4282,7 +4282,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: iusto
+        example: dignissimos
         required: true
         schema:
           type: string
@@ -4389,7 +4389,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: est
+        example: velit
         required: true
         schema:
           type: string
@@ -4429,42 +4429,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: aliquam
+          example: minima
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: aliquam
+            example: minima
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: recusandae
+          example: facere
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: recusandae
+            example: facere
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: unde
+          example: quaerat
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: unde
+            example: quaerat
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 10
+          example: 8
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 10
+            example: 8
       responses:
         200:
           description: ''
@@ -4774,12 +4774,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 10
+          example: 19
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 10
+            example: 19
       responses:
         200:
           description: ''
@@ -5003,7 +5003,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: odit
+        example: a
         required: true
         schema:
           type: string
@@ -5110,7 +5110,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: quae
+        example: fuga
         required: true
         schema:
           type: string
@@ -5150,42 +5150,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: nam
+          example: voluptate
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: nam
+            example: voluptate
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: possimus
+          example: dolore
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: possimus
+            example: dolore
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: eveniet
+          example: rerum
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: eveniet
+            example: rerum
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 19
+          example: 1
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 19
+            example: 1
       responses:
         200:
           description: ''
@@ -5495,12 +5495,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 1
+          example: 17
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 1
+            example: 17
       responses:
         200:
           description: ''
@@ -5724,7 +5724,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: cumque
+        example: quia
         required: true
         schema:
           type: string
@@ -5831,7 +5831,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: aspernatur
+        example: minus
         required: true
         schema:
           type: string
@@ -6511,19 +6511,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
-                  example: repellendus
+                  example: eius
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: quae
+                  example: quis
                 subject:
                   type: string
                   description: 'The subject of the email.'
-                  example: laboriosam
+                  example: voluptas
                 message:
                   type: string
                   description: 'The body content of the email.'
-                  example: ut
+                  example: amet
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -6653,19 +6653,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: voluptatem
+                  example: perspiciatis
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: culpa
+                  example: perspiciatis
                 subject:
                   type: string
                   description: 'The subject of the reply email.'
-                  example: est
+                  example: soluta
                 message:
                   type: string
                   description: 'The body content of the reply email.'
-                  example: sit
+                  example: illo
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -6675,7 +6675,7 @@ paths:
                 main_mail_id:
                   type: integer
                   description: 'The ID of the main email thread being replied to.'
-                  example: 17
+                  example: 20
               required:
                 - to
                 - subject
@@ -6792,19 +6792,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: quia
+                  example: illo
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: rerum
+                  example: natus
                 subject:
                   type: string
                   description: 'The subject of the forwarded email.'
-                  example: doloremque
+                  example: et
                 message:
                   type: string
                   description: 'The body content of the forwarded email.'
-                  example: cumque
+                  example: accusantium
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -7767,7 +7767,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: rau.marcellus@example.net
+                  example: alana.pollich@example.com
               required:
                 - email
       security: []
@@ -9690,7 +9690,7 @@ paths:
                 is_delete:
                   type: integer
                   description: 'optional Indicates if the notification should be marked as read and deleted.'
-                  example: 17
+                  example: 1
               required:
                 - team_id
                 - chat_id
@@ -9963,6 +9963,363 @@ paths:
         required: true
         schema:
           type: integer
+  /api/v3/user/jobs/store:
+    post:
+      summary: 'Create Job'
+      operationId: createJob
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Job has been created successfully.'
+                  job:
+                    id: 1
+                    job_title: 'Software Engineer'
+                    job_description: 'A great job opportunity'
+                    job_type: full-time
+                    job_location: 'New York'
+                    job_salary: 50000
+                    currency: USD
+                    job_experience: 3
+                    contact_person: 'John Doe'
+                    contact_email: johndoe@example.com
+                    list_of_values: hourly
+                    created_by: 1
+                    created_at: '2024-11-27T00:00:00.000000Z'
+                    updated_at: '2024-11-27T00:00:00.000000Z'
+                properties:
+                  message:
+                    type: string
+                    example: 'Job has been created successfully.'
+                  job:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      job_title:
+                        type: string
+                        example: 'Software Engineer'
+                      job_description:
+                        type: string
+                        example: 'A great job opportunity'
+                      job_type:
+                        type: string
+                        example: full-time
+                      job_location:
+                        type: string
+                        example: 'New York'
+                      job_salary:
+                        type: integer
+                        example: 50000
+                      currency:
+                        type: string
+                        example: USD
+                      job_experience:
+                        type: integer
+                        example: 3
+                      contact_person:
+                        type: string
+                        example: 'John Doe'
+                      contact_email:
+                        type: string
+                        example: johndoe@example.com
+                      list_of_values:
+                        type: string
+                        example: hourly
+                      created_by:
+                        type: integer
+                        example: 1
+                      created_at:
+                        type: string
+                        example: '2024-11-27T00:00:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-11-27T00:00:00.000000Z'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Validation failed.'
+                  errors:
+                    job_title:
+                      - 'The job title is required.'
+                    job_description:
+                      - 'The job description is required.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Validation failed.'
+                  errors:
+                    type: object
+                    properties:
+                      job_title:
+                        type: array
+                        example:
+                          - 'The job title is required.'
+                        items:
+                          type: string
+                      job_description:
+                        type: array
+                        example:
+                          - 'The job description is required.'
+                        items:
+                          type: string
+      tags:
+        - Jobs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                job_title:
+                  type: string
+                  description: 'The title of the job.'
+                  example: 'Software Engineer'
+                job_description:
+                  type: string
+                  description: 'The description of the job.'
+                  example: 'A great job opportunity'
+                job_type:
+                  type: string
+                  description: 'The type of the job (e.g., full-time, part-time).'
+                  example: full-time
+                job_location:
+                  type: string
+                  description: 'The location of the job.'
+                  example: 'New York'
+                job_salary:
+                  type: numeric
+                  description: 'optional The salary for the job.'
+                  example: '50000'
+                list_of_values:
+                  type: string
+                  description: 'optional List of additional job requirements or values.'
+                  example: hourly
+                currency:
+                  type: string
+                  description: 'optional The currency for the salary.'
+                  example: USD
+                job_experience:
+                  type: numeric
+                  description: 'optional The minimum experience required for the job.'
+                  example: '3'
+                contact_person:
+                  type: string
+                  description: 'optional The contact person for the job.'
+                  example: 'John Doe'
+                contact_email:
+                  type: string
+                  description: 'optional The contact email for the job.'
+                  example: johndoe@example.com
+              required:
+                - job_title
+                - job_description
+                - job_type
+                - job_location
+  '/api/v3/user/jobs/edit/{id}':
+    post:
+      summary: 'Update Job'
+      operationId: updateJob
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"message\": \"Job has been updated successfully.\",\n  \"job\": {\n    \"id\": 1,\n    \"job_title\": \"Software Engineer\",\n    \"job_description\": \"A great job opportunity\",\n    \"job_type\": \"full-time\",\n    \"job_location\": \"New York\",\n    \"job_salary\": 50000,\n    \"currency\": \"USD\",\n    \"job_experience\": 3,\n    \"contact_person\": \"John Doe\",\n    \"contact_email\": \"johndoe@example.com\",\n    \"list_of_values\": \"hourly\"\n    \"created_by\": 1,\n    \"created_at\": \"2024-11-27T00:00:00.000000Z\",\n    \"updated_at\": \"2024-11-27T00:00:00.000000Z\"\n  }\n}"
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Validation failed.'
+                  errors:
+                    job_title:
+                      - 'The job title is required.'
+                    job_description:
+                      - 'The job description is required.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Validation failed.'
+                  errors:
+                    type: object
+                    properties:
+                      job_title:
+                        type: array
+                        example:
+                          - 'The job title is required.'
+                        items:
+                          type: string
+                      job_description:
+                        type: array
+                        example:
+                          - 'The job description is required.'
+                        items:
+                          type: string
+      tags:
+        - Jobs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                job_title:
+                  type: string
+                  description: 'The title of the job.'
+                  example: 'Software Engineer'
+                job_description:
+                  type: string
+                  description: 'The description of the job.'
+                  example: 'A great job opportunity'
+                job_type:
+                  type: string
+                  description: 'The type of the job (e.g., full-time, part-time).'
+                  example: full-time
+                job_location:
+                  type: string
+                  description: 'The location of the job.'
+                  example: 'New York'
+                job_salary:
+                  type: numeric
+                  description: 'optional The salary for the job.'
+                  example: '50000'
+                list_of_values:
+                  type: string
+                  description: 'optional List of additional job requirements or values.'
+                  example: hourly
+                currency:
+                  type: string
+                  description: 'optional The currency for the salary.'
+                  example: USD
+                job_experience:
+                  type: numeric
+                  description: 'optional The minimum experience required for the job.'
+                  example: '3'
+                contact_person:
+                  type: string
+                  description: 'optional The contact person for the job.'
+                  example: 'John Doe'
+                contact_email:
+                  type: string
+                  description: 'optional The contact email for the job.'
+                  example: johndoe@example.com
+              required:
+                - job_title
+                - job_description
+                - job_type
+                - job_location
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the edit.'
+        example: quis
+        required: true
+        schema:
+          type: string
+  '/api/v3/user/jobs/delete/{id}':
+    post:
+      summary: 'Delete Job'
+      operationId: deleteJob
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Job has been deleted successfully.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Job has been deleted successfully.'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Job not found.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Job not found.'
+      tags:
+        - Jobs
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the delete.'
+        example: suscipit
+        required: true
+        schema:
+          type: string
+  /api/v3/user/jobs/search:
+    post:
+      summary: 'Search Job'
+      operationId: searchJob
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"job_title\": \"Software Developer\",\n      \"job_description\": \"Full stack developer needed...\",\n      \"job_type\": \"Full-time\",\n      \"job_location\": \"New York\",\n      \"job_salary\": 100000,\n      \"currency\": \"USD\",\n      \"job_experience\": 3,\n      \"contact_person\": \"John Doe\",\n      \"contact_email\": \"johndoe@example.com\"\n    },\n    ...\n  ]\n}"
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'An error occurred during the search'
+                properties:
+                  message:
+                    type: string
+                    example: 'An error occurred during the search'
+      tags:
+        - Jobs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: 'The title of the job.'
+                  example: abc
+              required:
+                - query
   /api/v3/user/meetings/load:
     get:
       summary: 'List All Meetings'
@@ -12572,7 +12929,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the edit.'
-        example: temporibus
+        example: saepe
         required: true
         schema:
           type: string
@@ -12853,7 +13210,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the strategy to delete.'
-        example: 6
+        example: 9
         required: true
         schema:
           type: integer
@@ -12952,7 +13309,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the strategy to view.'
-        example: 10
+        example: 20
         required: true
         schema:
           type: integer

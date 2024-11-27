@@ -122,4 +122,304 @@ class JobController extends Controller
     }
 
 
+    /**
+     * Create Job
+     *
+     * @bodyParam job_title string required The title of the job. Example: Software Engineer
+     * @bodyParam job_description string required The description of the job. Example: A great job opportunity
+     * @bodyParam job_type string required The type of the job (e.g., full-time, part-time). Example: full-time
+     * @bodyParam job_location string required The location of the job. Example: New York
+     * @bodyParam job_salary numeric optional The salary for the job. Example: 50000
+     * @bodyParam list_of_values string optional List of additional job requirements or values. Example: hourly
+     * @bodyParam currency string optional The currency for the salary. Example: USD
+     * @bodyParam job_experience numeric optional The minimum experience required for the job. Example: 3
+     * @bodyParam contact_person string optional The contact person for the job. Example: John Doe
+     * @bodyParam contact_email string optional The contact email for the job. Example: johndoe@example.com
+     *
+     * @response 200 {
+     *   "message": "Job has been created successfully.",
+     *   "job": {
+     *     "id": 1,
+     *     "job_title": "Software Engineer",
+     *     "job_description": "A great job opportunity",
+     *     "job_type": "full-time",
+     *     "job_location": "New York",
+     *     "job_salary": 50000,
+     *     "currency": "USD",
+     *     "job_experience": 3,
+     *     "contact_person": "John Doe",
+     *     "contact_email": "johndoe@example.com",
+     *     "list_of_values": "hourly",
+     *     "created_by": 1,
+     *     "created_at": "2024-11-27T00:00:00.000000Z",
+     *     "updated_at": "2024-11-27T00:00:00.000000Z"
+     *   }
+     * }
+     *
+     * @response 201 {
+     *   "message": "Validation failed.",
+     *   "errors": {
+     *     "job_title": ["The job title is required."],
+     *     "job_description": ["The job description is required."]
+     *   }
+     * }
+     */
+    public function store(Request $request)
+    {
+        try {
+            // Validate the incoming request
+            $validated = $request->validate([
+                'job_title' => 'required',
+                'job_description' => 'required',
+                'job_type' => 'required',
+                'job_location' => 'required',
+                'job_salary' => 'nullable|numeric',
+                'currency' => 'nullable',
+                'job_experience' => 'nullable|numeric',
+                'contact_person' => 'nullable',
+                'contact_email' => 'nullable|email',
+                'list_of_values' => 'nullable',
+            ]);
+
+            // Create a new job entry
+            $job = new Job();
+            $job->created_by = auth()->id();
+            $job->job_title = $request->job_title;
+            $job->job_description = $request->job_description;
+            $job->job_type = $request->job_type;
+            $job->job_location = $request->job_location;
+            $job->job_salary = $request->job_salary;
+            $job->currency = $request->currency;
+            $job->job_experience = $request->job_experience;
+            $job->contact_person = $request->contact_person;
+            $job->contact_email = $request->contact_email;
+            $job->list_of_values = $request->list_of_values;
+            $job->save();
+
+            // Return success response
+            return response()->json([
+                'message' => 'Job has been created successfully.',
+                'job' => $job
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Return validation errors
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $e->errors()
+            ], 201);
+        } catch (\Exception $e) {
+            // Handle unexpected errors
+            return response()->json([
+                'message' => 'An error occurred while creating the job.',
+            ], 201);
+        }
+    }
+
+
+    /**
+     * Update Job
+     *
+     * @bodyParam job_title string required The title of the job. Example: Software Engineer
+     * @bodyParam job_description string required The description of the job. Example: A great job opportunity
+     * @bodyParam job_type string required The type of the job (e.g., full-time, part-time). Example: full-time
+     * @bodyParam job_location string required The location of the job. Example: New York
+     * @bodyParam job_salary numeric optional The salary for the job. Example: 50000
+     * @bodyParam list_of_values string optional List of additional job requirements or values. Example: hourly
+     * @bodyParam currency string optional The currency for the salary. Example: USD
+     * @bodyParam job_experience numeric optional The minimum experience required for the job. Example: 3
+     * @bodyParam contact_person string optional The contact person for the job. Example: John Doe
+     * @bodyParam contact_email string optional The contact email for the job. Example: johndoe@example.com
+     *
+     * @response 200 {
+     *   "message": "Job has been updated successfully.",
+     *   "job": {
+     *     "id": 1,
+     *     "job_title": "Software Engineer",
+     *     "job_description": "A great job opportunity",
+     *     "job_type": "full-time",
+     *     "job_location": "New York",
+     *     "job_salary": 50000,
+     *     "currency": "USD",
+     *     "job_experience": 3,
+     *     "contact_person": "John Doe",
+     *     "contact_email": "johndoe@example.com",
+     *     "list_of_values": "hourly"
+     *     "created_by": 1,
+     *     "created_at": "2024-11-27T00:00:00.000000Z",
+     *     "updated_at": "2024-11-27T00:00:00.000000Z"
+     *   }
+     * }
+     *
+     * @response 201 {
+     *   "message": "Validation failed.",
+     *   "errors": {
+     *     "job_title": ["The job title is required."],
+     *     "job_description": ["The job description is required."]
+     *   }
+     * }
+     */
+    public function update(Request $request, $id)
+    {
+        try {
+            // Validate the incoming request
+            $validated = $request->validate([
+                'job_title' => 'required',
+                'job_description' => 'required',
+                'job_type' => 'required',
+                'job_location' => 'required',
+                'job_salary' => 'nullable|numeric',
+                'job_experience' => 'nullable|numeric',
+                'contact_person' => 'nullable',
+                'contact_email' => 'nullable|email',
+                'currency' => 'nullable',
+                'list_of_values' => 'nullable',
+            ]);
+
+            // Find the job by ID
+            $job = Job::findOrFail($id);
+
+            // Update the job details
+            $job->job_title = $request->job_title;
+            $job->job_description = $request->job_description;
+            $job->job_type = $request->job_type;
+            $job->job_location = $request->job_location;
+            $job->job_salary = $request->job_salary;
+            $job->currency = $request->currency;
+            $job->job_experience = $request->job_experience;
+            $job->contact_person = $request->contact_person;
+            $job->contact_email = $request->contact_email;
+            $job->list_of_values = $request->list_of_values;
+            $job->save();
+
+            // Return success response
+            return response()->json([
+                'message' => 'Job has been updated successfully.',
+                'job' => $job
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Return validation errors
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $e->errors()
+            ], 201);
+        } catch (\Exception $e) {
+            // Handle unexpected errors
+            return response()->json([
+                'message' => 'An error occurred while updating the job.',
+            ], 201);
+        }
+    }
+
+
+    /**
+     * Delete Job
+     *
+     * @response 200 {
+     *   "message": "Job has been deleted successfully."
+     * }
+     *
+     * @response 201 {
+     *   "message": "Job not found."
+     * }
+     */
+    public function delete($id)
+    {
+        try {
+            // Find the job by ID and delete it
+            $job = Job::findOrFail($id);
+            $job->delete();
+
+            // Return success response
+            return response()->json([
+                'message' => 'Job has been deleted successfully.'
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // Return not found error if job does not exist
+            return response()->json([
+                'message' => 'Job not found.'
+            ], 201);
+        } catch (\Exception $e) {
+            // Handle any other unexpected errors
+            return response()->json([
+                'message' => 'An error occurred while deleting the job.'
+            ], 201);
+        }
+    }
+
+
+    /**
+     * Search Job
+     *
+     * @bodyParam query string required The title of the job. Example: abc
+     * 
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "job_title": "Software Developer",
+     *       "job_description": "Full stack developer needed...",
+     *       "job_type": "Full-time",
+     *       "job_location": "New York",
+     *       "job_salary": 100000,
+     *       "currency": "USD",
+     *       "job_experience": 3,
+     *       "contact_person": "John Doe",
+     *       "contact_email": "johndoe@example.com"
+     *     },
+     *     ...
+     *   ]
+     * }
+     * 
+     * @response 201 {
+     *   "message": "An error occurred during the search"
+     * }
+     */
+    public function search(Request $request)
+    {
+        try {
+            // Get parameters from request
+            $sort_by = $request->get('sortby', 'id'); // Default to 'id' if not provided
+            $sort_type = $request->get('sorttype', 'asc'); // Default to 'asc' if not provided
+            $query = $request->get('query', '');
+            $query = str_replace(" ", "%", $query); // Convert spaces to % for SQL LIKE query
+
+            // // Validate sort parameters
+            // if (!in_array($sort_by, ['id', 'job_title', 'job_location', 'job_salary']) || 
+            //     !in_array($sort_type, ['asc', 'desc'])) {
+            //     return response()->json([
+            //         'message' => 'Invalid query parameters.'
+            //     ], 400);
+            // }
+
+            // Perform search query
+            $jobs = Job::query()
+                ->where(function ($q) use ($query) {
+                    $q->where('id', 'like', '%' . $query . '%')
+                        ->orWhere('job_title', 'like', '%' . $query . '%')
+                        ->orWhere('job_description', 'like', '%' . $query . '%')
+                        ->orWhere('job_type', 'like', '%' . $query . '%')
+                        ->orWhere('job_location', 'like', '%' . $query . '%')
+                        ->orWhere('job_salary', 'like', '%' . $query . '%')
+                        ->orWhere('job_experience', 'like', '%' . $query . '%')
+                        ->orWhere('contact_person', 'like', '%' . $query . '%')
+                        ->orWhere('contact_email', 'like', '%' . $query . '%');
+                })
+                ->orderBy($sort_by, $sort_type)
+                ->get(); // Get results
+
+            return response()->json([
+                'data' => $jobs
+            ], 200); // Return the jobs as JSON
+
+        } catch (\Exception $e) {
+            // Handle unexpected errors
+            return response()->json([
+                'message' => 'An error occurred during the search.'
+            ], 201);
+        }
+    }
+
+
+
+    ////
 }
