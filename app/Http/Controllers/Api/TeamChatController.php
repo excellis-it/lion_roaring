@@ -234,6 +234,8 @@ class TeamChatController extends Controller
             $teams = array_map(function ($team) {
                 $team['last_message'] = $this->userLastMessage($team['id'], auth()->id());
                 $team['unseen_chat_count'] = Helper::getTeamCountUnseenMessage(auth()->id(), $team['id']);
+                $team['isMeAdmin'] = Helper::checkAdminTeam(auth()->user()->id, $team['id']);
+                $team['isMeRemoved'] = Helper::checkRemovedFromTeam($team['id'], auth()->user()->id);
                 return $team;
             }, $teams);
 
@@ -593,6 +595,8 @@ class TeamChatController extends Controller
             $team = Team::where('id', $team_id)
                 ->with(['members', 'members.user'])
                 ->first();
+            $team->isMeAdmin = Helper::checkAdminTeam(auth()->user()->id, $team->id);
+            $team->isMeRemoved = Helper::checkRemovedFromTeam($team->id, auth()->user()->id);
 
             // Get team chat messages
             $team_chats = TeamChat::where('team_id', $team_id)
@@ -627,6 +631,18 @@ class TeamChatController extends Controller
                 ->with('user')
                 ->get();
 
+            $all_team_members = TeamMember::where('team_id', $team_id)
+                ->with('user')
+                ->get();
+
+            $team_member_ids = $all_team_members->pluck('user_id'); // Get user IDs of team members
+
+            $not_team_members = User::orderBy('first_name', 'asc')
+                ->whereNotIn('id', $team_member_ids) // Exclude team members
+                ->where('id', '!=', auth()->id()) // Exclude the current user
+                ->where('status', true)
+                ->get();
+
             $team_member_name = '';
             foreach ($team_members as $member) {
                 $team_member_name .= ($member->user->first_name ?? '') . ' ' .
@@ -640,6 +656,7 @@ class TeamChatController extends Controller
                 'team' => $team,
                 'team_chats' => $team_chats,
                 'team_member_names' => $team_member_name,
+                'not_team_member' => $not_team_members
             ], 200);
         } catch (\Throwable $th) {
             return response()->json(['msg' => $th->getMessage(), 'status' => false], 201);
