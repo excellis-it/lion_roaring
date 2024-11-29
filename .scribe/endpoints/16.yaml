@@ -377,7 +377,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hbEceDgZ856df6a1P43kVav'
+      - 'Bearer d1VP5Ea8veg36DabZc4f6hk'
     controller: null
     method: null
     route: null
@@ -404,13 +404,13 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: saepe
+        example: qui
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: saepe
+      id: qui
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -644,7 +644,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6aa35k4V8ehDcdP6fZvE1bg'
+      - 'Bearer 1gcfZPdEhb3ek4566V8avaD'
     controller: null
     method: null
     route: null

@@ -71,22 +71,6 @@ class SendMailController extends Controller
     public function inboxEmailList(Request $request)
     {
         $type = $request->get('type');
-        // $mails = SendMail::whereHas('mailUsers', function ($q) {
-        //     $q->where('user_id', auth()->id())->where('is_from', '!=', 1)->where('is_delete', 0);
-        // })
-        //     ->orderBy('created_at', 'desc')
-        //     ->paginate(15);
-        // $mails = SendMail::whereHas('mailUsers', function ($q) {
-        //     $q->where('user_id', auth()->id())
-        //         ->where('is_from', '!=', 1)
-        //         ->where('is_delete', 0);
-        // })
-        //     ->selectRaw('COALESCE(reply_of, id) as mail_group, MAX(id) as id, MAX(`to`) as `to`, MAX(subject) as subject, MAX(`message`) as `message`, MAX(created_at) as created_at, MAX(form_id) as user_id')
-        //     ->groupBy('mail_group')
-        //     ->with('userSender')
-        //     ->orderBy('created_at', 'desc')
-        //     ->paginate(15);
-
         $subQuery = SendMail::whereHas('mailUsers', function ($q) {
             $q->where('user_id', auth()->id())
                 ->where('is_from', '!=', 1)
@@ -142,12 +126,6 @@ class SendMailController extends Controller
     public function sentEmailList(Request $request)
     {
         $type = $request->get('type');
-        //return $type;
-        // $mails = SendMail::whereHas('mailUsers', function ($q) {
-        //     $q->where('user_id', auth()->id())->where('is_from', 1)->where('is_delete', 0);
-        // })
-        //     ->orderBy('created_at', 'desc')
-        //     ->paginate(15);
 
         $subQuery = SendMail::whereHas('mailUsers', function ($q) {
             $q->where('user_id', auth()->id())
@@ -204,11 +182,6 @@ class SendMailController extends Controller
     public function starEmailList(Request $request)
     {
         $type = $request->get('type');
-        // $mails = SendMail::whereHas('mailUsers', function ($q) {
-        //     $q->where('user_id', auth()->id())->where('is_starred', 1)->where('is_delete', 0);
-        // })
-        //     ->orderBy('created_at', 'desc')
-        //     ->paginate(15);
         $subQuery = SendMail::whereHas('mailUsers', function ($q) {
             $q->where('user_id', auth()->id())
                 ->where('is_starred', 1)

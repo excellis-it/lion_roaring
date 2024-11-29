@@ -281,7 +281,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 15
+                  example: 18
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -309,7 +309,7 @@ paths:
                 state:
                   type: integer
                   description: 'State of residence.'
-                  example: 15
+                  example: 19
                 address2:
                   type: string
                   description: 'nullable Additional address information.'
@@ -317,7 +317,7 @@ paths:
                 country:
                   type: integer
                   description: 'Country of residence.'
-                  example: 9
+                  example: 3
                 zip:
                   type: string
                   description: 'Zip code.'
@@ -2532,7 +2532,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: trystan64@example.net
+                  example: lila.nikolaus@example.com
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -2603,7 +2603,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: voluptatum
+                  example: quis
       security: []
   /api/v3/country-list:
     post:
@@ -2837,7 +2837,7 @@ paths:
         in: path
         name: topic
         description: 'The topic.'
-        example: voluptatum
+        example: nisi
         required: true
         schema:
           type: string
@@ -2987,32 +2987,32 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: et
+          example: expedita
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: et
+            example: expedita
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: distinctio
+          example: voluptas
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: distinctio
+            example: voluptas
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: ipsa
+          example: id
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: ipsa
+            example: id
         -
           in: query
           name: topic_id
@@ -3332,12 +3332,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 20
+          example: 14
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 20
+            example: 14
       responses:
         200:
           description: ''
@@ -3561,7 +3561,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: laboriosam
+        example: asperiores
         required: true
         schema:
           type: string
@@ -3668,7 +3668,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: quia
+        example: consequatur
         required: true
         schema:
           type: string
@@ -3708,42 +3708,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: nihil
+          example: quis
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: nihil
+            example: quis
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: sapiente
+          example: eos
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: sapiente
+            example: eos
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: possimus
+          example: et
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: possimus
+            example: et
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 16
+          example: 7
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 16
+            example: 7
       responses:
         200:
           description: ''
@@ -4053,12 +4053,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 1
+          example: 15
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 1
+            example: 15
       responses:
         200:
           description: ''
@@ -4282,7 +4282,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: dignissimos
+        example: sit
         required: true
         schema:
           type: string
@@ -4389,7 +4389,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: velit
+        example: odit
         required: true
         schema:
           type: string
@@ -4429,42 +4429,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: minima
+          example: dolor
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: minima
+            example: dolor
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: facere
+          example: veniam
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: facere
+            example: veniam
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: quaerat
+          example: porro
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: quaerat
+            example: porro
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 8
+          example: 5
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 8
+            example: 5
       responses:
         200:
           description: ''
@@ -4774,12 +4774,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 19
+          example: 12
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 19
+            example: 12
       responses:
         200:
           description: ''
@@ -5003,7 +5003,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: a
+        example: molestias
         required: true
         schema:
           type: string
@@ -5110,7 +5110,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: fuga
+        example: tempore
         required: true
         schema:
           type: string
@@ -5150,42 +5150,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: voluptate
+          example: enim
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: voluptate
+            example: enim
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: dolore
+          example: sunt
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: dolore
+            example: sunt
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: rerum
+          example: voluptatem
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: rerum
+            example: voluptatem
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 1
+          example: 5
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 1
+            example: 5
       responses:
         200:
           description: ''
@@ -5495,12 +5495,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 17
+          example: 9
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 17
+            example: 9
       responses:
         200:
           description: ''
@@ -5724,7 +5724,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: quia
+        example: aspernatur
         required: true
         schema:
           type: string
@@ -5831,72 +5831,460 @@ paths:
         in: path
         name: file
         description: ''
-        example: minus
+        example: sed
         required: true
         schema:
           type: string
   /api/v3/user/mail/inbox-email-list:
     post:
-      summary: 'Inbox Email List'
-      operationId: inboxEmailList
-      description: 'Retrieves a paginated list of emails for the authenticated user, excluding sent emails, and returns the data in JSON format.'
-      parameters: []
+      summary: 'Inbox Emails'
+      operationId: inboxEmails
+      description: 'API for fetching the inbox email list for the authenticated user.'
+      parameters:
+        -
+          in: query
+          name: type
+          description: 'The type of emails to filter.'
+          example: '"unread"'
+          required: false
+          schema:
+            type: string
+            description: 'The type of emails to filter.'
+            example: '"unread"'
       responses:
         200:
           description: ''
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-                example: "{\n   \"data\": [\n       {\n      \"id\": 85,\n      \"reply_of\": 84,\n      \"form_id\": 38,\n      \"to\": \"test@mail.net\",\n      \"cc\": null,\n      \"subject\": \"Test Email\",\n      \"message\": \"<p>ddddd</p>\",\n      \"attachment\": null,\n      \"is_draft\": 0,\n      \"is_delete\": 0,\n      \"deleted_at\": null,\n      \"created_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"updated_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"ownUserMailInfo\": {\n             \"is_read\": 0,\n             \"is_starred\": 0,\n             \"is_delete\": 0\n         }\n       },\n       // additional emails\n   ],\n   \"total\": 45,\n   \"perPage\": 15,\n   \"currentPage\": 1,\n   \"lastPage\": 3\n}"
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      subject: 'Hello World'
+                      message: 'This is a sample message.'
+                      userToNames: 'John Doe, Jane Smith'
+                      lastReplyMessage: 'See you soon!'
+                      lastReplyDate: '2024-11-29 10:00:00'
+                      ownUserMailInfo:
+                        is_read: true
+                        is_delete: false
+                  total: 25
+                  perPage: 15
+                  currentPage: 1
+                  lastPage: 2
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        subject: 'Hello World'
+                        message: 'This is a sample message.'
+                        userToNames: 'John Doe, Jane Smith'
+                        lastReplyMessage: 'See you soon!'
+                        lastReplyDate: '2024-11-29 10:00:00'
+                        ownUserMailInfo:
+                          is_read: true
+                          is_delete: false
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        subject:
+                          type: string
+                          example: 'Hello World'
+                        message:
+                          type: string
+                          example: 'This is a sample message.'
+                        userToNames:
+                          type: string
+                          example: 'John Doe, Jane Smith'
+                        lastReplyMessage:
+                          type: string
+                          example: 'See you soon!'
+                        lastReplyDate:
+                          type: string
+                          example: '2024-11-29 10:00:00'
+                        ownUserMailInfo:
+                          type: object
+                          properties:
+                            is_read:
+                              type: boolean
+                              example: true
+                            is_delete:
+                              type: boolean
+                              example: false
+                  total:
+                    type: integer
+                    example: 25
+                  perPage:
+                    type: integer
+                    example: 15
+                  currentPage:
+                    type: integer
+                    example: 1
+                  lastPage:
+                    type: integer
+                    example: 2
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Unable to fetch inbox email list.'
+                  error: 'Detailed error message.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Unable to fetch inbox email list.'
+                  error:
+                    type: string
+                    example: 'Detailed error message.'
       tags:
         - Email
   /api/v3/user/mail/sent-email-list:
     post:
-      summary: 'Sent Email List'
-      operationId: sentEmailList
-      description: 'Retrieves a paginated list of sent emails for the authenticated user, excluding deleted emails, and returns the data in JSON format.'
-      parameters: []
+      summary: 'Sent Emails'
+      operationId: sentEmails
+      description: 'API for fetching the sent email list for the authenticated user.'
+      parameters:
+        -
+          in: query
+          name: type
+          description: 'The type of emails to filter.'
+          example: '"draft"'
+          required: false
+          schema:
+            type: string
+            description: 'The type of emails to filter.'
+            example: '"draft"'
       responses:
         200:
           description: ''
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-                example: "{\n   \"data\": [\n       {\n      \"id\": 85,\n      \"reply_of\": 84,\n      \"form_id\": 38,\n      \"to\": \"test@mail.net\",\n      \"cc\": null,\n      \"subject\": \"Test Email\",\n      \"message\": \"<p>ddddd</p>\",\n      \"attachment\": null,\n      \"is_draft\": 0,\n      \"is_delete\": 0,\n      \"deleted_at\": null,\n      \"created_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"updated_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"ownUserMailInfo\": {\n             \"is_read\": 1,\n             \"is_starred\": 0,\n             \"is_delete\": 0\n         }\n       },\n       // additional emails\n   ],\n   \"total\": 30,\n   \"perPage\": 15,\n   \"currentPage\": 1,\n   \"lastPage\": 2\n}"
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      subject: 'Project Update'
+                      message: 'Here is the latest update.'
+                      userToNames: 'Alice Johnson, Bob Williams'
+                      lastReplyMessage: 'Noted, thanks!'
+                      lastReplyDate: '2024-11-29 12:00:00'
+                      ownUserMailInfo:
+                        is_read: true
+                        is_delete: false
+                  total: 30
+                  perPage: 15
+                  currentPage: 1
+                  lastPage: 2
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        subject: 'Project Update'
+                        message: 'Here is the latest update.'
+                        userToNames: 'Alice Johnson, Bob Williams'
+                        lastReplyMessage: 'Noted, thanks!'
+                        lastReplyDate: '2024-11-29 12:00:00'
+                        ownUserMailInfo:
+                          is_read: true
+                          is_delete: false
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        subject:
+                          type: string
+                          example: 'Project Update'
+                        message:
+                          type: string
+                          example: 'Here is the latest update.'
+                        userToNames:
+                          type: string
+                          example: 'Alice Johnson, Bob Williams'
+                        lastReplyMessage:
+                          type: string
+                          example: 'Noted, thanks!'
+                        lastReplyDate:
+                          type: string
+                          example: '2024-11-29 12:00:00'
+                        ownUserMailInfo:
+                          type: object
+                          properties:
+                            is_read:
+                              type: boolean
+                              example: true
+                            is_delete:
+                              type: boolean
+                              example: false
+                  total:
+                    type: integer
+                    example: 30
+                  perPage:
+                    type: integer
+                    example: 15
+                  currentPage:
+                    type: integer
+                    example: 1
+                  lastPage:
+                    type: integer
+                    example: 2
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Unable to fetch sent email list.'
+                  error: 'Detailed error message.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Unable to fetch sent email list.'
+                  error:
+                    type: string
+                    example: 'Detailed error message.'
       tags:
         - Email
   /api/v3/user/mail/star-email-list:
     post:
-      summary: 'Starred Email List'
-      operationId: starredEmailList
-      description: 'Retrieves a paginated list of starred emails for the authenticated user, excluding deleted emails, and returns the data in JSON format.'
-      parameters: []
+      summary: 'Starred Emails'
+      operationId: starredEmails
+      description: 'API for fetching the starred email list for the authenticated user.'
+      parameters:
+        -
+          in: query
+          name: type
+          description: 'The type of emails to filter.'
+          example: '"important"'
+          required: false
+          schema:
+            type: string
+            description: 'The type of emails to filter.'
+            example: '"important"'
       responses:
         200:
           description: ''
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-                example: "{\n   \"data\": [\n       {\n      \"id\": 85,\n      \"reply_of\": 84,\n      \"form_id\": 38,\n      \"to\": \"test@mail.net\",\n      \"cc\": null,\n      \"subject\": \"Test Email\",\n      \"message\": \"<p>ddddd</p>\",\n      \"attachment\": null,\n      \"is_draft\": 0,\n      \"is_delete\": 0,\n      \"deleted_at\": null,\n      \"created_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"updated_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"ownUserMailInfo\": {\n             \"is_read\": 1,\n             \"is_starred\": 1,\n             \"is_delete\": 0\n         }\n       },\n       // additional emails\n   ],\n   \"total\": 20,\n   \"perPage\": 15,\n   \"currentPage\": 1,\n   \"lastPage\": 2\n}"
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      subject: 'Meeting Reminder'
+                      message: "Don't forget our meeting tomorrow."
+                      userToNames: 'Eve Adams, Frank Taylor'
+                      lastReplyMessage: 'See you at 10 AM!'
+                      lastReplyDate: '2024-11-29 15:00:00'
+                      ownUserMailInfo:
+                        is_read: true
+                        is_delete: false
+                  total: 10
+                  perPage: 15
+                  currentPage: 1
+                  lastPage: 1
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        subject: 'Meeting Reminder'
+                        message: "Don't forget our meeting tomorrow."
+                        userToNames: 'Eve Adams, Frank Taylor'
+                        lastReplyMessage: 'See you at 10 AM!'
+                        lastReplyDate: '2024-11-29 15:00:00'
+                        ownUserMailInfo:
+                          is_read: true
+                          is_delete: false
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        subject:
+                          type: string
+                          example: 'Meeting Reminder'
+                        message:
+                          type: string
+                          example: "Don't forget our meeting tomorrow."
+                        userToNames:
+                          type: string
+                          example: 'Eve Adams, Frank Taylor'
+                        lastReplyMessage:
+                          type: string
+                          example: 'See you at 10 AM!'
+                        lastReplyDate:
+                          type: string
+                          example: '2024-11-29 15:00:00'
+                        ownUserMailInfo:
+                          type: object
+                          properties:
+                            is_read:
+                              type: boolean
+                              example: true
+                            is_delete:
+                              type: boolean
+                              example: false
+                  total:
+                    type: integer
+                    example: 10
+                  perPage:
+                    type: integer
+                    example: 15
+                  currentPage:
+                    type: integer
+                    example: 1
+                  lastPage:
+                    type: integer
+                    example: 1
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Unable to fetch starred email list.'
+                  error: 'Detailed error message.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Unable to fetch starred email list.'
+                  error:
+                    type: string
+                    example: 'Detailed error message.'
       tags:
         - Email
   /api/v3/user/mail/trash-email-list:
     post:
-      summary: 'Trash Email List'
-      operationId: trashEmailList
-      description: 'Retrieves a paginated list of emails in the trash for the authenticated user and returns the data in JSON format.'
-      parameters: []
+      summary: 'Trashed Emails'
+      operationId: trashedEmails
+      description: 'API for fetching the trashed email list for the authenticated user.'
+      parameters:
+        -
+          in: query
+          name: type
+          description: 'Optional. The type of emails to filter.'
+          example: '"archived"'
+          required: false
+          schema:
+            type: string
+            description: 'Optional. The type of emails to filter.'
+            example: '"archived"'
       responses:
         200:
           description: ''
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-                example: "{\n   \"data\": [\n       {\n      \"id\": 85,\n      \"reply_of\": 84,\n      \"form_id\": 38,\n      \"to\": \"test@mail.net\",\n      \"cc\": null,\n      \"subject\": \"Test Email\",\n      \"message\": \"<p>ddddd</p>\",\n      \"attachment\": null,\n      \"is_draft\": 0,\n      \"is_delete\": 0,\n      \"deleted_at\": null,\n      \"created_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"updated_at\": \"2024-11-06T14:07:53.000000Z\",\n      \"ownUserMailInfo\": {\n             \"is_read\": 1,\n             \"is_starred\": 0,\n             \"is_delete\": 1\n         }\n       },\n       // additional trashed emails\n   ],\n   \"total\": 5,\n   \"perPage\": 15,\n   \"currentPage\": 1,\n   \"lastPage\": 1\n}"
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      subject: 'Weekly Report'
+                      message: 'Attached is the weekly report.'
+                      userToNames: 'John Doe, Jane Smith'
+                      lastReplyMessage: 'Thank you for the report!'
+                      lastReplyDate: '2024-11-29 15:00:00'
+                      ownUserMailInfo:
+                        is_read: true
+                        is_delete: true
+                  total: 5
+                  perPage: 15
+                  currentPage: 1
+                  lastPage: 1
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        subject: 'Weekly Report'
+                        message: 'Attached is the weekly report.'
+                        userToNames: 'John Doe, Jane Smith'
+                        lastReplyMessage: 'Thank you for the report!'
+                        lastReplyDate: '2024-11-29 15:00:00'
+                        ownUserMailInfo:
+                          is_read: true
+                          is_delete: true
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        subject:
+                          type: string
+                          example: 'Weekly Report'
+                        message:
+                          type: string
+                          example: 'Attached is the weekly report.'
+                        userToNames:
+                          type: string
+                          example: 'John Doe, Jane Smith'
+                        lastReplyMessage:
+                          type: string
+                          example: 'Thank you for the report!'
+                        lastReplyDate:
+                          type: string
+                          example: '2024-11-29 15:00:00'
+                        ownUserMailInfo:
+                          type: object
+                          properties:
+                            is_read:
+                              type: boolean
+                              example: true
+                            is_delete:
+                              type: boolean
+                              example: true
+                  total:
+                    type: integer
+                    example: 5
+                  perPage:
+                    type: integer
+                    example: 15
+                  currentPage:
+                    type: integer
+                    example: 1
+                  lastPage:
+                    type: integer
+                    example: 1
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Unable to fetch trashed email list.'
+                  error: 'Detailed error message.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Unable to fetch trashed email list.'
+                  error:
+                    type: string
+                    example: 'Detailed error message.'
       tags:
         - Email
   /api/v3/user/mail/view:
@@ -6511,19 +6899,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
-                  example: eius
+                  example: assumenda
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: quis
+                  example: minima
                 subject:
                   type: string
                   description: 'The subject of the email.'
-                  example: voluptas
+                  example: et
                 message:
                   type: string
                   description: 'The body content of the email.'
-                  example: amet
+                  example: quia
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -6653,19 +7041,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: perspiciatis
+                  example: illo
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: perspiciatis
+                  example: assumenda
                 subject:
                   type: string
                   description: 'The subject of the reply email.'
-                  example: soluta
+                  example: deleniti
                 message:
                   type: string
                   description: 'The body content of the reply email.'
-                  example: illo
+                  example: minus
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -6675,7 +7063,7 @@ paths:
                 main_mail_id:
                   type: integer
                   description: 'The ID of the main email thread being replied to.'
-                  example: 20
+                  example: 6
               required:
                 - to
                 - subject
@@ -6792,19 +7180,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: illo
+                  example: et
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: natus
+                  example: sed
                 subject:
                   type: string
                   description: 'The subject of the forwarded email.'
-                  example: et
+                  example: ut
                 message:
                   type: string
                   description: 'The body content of the forwarded email.'
-                  example: accusantium
+                  example: et
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -7092,13 +7480,13 @@ paths:
                   type: integer
                   description: 'The ID of the mail to be starred or unstarred.'
                   example: 1
-                start_value:
+                star_value:
                   type: integer
                   description: 'The star value (1 for starred, 0 for unstarred).'
                   example: 1
               required:
                 - mail_id
-                - start_value
+                - star_value
   /api/v3/user/mail/mail-delete-single:
     post:
       summary: 'Delete Single Email'
@@ -7767,7 +8155,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: alana.pollich@example.com
+                  example: clement.quigley@example.com
               required:
                 - email
       security: []
@@ -9690,7 +10078,7 @@ paths:
                 is_delete:
                   type: integer
                   description: 'optional Indicates if the notification should be marked as read and deleted.'
-                  example: 1
+                  example: 20
               required:
                 - team_id
                 - chat_id
@@ -10233,7 +10621,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the edit.'
-        example: quis
+        example: quidem
         required: true
         schema:
           type: string
@@ -10275,7 +10663,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the delete.'
-        example: suscipit
+        example: adipisci
         required: true
         schema:
           type: string
@@ -12929,7 +13317,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the edit.'
-        example: saepe
+        example: qui
         required: true
         schema:
           type: string
@@ -13210,7 +13598,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the strategy to delete.'
-        example: 9
+        example: 11
         required: true
         schema:
           type: integer
@@ -13247,7 +13635,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the download.'
-        example: aut
+        example: error
         required: true
         schema:
           type: string
@@ -13309,7 +13697,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the strategy to view.'
-        example: 20
+        example: 5
         required: true
         schema:
           type: integer

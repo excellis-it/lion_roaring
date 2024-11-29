@@ -10,8 +10,8 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Inbox Email List'
-      description: 'Retrieves a paginated list of emails for the authenticated user, excluding sent emails, and returns the data in JSON format.'
+      title: 'Inbox Emails'
+      description: 'API for fetching the inbox email list for the authenticated user.'
       authenticated: true
       custom: []
     headers:
@@ -20,8 +20,18 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      type:
+        name: type
+        description: 'The type of emails to filter.'
+        required: false
+        example: '"unread"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      type: '"unread"'
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -30,33 +40,34 @@ endpoints:
         status: 200
         content: |-
           {
-             "data": [
-                 {
-                "id": 85,
-                "reply_of": 84,
-                "form_id": 38,
-                "to": "test@mail.net",
-                "cc": null,
-                "subject": "Test Email",
-                "message": "<p>ddddd</p>",
-                "attachment": null,
-                "is_draft": 0,
-                "is_delete": 0,
-                "deleted_at": null,
-                "created_at": "2024-11-06T14:07:53.000000Z",
-                "updated_at": "2024-11-06T14:07:53.000000Z",
+            "data": [
+              {
+                "id": 1,
+                "subject": "Hello World",
+                "message": "This is a sample message.",
+                "userToNames": "John Doe, Jane Smith",
+                "lastReplyMessage": "See you soon!",
+                "lastReplyDate": "2024-11-29 10:00:00",
                 "ownUserMailInfo": {
-                       "is_read": 0,
-                       "is_starred": 0,
-                       "is_delete": 0
-                   }
-                 },
-                 // additional emails
-             ],
-             "total": 45,
-             "perPage": 15,
-             "currentPage": 1,
-             "lastPage": 3
+                  "is_read": true,
+                  "is_delete": false
+                }
+              }
+            ],
+            "total": 25,
+            "perPage": 15,
+            "currentPage": 1,
+            "lastPage": 2
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Unable to fetch inbox email list.",
+            "error": "Detailed error message."
           }
         headers: []
         description: ''
@@ -65,7 +76,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dcv6PZaDVb5Eg4a8ekf31h6'
+      - 'Bearer 3Vaav8k1be4cdfPE66hgDZ5'
     controller: null
     method: null
     route: null
@@ -79,8 +90,8 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Sent Email List'
-      description: 'Retrieves a paginated list of sent emails for the authenticated user, excluding deleted emails, and returns the data in JSON format.'
+      title: 'Sent Emails'
+      description: 'API for fetching the sent email list for the authenticated user.'
       authenticated: true
       custom: []
     headers:
@@ -89,8 +100,18 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      type:
+        name: type
+        description: 'The type of emails to filter.'
+        required: false
+        example: '"draft"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      type: '"draft"'
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -99,33 +120,34 @@ endpoints:
         status: 200
         content: |-
           {
-             "data": [
-                 {
-                "id": 85,
-                "reply_of": 84,
-                "form_id": 38,
-                "to": "test@mail.net",
-                "cc": null,
-                "subject": "Test Email",
-                "message": "<p>ddddd</p>",
-                "attachment": null,
-                "is_draft": 0,
-                "is_delete": 0,
-                "deleted_at": null,
-                "created_at": "2024-11-06T14:07:53.000000Z",
-                "updated_at": "2024-11-06T14:07:53.000000Z",
+            "data": [
+              {
+                "id": 1,
+                "subject": "Project Update",
+                "message": "Here is the latest update.",
+                "userToNames": "Alice Johnson, Bob Williams",
+                "lastReplyMessage": "Noted, thanks!",
+                "lastReplyDate": "2024-11-29 12:00:00",
                 "ownUserMailInfo": {
-                       "is_read": 1,
-                       "is_starred": 0,
-                       "is_delete": 0
-                   }
-                 },
-                 // additional emails
-             ],
-             "total": 30,
-             "perPage": 15,
-             "currentPage": 1,
-             "lastPage": 2
+                  "is_read": true,
+                  "is_delete": false
+                }
+              }
+            ],
+            "total": 30,
+            "perPage": 15,
+            "currentPage": 1,
+            "lastPage": 2
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Unable to fetch sent email list.",
+            "error": "Detailed error message."
           }
         headers: []
         description: ''
@@ -134,7 +156,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f46DZ5k86PEcVdhgabe1va3'
+      - 'Bearer b64dgEcZfh85ev3Vak1DPa6'
     controller: null
     method: null
     route: null
@@ -148,8 +170,8 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Starred Email List'
-      description: 'Retrieves a paginated list of starred emails for the authenticated user, excluding deleted emails, and returns the data in JSON format.'
+      title: 'Starred Emails'
+      description: 'API for fetching the starred email list for the authenticated user.'
       authenticated: true
       custom: []
     headers:
@@ -158,8 +180,18 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      type:
+        name: type
+        description: 'The type of emails to filter.'
+        required: false
+        example: '"important"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      type: '"important"'
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -168,33 +200,34 @@ endpoints:
         status: 200
         content: |-
           {
-             "data": [
-                 {
-                "id": 85,
-                "reply_of": 84,
-                "form_id": 38,
-                "to": "test@mail.net",
-                "cc": null,
-                "subject": "Test Email",
-                "message": "<p>ddddd</p>",
-                "attachment": null,
-                "is_draft": 0,
-                "is_delete": 0,
-                "deleted_at": null,
-                "created_at": "2024-11-06T14:07:53.000000Z",
-                "updated_at": "2024-11-06T14:07:53.000000Z",
+            "data": [
+              {
+                "id": 1,
+                "subject": "Meeting Reminder",
+                "message": "Don't forget our meeting tomorrow.",
+                "userToNames": "Eve Adams, Frank Taylor",
+                "lastReplyMessage": "See you at 10 AM!",
+                "lastReplyDate": "2024-11-29 15:00:00",
                 "ownUserMailInfo": {
-                       "is_read": 1,
-                       "is_starred": 1,
-                       "is_delete": 0
-                   }
-                 },
-                 // additional emails
-             ],
-             "total": 20,
-             "perPage": 15,
-             "currentPage": 1,
-             "lastPage": 2
+                  "is_read": true,
+                  "is_delete": false
+                }
+              }
+            ],
+            "total": 10,
+            "perPage": 15,
+            "currentPage": 1,
+            "lastPage": 1
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Unable to fetch starred email list.",
+            "error": "Detailed error message."
           }
         headers: []
         description: ''
@@ -203,7 +236,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gP616E3vhaZa4dD5Vcf8ebk'
+      - 'Bearer aegd56ahfkEV1c3486PZDbv'
     controller: null
     method: null
     route: null
@@ -217,8 +250,8 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Trash Email List'
-      description: 'Retrieves a paginated list of emails in the trash for the authenticated user and returns the data in JSON format.'
+      title: 'Trashed Emails'
+      description: 'API for fetching the trashed email list for the authenticated user.'
       authenticated: true
       custom: []
     headers:
@@ -227,8 +260,18 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      type:
+        name: type
+        description: 'Optional. The type of emails to filter.'
+        required: false
+        example: '"archived"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      type: '"archived"'
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -237,33 +280,34 @@ endpoints:
         status: 200
         content: |-
           {
-             "data": [
-                 {
-                "id": 85,
-                "reply_of": 84,
-                "form_id": 38,
-                "to": "test@mail.net",
-                "cc": null,
-                "subject": "Test Email",
-                "message": "<p>ddddd</p>",
-                "attachment": null,
-                "is_draft": 0,
-                "is_delete": 0,
-                "deleted_at": null,
-                "created_at": "2024-11-06T14:07:53.000000Z",
-                "updated_at": "2024-11-06T14:07:53.000000Z",
+            "data": [
+              {
+                "id": 1,
+                "subject": "Weekly Report",
+                "message": "Attached is the weekly report.",
+                "userToNames": "John Doe, Jane Smith",
+                "lastReplyMessage": "Thank you for the report!",
+                "lastReplyDate": "2024-11-29 15:00:00",
                 "ownUserMailInfo": {
-                       "is_read": 1,
-                       "is_starred": 0,
-                       "is_delete": 1
-                   }
-                 },
-                 // additional trashed emails
-             ],
-             "total": 5,
-             "perPage": 15,
-             "currentPage": 1,
-             "lastPage": 1
+                  "is_read": true,
+                  "is_delete": true
+                }
+              }
+            ],
+            "total": 5,
+            "perPage": 15,
+            "currentPage": 1,
+            "lastPage": 1
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Unable to fetch trashed email list.",
+            "error": "Detailed error message."
           }
         headers: []
         description: ''
@@ -272,7 +316,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d8v1f3acVePgh5kZE646abD'
+      - 'Bearer ZbDVfd8a61Pke6ag3h5cE4v'
     controller: null
     method: null
     route: null
@@ -430,7 +474,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P8hkVD6avgdbZ514Efeca63'
+      - 'Bearer Da4kfP1eEha8bv3d56gc6VZ'
     controller: null
     method: null
     route: null
@@ -501,7 +545,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d6k5evDaPafh6g1bc34E8VZ'
+      - 'Bearer aa1ZgEh3vfDPebV8ck66d45'
     controller: null
     method: null
     route: null
@@ -534,7 +578,7 @@ endpoints:
         name: to
         description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
         required: true
-        example: eius
+        example: assumenda
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -543,7 +587,7 @@ endpoints:
         name: cc
         description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: quis
+        example: minima
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -552,7 +596,7 @@ endpoints:
         name: subject
         description: 'The subject of the email.'
         required: true
-        example: voluptas
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -561,7 +605,7 @@ endpoints:
         name: message
         description: 'The body content of the email.'
         required: true
-        example: amet
+        example: quia
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -577,10 +621,10 @@ endpoints:
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      to: eius
-      cc: quis
-      subject: voluptas
-      message: amet
+      to: assumenda
+      cc: minima
+      subject: et
+      message: quia
     fileParameters:
       attachments:
         - null
@@ -626,7 +670,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bg4a316f5VdDkc6haPEZev8'
+      - 'Bearer Zh6EbdkDva1f8Pg4e6a5c3V'
     controller: null
     method: null
     route: null
@@ -659,7 +703,7 @@ endpoints:
         name: to
         description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
         required: true
-        example: perspiciatis
+        example: illo
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -668,7 +712,7 @@ endpoints:
         name: cc
         description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: perspiciatis
+        example: assumenda
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -677,7 +721,7 @@ endpoints:
         name: subject
         description: 'The subject of the reply email.'
         required: true
-        example: soluta
+        example: deleniti
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -686,7 +730,7 @@ endpoints:
         name: message
         description: 'The body content of the reply email.'
         required: true
-        example: illo
+        example: minus
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -705,17 +749,17 @@ endpoints:
         name: main_mail_id
         description: 'The ID of the main email thread being replied to.'
         required: true
-        example: 20
+        example: 6
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      to: perspiciatis
-      cc: perspiciatis
-      subject: soluta
-      message: illo
-      main_mail_id: 20
+      to: illo
+      cc: assumenda
+      subject: deleniti
+      message: minus
+      main_mail_id: 6
     fileParameters:
       attachments:
         - null
@@ -762,7 +806,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d3Dcb58f166EhvgPea4VkaZ'
+      - 'Bearer VDkE4P68fevc35aZdag6h1b'
     controller: null
     method: null
     route: null
@@ -795,7 +839,7 @@ endpoints:
         name: to
         description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
         required: true
-        example: illo
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -804,7 +848,7 @@ endpoints:
         name: cc
         description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: natus
+        example: sed
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -813,7 +857,7 @@ endpoints:
         name: subject
         description: 'The subject of the forwarded email.'
         required: true
-        example: et
+        example: ut
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -822,7 +866,7 @@ endpoints:
         name: message
         description: 'The body content of the forwarded email.'
         required: true
-        example: accusantium
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -838,10 +882,10 @@ endpoints:
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      to: illo
-      cc: natus
-      subject: et
-      message: accusantium
+      to: et
+      cc: sed
+      subject: ut
+      message: et
     fileParameters:
       attachments:
         - null
@@ -887,7 +931,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3hgca6E4ef81V5PbDakvZd6'
+      - 'Bearer PE6fb54hgZ1V8ad6vaDekc3'
     controller: null
     method: null
     route: null
@@ -971,7 +1015,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8aE5abV63Z416hvfedcgPkD'
+      - 'Bearer 458d66aPegVZbkcvf3EDah1'
     controller: null
     method: null
     route: null
@@ -1055,7 +1099,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 665cedvk81fE4a3hVaDZbgP'
+      - 'Bearer e3cfhaPadVD4gk8E5bvZ616'
     controller: null
     method: null
     route: null
@@ -1125,7 +1169,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ecbDhPg6V3Efd4a16k8Za5v'
+      - 'Bearer 66aDZgdk4cbvPV185Eaefh3'
     controller: null
     method: null
     route: null
@@ -1161,8 +1205,8 @@ endpoints:
         enumValues: []
         exampleWasSpecified: true
         custom: []
-      start_value:
-        name: start_value
+      star_value:
+        name: star_value
         description: 'The star value (1 for starred, 0 for unstarred).'
         required: true
         example: 1
@@ -1172,7 +1216,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       mail_id: 1
-      start_value: 1
+      star_value: 1
     fileParameters: []
     responses:
       -
@@ -1209,7 +1253,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aP3ga5V6cf61vEehd48bZkD'
+      - 'Bearer k66gf8PcaD3Zhd14vV5Eeab'
     controller: null
     method: null
     route: null
@@ -1273,7 +1317,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hZa5f6VeEP6k31vc8Dadb4g'
+      - 'Bearer 3hDbaV6k58Z1aPEd6evf4cg'
     controller: null
     method: null
     route: null
@@ -1337,7 +1381,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 85cDgf4dvP66V1bhEZaake3'
+      - 'Bearer Za6fE8DgaP165d4cvk3bheV'
     controller: null
     method: null
     route: null
@@ -1401,7 +1445,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a46ba6vEZdh8D3PVkfe1g5c'
+      - 'Bearer 6DPkecbv8gh36aZfV15E4da'
     controller: null
     method: null
     route: null

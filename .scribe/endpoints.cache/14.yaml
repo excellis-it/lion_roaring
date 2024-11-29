@@ -105,7 +105,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dga1h3Z84advc6PVbk6fEe5'
+      - 'Bearer 4bEvf8adc6e3P51hgk6DaZV'
     controller: null
     method: null
     route: null
@@ -161,7 +161,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4g6dcZ6V8fa3hEa5PkD1veb'
+      - 'Bearer Zaekav635EDVfP8dc14hgb6'
     controller: null
     method: null
     route: null
@@ -188,13 +188,13 @@ endpoints:
         name: id
         description: 'The ID of the strategy to delete.'
         required: true
-        example: 9
+        example: 11
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: 9
+      id: 11
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -217,7 +217,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Ehc1edZ6kD3g54VvP8faab'
+      - 'Bearer V6E8aPb5v1Dch36kdageZf4'
     controller: null
     method: null
     route: null
@@ -244,13 +244,13 @@ endpoints:
         name: id
         description: 'The ID of the download.'
         required: true
-        example: aut
+        example: error
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: aut
+      id: error
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -273,7 +273,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kDdEVP843gfahbea66vc1Z5'
+      - 'Bearer dah1D5g3VbeP6Zf4kcavE68'
     controller: null
     method: null
     route: null
@@ -300,13 +300,13 @@ endpoints:
         name: id
         description: 'The ID of the strategy to view.'
         required: true
-        example: 20
+        example: 5
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: 20
+      id: 5
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -329,7 +329,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vgaf16h58bd6E4DaZckP3eV'
+      - 'Bearer PD638acf1VhE5Zdevbg4ka6'
     controller: null
     method: null
     route: null

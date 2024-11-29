@@ -15,269 +15,398 @@ use Carbon\Carbon;
 
 /**
  * @group Email
+ * @authenticated
  */
 
 class EmailController extends Controller
 {
 
     /**
-     * Inbox Email List
+     * Inbox Emails
      *
-     * Retrieves a paginated list of emails for the authenticated user, excluding sent emails, and returns the data in JSON format.
-     * @authenticated
+     * API for fetching the inbox email list for the authenticated user.
+     *
+     * @queryParam type string The type of emails to filter. Example: "unread"
      *
      * @response 200 {
-     *    "data": [
-     *        {
-     *       "id": 85,
-     *       "reply_of": 84,
-     *       "form_id": 38,
-     *       "to": "test@mail.net",
-     *       "cc": null,
-     *       "subject": "Test Email",
-     *       "message": "<p>ddddd</p>",
-     *       "attachment": null,
-     *       "is_draft": 0,
-     *       "is_delete": 0,
-     *       "deleted_at": null,
-     *       "created_at": "2024-11-06T14:07:53.000000Z",
-     *       "updated_at": "2024-11-06T14:07:53.000000Z",
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "subject": "Hello World",
+     *       "message": "This is a sample message.",
+     *       "userToNames": "John Doe, Jane Smith",
+     *       "lastReplyMessage": "See you soon!",
+     *       "lastReplyDate": "2024-11-29 10:00:00",
      *       "ownUserMailInfo": {
-     *              "is_read": 0,
-     *              "is_starred": 0,
-     *              "is_delete": 0
-     *          }
-     *        },
-     *        // additional emails
-     *    ],
-     *    "total": 45,
-     *    "perPage": 15,
-     *    "currentPage": 1,
-     *    "lastPage": 3
+     *         "is_read": true,
+     *         "is_delete": false
+     *       }
+     *     }
+     *   ],
+     *   "total": 25,
+     *   "perPage": 15,
+     *   "currentPage": 1,
+     *   "lastPage": 2
+     * }
+     *
+     * @response 201 {
+     *   "message": "Unable to fetch inbox email list.",
+     *   "error": "Detailed error message."
      * }
      */
     public function inboxEmailList(Request $request)
     {
-        // Retrieve paginated list of emails where the authenticated user is not the sender and has not deleted the email
-        $mails = SendMail::whereHas('mailUsers', function ($q) {
-            $q->where('user_id', auth()->id())
-                ->where('is_from', '!=', 1)
-                ->where('is_delete', 0);
-        })
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        try {
+            $type = $request->get('type');
+            $subQuery = SendMail::whereHas('mailUsers', function ($q) {
+                $q->where('user_id', auth()->id())
+                    ->where('is_from', '!=', 1)
+                    ->where('is_delete', 0);
+            })
+                ->selectRaw('COALESCE(reply_of, id) as mail_group, MAX(id) as max_id')
+                ->groupBy('mail_group');
 
-        // Add user-specific mail info to each mail item
-        $mails->each(function ($mail) {
-            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)
-                ->where('user_id', auth()->id())
-                ->first(['is_read', 'is_starred', 'is_delete']);
-        });
+            $mails = SendMail::joinSub($subQuery, 'grouped_mails', function ($join) {
+                $join->on('send_mails.id', '=', 'grouped_mails.max_id');
+            })
+                ->with([
+                    'userSender',
+                    'lastReply' => function ($query) {
+                        $query->latest('created_at')->take(1);
+                    }
+                ])
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
 
-        // Return the paginated data in JSON format
-        return response()->json([
-            'data' => $mails->items(), // Only email data with additional user-specific info
-            'total' => $mails->total(),
-            'perPage' => $mails->perPage(),
-            'currentPage' => $mails->currentPage(),
-            'lastPage' => $mails->lastPage()
-        ]);
+            $mails->each(function ($mail) {
+                $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)
+                    ->where('user_id', auth()->id())
+                    ->first();
+
+                $emails = explode(',', $mail->to);
+
+                $lastReply = $mail->lastReply->first();
+                $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
+                $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
+
+                $names = User::whereIn('email', $emails)
+                    ->select('first_name', 'middle_name', 'last_name')
+                    ->get()
+                    ->map(function ($user) {
+                        return trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
+                    })
+                    ->toArray();
+
+                $mail->userToNames = implode(', ', $names);
+            });
+
+            return response()->json([
+                'data' => $mails->items(),
+                'total' => $mails->total(),
+                'perPage' => $mails->perPage(),
+                'currentPage' => $mails->currentPage(),
+                'lastPage' => $mails->lastPage(),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Unable to fetch inbox email list.',
+                'error' => $e->getMessage(),
+            ], 201);
+        }
     }
 
 
     /**
-     * Sent Email List
+     * Sent Emails
      *
-     * Retrieves a paginated list of sent emails for the authenticated user, excluding deleted emails, and returns the data in JSON format.
-     * @authenticated
+     * API for fetching the sent email list for the authenticated user.
+     *
+     * @queryParam type string The type of emails to filter. Example: "draft"
      *
      * @response 200 {
-     *    "data": [
-     *        {
-     *       "id": 85,
-     *       "reply_of": 84,
-     *       "form_id": 38,
-     *       "to": "test@mail.net",
-     *       "cc": null,
-     *       "subject": "Test Email",
-     *       "message": "<p>ddddd</p>",
-     *       "attachment": null,
-     *       "is_draft": 0,
-     *       "is_delete": 0,
-     *       "deleted_at": null,
-     *       "created_at": "2024-11-06T14:07:53.000000Z",
-     *       "updated_at": "2024-11-06T14:07:53.000000Z",
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "subject": "Project Update",
+     *       "message": "Here is the latest update.",
+     *       "userToNames": "Alice Johnson, Bob Williams",
+     *       "lastReplyMessage": "Noted, thanks!",
+     *       "lastReplyDate": "2024-11-29 12:00:00",
      *       "ownUserMailInfo": {
-     *              "is_read": 1,
-     *              "is_starred": 0,
-     *              "is_delete": 0
-     *          }
-     *        },
-     *        // additional emails
-     *    ],
-     *    "total": 30,
-     *    "perPage": 15,
-     *    "currentPage": 1,
-     *    "lastPage": 2
+     *         "is_read": true,
+     *         "is_delete": false
+     *       }
+     *     }
+     *   ],
+     *   "total": 30,
+     *   "perPage": 15,
+     *   "currentPage": 1,
+     *   "lastPage": 2
+     * }
+     *
+     * @response 201 {
+     *   "message": "Unable to fetch sent email list.",
+     *   "error": "Detailed error message."
      * }
      */
     public function sentEmailList(Request $request)
     {
-        // Retrieve paginated list of sent emails where the authenticated user is the sender and has not deleted the email
-        $mails = SendMail::whereHas('mailUsers', function ($q) {
-            $q->where('user_id', auth()->id())
-                ->where('is_from', 1)
-                ->where('is_delete', 0);
-        })
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        try {
+            $type = $request->get('type');
 
-        // Add user-specific mail info to each mail item
-        $mails->each(function ($mail) {
-            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)
-                ->where('user_id', auth()->id())
-                ->first(['is_read', 'is_starred', 'is_delete']);
-        });
+            $subQuery = SendMail::whereHas('mailUsers', function ($q) {
+                $q->where('user_id', auth()->id())
+                    ->where('is_from', 1)
+                    ->where('is_delete', 0);
+            })
+                ->selectRaw('COALESCE(reply_of, id) as mail_group, MAX(id) as max_id')
+                ->groupBy('mail_group');
 
-        // Return the paginated data in JSON format
-        return response()->json([
-            'data' => $mails->items(), // Only email data with additional user-specific info
-            'total' => $mails->total(),
-            'perPage' => $mails->perPage(),
-            'currentPage' => $mails->currentPage(),
-            'lastPage' => $mails->lastPage()
-        ]);
+            $mails = SendMail::joinSub($subQuery, 'grouped_mails', function ($join) {
+                $join->on('send_mails.id', '=', 'grouped_mails.max_id');
+            })
+                ->with([
+                    'userSender',
+                    'lastReply' => function ($query) {
+                        $query->latest('created_at')->take(1);
+                    }
+                ])
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+
+            $mails->each(function ($mail) {
+                $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)
+                    ->where('user_id', auth()->id())
+                    ->first();
+
+                $emails = explode(',', $mail->to);
+
+                $lastReply = $mail->lastReply->first();
+                $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
+                $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
+
+                $names = User::whereIn('email', $emails)
+                    ->select('first_name', 'middle_name', 'last_name')
+                    ->get()
+                    ->map(function ($user) {
+                        return trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
+                    })
+                    ->toArray();
+
+                $mail->userToNames = implode(', ', $names);
+            });
+            $mails->type = $type;
+
+            return response()->json([
+                'data' => $mails->items(),
+                'total' => $mails->total(),
+                'perPage' => $mails->perPage(),
+                'currentPage' => $mails->currentPage(),
+                'lastPage' => $mails->lastPage(),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Unable to fetch sent email list.',
+                'error' => $e->getMessage(),
+            ], 201);
+        }
     }
 
 
 
     /**
-     * Starred Email List
+     * Starred Emails
      *
-     * Retrieves a paginated list of starred emails for the authenticated user, excluding deleted emails, and returns the data in JSON format.
-     * @authenticated
+     * API for fetching the starred email list for the authenticated user.
+     *
+     * @queryParam type string The type of emails to filter. Example: "important"
      *
      * @response 200 {
-     *    "data": [
-     *        {
-     *       "id": 85,
-     *       "reply_of": 84,
-     *       "form_id": 38,
-     *       "to": "test@mail.net",
-     *       "cc": null,
-     *       "subject": "Test Email",
-     *       "message": "<p>ddddd</p>",
-     *       "attachment": null,
-     *       "is_draft": 0,
-     *       "is_delete": 0,
-     *       "deleted_at": null,
-     *       "created_at": "2024-11-06T14:07:53.000000Z",
-     *       "updated_at": "2024-11-06T14:07:53.000000Z",
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "subject": "Meeting Reminder",
+     *       "message": "Don't forget our meeting tomorrow.",
+     *       "userToNames": "Eve Adams, Frank Taylor",
+     *       "lastReplyMessage": "See you at 10 AM!",
+     *       "lastReplyDate": "2024-11-29 15:00:00",
      *       "ownUserMailInfo": {
-     *              "is_read": 1,
-     *              "is_starred": 1,
-     *              "is_delete": 0
-     *          }
-     *        },
-     *        // additional emails
-     *    ],
-     *    "total": 20,
-     *    "perPage": 15,
-     *    "currentPage": 1,
-     *    "lastPage": 2
+     *         "is_read": true,
+     *         "is_delete": false
+     *       }
+     *     }
+     *   ],
+     *   "total": 10,
+     *   "perPage": 15,
+     *   "currentPage": 1,
+     *   "lastPage": 1
+     * }
+     *
+     * @response 201 {
+     *   "message": "Unable to fetch starred email list.",
+     *   "error": "Detailed error message."
      * }
      */
     public function starEmailList(Request $request)
     {
-        // Retrieve paginated list of starred emails for the authenticated user, excluding deleted emails
-        $mails = SendMail::whereHas('mailUsers', function ($q) {
-            $q->where('user_id', auth()->id())
-                ->where('is_starred', 1)
-                ->where('is_delete', 0);
-        })
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        try {
+            $type = $request->get('type');
 
-        // Add user-specific mail info to each mail item
-        $mails->each(function ($mail) {
-            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)
-                ->where('user_id', auth()->id())
-                ->first(['is_read', 'is_starred', 'is_delete']);
-        });
+            $subQuery = SendMail::whereHas('mailUsers', function ($q) {
+                $q->where('user_id', auth()->id())
+                    ->where('is_starred', 1)
+                    ->where('is_delete', 0);
+            })
+                ->selectRaw('COALESCE(reply_of, id) as mail_group, MAX(id) as max_id')
+                ->groupBy('mail_group');
 
-        // Return the paginated data in JSON format
-        return response()->json([
-            'data' => $mails->items(), // Only email data with additional user-specific info
-            'total' => $mails->total(),
-            'perPage' => $mails->perPage(),
-            'currentPage' => $mails->currentPage(),
-            'lastPage' => $mails->lastPage()
-        ]);
+            $mails = SendMail::joinSub($subQuery, 'grouped_mails', function ($join) {
+                $join->on('send_mails.id', '=', 'grouped_mails.max_id');
+            })
+                ->with([
+                    'userSender',
+                    'lastReply' => function ($query) {
+                        $query->latest('created_at')->take(1);
+                    }
+                ])
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+
+            $mails->each(function ($mail) {
+                $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)
+                    ->where('user_id', auth()->id())
+                    ->first();
+
+                $emails = explode(',', $mail->to);
+
+                $lastReply = $mail->lastReply->first();
+                $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
+                $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
+
+                $names = User::whereIn('email', $emails)
+                    ->select('first_name', 'middle_name', 'last_name')
+                    ->get()
+                    ->map(function ($user) {
+                        return trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
+                    })
+                    ->toArray();
+
+                $mail->userToNames = implode(', ', $names);
+            });
+            $mails->type = $type;
+
+            return response()->json([
+                'data' => $mails->items(),
+                'total' => $mails->total(),
+                'perPage' => $mails->perPage(),
+                'currentPage' => $mails->currentPage(),
+                'lastPage' => $mails->lastPage(),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Unable to fetch starred email list.',
+                'error' => $e->getMessage(),
+            ], 201);
+        }
     }
 
 
+
     /**
-     * Trash Email List
+     * Trashed Emails
      *
-     * Retrieves a paginated list of emails in the trash for the authenticated user and returns the data in JSON format.
-     * @authenticated
+     * API for fetching the trashed email list for the authenticated user.
+     *
+     * @queryParam type string Optional. The type of emails to filter. Example: "archived"
      *
      * @response 200 {
-     *    "data": [
-     *        {
-     *       "id": 85,
-     *       "reply_of": 84,
-     *       "form_id": 38,
-     *       "to": "test@mail.net",
-     *       "cc": null,
-     *       "subject": "Test Email",
-     *       "message": "<p>ddddd</p>",
-     *       "attachment": null,
-     *       "is_draft": 0,
-     *       "is_delete": 0,
-     *       "deleted_at": null,
-     *       "created_at": "2024-11-06T14:07:53.000000Z",
-     *       "updated_at": "2024-11-06T14:07:53.000000Z",
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "subject": "Weekly Report",
+     *       "message": "Attached is the weekly report.",
+     *       "userToNames": "John Doe, Jane Smith",
+     *       "lastReplyMessage": "Thank you for the report!",
+     *       "lastReplyDate": "2024-11-29 15:00:00",
      *       "ownUserMailInfo": {
-     *              "is_read": 1,
-     *              "is_starred": 0,
-     *              "is_delete": 1
-     *          }
-     *        },
-     *        // additional trashed emails
-     *    ],
-     *    "total": 5,
-     *    "perPage": 15,
-     *    "currentPage": 1,
-     *    "lastPage": 1
+     *         "is_read": true,
+     *         "is_delete": true
+     *       }
+     *     }
+     *   ],
+     *   "total": 5,
+     *   "perPage": 15,
+     *   "currentPage": 1,
+     *   "lastPage": 1
+     * }
+     *
+     * @response 201 {
+     *   "message": "Unable to fetch trashed email list.",
+     *   "error": "Detailed error message."
      * }
      */
     public function trashEmailList(Request $request)
     {
-        // Retrieve paginated list of trashed emails for the authenticated user
-        $mails = SendMail::whereHas('mailUsers', function ($q) {
-            $q->where('user_id', auth()->id())
-                ->where('is_delete', 1);
-        })
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        try {
+            $type = $request->get('type');
 
-        // Add user-specific mail info to each mail item
-        $mails->each(function ($mail) {
-            $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)
-                ->where('user_id', auth()->id())
-                ->first(['is_read', 'is_starred', 'is_delete']);
-        });
+            $subQuery = SendMail::whereHas('mailUsers', function ($q) {
+                $q->where('user_id', auth()->id())
+                    ->where('is_delete', 1);
+            })
+                ->selectRaw('COALESCE(reply_of, id) as mail_group, MAX(id) as max_id')
+                ->groupBy('mail_group');
 
-        // Return the paginated data in JSON format
-        return response()->json([
-            'data' => $mails->items(), // Only email data with additional user-specific info
-            'total' => $mails->total(),
-            'perPage' => $mails->perPage(),
-            'currentPage' => $mails->currentPage(),
-            'lastPage' => $mails->lastPage()
-        ]);
+            $mails = SendMail::joinSub($subQuery, 'grouped_mails', function ($join) {
+                $join->on('send_mails.id', '=', 'grouped_mails.max_id');
+            })
+                ->with([
+                    'userSender',
+                    'lastReply' => function ($query) {
+                        $query->latest('created_at')->take(1);
+                    }
+                ])
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+
+            $mails->each(function ($mail) {
+                $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)
+                    ->where('user_id', auth()->id())
+                    ->first();
+
+                $emails = explode(',', $mail->to);
+
+                $lastReply = $mail->lastReply->first();
+                $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
+                $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
+
+                $names = User::whereIn('email', $emails)
+                    ->select('first_name', 'middle_name', 'last_name')
+                    ->get()
+                    ->map(function ($user) {
+                        return trim("{$user->first_name} {$user->middle_name} {$user->last_name}");
+                    })
+                    ->toArray();
+
+                $mail->userToNames = implode(', ', $names);
+            });
+            $mails->type = $type;
+
+            return response()->json([
+                'data' => $mails->items(),
+                'total' => $mails->total(),
+                'perPage' => $mails->perPage(),
+                'currentPage' => $mails->currentPage(),
+                'lastPage' => $mails->lastPage(),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Unable to fetch trashed email list.',
+                'error' => $e->getMessage(),
+            ], 201);
+        }
     }
+
 
     /**
      * View Email Details
@@ -455,7 +584,7 @@ class EmailController extends Controller
                     'allMailIds' => $allMailIds,
                     'replyMailIds' => $replyMailIds
                 ]
-            ]);
+            ], 200);
         } catch (\Throwable $th) {
             return response()->json(['msg' => $th->getMessage(), 'status' => false], 201);
         }
@@ -490,7 +619,7 @@ class EmailController extends Controller
     public function composeMailUsers()
     {
         try {
-            $users = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
+            $users = User::where('status', true)->get(['id', 'email']);
             return response()->json(['message' => 'Users loaded successfully.', 'status' => true, 'users' => $users], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred while loading the compose mail users.', 'status' => false, 'error' => $e->getMessage()], 201);
@@ -1119,7 +1248,7 @@ class EmailController extends Controller
      *
      * @authenticated
      * @bodyParam mail_id int required The ID of the mail to be starred or unstarred. Example: 1
-     * @bodyParam start_value int required The star value (1 for starred, 0 for unstarred). Example: 1
+     * @bodyParam star_value int required The star value (1 for starred, 0 for unstarred). Example: 1
      *
      * @response 200 {
      *   "message": "Mail Starred Success!",
@@ -1138,16 +1267,16 @@ class EmailController extends Controller
     {
         try {
             $mail_id = $request->mail_id;
-            $start_value = $request->start_value; // 1 or 0
+            $star_value = $request->star_value; // 1 or 0
             $msg = '';
 
             $mail = MailUser::where('send_mail_id', $mail_id)->where('user_id', auth()->id())->first();
             if ($mail) {
-                $mail->is_starred = $start_value;
+                $mail->is_starred = $star_value;
                 $mail->save();
             }
 
-            if ($start_value == 1) {
+            if ($star_value == 1) {
                 $msg = "Mail Starred Success!";
             } else {
                 $msg = "Mail Star Mark Removed!";
@@ -1266,7 +1395,7 @@ class EmailController extends Controller
             return view('user.mail.mail-print', compact('mail_details', 'ownUserMailInfo', 'reply_mails'));
         } catch (\Exception $e) {
             // Log the error and return a 500 response
-         //   \Log::error('Failed to fetch mail details: ' . $e->getMessage());
+            //   \Log::error('Failed to fetch mail details: ' . $e->getMessage());
 
             return response()->json([
                 'message' => 'Failed to fetch mail details. Please try again later.',
