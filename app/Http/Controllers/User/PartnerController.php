@@ -97,12 +97,16 @@ class PartnerController extends Controller
             return redirect()->back()->withErrors(['phone' => 'Phone number already exists'])->withInput();
         }
 
+        $uniqueNumber = rand(1000, 9999);
+        $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
+
         $data = new User();
         $data->created_id = Auth::user()->id;
         $data->user_name = $request->user_name;
         $data->first_name = $request->first_name;
         $data->last_name = $request->last_name;
         $data->middle_name = $request->middle_name;
+        $data->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
         $data->email = $request->email;
         $data->password = bcrypt($request->password);
         $data->address = $request->address;

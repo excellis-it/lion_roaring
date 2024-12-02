@@ -35,10 +35,14 @@ class AdminController extends Controller
         if ($count > 0) {
             return redirect()->back()->with('error', 'Email already exists');
         } else {
-            $admin = new User;
+            $uniqueNumber = rand(1000, 9999);
+            $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
+
+            $admin = new User();
             $admin->first_name = $request->first_name;
             $admin->last_name = $request->last_name;
             $admin->middle_name = $request->middle_name ?? null;
+            $admin->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
             $admin->email = $request->email;
             $admin->user_name = $request->user_name;
             $admin->password = bcrypt($request->password);

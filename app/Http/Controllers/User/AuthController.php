@@ -125,7 +125,7 @@ class AuthController extends Controller
         $user->user_name = $request->user_name;
         $user->ecclesia_id = $request->ecclesia_id;
         $user->email = $request->email;
-        $user->personal_email = $lr_email;
+        $user->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->middle_name = $request->middle_name;
