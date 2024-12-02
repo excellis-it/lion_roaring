@@ -45,7 +45,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Ensure that you are encoding this correctly
-        const userEmails = {!! json_encode($allMailIds->pluck('email')) !!};
+        const userEmails = {!! json_encode($allMailIds->pluck('personal_email')) !!};
 
         // Initialize Tagify for "To" and "CC" fields
         const toInput = document.getElementById('compose_to');

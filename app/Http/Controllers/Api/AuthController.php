@@ -100,10 +100,15 @@ class AuthController extends Controller
             return response()->json(['error' => 'Phone number already exists'], 409);
         }
 
+        $uniqueNumber = rand(1000, 9999);
+        $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
+
+
         $user = new User();
         $user->user_name = $request->user_name;
         $user->ecclesia_id = $request->ecclesia_id;
         $user->email = $request->email;
+        $user->personal_email = $lr_email;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->middle_name = $request->middle_name;

@@ -89,7 +89,7 @@ class EmailController extends Controller
                 $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
                 $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
 
-                $names = User::whereIn('email', $emails)
+                $names = User::whereIn('personal_email', $emails)
                     ->select('first_name', 'middle_name', 'last_name')
                     ->get()
                     ->map(function ($user) {
@@ -185,7 +185,7 @@ class EmailController extends Controller
                 $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
                 $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
 
-                $names = User::whereIn('email', $emails)
+                $names = User::whereIn('personal_email', $emails)
                     ->select('first_name', 'middle_name', 'last_name')
                     ->get()
                     ->map(function ($user) {
@@ -283,7 +283,7 @@ class EmailController extends Controller
                 $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
                 $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
 
-                $names = User::whereIn('email', $emails)
+                $names = User::whereIn('personal_email', $emails)
                     ->select('first_name', 'middle_name', 'last_name')
                     ->get()
                     ->map(function ($user) {
@@ -380,7 +380,7 @@ class EmailController extends Controller
                 $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
                 $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
 
-                $names = User::whereIn('email', $emails)
+                $names = User::whereIn('personal_email', $emails)
                     ->select('first_name', 'middle_name', 'last_name')
                     ->get()
                     ->map(function ($user) {
@@ -566,11 +566,11 @@ class EmailController extends Controller
             // List of all user emails except the authenticated user
             $allMailIds = User::where('status', true)
                 ->where('id', '!=', auth()->id())
-                ->get(['id', 'email']);
+                ->get(['id', 'personal_email']);
 
             // Collect emails involved in the thread (main email + replies)
-            $replyMailIds = collect([$mail_details->user->email])
-                ->merge($reply_mails->pluck('user.email'))
+            $replyMailIds = collect([$mail_details->user->personal_email])
+                ->merge($reply_mails->pluck('user.personal_email'))
                 ->unique();
 
             // Return the email details as a JSON response
@@ -619,7 +619,7 @@ class EmailController extends Controller
     public function composeMailUsers()
     {
         try {
-            $users = User::where('status', true)->get(['id', 'email']);
+            $users = User::where('status', true)->get(['id', 'personal_email']);
             return response()->json(['message' => 'Users loaded successfully.', 'status' => true, 'users' => $users], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred while loading the compose mail users.', 'status' => false, 'error' => $e->getMessage()], 201);
@@ -666,6 +666,7 @@ class EmailController extends Controller
     public function sendMail(Request $request)
     {
         try {
+
             $request->validate([
                 'to' => 'required|json',
                 'subject' => 'required|string',
@@ -675,6 +676,8 @@ class EmailController extends Controller
 
             $toEmails = json_decode($request->to, true);
             $to = array_column($toEmails, 'value');
+
+            // return implode(',', $to);
 
             $cc = [];
             if ($request->cc) {
@@ -705,6 +708,7 @@ class EmailController extends Controller
             $mail->subject = $request->subject;
             $mail->message = $request->message;
 
+            $attachmentPaths = [];
             if ($request->hasFile('attachments')) {
                 $attachments = [];
                 foreach ($request->file('attachments') as $file) {
@@ -713,16 +717,22 @@ class EmailController extends Controller
                         'original_name' => $file->getClientOriginalName(),
                         'encrypted_name' => $filePath,
                     ];
+                    $attachmentPaths[] = $filePath;
                 }
                 $mail->attachment = json_encode($attachments);
+
+                // return json_encode($attachments);
+                // die;
             }
+
+
 
             $mail->save();
 
             $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->email;
             $cc_id = [];
             foreach ($cc as $email) {
-                $user = User::where('email', $email)->first();
+                $user = User::where('personal_email', $email)->first();
                 if ($user) {
                     $cc_id[] = $user->id;
                     $mail_user = new MailUser();
@@ -741,7 +751,7 @@ class EmailController extends Controller
 
             $to_id = [];
             foreach ($to as $email) {
-                $user = User::where('email', $email)->first();
+                $user = User::where('personal_email', $email)->first();
                 if ($user) {
                     $to_id[] = $user->id;
                     $mail_user = new MailUser();
@@ -765,13 +775,14 @@ class EmailController extends Controller
             $mail_user->save();
 
             $sender_user = auth()->user();
-            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->email, $sender_user->full_name));
+          //  Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->personal_email, $sender_user->full_name));
 
             return response()->json([
                 'message' => 'Mail sent successfully.',
                 'status' => true,
                 'send_to_ids' => array_merge($cc_id, $to_id),
-                'notification_message' => $notification_message
+                'notification_message' => $notification_message,
+                'attachmentPaths' => $attachmentPaths,
             ], 200);
         } catch (\Exception $e) {
             // \Log::error('Mail sending failed: ' . $e->getMessage());
@@ -881,10 +892,10 @@ class EmailController extends Controller
 
             $mail->save();
 
-            $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->email;
+            $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->personal_email;
             $cc_id = [];
             foreach ($cc as $email) {
-                $user = User::where('email', $email)->first();
+                $user = User::where('personal_email', $email)->first();
                 if ($user) {
                     $cc_id[] = $user->id;
                     $mail_user = new MailUser();
@@ -903,7 +914,7 @@ class EmailController extends Controller
 
             $to_id = [];
             foreach ($to as $email) {
-                $user = User::where('email', $email)->first();
+                $user = User::where('personal_email', $email)->first();
                 if ($user) {
                     $to_id[] = $user->id;
                     $mail_user = new MailUser();
@@ -927,7 +938,7 @@ class EmailController extends Controller
             $mail_user->save();
 
             $sender_user = auth()->user();
-            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->email, $sender_user->full_name));
+            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->personal_email, $sender_user->full_name));
 
             return response()->json([
                 'message' => 'Mail sent successfully.',
@@ -1039,10 +1050,10 @@ class EmailController extends Controller
 
             $mail->save();
 
-            $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->email;
+            $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->personal_email;
             $cc_id = [];
             foreach ($cc as $email) {
-                $user = User::where('email', $email)->first();
+                $user = User::where('personal_email', $email)->first();
                 if ($user) {
                     $cc_id[] = $user->id;
                     $mail_user = new MailUser();
@@ -1061,7 +1072,7 @@ class EmailController extends Controller
 
             $to_id = [];
             foreach ($to as $email) {
-                $user = User::where('email', $email)->first();
+                $user = User::where('personal_email', $email)->first();
                 if ($user) {
                     $to_id[] = $user->id;
                     $mail_user = new MailUser();
@@ -1085,7 +1096,7 @@ class EmailController extends Controller
             $mail_user->save();
 
             $sender_user = auth()->user();
-            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->email, $sender_user->full_name));
+            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->personal_email, $sender_user->full_name));
 
             return response()->json([
                 'message' => 'Mail sent successfully.',
