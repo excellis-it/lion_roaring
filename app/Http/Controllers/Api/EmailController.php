@@ -613,7 +613,6 @@ class EmailController extends Controller
 
             // List of all user emails except the authenticated user
             $allMailIds = User::where('status', true)
-                ->where('id', '!=', auth()->id())
                 ->get(['id', 'email']);
 
             // Collect emails involved in the thread (main email + replies)
