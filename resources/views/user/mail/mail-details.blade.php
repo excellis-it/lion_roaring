@@ -88,7 +88,7 @@
                                         </div>
                                         <div class="name_text_p">
                                             <h5>{{ $mail_details->user->full_name }}</h5>
-                                            <h6><span class="time_text">From: {{ $mail_details->user->personal_email }}</span></h6>
+                                            <h6><span class="time_text">From: {{ $mail_details->user->email }}</span></h6>
                                             <h6><span class="time_text">To: </span>
                                                 @foreach (explode(',', $mail_details->to) as $toEmail)
                                                     <span class="badge bg-badge-dark text-dark">{{ trim($toEmail) }}</span>
@@ -210,7 +210,7 @@
                                 @csrf
                                 <div class="d-flex align-items-center"><span
                                         class="material-symbols-outlined">reply</span>
-                                    &nbsp;&nbsp; | &nbsp;&nbsp; Reply To: 
+                                    &nbsp;&nbsp; | &nbsp;&nbsp; Reply To:
                                     {{-- <span class="badge bg-badge-dark text-dark">{{ $mail_details->user->email }}</span> --}}
                                     @if ($mail_details->to)
                                         @php
@@ -221,7 +221,8 @@
                                         @endphp
 
                                         @foreach ($uniqueEmails as $email)
-                                            <span hidden class="badge bg-badge-dark text-dark ms-1">{{ trim($email) }}</span>
+                                            <span hidden
+                                                class="badge bg-badge-dark text-dark ms-1">{{ trim($email) }}</span>
                                         @endforeach
                                     @endif
                                 </div>
@@ -372,7 +373,8 @@
     <script src="https://unpkg.com/@yaireo/tagify"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const userEmails = {!! json_encode($allMailIds->pluck('personal_email')) !!};
+            const userEmails = {!! json_encode($allMailIds->pluck('email')) !!};
+            // alert(userEmails);
             // Ensure that you are encoding this correctly
             //  const userFwEmailsTo = {mailtoJson};
             //  const userFwEmailsCc = {ccJson};

@@ -40,7 +40,7 @@
                     </span>
                     <div class="ms-2">
                         <h5>{{ $mail_details->user->full_name }}</h5>
-                        <h6>From: {{ $mail_details->user->personal_email }}</h6>
+                        <h6>From: {{ $mail_details->user->email }}</h6>
                         <h6>TO: <span class="text-dark">{{ $mail_details->to }}</span></h6>
                         <h6>CC: <span class="text-dark">{{ $mail_details->cc }}</span></h6>
                         <h6>Date: {{ $mail_details->created_at->format('d/m/Y h:i A') }}</h6>
@@ -88,7 +88,7 @@
                             </span>
                             <div class="ms-2">
                                 <h5>{{ $reply->user->full_name }}</h5>
-                                <h6>From: {{ $reply->user->personal_email }}</h6>
+                                <h6>From: {{ $reply->user->email }}</h6>
                                 <h6>TO: <span class="text-dark">{{ $reply->to }}</span></h6>
                                 <h6>CC: <span class="text-dark">{{ $reply->cc }}</span></h6>
                                 <h6>Date: {{ $reply->created_at->format('d/m/Y h:i A') }}</h6>

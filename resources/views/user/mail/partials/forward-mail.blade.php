@@ -8,7 +8,7 @@
 
                 <div class="ms-2">
 
-                    <h6>From: {{ $mail_details->user->full_name }} - {{ $mail_details->user->personal_email }}</h6>
+                    <h6>From: {{ $mail_details->user->full_name }} - {{ $mail_details->user->email }}</h6>
                     <h6>TO: <span class="text-dark">{{ $mail_details->to }}</span></h6>
                     @if (!empty($mail_details->cc))
                         <h6>CC: <span class="text-dark">{{ $mail_details->cc }}</span></h6>
@@ -50,7 +50,7 @@
                     <div class="d-flex align-items-center mb-3">
 
                         <div class="ms-2">
-                            <h6>From: {{ $reply->user->full_name }} - {{ $reply->user->personal_email }}</h6>
+                            <h6>From: {{ $reply->user->full_name }} - {{ $reply->user->email }}</h6>
                             <h6>TO: <span class="text-dark">{{ $reply->to }}</span></h6>
                             @if (!empty($reply->cc))
                                 <h6>CC: <span class="text-dark">{{ $reply->cc }}</span></h6>

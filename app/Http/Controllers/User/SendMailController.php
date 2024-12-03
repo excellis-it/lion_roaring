@@ -20,7 +20,7 @@ class SendMailController extends Controller
         if (auth()->user()->can('Manage Email')) {
 
             // $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-            $allMailIds = User::where('status', true)->get(['id', 'personal_email']);
+            $allMailIds = User::where('status', true)->get(['id', 'email']);
 
             return view('user.mail.list', ['allMailIds' => $allMailIds]);
         } else {
@@ -33,7 +33,7 @@ class SendMailController extends Controller
         if (auth()->user()->can('Manage Email')) {
 
             // $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-            $allMailIds = User::where('status', true)->get(['id', 'personal_email']);
+            $allMailIds = User::where('status', true)->get(['id', 'email']);
 
             return view('user.mail.sent', ['allMailIds' => $allMailIds]);
         } else {
@@ -46,7 +46,7 @@ class SendMailController extends Controller
         if (auth()->user()->can('Manage Email')) {
 
             //  $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-            $allMailIds = User::where('status', true)->get(['id', 'personal_email']);
+            $allMailIds = User::where('status', true)->get(['id', 'email']);
 
             return view('user.mail.star', ['allMailIds' => $allMailIds]);
         } else {
@@ -59,7 +59,7 @@ class SendMailController extends Controller
         if (auth()->user()->can('Manage Email')) {
 
             // $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-            $allMailIds = User::where('status', true)->get(['id', 'personal_email']);
+            $allMailIds = User::where('status', true)->get(['id', 'email']);
 
             return view('user.mail.trash', ['allMailIds' => $allMailIds]);
         } else {
@@ -100,7 +100,7 @@ class SendMailController extends Controller
             $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
             $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
             // Fetch the name of the sendTo
-            $names = User::whereIn('personal_email', $emails)
+            $names = User::whereIn('email', $emails)
                 ->select('first_name', 'middle_name', 'last_name')
                 ->get()
                 ->map(function ($user) {
@@ -155,7 +155,7 @@ class SendMailController extends Controller
             $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
             $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
             // Fetch the name of the sendTo
-            $names = User::whereIn('personal_email', $emails)
+            $names = User::whereIn('email', $emails)
                 ->select('first_name', 'middle_name', 'last_name')
                 ->get()
                 ->map(function ($user) {
@@ -212,7 +212,7 @@ class SendMailController extends Controller
             $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
 
             // Fetch the name of the sendTo
-            $names = User::whereIn('personal_email', $emails)
+            $names = User::whereIn('email', $emails)
                 ->select('first_name', 'middle_name', 'last_name')
                 ->get()
                 ->map(function ($user) {
@@ -269,7 +269,7 @@ class SendMailController extends Controller
             $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
             $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
             // Fetch the name of the sendTo
-            $names = User::whereIn('personal_email', $emails)
+            $names = User::whereIn('email', $emails)
                 ->select('first_name', 'middle_name', 'last_name')
                 ->get()
                 ->map(function ($user) {
@@ -384,13 +384,15 @@ class SendMailController extends Controller
         });
 
         // Fetch all mail IDs for other users (to avoid sending mails to yourself)
-        $allMailIds = User::where('status', true)->get(['id', 'personal_email']);
+        $allMailIds = User::where('status', true)->get(['id', 'email']);
+
+       // return $allMailIds;
 
         // Collect all email addresses involved in this mail thread, excluding the current user's email
-        $replyMailids = collect([$mail_details->user->personal_email])
-            ->merge($reply_mails->pluck('user.personal_email'))
+        $replyMailids = collect([$mail_details->user->email])
+            ->merge($reply_mails->pluck('user.email'))
             ->reject(function ($email) {
-                return $email === auth()->user()->personal_email;
+                return $email === auth()->user()->email;
             });
 
         // Return the view with the relevant data
@@ -424,7 +426,7 @@ class SendMailController extends Controller
     public function compose()
     {
         if (auth()->user()->can('Manage Email')) {
-            $users = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'personal_email']); // Adjust fields as needed
+            $users = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']); // Adjust fields as needed
             return view('user.mail.compose')->with(compact('users'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -498,11 +500,11 @@ class SendMailController extends Controller
 
 
         // Save users associated with CC
-        $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->personal_email;
+        $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->email;
         $cc_id = [];
         if ($cc) {
             foreach ($cc as $email) {
-                $user = User::where('personal_email', $email)->first();
+                $user = User::where('email', $email)->first();
                 if ($user) {
                     $cc_id[] =  $user->id;
                     $mail_user = new MailUser();
@@ -526,7 +528,7 @@ class SendMailController extends Controller
         // Save users associated with TO
         $to_id = [];
         foreach ($to as $email) {
-            $user = User::where('personal_email', $email)->first();
+            $user = User::where('email', $email)->first();
             if ($user) {
                 $to_id[] =  $user->id;
                 $mail_user = new MailUser();
@@ -559,7 +561,7 @@ class SendMailController extends Controller
         try {
 
             $sender_user = auth()->user();
-            $senderEmail = $sender_user->personal_email;
+            $senderEmail = $sender_user->email;
             $senderName = $sender_user->full_name;
 
             Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $senderEmail, $senderName));
@@ -657,11 +659,11 @@ class SendMailController extends Controller
 
 
         // Save users associated with CC
-        $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->personal_email;
+        $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->email;
         $cc_id = [];
         if ($cc) {
             foreach ($cc as $email) {
-                $user = User::where('personal_email', $email)->first();
+                $user = User::where('email', $email)->first();
                 if ($user) {
                     $cc_id[] =  $user->id;
                     $mail_user = new MailUser();
@@ -685,7 +687,7 @@ class SendMailController extends Controller
         // Save users associated with TO
         $to_id = [];
         foreach ($to as $email) {
-            $user = User::where('personal_email', $email)->first();
+            $user = User::where('email', $email)->first();
             if ($user) {
                 $to_id[] =  $user->id;
                 $mail_user = new MailUser();
@@ -720,7 +722,7 @@ class SendMailController extends Controller
 
             // Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
             $sender_user = auth()->user();
-            $senderEmail = $sender_user->personal_email;
+            $senderEmail = $sender_user->email;
             $senderName = $sender_user->full_name;
 
             Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $senderEmail, $senderName));
@@ -815,11 +817,11 @@ class SendMailController extends Controller
 
 
         // Save users associated with CC
-        $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->personal_email;
+        $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->email;
         $cc_id = [];
         if ($cc) {
             foreach ($cc as $email) {
-                $user = User::where('personal_email', $email)->first();
+                $user = User::where('email', $email)->first();
                 if ($user) {
                     $cc_id[] =  $user->id;
                     $mail_user = new MailUser();
@@ -843,7 +845,7 @@ class SendMailController extends Controller
         // Save users associated with TO
         $to_id = [];
         foreach ($to as $email) {
-            $user = User::where('personal_email', $email)->first();
+            $user = User::where('email', $email)->first();
             if ($user) {
                 $to_id[] =  $user->id;
                 $mail_user = new MailUser();
@@ -877,7 +879,7 @@ class SendMailController extends Controller
 
             // Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
             $sender_user = auth()->user();
-            $senderEmail = $sender_user->personal_email;
+            $senderEmail = $sender_user->email;
             $senderName = $sender_user->full_name;
 
             Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $senderEmail, $senderName));

@@ -165,7 +165,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Ensure that you are encoding this correctly
-            const userEmails = {!! json_encode($users->pluck('personal_email')) !!};
+            const userEmails = {!! json_encode($users->pluck('email')) !!};
 
             // Initialize Tagify for "To" and "CC" fields
             const toInput = document.getElementById('to');

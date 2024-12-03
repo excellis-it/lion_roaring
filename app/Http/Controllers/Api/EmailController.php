@@ -79,7 +79,17 @@ class EmailController extends Controller
                 ->paginate(15);
 
             $mails->each(function ($mail) {
-                $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)
+
+                $init_mail = SendMail::findOrFail($mail->id);
+
+                // Determine the main mail's ID (if it's a reply, use the parent mail's ID)
+                if (!empty($init_mail->reply_of)) {
+                    $fetch_mailId = $init_mail->reply_of;
+                } else {
+                    $fetch_mailId = $mail->id;
+                }
+
+                $mail->ownUserMailInfo = MailUser::where('send_mail_id', $fetch_mailId)
                     ->where('user_id', auth()->id())
                     ->first();
 
@@ -89,7 +99,7 @@ class EmailController extends Controller
                 $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
                 $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
 
-                $names = User::whereIn('personal_email', $emails)
+                $names = User::whereIn('email', $emails)
                     ->select('first_name', 'middle_name', 'last_name')
                     ->get()
                     ->map(function ($user) {
@@ -175,7 +185,15 @@ class EmailController extends Controller
                 ->paginate(15);
 
             $mails->each(function ($mail) {
-                $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)
+                $init_mail = SendMail::findOrFail($mail->id);
+
+                // Determine the main mail's ID (if it's a reply, use the parent mail's ID)
+                if (!empty($init_mail->reply_of)) {
+                    $fetch_mailId = $init_mail->reply_of;
+                } else {
+                    $fetch_mailId = $mail->id;
+                }
+                $mail->ownUserMailInfo = MailUser::where('send_mail_id', $fetch_mailId)
                     ->where('user_id', auth()->id())
                     ->first();
 
@@ -185,7 +203,7 @@ class EmailController extends Controller
                 $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
                 $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
 
-                $names = User::whereIn('personal_email', $emails)
+                $names = User::whereIn('email', $emails)
                     ->select('first_name', 'middle_name', 'last_name')
                     ->get()
                     ->map(function ($user) {
@@ -273,7 +291,15 @@ class EmailController extends Controller
                 ->paginate(15);
 
             $mails->each(function ($mail) {
-                $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)
+                $init_mail = SendMail::findOrFail($mail->id);
+
+                // Determine the main mail's ID (if it's a reply, use the parent mail's ID)
+                if (!empty($init_mail->reply_of)) {
+                    $fetch_mailId = $init_mail->reply_of;
+                } else {
+                    $fetch_mailId = $mail->id;
+                }
+                $mail->ownUserMailInfo = MailUser::where('send_mail_id', $fetch_mailId)
                     ->where('user_id', auth()->id())
                     ->first();
 
@@ -283,7 +309,7 @@ class EmailController extends Controller
                 $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
                 $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
 
-                $names = User::whereIn('personal_email', $emails)
+                $names = User::whereIn('email', $emails)
                     ->select('first_name', 'middle_name', 'last_name')
                     ->get()
                     ->map(function ($user) {
@@ -370,7 +396,15 @@ class EmailController extends Controller
                 ->paginate(15);
 
             $mails->each(function ($mail) {
-                $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)
+                $init_mail = SendMail::findOrFail($mail->id);
+
+                // Determine the main mail's ID (if it's a reply, use the parent mail's ID)
+                if (!empty($init_mail->reply_of)) {
+                    $fetch_mailId = $init_mail->reply_of;
+                } else {
+                    $fetch_mailId = $mail->id;
+                }
+                $mail->ownUserMailInfo = MailUser::where('send_mail_id', $fetch_mailId)
                     ->where('user_id', auth()->id())
                     ->first();
 
@@ -380,7 +414,7 @@ class EmailController extends Controller
                 $mail->lastReplyMessage = $lastReply ? $lastReply->message : $mail->message;
                 $mail->lastReplyDate = $lastReply ? $lastReply->created_at : $mail->created_at;
 
-                $names = User::whereIn('personal_email', $emails)
+                $names = User::whereIn('email', $emails)
                     ->select('first_name', 'middle_name', 'last_name')
                     ->get()
                     ->map(function ($user) {
@@ -532,16 +566,30 @@ class EmailController extends Controller
 
             // Find the initial email or the main email if this is a reply
             $init_mail = SendMail::findOrFail($id);
-            $fetch_mailId = !empty($init_mail->reply_of) ? $init_mail->reply_of : $id;
 
-            // Mark the email as read for the authenticated user
-            $init_ownUserMailInfo = MailUser::where('send_mail_id', $id)
-                ->where('user_id', auth()->id())
-                ->first();
-            if ($init_ownUserMailInfo) {
-                $init_ownUserMailInfo->is_read = 1;
-                $init_ownUserMailInfo->save();
+
+            // Determine the main mail's ID (if it's a reply, use the parent mail's ID)
+            if (!empty($init_mail->reply_of)) {
+                $fetch_mailId = $init_mail->reply_of;
+            } else {
+                $fetch_mailId = $id;
             }
+
+            // // Mark the email as read for the authenticated user
+            // $init_ownUserMailInfo = MailUser::where('send_mail_id', $id)
+            //     ->where('user_id', auth()->id())
+            //     ->get();
+            // if ($init_ownUserMailInfo) {
+            //     $init_ownUserMailInfo->is_read = 1;
+            //     $init_ownUserMailInfo->save();
+            // }
+            MailUser::whereIn('send_mail_id', function ($query) use ($fetch_mailId) {
+                $query->select('id')
+                    ->from('send_mails')
+                    ->where('id', $fetch_mailId)
+                    ->orWhere('reply_of', $fetch_mailId);
+            })->where('user_id', auth()->id())
+                ->update(['is_read' => 1]);
 
             // Fetch the main email details along with sender info
             $mail_details = SendMail::with('user')->findOrFail($fetch_mailId);
@@ -566,11 +614,11 @@ class EmailController extends Controller
             // List of all user emails except the authenticated user
             $allMailIds = User::where('status', true)
                 ->where('id', '!=', auth()->id())
-                ->get(['id', 'personal_email']);
+                ->get(['id', 'email']);
 
             // Collect emails involved in the thread (main email + replies)
-            $replyMailIds = collect([$mail_details->user->personal_email])
-                ->merge($reply_mails->pluck('user.personal_email'))
+            $replyMailIds = collect([$mail_details->user->email])
+                ->merge($reply_mails->pluck('user.email'))
                 ->unique();
 
             // Return the email details as a JSON response
@@ -619,7 +667,7 @@ class EmailController extends Controller
     public function composeMailUsers()
     {
         try {
-            $users = User::where('status', true)->get(['id', 'personal_email']);
+            $users = User::where('status', true)->get(['id', 'email']);
             return response()->json(['message' => 'Users loaded successfully.', 'status' => true, 'users' => $users], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred while loading the compose mail users.', 'status' => false, 'error' => $e->getMessage()], 201);
@@ -666,7 +714,6 @@ class EmailController extends Controller
     public function sendMail(Request $request)
     {
         try {
-
             $request->validate([
                 'to' => 'required|json',
                 'subject' => 'required|string',
@@ -676,8 +723,6 @@ class EmailController extends Controller
 
             $toEmails = json_decode($request->to, true);
             $to = array_column($toEmails, 'value');
-
-            // return implode(',', $to);
 
             $cc = [];
             if ($request->cc) {
@@ -708,7 +753,6 @@ class EmailController extends Controller
             $mail->subject = $request->subject;
             $mail->message = $request->message;
 
-            $attachmentPaths = [];
             if ($request->hasFile('attachments')) {
                 $attachments = [];
                 foreach ($request->file('attachments') as $file) {
@@ -717,22 +761,16 @@ class EmailController extends Controller
                         'original_name' => $file->getClientOriginalName(),
                         'encrypted_name' => $filePath,
                     ];
-                    $attachmentPaths[] = $filePath;
                 }
                 $mail->attachment = json_encode($attachments);
-
-                // return json_encode($attachments);
-                // die;
             }
-
-
 
             $mail->save();
 
             $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->email;
             $cc_id = [];
             foreach ($cc as $email) {
-                $user = User::where('personal_email', $email)->first();
+                $user = User::where('email', $email)->first();
                 if ($user) {
                     $cc_id[] = $user->id;
                     $mail_user = new MailUser();
@@ -751,7 +789,7 @@ class EmailController extends Controller
 
             $to_id = [];
             foreach ($to as $email) {
-                $user = User::where('personal_email', $email)->first();
+                $user = User::where('email', $email)->first();
                 if ($user) {
                     $to_id[] = $user->id;
                     $mail_user = new MailUser();
@@ -775,14 +813,13 @@ class EmailController extends Controller
             $mail_user->save();
 
             $sender_user = auth()->user();
-          //  Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->personal_email, $sender_user->full_name));
+            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->email, $sender_user->full_name));
 
             return response()->json([
                 'message' => 'Mail sent successfully.',
                 'status' => true,
                 'send_to_ids' => array_merge($cc_id, $to_id),
-                'notification_message' => $notification_message,
-                'attachmentPaths' => $attachmentPaths,
+                'notification_message' => $notification_message
             ], 200);
         } catch (\Exception $e) {
             // \Log::error('Mail sending failed: ' . $e->getMessage());
@@ -892,10 +929,10 @@ class EmailController extends Controller
 
             $mail->save();
 
-            $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->personal_email;
+            $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->email;
             $cc_id = [];
             foreach ($cc as $email) {
-                $user = User::where('personal_email', $email)->first();
+                $user = User::where('email', $email)->first();
                 if ($user) {
                     $cc_id[] = $user->id;
                     $mail_user = new MailUser();
@@ -914,7 +951,7 @@ class EmailController extends Controller
 
             $to_id = [];
             foreach ($to as $email) {
-                $user = User::where('personal_email', $email)->first();
+                $user = User::where('email', $email)->first();
                 if ($user) {
                     $to_id[] = $user->id;
                     $mail_user = new MailUser();
@@ -938,7 +975,7 @@ class EmailController extends Controller
             $mail_user->save();
 
             $sender_user = auth()->user();
-            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->personal_email, $sender_user->full_name));
+            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->email, $sender_user->full_name));
 
             return response()->json([
                 'message' => 'Mail sent successfully.',
@@ -1050,10 +1087,10 @@ class EmailController extends Controller
 
             $mail->save();
 
-            $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->personal_email;
+            $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->email;
             $cc_id = [];
             foreach ($cc as $email) {
-                $user = User::where('personal_email', $email)->first();
+                $user = User::where('email', $email)->first();
                 if ($user) {
                     $cc_id[] = $user->id;
                     $mail_user = new MailUser();
@@ -1072,7 +1109,7 @@ class EmailController extends Controller
 
             $to_id = [];
             foreach ($to as $email) {
-                $user = User::where('personal_email', $email)->first();
+                $user = User::where('email', $email)->first();
                 if ($user) {
                     $to_id[] = $user->id;
                     $mail_user = new MailUser();
@@ -1096,7 +1133,7 @@ class EmailController extends Controller
             $mail_user->save();
 
             $sender_user = auth()->user();
-            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->personal_email, $sender_user->full_name));
+            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->email, $sender_user->full_name));
 
             return response()->json([
                 'message' => 'Mail sent successfully.',
@@ -1277,20 +1314,44 @@ class EmailController extends Controller
     public function star(Request $request)
     {
         try {
+            // $mail_id = $request->mail_id;
+            // $star_value = $request->star_value; // 1 or 0
+            // $msg = '';
+
+            // $mail = MailUser::where('send_mail_id', $mail_id)->where('user_id', auth()->id())->first();
+            // if ($mail) {
+            //     $mail->is_starred = $star_value;
+            //     $mail->save();
+            // }
+
+            // if ($star_value == 1) {
+            //     $msg = "Mail Starred Success!";
+            // } else {
+            //     $msg = "Mail Star Mark Removed!";
+            // }
             $mail_id = $request->mail_id;
-            $star_value = $request->star_value; // 1 or 0
+            $star_value = $request->star_value; // Corrected variable name for clarity
             $msg = '';
 
-            $mail = MailUser::where('send_mail_id', $mail_id)->where('user_id', auth()->id())->first();
-            if ($mail) {
-                $mail->is_starred = $star_value;
-                $mail->save();
-            }
+            // Identify the main mail (reply_of or id)
+            $mainMailId = SendMail::where('id', $mail_id)
+                ->orWhere('reply_of', $mail_id)
+                ->value('reply_of') ?? $mail_id;
 
-            if ($star_value == 1) {
-                $msg = "Mail Starred Success!";
+            // Update the starred status for the main mail only
+            $mailUser = MailUser::where('send_mail_id', $mainMailId)
+                ->where('user_id', auth()->id())
+                ->first();
+
+            if ($mailUser) {
+                $mailUser->is_starred = $star_value;
+                $mailUser->save();
+
+                $msg = $star_value == 1
+                    ? "Mail Starred Successfully!"
+                    : "Mail Star Mark Removed!";
             } else {
-                $msg = "Mail Star Mark Removed!";
+                $msg = "Mail not found or you do not have permission.";
             }
 
             return response()->json(['message' => $msg, 'status' => true], 200);
@@ -1319,14 +1380,33 @@ class EmailController extends Controller
     {
         try {
 
-            $mailid = $request->mail_id;
+            // $mailid = $request->mail_id;
 
-            $mail = MailUser::where('send_mail_id', $mailid)->where('user_id', auth()->id())->first();
-            if ($mail) {
-                $mail->is_delete = 1;
-                $mail->deleted_at = now();
-                $mail->save();
-            }
+            // $mail = MailUser::where('send_mail_id', $mailid)->where('user_id', auth()->id())->first();
+            // if ($mail) {
+            //     $mail->is_delete = 1;
+            //     $mail->deleted_at = now();
+            //     $mail->save();
+            // }
+            $mailId = $request->mail_id;
+
+            // Find the main mail group (either the main mail or the reply's group)
+            $mainMailId = SendMail::where('id', $mailId)
+                ->orWhere('reply_of', $mailId)
+                ->value('reply_of') ?? $mailId;
+
+            // Get all mail IDs (main and replies) in this group
+            $allMailIds = SendMail::where('id', $mainMailId)
+                ->orWhere('reply_of', $mainMailId)
+                ->pluck('id');
+
+            // Update MailUser records for the authenticated user
+            MailUser::whereIn('send_mail_id', $allMailIds)
+                ->where('user_id', auth()->id())
+                ->update([
+                    'is_delete' => 1,
+                    'deleted_at' => now(),
+                ]);
 
             return response()->json(['message' => 'Mail deleted successfully.', 'status' => true], 200);
         } catch (\Exception $e) {

@@ -281,7 +281,7 @@ paths:
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 18
+                  example: 16
                 first_name:
                   type: string
                   description: 'First name of the user.'
@@ -309,7 +309,7 @@ paths:
                 state:
                   type: integer
                   description: 'State of residence.'
-                  example: 19
+                  example: 9
                 address2:
                   type: string
                   description: 'nullable Additional address information.'
@@ -317,7 +317,7 @@ paths:
                 country:
                   type: integer
                   description: 'Country of residence.'
-                  example: 3
+                  example: 1
                 zip:
                   type: string
                   description: 'Zip code.'
@@ -2532,7 +2532,7 @@ paths:
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: lila.nikolaus@example.com
+                  example: eleanore.zboncak@example.com
                 phone:
                   type: string
                   description: 'Phone of the user.'
@@ -2603,7 +2603,7 @@ paths:
                 stripeToken:
                   type: string
                   description: required.
-                  example: quis
+                  example: iste
       security: []
   /api/v3/country-list:
     post:
@@ -2837,7 +2837,7 @@ paths:
         in: path
         name: topic
         description: 'The topic.'
-        example: nisi
+        example: et
         required: true
         schema:
           type: string
@@ -2987,42 +2987,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: expedita
+          example: quia
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: expedita
+            example: quia
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: voluptas
+          example: vero
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: voluptas
+            example: vero
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: id
+          example: blanditiis
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: id
+            example: blanditiis
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 19
+          example: 10
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 19
+            example: 10
       responses:
         200:
           description: ''
@@ -3332,12 +3332,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 14
+          example: 5
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 14
+            example: 5
       responses:
         200:
           description: ''
@@ -3561,7 +3561,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: asperiores
+        example: labore
         required: true
         schema:
           type: string
@@ -3668,7 +3668,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: consequatur
+        example: omnis
         required: true
         schema:
           type: string
@@ -3708,42 +3708,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: quis
+          example: necessitatibus
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: quis
+            example: necessitatibus
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: eos
+          example: voluptatem
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: eos
+            example: voluptatem
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: et
+          example: quasi
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: et
+            example: quasi
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 7
+          example: 4
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 7
+            example: 4
       responses:
         200:
           description: ''
@@ -4053,12 +4053,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 15
+          example: 14
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 15
+            example: 14
       responses:
         200:
           description: ''
@@ -4282,7 +4282,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: sit
+        example: et
         required: true
         schema:
           type: string
@@ -4389,7 +4389,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: odit
+        example: id
         required: true
         schema:
           type: string
@@ -4429,42 +4429,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: dolor
+          example: consequatur
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: dolor
+            example: consequatur
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: veniam
+          example: ullam
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: veniam
+            example: ullam
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: porro
+          example: magnam
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: porro
+            example: magnam
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 5
+          example: 11
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 5
+            example: 11
       responses:
         200:
           description: ''
@@ -4774,12 +4774,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 12
+          example: 4
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 12
+            example: 4
       responses:
         200:
           description: ''
@@ -5003,7 +5003,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: molestias
+        example: quasi
         required: true
         schema:
           type: string
@@ -5110,7 +5110,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: tempore
+        example: porro
         required: true
         schema:
           type: string
@@ -5150,42 +5150,42 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: enim
+          example: distinctio
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: enim
+            example: distinctio
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: sunt
+          example: possimus
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: sunt
+            example: possimus
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: voluptatem
+          example: ut
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: voluptatem
+            example: ut
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 5
+          example: 12
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 5
+            example: 12
       responses:
         200:
           description: ''
@@ -5495,12 +5495,12 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 9
+          example: 3
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 9
+            example: 3
       responses:
         200:
           description: ''
@@ -5724,7 +5724,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: aspernatur
+        example: quidem
         required: true
         schema:
           type: string
@@ -5831,7 +5831,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: sed
+        example: molestias
         required: true
         schema:
           type: string
@@ -6899,19 +6899,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
-                  example: assumenda
+                  example: quas
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: minima
+                  example: labore
                 subject:
                   type: string
                   description: 'The subject of the email.'
-                  example: et
+                  example: accusantium
                 message:
                   type: string
                   description: 'The body content of the email.'
-                  example: quia
+                  example: ipsa
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -7041,19 +7041,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: illo
+                  example: voluptatem
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: assumenda
+                  example: perferendis
                 subject:
                   type: string
                   description: 'The subject of the reply email.'
-                  example: deleniti
+                  example: voluptatem
                 message:
                   type: string
                   description: 'The body content of the reply email.'
-                  example: minus
+                  example: consequatur
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -7063,7 +7063,7 @@ paths:
                 main_mail_id:
                   type: integer
                   description: 'The ID of the main email thread being replied to.'
-                  example: 6
+                  example: 12
               required:
                 - to
                 - subject
@@ -7180,19 +7180,19 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: et
+                  example: temporibus
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: sed
+                  example: ab
                 subject:
                   type: string
                   description: 'The subject of the forwarded email.'
-                  example: ut
+                  example: accusamus
                 message:
                   type: string
                   description: 'The body content of the forwarded email.'
-                  example: et
+                  example: debitis
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -8155,7 +8155,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: clement.quigley@example.com
+                  example: bauch.curt@example.net
               required:
                 - email
       security: []
@@ -10078,7 +10078,7 @@ paths:
                 is_delete:
                   type: integer
                   description: 'optional Indicates if the notification should be marked as read and deleted.'
-                  example: 20
+                  example: 15
               required:
                 - team_id
                 - chat_id
@@ -10663,7 +10663,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the delete.'
-        example: adipisci
+        example: fugit
         required: true
         schema:
           type: string
@@ -13317,7 +13317,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the edit.'
-        example: qui
+        example: doloribus
         required: true
         schema:
           type: string
@@ -13635,7 +13635,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the download.'
-        example: error
+        example: officia
         required: true
         schema:
           type: string
@@ -13697,7 +13697,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the strategy to view.'
-        example: 5
+        example: 17
         required: true
         schema:
           type: integer

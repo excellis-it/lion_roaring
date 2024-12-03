@@ -91,7 +91,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4eac31khP6Dfv5a8ZVbEd6g'
+      - 'Bearer 8he5fkZaaDbg14c3d6EV6Pv'
     controller: null
     method: null
     route: null
@@ -172,7 +172,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1DvVP43g8a6f5akdhe6ZEcb'
+      - 'Bearer 1avdcZPg84eV3Eh6bD6f5ka'
     controller: null
     method: null
     route: null
@@ -344,7 +344,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cD46a1daEkf8ebPZ3gV6hv5'
+      - 'Bearer DV1gP3vE8a5646hbefkcdaZ'
     controller: null
     method: null
     route: null
@@ -526,7 +526,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8dEk4Zba5aDcevPV1g6f36h'
+      - 'Bearer dZb34eva8aVDEgk16f6hcP5'
     controller: null
     method: null
     route: null
@@ -553,13 +553,13 @@ endpoints:
         name: id
         description: 'The ID of the delete.'
         required: true
-        example: adipisci
+        example: fugit
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: adipisci
+      id: fugit
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -588,7 +588,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3ZvPbah51eg4EVkca86fdD6'
+      - 'Bearer vcg65Ek63Dda4abe8fPZh1V'
     controller: null
     method: null
     route: null
@@ -664,7 +664,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vV6ebc8E651aPkg34ZdDhfa'
+      - 'Bearer 5Ecbh4Z83g66dfPvVkDaea1'
     controller: null
     method: null
     route: null

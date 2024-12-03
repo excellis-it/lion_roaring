@@ -35,11 +35,20 @@ class SendMail extends Mailable
     public function build()
     {
         // return $this->markdown('user.mails.SendMail')->subject($this->mail->subject)->with('mail', $this->mail);
-        return $this->from(
-            $this->senderEmail ?? env('MAIL_FROM_ADDRESS'),
-            $this->senderName ?? env('MAIL_FROM_NAME')
-        )
-            ->view('user.mails.SendMail')  // Use markdown email template
+        // return $this->from(
+        //     $this->senderEmail ?? env('MAIL_FROM_ADDRESS'),
+        //     $this->senderName ?? env('MAIL_FROM_NAME')
+        // )
+        //     ->view('user.mails.SendMail')  // Use markdown email template
+        //     ->subject($this->mail->subject)  // Set the email subject
+        //     ->with('mail', $this->mail);
+
+        // return $this->view('user.mails.SendMail')  // Use markdown email template
+        //     ->subject($this->mail->subject)  // Set the email subject
+        //     ->with('mail', $this->mail);
+
+        return $this->view('user.mails.SendMail')
+            ->from($this->senderEmail ?? env('MAIL_FROM_ADDRESS'), $this->senderName ?? env('MAIL_FROM_NAME'))
             ->subject($this->mail->subject)  // Set the email subject
             ->with('mail', $this->mail);
     }
