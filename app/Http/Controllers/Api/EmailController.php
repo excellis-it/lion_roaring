@@ -142,6 +142,7 @@ class EmailController extends Controller
      * API for fetching the sent email list for the authenticated user.
      *
      * @queryParam type string The type of emails to filter. Example: "draft"
+     * @queryParam search string optional for search. Example: "abc"
      *
      * @response 200 {
      *   "data": [
@@ -173,12 +174,19 @@ class EmailController extends Controller
     {
         try {
             $type = $request->get('type');
+            $searchQuery = $request->get('search');
 
             $subQuery = SendMail::whereHas('mailUsers', function ($q) {
                 $q->where('user_id', auth()->id())
                     ->where('is_from', 1)
                     ->where('is_delete', 0);
             })
+                ->when($searchQuery, function ($query) use ($searchQuery) {
+                    $query->where(function ($q) use ($searchQuery) {
+                        $q->where('subject', 'like', "%{$searchQuery}%")
+                            ->orWhere('message', 'like', "%{$searchQuery}%");
+                    });
+                })
                 ->selectRaw('COALESCE(reply_of, id) as mail_group, MAX(id) as max_id')
                 ->groupBy('mail_group');
 
@@ -248,6 +256,7 @@ class EmailController extends Controller
      * API for fetching the starred email list for the authenticated user.
      *
      * @queryParam type string The type of emails to filter. Example: "important"
+     * @queryParam search string optional for search. Example: "abc"
      *
      * @response 200 {
      *   "data": [
@@ -279,12 +288,19 @@ class EmailController extends Controller
     {
         try {
             $type = $request->get('type');
+            $searchQuery = $request->get('search');
 
             $subQuery = SendMail::whereHas('mailUsers', function ($q) {
                 $q->where('user_id', auth()->id())
                     ->where('is_starred', 1)
                     ->where('is_delete', 0);
             })
+                ->when($searchQuery, function ($query) use ($searchQuery) {
+                    $query->where(function ($q) use ($searchQuery) {
+                        $q->where('subject', 'like', "%{$searchQuery}%")
+                            ->orWhere('message', 'like', "%{$searchQuery}%");
+                    });
+                })
                 ->selectRaw('COALESCE(reply_of, id) as mail_group, MAX(id) as max_id')
                 ->groupBy('mail_group');
 
@@ -354,6 +370,7 @@ class EmailController extends Controller
      * API for fetching the trashed email list for the authenticated user.
      *
      * @queryParam type string Optional. The type of emails to filter. Example: "archived"
+     * @queryParam search string optional for search. Example: "abc"
      *
      * @response 200 {
      *   "data": [
@@ -385,11 +402,18 @@ class EmailController extends Controller
     {
         try {
             $type = $request->get('type');
+            $searchQuery = $request->get('search');
 
             $subQuery = SendMail::whereHas('mailUsers', function ($q) {
                 $q->where('user_id', auth()->id())
                     ->where('is_delete', 1);
             })
+                ->when($searchQuery, function ($query) use ($searchQuery) {
+                    $query->where(function ($q) use ($searchQuery) {
+                        $q->where('subject', 'like', "%{$searchQuery}%")
+                            ->orWhere('message', 'like', "%{$searchQuery}%");
+                    });
+                })
                 ->selectRaw('COALESCE(reply_of, id) as mail_group, MAX(id) as max_id')
                 ->groupBy('mail_group');
 

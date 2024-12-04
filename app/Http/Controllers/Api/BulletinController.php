@@ -41,8 +41,10 @@ class BulletinController extends Controller
             // Apply the search filter if searchQuery is provided
             $bulletins = Bulletin::where('user_id', Auth::id())
                 ->when($searchQuery, function ($query) use ($searchQuery) {
-                    $query->where('title', 'like', "%{$searchQuery}%")
-                        ->orWhere('description', 'like', "%{$searchQuery}%");
+                    $query->where(function ($subQuery) use ($searchQuery) {
+                        $subQuery->where('title', 'like', "%{$searchQuery}%")
+                            ->orWhere('description', 'like', "%{$searchQuery}%");
+                    });
                 })
                 ->paginate(15);
 
@@ -173,9 +175,9 @@ class BulletinController extends Controller
                         ->orWhere('description', 'like', "%{$searchQuery}%");
                 })
                 ->orderBy('id', 'desc')
-                ->get();
+                ->paginate(15);
 
-            return response()->json(['data' => $bulletins], 200);
+            return response()->json($bulletins, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to load bulletins.'], 201);
         }
