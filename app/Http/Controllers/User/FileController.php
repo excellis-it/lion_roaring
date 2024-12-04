@@ -39,11 +39,12 @@ class FileController extends Controller
 
     public function store(Request $request)
     {
+        // return $request->type;
         $validated = FacadesValidator::make($request->all(), [
             'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
             'file' => 'required|array', // Ensure file is an array
             'file.*' => 'required|file', // Ensure each file is valid
-            'type' => 'required|in:Becoming Sovereign,Becoming Christ Like,Leadership Development',
+            'type' => 'required',
         ]);
 
         // Check if validation fails
@@ -164,7 +165,7 @@ class FileController extends Controller
         $validated = FacadesValidator::make($request->all(), [
             'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
             'file' => 'nullable|file', // Ensure file validation if provided
-            'type' => 'required|in:Becoming Sovereign,Becoming Christ Like,Leadership Development',
+            'type' => 'required',
         ]);
 
         // Check if validation fails

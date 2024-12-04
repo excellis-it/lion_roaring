@@ -315,6 +315,7 @@ class FileController extends Controller
         try {
             $validated = Validator::make($request->all(), [
                 'file' => 'required|file', // Ensure file validation
+                'type' => 'required',
                 'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
             ]);
 
@@ -351,7 +352,7 @@ class FileController extends Controller
             $fileModel->file_name = $file_name;
             $fileModel->file_extension = $file_extension;
             $fileModel->topic_id = $request->topic_id;
-            $fileModel->type = '';
+            $fileModel->type = $request->type;
             $fileModel->file = $file_upload;
             $fileModel->save();
 
@@ -464,6 +465,7 @@ class FileController extends Controller
             // Validate topic_id and file fields
             $validatedData = $request->validate([
                 'topic_id' => 'required|exists:topics,id',
+                'type' => 'required',
                 'file' => 'file'  // File is optional in case only topic_id needs updating
             ]);
 
@@ -481,7 +483,7 @@ class FileController extends Controller
                     ->first();
                 if ($existingFile) {
                     return response()->json([
-                        'message' => 'Validation failed.',
+                        'message' => 'The file name has already been taken.',
                         'errors' => ['file' => ['The file name has already been taken.']],
                         'status' => false
                     ], 201);
@@ -496,6 +498,7 @@ class FileController extends Controller
 
             // Update topic_id
             $file->topic_id = $request->topic_id;
+            $file->type = $request->type;
             $file->save();
 
             return response()->json([
