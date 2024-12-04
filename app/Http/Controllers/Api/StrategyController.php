@@ -21,7 +21,7 @@ class StrategyController extends Controller
 
     /**
      * Strategies List
-     * 
+     * @queryParam search string optional for search. Example: "abc"
      * 
      * @response 200 {
      *    "data": {
@@ -86,13 +86,25 @@ class StrategyController extends Controller
      * }
      * @response 201 scenario="error" {"error": "Failed to fetch strategies."}
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
+            // Get search term from the request (e.g., file name or user id)
+            $searchQuery = $request->get('search');
 
-            $strategies = Strategy::orderBy('id', 'desc')->paginate(15);
+
+            // Query strategies with optional search functionality
+            $strategies = Strategy::when($searchQuery, function ($query) use ($searchQuery) {
+                $query->where('file_name', 'like', "%$searchQuery%")
+                    ->orWhere('file_extension', 'like', "%$searchQuery%");
+            })
+                ->orderBy('id', 'desc')
+                ->paginate(15);
+
+            // Return success response with strategy data
             return response()->json(['data' => $strategies], 200);
         } catch (\Exception $e) {
+            // Return error response if fetching strategies fails
             return response()->json(['error' => 'Failed to fetch strategies.'], 201);
         }
     }
@@ -121,7 +133,7 @@ class StrategyController extends Controller
             $file_name = $file->getClientOriginalName();
             $file_extension = $file->getClientOriginalExtension();
             $file_path = $this->imageUpload($file, 'strategies');
-            
+
             $check = Strategy::where('file_name', $file_name)
                 ->where('file_extension', $file_extension)
                 ->first();

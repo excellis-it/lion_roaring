@@ -18,6 +18,7 @@ class BulletinController extends Controller
      * Bulletins List
      *
      * @authenticated
+     * @queryParam search string optional for search. Example: "abc"
      * @response 200 {
      *     "data": [
      *         {
@@ -31,11 +32,21 @@ class BulletinController extends Controller
      *     ]
      * }
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $bulletins = Bulletin::where('user_id', Auth::id())->get();
-            return response()->json(['data' => $bulletins], 200);
+            // Fetch the search query from the request
+            $searchQuery = $request->get('search');
+
+            // Apply the search filter if searchQuery is provided
+            $bulletins = Bulletin::where('user_id', Auth::id())
+                ->when($searchQuery, function ($query) use ($searchQuery) {
+                    $query->where('title', 'like', "%{$searchQuery}%")
+                        ->orWhere('description', 'like', "%{$searchQuery}%");
+                })
+                ->paginate(15);
+
+            return response()->json($bulletins, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to load bulletins.'], 201);
         }
@@ -79,6 +90,7 @@ class BulletinController extends Controller
     /**
      * Bulletin Board
      * @authenticated
+     * @queryParam search string optional for search. Example: "abc"
      *
      * @response 200 {
      *     "data": [
@@ -148,10 +160,20 @@ class BulletinController extends Controller
      *     "error": "Failed to load bulletins."
      * }
      */
-    public function allBulletins()
+    public function allBulletins(Request $request)
     {
         try {
-            $bulletins = Bulletin::with('user')->orderBy('id', 'desc')->get();
+            // Fetch the search query from the request
+            $searchQuery = $request->get('search');
+
+            // Apply the search filter if searchQuery is provided
+            $bulletins = Bulletin::with('user')
+                ->when($searchQuery, function ($query) use ($searchQuery) {
+                    $query->where('title', 'like', "%{$searchQuery}%")
+                        ->orWhere('description', 'like', "%{$searchQuery}%");
+                })
+                ->orderBy('id', 'desc')
+                ->get();
 
             return response()->json(['data' => $bulletins], 200);
         } catch (\Exception $e) {

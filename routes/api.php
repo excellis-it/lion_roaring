@@ -80,6 +80,11 @@ Route::prefix('v3')->group(function () {
 
         Route::post('check-menu-permission', [ProfileController::class, 'checkUserMenuPermission']);
 
+        Route::get('/notifications', [ProfileController::class, 'notifications'])->name('notification.list');
+        Route::get('/notification-read/{type}/{id}', [ProfileController::class, 'notificationRead'])->name('notification.read');
+        // notification.clear
+        Route::get('/notification-clear', [ProfileController::class, 'notificationClear'])->name('notification.clear');
+
 
         Route::prefix('chats')->name('chats.')->group(function () {
             Route::post('/list', [ChatController::class, 'chats']);
@@ -133,6 +138,8 @@ Route::prefix('v3')->group(function () {
 
             Route::post('/mail-delete-single', [EmailController::class, 'deleteSingleMail']);
             Route::post('/mail-restore-single', [EmailController::class, 'restoreSingleMail']);
+
+            Route::post('/mail-trash-empty', [EmailController::class, 'trashEmpty']);
 
             Route::get('/print/{id}', [EmailController::class, 'printMail']);
         });

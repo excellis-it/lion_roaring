@@ -377,7 +377,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dvDaE34fcZae8165gVPkhb6'
+      - 'Bearer 46Ded15favZaEhkg83b6VPc'
     controller: null
     method: null
     route: null
@@ -404,13 +404,13 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: doloribus
+        example: sed
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: doloribus
+      id: sed
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -644,7 +644,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a54Dcv6Zd8ghPE6bk1V3afe'
+      - 'Bearer DEafkvebV65h4gac16PZ8d3'
     controller: null
     method: null
     route: null

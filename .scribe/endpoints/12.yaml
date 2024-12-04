@@ -20,8 +20,18 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'optional for search.'
+        required: false
+        example: '"abc"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      search: '"abc"'
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -65,7 +75,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kcf6DEV3hPdveg14a68baZ5'
+      - 'Bearer D6Zkv685f3gaVEdhbePca41'
     controller: null
     method: null
     route: null
@@ -178,7 +188,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VagD41bEef53hc8vdk66PZa'
+      - 'Bearer 56a6VkdvfDZbgEh1a3e84Pc'
     controller: null
     method: null
     route: null
@@ -272,7 +282,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pkafv41VgadZ6D38ch6eb5E'
+      - 'Bearer 6eZhcPk6b4D13gfvVa8E5ad'
     controller: null
     method: null
     route: null
@@ -376,7 +386,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vck41h3P5dag6eEZfv68Dba'
+      - 'Bearer EhdZf36k1cvPD465age8bVa'
     controller: null
     method: null
     route: null
@@ -430,7 +440,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pa5kdEVeg1h486v36cbfaDZ'
+      - 'Bearer v8EZD53cdgVkP6a1fbeha64'
     controller: null
     method: null
     route: null
@@ -516,7 +526,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V4aPE66va1bdcZfgh5kD38e'
+      - 'Bearer D56EkghacbPV643Zd1ae8fv'
     controller: null
     method: null
     route: null

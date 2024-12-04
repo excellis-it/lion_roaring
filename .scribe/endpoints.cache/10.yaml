@@ -22,8 +22,18 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'optional for search.'
+        required: false
+        example: '"abc"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      search: '"abc"'
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -50,7 +60,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aV51E6ce6a3bkDdfvP4Z8hg'
+      - 'Bearer f86k5dDvbhZ1cVa3eE64gaP'
     controller: null
     method: null
     route: null
@@ -119,7 +129,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dkgfd53a46ecbEVv6haZP18'
+      - 'Bearer 6dE85cD4g13hVZkva6bPfea'
     controller: null
     method: null
     route: null
@@ -143,8 +153,18 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'optional for search.'
+        required: false
+        example: '"abc"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      search: '"abc"'
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -232,7 +252,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fbac5D16VaZke6hEP4v8gd3'
+      - 'Bearer ZDeP4ak1v5g3hfVE6b86dac'
     controller: null
     method: null
     route: null
@@ -312,7 +332,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kZfcgh46va53b1Ve68aEDdP'
+      - 'Bearer Zgda6c8EVefvP5bhD1a3k46'
     controller: null
     method: null
     route: null
@@ -402,7 +422,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a3gPf4k5E18bZcDdaehvV66'
+      - 'Bearer 15f6aPdcE6b4Vkg83vhZaDe'
     controller: null
     method: null
     route: null
@@ -464,7 +484,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6a6bc1eghaPd8fkZ4Dv3VE5'
+      - 'Bearer VP6D1b8ah56kgZe4ad3Efcv'
     controller: null
     method: null
     route: null

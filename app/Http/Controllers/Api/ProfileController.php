@@ -7,6 +7,7 @@ use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Notification;
 
 /**
  * @group Profile
@@ -312,6 +313,167 @@ class ProfileController extends Controller
                 'status' => false,
                 'message' => 'An error occurred: ' . $e->getMessage()
             ], 201); // 201 Created for error handling (you may want to use 500 for internal errors)
+        }
+    }
+
+    /**
+     * Notifications list
+     *
+     * @authenticated
+     *
+     *
+     * @response 200 
+     *   {
+     *    "list": {
+     *        "current_page": 1,
+     *        "data": [
+     *            {
+     *                "id": 862,
+     *                "user_id": 37,
+     *                "chat_id": null,
+     *                "message": "You have a <b>new mail</b> from masum@excellisit.net",
+     *                "status": 0,
+     *                "type": "Mail",
+     *                "is_read": 0,
+     *                "is_delete": 0,
+     *                "created_at": "2024-12-04T05:40:32.000000Z",
+     *                "updated_at": "2024-12-04T05:40:32.000000Z"
+     *            },
+     *            {
+     *                "id": 860,
+     *                "user_id": 37,
+     *                "chat_id": null,
+     *                "message": "You have a <b>new mail</b> from masum@excellisit.net",
+     *                "status": 0,
+     *                "type": "Mail",
+     *                "is_read": 0,
+     *                "is_delete": 0,
+     *                "created_at": "2024-12-04T05:37:44.000000Z",
+     *                "updated_at": "2024-12-04T05:37:44.000000Z"
+     *            }
+     *        ],
+     *        "first_page_url": "http://127.0.0.1:8000/api/v3/user/notifications?page=1",
+     *        "from": 1,
+     *        "last_page": 15,
+     *        "last_page_url": "http://127.0.0.1:8000/api/v3/user/notifications?page=15",
+     *        "links": [
+     *            {
+     *                "url": null,
+     *                "label": "&laquo; Previous",
+     *                "active": false
+     *            },
+     *            {
+     *                "url": "http://127.0.0.1:8000/api/v3/user/notifications?page=1",
+     *                "label": "1",
+     *                "active": true
+     *            },
+     *            {
+     *                "url": "http://127.0.0.1:8000/api/v3/user/notifications?page=2",
+     *                "label": "2",
+     *                "active": false
+     *            },           
+     *            {
+     *                "url": "http://127.0.0.1:8000/api/v3/user/notifications?page=2",
+     *                "label": "Next &raquo;",
+     *                "active": false
+     *            }
+     *        ],
+     *        "next_page_url": "http://127.0.0.1:8000/api/v3/user/notifications?page=2",
+     *        "path": "http://127.0.0.1:8000/api/v3/user/notifications",
+     *        "per_page": 15,
+     *        "prev_page_url": null,
+     *        "to": 15,
+     *        "total": 216
+     *    }
+     * }
+     * @response 201 {
+     *   "message": "Page not found"
+     * }
+     */
+    public function notifications(Request $request)
+    {
+        try {
+
+
+            $notifications = Notification::where('user_id', auth()->user()->id)->where('is_delete', 0)
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+
+            $is_notification = true;
+
+            return response()->json([
+                'list' => $notifications
+            ], 200);
+
+
+            return response()->json(['message' => 'Page not found'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 201);
+        }
+    }
+
+    /**
+     * Mark a notification as read.
+     *
+     * @authenticated
+     *
+     * @urlParam type string The type of notification (Chat, Team, Mail). Example: Chat
+     * @urlParam id int The ID of the notification. Example: 1
+     *
+     * @response 200 {
+     *   "message": "Notification marked as read"
+     * }
+     * @response 404 {
+     *   "message": "Notification not found"
+     * }
+     */
+    public function notificationRead($type, $id)
+    {
+        try {
+            $notification = Notification::find($id);
+
+            if (!$notification) {
+                return response()->json(['message' => 'Notification not found'], 404);
+            }
+
+            $pagename = 'no';
+
+            if ($type == 'Chat') {
+                $pagename = 'chat';
+            } elseif ($type == 'Team') {
+                $pagename = 'team';
+            } elseif ($type == 'Mail') {
+                $pagename = 'mail';
+            }
+
+            $notification->is_read = 1;
+            $notification->update();
+
+            return response()->json(['page_name' => $pagename, 'message' => 'Notification marked as read'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 201);
+        }
+    }
+
+
+
+    /**
+     * Delete all notifications
+     *
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Notification deleted successfully.",
+     *   "status": true
+     * }
+     */
+    public function notificationClear()
+    {
+        try {
+            Notification::where('user_id', auth()->user()->id)->delete();
+            return response()->json(['message' => 'Notification deleted successfully.', 'status' => true], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 201);
         }
     }
 }

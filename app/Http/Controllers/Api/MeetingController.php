@@ -17,6 +17,7 @@ class MeetingController extends Controller
 {
     /**
      * List All Meetings
+     * @queryParam search string optional for search. Example: "abc"
      *
      * @response 200 {
      *     "data": [
@@ -42,12 +43,22 @@ class MeetingController extends Controller
      *     "error": "Failed to load meetings."
      * }
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $meetings = Meeting::with('user')->orderBy('id', 'desc')->get();
+            // Fetch the search query from the request
+            $searchQuery = $request->get('search');
 
-            return response()->json(['data' => $meetings], 200);
+            // Apply the search filter if searchQuery is provided
+            $meetings = Meeting::with('user')
+                ->when($searchQuery, function ($query) use ($searchQuery) {
+                    $query->where('title', 'like', "%{$searchQuery}%")
+                        ->orWhere('description', 'like', "%{$searchQuery}%");
+                })
+                ->orderBy('id', 'desc')
+                ->paginate(15);
+
+            return response()->json($meetings, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to load meetings.'], 201);
         }
@@ -168,7 +179,7 @@ class MeetingController extends Controller
     }
 
 
-     /**
+    /**
      * Update Meeting
      * @urlParam id int required The ID of the meeting. Example: 1
      * @bodyParam title string required The title of the meeting. Example: Project Sync Update
@@ -285,6 +296,4 @@ class MeetingController extends Controller
             return response()->json(['error' => 'Failed to load meeting calender data.'], 201);
         }
     }
-
-
 }

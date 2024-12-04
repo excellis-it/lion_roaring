@@ -17,6 +17,7 @@ class EventController extends Controller
 {
     /**
      * List All events
+     * @queryParam search string optional for search. Example: "abc"
      *
      * @response 200 {
      *     "data": [
@@ -41,12 +42,22 @@ class EventController extends Controller
      *     "error": "Failed to load events."
      * }
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $events = Event::with('user')->orderBy('id', 'desc')->get();
+            // Fetch the search query from the request
+            $searchQuery = $request->get('search');
 
-            return response()->json(['data' => $events], 200);
+            // Apply the search filter if searchQuery is provided
+            $events = Event::with('user')
+                ->when($searchQuery, function ($query) use ($searchQuery) {
+                    $query->where('title', 'like', "%{$searchQuery}%")
+                        ->orWhere('description', 'like', "%{$searchQuery}%");
+                })
+                ->orderBy('id', 'desc')
+                ->paginate(15);
+
+            return response()->json($events, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to load events.'], 201);
         }
@@ -162,7 +173,7 @@ class EventController extends Controller
     }
 
 
-     /**
+    /**
      * Update event
      * @urlParam id int required The ID of the event. Example: 1
      * @bodyParam title string required The title of the event. Example: Project Sync Update
@@ -273,6 +284,4 @@ class EventController extends Controller
             return response()->json(['error' => 'Failed to load event calender data.'], 201);
         }
     }
-
-
 }

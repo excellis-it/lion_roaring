@@ -22,8 +22,18 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'optional for search.'
+        required: false
+        example: '"abc"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      search: '"abc"'
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -91,7 +101,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8he5fkZaaDbg14c3d6EV6Pv'
+      - 'Bearer gbk3Z6a865fdv1aDPEV4che'
     controller: null
     method: null
     route: null
@@ -172,7 +182,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1avdcZPg84eV3Eh6bD6f5ka'
+      - 'Bearer 65e4gD81Eb3VhZPf6ckvdaa'
     controller: null
     method: null
     route: null
@@ -344,7 +354,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DV1gP3vE8a5646hbefkcdaZ'
+      - 'Bearer E1f3D4kdZaV6Pba6vhgce85'
     controller: null
     method: null
     route: null
@@ -371,13 +381,13 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: quidem
+        example: ad
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: quidem
+      id: ad
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -526,7 +536,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dZb34eva8aVDEgk16f6hcP5'
+      - 'Bearer 863cDvkgbh56Z4EeP1afadV'
     controller: null
     method: null
     route: null
@@ -553,13 +563,13 @@ endpoints:
         name: id
         description: 'The ID of the delete.'
         required: true
-        example: fugit
+        example: alias
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: fugit
+      id: alias
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -588,7 +598,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vcg65Ek63Dda4abe8fPZh1V'
+      - 'Bearer 3DdkEPZa4gh615ef6Vb8avc'
     controller: null
     method: null
     route: null
@@ -664,7 +674,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5Ecbh4Z83g66dfPvVkDaea1'
+      - 'Bearer 3hgDka1edbcVPf656aZ8E4v'
     controller: null
     method: null
     route: null

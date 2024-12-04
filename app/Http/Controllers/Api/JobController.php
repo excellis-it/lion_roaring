@@ -16,7 +16,7 @@ class JobController extends Controller
 {
     /**
      * All Job Posts
-     *
+     * @queryParam search string optional for search. Example: "abc"
      * @response 200 {
      *     "data": [
      *         {
@@ -65,12 +65,21 @@ class JobController extends Controller
      *     "error": "Failed to load jobs."
      * }
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $jobs = Job::with('user')->get();
+            // Fetch the search query from the request
+            $searchQuery = $request->get('search');
 
-            return response()->json(['data' => $jobs], 200);
+            // Apply the search filter if searchQuery is provided
+            $jobs = Job::with('user')
+                ->when($searchQuery, function ($query) use ($searchQuery) {
+                    $query->where('job_title', 'like', "%{$searchQuery}%")
+                        ->orWhere('job_description', 'like', "%{$searchQuery}%");
+                })
+                ->paginate(15);
+
+            return response()->json($jobs, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to load jobs.'], 201);
         }

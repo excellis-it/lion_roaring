@@ -20,8 +20,18 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'optional for search.'
+        required: false
+        example: '"abc"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      search: '"abc"'
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -150,7 +160,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 656gfPcab8vhDkEV1d4Za3e'
+      - 'Bearer 81akDEdeZVc63fgb5av4h6P'
     controller: null
     method: null
     route: null

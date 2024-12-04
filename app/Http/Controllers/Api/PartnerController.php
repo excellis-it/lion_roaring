@@ -16,6 +16,7 @@ class PartnerController extends Controller
 {
     /**
      * List Of Members
+     * @queryParam search string optional for search. Example: "abc"
      * 
      * @response 200 {
      *    "data": {
@@ -127,13 +128,28 @@ class PartnerController extends Controller
      *    "message": "Error occurred while fetching the partners."
      * }
      */
-    public function list()
+    public function list(Request $request)
     {
         try {
-            // Check for authorization or role validation (if needed)
+            // Get search query if available
+            $searchQuery = $request->get('search');
+
+            // Build the query with search filters (name, email, phone)
             $partners = User::whereHas('roles', function ($q) {
                 $q->where('name', '!=', 'ADMIN');
-            })->orderBy('id', 'desc')->paginate(15);
+            })
+                ->when($searchQuery, function ($query) use ($searchQuery) {
+                    $query->where('first_name', 'like', "%{$searchQuery}%")
+                        ->orWhere('last_name', 'like', "%{$searchQuery}%")
+                        ->orWhere('email', 'like', "%{$searchQuery}%")
+                        ->orWhere('phone', 'like', "%{$searchQuery}%")
+                        ->orWhere('address', 'like', "%{$searchQuery}%")
+                        ->orWhere('city', 'like', "%{$searchQuery}%")
+                        ->orWhere('state', 'like', "%{$searchQuery}%")
+                        ->orWhere('country', 'like', "%{$searchQuery}%");
+                })
+                ->orderBy('id', 'desc')
+                ->paginate(15);
 
             // Return successful response with partner data
             return response()->json([

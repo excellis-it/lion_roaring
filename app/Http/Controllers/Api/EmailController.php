@@ -27,6 +27,7 @@ class EmailController extends Controller
      * API for fetching the inbox email list for the authenticated user.
      *
      * @queryParam type string The type of emails to filter. Example: "unread"
+     * @queryParam search string optional for search. Example: "abc"
      *
      * @response 200 {
      *   "data": [
@@ -58,11 +59,20 @@ class EmailController extends Controller
     {
         try {
             $type = $request->get('type');
+
+            $searchQuery = $request->get('search');
+
             $subQuery = SendMail::whereHas('mailUsers', function ($q) {
                 $q->where('user_id', auth()->id())
                     ->where('is_from', '!=', 1)
                     ->where('is_delete', 0);
             })
+                ->when($searchQuery, function ($query) use ($searchQuery) {
+                    $query->where(function ($q) use ($searchQuery) {
+                        $q->where('subject', 'like', "%{$searchQuery}%")
+                            ->orWhere('message', 'like', "%{$searchQuery}%");
+                    });
+                })
                 ->selectRaw('COALESCE(reply_of, id) as mail_group, MAX(id) as max_id')
                 ->groupBy('mail_group');
 
@@ -1496,7 +1506,59 @@ class EmailController extends Controller
 
 
 
+    /**
+     * Empty Trash Mails
+     *
+     * @authenticated
+     *
+     * Only mails marked as "trashed" by the authenticated user are affected.
+     * 
+     * @response 200 {
+     *     "message": "All trash mails emptied successfully.",
+     *     "status": true
+     * }
+     * @response 201 {
+     *     "message": "An error occurred while trying to empty the trash.",
+     *     "status": false,
+     *     "error": "Detailed error message"
+     * }
+     */
+    public function trashEmpty(Request $request)
+    {
+        try {
 
+            $trashedMails = SendMail::whereHas('mailUsers', function ($query) {
+                $query->where('user_id', auth()->id())
+                    ->where('is_delete', 1); // Only include mails in the trash
+            })->get();
+
+            foreach ($trashedMails as $mail) {
+                $mainMailId = $mail->reply_of ?? $mail->id;
+
+                $allMailIds = SendMail::where('id', $mainMailId)
+                    ->orWhere('reply_of', $mainMailId)
+                    ->pluck('id');
+
+                MailUser::whereIn('send_mail_id', $allMailIds)
+                    ->where('user_id', auth()->id())
+                    ->update([
+                        'is_delete' => 2, // Permanently deleted
+                        'deleted_at' => now(),
+                    ]);
+            }
+
+            return response()->json([
+                'message' => 'All trash mails emptied successfully.',
+                'status' => true,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while trying to empty the trash.',
+                'status' => false,
+                'error' => $e->getMessage(),
+            ], 201);
+        }
+    }
 
 
 
