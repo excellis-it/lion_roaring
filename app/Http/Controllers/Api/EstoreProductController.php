@@ -94,7 +94,7 @@ class EstoreProductController extends Controller
         try {
             // If category_id is provided, filter products by category
             $category_id = $category_id ?? ''; // Default value is ''
-            $productsQuery = Product::where('status', 1);
+            $productsQuery = Product::with('image')->where('status', 1);
 
             // Check if category_id is provided and filter by category
             if ($category_id) {

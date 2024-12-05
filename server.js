@@ -6,7 +6,9 @@ const server = http.createServer(app);
 const io = require('socket.io')(server, {
   cors: {
     origin: '*',
+    methods: ['GET', 'POST'],
   },
+  transports: ['websocket', 'polling'],
 });
 
 // const https = require('https');
@@ -30,7 +32,7 @@ const io = require('socket.io')(server, {
 
 
 io.on('connection', (socket) => {
-    console.log('a user connected');
+    console.log('a user socket connected');
 
     socket.on('chat', (msg) => {
         console.log('message: ' + msg);

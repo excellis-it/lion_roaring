@@ -48,7 +48,7 @@ class SendMail extends Mailable
         //     ->with('mail', $this->mail);
 
         return $this->view('user.mails.SendMail')
-            ->from($this->senderEmail ?? env('MAIL_FROM_ADDRESS'), $this->senderName ?? env('MAIL_FROM_NAME'))
+            ->from($this->senderEmail, $this->senderName ?? env('MAIL_FROM_NAME'))
             ->subject($this->mail->subject)  // Set the email subject
             ->with('mail', $this->mail);
     }

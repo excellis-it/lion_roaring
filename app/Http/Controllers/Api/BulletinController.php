@@ -296,7 +296,7 @@ class BulletinController extends Controller
             $bulletin = Bulletin::where('id', $id)->where('user_id', Auth::id())->first();
 
             if (!$bulletin) {
-                return response()->json(['error' => 'Bulletin not found or unauthorized.'], 201);
+                return response()->json(['error' => 'Bulletin not found or unauthorized.', 'data' => $bulletin], 201);
             }
 
             $bulletin->delete();
