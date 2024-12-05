@@ -67,7 +67,7 @@ class LeadershipDevelopmentController extends Controller
         $file->file_name = $file_name;
         $file->file_extension = $file_extension;
         $file->topic_id = $request->topic_id;
-        $file->type = 'Leadership Development';
+        $file->type = 'Becoming a Leader';
         $file->file = $file_upload;
         $file->save();
 
@@ -184,6 +184,7 @@ class LeadershipDevelopmentController extends Controller
             $file->file_extension = $file_extension;
             $file->file = $file_upload;
         }
+        $file->type = 'Becoming a Leader';
         $file->topic_id = $request->topic_id;
         $file->save();
 
