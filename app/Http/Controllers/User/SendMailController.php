@@ -386,7 +386,7 @@ class SendMailController extends Controller
         // Fetch all mail IDs for other users (to avoid sending mails to yourself)
         $allMailIds = User::where('status', true)->get(['id', 'email']);
 
-       // return $allMailIds;
+        // return $allMailIds;
 
         // Collect all email addresses involved in this mail thread, excluding the current user's email
         $replyMailids = collect([$mail_details->user->email])
@@ -514,12 +514,13 @@ class SendMailController extends Controller
                     $mail_user->save();
 
 
-
-                    $notification = new Notification();
-                    $notification->user_id =  $user->id;
-                    $notification->message = $notification_message;
-                    $notification->type = 'Mail';
-                    $notification->save();
+                    if ($user->id != auth()->id()) {
+                        $notification = new Notification();
+                        $notification->user_id =  $user->id;
+                        $notification->message = $notification_message;
+                        $notification->type = 'Mail';
+                        $notification->save();
+                    }
                 }
             }
         }
@@ -537,11 +538,13 @@ class SendMailController extends Controller
                 $mail_user->is_to = 1;
                 $mail_user->save();
 
-                $notification = new Notification();
-                $notification->user_id =  $user->id;
-                $notification->message = $notification_message;
-                $notification->type = 'Mail';
-                $notification->save();
+                if ($user->id != auth()->id()) {
+                    $notification = new Notification();
+                    $notification->user_id =  $user->id;
+                    $notification->message = $notification_message;
+                    $notification->type = 'Mail';
+                    $notification->save();
+                }
             }
         }
 
@@ -673,12 +676,13 @@ class SendMailController extends Controller
                     $mail_user->save();
 
 
-
-                    $notification = new Notification();
-                    $notification->user_id =  $user->id;
-                    $notification->message = $notification_message;
-                    $notification->type = 'Mail';
-                    $notification->save();
+                    if ($user->id != auth()->id()) {
+                        $notification = new Notification();
+                        $notification->user_id =  $user->id;
+                        $notification->message = $notification_message;
+                        $notification->type = 'Mail';
+                        $notification->save();
+                    }
                 }
             }
         }
@@ -696,11 +700,13 @@ class SendMailController extends Controller
                 $mail_user->is_to = 1;
                 $mail_user->save();
 
-                $notification = new Notification();
-                $notification->user_id =  $user->id;
-                $notification->message = $notification_message;
-                $notification->type = 'Mail';
-                $notification->save();
+                if ($user->id != auth()->id()) {
+                    $notification = new Notification();
+                    $notification->user_id =  $user->id;
+                    $notification->message = $notification_message;
+                    $notification->type = 'Mail';
+                    $notification->save();
+                }
             }
         }
 
@@ -831,12 +837,13 @@ class SendMailController extends Controller
                     $mail_user->save();
 
 
-
-                    $notification = new Notification();
-                    $notification->user_id =  $user->id;
-                    $notification->message = $notification_message;
-                    $notification->type = 'Mail';
-                    $notification->save();
+                    if ($user->id != auth()->id()) {
+                        $notification = new Notification();
+                        $notification->user_id =  $user->id;
+                        $notification->message = $notification_message;
+                        $notification->type = 'Mail';
+                        $notification->save();
+                    }
                 }
             }
         }
@@ -854,11 +861,13 @@ class SendMailController extends Controller
                 $mail_user->is_to = 1;
                 $mail_user->save();
 
-                $notification = new Notification();
-                $notification->user_id =  $user->id;
-                $notification->message = $notification_message;
-                $notification->type = 'Mail';
-                $notification->save();
+                if ($user->id != auth()->id()) {
+                    $notification = new Notification();
+                    $notification->user_id =  $user->id;
+                    $notification->message = $notification_message;
+                    $notification->type = 'Mail';
+                    $notification->save();
+                }
             }
         }
 

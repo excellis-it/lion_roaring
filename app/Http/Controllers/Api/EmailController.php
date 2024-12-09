@@ -812,11 +812,13 @@ class EmailController extends Controller
                     $mail_user->is_cc = 1;
                     $mail_user->save();
 
-                    $notification = new Notification();
-                    $notification->user_id = $user->id;
-                    $notification->message = $notification_message;
-                    $notification->type = 'Mail';
-                    $notification->save();
+                    if ($user->id != auth()->id()) {
+                        $notification = new Notification();
+                        $notification->user_id = $user->id;
+                        $notification->message = $notification_message;
+                        $notification->type = 'Mail';
+                        $notification->save();
+                    }
                 }
             }
 
@@ -831,11 +833,13 @@ class EmailController extends Controller
                     $mail_user->is_to = 1;
                     $mail_user->save();
 
-                    $notification = new Notification();
-                    $notification->user_id = $user->id;
-                    $notification->message = $notification_message;
-                    $notification->type = 'Mail';
-                    $notification->save();
+                    if ($user->id != auth()->id()) {
+                        $notification = new Notification();
+                        $notification->user_id = $user->id;
+                        $notification->message = $notification_message;
+                        $notification->type = 'Mail';
+                        $notification->save();
+                    }
                 }
             }
 
@@ -974,11 +978,13 @@ class EmailController extends Controller
                     $mail_user->is_cc = 1;
                     $mail_user->save();
 
-                    $notification = new Notification();
-                    $notification->user_id = $user->id;
-                    $notification->message = $notification_message;
-                    $notification->type = 'Mail';
-                    $notification->save();
+                    if ($user->id != auth()->id()) {
+                        $notification = new Notification();
+                        $notification->user_id = $user->id;
+                        $notification->message = $notification_message;
+                        $notification->type = 'Mail';
+                        $notification->save();
+                    }
                 }
             }
 
@@ -993,11 +999,13 @@ class EmailController extends Controller
                     $mail_user->is_to = 1;
                     $mail_user->save();
 
-                    $notification = new Notification();
-                    $notification->user_id = $user->id;
-                    $notification->message = $notification_message;
-                    $notification->type = 'Mail';
-                    $notification->save();
+                    if ($user->id != auth()->id()) {
+                        $notification = new Notification();
+                        $notification->user_id = $user->id;
+                        $notification->message = $notification_message;
+                        $notification->type = 'Mail';
+                        $notification->save();
+                    }
                 }
             }
 
@@ -1132,11 +1140,13 @@ class EmailController extends Controller
                     $mail_user->is_cc = 1;
                     $mail_user->save();
 
-                    $notification = new Notification();
-                    $notification->user_id = $user->id;
-                    $notification->message = $notification_message;
-                    $notification->type = 'Mail';
-                    $notification->save();
+                    if ($user->id != auth()->id()) {
+                        $notification = new Notification();
+                        $notification->user_id = $user->id;
+                        $notification->message = $notification_message;
+                        $notification->type = 'Mail';
+                        $notification->save();
+                    }
                 }
             }
 
@@ -1151,11 +1161,13 @@ class EmailController extends Controller
                     $mail_user->is_to = 1;
                     $mail_user->save();
 
-                    $notification = new Notification();
-                    $notification->user_id = $user->id;
-                    $notification->message = $notification_message;
-                    $notification->type = 'Mail';
-                    $notification->save();
+                    if ($user->id != auth()->id()) {
+                        $notification = new Notification();
+                        $notification->user_id = $user->id;
+                        $notification->message = $notification_message;
+                        $notification->type = 'Mail';
+                        $notification->save();
+                    }
                 }
             }
 

@@ -100,7 +100,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fdv6a1De5ckZ3h8PgaE6Vb4'
+      - 'Bearer 6bvfheZ613c8k54PDVaaEgd'
     controller: null
     method: null
     route: null
@@ -182,7 +182,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8a3DhaEeckfgP6V54vbZd61'
+      - 'Bearer 46af3cha6DdEkZev8VP1gb5'
     controller: null
     method: null
     route: null
@@ -364,7 +364,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer faadck148PhVg6D5Zv6bEe3'
+      - 'Bearer c5aPVvD4g6ekZf3a86hb1dE'
     controller: null
     method: null
     route: null
@@ -391,14 +391,14 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: autem
+        example: impedit
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: autem
+      id: impedit
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -557,7 +557,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gdec5a314ZEhvk8ba6PfV6D'
+      - 'Bearer 5ha4Pkaf1c6vVEdDgbZe863'
     controller: null
     method: null
     route: null
@@ -584,14 +584,14 @@ endpoints:
         name: id
         description: 'The ID of the delete.'
         required: true
-        example: eos
+        example: qui
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: eos
+      id: qui
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -620,7 +620,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 64g631PZvVa5fdhEcb8kaeD'
+      - 'Bearer vDd648EZP6ck5ahgb1fea3V'
     controller: null
     method: null
     route: null
@@ -697,7 +697,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cg6kdDEfPa5148e6bhZVa3v'
+      - 'Bearer h86Df61cPkeabgVaZv4Ed53'
     controller: null
     method: null
     route: null

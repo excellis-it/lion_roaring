@@ -48,7 +48,7 @@ endpoints:
         name: email
         description: 'Email of the user. Example:'
         required: true
-        example: ocollier@example.org
+        example: winona54@example.net
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -77,7 +77,7 @@ endpoints:
     cleanBodyParameters:
       first_name: John
       last_name: Doe
-      email: ocollier@example.org
+      email: winona54@example.net
       phone: '1234567890'
       message: Hello
     fileParameters: []
@@ -88,6 +88,62 @@ endpoints:
           {
           "message": "Thank you for contacting us",
           "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/cms/contact-us-page
+    metadata:
+      groupName: 'Contact Us'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Contact us page'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": {
+              "id": 1,
+              "address": "123 Main St, Springfield, USA",
+              "phone": "+123456789",
+              "email": "info@example.com",
+              "created_at": "2024-12-09T10:00:00.000000Z",
+              "updated_at": "2024-12-09T10:00:00.000000Z"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to retrieve contact us information.",
+            "error": "Database error or contact information not found."
           }
         headers: []
         description: ''

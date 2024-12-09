@@ -110,7 +110,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ave1hPfbd3gca68Vk6ZE5D4'
+      - 'Bearer Zga56Vc3Pb4dev18DE6ahkf'
     controller: null
     method: null
     route: null

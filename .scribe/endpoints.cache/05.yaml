@@ -227,7 +227,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b31ev6V6Z48EghPcd5afDak'
+      - 'Bearer Dv8adbea3Vgfh6P6cE14kZ5'
     controller: null
     method: null
     route: null
@@ -392,7 +392,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ca3bfadkD6E1vhg48Z5e6PV'
+      - 'Bearer ePD81fZh3EV6bc5da6g4kva'
     controller: null
     method: null
     route: null
@@ -446,7 +446,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dv5dcbg6P14EkfeVZ8aa36h'
+      - 'Bearer ag46Z1aD5bheE6Pc8kV3dfv'
     controller: null
     method: null
     route: null
@@ -473,14 +473,14 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: debitis
+        example: soluta
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: debitis
+      id: soluta
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -675,7 +675,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6ev45D8Za3b61PgahfEdkcV'
+      - 'Bearer a6P48kcebEvgDdf1Zh63a5V'
     controller: null
     method: null
     route: null
@@ -702,14 +702,14 @@ endpoints:
         name: id
         description: 'The ID of the partner to delete.'
         required: true
-        example: 11
+        example: 5
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 11
+      id: 5
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -739,7 +739,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer acPad53keVh6g6EZ1vfb8D4'
+      - 'Bearer bga46avEk6e3h1dP8cfV5DZ'
     controller: null
     method: null
     route: null
