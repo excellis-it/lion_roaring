@@ -30,9 +30,9 @@
         var useCsrf = Boolean();
         var csrfUrl = "/sanctum/csrf-cookie";
     </script>
-    <script src="../docs/js/tryitout-4.35.0.js"></script>
+    <script src="../docs/js/tryitout-4.38.0.js"></script>
 
-    <script src="../docs/js/theme-default-4.35.0.js"></script>
+    <script src="../docs/js/theme-default-4.38.0.js"></script>
 
 </head>
 
@@ -563,8 +563,20 @@
                     <a href="#members">Members</a>
                 </li>
                                     <ul id="tocify-subheader-members" class="tocify-subheader">
-                                                    <li class="tocify-item level-2" data-unique="members-GETapi-v3-user-partners-list">
+                                                    <li class="tocify-item level-2" data-unique="members-POSTapi-v3-create-partner">
+                                <a href="#members-POSTapi-v3-create-partner">Store new Members</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="members-GETapi-v3-user-partners-list">
                                 <a href="#members-GETapi-v3-user-partners-list">List Of Members</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="members-GETapi-v3-user-partners-create-data">
+                                <a href="#members-GETapi-v3-user-partners-create-data">Load data roles, ecclesias, countries.</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="members-POSTapi-v3-user-partners-update--id-">
+                                <a href="#members-POSTapi-v3-user-partners-update--id-">Update Members's details</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="members-POSTapi-v3-user-partners-delete--id-">
+                                <a href="#members-POSTapi-v3-user-partners-delete--id-">Delete a Member</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -646,7 +658,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: December 4, 2024</li>
+        <li>Last updated: December 9, 2024</li>
     </ul>
 </div>
 
@@ -1147,7 +1159,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"user_name\": \"johndoe\",
     \"email\": \"johndoe@example.com\",
-    \"ecclesia_id\": 4,
+    \"ecclesia_id\": 9,
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
     \"middle_name\": \"A.\",
@@ -1156,7 +1168,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"city\": \"Springfield\",
     \"state\": 14,
     \"address2\": \"Apt 4B\",
-    \"country\": 5,
+    \"country\": 13,
     \"zip\": \"62704\",
     \"email_confirmation\": \"johndoe@example.com\",
     \"password\": \"Password@123\",
@@ -1178,7 +1190,7 @@ const headers = {
 let body = {
     "user_name": "johndoe",
     "email": "johndoe@example.com",
-    "ecclesia_id": 4,
+    "ecclesia_id": 9,
     "first_name": "John",
     "last_name": "Doe",
     "middle_name": "A.",
@@ -1187,7 +1199,7 @@ let body = {
     "city": "Springfield",
     "state": 14,
     "address2": "Apt 4B",
-    "country": 5,
+    "country": 13,
     "zip": "62704",
     "email_confirmation": "johndoe@example.com",
     "password": "Password@123",
@@ -1342,10 +1354,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="ecclesia_id"                data-endpoint="POSTapi-v3-register"
-               value="4"
+               value="9"
                data-component="body">
     <br>
-<p>nullable Ecclesia ID if applicable. Example: <code>4</code></p>
+<p>nullable Ecclesia ID if applicable. Example: <code>9</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>first_name</code></b>&nbsp;&nbsp;
@@ -1441,10 +1453,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="country"                data-endpoint="POSTapi-v3-register"
-               value="5"
+               value="13"
                data-component="body">
     <br>
-<p>Country of residence. Example: <code>5</code></p>
+<p>Country of residence. Example: <code>13</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>zip</code></b>&nbsp;&nbsp;
@@ -4930,7 +4942,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "reciver_id=2"\
     --form "message=Hello there!"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpX13KSy" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpBFkTvY" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -5151,7 +5163,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Optional file attachment for the chat message. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpX13KSy</code></p>
+<p>Optional file attachment for the chat message. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpBFkTvY</code></p>
         </div>
         </form>
 
@@ -5899,7 +5911,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"first_name\": \"John\",
     \"last_name\": \"Doe\",
-    \"email\": \"gerlach.madonna@example.org\",
+    \"email\": \"ocollier@example.org\",
     \"phone\": \"1234567890\",
     \"message\": \"Hello\"
 }"
@@ -5919,7 +5931,7 @@ const headers = {
 let body = {
     "first_name": "John",
     "last_name": "Doe",
-    "email": "gerlach.madonna@example.org",
+    "email": "ocollier@example.org",
     "phone": "1234567890",
     "message": "Hello"
 };
@@ -6042,10 +6054,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-contact-us"
-               value="gerlach.madonna@example.org"
+               value="ocollier@example.org"
                data-component="body">
     <br>
-<p>Email of the user. Example: Example: <code>gerlach.madonna@example.org</code></p>
+<p>Email of the user. Example: Example: <code>ocollier@example.org</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -6101,7 +6113,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"postcode\": \"ZP74857\",
     \"amount\": 150,
     \"country_id\": 2,
-    \"stripeToken\": \"quia\"
+    \"stripeToken\": \"vel\"
 }"
 </code></pre></div>
 
@@ -6126,7 +6138,7 @@ let body = {
     "postcode": "ZP74857",
     "amount": 150,
     "country_id": 2,
-    "stripeToken": "quia"
+    "stripeToken": "vel"
 };
 
 fetch(url, {
@@ -6314,10 +6326,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="stripeToken"                data-endpoint="POSTapi-v3-donation"
-               value="quia"
+               value="vel"
                data-component="body">
     <br>
-<p>required. Example: <code>quia</code></p>
+<p>required. Example: <code>vel</code></p>
         </div>
         </form>
 
@@ -7046,7 +7058,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/topics/error/edit" \
+    --get "http://127.0.0.1:8000/api/v3/user/topics/non/edit" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7054,7 +7066,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/topics/error/edit"
+    "http://127.0.0.1:8000/api/v3/user/topics/non/edit"
 );
 
 const headers = {
@@ -7173,10 +7185,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="topic"                data-endpoint="GETapi-v3-user-topics--topic--edit"
-               value="error"
+               value="non"
                data-component="url">
     <br>
-<p>The topic. Example: <code>error</code></p>
+<p>The topic. Example: <code>non</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
@@ -7777,7 +7789,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/list-by-topics?sortby=magni&amp;sorttype=dolor&amp;query=quia&amp;topic_id=1" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/list-by-topics?sortby=fugit&amp;sorttype=quo&amp;query=qui&amp;topic_id=4" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7789,10 +7801,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "sortby": "magni",
-    "sorttype": "dolor",
-    "query": "quia",
-    "topic_id": "1",
+    "sortby": "fugit",
+    "sorttype": "quo",
+    "query": "qui",
+    "topic_id": "4",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -7928,10 +7940,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sortby"                data-endpoint="GETapi-v3-user-becoming-sovereign-list-by-topics"
-               value="magni"
+               value="fugit"
                data-component="query">
     <br>
-<p>The column to sort by (optional, default: id). Example: <code>magni</code></p>
+<p>The column to sort by (optional, default: id). Example: <code>fugit</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>sorttype</code></b>&nbsp;&nbsp;
@@ -7939,10 +7951,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sorttype"                data-endpoint="GETapi-v3-user-becoming-sovereign-list-by-topics"
-               value="dolor"
+               value="quo"
                data-component="query">
     <br>
-<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>dolor</code></p>
+<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>quo</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
@@ -7950,10 +7962,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="query"                data-endpoint="GETapi-v3-user-becoming-sovereign-list-by-topics"
-               value="quia"
+               value="qui"
                data-component="query">
     <br>
-<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>quia</code></p>
+<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>qui</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -7961,10 +7973,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic_id"                data-endpoint="GETapi-v3-user-becoming-sovereign-list-by-topics"
-               value="1"
+               value="4"
                data-component="query">
     <br>
-<p>The ID of the topic to filter files by (optional). Example: <code>1</code></p>
+<p>The ID of the topic to filter files by (optional). Example: <code>4</code></p>
             </div>
                 </form>
 
@@ -8137,7 +8149,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=0"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpWVhfhR" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php6t2YRa" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -8304,7 +8316,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpWVhfhR</code></p>
+<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php6t2YRa</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -8333,7 +8345,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/view/1?topic=2" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/view/1?topic=7" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -8345,7 +8357,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "topic": "2",
+    "topic": "7",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -8496,10 +8508,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic"                data-endpoint="GETapi-v3-user-becoming-sovereign-view--id-"
-               value="2"
+               value="7"
                data-component="query">
     <br>
-<p>The ID of the topic to filter by (optional). Example: <code>2</code></p>
+<p>The ID of the topic to filter by (optional). Example: <code>7</code></p>
             </div>
                 </form>
 
@@ -8517,17 +8529,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/update/et" \
+    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/update/error" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=1"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpK8TMHH" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpOK2A7v" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/update/et"
+    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/update/error"
 );
 
 const headers = {
@@ -8690,10 +8702,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-becoming-sovereign-update--id-"
-               value="et"
+               value="error"
                data-component="url">
     <br>
-<p>The ID of the update. Example: <code>et</code></p>
+<p>The ID of the update. Example: <code>error</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -8705,7 +8717,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpK8TMHH</code></p>
+<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpOK2A7v</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -8898,7 +8910,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/download/quasi" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/download/culpa" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -8906,7 +8918,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/download/quasi"
+    "http://127.0.0.1:8000/api/v3/user/becoming-sovereign/download/culpa"
 );
 
 const headers = {
@@ -9038,10 +9050,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="file"                data-endpoint="GETapi-v3-user-becoming-sovereign-download--file-"
-               value="quasi"
+               value="culpa"
                data-component="url">
     <br>
-<p>Example: <code>quasi</code></p>
+<p>Example: <code>culpa</code></p>
             </div>
                     </form>
 
@@ -9295,7 +9307,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/list-by-topics?sortby=ea&amp;sorttype=voluptas&amp;query=minima&amp;topic_id=9" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/list-by-topics?sortby=esse&amp;sorttype=qui&amp;query=dolorum&amp;topic_id=14" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -9307,10 +9319,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "sortby": "ea",
-    "sorttype": "voluptas",
-    "query": "minima",
-    "topic_id": "9",
+    "sortby": "esse",
+    "sorttype": "qui",
+    "query": "dolorum",
+    "topic_id": "14",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -9446,10 +9458,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sortby"                data-endpoint="GETapi-v3-user-becoming-christ-like-list-by-topics"
-               value="ea"
+               value="esse"
                data-component="query">
     <br>
-<p>The column to sort by (optional, default: id). Example: <code>ea</code></p>
+<p>The column to sort by (optional, default: id). Example: <code>esse</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>sorttype</code></b>&nbsp;&nbsp;
@@ -9457,10 +9469,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sorttype"                data-endpoint="GETapi-v3-user-becoming-christ-like-list-by-topics"
-               value="voluptas"
+               value="qui"
                data-component="query">
     <br>
-<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>voluptas</code></p>
+<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>qui</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
@@ -9468,10 +9480,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="query"                data-endpoint="GETapi-v3-user-becoming-christ-like-list-by-topics"
-               value="minima"
+               value="dolorum"
                data-component="query">
     <br>
-<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>minima</code></p>
+<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>dolorum</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -9479,10 +9491,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic_id"                data-endpoint="GETapi-v3-user-becoming-christ-like-list-by-topics"
-               value="9"
+               value="14"
                data-component="query">
     <br>
-<p>The ID of the topic to filter files by (optional). Example: <code>9</code></p>
+<p>The ID of the topic to filter files by (optional). Example: <code>14</code></p>
             </div>
                 </form>
 
@@ -9655,7 +9667,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=0"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpiCZVIn" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpdvIMY8" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -9822,7 +9834,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpiCZVIn</code></p>
+<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpdvIMY8</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -9851,7 +9863,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/view/1?topic=2" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/view/1?topic=20" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -9863,7 +9875,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "topic": "2",
+    "topic": "20",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -10014,10 +10026,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic"                data-endpoint="GETapi-v3-user-becoming-christ-like-view--id-"
-               value="2"
+               value="20"
                data-component="query">
     <br>
-<p>The ID of the topic to filter by (optional). Example: <code>2</code></p>
+<p>The ID of the topic to filter by (optional). Example: <code>20</code></p>
             </div>
                 </form>
 
@@ -10035,17 +10047,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/update/ipsum" \
+    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/update/assumenda" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=1"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpN92yM9" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpNaMX68" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/update/ipsum"
+    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/update/assumenda"
 );
 
 const headers = {
@@ -10208,10 +10220,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-becoming-christ-like-update--id-"
-               value="ipsum"
+               value="assumenda"
                data-component="url">
     <br>
-<p>The ID of the update. Example: <code>ipsum</code></p>
+<p>The ID of the update. Example: <code>assumenda</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -10223,7 +10235,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpN92yM9</code></p>
+<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpNaMX68</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -10416,7 +10428,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/download/consequatur" \
+    --get "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/download/molestiae" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -10424,7 +10436,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/download/consequatur"
+    "http://127.0.0.1:8000/api/v3/user/becoming-christ-like/download/molestiae"
 );
 
 const headers = {
@@ -10556,10 +10568,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="file"                data-endpoint="GETapi-v3-user-becoming-christ-like-download--file-"
-               value="consequatur"
+               value="molestiae"
                data-component="url">
     <br>
-<p>Example: <code>consequatur</code></p>
+<p>Example: <code>molestiae</code></p>
             </div>
                     </form>
 
@@ -10813,7 +10825,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/list-by-topics?sortby=veniam&amp;sorttype=quo&amp;query=quia&amp;topic_id=14" \
+    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/list-by-topics?sortby=rerum&amp;sorttype=vero&amp;query=provident&amp;topic_id=3" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -10825,10 +10837,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "sortby": "veniam",
-    "sorttype": "quo",
-    "query": "quia",
-    "topic_id": "14",
+    "sortby": "rerum",
+    "sorttype": "vero",
+    "query": "provident",
+    "topic_id": "3",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -10964,10 +10976,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sortby"                data-endpoint="GETapi-v3-user-leadership-development-list-by-topics"
-               value="veniam"
+               value="rerum"
                data-component="query">
     <br>
-<p>The column to sort by (optional, default: id). Example: <code>veniam</code></p>
+<p>The column to sort by (optional, default: id). Example: <code>rerum</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>sorttype</code></b>&nbsp;&nbsp;
@@ -10975,10 +10987,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sorttype"                data-endpoint="GETapi-v3-user-leadership-development-list-by-topics"
-               value="quo"
+               value="vero"
                data-component="query">
     <br>
-<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>quo</code></p>
+<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>vero</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
@@ -10986,10 +10998,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="query"                data-endpoint="GETapi-v3-user-leadership-development-list-by-topics"
-               value="quia"
+               value="provident"
                data-component="query">
     <br>
-<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>quia</code></p>
+<p>The search query to filter files by ID, file name, or file extension (optional). Example: <code>provident</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -10997,10 +11009,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic_id"                data-endpoint="GETapi-v3-user-leadership-development-list-by-topics"
-               value="14"
+               value="3"
                data-component="query">
     <br>
-<p>The ID of the topic to filter files by (optional). Example: <code>14</code></p>
+<p>The ID of the topic to filter files by (optional). Example: <code>3</code></p>
             </div>
                 </form>
 
@@ -11173,7 +11185,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=0"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpWwRTAx" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpYEhS3K" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -11340,7 +11352,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpWwRTAx</code></p>
+<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpYEhS3K</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -11369,7 +11381,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/view/1?topic=14" \
+    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/view/1?topic=7" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -11381,7 +11393,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "topic": "14",
+    "topic": "7",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -11532,10 +11544,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic"                data-endpoint="GETapi-v3-user-leadership-development-view--id-"
-               value="14"
+               value="7"
                data-component="query">
     <br>
-<p>The ID of the topic to filter by (optional). Example: <code>14</code></p>
+<p>The ID of the topic to filter by (optional). Example: <code>7</code></p>
             </div>
                 </form>
 
@@ -11553,17 +11565,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/leadership-development/update/est" \
+    "http://127.0.0.1:8000/api/v3/user/leadership-development/update/vitae" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=1"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpuJZML0" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpmbYuKj" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/leadership-development/update/est"
+    "http://127.0.0.1:8000/api/v3/user/leadership-development/update/vitae"
 );
 
 const headers = {
@@ -11726,10 +11738,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-leadership-development-update--id-"
-               value="est"
+               value="vitae"
                data-component="url">
     <br>
-<p>The ID of the update. Example: <code>est</code></p>
+<p>The ID of the update. Example: <code>vitae</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -11741,7 +11753,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpuJZML0</code></p>
+<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpmbYuKj</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -11934,7 +11946,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/download/voluptate" \
+    --get "http://127.0.0.1:8000/api/v3/user/leadership-development/download/ipsum" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -11942,7 +11954,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/leadership-development/download/voluptate"
+    "http://127.0.0.1:8000/api/v3/user/leadership-development/download/ipsum"
 );
 
 const headers = {
@@ -12074,10 +12086,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="file"                data-endpoint="GETapi-v3-user-leadership-development-download--file-"
-               value="voluptate"
+               value="ipsum"
                data-component="url">
     <br>
-<p>Example: <code>voluptate</code></p>
+<p>Example: <code>ipsum</code></p>
             </div>
                     </form>
 
@@ -12331,7 +12343,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/files/list-by-topics?sortby=nostrum&amp;sorttype=eligendi&amp;query=sequi&amp;topic_id=1" \
+    --get "http://127.0.0.1:8000/api/v3/user/files/list-by-topics?sortby=minima&amp;sorttype=vitae&amp;query=sequi&amp;topic_id=19" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -12343,10 +12355,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "sortby": "nostrum",
-    "sorttype": "eligendi",
+    "sortby": "minima",
+    "sorttype": "vitae",
     "query": "sequi",
-    "topic_id": "1",
+    "topic_id": "19",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -12482,10 +12494,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sortby"                data-endpoint="GETapi-v3-user-files-list-by-topics"
-               value="nostrum"
+               value="minima"
                data-component="query">
     <br>
-<p>The column to sort by (optional, default: id). Example: <code>nostrum</code></p>
+<p>The column to sort by (optional, default: id). Example: <code>minima</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>sorttype</code></b>&nbsp;&nbsp;
@@ -12493,10 +12505,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="sorttype"                data-endpoint="GETapi-v3-user-files-list-by-topics"
-               value="eligendi"
+               value="vitae"
                data-component="query">
     <br>
-<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>eligendi</code></p>
+<p>The sort direction, either 'asc' or 'desc' (optional, default: 'asc'). Example: <code>vitae</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
@@ -12515,10 +12527,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic_id"                data-endpoint="GETapi-v3-user-files-list-by-topics"
-               value="1"
+               value="19"
                data-component="query">
     <br>
-<p>The ID of the topic to filter files by (optional). Example: <code>1</code></p>
+<p>The ID of the topic to filter files by (optional). Example: <code>19</code></p>
             </div>
                 </form>
 
@@ -12691,7 +12703,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=0"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpyKsWas" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phprttbYJ" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -12858,7 +12870,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpyKsWas</code></p>
+<p>The file to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phprttbYJ</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -12887,7 +12899,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/files/view/1?topic=4" \
+    --get "http://127.0.0.1:8000/api/v3/user/files/view/1?topic=17" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -12899,7 +12911,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const params = {
-    "topic": "4",
+    "topic": "17",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -13050,10 +13062,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="topic"                data-endpoint="GETapi-v3-user-files-view--id-"
-               value="4"
+               value="17"
                data-component="query">
     <br>
-<p>The ID of the topic to filter by (optional). Example: <code>4</code></p>
+<p>The ID of the topic to filter by (optional). Example: <code>17</code></p>
             </div>
                 </form>
 
@@ -13071,17 +13083,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/files/update/suscipit" \
+    "http://127.0.0.1:8000/api/v3/user/files/update/soluta" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "topic_id=1"\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpplXtYL" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpP1njyR" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/files/update/suscipit"
+    "http://127.0.0.1:8000/api/v3/user/files/update/soluta"
 );
 
 const headers = {
@@ -13244,10 +13256,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-files-update--id-"
-               value="suscipit"
+               value="soluta"
                data-component="url">
     <br>
-<p>The ID of the update. Example: <code>suscipit</code></p>
+<p>The ID of the update. Example: <code>soluta</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -13259,7 +13271,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpplXtYL</code></p>
+<p>The new file to replace the existing one (optional). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpP1njyR</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>topic_id</code></b>&nbsp;&nbsp;
@@ -13452,7 +13464,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/files/download/ut" \
+    --get "http://127.0.0.1:8000/api/v3/user/files/download/eum" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -13460,7 +13472,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/files/download/ut"
+    "http://127.0.0.1:8000/api/v3/user/files/download/eum"
 );
 
 const headers = {
@@ -13592,10 +13604,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="file"                data-endpoint="GETapi-v3-user-files-download--file-"
-               value="ut"
+               value="eum"
                data-component="url">
     <br>
-<p>Example: <code>ut</code></p>
+<p>Example: <code>eum</code></p>
             </div>
                     </form>
 
@@ -13805,7 +13817,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/mail/sent-email-list?type=%22draft%22" \
+    "http://127.0.0.1:8000/api/v3/user/mail/sent-email-list?type=%22draft%22&amp;search=%22abc%22" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -13818,6 +13830,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 const params = {
     "type": ""draft"",
+    "search": ""abc"",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -13965,6 +13978,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>The type of emails to filter. Example: <code>"draft"</code></p>
             </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>search</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="search"                data-endpoint="POSTapi-v3-user-mail-sent-email-list"
+               value=""abc""
+               data-component="query">
+    <br>
+<p>optional for search. Example: <code>"abc"</code></p>
+            </div>
                 </form>
 
                     <h2 id="email-POSTapi-v3-user-mail-star-email-list">Starred Emails</h2>
@@ -13981,7 +14005,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/mail/star-email-list?type=%22important%22" \
+    "http://127.0.0.1:8000/api/v3/user/mail/star-email-list?type=%22important%22&amp;search=%22abc%22" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -13994,6 +14018,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 const params = {
     "type": ""important"",
+    "search": ""abc"",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -14141,6 +14166,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>The type of emails to filter. Example: <code>"important"</code></p>
             </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>search</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="search"                data-endpoint="POSTapi-v3-user-mail-star-email-list"
+               value=""abc""
+               data-component="query">
+    <br>
+<p>optional for search. Example: <code>"abc"</code></p>
+            </div>
                 </form>
 
                     <h2 id="email-POSTapi-v3-user-mail-trash-email-list">Trashed Emails</h2>
@@ -14157,7 +14193,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/mail/trash-email-list?type=%22archived%22" \
+    "http://127.0.0.1:8000/api/v3/user/mail/trash-email-list?type=%22archived%22&amp;search=%22abc%22" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -14170,6 +14206,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 const params = {
     "type": ""archived"",
+    "search": ""abc"",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -14316,6 +14353,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="query">
     <br>
 <p>Optional. The type of emails to filter. Example: <code>"archived"</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>search</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="search"                data-endpoint="POSTapi-v3-user-mail-trash-email-list"
+               value=""abc""
+               data-component="query">
+    <br>
+<p>optional for search. Example: <code>"abc"</code></p>
             </div>
                 </form>
 
@@ -14759,11 +14807,11 @@ with the option to include CC recipients and attachments. Notifications are sent
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "to=qui"\
-    --form "cc=quibusdam"\
-    --form "subject=corrupti"\
-    --form "message=reprehenderit"\
-    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpNKBClZ" </code></pre></div>
+    --form "to=quo"\
+    --form "cc=consequatur"\
+    --form "subject=unde"\
+    --form "message=sint"\
+    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phppr1oXx" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -14778,10 +14826,10 @@ const headers = {
 };
 
 const body = new FormData();
-body.append('to', 'qui');
-body.append('cc', 'quibusdam');
-body.append('subject', 'corrupti');
-body.append('message', 'reprehenderit');
+body.append('to', 'quo');
+body.append('cc', 'consequatur');
+body.append('subject', 'unde');
+body.append('message', 'sint');
 body.append('attachments[]', document.querySelector('input[name="attachments[]"]').files[0]);
 
 fetch(url, {
@@ -14928,10 +14976,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="to"                data-endpoint="POSTapi-v3-user-mail-send"
-               value="qui"
+               value="quo"
                data-component="body">
     <br>
-<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;masum2@excellisit.net&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>qui</code></p>
+<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;masum2@excellisit.net&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>quo</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>cc</code></b>&nbsp;&nbsp;
@@ -14939,10 +14987,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="cc"                data-endpoint="POSTapi-v3-user-mail-send"
-               value="quibusdam"
+               value="consequatur"
                data-component="body">
     <br>
-<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>quibusdam</code></p>
+<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>consequatur</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>subject</code></b>&nbsp;&nbsp;
@@ -14950,10 +14998,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="subject"                data-endpoint="POSTapi-v3-user-mail-send"
-               value="corrupti"
+               value="unde"
                data-component="body">
     <br>
-<p>The subject of the email. Example: <code>corrupti</code></p>
+<p>The subject of the email. Example: <code>unde</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>message</code></b>&nbsp;&nbsp;
@@ -14961,10 +15009,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="message"                data-endpoint="POSTapi-v3-user-mail-send"
-               value="reprehenderit"
+               value="sint"
                data-component="body">
     <br>
-<p>The body content of the email. Example: <code>reprehenderit</code></p>
+<p>The body content of the email. Example: <code>sint</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>attachments</code></b>&nbsp;&nbsp;
@@ -15000,12 +15048,12 @@ including attachments and notifications to recipients.</p>
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "to=corporis"\
-    --form "cc=odio"\
-    --form "subject=libero"\
-    --form "message=rem"\
-    --form "main_mail_id=19"\
-    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpiBBEzk" </code></pre></div>
+    --form "to=exercitationem"\
+    --form "cc=sunt"\
+    --form "subject=hic"\
+    --form "message=et"\
+    --form "main_mail_id=6"\
+    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpoANykz" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -15020,11 +15068,11 @@ const headers = {
 };
 
 const body = new FormData();
-body.append('to', 'corporis');
-body.append('cc', 'odio');
-body.append('subject', 'libero');
-body.append('message', 'rem');
-body.append('main_mail_id', '19');
+body.append('to', 'exercitationem');
+body.append('cc', 'sunt');
+body.append('subject', 'hic');
+body.append('message', 'et');
+body.append('main_mail_id', '6');
 body.append('attachments[]', document.querySelector('input[name="attachments[]"]').files[0]);
 
 fetch(url, {
@@ -15174,10 +15222,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="to"                data-endpoint="POSTapi-v3-user-mail-sendReply"
-               value="corporis"
+               value="exercitationem"
                data-component="body">
     <br>
-<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;user1@example.com&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>corporis</code></p>
+<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;user1@example.com&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>exercitationem</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>cc</code></b>&nbsp;&nbsp;
@@ -15185,10 +15233,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="cc"                data-endpoint="POSTapi-v3-user-mail-sendReply"
-               value="odio"
+               value="sunt"
                data-component="body">
     <br>
-<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>odio</code></p>
+<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>sunt</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>subject</code></b>&nbsp;&nbsp;
@@ -15196,10 +15244,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="subject"                data-endpoint="POSTapi-v3-user-mail-sendReply"
-               value="libero"
+               value="hic"
                data-component="body">
     <br>
-<p>The subject of the reply email. Example: <code>libero</code></p>
+<p>The subject of the reply email. Example: <code>hic</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>message</code></b>&nbsp;&nbsp;
@@ -15207,10 +15255,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="message"                data-endpoint="POSTapi-v3-user-mail-sendReply"
-               value="rem"
+               value="et"
                data-component="body">
     <br>
-<p>The body content of the reply email. Example: <code>rem</code></p>
+<p>The body content of the reply email. Example: <code>et</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>attachments</code></b>&nbsp;&nbsp;
@@ -15231,10 +15279,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="main_mail_id"                data-endpoint="POSTapi-v3-user-mail-sendReply"
-               value="19"
+               value="6"
                data-component="body">
     <br>
-<p>The ID of the main email thread being replied to. Example: <code>19</code></p>
+<p>The ID of the main email thread being replied to. Example: <code>6</code></p>
         </div>
         </form>
 
@@ -15257,11 +15305,11 @@ including optional CC recipients and attachments.</p>
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "to=at"\
-    --form "cc=quis"\
-    --form "subject=et"\
-    --form "message=quae"\
-    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php8xwmqE" </code></pre></div>
+    --form "to=qui"\
+    --form "cc=sed"\
+    --form "subject=qui"\
+    --form "message=cumque"\
+    --form "attachments[]=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpurAt47" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -15276,10 +15324,10 @@ const headers = {
 };
 
 const body = new FormData();
-body.append('to', 'at');
-body.append('cc', 'quis');
-body.append('subject', 'et');
-body.append('message', 'quae');
+body.append('to', 'qui');
+body.append('cc', 'sed');
+body.append('subject', 'qui');
+body.append('message', 'cumque');
 body.append('attachments[]', document.querySelector('input[name="attachments[]"]').files[0]);
 
 fetch(url, {
@@ -15426,10 +15474,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="to"                data-endpoint="POSTapi-v3-user-mail-sendForward"
-               value="at"
+               value="qui"
                data-component="body">
     <br>
-<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;user1@example.com&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>at</code></p>
+<p>JSON-encoded array of recipient emails in the format [{&quot;value&quot;: &quot;user1@example.com&quot;}, {&quot;value&quot;: &quot;user2@example.com&quot;}]. Example: <code>qui</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>cc</code></b>&nbsp;&nbsp;
@@ -15437,10 +15485,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="cc"                data-endpoint="POSTapi-v3-user-mail-sendForward"
-               value="quis"
+               value="sed"
                data-component="body">
     <br>
-<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>quis</code></p>
+<p>JSON-encoded array of CC recipient emails in the same format as the &quot;to&quot; field. Optional. Example: <code>sed</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>subject</code></b>&nbsp;&nbsp;
@@ -15448,10 +15496,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="subject"                data-endpoint="POSTapi-v3-user-mail-sendForward"
-               value="et"
+               value="qui"
                data-component="body">
     <br>
-<p>The subject of the forwarded email. Example: <code>et</code></p>
+<p>The subject of the forwarded email. Example: <code>qui</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>message</code></b>&nbsp;&nbsp;
@@ -15459,10 +15507,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="message"                data-endpoint="POSTapi-v3-user-mail-sendForward"
-               value="quae"
+               value="cumque"
                data-component="body">
     <br>
-<p>The body content of the forwarded email. Example: <code>quae</code></p>
+<p>The body content of the forwarded email. Example: <code>cumque</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>attachments</code></b>&nbsp;&nbsp;
@@ -17947,7 +17995,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"email\": \"frosenbaum@example.net\"
+    \"email\": \"nedra.lesch@example.net\"
 }"
 </code></pre></div>
 
@@ -17963,7 +18011,7 @@ const headers = {
 };
 
 let body = {
-    "email": "frosenbaum@example.net"
+    "email": "nedra.lesch@example.net"
 };
 
 fetch(url, {
@@ -18062,10 +18110,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v3-forget-password"
-               value="frosenbaum@example.net"
+               value="nedra.lesch@example.net"
                data-component="body">
     <br>
-<p>The email of the user. Example: Example: <code>frosenbaum@example.net</code></p>
+<p>The email of the user. Example: Example: <code>nedra.lesch@example.net</code></p>
         </div>
         </form>
 
@@ -18407,7 +18455,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "name="Project Z Team""\
     --form "description="Team for Project Z collaboration""\
     --form "members="\
-    --form "group_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpGq2vVP" </code></pre></div>
+    --form "group_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpRA3tx9" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -18597,7 +18645,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpGq2vVP</code></p>
+<p>An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpRA3tx9</code></p>
         </div>
         </form>
 
@@ -18958,7 +19006,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "team_id=5"\
     --form "message="Hello team!""\
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpLnmO5M" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpqbNaY0" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -19173,7 +19221,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The attachment file to send, if applicable (optional if a message is provided). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpLnmO5M</code></p>
+<p>The attachment file to send, if applicable (optional if a message is provided). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpqbNaY0</code></p>
         </div>
         </form>
 
@@ -19380,7 +19428,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "team_id=5"\
-    --form "group_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpx2SfOC" </code></pre></div>
+    --form "group_image=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpXFthLa" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -19530,7 +19578,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The new group image file (JPEG, PNG, JPG, GIF, SVG formats, max size: 2048KB). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpx2SfOC</code></p>
+<p>The new group image file (JPEG, PNG, JPG, GIF, SVG formats, max size: 2048KB). Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpXFthLa</code></p>
         </div>
         </form>
 
@@ -21254,7 +21302,7 @@ otherwise, it marks the notification as read.</p>
     --data "{
     \"team_id\": 10,
     \"chat_id\": 25,
-    \"is_delete\": 10
+    \"is_delete\": 7
 }"
 </code></pre></div>
 
@@ -21273,7 +21321,7 @@ const headers = {
 let body = {
     "team_id": 10,
     "chat_id": 25,
-    "is_delete": 10
+    "is_delete": 7
 };
 
 fetch(url, {
@@ -21443,10 +21491,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="is_delete"                data-endpoint="POSTapi-v3-user-team-chats-notification"
-               value="10"
+               value="7"
                data-component="body">
     <br>
-<p>optional Indicates if the notification should be marked as read and deleted. Example: <code>10</code></p>
+<p>optional Indicates if the notification should be marked as read and deleted. Example: <code>7</code></p>
         </div>
         </form>
 
@@ -22140,7 +22188,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/jobs/edit/ad" \
+    "http://127.0.0.1:8000/api/v3/user/jobs/edit/autem" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -22161,7 +22209,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/jobs/edit/ad"
+    "http://127.0.0.1:8000/api/v3/user/jobs/edit/autem"
 );
 
 const headers = {
@@ -22322,10 +22370,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-jobs-edit--id-"
-               value="ad"
+               value="autem"
                data-component="url">
     <br>
-<p>The ID of the edit. Example: <code>ad</code></p>
+<p>The ID of the edit. Example: <code>autem</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -22454,7 +22502,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/jobs/delete/alias" \
+    "http://127.0.0.1:8000/api/v3/user/jobs/delete/eos" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -22462,7 +22510,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/jobs/delete/alias"
+    "http://127.0.0.1:8000/api/v3/user/jobs/delete/eos"
 );
 
 const headers = {
@@ -22585,10 +22633,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-jobs-delete--id-"
-               value="alias"
+               value="eos"
                data-component="url">
     <br>
-<p>The ID of the delete. Example: <code>alias</code></p>
+<p>The ID of the delete. Example: <code>eos</code></p>
             </div>
                     </form>
 
@@ -23893,7 +23941,364 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
     
 
-                                <h2 id="members-GETapi-v3-user-partners-list">List Of Members</h2>
+                                <h2 id="members-POSTapi-v3-create-partner">Store new Members</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v3-create-partner">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/create-partner" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"user_name\": \"johndoe\",
+    \"ecclesia_id\": 1,
+    \"role\": \"MEMBER\",
+    \"first_name\": \"John\",
+    \"last_name\": \"Doe\",
+    \"middle_name\": \"Smith\",
+    \"email\": \"johndoe@example.com\",
+    \"password\": \"P@ssword1\",
+    \"confirm_password\": \"P@ssword1\",
+    \"address\": \"123 Main St\",
+    \"country\": \"USA\",
+    \"state\": \"California\",
+    \"city\": \"Los Angeles\",
+    \"zip\": \"90001\",
+    \"address2\": \"Apt 4B\",
+    \"phone\": \"1234567890\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/create-partner"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "user_name": "johndoe",
+    "ecclesia_id": 1,
+    "role": "MEMBER",
+    "first_name": "John",
+    "last_name": "Doe",
+    "middle_name": "Smith",
+    "email": "johndoe@example.com",
+    "password": "P@ssword1",
+    "confirm_password": "P@ssword1",
+    "address": "123 Main St",
+    "country": "USA",
+    "state": "California",
+    "city": "Los Angeles",
+    "zip": "90001",
+    "address2": "Apt 4B",
+    "phone": "1234567890"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-create-partner">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Customer created successfully.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Failed to create user.&quot;,
+    &quot;error&quot;: &quot;Validation error or database error&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-create-partner" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-create-partner"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-create-partner"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-create-partner" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-create-partner">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-create-partner" data-method="POST"
+      data-path="api/v3/create-partner"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-create-partner', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-create-partner"
+                    onclick="tryItOut('POSTapi-v3-create-partner');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-create-partner"
+                    onclick="cancelTryOut('POSTapi-v3-create-partner');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-create-partner"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/create-partner</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-create-partner"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-create-partner"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-create-partner"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>user_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="user_name"                data-endpoint="POSTapi-v3-create-partner"
+               value="johndoe"
+               data-component="body">
+    <br>
+<p>The unique username. Example: <code>johndoe</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>ecclesia_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="ecclesia_id"                data-endpoint="POSTapi-v3-create-partner"
+               value="1"
+               data-component="body">
+    <br>
+<p>nullable The ID of the ecclesia. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>role</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="role"                data-endpoint="POSTapi-v3-create-partner"
+               value="MEMBER"
+               data-component="body">
+    <br>
+<p>The role to assign. Example: <code>MEMBER</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>first_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="first_name"                data-endpoint="POSTapi-v3-create-partner"
+               value="John"
+               data-component="body">
+    <br>
+<p>The first name of the user. Example: <code>John</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>last_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="last_name"                data-endpoint="POSTapi-v3-create-partner"
+               value="Doe"
+               data-component="body">
+    <br>
+<p>The last name of the user. Example: <code>Doe</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>middle_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="middle_name"                data-endpoint="POSTapi-v3-create-partner"
+               value="Smith"
+               data-component="body">
+    <br>
+<p>nullable The middle name of the user. Example: <code>Smith</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="email"                data-endpoint="POSTapi-v3-create-partner"
+               value="johndoe@example.com"
+               data-component="body">
+    <br>
+<p>The email address of the user. Example: <code>johndoe@example.com</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="password"                data-endpoint="POSTapi-v3-create-partner"
+               value="P@ssword1"
+               data-component="body">
+    <br>
+<p>The password. Must contain at least one special character (@$%&amp;). Example: <code>P@ssword1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>confirm_password</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="confirm_password"                data-endpoint="POSTapi-v3-create-partner"
+               value="P@ssword1"
+               data-component="body">
+    <br>
+<p>The confirmed password. Must match the password. Example: <code>P@ssword1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>address</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="address"                data-endpoint="POSTapi-v3-create-partner"
+               value="123 Main St"
+               data-component="body">
+    <br>
+<p>The address of the user. Example: <code>123 Main St</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>country</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="country"                data-endpoint="POSTapi-v3-create-partner"
+               value="USA"
+               data-component="body">
+    <br>
+<p>The country of the user. Example: <code>USA</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>state</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="state"                data-endpoint="POSTapi-v3-create-partner"
+               value="California"
+               data-component="body">
+    <br>
+<p>The state of the user. Example: <code>California</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>city</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="city"                data-endpoint="POSTapi-v3-create-partner"
+               value="Los Angeles"
+               data-component="body">
+    <br>
+<p>The city of the user. Example: <code>Los Angeles</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>zip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="zip"                data-endpoint="POSTapi-v3-create-partner"
+               value="90001"
+               data-component="body">
+    <br>
+<p>The zip code. Example: <code>90001</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>address2</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="address2"                data-endpoint="POSTapi-v3-create-partner"
+               value="Apt 4B"
+               data-component="body">
+    <br>
+<p>nullable The secondary address. Example: <code>Apt 4B</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="phone"                data-endpoint="POSTapi-v3-create-partner"
+               value="1234567890"
+               data-component="body">
+    <br>
+<p>The phone number. Example: <code>1234567890</code></p>
+        </div>
+        </form>
+
+                    <h2 id="members-GETapi-v3-user-partners-list">List Of Members</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -24152,6 +24557,675 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>optional for search. Example: <code>"abc"</code></p>
             </div>
                 </form>
+
+                    <h2 id="members-GETapi-v3-user-partners-create-data">Load data roles, ecclesias, countries.</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v3-user-partners-create-data">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://127.0.0.1:8000/api/v3/user/partners/create-data" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/partners/create-data"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v3-user-partners-create-data">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;roles&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;name&quot;: &quot;Manager&quot;
+        },
+        {
+            &quot;id&quot;: 2,
+            &quot;name&quot;: &quot;Supervisor&quot;
+        }
+    ],
+    &quot;ecclesias&quot;: [
+        {
+            &quot;id&quot;: 10,
+            &quot;name&quot;: &quot;Ecclesia One&quot;
+        },
+        {
+            &quot;id&quot;: 9,
+            &quot;name&quot;: &quot;Ecclesia Two&quot;
+        }
+    ],
+    &quot;countries&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;name&quot;: &quot;United States&quot;
+        },
+        {
+            &quot;id&quot;: 2,
+            &quot;name&quot;: &quot;Canada&quot;
+        }
+    ]
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v3-user-partners-create-data" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v3-user-partners-create-data"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v3-user-partners-create-data"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v3-user-partners-create-data" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v3-user-partners-create-data">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v3-user-partners-create-data" data-method="GET"
+      data-path="api/v3/user/partners/create-data"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v3-user-partners-create-data', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v3-user-partners-create-data"
+                    onclick="tryItOut('GETapi-v3-user-partners-create-data');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v3-user-partners-create-data"
+                    onclick="cancelTryOut('GETapi-v3-user-partners-create-data');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v3-user-partners-create-data"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v3/user/partners/create-data</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v3-user-partners-create-data"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v3-user-partners-create-data"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v3-user-partners-create-data"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="members-POSTapi-v3-user-partners-update--id-">Update Members&#039;s details</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v3-user-partners-update--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/partners/update/debitis" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"first_name\": \"John\",
+    \"last_name\": \"Doe\",
+    \"middle_name\": \"Smith\",
+    \"email\": \"johndoe@example.com\",
+    \"address\": \"123 Main St\",
+    \"phone\": \"1234567890\",
+    \"ecclesia_id\": 1,
+    \"country\": \"USA\",
+    \"state\": \"California\",
+    \"city\": \"Los Angeles\",
+    \"zip\": \"90001\",
+    \"address2\": \"Apt 4B\",
+    \"password\": \"P@ssword1\",
+    \"confirm_password\": \"P@ssword1\",
+    \"status\": 1
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/partners/update/debitis"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "first_name": "John",
+    "last_name": "Doe",
+    "middle_name": "Smith",
+    "email": "johndoe@example.com",
+    "address": "123 Main St",
+    "phone": "1234567890",
+    "ecclesia_id": 1,
+    "country": "USA",
+    "state": "California",
+    "city": "Los Angeles",
+    "zip": "90001",
+    "address2": "Apt 4B",
+    "password": "P@ssword1",
+    "confirm_password": "P@ssword1",
+    "status": 1
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-partners-update--id-">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Member updated successfully.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Failed to update member.&quot;,
+    &quot;error&quot;: &quot;Validation error or database error&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-partners-update--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-partners-update--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-partners-update--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-partners-update--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-partners-update--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-partners-update--id-" data-method="POST"
+      data-path="api/v3/user/partners/update/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-partners-update--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-partners-update--id-"
+                    onclick="tryItOut('POSTapi-v3-user-partners-update--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-partners-update--id-"
+                    onclick="cancelTryOut('POSTapi-v3-user-partners-update--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-partners-update--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/partners/update/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="debitis"
+               data-component="url">
+    <br>
+<p>The ID of the update. Example: <code>debitis</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>first_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="first_name"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="John"
+               data-component="body">
+    <br>
+<p>The first name of the user. Example: <code>John</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>last_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="last_name"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="Doe"
+               data-component="body">
+    <br>
+<p>The last name of the user. Example: <code>Doe</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>middle_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="middle_name"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="Smith"
+               data-component="body">
+    <br>
+<p>nullable The middle name of the user. Example: <code>Smith</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="email"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="johndoe@example.com"
+               data-component="body">
+    <br>
+<p>The email address of the user. Example: <code>johndoe@example.com</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>address</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="address"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="123 Main St"
+               data-component="body">
+    <br>
+<p>The address of the user. Example: <code>123 Main St</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="phone"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="1234567890"
+               data-component="body">
+    <br>
+<p>The phone number. Example: <code>1234567890</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>ecclesia_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="ecclesia_id"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>nullable The ID of the ecclesia. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>country</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="country"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="USA"
+               data-component="body">
+    <br>
+<p>The country of the user. Example: <code>USA</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>state</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="state"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="California"
+               data-component="body">
+    <br>
+<p>The state of the user. Example: <code>California</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>city</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="city"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="Los Angeles"
+               data-component="body">
+    <br>
+<p>The city of the user. Example: <code>Los Angeles</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>zip</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="zip"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="90001"
+               data-component="body">
+    <br>
+<p>The zip code. Example: <code>90001</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>address2</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="address2"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="Apt 4B"
+               data-component="body">
+    <br>
+<p>nullable The secondary address. Example: <code>Apt 4B</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="password"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="P@ssword1"
+               data-component="body">
+    <br>
+<p>nullable The new password. Must include at least one special character (@$%&amp;). Example: <code>P@ssword1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>confirm_password</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+                              name="confirm_password"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="P@ssword1"
+               data-component="body">
+    <br>
+<p>nullable The confirmed password. Must match the password. Example: <code>P@ssword1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="status"                data-endpoint="POSTapi-v3-user-partners-update--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>The status. Example: <code>1</code></p>
+        </div>
+        </form>
+
+                    <h2 id="members-POSTapi-v3-user-partners-delete--id-">Delete a Member</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v3-user-partners-delete--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://127.0.0.1:8000/api/v3/user/partners/delete/11" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v3/user/partners/delete/11"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v3-user-partners-delete--id-">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Member has been deleted successfully.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (201):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Failed to delete member.&quot;,
+    &quot;error&quot;: &quot;Validation error or database error&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v3-user-partners-delete--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v3-user-partners-delete--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v3-user-partners-delete--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v3-user-partners-delete--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v3-user-partners-delete--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v3-user-partners-delete--id-" data-method="POST"
+      data-path="api/v3/user/partners/delete/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v3-user-partners-delete--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v3-user-partners-delete--id-"
+                    onclick="tryItOut('POSTapi-v3-user-partners-delete--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v3-user-partners-delete--id-"
+                    onclick="cancelTryOut('POSTapi-v3-user-partners-delete--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v3-user-partners-delete--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v3/user/partners/delete/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v3-user-partners-delete--id-"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v3-user-partners-delete--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v3-user-partners-delete--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="POSTapi-v3-user-partners-delete--id-"
+               value="11"
+               data-component="url">
+    <br>
+<p>The ID of the partner to delete. Example: <code>11</code></p>
+            </div>
+                    </form>
 
                 <h1 id="profile">Profile</h1>
 
@@ -24527,7 +25601,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "profile_picture=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpQysabR" </code></pre></div>
+    --form "profile_picture=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php9YJfok" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -24664,7 +25738,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The profile picture of the user. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpQysabR</code></p>
+<p>The profile picture of the user. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/php9YJfok</code></p>
         </div>
         </form>
 
@@ -26181,7 +27255,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://127.0.0.1:8000/api/v3/user/roles/edit/sed" \
+    "http://127.0.0.1:8000/api/v3/user/roles/edit/tenetur" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -26189,7 +27263,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/roles/edit/sed"
+    "http://127.0.0.1:8000/api/v3/user/roles/edit/tenetur"
 );
 
 const headers = {
@@ -26517,10 +27591,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="POSTapi-v3-user-roles-edit--id-"
-               value="sed"
+               value="tenetur"
                data-component="url">
     <br>
-<p>The ID of the edit. Example: <code>sed</code></p>
+<p>The ID of the edit. Example: <code>tenetur</code></p>
             </div>
                     </form>
 
@@ -26762,7 +27836,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpCum0RL" </code></pre></div>
+    --form "file=@/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpvVgz9P" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -26897,7 +27971,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>files to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpCum0RL</code></p>
+<p>files to upload. Example: <code>/private/var/folders/wy/1yz2w5p91q13336262xr4yzw0000gn/T/phpvVgz9P</code></p>
         </div>
         </form>
 
@@ -26915,7 +27989,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/strategy/delete/9" \
+    --get "http://127.0.0.1:8000/api/v3/user/strategy/delete/2" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -26923,7 +27997,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/strategy/delete/9"
+    "http://127.0.0.1:8000/api/v3/user/strategy/delete/2"
 );
 
 const headers = {
@@ -27046,10 +28120,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="GETapi-v3-user-strategy-delete--id-"
-               value="9"
+               value="2"
                data-component="url">
     <br>
-<p>The ID of the strategy to delete. Example: <code>9</code></p>
+<p>The ID of the strategy to delete. Example: <code>2</code></p>
             </div>
                     </form>
 
@@ -27067,7 +28141,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/strategy/download/in" \
+    --get "http://127.0.0.1:8000/api/v3/user/strategy/download/et" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -27075,7 +28149,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/strategy/download/in"
+    "http://127.0.0.1:8000/api/v3/user/strategy/download/et"
 );
 
 const headers = {
@@ -27196,10 +28270,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="GETapi-v3-user-strategy-download--id-"
-               value="in"
+               value="et"
                data-component="url">
     <br>
-<p>The ID of the download. Example: <code>in</code></p>
+<p>The ID of the download. Example: <code>et</code></p>
             </div>
                     </form>
 
@@ -27217,7 +28291,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://127.0.0.1:8000/api/v3/user/strategy/view/14" \
+    --get "http://127.0.0.1:8000/api/v3/user/strategy/view/16" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -27225,7 +28299,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://127.0.0.1:8000/api/v3/user/strategy/view/14"
+    "http://127.0.0.1:8000/api/v3/user/strategy/view/16"
 );
 
 const headers = {
@@ -27354,10 +28428,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="GETapi-v3-user-strategy-view--id-"
-               value="14"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the strategy to view. Example: <code>14</code></p>
+<p>The ID of the strategy to view. Example: <code>16</code></p>
             </div>
                     </form>
 

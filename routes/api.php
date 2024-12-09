@@ -71,6 +71,8 @@ Route::prefix('v3')->group(function () {
     Route::post('register-agreement', [AuthController::class, 'registerAgreement']);
     Route::post('forget-password', [ForgetPasswordController::class, 'forgetPassword']);
 
+    Route::post('/create-partner', [PartnerController::class, 'storePartner']);
+
     Route::group(['middleware' => ['auth:api', 'user'], 'prefix' => 'user'], function () {
         Route::post('profile', [ProfileController::class, 'profile']);
         Route::post('update-profile', [ProfileController::class, 'updateProfile']);
@@ -252,6 +254,10 @@ Route::prefix('v3')->group(function () {
 
         Route::prefix('partners')->group(function () {
             Route::get('/list', [PartnerController::class, 'list']);
+            Route::get('/create-data', [PartnerController::class, 'loadCreateData']);
+            // Route::post('/store', [PartnerController::class, 'storePartner']);
+            Route::post('/update/{id}', [PartnerController::class, 'updatePartner']);
+            Route::post('/delete/{id}', [PartnerController::class, 'deletePartner']);
         });
 
         Route::prefix('roles')->group(function () {

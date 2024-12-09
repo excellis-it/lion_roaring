@@ -155,13 +155,25 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'An error occurred while fetching states.'
-                properties:
-                  message:
-                    type: string
-                    example: 'An error occurred while fetching states.'
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'No states found for the specified country.'
+                    properties:
+                      message:
+                        type: string
+                        example: 'No states found for the specified country.'
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'An error occurred while fetching states.'
+                    properties:
+                      message:
+                        type: string
+                        example: 'An error occurred while fetching states.'
       tags:
         - Authentication
       requestBody:
@@ -175,6 +187,7 @@ paths:
                   type: integer
                   description: 'The ID of the country to fetch states for.'
                   example: 1
+                  nullable: false
               required:
                 - country
       security: []
@@ -274,66 +287,82 @@ paths:
                   type: string
                   description: 'Unique username for the user.'
                   example: johndoe
+                  nullable: false
                 email:
                   type: string
                   description: 'Unique email address.'
                   example: johndoe@example.com
+                  nullable: false
                 ecclesia_id:
                   type: integer
                   description: 'nullable Ecclesia ID if applicable.'
-                  example: 4
+                  example: 9
+                  nullable: false
                 first_name:
                   type: string
                   description: 'First name of the user.'
                   example: John
+                  nullable: false
                 last_name:
                   type: string
                   description: 'Last name of the user.'
                   example: Doe
+                  nullable: false
                 middle_name:
                   type: string
                   description: 'nullable Middle name of the user.'
                   example: A.
+                  nullable: true
                 address:
                   type: string
                   description: 'Address of the user.'
                   example: '123 Main St'
+                  nullable: false
                 phone:
                   type: string
                   description: "User's phone number."
                   example: '1234567890'
+                  nullable: false
                 city:
                   type: string
                   description: 'City of residence.'
                   example: Springfield
+                  nullable: false
                 state:
                   type: integer
                   description: 'State of residence.'
                   example: 14
+                  nullable: false
                 address2:
                   type: string
                   description: 'nullable Additional address information.'
                   example: 'Apt 4B'
+                  nullable: true
                 country:
                   type: integer
                   description: 'Country of residence.'
-                  example: 5
+                  example: 13
+                  nullable: false
                 zip:
                   type: string
                   description: 'Zip code.'
                   example: '62704'
+                  nullable: false
                 email_confirmation:
                   type: string
                   description: 'Confirmation of the email address. Must match `email`.'
                   example: johndoe@example.com
+                  nullable: false
                 password:
                   type: string
                   description: 'Password for the user. Must be at least 8 characters and include one special character (@$%&).'
                   example: Password@123
+                  nullable: false
                 password_confirmation:
                   type: string
                   description: 'Confirmation of the password. Must match `password`.'
                   example: Password@123
+                  nullable: false
               required:
                 - user_name
                 - email
@@ -376,10 +405,12 @@ paths:
                   type: string
                   description: 'The username or email of the user.'
                   example: john_doe
+                  nullable: false
                 password:
                   type: string
                   description: 'The password of the user.'
                   example: password
+                  nullable: false
               required:
                 - user_name
                 - password
@@ -417,6 +448,7 @@ paths:
             type: string
             description: 'optional for search.'
             example: '"abc"'
+            nullable: false
       responses:
         200:
           description: ''
@@ -549,6 +581,7 @@ paths:
             type: string
             description: 'optional for search.'
             example: '"abc"'
+            nullable: false
       responses:
         200:
           description: ''
@@ -844,10 +877,12 @@ paths:
                   type: string
                   description: 'The title of the bulletin.'
                   example: '"New Bulletin Title"'
+                  nullable: false
                 description:
                   type: string
                   description: 'The description of the bulletin.'
                   example: '"Details about the bulletin."'
+                  nullable: false
               required:
                 - title
                 - description
@@ -923,10 +958,12 @@ paths:
                   type: string
                   description: 'The new title of the bulletin.'
                   example: '"Updated Bulletin Title"'
+                  nullable: false
                 description:
                   type: string
                   description: 'The new description of the bulletin.'
                   example: '"Updated details about the bulletin."'
+                  nullable: false
     parameters:
       -
         in: path
@@ -1438,6 +1475,7 @@ paths:
                   type: string
                   description: 'The slug of the our governance.'
                   example: robert-hyde
+                  nullable: false
               required:
                 - slug
       security: []
@@ -1468,6 +1506,7 @@ paths:
                   type: string
                   description: 'The slug of the our governance.'
                   example: 'lion-roaring-innovation-center, lion-roaring-education-center-1709707179.'
+                  nullable: false
               required:
                 - slug
       security: []
@@ -1531,6 +1570,7 @@ paths:
                   type: string
                   description: 'The slug of the organization center.'
                   example: lion-roaring-foundation.
+                  nullable: false
               required:
                 - slug
       security: []
@@ -1950,6 +1990,7 @@ paths:
                   type: integer
                   description: 'ID of the sender (the another user).'
                   example: 1
+                  nullable: false
               required:
                 - sender_receiver_id
   /api/v3/user/chats/send:
@@ -2232,14 +2273,17 @@ paths:
                   type: integer
                   description: 'ID of the receiver (chat partner).'
                   example: 2
+                  nullable: false
                 message:
                   type: string
                   description: 'Optional message text if sending a text message.'
                   example: 'Hello there!'
+                  nullable: false
                 file:
                   type: string
                   format: binary
                   description: 'Optional file attachment for the chat message.'
+                  nullable: false
               required:
                 - reciver_id
   /api/v3/user/chats/clear:
@@ -2278,6 +2322,7 @@ paths:
                   type: integer
                   description: 'The ID of the user to clear chat with.'
                   example: 2
+                  nullable: false
               required:
                 - reciver_id
   /api/v3/user/chats/seen:
@@ -2348,10 +2393,12 @@ paths:
                   type: integer
                   description: 'The ID of the chat message to mark as seen.'
                   example: 10
+                  nullable: false
                 reciver_id:
                   type: integer
                   description: 'The ID of the receiver user.'
                   example: 2
+                  nullable: false
               required:
                 - chat_id
                 - reciver_id
@@ -2419,10 +2466,12 @@ paths:
                   type: integer
                   description: 'The ID of the chat message to be removed.'
                   example: 10
+                  nullable: false
                 del_from:
                   type: string
                   description: 'Specifies if the message should be deleted for "everyone" or only for the sender ("me").'
                   example: '"me"'
+                  nullable: false
               required:
                 - chat_id
                 - del_from
@@ -2438,53 +2487,118 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  msg: 'Notification sent successfully'
-                  status: true
-                  notification_count: 4
-                  notification:
-                    id: 46
-                    user_id: 3
-                    chat_id: 15
-                    message: 'You have a <b>new message</b> from John Doe'
-                    type: Chat
-                    created_at: '2024-11-07T14:35:29.000000Z'
-                    updated_at: '2024-11-07T14:35:29.000000Z'
-                properties:
-                  msg:
-                    type: string
-                    example: 'Notification sent successfully'
-                  status:
-                    type: boolean
-                    example: true
-                  notification_count:
-                    type: integer
-                    example: 4
-                  notification:
+                oneOf:
+                  -
+                    description: ''
                     type: object
+                    example:
+                      msg: 'Notification deleted successfully'
+                      status: true
                     properties:
-                      id:
-                        type: integer
-                        example: 46
-                      user_id:
+                      msg:
+                        type: string
+                        example: 'Notification deleted successfully'
+                      status:
+                        type: boolean
+                        example: true
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      msg: 'Notification already sent'
+                      status: true
+                      notification_count: 3
+                      notification:
+                        id: 45
+                        user_id: 3
+                        chat_id: 15
+                        message: 'You have a <b>new message</b> from John Doe'
+                        type: Chat
+                        created_at: '2024-11-07T14:35:29.000000Z'
+                        updated_at: '2024-11-07T14:35:29.000000Z'
+                    properties:
+                      msg:
+                        type: string
+                        example: 'Notification already sent'
+                      status:
+                        type: boolean
+                        example: true
+                      notification_count:
                         type: integer
                         example: 3
-                      chat_id:
+                      notification:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 45
+                          user_id:
+                            type: integer
+                            example: 3
+                          chat_id:
+                            type: integer
+                            example: 15
+                          message:
+                            type: string
+                            example: 'You have a <b>new message</b> from John Doe'
+                          type:
+                            type: string
+                            example: Chat
+                          created_at:
+                            type: string
+                            example: '2024-11-07T14:35:29.000000Z'
+                          updated_at:
+                            type: string
+                            example: '2024-11-07T14:35:29.000000Z'
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      msg: 'Notification sent successfully'
+                      status: true
+                      notification_count: 4
+                      notification:
+                        id: 46
+                        user_id: 3
+                        chat_id: 15
+                        message: 'You have a <b>new message</b> from John Doe'
+                        type: Chat
+                        created_at: '2024-11-07T14:35:29.000000Z'
+                        updated_at: '2024-11-07T14:35:29.000000Z'
+                    properties:
+                      msg:
+                        type: string
+                        example: 'Notification sent successfully'
+                      status:
+                        type: boolean
+                        example: true
+                      notification_count:
                         type: integer
-                        example: 15
-                      message:
-                        type: string
-                        example: 'You have a <b>new message</b> from John Doe'
-                      type:
-                        type: string
-                        example: Chat
-                      created_at:
-                        type: string
-                        example: '2024-11-07T14:35:29.000000Z'
-                      updated_at:
-                        type: string
-                        example: '2024-11-07T14:35:29.000000Z'
+                        example: 4
+                      notification:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 46
+                          user_id:
+                            type: integer
+                            example: 3
+                          chat_id:
+                            type: integer
+                            example: 15
+                          message:
+                            type: string
+                            example: 'You have a <b>new message</b> from John Doe'
+                          type:
+                            type: string
+                            example: Chat
+                          created_at:
+                            type: string
+                            example: '2024-11-07T14:35:29.000000Z'
+                          updated_at:
+                            type: string
+                            example: '2024-11-07T14:35:29.000000Z'
       tags:
         - Chats
       requestBody:
@@ -2498,14 +2612,17 @@ paths:
                   type: integer
                   description: 'The ID of the chat message related to the notification.'
                   example: 15
+                  nullable: false
                 user_id:
                   type: integer
                   description: 'The ID of the receiver of the chat message.'
                   example: 5
+                  nullable: false
                 is_delete:
                   type: integer
                   description: 'optional Set to 1 to mark the notification as deleted.'
                   example: 1
+                  nullable: false
               required:
                 - chat_id
                 - user_id
@@ -2545,22 +2662,27 @@ paths:
                   type: string
                   description: 'First Name of the user.'
                   example: John
+                  nullable: false
                 last_name:
                   type: string
                   description: 'Last Name of the user.'
                   example: Doe
+                  nullable: false
                 email:
                   type: string
                   description: 'Email of the user. Example:'
-                  example: gerlach.madonna@example.org
+                  example: ocollier@example.org
+                  nullable: false
                 phone:
                   type: string
                   description: 'Phone of the user.'
                   example: '1234567890'
+                  nullable: false
                 message:
                   type: string
                   description: 'Message of the user.'
                   example: Hello
+                  nullable: false
               required:
                 - first_name
                 - last_name
@@ -2588,42 +2710,52 @@ paths:
                   type: string
                   description: required.
                   example: 'Robert Hyde'
+                  nullable: false
                 last_name:
                   type: string
                   description: required.
                   example: Hyde
+                  nullable: false
                 email:
                   type: string
                   description: required.
                   example: hyde@yopmail.com
+                  nullable: false
                 address:
                   type: string
                   description: required.
                   example: 'New york'
+                  nullable: false
                 city:
                   type: string
                   description: required.
                   example: 'New york'
+                  nullable: false
                 state:
                   type: string
                   description: required.
                   example: London
+                  nullable: false
                 postcode:
                   type: string
                   description: required.
                   example: ZP74857
+                  nullable: false
                 amount:
                   type: integer
                   description: required.
                   example: 150
+                  nullable: false
                 country_id:
                   type: integer
                   description: 'required. The country_id of the country.'
                   example: 2
+                  nullable: false
                 stripeToken:
                   type: string
                   description: required.
-                  example: quia
+                  example: vel
+                  nullable: false
       security: []
   /api/v3/country-list:
     post:
@@ -2808,10 +2940,12 @@ paths:
                   type: string
                   description: 'The name of the topic.'
                   example: '"Sample Topic"'
+                  nullable: false
                 education_type:
                   type: string
                   description: 'The type of education.'
                   example: '"General"'
+                  nullable: false
               required:
                 - topic_name
                 - education_type
@@ -2857,7 +2991,7 @@ paths:
         in: path
         name: topic
         description: 'The topic.'
-        example: error
+        example: non
         required: true
         schema:
           type: string
@@ -2921,10 +3055,12 @@ paths:
                   type: string
                   description: 'The name of the topic.'
                   example: '"Updated Topic"'
+                  nullable: false
                 education_type:
                   type: string
                   description: 'The type of education.'
                   example: '"General"'
+                  nullable: false
               required:
                 - topic_name
                 - education_type
@@ -2987,6 +3123,7 @@ paths:
             type: integer
             description: 'The ID of the topic to filter by.'
             example: 1
+            nullable: false
       responses:
         200:
           description: ''
@@ -3007,42 +3144,46 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: magni
+          example: fugit
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: magni
+            example: fugit
+            nullable: false
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: dolor
+          example: quo
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: dolor
+            example: quo
+            nullable: false
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: quia
+          example: qui
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: quia
+            example: qui
+            nullable: false
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 1
+          example: 4
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 1
+            example: 4
+            nullable: false
       responses:
         200:
           description: ''
@@ -3335,10 +3476,12 @@ paths:
                   type: string
                   format: binary
                   description: 'The file to upload.'
+                  nullable: false
                 topic_id:
                   type: integer
                   description: 'The ID of the topic to associate the file with.'
                   example: 0
+                  nullable: false
               required:
                 - file
                 - topic_id
@@ -3352,12 +3495,13 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 2
+          example: 7
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 2
+            example: 7
+            nullable: false
       responses:
         200:
           description: ''
@@ -3570,10 +3714,12 @@ paths:
                   type: string
                   format: binary
                   description: 'The new file to replace the existing one (optional).'
+                  nullable: false
                 topic_id:
                   type: integer
                   description: 'The ID of the topic to associate with the file.'
                   example: 1
+                  nullable: false
               required:
                 - topic_id
     parameters:
@@ -3581,7 +3727,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: et
+        example: error
         required: true
         schema:
           type: string
@@ -3670,17 +3816,33 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'Something went wrong. Please try again later.'
-                  status: false
-                properties:
-                  message:
-                    type: string
-                    example: 'Something went wrong. Please try again later.'
-                  status:
-                    type: boolean
-                    example: false
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'File not found.'
+                      status: false
+                    properties:
+                      message:
+                        type: string
+                        example: 'File not found.'
+                      status:
+                        type: boolean
+                        example: false
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'Something went wrong. Please try again later.'
+                      status: false
+                    properties:
+                      message:
+                        type: string
+                        example: 'Something went wrong. Please try again later.'
+                      status:
+                        type: boolean
+                        example: false
       tags:
         - Education
     parameters:
@@ -3688,7 +3850,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: quasi
+        example: culpa
         required: true
         schema:
           type: string
@@ -3708,6 +3870,7 @@ paths:
             type: integer
             description: 'The ID of the topic to filter by.'
             example: 1
+            nullable: false
       responses:
         200:
           description: ''
@@ -3728,42 +3891,46 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: ea
+          example: esse
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: ea
+            example: esse
+            nullable: false
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: voluptas
+          example: qui
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: voluptas
+            example: qui
+            nullable: false
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: minima
+          example: dolorum
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: minima
+            example: dolorum
+            nullable: false
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 9
+          example: 14
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 9
+            example: 14
+            nullable: false
       responses:
         200:
           description: ''
@@ -4056,10 +4223,12 @@ paths:
                   type: string
                   format: binary
                   description: 'The file to upload.'
+                  nullable: false
                 topic_id:
                   type: integer
                   description: 'The ID of the topic to associate the file with.'
                   example: 0
+                  nullable: false
               required:
                 - file
                 - topic_id
@@ -4073,12 +4242,13 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 2
+          example: 20
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 2
+            example: 20
+            nullable: false
       responses:
         200:
           description: ''
@@ -4291,10 +4461,12 @@ paths:
                   type: string
                   format: binary
                   description: 'The new file to replace the existing one (optional).'
+                  nullable: false
                 topic_id:
                   type: integer
                   description: 'The ID of the topic to associate with the file.'
                   example: 1
+                  nullable: false
               required:
                 - topic_id
     parameters:
@@ -4302,7 +4474,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: ipsum
+        example: assumenda
         required: true
         schema:
           type: string
@@ -4391,17 +4563,33 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'Something went wrong. Please try again later.'
-                  status: false
-                properties:
-                  message:
-                    type: string
-                    example: 'Something went wrong. Please try again later.'
-                  status:
-                    type: boolean
-                    example: false
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'File not found.'
+                      status: false
+                    properties:
+                      message:
+                        type: string
+                        example: 'File not found.'
+                      status:
+                        type: boolean
+                        example: false
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'Something went wrong. Please try again later.'
+                      status: false
+                    properties:
+                      message:
+                        type: string
+                        example: 'Something went wrong. Please try again later.'
+                      status:
+                        type: boolean
+                        example: false
       tags:
         - Education
     parameters:
@@ -4409,7 +4597,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: consequatur
+        example: molestiae
         required: true
         schema:
           type: string
@@ -4429,6 +4617,7 @@ paths:
             type: integer
             description: 'The ID of the topic to filter by.'
             example: 1
+            nullable: false
       responses:
         200:
           description: ''
@@ -4449,42 +4638,46 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: veniam
+          example: rerum
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: veniam
+            example: rerum
+            nullable: false
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: quo
+          example: vero
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: quo
+            example: vero
+            nullable: false
         -
           in: query
           name: query
           description: 'The search query to filter files by ID, file name, or file extension (optional).'
-          example: quia
+          example: provident
           required: false
           schema:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
-            example: quia
+            example: provident
+            nullable: false
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 14
+          example: 3
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 14
+            example: 3
+            nullable: false
       responses:
         200:
           description: ''
@@ -4777,10 +4970,12 @@ paths:
                   type: string
                   format: binary
                   description: 'The file to upload.'
+                  nullable: false
                 topic_id:
                   type: integer
                   description: 'The ID of the topic to associate the file with.'
                   example: 0
+                  nullable: false
               required:
                 - file
                 - topic_id
@@ -4794,12 +4989,13 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 14
+          example: 7
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 14
+            example: 7
+            nullable: false
       responses:
         200:
           description: ''
@@ -5012,10 +5208,12 @@ paths:
                   type: string
                   format: binary
                   description: 'The new file to replace the existing one (optional).'
+                  nullable: false
                 topic_id:
                   type: integer
                   description: 'The ID of the topic to associate with the file.'
                   example: 1
+                  nullable: false
               required:
                 - topic_id
     parameters:
@@ -5023,7 +5221,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: est
+        example: vitae
         required: true
         schema:
           type: string
@@ -5112,17 +5310,33 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'Something went wrong. Please try again later.'
-                  status: false
-                properties:
-                  message:
-                    type: string
-                    example: 'Something went wrong. Please try again later.'
-                  status:
-                    type: boolean
-                    example: false
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'File not found.'
+                      status: false
+                    properties:
+                      message:
+                        type: string
+                        example: 'File not found.'
+                      status:
+                        type: boolean
+                        example: false
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'Something went wrong. Please try again later.'
+                      status: false
+                    properties:
+                      message:
+                        type: string
+                        example: 'Something went wrong. Please try again later.'
+                      status:
+                        type: boolean
+                        example: false
       tags:
         - Education
     parameters:
@@ -5130,7 +5344,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: voluptate
+        example: ipsum
         required: true
         schema:
           type: string
@@ -5150,6 +5364,7 @@ paths:
             type: integer
             description: 'The ID of the topic to filter by.'
             example: 1
+            nullable: false
       responses:
         200:
           description: ''
@@ -5170,22 +5385,24 @@ paths:
           in: query
           name: sortby
           description: 'The column to sort by (optional, default: id).'
-          example: nostrum
+          example: minima
           required: false
           schema:
             type: string
             description: 'The column to sort by (optional, default: id).'
-            example: nostrum
+            example: minima
+            nullable: false
         -
           in: query
           name: sorttype
           description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-          example: eligendi
+          example: vitae
           required: false
           schema:
             type: string
             description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-            example: eligendi
+            example: vitae
+            nullable: false
         -
           in: query
           name: query
@@ -5196,16 +5413,18 @@ paths:
             type: string
             description: 'The search query to filter files by ID, file name, or file extension (optional).'
             example: sequi
+            nullable: false
         -
           in: query
           name: topic_id
           description: 'The ID of the topic to filter files by (optional).'
-          example: 1
+          example: 19
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter files by (optional).'
-            example: 1
+            example: 19
+            nullable: false
       responses:
         200:
           description: ''
@@ -5498,10 +5717,12 @@ paths:
                   type: string
                   format: binary
                   description: 'The file to upload.'
+                  nullable: false
                 topic_id:
                   type: integer
                   description: 'The ID of the topic to associate the file with.'
                   example: 0
+                  nullable: false
               required:
                 - file
                 - topic_id
@@ -5515,12 +5736,13 @@ paths:
           in: query
           name: topic
           description: 'The ID of the topic to filter by (optional).'
-          example: 4
+          example: 17
           required: false
           schema:
             type: integer
             description: 'The ID of the topic to filter by (optional).'
-            example: 4
+            example: 17
+            nullable: false
       responses:
         200:
           description: ''
@@ -5733,10 +5955,12 @@ paths:
                   type: string
                   format: binary
                   description: 'The new file to replace the existing one (optional).'
+                  nullable: false
                 topic_id:
                   type: integer
                   description: 'The ID of the topic to associate with the file.'
                   example: 1
+                  nullable: false
               required:
                 - topic_id
     parameters:
@@ -5744,7 +5968,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the update.'
-        example: suscipit
+        example: soluta
         required: true
         schema:
           type: string
@@ -5833,17 +6057,33 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'Something went wrong. Please try again later.'
-                  status: false
-                properties:
-                  message:
-                    type: string
-                    example: 'Something went wrong. Please try again later.'
-                  status:
-                    type: boolean
-                    example: false
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'File not found.'
+                      status: false
+                    properties:
+                      message:
+                        type: string
+                        example: 'File not found.'
+                      status:
+                        type: boolean
+                        example: false
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'Something went wrong. Please try again later.'
+                      status: false
+                    properties:
+                      message:
+                        type: string
+                        example: 'Something went wrong. Please try again later.'
+                      status:
+                        type: boolean
+                        example: false
       tags:
         - Education
     parameters:
@@ -5851,7 +6091,7 @@ paths:
         in: path
         name: file
         description: ''
-        example: ut
+        example: eum
         required: true
         schema:
           type: string
@@ -5871,6 +6111,7 @@ paths:
             type: string
             description: 'The type of emails to filter.'
             example: '"unread"'
+            nullable: false
         -
           in: query
           name: search
@@ -5881,6 +6122,7 @@ paths:
             type: string
             description: 'optional for search.'
             example: '"abc"'
+            nullable: false
       responses:
         200:
           description: ''
@@ -5994,6 +6236,18 @@ paths:
             type: string
             description: 'The type of emails to filter.'
             example: '"draft"'
+            nullable: false
+        -
+          in: query
+          name: search
+          description: 'optional for search.'
+          example: '"abc"'
+          required: false
+          schema:
+            type: string
+            description: 'optional for search.'
+            example: '"abc"'
+            nullable: false
       responses:
         200:
           description: ''
@@ -6107,6 +6361,18 @@ paths:
             type: string
             description: 'The type of emails to filter.'
             example: '"important"'
+            nullable: false
+        -
+          in: query
+          name: search
+          description: 'optional for search.'
+          example: '"abc"'
+          required: false
+          schema:
+            type: string
+            description: 'optional for search.'
+            example: '"abc"'
+            nullable: false
       responses:
         200:
           description: ''
@@ -6220,6 +6486,18 @@ paths:
             type: string
             description: 'Optional. The type of emails to filter.'
             example: '"archived"'
+            nullable: false
+        -
+          in: query
+          name: search
+          description: 'optional for search.'
+          example: '"abc"'
+          required: false
+          schema:
+            type: string
+            description: 'optional for search.'
+            example: '"abc"'
+            nullable: false
       responses:
         200:
           description: ''
@@ -6746,6 +7024,7 @@ paths:
                   type: integer
                   description: 'The email ID to view.'
                   example: 1
+                  nullable: false
               required:
                 - mail_id
   /api/v3/user/mail/compose-mail-users:
@@ -6801,21 +7080,37 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'An error occurred while loading the compose mail users.'
-                  status: false
-                  error: 'Exception message details'
-                properties:
-                  message:
-                    type: string
-                    example: 'An error occurred while loading the compose mail users.'
-                  status:
-                    type: boolean
-                    example: false
-                  error:
-                    type: string
-                    example: 'Exception message details'
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'You do not have permission to access this page.'
+                      status: false
+                    properties:
+                      message:
+                        type: string
+                        example: 'You do not have permission to access this page.'
+                      status:
+                        type: boolean
+                        example: false
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'An error occurred while loading the compose mail users.'
+                      status: false
+                      error: 'Exception message details'
+                    properties:
+                      message:
+                        type: string
+                        example: 'An error occurred while loading the compose mail users.'
+                      status:
+                        type: boolean
+                        example: false
+                      error:
+                        type: string
+                        example: 'Exception message details'
       tags:
         - Email
   /api/v3/user/mail/send:
@@ -6929,19 +7224,23 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
-                  example: qui
+                  example: quo
+                  nullable: false
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: quibusdam
+                  example: consequatur
+                  nullable: false
                 subject:
                   type: string
                   description: 'The subject of the email.'
-                  example: corrupti
+                  example: unde
+                  nullable: false
                 message:
                   type: string
                   description: 'The body content of the email.'
-                  example: reprehenderit
+                  example: sint
+                  nullable: false
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -7071,19 +7370,23 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: corporis
+                  example: exercitationem
+                  nullable: false
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: odio
+                  example: sunt
+                  nullable: false
                 subject:
                   type: string
                   description: 'The subject of the reply email.'
-                  example: libero
+                  example: hic
+                  nullable: false
                 message:
                   type: string
                   description: 'The body content of the reply email.'
-                  example: rem
+                  example: et
+                  nullable: false
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -7093,7 +7396,8 @@ paths:
                 main_mail_id:
                   type: integer
                   description: 'The ID of the main email thread being replied to.'
-                  example: 19
+                  example: 6
+                  nullable: false
               required:
                 - to
                 - subject
@@ -7210,19 +7514,23 @@ paths:
                 to:
                   type: string
                   description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
-                  example: at
+                  example: qui
+                  nullable: false
                 cc:
                   type: string
                   description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
-                  example: quis
+                  example: sed
+                  nullable: false
                 subject:
                   type: string
                   description: 'The subject of the forwarded email.'
-                  example: et
+                  example: qui
+                  nullable: false
                 message:
                   type: string
                   description: 'The body content of the forwarded email.'
-                  example: quae
+                  example: cumque
+                  nullable: false
                 attachments:
                   type: array
                   description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
@@ -7470,17 +7778,33 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'Mail Star Mark Removed!'
-                  status: true
-                properties:
-                  message:
-                    type: string
-                    example: 'Mail Star Mark Removed!'
-                  status:
-                    type: boolean
-                    example: true
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'Mail Starred Success!'
+                      status: true
+                    properties:
+                      message:
+                        type: string
+                        example: 'Mail Starred Success!'
+                      status:
+                        type: boolean
+                        example: true
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'Mail Star Mark Removed!'
+                      status: true
+                    properties:
+                      message:
+                        type: string
+                        example: 'Mail Star Mark Removed!'
+                      status:
+                        type: boolean
+                        example: true
         201:
           description: ''
           content:
@@ -7510,10 +7834,12 @@ paths:
                   type: integer
                   description: 'The ID of the mail to be starred or unstarred.'
                   example: 1
+                  nullable: false
                 star_value:
                   type: integer
                   description: 'The star value (1 for starred, 0 for unstarred).'
                   example: 1
+                  nullable: false
               required:
                 - mail_id
                 - star_value
@@ -7569,6 +7895,7 @@ paths:
                   type: integer
                   description: 'The ID of the mail to be deleted.'
                   example: 1
+                  nullable: false
               required:
                 - mail_id
   /api/v3/user/mail/mail-restore-single:
@@ -7623,6 +7950,7 @@ paths:
                   type: integer
                   description: 'The ID of the mail to be restored.'
                   example: 1
+                  nullable: false
               required:
                 - mail_id
   /api/v3/user/mail/mail-trash-empty:
@@ -7736,6 +8064,7 @@ paths:
             type: string
             description: 'optional for search.'
             example: '"abc"'
+            nullable: false
       responses:
         200:
           description: ''
@@ -7908,18 +8237,22 @@ paths:
                   type: string
                   description: 'The title of the event.'
                   example: 'Project Sync'
+                  nullable: false
                 description:
                   type: string
                   description: 'The description of the event.'
                   example: 'Weekly project sync event.'
+                  nullable: true
                 start:
                   type: datetime
                   description: 'The start time of the event in ISO 8601 format.'
                   example: '2024-11-22T01:25'
+                  nullable: false
                 end:
                   type: datetime
                   description: 'The end time of the event in ISO 8601 format.'
                   example: '2024-11-23T01:25'
+                  nullable: false
               required:
                 - title
                 - start
@@ -8118,18 +8451,22 @@ paths:
                   type: string
                   description: 'The title of the event.'
                   example: 'Project Sync Update'
+                  nullable: false
                 description:
                   type: string
                   description: 'The description of the event.'
                   example: 'Updated project sync event.'
+                  nullable: true
                 start:
                   type: datetime
                   description: 'The updated start time in ISO 8601 format.'
                   example: '2024-11-22T01:25'
+                  nullable: false
                 end:
                   type: datetime
                   description: 'The updated end time in ISO 8601 format.'
                   example: '2024-11-23T01:25'
+                  nullable: false
               required:
                 - title
                 - start
@@ -8240,7 +8577,8 @@ paths:
                 email:
                   type: string
                   description: 'The email of the user. Example:'
-                  example: frosenbaum@example.net
+                  example: nedra.lesch@example.net
+                  nullable: false
               required:
                 - email
       security: []
@@ -8287,10 +8625,12 @@ paths:
                   type: string
                   description: 'The name of the team.'
                   example: '"Project Z Team"'
+                  nullable: false
                 description:
                   type: string
                   description: 'A brief description of the team.'
                   example: '"Team for Project Z collaboration"'
+                  nullable: false
                 members:
                   type: array
                   description: 'The IDs of the users to be added to the group.'
@@ -8301,6 +8641,7 @@ paths:
                   type: string
                   format: binary
                   description: 'An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB.'
+                  nullable: false
               required:
                 - name
                 - description
@@ -8881,6 +9222,7 @@ paths:
                   type: integer
                   description: 'The ID of the team to load chats from.'
                   example: 5
+                  nullable: false
               required:
                 - team_id
   /api/v3/user/team-chats/send:
@@ -9122,14 +9464,17 @@ paths:
                   type: integer
                   description: 'The ID of the team to send the message to.'
                   example: 5
+                  nullable: false
                 message:
                   type: string
                   description: 'The text message to send (optional if a file is provided).'
                   example: '"Hello team!"'
+                  nullable: false
                 file:
                   type: string
                   format: binary
                   description: 'The attachment file to send, if applicable (optional if a message is provided).'
+                  nullable: false
               required:
                 - team_id
   /api/v3/user/team-chats/group-info:
@@ -9255,6 +9600,7 @@ paths:
                   type: integer
                   description: 'The ID of the team to retrieve information for.'
                   example: 5
+                  nullable: false
               required:
                 - team_id
   /api/v3/user/team-chats/update-group-image:
@@ -9313,10 +9659,12 @@ paths:
                   type: integer
                   description: 'The ID of the team whose image is being updated.'
                   example: 5
+                  nullable: false
                 group_image:
                   type: string
                   format: binary
                   description: 'The new group image file (JPEG, PNG, JPG, GIF, SVG formats, max size: 2048KB).'
+                  nullable: false
               required:
                 - team_id
                 - group_image
@@ -9384,14 +9732,17 @@ paths:
                   type: integer
                   description: 'The ID of the team whose name and description are being updated.'
                   example: 5
+                  nullable: false
                 name:
                   type: string
                   description: 'The new name of the team (maximum 100 characters).'
                   example: '"Developers Group"'
+                  nullable: false
                 description:
                   type: string
                   description: 'The new description of the team (maximum 255 characters).'
                   example: '"A group for discussing development strategies."'
+                  nullable: false
               required:
                 - team_id
                 - name
@@ -9520,10 +9871,12 @@ paths:
                   type: integer
                   description: 'The ID of the team from which the member will be removed.'
                   example: 10
+                  nullable: false
                 user_id:
                   type: integer
                   description: 'The ID of the user to be removed from the team.'
                   example: 5
+                  nullable: false
               required:
                 - team_id
                 - user_id
@@ -9645,6 +9998,7 @@ paths:
                   type: integer
                   description: 'The ID of the team to which members will be added.'
                   example: 10
+                  nullable: false
                 members:
                   type: array
                   description: 'The IDs of the users to be added to the group.'
@@ -9738,6 +10092,7 @@ paths:
                   type: integer
                   description: 'The ID of the team the user is leaving.'
                   example: 10
+                  nullable: false
               required:
                 - team_id
   /api/v3/user/team-chats/delete-group:
@@ -9784,21 +10139,37 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'An error occurred while deleting the group.'
-                  status: false
-                  error: 'Error details here'
-                properties:
-                  message:
-                    type: string
-                    example: 'An error occurred while deleting the group.'
-                  status:
-                    type: boolean
-                    example: false
-                  error:
-                    type: string
-                    example: 'Error details here'
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'You must be an admin to delete this group.'
+                      status: false
+                    properties:
+                      message:
+                        type: string
+                        example: 'You must be an admin to delete this group.'
+                      status:
+                        type: boolean
+                        example: false
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'An error occurred while deleting the group.'
+                      status: false
+                      error: 'Error details here'
+                    properties:
+                      message:
+                        type: string
+                        example: 'An error occurred while deleting the group.'
+                      status:
+                        type: boolean
+                        example: false
+                      error:
+                        type: string
+                        example: 'Error details here'
       tags:
         - 'Group Chats'
       requestBody:
@@ -9812,6 +10183,7 @@ paths:
                   type: integer
                   description: 'The ID of the team to be deleted.'
                   example: 10
+                  nullable: false
               required:
                 - team_id
   /api/v3/user/team-chats/make-admin:
@@ -9870,21 +10242,37 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'An error occurred while making the member an admin.'
-                  status: false
-                  error: 'Error details here'
-                properties:
-                  message:
-                    type: string
-                    example: 'An error occurred while making the member an admin.'
-                  status:
-                    type: boolean
-                    example: false
-                  error:
-                    type: string
-                    example: 'Error details here'
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'You must be an admin to make someone else an admin.'
+                      status: false
+                    properties:
+                      message:
+                        type: string
+                        example: 'You must be an admin to make someone else an admin.'
+                      status:
+                        type: boolean
+                        example: false
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'An error occurred while making the member an admin.'
+                      status: false
+                      error: 'Error details here'
+                    properties:
+                      message:
+                        type: string
+                        example: 'An error occurred while making the member an admin.'
+                      status:
+                        type: boolean
+                        example: false
+                      error:
+                        type: string
+                        example: 'Error details here'
       tags:
         - 'Group Chats'
       requestBody:
@@ -9898,10 +10286,12 @@ paths:
                   type: integer
                   description: 'The ID of the team.'
                   example: 10
+                  nullable: false
                 user_id:
                   type: integer
                   description: 'The ID of the user to be made an admin.'
                   example: 5
+                  nullable: false
               required:
                 - team_id
                 - user_id
@@ -9933,21 +10323,37 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'An error occurred while marking the message as seen.'
-                  status: false
-                  error: 'Error details here'
-                properties:
-                  message:
-                    type: string
-                    example: 'An error occurred while marking the message as seen.'
-                  status:
-                    type: boolean
-                    example: false
-                  error:
-                    type: string
-                    example: 'Error details here'
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'Chat member not found.'
+                      status: false
+                    properties:
+                      message:
+                        type: string
+                        example: 'Chat member not found.'
+                      status:
+                        type: boolean
+                        example: false
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'An error occurred while marking the message as seen.'
+                      status: false
+                      error: 'Error details here'
+                    properties:
+                      message:
+                        type: string
+                        example: 'An error occurred while marking the message as seen.'
+                      status:
+                        type: boolean
+                        example: false
+                      error:
+                        type: string
+                        example: 'Error details here'
       tags:
         - 'Group Chats'
       requestBody:
@@ -9961,6 +10367,7 @@ paths:
                   type: integer
                   description: 'The ID of the chat message to mark as seen.'
                   example: 15
+                  nullable: false
               required:
                 - chat_id
   /api/v3/user/team-chats/remove-chat:
@@ -9999,21 +10406,50 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'An error occurred while removing the chat message.'
-                  status: false
-                  error: 'Error details here'
-                properties:
-                  message:
-                    type: string
-                    example: 'An error occurred while removing the chat message.'
-                  status:
-                    type: boolean
-                    example: false
-                  error:
-                    type: string
-                    example: 'Error details here'
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'Chat message not found.'
+                      status: false
+                    properties:
+                      message:
+                        type: string
+                        example: 'Chat message not found.'
+                      status:
+                        type: boolean
+                        example: false
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'Chat member not found for the authenticated user.'
+                      status: false
+                    properties:
+                      message:
+                        type: string
+                        example: 'Chat member not found for the authenticated user.'
+                      status:
+                        type: boolean
+                        example: false
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'An error occurred while removing the chat message.'
+                      status: false
+                      error: 'Error details here'
+                    properties:
+                      message:
+                        type: string
+                        example: 'An error occurred while removing the chat message.'
+                      status:
+                        type: boolean
+                        example: false
+                      error:
+                        type: string
+                        example: 'Error details here'
       tags:
         - 'Group Chats'
       requestBody:
@@ -10027,14 +10463,17 @@ paths:
                   type: integer
                   description: 'The ID of the chat message to be removed.'
                   example: 25
+                  nullable: false
                 del_from:
                   type: string
                   description: 'Determines if the chat should be deleted for `everyone` or just for the authenticated user.'
                   example: everyone
+                  nullable: false
                 team_id:
                   type: integer
                   description: 'The ID of the team to which the chat belongs.'
                   example: 10
+                  nullable: false
               required:
                 - chat_id
                 - del_from
@@ -10067,21 +10506,37 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'An error occurred while clearing the conversation.'
-                  status: false
-                  error: 'Error details here'
-                properties:
-                  message:
-                    type: string
-                    example: 'An error occurred while clearing the conversation.'
-                  status:
-                    type: boolean
-                    example: false
-                  error:
-                    type: string
-                    example: 'Error details here'
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'You do not have permission to clear the conversation.'
+                      status: false
+                    properties:
+                      message:
+                        type: string
+                        example: 'You do not have permission to clear the conversation.'
+                      status:
+                        type: boolean
+                        example: false
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      message: 'An error occurred while clearing the conversation.'
+                      status: false
+                      error: 'Error details here'
+                    properties:
+                      message:
+                        type: string
+                        example: 'An error occurred while clearing the conversation.'
+                      status:
+                        type: boolean
+                        example: false
+                      error:
+                        type: string
+                        example: 'Error details here'
       tags:
         - 'Group Chats'
       requestBody:
@@ -10095,6 +10550,7 @@ paths:
                   type: integer
                   description: 'The ID of the team for which to clear the conversation.'
                   example: 10
+                  nullable: false
               required:
                 - team_id
   /api/v3/user/team-chats/notification:
@@ -10109,8 +10565,15 @@ paths:
           content:
             text/plain:
               schema:
-                type: string
-                example: "{\n   \"message\": \"Notification sent successfully.\",\n   \"status\": true,\n   \"notification\": {\n       // New notification object details here\n   },\n   \"notification_count\": 6\n}"
+                oneOf:
+                  -
+                    description: ''
+                    type: string
+                    example: "{\n   \"message\": \"Notification read successfully.\",\n   \"status\": true,\n   \"notification\": {\n       // Notification object details here\n   },\n   \"notification_count\": 5\n}"
+                  -
+                    description: ''
+                    type: string
+                    example: "{\n   \"message\": \"Notification sent successfully.\",\n   \"status\": true,\n   \"notification\": {\n       // New notification object details here\n   },\n   \"notification_count\": 6\n}"
         201:
           description: ''
           content:
@@ -10156,14 +10619,17 @@ paths:
                   type: integer
                   description: 'The ID of the team associated with the notification.'
                   example: 10
+                  nullable: false
                 chat_id:
                   type: integer
                   description: 'The ID of the chat message.'
                   example: 25
+                  nullable: false
                 is_delete:
                   type: integer
                   description: 'optional Indicates if the notification should be marked as read and deleted.'
-                  example: 10
+                  example: 7
+                  nullable: false
               required:
                 - team_id
                 - chat_id
@@ -10183,6 +10649,7 @@ paths:
             type: string
             description: 'optional for search.'
             example: '"abc"'
+            nullable: false
       responses:
         200:
           description: ''
@@ -10570,42 +11037,52 @@ paths:
                   type: string
                   description: 'The title of the job.'
                   example: 'Software Engineer'
+                  nullable: false
                 job_description:
                   type: string
                   description: 'The description of the job.'
                   example: 'A great job opportunity'
+                  nullable: false
                 job_type:
                   type: string
                   description: 'The type of the job (e.g., full-time, part-time).'
                   example: full-time
+                  nullable: false
                 job_location:
                   type: string
                   description: 'The location of the job.'
                   example: 'New York'
+                  nullable: false
                 job_salary:
                   type: numeric
                   description: 'optional The salary for the job.'
                   example: '50000'
+                  nullable: false
                 list_of_values:
                   type: string
                   description: 'optional List of additional job requirements or values.'
                   example: hourly
+                  nullable: false
                 currency:
                   type: string
                   description: 'optional The currency for the salary.'
                   example: USD
+                  nullable: false
                 job_experience:
                   type: numeric
                   description: 'optional The minimum experience required for the job.'
                   example: '3'
+                  nullable: false
                 contact_person:
                   type: string
                   description: 'optional The contact person for the job.'
                   example: 'John Doe'
+                  nullable: false
                 contact_email:
                   type: string
                   description: 'optional The contact email for the job.'
                   example: johndoe@example.com
+                  nullable: false
               required:
                 - job_title
                 - job_description
@@ -10670,42 +11147,52 @@ paths:
                   type: string
                   description: 'The title of the job.'
                   example: 'Software Engineer'
+                  nullable: false
                 job_description:
                   type: string
                   description: 'The description of the job.'
                   example: 'A great job opportunity'
+                  nullable: false
                 job_type:
                   type: string
                   description: 'The type of the job (e.g., full-time, part-time).'
                   example: full-time
+                  nullable: false
                 job_location:
                   type: string
                   description: 'The location of the job.'
                   example: 'New York'
+                  nullable: false
                 job_salary:
                   type: numeric
                   description: 'optional The salary for the job.'
                   example: '50000'
+                  nullable: false
                 list_of_values:
                   type: string
                   description: 'optional List of additional job requirements or values.'
                   example: hourly
+                  nullable: false
                 currency:
                   type: string
                   description: 'optional The currency for the salary.'
                   example: USD
+                  nullable: false
                 job_experience:
                   type: numeric
                   description: 'optional The minimum experience required for the job.'
                   example: '3'
+                  nullable: false
                 contact_person:
                   type: string
                   description: 'optional The contact person for the job.'
                   example: 'John Doe'
+                  nullable: false
                 contact_email:
                   type: string
                   description: 'optional The contact email for the job.'
                   example: johndoe@example.com
+                  nullable: false
               required:
                 - job_title
                 - job_description
@@ -10716,7 +11203,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the edit.'
-        example: ad
+        example: autem
         required: true
         schema:
           type: string
@@ -10758,7 +11245,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the delete.'
-        example: alias
+        example: eos
         required: true
         schema:
           type: string
@@ -10801,6 +11288,7 @@ paths:
                   type: string
                   description: 'The title of the job.'
                   example: abc
+                  nullable: false
               required:
                 - query
   /api/v3/user/meetings/load:
@@ -10819,6 +11307,7 @@ paths:
             type: string
             description: 'optional for search.'
             example: '"abc"'
+            nullable: false
       responses:
         200:
           description: ''
@@ -11000,22 +11489,27 @@ paths:
                   type: string
                   description: 'The title of the meeting.'
                   example: 'Project Sync'
+                  nullable: false
                 description:
                   type: string
                   description: 'The description of the meeting.'
                   example: 'Weekly project sync meeting.'
+                  nullable: true
                 start_time:
                   type: datetime
                   description: 'The start time of the meeting in ISO 8601 format.'
                   example: '2024-11-22T01:25'
+                  nullable: false
                 end_time:
                   type: datetime
                   description: 'The end time of the meeting in ISO 8601 format.'
                   example: '2024-11-22T02:25'
+                  nullable: false
                 meeting_link:
                   type: string
                   description: 'The link to join the meeting.'
                   example: 'https://meeting.example.com/xyz123'
+                  nullable: true
               required:
                 - title
                 - start_time
@@ -11218,22 +11712,27 @@ paths:
                   type: string
                   description: 'The title of the meeting.'
                   example: 'Project Sync Update'
+                  nullable: false
                 description:
                   type: string
                   description: 'The description of the meeting.'
                   example: 'Updated project sync meeting.'
+                  nullable: true
                 start_time:
                   type: datetime
                   description: 'The updated start time in ISO 8601 format.'
                   example: '2024-11-11T09:00:00.000000Z'
+                  nullable: false
                 end_time:
                   type: datetime
                   description: 'The updated end time in ISO 8601 format.'
                   example: '2024-11-11T10:00:00.000000Z'
+                  nullable: false
                 meeting_link:
                   type: string
                   description: 'The updated link for the meeting.'
                   example: 'https://meeting.example.com/updated123'
+                  nullable: true
               required:
                 - title
                 - start_time
@@ -11395,6 +11894,144 @@ paths:
                     example: 'Meetings not found.'
       tags:
         - Meetings
+  /api/v3/create-partner:
+    post:
+      summary: 'Store new Members'
+      operationId: storeNewMembers
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Customer created successfully.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Customer created successfully.'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Failed to create user.'
+                  error: 'Validation error or database error'
+                properties:
+                  message:
+                    type: string
+                    example: 'Failed to create user.'
+                  error:
+                    type: string
+                    example: 'Validation error or database error'
+      tags:
+        - Members
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_name:
+                  type: string
+                  description: 'The unique username.'
+                  example: johndoe
+                  nullable: false
+                ecclesia_id:
+                  type: integer
+                  description: 'nullable The ID of the ecclesia.'
+                  example: 1
+                  nullable: false
+                role:
+                  type: string
+                  description: 'The role to assign.'
+                  example: MEMBER
+                  nullable: false
+                first_name:
+                  type: string
+                  description: 'The first name of the user.'
+                  example: John
+                  nullable: false
+                last_name:
+                  type: string
+                  description: 'The last name of the user.'
+                  example: Doe
+                  nullable: false
+                middle_name:
+                  type: string
+                  description: 'nullable The middle name of the user.'
+                  example: Smith
+                  nullable: false
+                email:
+                  type: string
+                  description: 'The email address of the user.'
+                  example: johndoe@example.com
+                  nullable: false
+                password:
+                  type: string
+                  description: 'The password. Must contain at least one special character (@$%&).'
+                  example: P@ssword1
+                  nullable: false
+                confirm_password:
+                  type: string
+                  description: 'The confirmed password. Must match the password.'
+                  example: P@ssword1
+                  nullable: false
+                address:
+                  type: string
+                  description: 'The address of the user.'
+                  example: '123 Main St'
+                  nullable: false
+                country:
+                  type: string
+                  description: 'The country of the user.'
+                  example: USA
+                  nullable: false
+                state:
+                  type: string
+                  description: 'The state of the user.'
+                  example: California
+                  nullable: false
+                city:
+                  type: string
+                  description: 'The city of the user.'
+                  example: 'Los Angeles'
+                  nullable: false
+                zip:
+                  type: string
+                  description: 'The zip code.'
+                  example: '90001'
+                  nullable: false
+                address2:
+                  type: string
+                  description: 'nullable The secondary address.'
+                  example: 'Apt 4B'
+                  nullable: false
+                phone:
+                  type: string
+                  description: 'The phone number.'
+                  example: '1234567890'
+                  nullable: false
+              required:
+                - user_name
+                - role
+                - first_name
+                - last_name
+                - email
+                - password
+                - confirm_password
+                - address
+                - country
+                - state
+                - city
+                - zip
+                - phone
   /api/v3/user/partners/list:
     get:
       summary: 'List Of Members'
@@ -11411,6 +12048,7 @@ paths:
             type: string
             description: 'optional for search.'
             example: '"abc"'
+            nullable: false
       responses:
         200:
           description: ''
@@ -11723,6 +12361,283 @@ paths:
                     example: 'Error occurred while fetching the partners.'
       tags:
         - Members
+  /api/v3/user/partners/create-data:
+    get:
+      summary: 'Load data roles, ecclesias, countries.'
+      operationId: loadDataRolesEcclesiasCountries
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  roles:
+                    -
+                      id: 1
+                      name: Manager
+                    -
+                      id: 2
+                      name: Supervisor
+                  ecclesias:
+                    -
+                      id: 10
+                      name: 'Ecclesia One'
+                    -
+                      id: 9
+                      name: 'Ecclesia Two'
+                  countries:
+                    -
+                      id: 1
+                      name: 'United States'
+                    -
+                      id: 2
+                      name: Canada
+                properties:
+                  roles:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: Manager
+                      -
+                        id: 2
+                        name: Supervisor
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: Manager
+                  ecclesias:
+                    type: array
+                    example:
+                      -
+                        id: 10
+                        name: 'Ecclesia One'
+                      -
+                        id: 9
+                        name: 'Ecclesia Two'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 10
+                        name:
+                          type: string
+                          example: 'Ecclesia One'
+                  countries:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: 'United States'
+                      -
+                        id: 2
+                        name: Canada
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: 'United States'
+      tags:
+        - Members
+  '/api/v3/user/partners/update/{id}':
+    post:
+      summary: "Update Members's details"
+      operationId: updateMemberssDetails
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Member updated successfully.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Member updated successfully.'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Failed to update member.'
+                  error: 'Validation error or database error'
+                properties:
+                  message:
+                    type: string
+                    example: 'Failed to update member.'
+                  error:
+                    type: string
+                    example: 'Validation error or database error'
+      tags:
+        - Members
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: 'The first name of the user.'
+                  example: John
+                  nullable: false
+                last_name:
+                  type: string
+                  description: 'The last name of the user.'
+                  example: Doe
+                  nullable: false
+                middle_name:
+                  type: string
+                  description: 'nullable The middle name of the user.'
+                  example: Smith
+                  nullable: false
+                email:
+                  type: string
+                  description: 'The email address of the user.'
+                  example: johndoe@example.com
+                  nullable: false
+                address:
+                  type: string
+                  description: 'The address of the user.'
+                  example: '123 Main St'
+                  nullable: false
+                phone:
+                  type: string
+                  description: 'The phone number.'
+                  example: '1234567890'
+                  nullable: false
+                ecclesia_id:
+                  type: integer
+                  description: 'nullable The ID of the ecclesia.'
+                  example: 1
+                  nullable: false
+                country:
+                  type: string
+                  description: 'The country of the user.'
+                  example: USA
+                  nullable: false
+                state:
+                  type: string
+                  description: 'The state of the user.'
+                  example: California
+                  nullable: false
+                city:
+                  type: string
+                  description: 'The city of the user.'
+                  example: 'Los Angeles'
+                  nullable: false
+                zip:
+                  type: string
+                  description: 'The zip code.'
+                  example: '90001'
+                  nullable: false
+                address2:
+                  type: string
+                  description: 'nullable The secondary address.'
+                  example: 'Apt 4B'
+                  nullable: false
+                password:
+                  type: string
+                  description: 'nullable The new password. Must include at least one special character (@$%&).'
+                  example: P@ssword1
+                  nullable: false
+                confirm_password:
+                  type: string
+                  description: 'nullable The confirmed password. Must match the password.'
+                  example: P@ssword1
+                  nullable: false
+                status:
+                  type: integer
+                  description: 'The status.'
+                  example: 1
+                  nullable: false
+              required:
+                - first_name
+                - last_name
+                - email
+                - address
+                - phone
+                - country
+                - state
+                - city
+                - zip
+                - status
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the update.'
+        example: debitis
+        required: true
+        schema:
+          type: string
+  '/api/v3/user/partners/delete/{id}':
+    post:
+      summary: 'Delete a Member'
+      operationId: deleteAMember
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Member has been deleted successfully.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Member has been deleted successfully.'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Failed to delete member.'
+                  error: 'Validation error or database error'
+                properties:
+                  message:
+                    type: string
+                    example: 'Failed to delete member.'
+                  error:
+                    type: string
+                    example: 'Validation error or database error'
+      tags:
+        - Members
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the partner to delete.'
+        example: 11
+        required: true
+        schema:
+          type: integer
   /api/v3/user/profile:
     post:
       summary: 'Profile Details'
@@ -11840,22 +12755,27 @@ paths:
                   type: string
                   description: 'The first name of the user.'
                   example: John
+                  nullable: false
                 middle_name:
                   type: string
                   description: 'optional The middle name of the user.'
                   example: Doe
+                  nullable: false
                 last_name:
                   type: string
                   description: 'The last name of the user.'
                   example: Doe
+                  nullable: false
                 phone:
                   type: string
                   description: 'The phone number of the user.'
                   example: '7415236986'
+                  nullable: false
                 address:
                   type: string
                   description: 'The address of the user.'
                   example: '51 DN Block Merlin Infinite Building, 9th Floor, Unit, 907, Sector V, Bidhannagar, Kolkata, West Bengal 700091'
+                  nullable: false
               required:
                 - first_name
                 - last_name
@@ -11913,6 +12833,7 @@ paths:
                   type: string
                   format: binary
                   description: 'The profile picture of the user.'
+                  nullable: false
               required:
                 - profile_picture
   /api/v3/user/change-password:
@@ -11951,14 +12872,17 @@ paths:
                   type: string
                   description: 'The old password of the user.'
                   example: password
+                  nullable: false
                 new_password:
                   type: string
                   description: 'The new password of the user.'
                   example: password123
+                  nullable: false
                 confirm_password:
                   type: string
                   description: 'The confirm password of the user.'
                   example: password123
+                  nullable: false
               required:
                 - old_password
                 - new_password
@@ -12047,6 +12971,7 @@ paths:
                   type: string
                   description: 'The name of the permission to check.'
                   example: 'Manage Email'
+                  nullable: false
               required:
                 - permission_name
   /api/v3/user/check-menu-permission:
@@ -13725,7 +14650,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the edit.'
-        example: sed
+        example: tenetur
         required: true
         schema:
           type: string
@@ -13745,6 +14670,7 @@ paths:
             type: string
             description: 'optional for search.'
             example: '"abc"'
+            nullable: false
       responses:
         200:
           description: ''
@@ -13976,6 +14902,7 @@ paths:
                   type: string
                   format: binary
                   description: 'files to upload.'
+                  nullable: false
               required:
                 - file
   '/api/v3/user/strategy/delete/{id}':
@@ -14016,7 +14943,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the strategy to delete.'
-        example: 9
+        example: 2
         required: true
         schema:
           type: integer
@@ -14053,7 +14980,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the download.'
-        example: in
+        example: et
         required: true
         schema:
           type: string
@@ -14115,7 +15042,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the strategy to view.'
-        example: 14
+        example: 16
         required: true
         schema:
           type: integer
