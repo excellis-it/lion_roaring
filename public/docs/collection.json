@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Project",
-        "_postman_id": "4e975568-7519-4c35-af26-62e82c98bf90",
+        "_postman_id": "8a7efa71-be55-46d2-b071-c00f29bff657",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -173,7 +173,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":2,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"city\":\"Springfield\",\"state\":18,\"address2\":\"Apt 4B\",\"country\":18,\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":4,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"city\":\"Springfield\",\"state\":13,\"address2\":\"Apt 4B\",\"country\":6,\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -1306,7 +1306,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"winona54@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"elise83@example.net\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1391,7 +1391,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"laborum\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"sint\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1580,7 +1580,7 @@
                                         {
                                             "id": "topic",
                                             "key": "topic",
-                                            "value": "sed",
+                                            "value": "dolorum",
                                             "description": "The topic."
                                         },
                                         {
@@ -1757,30 +1757,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "cupiditate",
+                                            "value": "vel",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "non",
+                                            "value": "dolores",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "aut",
+                                            "value": "doloremque",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "10",
+                                            "value": "9",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=cupiditate&sorttype=non&query=aut&topic_id=10"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=vel&sorttype=dolores&query=doloremque&topic_id=9"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -1911,12 +1911,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "19",
+                                            "value": "6",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=19",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=6",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -1967,7 +1967,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "dicta",
+                                            "value": "sit",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2092,7 +2092,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "nemo",
+                                            "value": "vel",
                                             "description": ""
                                         }
                                     ]
@@ -2186,30 +2186,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "architecto",
+                                            "value": "aut",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "rerum",
+                                            "value": "nisi",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "corrupti",
+                                            "value": "blanditiis",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "3",
+                                            "value": "17",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/list-by-topics?sortby=architecto&sorttype=rerum&query=corrupti&topic_id=3"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/list-by-topics?sortby=aut&sorttype=nisi&query=blanditiis&topic_id=17"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2340,12 +2340,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "14",
+                                            "value": "4",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/view\/:id?topic=14",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/view\/:id?topic=4",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2396,7 +2396,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "exercitationem",
+                                            "value": "itaque",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2521,7 +2521,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "quibusdam",
+                                            "value": "ipsam",
                                             "description": ""
                                         }
                                     ]
@@ -2615,30 +2615,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "labore",
+                                            "value": "qui",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "repellendus",
+                                            "value": "vitae",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "dolore",
+                                            "value": "eaque",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "11",
+                                            "value": "17",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=labore&sorttype=repellendus&query=dolore&topic_id=11"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=qui&sorttype=vitae&query=eaque&topic_id=17"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2769,12 +2769,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "1",
+                                            "value": "4",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=1",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=4",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2825,7 +2825,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "maxime",
+                                            "value": "accusantium",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2950,7 +2950,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "corrupti",
+                                            "value": "labore",
                                             "description": ""
                                         }
                                     ]
@@ -3044,30 +3044,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "possimus",
+                                            "value": "autem",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "voluptatum",
+                                            "value": "voluptas",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "et",
+                                            "value": "reprehenderit",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "1",
+                                            "value": "10",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/list-by-topics?sortby=possimus&sorttype=voluptatum&query=et&topic_id=1"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/list-by-topics?sortby=autem&sorttype=voluptas&query=reprehenderit&topic_id=10"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -3198,12 +3198,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "14",
+                                            "value": "6",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/view\/:id?topic=14",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/view\/:id?topic=6",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -3254,7 +3254,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "cumque",
+                                            "value": "eveniet",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -3379,7 +3379,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "ea",
+                                            "value": "totam",
                                             "description": ""
                                         }
                                     ]
@@ -3735,25 +3735,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "voluptatem",
+                                    "value": "impedit",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"masum2@excellisit.net\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "ut",
+                                    "value": "quaerat",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "quasi",
+                                    "value": "error",
                                     "type": "text",
                                     "description": "The subject of the email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "est",
+                                    "value": "molestiae",
                                     "type": "text",
                                     "description": "The body content of the email."
                                 },
@@ -3812,25 +3812,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "non",
+                                    "value": "id",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "officia",
+                                    "value": "ut",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "sit",
+                                    "value": "occaecati",
                                     "type": "text",
                                     "description": "The subject of the reply email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "non",
+                                    "value": "laborum",
                                     "type": "text",
                                     "description": "The body content of the reply email."
                                 },
@@ -3895,25 +3895,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "aliquid",
+                                    "value": "dolor",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "iure",
+                                    "value": "alias",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "blanditiis",
+                                    "value": "aut",
                                     "type": "text",
                                     "description": "The subject of the forwarded email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "corporis",
+                                    "value": "rerum",
                                     "type": "text",
                                     "description": "The body content of the forwarded email."
                                 },
@@ -4582,7 +4582,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"shaylee68@example.net\"}"
+                            "raw": "{\"email\":\"kris.kyler@example.org\"}"
                         },
                         "description": "",
                         "auth": {
@@ -5304,7 +5304,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":2}"
+                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":17}"
                         },
                         "description": "Manages notifications for group chat messages. If the user has a new message, it sends a notification;\notherwise, it marks the notification as read."
                     },
@@ -5485,7 +5485,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "impedit",
+                                    "value": "quibusdam",
                                     "description": "The ID of the edit."
                                 }
                             ]
@@ -5534,7 +5534,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "qui",
+                                    "value": "aperiam",
                                     "description": "The ID of the delete."
                                 }
                             ]
@@ -5965,9 +5965,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v3\/user\/partners\/create-data",
+                            "path": "api\/v3\/user\/partners\/create-form-data",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v3\/user\/partners\/create-data"
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/partners\/create-form-data"
                         },
                         "method": "GET",
                         "header": [
@@ -6004,7 +6004,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "soluta",
+                                    "value": "est",
                                     "description": "The ID of the update."
                                 }
                             ]
@@ -6517,7 +6517,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "tenetur",
+                                    "value": "incidunt",
                                     "description": "The ID of the edit."
                                 }
                             ]
@@ -6661,7 +6661,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "20",
+                                    "value": "10",
                                     "description": "The ID of the strategy to delete."
                                 }
                             ]
@@ -6707,7 +6707,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "aut",
+                                    "value": "eius",
                                     "description": "The ID of the download."
                                 }
                             ]
@@ -6753,7 +6753,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "1",
+                                    "value": "16",
                                     "description": "The ID of the strategy to view."
                                 }
                             ]

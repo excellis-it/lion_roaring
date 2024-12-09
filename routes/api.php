@@ -255,7 +255,7 @@ Route::prefix('v3')->group(function () {
 
         Route::prefix('partners')->group(function () {
             Route::get('/list', [PartnerController::class, 'list']);
-            Route::get('/create-data', [PartnerController::class, 'loadCreateData']);
+            Route::get('/create-form-data', [PartnerController::class, 'loadCreateData']);
             // Route::post('/store', [PartnerController::class, 'storePartner']);
             Route::post('/update/{id}', [PartnerController::class, 'updatePartner']);
             Route::post('/delete/{id}', [PartnerController::class, 'deletePartner']);

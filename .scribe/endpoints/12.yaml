@@ -100,7 +100,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6bvfheZ613c8k54PDVaaEgd'
+      - 'Bearer eEg8a6VD3vb465hfZP1adck'
     controller: null
     method: null
     route: null
@@ -182,7 +182,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 46af3cha6DdEkZev8VP1gb5'
+      - 'Bearer eDh84VaZ5aPgfkvE6d6b3c1'
     controller: null
     method: null
     route: null
@@ -364,7 +364,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c5aPVvD4g6ekZf3a86hb1dE'
+      - 'Bearer 5V1efhaZk43vc668bPdEagD'
     controller: null
     method: null
     route: null
@@ -391,14 +391,14 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: impedit
+        example: quibusdam
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: impedit
+      id: quibusdam
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -557,7 +557,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5ha4Pkaf1c6vVEdDgbZe863'
+      - 'Bearer eaaf6kVhc3gZ18dEbv5P46D'
     controller: null
     method: null
     route: null
@@ -584,14 +584,14 @@ endpoints:
         name: id
         description: 'The ID of the delete.'
         required: true
-        example: qui
+        example: aperiam
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: qui
+      id: aperiam
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -620,7 +620,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vDd648EZP6ck5ahgb1fea3V'
+      - 'Bearer 81E4vgkb5Z6Vfcdaha3eP6D'
     controller: null
     method: null
     route: null
@@ -697,7 +697,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h86Df61cPkeabgVaZv4Ed53'
+      - 'Bearer veEaZ5Dd1P64bfgcha8kV36'
     controller: null
     method: null
     route: null

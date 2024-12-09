@@ -225,7 +225,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dv8adbea3Vgfh6P6cE14kZ5'
+      - 'Bearer 6P4adf8aD3kgVh65eZ1Evbc'
     controller: null
     method: null
     route: null
@@ -390,7 +390,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ePD81fZh3EV6bc5da6g4kva'
+      - 'Bearer eg86cPf1ZaDE3kh654abdVv'
     controller: null
     method: null
     route: null
@@ -398,7 +398,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v3/user/partners/create-data
+    uri: api/v3/user/partners/create-form-data
     metadata:
       groupName: Members
       groupDescription: ''
@@ -444,7 +444,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ag46Z1aD5bheE6Pc8kV3dfv'
+      - 'Bearer k4ZV6hP3v6fecg8abEdD5a1'
     controller: null
     method: null
     route: null
@@ -471,14 +471,14 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: soluta
+        example: est
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: soluta
+      id: est
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -673,7 +673,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a6P48kcebEvgDdf1Zh63a5V'
+      - 'Bearer V66d8kfb5vEDe3aZah4cg1P'
     controller: null
     method: null
     route: null
@@ -737,7 +737,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bga46avEk6e3h1dP8cfV5DZ'
+      - 'Bearer 8Ee145aPZDfbhdkcV66ga3v'
     controller: null
     method: null
     route: null
