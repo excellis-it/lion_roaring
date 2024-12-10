@@ -230,8 +230,8 @@ class PartnerController extends Controller
      * @bodyParam password string required The password. Must contain at least one special character (@$%&). Example: P@ssword1
      * @bodyParam confirm_password string required The confirmed password. Must match the password. Example: P@ssword1
      * @bodyParam address string required The address of the user. Example: 123 Main St
-     * @bodyParam country string required The country of the user. Example: USA
-     * @bodyParam state string required The state of the user. Example: California
+     * @bodyParam country int required The country of the user. Example: 1
+     * @bodyParam state int required The state of the user. Example: 1
      * @bodyParam city string required The city of the user. Example: Los Angeles
      * @bodyParam zip string required The zip code. Example: 90001
      * @bodyParam address2 string nullable The secondary address. Example: Apt 4B
@@ -330,8 +330,8 @@ class PartnerController extends Controller
      * @bodyParam address string required The address of the user. Example: 123 Main St
      * @bodyParam phone string required The phone number. Example: 1234567890
      * @bodyParam ecclesia_id integer nullable The ID of the ecclesia. Example: 1
-     * @bodyParam country string required The country of the user. Example: USA
-     * @bodyParam state string required The state of the user. Example: California
+     * @bodyParam country int required The country of the user. Example: 1
+     * @bodyParam state int required The state of the user. Example: 1
      * @bodyParam city string required The city of the user. Example: Los Angeles
      * @bodyParam zip string required The zip code. Example: 90001
      * @bodyParam address2 string nullable The secondary address. Example: Apt 4B
