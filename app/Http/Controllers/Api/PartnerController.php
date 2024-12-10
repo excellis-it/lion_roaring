@@ -247,74 +247,74 @@ class PartnerController extends Controller
      */
     public function storePartner(Request $request)
     {
-        try {
-            $request->validate([
-                'user_name' => 'required|unique:users',
-                'ecclesia_id' => 'nullable|exists:ecclesias,id',
-                'role' => 'required',
-                'first_name' => 'required',
-                'last_name' => 'required',
-                'middle_name' => 'nullable',
-                'email' => 'required|unique:users|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
-                'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
-                'confirm_password' => 'required|min:8|same:password',
-                'address' => 'required',
-                'country' => 'required',
-                'state' => 'required',
-                'city' => 'required',
-                'zip' => 'required',
-                'address2' => 'nullable',
-                'phone' => 'required',
-            ], [
-                'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
-            ]);
+        // try {
+        $request->validate([
+            'user_name' => 'required|unique:users',
+            'ecclesia_id' => 'nullable|exists:ecclesias,id',
+            'role' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'middle_name' => 'nullable',
+            'email' => 'required|unique:users|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
+            'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
+            'confirm_password' => 'required|min:8|same:password',
+            'address' => 'required',
+            'country' => 'required',
+            'state' => 'required',
+            'city' => 'required',
+            'zip' => 'required',
+            'address2' => 'nullable',
+            'phone' => 'required',
+        ], [
+            'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
+        ]);
 
-            $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $request->phone);
+        $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $request->phone);
 
-            if (User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->exists()) {
-                return response()->json(['message' => 'Phone number already exists.'], 201);
-            }
-
-            $uniqueNumber = rand(1000, 9999);
-            $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
-
-            $data = new User();
-            $data->created_id = auth()->id();
-            $data->user_name = $request->user_name;
-            $data->first_name = $request->first_name;
-            $data->last_name = $request->last_name;
-            $data->middle_name = $request->middle_name;
-            $data->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
-            $data->email = $request->email;
-            $data->password = bcrypt($request->password);
-            $data->address = $request->address;
-            $data->country = $request->country;
-            $data->state = $request->state;
-            $data->city = $request->city;
-            $data->zip = $request->zip;
-            $data->address2 = $request->address2;
-            $data->ecclesia_id = $request->ecclesia_id;
-            $data->phone = $request->phone;
-            $data->status = 1;
-            $data->save();
-
-            // $role = Role::where('name', $request->role)->first();
-            $data->assignRole('MEMBER');
-
-            Mail::to($request->email)->send(new RegistrationMail([
-                'name' => $request->first_name . ' ' . $request->last_name,
-                'email' => $request->email,
-                'password' => $request->password,
-                'type' => ucfirst(strtolower($request->role)),
-            ]));
-
-            return response()->json(['message' => 'Customer created successfully.'], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Failed to create user.',
-                'error' => $e->getMessage(),
-            ], 201);
+        if (User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->exists()) {
+            return response()->json(['message' => 'Phone number already exists.'], 201);
         }
+
+        $uniqueNumber = rand(1000, 9999);
+        $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
+
+        $data = new User();
+        $data->created_id = auth()->id();
+        $data->user_name = $request->user_name;
+        $data->first_name = $request->first_name;
+        $data->last_name = $request->last_name;
+        $data->middle_name = $request->middle_name;
+        $data->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
+        $data->email = $request->email;
+        $data->password = bcrypt($request->password);
+        $data->address = $request->address;
+        $data->country = $request->country;
+        $data->state = $request->state;
+        $data->city = $request->city;
+        $data->zip = $request->zip;
+        $data->address2 = $request->address2;
+        $data->ecclesia_id = $request->ecclesia_id;
+        $data->phone = $request->phone;
+        $data->status = 1;
+        $data->save();
+
+        // $role = Role::where('name', $request->role)->first();
+        $data->assignRole('MEMBER');
+
+        Mail::to($request->email)->send(new RegistrationMail([
+            'name' => $request->first_name . ' ' . $request->last_name,
+            'email' => $request->email,
+            'password' => $request->password,
+            'type' => ucfirst(strtolower($request->role)),
+        ]));
+
+        return response()->json(['message' => 'Customer created successfully.'], 200);
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'message' => 'Failed to create user.',
+        //         'error' => $e->getMessage(),
+        //     ], 201);
+        // }
     }
 
 
