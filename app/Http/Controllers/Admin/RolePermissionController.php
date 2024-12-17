@@ -127,7 +127,7 @@ class RolePermissionController extends Controller
         $permissions = $request['permissions'];
         $role->save();
 
-        $p_all = Permission::all();
+        $p_all = Permission::where('type', 2)->get();
 
         foreach ($p_all as $p) {
             $role->revokePermissionTo($p);
