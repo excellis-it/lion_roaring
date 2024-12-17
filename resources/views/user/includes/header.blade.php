@@ -18,7 +18,7 @@
         <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-center">
             <li class="nav-item m-3">
 
-                <a href="{{ route('e-store') }}" class="btn btn-primary"> <i class="ti ti-shopping-cart"></i>e-Store</a>
+                <a href="{{ route('e-learning') }}" class="btn btn-primary"> <i class="ti ti-shopping-cart"></i>e-Learning</a>
             </li>
 
             <li class="nav-item dropdown">

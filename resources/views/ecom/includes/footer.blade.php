@@ -84,7 +84,7 @@
                         {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_newsletter_title : '' !!}
                     </h4>
                     <div class="ftr-frm">
-                        <form action="{{ route('e-store.newsletter') }}" method="post" id="submit-newsletter">
+                        <form action="{{ route('e-learning.newsletter') }}" method="post" id="submit-newsletter">
                             @csrf
                             <div class="row">
                                 <div class="form-group col-lg-6 col-md-12">
@@ -134,7 +134,7 @@
         <div class="container">
             <div class="ftr_line_link">
                 <ul>
-                    <li><a href="{{ route('e-store') }}">Home</a></li>
+                    <li><a href="{{ route('e-learning') }}">Home</a></li>
                     <li><a href="{{ route('all-products') }}">Our Collections</a></li>
                     <li><a href="{{ route('contact-us') }}">Contact us</a></li>
                     @if (Helper::getCmsPages() && count(Helper::getCmsPages()) > 0)

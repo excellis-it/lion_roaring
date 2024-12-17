@@ -524,9 +524,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
 
 /**************************************************----------------------------ECOM--------------------------****************************************************************/
 
-Route::prefix('e-store')->middleware(['user'])->group(function () {
-    Route::get('/', [HomeController::class, 'eStore'])->name('e-store');
-    Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-store.newsletter');
+Route::prefix('e-learning')->middleware(['user'])->group(function () {
+    Route::get('/', [HomeController::class, 'eStore'])->name('e-learning');
+    Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-learning.newsletter');
     Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails'])->name('product-details');
     Route::get('/all-products', [EstoreProductController::class, 'products'])->name('all-products');
     Route::get('/products-filter', [EstoreProductController::class, 'productsFilter'])->name('products-filter');
