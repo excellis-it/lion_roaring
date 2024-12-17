@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             // AddStrategyPermission::class,
             // StatesTableSeeder::class,
             // AddStrategyPermission::class,
+            AdminPanelRolePermissionSeeder::class,
         ]);
     }
 }

@@ -17,8 +17,12 @@ class AboutUsController extends Controller
     use ImageTrait;
     public function index()
     {
-        $about_us = AboutUs::orderBy('id', 'desc')->first();
-        return view('admin.about-us.update')->with(compact('about_us'));
+        if (auth()->user()->can('Manage Pages')) {
+            $about_us = AboutUs::orderBy('id', 'desc')->first();
+            return view('admin.about-us.update')->with(compact('about_us'));
+        } else {
+            return redirect()->route('admin.dashboard')->with('error', 'Unauthorized Access');
+        }
     }
 
     /**

@@ -20,9 +20,13 @@ class PrincipleAndBusinessController extends Controller
      */
     public function index()
     {
+        if (auth()->user()->can('Manage Pages')) {
         $business = PrincipalAndBusiness::orderBy('id', 'desc')->first();
         $principle_images = PrincipleBusinessImage::get();
         return view('admin.principle-and-business.update')->with(compact('business', 'principle_images'));
+        } else {
+            return redirect()->route('admin.home')->with('error', 'Unauthorized Access');
+        }
     }
 
     /**

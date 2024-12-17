@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\PmaDisclaimerController;
 use App\Http\Controllers\Admin\PrincipleAndBusinessController;
 use App\Http\Controllers\Admin\RegisterAgreementController;
+use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\ServiceContoller;
 use App\Http\Controllers\Admin\TestimonialController;
@@ -124,8 +125,15 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         'services' => ServiceContoller::class,
         'donations' => AdminDonationController::class,
         'plans' => PlanController::class,
-
     ]);
+
+    Route::name('admin.')->group(function () {
+        Route::resource('roles', RolePermissionController::class);
+    });
+
+    Route::prefix('roles')->group(function () {
+        Route::get('/role-delete/{id}', [RolePermissionsController::class, 'delete'])->name('admin.roles.delete');
+    });
 
     Route::prefix('plans')->group(function () {
         Route::get('/plan-delete/{id}', [PlanController::class, 'delete'])->name('plans.delete');

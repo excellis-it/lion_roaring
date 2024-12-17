@@ -51,7 +51,7 @@
                                                         <td>{{ $key + 1 }}</td>
                                                         <td> {{ $role->name }}</td>
                                                         <td>
-                                                            @foreach ($role->permissions as $permission)
+                                                            @foreach ($role->permissions()->where('type', 1)->get() as $permission)
                                                                 <span class="round-btn">{{ $permission->name }}</span>
                                                             @endforeach
                                                         </td>

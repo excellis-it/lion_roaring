@@ -17,6 +17,7 @@
 
                 <div class="left_right">
                     <div class="row">
+                        @if (auth()->user()->hasRole('ADMIN'))
                         <div class="col-md-12">
                             <!-- <h2 class="flight_titel">Flight</h2> -->
                             <div class="row">
@@ -178,6 +179,8 @@
                                 </div>
                             </div> --}}
                         </div>
+                        @endif
+
                     </div>
 
                 </div>

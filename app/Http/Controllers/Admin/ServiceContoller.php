@@ -19,10 +19,14 @@ class ServiceContoller extends Controller
 
     public function index(Request $request)
     {
-        $our_organization = OurOrganization::where('slug', $request->slug)->first();
-        $our_organization_id = $our_organization->id;
-        $services = Service::where('our_organization_id', $our_organization_id)->get();
-        return view('admin.service.update')->with(compact('services','our_organization_id'));
+        if (auth()->user()->can('Manage Services')) {
+            $our_organization = OurOrganization::where('slug', $request->slug)->first();
+            $our_organization_id = $our_organization->id;
+            $services = Service::where('our_organization_id', $our_organization_id)->get();
+            return view('admin.service.update')->with(compact('services', 'our_organization_id'));
+        } else {
+            return redirect()->back()->with('message', 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -43,7 +47,7 @@ class ServiceContoller extends Controller
      */
     public function store(Request $request)
     {
-        for($key = 0; $key < $request->column_count; $key++) {
+        for ($key = 0; $key < $request->column_count; $key++) {
             if (isset($request->image_id[$key])) {
                 $service = Service::find($request->image_id[$key]);
                 // delete old image

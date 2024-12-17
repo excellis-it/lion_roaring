@@ -14,9 +14,13 @@ class FooterController extends Controller
 
     public function index()
     {
+        if (auth()->user()->can('Manage Pages')) {
         $footer = Footer::orderBy('id', 'desc')->first();
         $social_links = FooterSocialLink::get();
         return view('admin.footer.update')->with(compact('footer', 'social_links'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     public function update(Request $request)

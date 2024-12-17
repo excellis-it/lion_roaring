@@ -18,8 +18,11 @@
     Admin
 @endsection
 @section('create_button')
-    <a href="javascript:void(0)" id="create-admin" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_admin">Add
-        Admin</a>
+    @if (auth()->user()->can('Create Admin List'))
+        <a href="javascript:void(0)" id="create-admin" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#add_admin">Add
+            Admin</a>
+    @endif
 @endsection
 
 @section('content')
@@ -239,14 +242,17 @@
                                     <td>{{ date('d M Y', strtotime($admin->created_at)) }}</td>
                                     <td align="center">
                                         <div class="edit-1 d-flex align-items-center justify-content-center">
-                                            <a class="edit-admins edit-icon" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit_admin" data-id="{{ $admin->id }}"
-                                                data-route="{{ route('admin.edit', $admin->id) }}"> <span
-                                                    class="edit-icon"><i class="ph ph-pencil-simple"></i></span></a>
-
-                                            <a href="{{ route('admin.delete', $admin->id) }}"
-                                                onclick="return confirm('Are you sure to delete this admin?')"> <span
-                                                    class="trash-icon"><i class="ph ph-trash"></i></span></a>
+                                            @if (auth()->user()->can('Edit Admin List'))
+                                                <a class="edit-admins edit-icon" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#edit_admin" data-id="{{ $admin->id }}"
+                                                    data-route="{{ route('admin.edit', $admin->id) }}"> <span
+                                                        class="edit-icon"><i class="ph ph-pencil-simple"></i></span></a>
+                                            @endif
+                                            @if (auth()->user()->can('Delete Admin List'))
+                                                <a href="{{ route('admin.delete', $admin->id) }}"
+                                                    onclick="return confirm('Are you sure to delete this admin?')"> <span
+                                                        class="trash-icon"><i class="ph ph-trash"></i></span></a>
+                                            @endif
                                         </div>
 
                                     </td>

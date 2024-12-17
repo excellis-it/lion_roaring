@@ -12,8 +12,12 @@ class AdminController extends Controller
     //
     public function index()
     {
-        $admins = User::role('ADMIN')->where('id', '!=', auth()->user()->id)->get();
-        return view('admin.admin.list')->with(compact('admins'));
+        if (auth()->user()->can('Manage Admin List')) {
+            $admins = User::role('ADMIN')->where('id', '!=', auth()->user()->id)->get();
+            return view('admin.admin.list')->with(compact('admins'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     public function store(Request $request)
@@ -27,38 +31,47 @@ class AdminController extends Controller
             'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
             'phone' => 'required',
             'confirm_password' => 'required|same:password',
-        ],[
+        ], [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
         ]);
 
-        $count = User::where('email', $request->email)->count();
-        if ($count > 0) {
-            return redirect()->back()->with('error', 'Email already exists');
-        } else {
-            $uniqueNumber = rand(1000, 9999);
-            $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
+        if (auth()->user()->can('Create Admin List')) {
 
-            $admin = new User();
-            $admin->first_name = $request->first_name;
-            $admin->last_name = $request->last_name;
-            $admin->middle_name = $request->middle_name ?? null;
-            $admin->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
-            $admin->email = $request->email;
-            $admin->user_name = $request->user_name;
-            $admin->password = bcrypt($request->password);
-            $admin->phone = $request->phone;
-            $admin->status = true;
-            $admin->save();
-            $admin->assignRole('ADMIN');
-            session()->flash('message', 'Admin account has been successfully created.');
-            return response()->json(['message' => 'Admin account has been successfully created.', 'status' => 'success']);
+            $count = User::where('email', $request->email)->count();
+            if ($count > 0) {
+                return redirect()->back()->with('error', 'Email already exists');
+            } else {
+                $uniqueNumber = rand(1000, 9999);
+                $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
+
+                $admin = new User();
+                $admin->first_name = $request->first_name;
+                $admin->last_name = $request->last_name;
+                $admin->middle_name = $request->middle_name ?? null;
+                $admin->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
+                $admin->email = $request->email;
+                $admin->user_name = $request->user_name;
+                $admin->password = bcrypt($request->password);
+                $admin->phone = $request->phone;
+                $admin->status = true;
+                $admin->save();
+                $admin->assignRole('ADMIN');
+                session()->flash('message', 'Admin account has been successfully created.');
+                return response()->json(['message' => 'Admin account has been successfully created.', 'status' => 'success']);
+            }
+        } else {
+            abort(403, 'You do not have permission to access this page.');
         }
     }
 
     public function edit($id)
     {
-        $admin = User::where('id', $id)->first();
-        return response()->json(['admin' => $admin, 'message' => 'Admin details found successfully.']);
+        if (auth()->user()->can('Edit Admin List')) {
+            $admin = User::where('id', $id)->first();
+            return response()->json(['admin' => $admin, 'message' => 'Admin details found successfully.']);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     public function update(Request $request)
@@ -71,7 +84,7 @@ class AdminController extends Controller
             'edit_email' => 'required|email|unique:users,email,' . $request->id,
             'edit_user_name' => 'required|unique:users,user_name,' . $request->id,
             'edit_phone' => 'required',
-        ],[
+        ], [
             'edit_email.unique' => 'Email already exists',
             'edit_user_name.unique' => 'Username already exists',
             'edit_email.required' => 'Email is required',
@@ -92,19 +105,21 @@ class AdminController extends Controller
         $admin->save();
         session()->flash('message', 'Admin account has been successfully updated.');
         return response()->json(['message' => 'Admin account has been successfully updated.', 'status' => 'success']);
-
     }
 
 
     public function delete($id)
     {
-
-        User::findOrFail($id)->delete();
-         //check if user teamMember
-         $teamMember = TeamMember::where('user_id', $id)->get();
-         if ($teamMember) {
-             $teamMember->each->delete();
-         }
-        return redirect()->back()->with('error', 'Admin has been deleted!');
+        if (auth()->user()->can('Delete Admin List')) {
+            User::findOrFail($id)->delete();
+            //check if user teamMember
+            $teamMember = TeamMember::where('user_id', $id)->get();
+            if ($teamMember) {
+                $teamMember->each->delete();
+            }
+            return redirect()->back()->with('error', 'Admin has been deleted!');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 }

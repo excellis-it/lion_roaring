@@ -17,8 +17,12 @@ class EcclesiaAssociationController extends Controller
     use ImageTrait;
     public function index()
     {
+        if (auth()->user()->can('Manage Pages')) {
         $ecclesia_association = EcclesiaAssociation::orderBy('id', 'desc')->first();
         return view('admin.ecclesia-associations.update')->with(compact('ecclesia_association'));
+        } else {
+            return redirect()->route('admin.dashboard')->with('error', 'Unauthorized Access');
+        }
     }
 
     /**
