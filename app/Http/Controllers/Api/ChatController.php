@@ -532,8 +532,8 @@ class ChatController extends Controller
             $reciver_id = $request->reciver_id;
 
             Chat::where('id', $request->chat_id)
-                ->where('sender_id', $reciver_id)
-                ->where('reciver_id', $sender_id)
+                // ->where('sender_id', $reciver_id)
+                //  ->where('reciver_id', $sender_id)
                 ->update(['seen' => 1]);
 
             $last_chat = Chat::findOrFail($request->chat_id);

@@ -39,6 +39,11 @@ io.on('connection', (socket) => {
         io.sockets.emit('chat', msg);
     });
 
+    socket.on('read-chat', (msg) => {
+        console.log('message: ' + msg);
+        io.sockets.emit('read-chat', msg);
+    });
+
     // remove-chat
     socket.on('remove-chat', (msg) => {
         console.log('remove-chat: ' + msg);
@@ -52,11 +57,7 @@ io.on('connection', (socket) => {
         io.sockets.emit('seen', messageId);
     });
 
-    // multiple_seen
-    socket.on('multiple_seen', (msg) => {
-        console.log('multiple_seen: ' + msg);
-        io.sockets.emit('multiple_seen', msg);
-    });
+    
 
     // clear-chat
     socket.on('clear-chat', (msg) => {

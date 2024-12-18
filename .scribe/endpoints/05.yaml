@@ -127,8 +127,8 @@ endpoints:
         name: country
         description: 'The country of the user.'
         required: true
-        example: USA
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         exampleWasSpecified: true
         nullable: false
@@ -137,8 +137,8 @@ endpoints:
         name: state
         description: 'The state of the user.'
         required: true
-        example: California
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         exampleWasSpecified: true
         nullable: false
@@ -194,8 +194,8 @@ endpoints:
       password: P@ssword1
       confirm_password: P@ssword1
       address: '123 Main St'
-      country: USA
-      state: California
+      country: 1
+      state: 1
       city: 'Los Angeles'
       zip: '90001'
       address2: 'Apt 4B'
@@ -225,7 +225,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6P4adf8aD3kgVh65eZ1Evbc'
+      - 'Bearer aVZ5hdkD1e46Pc8vbfEag36'
     controller: null
     method: null
     route: null
@@ -390,7 +390,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eg86cPf1ZaDE3kh654abdVv'
+      - 'Bearer 5aVP6D63k81acZehbvgfdE4'
     controller: null
     method: null
     route: null
@@ -444,7 +444,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k4ZV6hP3v6fecg8abEdD5a1'
+      - 'Bearer gbhV6EZ5vfeDk8aad3c1P64'
     controller: null
     method: null
     route: null
@@ -471,14 +471,14 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: est
+        example: eius
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: est
+      id: eius
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -556,8 +556,8 @@ endpoints:
         name: country
         description: 'The country of the user.'
         required: true
-        example: USA
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         exampleWasSpecified: true
         nullable: false
@@ -566,8 +566,8 @@ endpoints:
         name: state
         description: 'The state of the user.'
         required: true
-        example: California
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         exampleWasSpecified: true
         nullable: false
@@ -640,8 +640,8 @@ endpoints:
       address: '123 Main St'
       phone: '1234567890'
       ecclesia_id: 1
-      country: USA
-      state: California
+      country: 1
+      state: 1
       city: 'Los Angeles'
       zip: '90001'
       address2: 'Apt 4B'
@@ -673,7 +673,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V66d8kfb5vEDe3aZah4cg1P'
+      - 'Bearer Eg413V65edZahcvPDk8b6af'
     controller: null
     method: null
     route: null
@@ -700,14 +700,14 @@ endpoints:
         name: id
         description: 'The ID of the partner to delete.'
         required: true
-        example: 5
+        example: 10
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 5
+      id: 10
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -737,7 +737,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8Ee145aPZDfbhdkcV66ga3v'
+      - 'Bearer cDaeaf351ZP68bhg6kVdEv4'
     controller: null
     method: null
     route: null

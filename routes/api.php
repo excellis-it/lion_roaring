@@ -140,6 +140,7 @@ Route::prefix('v3')->group(function () {
             Route::post('/mail-star', [EmailController::class, 'star']);
 
             Route::post('/mail-delete-single', [EmailController::class, 'deleteSingleMail']);
+            Route::post('/mail-delete-single-trash', [EmailController::class, 'deleteSingleTrashMail']);
             Route::post('/mail-restore-single', [EmailController::class, 'restoreSingleMail']);
 
             Route::post('/mail-trash-empty', [EmailController::class, 'trashEmpty']);

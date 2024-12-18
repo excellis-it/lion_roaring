@@ -1460,6 +1460,52 @@ class EmailController extends Controller
         }
     }
 
+
+    /**
+     * Delete Single Trash Email
+     *
+     * @authenticated
+     * @bodyParam mail_id int required The ID of the mail to be deleted. Example: 1
+     *
+     * @response 200 {
+     *   "message": "Mail deleted successfully.",
+     *   "status": true
+     * }
+     * @response 500 {
+     *   "message": "Failed to delete mail. Please try again later.",
+     *   "status": false
+     * }
+     */
+    public function deleteSingleTrashMail(Request $request)
+    {
+        try {
+            $mailId = $request->mail_id;
+
+            // Find the main mail group (either the main mail or the reply's group)
+            $mainMailId = SendMail::where('id', $mailId)
+                ->orWhere('reply_of', $mailId)
+                ->value('reply_of') ?? $mailId;
+
+            // Get all mail IDs (main and replies) in this group
+            $allMailIds = SendMail::where('id', $mainMailId)
+                ->orWhere('reply_of', $mainMailId)
+                ->pluck('id');
+
+            // Update MailUser records for the authenticated user
+            MailUser::whereIn('send_mail_id', $allMailIds)
+                ->where('user_id', auth()->id())
+                ->update([
+                    'is_delete' => 2,
+                    'deleted_at' => now(),
+                ]);
+
+            return response()->json(['message' => 'Mail deleted successfully.', 'status' => true], 200);
+        } catch (\Exception $e) {
+            //  \Log::error('Mail deletion failed: ' . $e->getMessage());
+            return response()->json(['message' => 'Failed to delete mail. Please try again later.', 'status' => false], 500);
+        }
+    }
+
     /**
      * Restore Single Email
      *

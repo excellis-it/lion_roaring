@@ -90,7 +90,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6DdeaPE6v3kaghf485Vbc1Z'
+      - 'Bearer 46fkdE5ePVgvDZ8aba1ch63'
     controller: null
     method: null
     route: null
@@ -182,7 +182,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z4D3evc61ga6bkh5dVPf8Ea'
+      - 'Bearer 3DhvaEfgZP5e6dk1V4b6a8c'
     controller: null
     method: null
     route: null
@@ -274,7 +274,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6dakDbVhe1g54P6E3fa8vZc'
+      - 'Bearer Za4fbPcdk6geV56DEavh831'
     controller: null
     method: null
     route: null
@@ -366,7 +366,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5fcDk68hE4P1dVb3gavaeZ6'
+      - 'Bearer Efb6ade1kgvV5ZaP63D4hc8'
     controller: null
     method: null
     route: null
@@ -525,7 +525,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V6b41DahcfevZ583akEgP6d'
+      - 'Bearer k8Dfe4aVhcdE16aZ5Pv36gb'
     controller: null
     method: null
     route: null
@@ -596,7 +596,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gdcVb4v16Phe3faZkaED865'
+      - 'Bearer VbveadPa3Z6gkc4f8hD1E65'
     controller: null
     method: null
     route: null
@@ -629,7 +629,7 @@ endpoints:
         name: to
         description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
         required: true
-        example: impedit
+        example: sed
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -639,7 +639,7 @@ endpoints:
         name: cc
         description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: quaerat
+        example: occaecati
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -649,7 +649,7 @@ endpoints:
         name: subject
         description: 'The subject of the email.'
         required: true
-        example: error
+        example: consequatur
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -659,7 +659,7 @@ endpoints:
         name: message
         description: 'The body content of the email.'
         required: true
-        example: molestiae
+        example: vero
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -677,10 +677,10 @@ endpoints:
         nullable: false
         custom: []
     cleanBodyParameters:
-      to: impedit
-      cc: quaerat
-      subject: error
-      message: molestiae
+      to: sed
+      cc: occaecati
+      subject: consequatur
+      message: vero
     fileParameters:
       attachments:
         - null
@@ -726,7 +726,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h6dZ15VcevD84agkf6aP3bE'
+      - 'Bearer vda4bkPfg6ec3a1VD6Z58hE'
     controller: null
     method: null
     route: null
@@ -759,7 +759,7 @@ endpoints:
         name: to
         description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
         required: true
-        example: id
+        example: aliquam
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -769,7 +769,7 @@ endpoints:
         name: cc
         description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: ut
+        example: asperiores
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -779,7 +779,7 @@ endpoints:
         name: subject
         description: 'The subject of the reply email.'
         required: true
-        example: occaecati
+        example: velit
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -789,7 +789,7 @@ endpoints:
         name: message
         description: 'The body content of the reply email.'
         required: true
-        example: laborum
+        example: a
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -810,18 +810,18 @@ endpoints:
         name: main_mail_id
         description: 'The ID of the main email thread being replied to.'
         required: true
-        example: 14
+        example: 5
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      to: id
-      cc: ut
-      subject: occaecati
-      message: laborum
-      main_mail_id: 14
+      to: aliquam
+      cc: asperiores
+      subject: velit
+      message: a
+      main_mail_id: 5
     fileParameters:
       attachments:
         - null
@@ -868,7 +868,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1c8P6kba45ZahVfdgv3De6E'
+      - 'Bearer k3cDE8665vZh41dgaVebPaf'
     controller: null
     method: null
     route: null
@@ -901,7 +901,7 @@ endpoints:
         name: to
         description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
         required: true
-        example: dolor
+        example: ut
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -911,7 +911,7 @@ endpoints:
         name: cc
         description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: alias
+        example: ipsam
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -921,7 +921,7 @@ endpoints:
         name: subject
         description: 'The subject of the forwarded email.'
         required: true
-        example: aut
+        example: asperiores
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -931,7 +931,7 @@ endpoints:
         name: message
         description: 'The body content of the forwarded email.'
         required: true
-        example: rerum
+        example: accusantium
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -949,10 +949,10 @@ endpoints:
         nullable: false
         custom: []
     cleanBodyParameters:
-      to: dolor
-      cc: alias
-      subject: aut
-      message: rerum
+      to: ut
+      cc: ipsam
+      subject: asperiores
+      message: accusantium
     fileParameters:
       attachments:
         - null
@@ -998,7 +998,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6bea5aPdcZ8E4kV16Dfhgv3'
+      - 'Bearer 8VZavcd6b564fE3a1kDehPg'
     controller: null
     method: null
     route: null
@@ -1083,7 +1083,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EfPDkb41h86v5eagZVc6a3d'
+      - 'Bearer b56Dkea8hvEcPfg14Z6Va3d'
     controller: null
     method: null
     route: null
@@ -1168,7 +1168,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6D61bVvfgPEea5h84Zak3cd'
+      - 'Bearer baVc5vZa8h4E1PdgDfk66e3'
     controller: null
     method: null
     route: null
@@ -1239,7 +1239,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3g6c4kh56dPE8fa1DaebZvV'
+      - 'Bearer daZP1hD6evfEckag65834Vb'
     controller: null
     method: null
     route: null
@@ -1325,7 +1325,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4V3vkafZabPc61E8hde56Dg'
+      - 'Bearer hV8DP1f646Ed5bvgZk3eaca'
     controller: null
     method: null
     route: null
@@ -1390,7 +1390,72 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VPfvdkca46b35Z81gDeha6E'
+      - 'Bearer ZkbfD3d4Vahea6g56v81EPc'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/mail-delete-single-trash
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete Single Trash Email'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      mail_id:
+        name: mail_id
+        description: 'The ID of the mail to be deleted.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      mail_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail deleted successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "message": "Failed to delete mail. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer d1hvceEbD6P65ZV34af8kag'
     controller: null
     method: null
     route: null
@@ -1455,7 +1520,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DhE46cvd561fVbgake3ZaP8'
+      - 'Bearer EvceDfVhZ63a1aP6b4k8dg5'
     controller: null
     method: null
     route: null
@@ -1510,7 +1575,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer evk36PZ6841aadgVfEc5hDb'
+      - 'Bearer ZEhk46D5ad1aP8Vcfb3e6gv'
     controller: null
     method: null
     route: null
@@ -1575,7 +1640,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cvDbafh5EdV6gekP81Za463'
+      - 'Bearer aacg8vd1fE6Zb4Vh3P56keD'
     controller: null
     method: null
     route: null

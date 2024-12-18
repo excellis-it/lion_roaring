@@ -276,7 +276,6 @@
                 var getUserID = $(this).attr("data-id");
                 receiver_id = getUserID;
                 loadChats();
-
                 // Remove "active" class from all user-list elements first
                 $(".user-list").removeClass("active");
 
@@ -308,6 +307,8 @@
                                 unseen_chat: resp.unseen_chat,
                             });
 
+
+
                             if (resp.chat_count > 0) {
                                 scrollChatToBottom(receiver_id);
                             }
@@ -335,6 +336,8 @@
                     }
                 });
             }
+
+
 
 
             function scrollChatToBottom(receiver_id) {
@@ -713,7 +716,10 @@
                     $("#message-app-" + data.sender_id).html("");
                     load_chat_list();
                 }
-            })
+            });
+
+
+
 
 
             // Listen for incoming chat messages from the server
