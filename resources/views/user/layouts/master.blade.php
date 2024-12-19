@@ -279,6 +279,11 @@
                 // Remove "active" class from all user-list elements first
                 $(".user-list").removeClass("active");
 
+                socket.emit("read-chat", {
+                    read_chat: 1,
+                    receiver_id: receiver_id
+                });
+
                 // Add "active" class to the clicked element
                 $("#chat_list_user_" + getUserID).addClass("active");
 
@@ -716,6 +721,11 @@
                     $("#message-app-" + data.sender_id).html("");
                     load_chat_list();
                 }
+            });
+
+
+            socket.on('read-chat', function(data) {
+                load_chat_list();
             });
 
 

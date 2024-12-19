@@ -294,9 +294,10 @@ class ChatController extends Controller
             $chat_count = $chats->count();
 
             // Get unseen chats
-            $unseen_chat = Chat::where('sender_id', $request->reciver_id)
-                ->where('reciver_id', $request->sender_id)
+            $unseen_chat = Chat::where('sender_id', $request->sender_receiver_id)
+                ->where('reciver_id', auth()->id())
                 ->where('seen', 0)
+                ->where('delete_from_receiver_id', 0)
                 ->get();
 
             return response()->json([
