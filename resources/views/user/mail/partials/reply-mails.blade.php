@@ -40,7 +40,7 @@
                                         <span hidden>No CC emails available</span>
                                     @endif
                                 </h6>
-                                <h6>Date: {{ $reply->created_at->format('d/m/Y h:i A') }}</h6>
+                                <h6>Date: {{ $reply->created_at->format('m/d/Y h:i A') }}</h6>
                             </div>
                         </div>
                     </div>
