@@ -39,7 +39,7 @@
                                         <div class="box_label">
                                             <label>Phone *</label>
                                             <input type="tel" class="form-control" name="phone" id="mobile_code"
-                                                value="{{ old('full_phone_number') }}" placeholder="">
+                                                value="{{ old('full_phone_number') }}" placeholder="Enter Phone Number">
                                             @if ($errors->has('phone'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('phone') }}
@@ -54,10 +54,9 @@
                                             <label>Password *</label>
                                             <input type="password" class="form-control" name="password" id="password"
                                                 value="{{ old('password') }}" placeholder="">
-                                                <span class="eye-btn-1" id="eye-button-1">
-                                                    <i class="fa fa-eye-slash" aria-hidden="true"
-                                                        id="togglePassword"></i>
-                                                </span>
+                                            <span class="eye-btn-1" id="eye-button-1">
+                                                <i class="fa fa-eye-slash" aria-hidden="true" id="togglePassword"></i>
+                                            </span>
                                             @if ($errors->has('password'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('password') }}
@@ -69,12 +68,11 @@
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label position-relative">
                                             <label>Confirm Password *</label>
-                                            <input type="password" class="form-control" name="confirm_password" id="confirm_password"
-                                                value="{{ old('confirm_password') }}" placeholder="">
-                                                <span class="eye-btn-1" id="eye-button-2">
-                                                    <i class="fa fa-eye-slash" aria-hidden="true"
-                                                        id="togglePassword"></i>
-                                                </span>
+                                            <input type="password" class="form-control" name="confirm_password"
+                                                id="confirm_password" value="{{ old('confirm_password') }}" placeholder="">
+                                            <span class="eye-btn-1" id="eye-button-2">
+                                                <i class="fa fa-eye-slash" aria-hidden="true" id="togglePassword"></i>
+                                            </span>
                                             @if ($errors->has('confirm_password'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('confirm_password') }}
@@ -285,23 +283,23 @@
 @endsection
 
 @push('scripts')
-<script>
-    $(document).ready(function() {
-        $('#eye-button-1').click(function() {
-            $('#password').attr('type', $('#password').is(':password') ? 'text' : 'password');
-            $(this).find('i').toggleClass('fa-eye-slash fa-eye');
+    <script>
+        $(document).ready(function() {
+            $('#eye-button-1').click(function() {
+                $('#password').attr('type', $('#password').is(':password') ? 'text' : 'password');
+                $(this).find('i').toggleClass('fa-eye-slash fa-eye');
+            });
+            $('#eye-button-2').click(function() {
+                $('#confirm_password').attr('type', $('#confirm_password').is(':password') ? 'text' :
+                    'password');
+                $(this).find('i').toggleClass('fa-eye-slash fa-eye');
+            });
         });
-        $('#eye-button-2').click(function() {
-            $('#confirm_password').attr('type', $('#confirm_password').is(':password') ? 'text' : 'password');
-            $(this).find('i').toggleClass('fa-eye-slash fa-eye');
-        });
-    });
-</script>
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput-jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/utils.min.js"></script>
-
     <script>
         function initializeIntlTelInput() {
             const phoneInput = $("#mobile_code");
@@ -321,23 +319,50 @@
             const dialCode = selectedCountry.dialCode;
             const exampleNumber = intlTelInputUtils.getExampleNumber(selectedCountry.iso2, 0, 0);
 
-            let maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
+            let maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils
+                .numberFormat.NATIONAL);
             maskNumber = maskNumber.replace('+' + dialCode + ' ', '');
 
-            const mask = maskNumber.replace(/[0-9+]/g, '0');
-            phoneInput.mask(mask, { placeholder: maskNumber });
+            // Define the mask
+            let mask;
+            if (dialCode && dialCode.length > 2) {
+                // Use a fixed mask pattern for countries with dial codes of length greater than 2
+                mask = '999 999 999';
+                maskNumber = '999 999 999';
+            } else {
+                // Dynamically create a mask by replacing digits with 0 for shorter dial codes
+                mask = maskNumber.replace(/[0-9+]/g, '0');
+            }
+
+            // Apply the mask with the placeholder
+            phoneInput.mask(mask, {
+                placeholder: 'Enter Phone Number',
+            });
 
             phoneInput.on('countrychange', function() {
-                $(this).val('');
+                $(this).val(''); // Clear the input field when country changes
                 const newSelectedCountry = $(this).intlTelInput('getSelectedCountryData');
                 const newDialCode = newSelectedCountry.dialCode;
                 const newExampleNumber = intlTelInputUtils.getExampleNumber(newSelectedCountry.iso2, 0, 0);
 
-                let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
+                let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry.iso2,
+                    intlTelInputUtils.numberFormat.NATIONAL);
                 newMaskNumber = newMaskNumber.replace('+' + newDialCode + ' ', '');
 
-                const newMask = newMaskNumber.replace(/[0-9+]/g, '0');
-                phoneInput.mask(newMask, { placeholder: newMaskNumber });
+                let newMask;
+
+                if (newDialCode.length > 2) {
+                    // If dial code length is more than 2, use a 999 999 999 mask (or a similar format)
+                    newMask = '999 999 999';
+                    newMaskNumber = '999 999 999';
+                } else {
+                    // Otherwise, replace all digits with 0
+                    newMask = newMaskNumber.replace(/[0-9+]/g, '0');
+                }
+
+                phoneInput.mask(newMask, {
+                    placeholder: 'Enter Phone Number',
+                });
             });
         }
 
@@ -373,6 +398,8 @@
             });
         });
     </script>
+
+
     <script>
         $(document).ready(function() {
             getStates($('#country').val());

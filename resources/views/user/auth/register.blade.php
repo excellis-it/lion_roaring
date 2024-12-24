@@ -203,7 +203,7 @@
                                             <div class="col-lg-4 mb-3">
                                                 <div class="login-username">
                                                     <label for="user_login">Phone Number</label>
-                                                    <input type="text" name="phone_number" id="mobile_code"
+                                                    <input type="text" name="phone_number" id="mobile_code" placeholder="Enter Phone Number"
                                                         class="input" value="{{ old('full_phone_number') }}">
                                                     @if ($errors->has('phone_number'))
                                                         <div class="error" style="color:red;">
@@ -444,9 +444,19 @@
                 .numberFormat.NATIONAL);
             maskNumber = maskNumber.replace('+' + dialCode + ' ', '');
 
-            const mask = maskNumber.replace(/[0-9+]/g, '0');
+            let mask;
+            if (dialCode && dialCode.length > 2) {
+                // Use a fixed mask pattern for countries with dial codes of length greater than 2
+                mask = '999 999 999';
+                maskNumber = '999 999 999';
+            } else {
+                // Dynamically create a mask by replacing digits with 0 for shorter dial codes
+                mask = maskNumber.replace(/[0-9+]/g, '0');
+            }
+
+            // Apply the mask with the placeholder
             phoneInput.mask(mask, {
-                placeholder: maskNumber
+                placeholder: 'Enter Phone Number',
             });
 
             phoneInput.on('countrychange', function() {
@@ -458,10 +468,18 @@
                 let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry.iso2,
                     intlTelInputUtils.numberFormat.NATIONAL);
                 newMaskNumber = newMaskNumber.replace('+' + newDialCode + ' ', '');
+                let newMask;
+                if (newDialCode.length > 2) {
+                    // If dial code length is more than 2, use a 999 999 999 mask (or a similar format)
+                    newMask = '999 999 999';
+                    newMaskNumber = '999 999 999';
+                } else {
+                    // Otherwise, replace all digits with 0
+                    newMask = newMaskNumber.replace(/[0-9+]/g, '0');
+                }
 
-                const newMask = newMaskNumber.replace(/[0-9+]/g, '0');
                 phoneInput.mask(newMask, {
-                    placeholder: newMaskNumber
+                    placeholder: 'Enter Phone Number',
                 });
             });
         }
