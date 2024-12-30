@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 
@@ -317,6 +318,8 @@ class PartnerController extends Controller
         if (Auth::user()->can('Delete Partners')) {
             $id = Crypt::decrypt($id);
             $user = User::findOrFail($id);
+            Log::info($user->email . ' deleted by ' . auth()->user()->email);
+
             $user->delete();
 
             //check if user teamMember

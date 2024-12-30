@@ -16,12 +16,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 
 /**
  * @group Members
- * 
+ *
  * @authenticated
  */
 
@@ -30,7 +31,7 @@ class PartnerController extends Controller
     /**
      * List Of Members
      * @queryParam search string optional for search. Example: "abc"
-     * 
+     *
      * @response 200 {
      *    "data": {
      *        "current_page": 1,
@@ -136,7 +137,7 @@ class PartnerController extends Controller
      *        "total": 2
      *    }
      * }
-     * 
+     *
      * @response 201 {
      *    "message": "Error occurred while fetching the partners."
      * }
@@ -179,9 +180,9 @@ class PartnerController extends Controller
 
     /**
      * Load data roles, ecclesias, countries.
-     * 
+     *
      * @authenticated
-     * 
+     *
      * @response 200 {
      *   "roles": [
      *     {"id": 1, "name": "Manager"},
@@ -219,7 +220,7 @@ class PartnerController extends Controller
 
     /**
      * Store new Members
-     * 
+     *
      * @bodyParam user_name string required The unique username. Example: johndoe
      * @bodyParam ecclesia_id integer nullable The ID of the ecclesia. Example: 1
      * @bodyParam role string required The role to assign. Example: MEMBER
@@ -236,7 +237,7 @@ class PartnerController extends Controller
      * @bodyParam zip string required The zip code. Example: 90001
      * @bodyParam address2 string nullable The secondary address. Example: Apt 4B
      * @bodyParam phone string required The phone number. Example: 1234567890
-     * 
+     *
      * @response 200 {
      *   "message": "Customer created successfully."
      * }
@@ -320,9 +321,9 @@ class PartnerController extends Controller
 
     /**
      * Update Members's details
-     * 
+     *
      * @authenticated
-     * 
+     *
      * @bodyParam first_name string required The first name of the user. Example: John
      * @bodyParam last_name string required The last name of the user. Example: Doe
      * @bodyParam middle_name string nullable The middle name of the user. Example: Smith
@@ -338,7 +339,7 @@ class PartnerController extends Controller
      * @bodyParam password string nullable The new password. Must include at least one special character (@$%&). Example: P@ssword1
      * @bodyParam confirm_password string nullable The confirmed password. Must match the password. Example: P@ssword1
      * @bodyParam status int required The status. Example: 1
-     * 
+     *
      * @response 200 {
      *   "message": "Member updated successfully."
      * }
@@ -410,11 +411,11 @@ class PartnerController extends Controller
 
     /**
      * Delete a Member
-     * 
+     *
      * @authenticated
-     * 
+     *
      * @urlParam id int required The ID of the partner to delete.
-     * 
+     *
      * @response 200 {
      *   "message": "Member has been deleted successfully."
      * }
@@ -428,6 +429,8 @@ class PartnerController extends Controller
         try {
 
             $user = User::findOrFail($id);
+
+            Log::info($user->email . ' deleted by ' . auth()->user()->email);
 
             // Delete the user
             $user->delete();
