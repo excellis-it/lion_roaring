@@ -430,7 +430,7 @@ class PartnerController extends Controller
 
             $user = User::findOrFail($id);
 
-            Log::info($user->email . ' deleted by ' . auth()->user()->email);
+            Log::info($user->email . ' deleted by ' . auth()->user()->email . 'deleted at ' . time());
 
             // Delete the user
             $user->delete();
