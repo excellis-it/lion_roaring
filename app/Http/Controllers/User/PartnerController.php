@@ -318,7 +318,7 @@ class PartnerController extends Controller
         if (Auth::user()->can('Delete Partners')) {
             $id = Crypt::decrypt($id);
             $user = User::findOrFail($id);
-            Log::info($user->email . ' deleted by ' . auth()->user()->email . 'deleted at ' . time());
+            Log::info($user->email . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
 
             $user->delete();
 
