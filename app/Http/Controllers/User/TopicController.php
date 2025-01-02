@@ -7,6 +7,7 @@ use App\Models\Topic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class TopicController extends Controller
@@ -143,6 +144,7 @@ class TopicController extends Controller
     {
         if (Auth::user()->can('Delete Topic')) {
             $topic = Topic::findOrFail(Crypt::decrypt($id));
+            Log::info($topic->topic_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             $topic->delete();
             return redirect()->route('topics.index')->with('message', 'Topic deleted successfully.');
         } else {

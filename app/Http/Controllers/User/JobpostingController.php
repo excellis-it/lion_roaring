@@ -7,6 +7,7 @@ use App\Models\Job;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 
 class JobpostingController extends Controller
 {
@@ -198,6 +199,7 @@ class JobpostingController extends Controller
     {
         if (Auth::user()->can('Delete Job Postings')) {
             $job = Job::findOrFail($id);
+            Log::info($job->job_title . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             $job->delete();
             return redirect()->route('jobs.index')->with('error', 'Job has been deleted successfully.');
         } else {

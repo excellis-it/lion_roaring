@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LiveEventController extends Controller
 {
@@ -68,6 +69,7 @@ class LiveEventController extends Controller
     public function destroy($id)
     {
         $event = Event::findOrFail($id);
+        Log::info($event->title . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
         $event->delete();
 
         return response()->json(['success' => 'Event deleted successfully.']);

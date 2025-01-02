@@ -88,6 +88,7 @@ class FileController extends Controller
         if (auth()->user()->can('Delete File')) {
             $file = File::find($id);
             if ($file) {
+                Log::info($file->file_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
                 $file->delete();
                 // delete file from storage
                 Storage::disk('public')->delete($file->file);

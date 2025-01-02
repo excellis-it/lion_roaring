@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * @authenticated
- * 
+ *
  * @group Education
- *  
+ *
  * @subgroup Becoming a Leader
  * @subgroupDescription APIs for managing Becoming a Leader files and topics.
  */
@@ -27,12 +27,12 @@ class LeadershipDevelopmentController extends Controller
      * Becoming a Leaders List
      *
      * @queryParam topic int The ID of the topic to filter by. Example: 1
-     * 
+     *
      * @response 200 *{
      *    "data": {
      *        "current_page": 1,
      *        "data": [
-     *            
+     *
      *            {
      *                "id": 60,
      *                "user_id": 1,
@@ -250,7 +250,7 @@ class LeadershipDevelopmentController extends Controller
      *   ],
      *   "status": true
      * }
-     * 
+     *
      * @response 201 {
      *   "message": "Failed to fetch topics. Please try again later.",
      *   "status": false
@@ -296,12 +296,12 @@ class LeadershipDevelopmentController extends Controller
      *    },
      *    "status": true
      * }
-     * 
+     *
      * @response 400 {
      *   "message": "The file name has already been taken.",
      *   "status": false
      * }
-     * 
+     *
      * @response 422 {
      *   "message": "Validation errors occurred.",
      *   "errors": {
@@ -555,6 +555,7 @@ class LeadershipDevelopmentController extends Controller
 
             // Delete file from database and storage
             Storage::disk('public')->delete($file->file);
+            Log::info($file->file_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             $file->delete();
 
             return response()->json([

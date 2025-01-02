@@ -8,6 +8,7 @@ use App\Models\Ecclesia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 
 class EcclesiaContorller extends Controller
 {
@@ -131,6 +132,7 @@ class EcclesiaContorller extends Controller
     {
         if (Auth::user()->hasRole('ADMIN')) {
             $ecclesia = Ecclesia::findOrFail(Crypt::decrypt($id));
+            Log::info($ecclesia->name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             $ecclesia->delete();
             return redirect()->route('ecclesias.index')->with('message', 'Ecclesia deleted successfully.');
         } else {

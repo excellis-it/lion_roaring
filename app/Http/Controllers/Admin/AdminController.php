@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TeamMember;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -111,7 +112,12 @@ class AdminController extends Controller
     public function delete($id)
     {
         if (auth()->user()->can('Delete Admin List')) {
-            User::findOrFail($id)->delete();
+            $user = User::findOrFail($id);
+
+            Log::info($user->email . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
+
+            // Delete the user
+            $user->delete();
             //check if user teamMember
             $teamMember = TeamMember::where('user_id', $id)->get();
             if ($teamMember) {

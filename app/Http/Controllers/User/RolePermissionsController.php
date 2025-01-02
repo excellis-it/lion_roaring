@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -162,6 +163,7 @@ class RolePermissionsController extends Controller
         $id = Crypt::decrypt($id);
         $role = Role::findOrFail($id);
         if ($role->name != 'ADMIN') {
+            Log::info($role->id . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             $role->delete();
             return redirect()->back()->with('message', 'Role deleted successfully.');
         } else {

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Bulletin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 class BulletinController extends Controller
@@ -165,6 +166,7 @@ class BulletinController extends Controller
                 $bulletin = Bulletin::where('user_id', Auth::user()->id)->find($id);
             }
             if ($bulletin) {
+                Log::info($bulletin->title . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
                 $bulletin->delete();
                 return response()->json(['message' => 'Bulletin deleted successfully', 'status' => true, 'bulletin' => $bulletin]);
             }

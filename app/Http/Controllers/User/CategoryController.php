@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
@@ -179,6 +180,7 @@ class CategoryController extends Controller
     public function delete(Request $request)
     {
         $category = Category::findOrFail($request->id);
+        Log::info($category->name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
         $category->delete();
 
         return response()->json(['message' => 'Category deleted successfully.']);

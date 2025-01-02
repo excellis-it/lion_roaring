@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\EcomNewsletter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class NewsletterController extends Controller
 {
@@ -45,6 +46,7 @@ class NewsletterController extends Controller
     {
         if (auth()->user()->hasRole('ADMIN')) {
             $newsletter = EcomNewsletter::find($id);
+            Log::info($newsletter->id . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             if ($newsletter) {
                 $newsletter->delete();
                 return redirect()->back()->with('message', 'Newsletter deleted successfully.');

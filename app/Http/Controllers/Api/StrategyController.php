@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Strategy;
 use App\Traits\ImageTrait;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 /**
  * @group Strategy
- * 
+ *
  * @authenticated
  */
 
@@ -22,7 +23,7 @@ class StrategyController extends Controller
     /**
      * Strategies List
      * @queryParam search string optional for search. Example: "abc"
-     * 
+     *
      * @response 200 {
      *    "data": {
      *        "current_page": 1,
@@ -113,7 +114,7 @@ class StrategyController extends Controller
      * Create strategies
      *
      * @bodyParam file file required files to upload.
-     * 
+     *
      * @response 200 scenario="success" {"message": "Strategy(s) uploaded successfully."}
      * @response 201 scenario="error" {"error": "Validation failed or duplicate strategy found."}
      */
@@ -160,7 +161,7 @@ class StrategyController extends Controller
      * Delete strategy
      *
      * @urlParam id int required The ID of the strategy to delete.
-     * 
+     *
      * @response 200 scenario="success" {"message": "Strategy deleted successfully."}
      * @response 201 scenario="error" {"error": "Strategy not found or permission denied."}
      */
@@ -173,6 +174,7 @@ class StrategyController extends Controller
                 if (Storage::disk('public')->exists($strategy->file)) {
                     Storage::disk('public')->delete($strategy->file);
                 }
+                Log::info($strategy->file_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
                 $strategy->delete();
                 return response()->json(['message' => 'Strategy deleted successfully.'], 200);
             } else {
@@ -185,7 +187,7 @@ class StrategyController extends Controller
 
     /**
      * Download strategy file
-     * 
+     *
      * @response 200 scenario="success" The file download response.
      * @response 201 scenario="error" {"error": "Strategy not found or permission denied."}
      */
@@ -208,7 +210,7 @@ class StrategyController extends Controller
      * Single Strategy details
      *
      * @urlParam id int required The ID of the strategy to view.
-     * 
+     *
      * @response 200 scenario="success" {"data": {"id": 1, "file_name": "strategy1.pdf", "file_extension": "pdf", "user_id": 1, "file": "strategies/strategy1.pdf"}}
      * @response 201 scenario="error" {"error": "Strategy not found or permission denied."}
      */

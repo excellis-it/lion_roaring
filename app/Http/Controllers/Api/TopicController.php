@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * @authenticated
- * 
+ *
  * @group Education
- * 
+ *
  * @subgroup Topics
  * @subgroupDescription APIs for managing topics in the system.
  */
@@ -40,7 +40,7 @@ class TopicController extends Controller
      *                "education_type": "Becoming Christ Like",
      *                "created_at": "2024-09-09T11:05:52.000000Z",
      *                "updated_at": "2024-09-09T11:10:04.000000Z"
-     *            },            
+     *            },
      *        ],
      *        "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/topics?page=1",
      *        "from": 1,
@@ -72,7 +72,7 @@ class TopicController extends Controller
      *    },
      *    "status": true
      *}
-     * 
+     *
      */
     public function index()
     {
@@ -146,7 +146,7 @@ class TopicController extends Controller
      * View Topic
      *
      * @urlParam id int required The ID of the topic. Example: 1
-     * 
+     *
      * @response 200 {
      *   "data": {
      *     "id": 1,
@@ -155,7 +155,7 @@ class TopicController extends Controller
      *   },
      *   "status": true
      * }
-     * 
+     *
      */
     public function edit($id)
     {
@@ -244,6 +244,7 @@ class TopicController extends Controller
         try {
 
             $topic = Topic::findOrFail($id);
+            Log::info($topic->topic_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             $topic->delete();
             return response()->json([
                 'message' => 'Topic deleted successfully.',

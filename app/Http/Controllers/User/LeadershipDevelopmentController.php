@@ -7,6 +7,7 @@ use App\Models\File;
 use App\Models\Topic;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class LeadershipDevelopmentController extends Controller
@@ -78,6 +79,7 @@ class LeadershipDevelopmentController extends Controller
     {
         if (auth()->user()->can('Delete Becoming a Leader')) {
             $file = File::find($id);
+            Log::info($file->file_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             if (isset($request->topic)) {
                 $new_topic = $request->topic;
             } else {

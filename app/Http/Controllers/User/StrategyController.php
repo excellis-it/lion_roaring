@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Strategy;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -77,6 +78,7 @@ class StrategyController extends Controller
     {
         if (auth()->user()->can('Delete Strategy')) {
             $strategy = Strategy::find($id);
+            Log::info($strategy->id . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             if ($strategy) {
 
                 // delete strategy from storage
@@ -84,7 +86,7 @@ class StrategyController extends Controller
                 // delete strategy from storage folder if exists
                 if (Storage::disk('public')->exists($strategy->file)) {
                     Storage::disk('public')->delete($strategy->file);
-                } 
+                }
                 $strategy->delete();
 
                 return redirect()->route('strategy.index')->with('message', 'Strategy deleted successfully.');
