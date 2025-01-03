@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Mail\ActiveUserMail;
+use App\Mail\RejectionEmail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,15 +26,14 @@ class MemberController extends Controller
                 $partners = User::whereHas('roles', function ($q) {
                     $q->whereNotIn('name', ['ADMIN', 'ECCLESIA']);
                 })
-                ->where('ecclesia_id', auth()->id())
-                ->orderBy('id', 'desc')
-                ->paginate(15);
+                    ->where('ecclesia_id', auth()->id())
+                    ->orderBy('id', 'desc')
+                    ->paginate(15);
             }
             return view('admin.members.list', compact('partners'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
-
     }
 
 
@@ -83,20 +83,41 @@ class MemberController extends Controller
         }
     }
 
- public function accept(Request $request, $id)
- {
-     $user = User::find($id);
-     $user->is_accept = 1;
-     $user->status = 1;
-     $user->save();
+    public function accept(Request $request, $id)
+    {
+        $user = User::find($id);
+        $user->is_accept = 1;
+        $user->status = 1;
+        $user->save();
 
-     $maildata = [
-        'name' => $user->full_name,
-        'email' => $user->email,
-        'type' => 'Activated',
-    ];
-    Mail::to($user->email)->send(new ActiveUserMail($maildata));
+        $maildata = [
+            'name' => $user->full_name,
+            'email' => $user->email,
+            'type' => 'Activated',
+        ];
+        Mail::to($user->email)->send(new ActiveUserMail($maildata));
 
-    return redirect()->back()->with('message', 'Account has been accepted successfully');
- }
+        return redirect()->back()->with('message', 'Account has been accepted successfully');
+    }
+
+    public function rejected(Request $request, $id)
+    {
+        $request->validate([
+            'reason' => 'required',
+        ]);
+        $partner = User::findOrFail($id);
+        $partner->is_accept = 2; // mark as rejected
+        $partner->save();
+
+        // Send email to the partner
+        Mail::to($partner->email)->send(new RejectionEmail($partner, $request->reason));
+
+        return redirect()->route('members.index')->with('message', 'Partner has been rejected and notified.');
+    }
+
+    public function rejectedView($id)
+    {
+        $partner = User::find($id);
+        return view('admin.members.rejected', compact('partner'));
+    }
 }

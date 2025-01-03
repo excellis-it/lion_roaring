@@ -130,6 +130,8 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     Route::prefix('members')->group(function () {
         Route::get('/', [MemberController::class, 'index'])->name('members.index');
         Route::put('/accept/{id}', [MemberController::class, 'accept'])->name('members.accept');
+        Route::put('/rejected/{id}', [MemberController::class, 'rejected'])->name('members.reject');
+        Route::get('/rejected-view/{id}', [MemberController::class, 'rejectedView'])->name('members.reject-view');
         Route::get('/fetch-data', [MemberController::class, 'fetchData'])->name('members.fetch-data');
     });
 
