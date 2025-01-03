@@ -17,7 +17,7 @@ class DetailsController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Manage Details Page')) {
         $details = Detail::orderBy('id', 'asc')->get();
         return view('admin.details.update')->with('details', $details);
         } else {

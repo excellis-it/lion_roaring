@@ -135,7 +135,7 @@
                                                 @foreach ($ecclessias as $item)
                                                     <option value="{{ $item->id }}"
                                                         {{ $partner->ecclesia_id == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->name }}</option>
+                                                        {{ $item->full_name ?? '' }}</option>
                                                 @endforeach
                                             </select>
                                             @if ($errors->has('ecclesia_id'))

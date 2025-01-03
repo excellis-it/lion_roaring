@@ -41,7 +41,7 @@
                     </ul>
                 </li>
             @endif
-            @if (Auth::user()->hasRole('ADMIN'))
+            @if (Auth::user()->hasRole('ADMIN') || Auth::user()->hasRole('LEADER'))
                 <li class="dropdown {{ Request::is('admin/roles*') ? 'active' : ' ' }}">
                     <a href="{{ route('admin.roles.index') }}">
                         <i class="ph ph-shield-check"></i>
@@ -75,6 +75,23 @@
                             href="{{ route('plans.index') }}"> Plan List</a></li>
                 </ul>
             </li> --}}
+            @if (Gate::check('Manage Ecclessia'))
+                <li class="dropdown {{ Request::is('admin/ecclessias*') ? 'active' : ' ' }}">
+                    <a href="{{ route('ecclessias.index') }}">
+                        <i class="ph ph-user-list"></i>
+                        <span>Ecclessias</span>
+                    </a>
+                </li>
+            @endif
+
+            @if (Gate::check('Manage All Members'))
+                <li class="dropdown {{ Request::is('admin/members*') ? 'active' : ' ' }}">
+                    <a href="{{ route('members.index') }}">
+                        <i class="ph ph-user-list"></i>
+                        <span>Members Access</span>
+                    </a>
+                </li>
+            @endif
             @if (Gate::check('Manage Donations'))
                 <li class="dropdown {{ Request::is('admin/donations*') ? 'active' : ' ' }}">
                     <a href="{{ route('donations.index') }}">
@@ -195,63 +212,127 @@
                     </ul>
                 </li>
             @endif
-            @if (Gate::check('Manage Pages'))
+            @if (Gate::check('Manage Home Page') ||
+                    Gate::check('Manage Details Page') ||
+                    Gate::check('Manage Organizations Page') ||
+                    Gate::check('Manage About Us Page') ||
+                    Gate::check('Manage Faq') ||
+                    Gate::check('Manage Gallery') ||
+                    Gate::check('Manage Ecclesia Association Page') ||
+                    Gate::check('Manage Principle and Business Page') ||
+                    Gate::check('Manage Contact Us Page') ||
+                    Gate::check('Manage Article of Association Page') ||
+                    Gate::check('Manage Footer') ||
+                    Gate::check('Manage Register Page Agreement Page') ||
+                    Gate::check('Manage Member Privacy Policy Page') ||
+                    Gate::check('Manage PMA Terms Page'))
                 <li class="dropdown">
                     <a href="javascript:void(0);"
-                        class="menu-toggle nav-link has-dropdown {{ Request::is('admin/pages*') ? 'active' : ' ' }}">
+                        class="menu-toggle nav-link has-dropdown {{ Request::is('admin/pages*') ? 'active' : '' }}">
                         <i class="ph ph-newspaper"></i>
                         <span> Pages </span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="{{ Request::is('admin/pages/home-cms') ? 'active' : ' ' }}"><a class="nav-link"
-                                href="{{ route('home-cms.index') }}"> Home </a></li>
-                        <li class="{{ Request::is('admin/pages/details') ? 'active' : ' ' }}"><a class="nav-link"
-                                href="{{ route('details.index') }}"> Details </a></li>
-                        <li class="dropdown {{ Request::is('admin/pages/organizations*') ? 'active' : ' ' }}">
-                            <a href="javascript:void(0);" class="menu-toggle nav-link has-dropdown">
-                                <span> Organization</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="{{ Request::is('admin/pages/organizations') ? 'active' : ' ' }}"><a
-                                        class="nav-link" href="{{ route('organizations.index') }}"> Organization
-                                        CMS</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="{{ Request::is('admin/pages/about-us') ? 'active' : ' ' }}"><a class="nav-link"
-                                href="{{ route('about-us.index') }}"> About Us</a></li>
-                        <li class="{{ Request::is('admin/pages/faq') ? 'active' : ' ' }}"><a class="nav-link"
-                                href="{{ route('faq.index') }}"> FAQS</a></li>
-                        <li class="{{ Request::is('admin/pages/gallery') ? 'active' : ' ' }}"><a class="nav-link"
-                                href="{{ route('gallery.index') }}"> GALLERY </a></li>
-                        <li class="{{ Request::is('admin/pages/ecclesia-associations') ? 'active' : ' ' }}"><a
-                                class="nav-link" href="{{ route('ecclesia-associations.index') }}"> ECCLESIA
-                                ASSOCIATION</a></li>
-                        <li class="{{ Request::is('admin/pages/principle-and-business') ? 'active' : ' ' }}"><a
-                                class="nav-link" href="{{ route('principle-and-business.index') }}">PRINCIPLE AND
-                                BUSINESS MODEL
-                            </a></li>
-                        <li class="{{ Request::is('admin/contact-us-cms') ? 'active' : ' ' }}"><a class="nav-link"
-                                href="{{ route('contact-us-cms.index') }}">CONTACT US</a></li>
-                        <li class="{{ Request::is('admin/pages/articles-of-association') ? 'active' : ' ' }}"><a
-                                class="nav-link" href="{{ route('articles-of-association.index') }}">
-                                ARTICLES OF ASSOCIATION</a></li>
-                        <li class="{{ Request::is('admin/pages/footer') ? 'active' : ' ' }}"><a class="nav-link"
-                                href="{{ route('footer.index') }}">
-                                Footer</a></li>
-                        <li class="{{ Request::is('admin/pages/register-agreements') ? 'active' : ' ' }}"><a
-                                class="nav-link" href="{{ route('register-agreements.index') }}">
-                                REGISTER PAGE AGREEMENTS</a></li>
-                        <li class="{{ Request::is('admin/pages/members-privacy-policies') ? 'active' : ' ' }}"><a
-                                class="nav-link" href="{{ route('members-privacy-policies.index') }}">
-                                MEMBERS PRIVACY POLICIES</a></li>
-                        {{-- PMA Terms --}}
-                        <li class="{{ Request::is('admin/pages/pma-terms') ? 'active' : ' ' }}"><a class="nav-link"
-                                href="{{ route('pma-terms.index') }}">
-                                PMA Terms</a></li>
+                        @if (Gate::check('Manage Home Page'))
+                            <li class="{{ Request::is('admin/pages/home-cms') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('home-cms.index') }}"> Home </a>
+                            </li>
+                        @endif
+
+                        @if (Gate::check('Manage Details Page'))
+                            <li class="{{ Request::is('admin/pages/details') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('details.index') }}"> Details </a>
+                            </li>
+                        @endif
+
+                        @if (Gate::check('Manage Organizations Page'))
+                            <li class="dropdown {{ Request::is('admin/pages/organizations*') ? 'active' : '' }}">
+                                <a href="javascript:void(0);" class="menu-toggle nav-link has-dropdown">
+                                    <span> Organization</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="{{ Request::is('admin/pages/organizations') ? 'active' : '' }}">
+                                        <a class="nav-link" href="{{ route('organizations.index') }}"> Organization
+                                            CMS</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
+
+                        @if (Gate::check('Manage About Us Page'))
+                            <li class="{{ Request::is('admin/pages/about-us') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('about-us.index') }}"> About Us</a>
+                            </li>
+                        @endif
+
+                        @if (Gate::check('Manage Faq'))
+                            <li class="{{ Request::is('admin/pages/faq') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('faq.index') }}"> FAQS</a>
+                            </li>
+                        @endif
+
+                        @if (Gate::check('Manage Gallery'))
+                            <li class="{{ Request::is('admin/pages/gallery') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('gallery.index') }}"> GALLERY </a>
+                            </li>
+                        @endif
+
+                        @if (Gate::check('Manage Ecclesia Association Page'))
+                            <li class="{{ Request::is('admin/pages/ecclesia-associations') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('ecclesia-associations.index') }}"> ECCLESIA
+                                    ASSOCIATION</a>
+                            </li>
+                        @endif
+
+                        @if (Gate::check('Manage Principle and Business Page'))
+                            <li class="{{ Request::is('admin/pages/principle-and-business') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('principle-and-business.index') }}"> PRINCIPLE AND
+                                    BUSINESS MODEL </a>
+                            </li>
+                        @endif
+
+                        @if (Gate::check('Manage Contact Us Page'))
+                            <li class="{{ Request::is('admin/contact-us-cms') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('contact-us-cms.index') }}"> CONTACT US </a>
+                            </li>
+                        @endif
+
+                        @if (Gate::check('Manage Article of Association Page'))
+                            <li class="{{ Request::is('admin/pages/articles-of-association') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('articles-of-association.index') }}"> ARTICLES OF
+                                    ASSOCIATION </a>
+                            </li>
+                        @endif
+
+                        @if (Gate::check('Manage Footer'))
+                            <li class="{{ Request::is('admin/pages/footer') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('footer.index') }}"> Footer </a>
+                            </li>
+                        @endif
+
+                        @if (Gate::check('Manage Register Page Agreement Page'))
+                            <li class="{{ Request::is('admin/pages/register-agreements') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('register-agreements.index') }}"> REGISTER PAGE
+                                    AGREEMENTS </a>
+                            </li>
+                        @endif
+
+                        @if (Gate::check('Manage Member Privacy Policy Page'))
+                            <li class="{{ Request::is('admin/pages/members-privacy-policies') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('members-privacy-policies.index') }}"> MEMBERS
+                                    PRIVACY POLICIES </a>
+                            </li>
+                        @endif
+
+                        @if (Gate::check('Manage PMA Terms Page'))
+                            <li class="{{ Request::is('admin/pages/pma-terms') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('pma-terms.index') }}"> PMA Terms </a>
+                            </li>
+                        @endif
                     </ul>
                 </li>
             @endif
+
         </ul>
     </aside>
 </div>

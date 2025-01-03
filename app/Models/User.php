@@ -14,7 +14,7 @@ class User extends Authenticatable
 {
     //  protected $guard_name = 'api';
     // protected $guard_name = 'web';
-  
+
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
@@ -95,7 +95,7 @@ class User extends Authenticatable
 
     public function ecclesia()
     {
-        return $this->belongsTo(Ecclesia::class);
+        return $this->belongsTo(User::class, 'ecclesia_id');
     }
 
     public function countries()

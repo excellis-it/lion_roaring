@@ -20,7 +20,7 @@ class PrincipleAndBusinessController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Manage Principle and Business Page')) {
         $business = PrincipalAndBusiness::orderBy('id', 'desc')->first();
         $principle_images = PrincipleBusinessImage::get();
         return view('admin.principle-and-business.update')->with(compact('business', 'principle_images'));

@@ -21,7 +21,7 @@ class OrganizationController extends Controller
 
     public function index()
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Manage Organizations Page')) {
         $organization = Organization::orderBy('id', 'desc')->first();
         return view('admin.organization.update')->with(compact('organization'));
         } else {

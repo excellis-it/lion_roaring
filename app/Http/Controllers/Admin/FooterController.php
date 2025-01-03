@@ -14,7 +14,7 @@ class FooterController extends Controller
 
     public function index()
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Manage Footer')) {
         $footer = Footer::orderBy('id', 'desc')->first();
         $social_links = FooterSocialLink::get();
         return view('admin.footer.update')->with(compact('footer', 'social_links'));

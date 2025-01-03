@@ -15,7 +15,7 @@ class RegisterAgreementController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Manage Register Page Agreement Page')) {
         $agreement = RegisterAgreement::orderBy('id', 'desc')->first();
         return view('admin.register_agreement.update', compact('agreement'));
         } else {

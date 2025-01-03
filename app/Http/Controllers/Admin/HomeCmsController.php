@@ -18,7 +18,7 @@ class HomeCmsController extends Controller
 
     public function index()
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Manage Home Page')) {
             $home = HomeCms::orderBy('id', 'desc')->first();
             return view('admin.home.update')->with('home', $home);
         } else {

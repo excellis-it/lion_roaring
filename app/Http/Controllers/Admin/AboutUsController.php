@@ -17,7 +17,7 @@ class AboutUsController extends Controller
     use ImageTrait;
     public function index()
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Manage About Us Page')) {
             $about_us = AboutUs::orderBy('id', 'desc')->first();
             return view('admin.about-us.update')->with(compact('about_us'));
         } else {

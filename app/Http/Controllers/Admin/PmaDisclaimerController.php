@@ -15,7 +15,7 @@ class PmaDisclaimerController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Manage PMA Terms Page')) {
             $term = PmaTerm::orderBy('id', 'desc')->first();
             return view('admin.pma-disclaimer.update')->with(compact('term'));
         } else {

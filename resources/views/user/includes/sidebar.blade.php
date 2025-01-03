@@ -312,7 +312,7 @@
                         </a>
                     </li>
                 @endif
-                @if (Auth::user()->hasRole('ADMIN'))
+                {{-- @if (Auth::user()->hasRole('ADMIN')) 
                     <li class="sidebar-item">
                         <a class="sidebar-link {{ Request::is('user/ecclesias/*') ? 'active' : '' }}"
                             href="{{ route('ecclesias.index') }}" aria-expanded="false">
@@ -322,7 +322,7 @@
                             <span class="hide-menu">Ecclesias</span>
                         </a>
                     </li>
-                @endif
+                @endif --}}
                 @if (Gate::check('Manage Strategy'))
                     <li class="sidebar-item">
                         <a class="sidebar-link"

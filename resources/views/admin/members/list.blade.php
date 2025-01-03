@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-    All Faq Details - {{ env('APP_NAME') }}
+    All Members Details - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
     <style>
@@ -10,12 +10,9 @@
     </style>
 @endpush
 @section('head')
-    All Faq Details
+    All Members Details
 @endsection
 @section('create_button')
-    @if (auth()->user()->can('Create Faq'))
-        <a href="{{ route('faq.create') }}" class="btn btn-primary">+ Create New FAQ</a>
-    @endif
 @endsection
 @section('content')
     <section id="loading">
@@ -43,24 +40,37 @@
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive" id="faq-data">
+                <div class="table-responsive" id="contacts-data">
                     <table class="table table-bordered" class="display">
                         <thead>
                             <tr>
-                                <th class="sorting" data-tippy-content="Sort by Id" data-sorting_type="asc"
-                                    data-column_name="id" style="cursor: pointer">Id<span id="id_icon"></span>
+                                <th>ID </th>
+                                <th class="sorting" data-tippy-content="Sort by Name" data-sorting_type="desc"
+                                    data-column_name="name" style="cursor: pointer"> Name<span id="name_icon"><i
+                                            class="fa fa-arrow-down"></i></span></th>
+                                <th>
+                                    Ecclesia
                                 </th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="question"
-                                    style="cursor: pointer" data-tippy-content="Sort by Question">
-                                    Question<span id="question_icon"></span></th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="answer"
-                                    style="cursor: pointer" data-tippy-content="Sort by answer">
-                                    Answer<span id="answer_icon"></span></th>
+                                <th class="sorting" data-tippy-content="Sort by User Name" data-sorting_type="desc"
+                                    data-column_name="user_name" style="cursor: pointer">User Name<span
+                                        id="user_name_icon"></span></th>
+                                <th class="sorting" data-tippy-content="Sort by Email" data-sorting_type="desc"
+                                    data-column_name="email" style="cursor: pointer"> Email <span id="email_icon"></span>
+                                </th>
+                                <th class="sorting" data-tippy-content="Sort by Phone" data-sorting_type="desc"
+                                    data-column_name="phone" style="cursor: pointer"> Phone <span id="phone_icon"></span>
+                                </th>
+                                <th class="sorting" data-tippy-content="Sort by Address" data-sorting_type="desc"
+                                    data-column_name="address" style="cursor: pointer"> Address <span
+                                        id="address_icon"></span></th>
 
+                                <th>Role</th>
+
+                                <th>Is Accept Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @include('admin.faq.table')
+                            @include('admin.members.table')
 
                         </tbody>
                     </table>
@@ -79,7 +89,7 @@
         $(document).on('click', '#delete', function(e) {
             swal({
                     title: "Are you sure?",
-                    text: "To delete this faq.",
+                    text: "To delete this member.",
                     type: "warning",
                     confirmButtonText: "Yes",
                     showCancelButton: true
@@ -97,18 +107,21 @@
                 })
         });
     </script>
+
     <script>
         $(document).ready(function() {
 
             function clear_icon() {
-                $('#id_icon').html('');
-                $('#question_icon').html('');
-                $('#answer_icon').html('');
+                $('#name_icon').html('');
+                $('#email_icon').html('');
+                $('#phone_icon').html('');
+                $('#address_icon').html('');
+                $('#user_name_icon').html('');
             }
 
             function fetch_data(page, sort_type, sort_by, query) {
                 $.ajax({
-                    url: "{{ route('faq.fetch-data') }}",
+                    url: "{{ route('members.fetch-data') }}",
                     data: {
                         page: page,
                         sortby: sort_by,
@@ -138,14 +151,14 @@
                     reverse_order = 'desc';
                     clear_icon();
                     $('#' + column_name + '_icon').html(
-                        '<span class="ph ph-caret-down"></span>');
+                        '<i class="fa fa-arrow-down"></i>');
                 }
                 if (order_type == 'desc') {
                     $(this).data('sorting_type', 'asc');
                     reverse_order = 'asc';
                     clear_icon();
                     $('#' + column_name + '_icon').html(
-                        '<span class="ph ph-caret-up"></span>');
+                        '<i class="fa fa-arrow-up"></i>');
                 }
                 $('#hidden_column_name').val(column_name);
                 $('#hidden_sort_type').val(reverse_order);

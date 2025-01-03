@@ -32,8 +32,8 @@ class PartnerController extends Controller
         if (Auth::user()->can('Manage Partners')) {
             // if (Auth::user()->hasRole('ADMIN')) {
             $partners = User::whereHas('roles', function ($q) {
-                $q->where('name', '!=', 'ADMIN');
-            })->orderBy('id', 'desc')->paginate(15);
+                $q->whereNotIn('name', ['ADMIN', 'ECCLESIA']);
+            })->where('is_accept', 1)->orderBy('id', 'desc')->paginate(15);
             // } else {
             //     $partners = User::orderBy('id', 'desc')->paginate(15);
             // }
@@ -51,8 +51,8 @@ class PartnerController extends Controller
     public function create()
     {
         if (Auth::user()->can('Create Partners')) {
-            $roles = Role::where('name', '!=', 'ADMIN')->get();
-            $eclessias = Ecclesia::orderBy('id', 'desc')->get();
+            $roles = Role::whereNotIn('name', ['ADMIN', 'ECCLESIA'])->get();
+            $eclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
             $countries = Country::orderBy('name', 'asc')->get();
             return view('user.partner.create')->with(compact('roles', 'eclessias', 'countries'));
         } else {
@@ -71,7 +71,7 @@ class PartnerController extends Controller
 
         $request->validate([
             'user_name' => 'required|unique:users',
-            'ecclesia_id' => 'nullable|exists:ecclesias,id',
+            'ecclesia_id' => 'nullable|exists:users,id',
             'role' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
@@ -119,6 +119,7 @@ class PartnerController extends Controller
         $data->ecclesia_id = $request->ecclesia_id;
         $data->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
         $data->status = 1;
+        $data->is_accept = 1;
         $data->save();
         $data->assignRole($request->role);
         $maildata = [
@@ -160,8 +161,8 @@ class PartnerController extends Controller
         if (Auth::user()->can('Edit Partners')) {
             $id = Crypt::decrypt($id);
             $partner = User::findOrFail($id);
-            $roles = Role::where('name', '!=', 'ADMIN')->get();
-            $ecclessias = Ecclesia::orderBy('id', 'desc')->get();
+            $roles = Role::whereNotIn('name', ['ADMIN', 'ECCLESIA'])->get();
+            $ecclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
             $countries = Country::orderBy('name', 'asc')->get();
             return view('user.partner.edit', compact('partner', 'roles', 'ecclessias', 'countries'));
         } else {
@@ -189,7 +190,7 @@ class PartnerController extends Controller
                 'email' => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix|unique:users,email,' . $id,
                 'address' => 'required',
                 'phone' => 'required',
-                'ecclesia_id' => 'nullable|exists:ecclesias,id',
+                'ecclesia_id' => 'nullable|exists:users,id',
                 'country' => 'required',
                 'state' => 'required',
                 'city' => 'required',
@@ -260,7 +261,7 @@ class PartnerController extends Controller
                         ->orWhere('address', 'like', '%' . $query . '%')
                         ->orWhere('user_name', 'like', '%' . $query . '%')
                         ->orWhereHas('ecclesia', function ($q) use ($query) {
-                            $q->where('name', 'like', '%' . $query . '%');
+                            $q->where('first_name', 'like', '%' . $query . '%');
                         })
                         ->orWhereHas('roles', function ($q) use ($query) {
                             $q->where('name', 'like', '%' . $query . '%');
@@ -276,10 +277,10 @@ class PartnerController extends Controller
 
             // Exclude users with the "ADMIN" role
             $partners->whereDoesntHave('roles', function ($q) {
-                $q->where('name', 'ADMIN');
+                $q->where('name', 'ADMIN')->orWhere('name', 'ECCLESIA');
             });
 
-            $partners = $partners->paginate(15);
+            $partners = $partners->where('is_accept', 1)->paginate(15);
 
             return response()->json(['data' => view('user.partner.table', compact('partners'))->render()]);
         }

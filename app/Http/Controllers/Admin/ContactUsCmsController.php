@@ -17,7 +17,7 @@ class ContactUsCmsController extends Controller
     use ImageTrait;
     public function index()
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Manage Contact Us Page')) {
             $contact_us = ContactUsCms::orderBy('id', 'desc')->first();
             return view('admin.contact-us-cms.update')->with(compact('contact_us'));
         } else {

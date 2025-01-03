@@ -55,7 +55,7 @@ class AuthController extends Controller
 
     public function register()
     {
-        $eclessias = Ecclesia::orderBy('id', 'desc')->get();
+        $eclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
         $countries = Country::all();
         return view('user.auth.register')->with(compact('eclessias', 'countries'));
     }

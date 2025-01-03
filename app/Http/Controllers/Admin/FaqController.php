@@ -17,7 +17,7 @@ class FaqController extends Controller
 
     public function index()
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Manage Faq')) {
         $faqs = Faq::orderByDesc('id')->paginate(15);
         return view('admin.faq.list', compact('faqs'));
         } else {
@@ -51,7 +51,7 @@ class FaqController extends Controller
      */
     public function create()
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Create Faq')) {
         return view('admin.faq.create');
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -99,7 +99,7 @@ class FaqController extends Controller
      */
     public function edit($id)
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Edit Faq')) {
         $faq = Faq::findOrFail($id);
         return view('admin.faq.edit')->with(compact('faq'));
         } else {
@@ -142,7 +142,7 @@ class FaqController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Delete Faq')) {
         $faq = Faq::findOrFail($id);
         $faq->delete();
         return redirect()->route('faq.index')->with('error', 'Faq has been deleted successfully.');

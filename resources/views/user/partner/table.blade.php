@@ -6,7 +6,7 @@
             </td>
             <td>{{ $partner->full_name }}</td>
             <td>
-                {{ $partner->ecclesia ?  $partner->ecclesia->name : '' }}
+                {{ isset($partner->ecclesia) ?  $partner->ecclesia->full_name : '' }}
             </td>
             <td>{{ $partner->user_name }}</td>
             <td>{{ $partner->email }}</td>

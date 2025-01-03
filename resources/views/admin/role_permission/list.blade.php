@@ -22,7 +22,8 @@
     Role Permission
 @endsection
 @section('create_button')
-    <a href="{{route('admin.roles.create')}}" id="create-admin" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_admin"> <i class="ph ph-plus"></i>Add Role Permission</a>
+    <a href="{{ route('admin.roles.create') }}" id="create-admin" class="btn btn-primary" data-bs-toggle="modal"
+        data-bs-target="#add_admin"> <i class="ph ph-plus"></i>Add Role Permission</a>
 @endsection
 @section('content')
     <section id="loading">
@@ -76,7 +77,7 @@
                                                 <a title="Edit "
                                                     href="{{ route('admin.roles.edit', Crypt::encrypt($role->id)) }}">
                                                     <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span></a>
-                                                @if ($role->name == 'MEMBER' || $role->name == 'LEADER')
+                                                @if ($role->name == 'MEMBER' || $role->name == 'LEADER' || $role->name == 'ECCLESIA')
                                                 @else
                                                     <a title="Delete "
                                                         data-route="{{ route('admin.roles.delete', Crypt::encrypt($role->id)) }}"

@@ -13,7 +13,7 @@ class ArticleOfAssociationController extends Controller
 
     public function index()
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Manage Article of Association Page')) {
             $article = Article::orderBy('id', 'desc')->first();
             return view('admin.article_of_association.update', compact('article'));
         } else {

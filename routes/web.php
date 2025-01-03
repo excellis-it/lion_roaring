@@ -14,10 +14,12 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DetailsController;
 use App\Http\Controllers\Admin\DonationController as AdminDonationController;
 use App\Http\Controllers\Admin\EcclesiaAssociationController;
+use App\Http\Controllers\Admin\EcclessiaController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FooterController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\HomeCmsController;
+use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\MemberPrivacyPolicyContoller;
 use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\OrganizationCenterController;
@@ -114,6 +116,21 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::post('/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
         Route::get('/delete/{id}', [AdminController::class, 'delete'])->name('admin.delete');
         Route::post('/update', [AdminController::class, 'update'])->name('admin.update');
+    });
+
+    // admin index
+    Route::prefix('ecclessias')->group(function () {
+        Route::get('/', [EcclessiaController::class, 'index'])->name('ecclessias.index');
+        Route::post('/store', [EcclessiaController::class, 'store'])->name('ecclessias.store');
+        Route::post('/edit/{id}', [EcclessiaController::class, 'edit'])->name('ecclessias.edit');
+        Route::get('/delete/{id}', [EcclessiaController::class, 'delete'])->name('ecclessias.delete');
+        Route::post('/update', [EcclessiaController::class, 'update'])->name('ecclessias.update');
+    });
+
+    Route::prefix('members')->group(function () {
+        Route::get('/', [MemberController::class, 'index'])->name('members.index');
+        Route::put('/accept/{id}', [MemberController::class, 'accept'])->name('members.accept');
+        Route::get('/fetch-data', [MemberController::class, 'fetchData'])->name('members.fetch-data');
     });
 
     Route::resources([

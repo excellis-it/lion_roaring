@@ -17,7 +17,7 @@ class GalleryController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Manage Gallery')) {
             $gallery = Gallery::orderByDesc('id')->paginate(15);
             return view('admin.gallery.list', compact('gallery'));
         } else {
@@ -34,7 +34,7 @@ class GalleryController extends Controller
      */
     public function create()
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Create Gallery')) {
             return view('admin.gallery.create');
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -84,7 +84,7 @@ class GalleryController extends Controller
      */
     public function edit($id)
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Edit Gallery')) {
             $gallery = Gallery::findOrFail($id);
             return view('admin.gallery.edit')->with(compact('gallery'));
         } else {
@@ -127,7 +127,7 @@ class GalleryController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->can('Manage Pages')) {
+        if (auth()->user()->can('Delete Gallery')) {
             $gallery = Gallery::findOrFail($id);
             $gallery->delete();
             return redirect()->route('gallery.index')->with('error', 'Gallery has been deleted successfully.');

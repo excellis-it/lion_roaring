@@ -61,7 +61,7 @@
                                                                     class="edit_icon me-2">
                                                                     <i class="ti ti-edit"></i>
                                                                 </a>
-                                                                @if ($role->name == 'MEMBER' || $role->name == 'LEADER')
+                                                                @if ($role->name == 'MEMBER' || $role->name == 'LEADER' || $role->name == 'ECCLESIA')
                                                                 @else
                                                                     <a href="javascript:void(0);"
                                                                         data-route="{{ route('roles.delete', Crypt::encrypt($role->id)) }}"

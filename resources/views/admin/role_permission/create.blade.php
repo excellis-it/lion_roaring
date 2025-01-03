@@ -44,7 +44,22 @@
                                                 'Our Organization',
                                                 'Organization Center',
                                                 'Services',
-                                                'Pages',
+                                                'Home Page',
+                                                'Details Page',
+                                                'Organizations Page',
+                                                'About Us Page',
+                                                'Faq',
+                                                'Gallery',
+                                                'Ecclesia Association Page',
+                                                'Principle and Business Page',
+                                                'Contact Us Page',
+                                                'Article of Association Page',
+                                                'Footer',
+                                                'Register Page Agreement Page',
+                                                'Member Privacy Policy Page',
+                                                'PMA Terms Page',
+                                                'Ecclessia',
+                                                'All Members'
                                             ];
 
                                         @endphp
@@ -59,12 +74,12 @@
                                                     </th>
                                                     <th>Select All</th>
                                                     <th>Manage</th>
-                                                    <th>View</th>
+                                                    {{-- <th>View</th> --}}
                                                     <th>Create</th>
                                                     <th>Update</th>
                                                     <th>Delete</th>
-                                                    <th>Upload</th>
-                                                    <th>Download</th>
+                                                    {{-- <th>Upload</th>
+                                                    <th>Download</th> --}}
                                                 </tr>
                                             </thead>
                                             <tbody class="list">
@@ -88,7 +103,7 @@
                                                                 @endif
                                                             @endif
                                                         </td>
-                                                        <td>
+                                                        {{-- <td>
                                                             @if (in_array('View ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('View ' . $module, $permissions))
                                                                     <div class="toggle-check">
@@ -102,7 +117,7 @@
                                                                     </div>
                                                                 @endif
                                                             @endif
-                                                        </td>
+                                                        </td> --}}
                                                         <td>
                                                             @if (in_array('Create ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('Create ' . $module, $permissions))
@@ -150,7 +165,7 @@
                                                             @endif
                                                         </td>
 
-                                                        <td>
+                                                        {{-- <td>
                                                             @if (in_array('Upload ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('Upload ' . $module, $permissions))
                                                                     <div class="toggle-check">
@@ -179,7 +194,7 @@
                                                                     </div>
                                                                 @endif
                                                             @endif
-                                                        </td>
+                                                        </td> --}}
                                                     </tr>
                                                 @endforeach
 
@@ -202,6 +217,7 @@
                             <div class="col-xl-12">
                                 <div class="btn-1">
                                     <button type="submit">Create</button>
+                                    <a href="{{route('admin.roles.index')}}"> <button type="button">Cancel</button></a>
                                 </div>
                             </div>
                         </div>

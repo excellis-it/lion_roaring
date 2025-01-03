@@ -13,7 +13,9 @@
     All Gallery Details
 @endsection
 @section('create_button')
-  <a href="{{ route('gallery.create') }}" class="btn btn-primary">+ Create New Gallery</a>
+    @if (auth()->user()->can('Create Gallery'))
+        <a href="{{ route('gallery.create') }}" class="btn btn-primary">+ Create New Gallery</a>
+    @endif
 @endsection
 @section('content')
     <section id="loading">
@@ -44,42 +46,47 @@
                                 <th class="sorting" data-tippy-content="Sort by Id" data-sorting_type="asc"
                                     data-column_name="id" style="cursor: pointer">Id<span id="id_icon"></span>
                                 </th>
-                                <th >
+                                <th>
                                     Image</th>
 
                             </tr>
                         </thead>
                         <tbody>
                             @if (count($gallery) > 0)
-                            @foreach ($gallery as $key => $item)
-                                <tr>
-                                    <td> {{ ($gallery->currentPage()-1) * $gallery->perPage() + $loop->index + 1 }}</td>
-                                    <td><a href="{{ Storage::url($item->image) }}" target="_blank"><img src="{{ Storage::url($item->image) }}" alt="gallery"
-                                        style="width: 30%; height: 100px; border-radius:50%"></a></td>
-                                    <td>
-                                        <div class="edit-1 d-flex align-items-center justify-content-center">
-                                            <a title="Edit " href="{{ route('gallery.edit', $item->id) }}">
-                                                <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span>
-                                            </a>
-                                            <a title="Delete " data-route="{{ route('gallery.delete', $item->id) }}"
-                                                href="javascript:void(0);" id="delete">
-                                                <span class="trash-icon"><i class="ph ph-trash"></i></span>
-                                            </a>
+                                @foreach ($gallery as $key => $item)
+                                    <tr>
+                                        <td> {{ ($gallery->currentPage() - 1) * $gallery->perPage() + $loop->index + 1 }}</td>
+                                        <td><a href="{{ Storage::url($item->image) }}" target="_blank"><img
+                                                    src="{{ Storage::url($item->image) }}" alt="gallery"
+                                                    style="width: 30%; height: 100px; border-radius:50%"></a></td>
+                                        <td>
+                                            <div class="edit-1 d-flex align-items-center justify-content-center">
+                                                @if (auth()->user()->can('Edit Gallery'))
+                                                    <a title="Edit " href="{{ route('gallery.edit', $item->id) }}">
+                                                        <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span>
+                                                    </a>
+                                                @endif
+                                                @if (auth()->user()->can('Delete Gallery'))
+                                                    <a title="Delete " data-route="{{ route('gallery.delete', $item->id) }}"
+                                                        href="javascript:void(0);" id="delete">
+                                                        <span class="trash-icon"><i class="ph ph-trash"></i></span>
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                <tr style="box-shadow: none;">
+                                    <td colspan="3">
+                                        <div class="d-flex justify-content-center">
+                                            {!! $gallery->links() !!}
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
-                            <tr style="box-shadow: none;">
-                                <td colspan="3">
-                                    <div class="d-flex justify-content-center">
-                                        {!! $gallery->links() !!}
-                                    </div>
-                                </td>
-                            </tr>
                             @else
-                            <tr>
-                                <td colspan="3" class="text-center">No Gallery Found</td>
-                            </tr>
+                                <tr>
+                                    <td colspan="3" class="text-center">No Gallery Found</td>
+                                </tr>
                             @endif
                         </tbody>
                     </table>
