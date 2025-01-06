@@ -56,7 +56,9 @@ class TeamChatController extends Controller
 
 
 
-            $members = User::orderBy('first_name', 'asc')->where('id', '!=', auth()->id())->where('status', true)->get();
+            $members = User::with('roles')->orderBy('first_name', 'asc')->where('id', '!=', auth()->id())->where('status', true)->whereHas('roles', function ($query) {
+                $query->whereIn('type', [1, 2]);
+            })->get();
             return view('user.team-chat.index')->with(compact('teams', 'members'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -89,7 +91,7 @@ class TeamChatController extends Controller
         $admin_member->save();
 
         // Add other members to the team
-        $count =0;
+        $count = 0;
         foreach ($request->members as $member_id) {
 
             $team_member = new TeamMember();
@@ -227,7 +229,9 @@ class TeamChatController extends Controller
                     $query->where('is_removed', false); // Replace with your condition
                 }, 'members.user'])
                 ->first();
-            $members = User::orderBy('first_name', 'asc')->where('id', '!=', auth()->id())->where('status', true)->get();
+            $members = User::with('roles')->orderBy('first_name', 'asc')->where('id', '!=', auth()->id())->where('status', true)->whereHas('roles', function ($query) {
+                $query->whereIn('type', [1, 2]);
+            })->get();
             $is_group_info = true;
             return response()->json(['view' => (string) view('user.team-chat.group-info')->with(compact('team', 'is_group_info', 'members'))]);
         }

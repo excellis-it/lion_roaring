@@ -646,7 +646,9 @@ class EmailController extends Controller
                 });
 
             // List of all user emails except the authenticated user
-            $allMailIds = User::where('status', true)
+            $allMailIds = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
+                $query->whereIn('type', [1, 2]);
+            })
                 ->get(['id', 'email']);
 
             // Collect emails involved in the thread (main email + replies)
@@ -700,7 +702,9 @@ class EmailController extends Controller
     public function composeMailUsers()
     {
         try {
-            $users = User::where('status', true)->get(['id', 'email']);
+            $users = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
+                $query->whereIn('type', [1, 2]);
+            })->get(['id', 'email']);
             return response()->json(['message' => 'Users loaded successfully.', 'status' => true, 'users' => $users], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred while loading the compose mail users.', 'status' => false, 'error' => $e->getMessage()], 201);

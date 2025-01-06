@@ -251,7 +251,9 @@ class TeamChatController extends Controller
             });
 
             // Get members who are not the authenticated user
-            $members = User::orderBy('first_name', 'asc')->where('id', '!=', auth()->id())->where('status', true)->get();
+            $members = User::with('roles')->orderBy('first_name', 'asc')->where('id', '!=', auth()->id())->where('status', true)->whereHas('roles', function ($query) {
+                $query->whereIn('type', [1, 2]);
+            })->get();
 
             return response()->json([
                 'msg' => 'Teams listed successfully',
@@ -637,10 +639,13 @@ class TeamChatController extends Controller
 
             $team_member_ids = $all_team_members->pluck('user_id'); // Get user IDs of team members
 
-            $not_team_members = User::orderBy('first_name', 'asc')
+            $not_team_members = User::with('roles')->orderBy('first_name', 'asc')
                 ->whereNotIn('id', $team_member_ids) // Exclude team members
                 ->where('id', '!=', auth()->id()) // Exclude the current user
                 ->where('status', true)
+                ->whereHas('roles', function ($query) {
+                    $query->whereIn('type', [1, 2]);
+                })
                 ->get();
 
             $team_member_name = '';
@@ -874,9 +879,12 @@ class TeamChatController extends Controller
             ];
 
             // Retrieve additional members not in the team
-            $available_members = User::orderBy('first_name', 'asc')
+            $available_members = User::with('roles')->orderBy('first_name', 'asc')
                 ->where('id', '!=', auth()->id())
                 ->where('status', true)
+                ->whereHas('roles', function ($query) {
+                    $query->whereIn('type', [1, 2]);
+                })
                 ->get(['id', 'first_name', 'last_name']);
 
             return response()->json([
