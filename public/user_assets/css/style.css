@@ -2330,3 +2330,13 @@ section {
     background-color: #643271;
     color: #fff;
 }
+
+
+.emailRow__title
+{
+    display: inline-block;
+    max-width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
