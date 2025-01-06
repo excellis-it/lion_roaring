@@ -11,11 +11,11 @@ class AuthController extends Controller
 {
     public function login()
     {
-        if (Auth::check()) {
-            return redirect()->route('admin.dashboard');
-        } else {
+        // if (Auth::check()) {
+        //     return redirect()->route('admin.dashboard');
+        // } else {
             return view('admin.auth.login');
-        }
+        // }
     }
 
     public function redirectAdminLogin()

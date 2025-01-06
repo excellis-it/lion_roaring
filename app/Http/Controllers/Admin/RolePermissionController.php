@@ -19,12 +19,8 @@ class RolePermissionController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->hasRole('ADMIN') || Auth::user()->hasRole('LEADER')) {
-            if (Auth::user()->hasRole('LEADER')) {
-                $roles = Role::where('name', 'MEMBER')->orWhere('name', 'MEMBER SOVEREIGN')->get();
-            } else {
-                $roles = Role::where('name', '!=', 'ADMIN')->get();
-            }
+        if (Auth::user()->hasRole('ADMIN')) {
+            $roles = Role::where('name', '!=', 'ADMIN')->whereIn('type', [1, 3])->get();
             return view('admin.role_permission.list', compact('roles'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -62,13 +58,14 @@ class RolePermissionController extends Controller
         $name             = $request['role_name'];
         $role             = new Role();
         $role->name       = $name;
+        $role->type = 3;
         $permissions      = $request['permissions'];
         $role->save();
 
         if (!empty($permissions)) {
             foreach ($permissions as $permission) {
                 $p = Permission::where('id', '=', $permission)->firstOrFail();
-                $role = Role::where('name', '=', $name)->first();
+                $role = Role::where('name', '=', $name)->whereIn('type', [3])->first();
                 $role->givePermissionTo($p);
             }
         }
@@ -95,7 +92,7 @@ class RolePermissionController extends Controller
      */
     public function edit($id)
     {
-        if (Auth::user()->hasRole('ADMIN') || Auth::user()->hasRole('LEADER')) {
+        if (Auth::user()->hasRole('ADMIN')) {
             $id = Crypt::decrypt($id);
             $role = Role::findOrFail($id);
             $user = Auth::user();

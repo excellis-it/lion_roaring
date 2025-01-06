@@ -18,9 +18,14 @@ class Admin
     public function handle(Request $request, Closure $next)
     {
         if (Auth::check()) {
-            return $next($request);
+            $user = auth()->user()->roles()->whereIn('type', [1, 3])->first();
+            if ($user) {
+                return $next($request);
+            } else {
+                return redirect()->route('admin.login')->with('error', 'You are not authorized to access this page');
+            }
         } else {
-            return redirect()->route('admin.login');
+            return redirect()->route('admin.login')->with('error', 'You are not authorized to access this page');
         }
     }
 }
