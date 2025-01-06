@@ -8,15 +8,19 @@ use App\Models\TeamMember;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Role;
 
 class EcclessiaController extends Controller
 {
     public function index()
     {
-        if (auth()->user()->can('Manage Ecclessia')) {
-            $ecclessias = User::role('ECCLESIA')->where('id', '!=', auth()->user()->id)->orderBy('id', 'desc')->get();
+        if (auth()->user()->can('Manage All Users')) {
+            $roles = Role::where('name', '!=', 'ADMIN')->whereIn('type', [1, 3])->get();
+            $ecclessias = User::whereHas('roles', function($query){
+                $query->whereIn('type', [1, 3])->where('name', '!=', 'ADMIN');
+            })->where('id', '!=', auth()->user()->id)->orderBy('id', 'desc')->get();
             $countries = Country::orderBy('name', 'asc')->get();
-            return view('admin.ecclessia.list')->with(compact('ecclessias', 'countries'));
+            return view('admin.ecclessia.list')->with(compact('ecclessias', 'countries', 'roles'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -33,12 +37,13 @@ class EcclessiaController extends Controller
             'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
             'phone' => 'required',
             'country' => 'required',
+            'role' => 'required',
             'confirm_password' => 'required|same:password',
         ], [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
         ]);
 
-        if (auth()->user()->can('Create Ecclessia')) {
+        if (auth()->user()->can('Create All Users')) {
 
             $count = User::where('email', $request->email)->count();
             if ($count > 0) {
@@ -59,7 +64,7 @@ class EcclessiaController extends Controller
                 $ecclessias->status = true;
                 $ecclessias->country = $request->country;
                 $ecclessias->save();
-                $ecclessias->assignRole('ECCLESIA');
+                $ecclessias->assignRole($request->role);
                 session()->flash('message', 'Ecclessia account has been successfully created.');
                 return response()->json(['message' => 'Ecclessia account has been successfully created.', 'status' => 'success']);
             }
@@ -70,11 +75,12 @@ class EcclessiaController extends Controller
 
     public function edit($id)
     {
-        if (auth()->user()->can('Edit Ecclessia')) {
+        if (auth()->user()->can('Edit All Users')) {
             $eclessia = User::where('id', $id)->first();
             $countries = Country::orderBy('name', 'asc')->get();
+            $roles = Role::where('name', '!=', 'ADMIN')->whereIn('type', [1, 3])->get();
             $edit = true;
-            return response()->json(['data' => view('admin.ecclessia.edit', compact('eclessia', 'countries', 'edit'))->render()]);
+            return response()->json(['data' => view('admin.ecclessia.edit', compact('eclessia', 'countries', 'edit', 'roles'))->render()]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -84,6 +90,7 @@ class EcclessiaController extends Controller
     {
         // dd($request->all());
         $request->validate([
+            'role' => 'required',
             'edit_first_name' => 'required',
             'edit_last_name' => 'required',
             'edit_middle_name' => 'nullable',
@@ -116,6 +123,7 @@ class EcclessiaController extends Controller
             $ecclessias->password = bcrypt($request->password);
         }
         $ecclessias->save();
+        $ecclessias->syncRoles([$request->role]);
         session()->flash('message', 'Ecclessia account has been successfully updated.');
         return response()->json(['message' => 'Ecclessia account has been successfully updated.', 'status' => 'success']);
     }
@@ -123,7 +131,7 @@ class EcclessiaController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->can('Delete Ecclessia')) {
+        if (auth()->user()->can('Delete All Users')) {
             $user = User::findOrFail($id);
 
             Log::info($user->email . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());

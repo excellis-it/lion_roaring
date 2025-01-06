@@ -167,28 +167,28 @@ class NewAdminRolePermissionSeeder extends Seeder
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
             [
-                "name" => "Manage All Members",
+                "name" => "Manage Members Access",
                 "guard_name" => "web",
                 "type" => 2,
                 "created_at" => date('Y-m-d H:i:s'),
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
             [
-                "name" => "Manage Ecclessia",
+                "name" => "Manage All Users",
                 "guard_name" => "web",
                 "type" => 2,
                 "created_at" => date('Y-m-d H:i:s'),
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
             [
-                "name" => "Create Ecclessia",
+                "name" => "Create All Users",
                 "guard_name" => "web",
                 "type" => 2,
                 "created_at" => date('Y-m-d H:i:s'),
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
             [
-                "name" => "Edit Ecclessia",
+                "name" => "Edit All Users",
                 "guard_name" => "web",
                 "type" => 2,
                 "created_at" => date('Y-m-d H:i:s'),
@@ -196,7 +196,7 @@ class NewAdminRolePermissionSeeder extends Seeder
             ],
 
             [
-                "name" => "Delete Ecclessia",
+                "name" => "Delete All Users",
                 "guard_name" => "web",
                 "type" => 2,
                 "created_at" => date('Y-m-d H:i:s'),

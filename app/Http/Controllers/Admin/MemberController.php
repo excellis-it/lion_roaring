@@ -15,18 +15,18 @@ class MemberController extends Controller
 {
     public function index()
     {
-        if (Auth::user()->can('Manage All Members')) {
-            if (Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->can('Manage Members Access')) {
+            if (Auth::user()->hasRole('ECCLESIA')) {
                 // Exclude ADMIN and ECCLESIA roles
                 $partners = User::whereHas('roles', function ($q) {
                     $q->whereNotIn('name', ['ADMIN', 'ECCLESIA']);
-                })->orderBy('id', 'desc')->paginate(15);
+                })->where('ecclesia_id', auth()->id())->orderBy('id', 'desc')->paginate(15);
             } else {
                 // Exclude ADMIN and ECCLESIA roles, and filter by ecclesia_id
                 $partners = User::whereHas('roles', function ($q) {
                     $q->whereNotIn('name', ['ADMIN', 'ECCLESIA']);
                 })
-                    ->where('ecclesia_id', auth()->id())
+
                     ->orderBy('id', 'desc')
                     ->paginate(15);
             }

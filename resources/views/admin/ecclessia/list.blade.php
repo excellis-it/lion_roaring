@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-    Ecclessia - {{ env('APP_NAME') }}
+    All Users - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
     <style>
@@ -15,13 +15,13 @@
     </style>
 @endpush
 @section('head')
-    Manage Ecclessia
+    Manage All Users
 @endsection
 @section('create_button')
-    @if (auth()->user()->can('Create Ecclessia'))
+    @if (auth()->user()->can('Create All Users'))
         <a href="javascript:void(0)" id="create-ecclessia" class="btn btn-primary" data-bs-toggle="modal"
             data-bs-target="#add_ecclessia">Add
-            Ecclessia </a>
+            User </a>
     @endif
 @endsection
 
@@ -33,7 +33,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Ecclessia Information</h5>
+                    <h5 class="modal-title">All Users Information</h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -55,6 +55,20 @@
                                 </div> --}}
                                 <div class="row">
                                     {{-- user_name --}}
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Roles<span class="text-danger">*</span></label>
+                                            <select name="role" id="role" class="form-control">
+                                                <option value="">Select Role</option>
+                                                @foreach ($roles as $role)
+                                                    <option value="{{ $role->name }}"
+                                                        @if (old('role') == $role->name) selected @endif>
+                                                        {{ $role->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>User Name<span class="text-danger">*</span></label>
@@ -149,7 +163,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Ecclessia Information</h5>
+                    <h5 class="modal-title">All Users Information</h5>
                     <button type="button" class="edit_close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -183,6 +197,9 @@
                                 <th>
                                     User Name
                                 </th>
+                                <th>
+                                    Role
+                                </th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>
@@ -196,21 +213,22 @@
                             @foreach ($ecclessias as $ecclessia)
                                 <tr>
                                     <td>{{ $ecclessia->user_name }}</td>
+                                    <td>{{$ecclessia->getRoleNames()->first()}}</td>
                                     <td>{{ $ecclessia->full_name }}</td>
                                     <td>{{ $ecclessia->email }}</td>
                                     <td>{{ $ecclessia->phone }}</td>
                                     <td>{{ date('d M Y', strtotime($ecclessia->created_at)) }}</td>
                                     <td align="center">
                                         <div class="edit-1 d-flex align-items-center justify-content-center">
-                                            @if (auth()->user()->can('Edit Ecclessia'))
+                                            @if (auth()->user()->can('Edit All Users'))
                                                 <a class="edit-admins edit-icon" href="#" data-bs-toggle="modal"
                                                     data-bs-target="#edit_admin" data-id="{{ $ecclessia->id }}"
                                                     data-route="{{ route('ecclessias.edit', $ecclessia->id) }}"> <span
                                                         class="edit-icon"><i class="ph ph-pencil-simple"></i></span></a>
                                             @endif
-                                            @if (auth()->user()->can('Delete Ecclessia'))
+                                            @if (auth()->user()->can('Delete All Users'))
                                                 <a href="{{ route('ecclessias.delete', $ecclessia->id) }}"
-                                                    onclick="return confirm('Are you sure to delete this ecclessia?')">
+                                                    onclick="return confirm('Are you sure to delete this user?')">
                                                     <span class="trash-icon"><i class="ph ph-trash"></i></span></a>
                                             @endif
                                         </div>

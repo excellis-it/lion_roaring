@@ -62,8 +62,8 @@
                                                 'Register Page Agreement Page',
                                                 'Member Privacy Policy Page',
                                                 'PMA Terms Page',
-                                                 'Ecclessia',
-                                                'All Members'
+                                                 'All Users',
+                                                'Members Access'
                                             ];
 
 

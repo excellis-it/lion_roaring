@@ -5,6 +5,20 @@
         <div class="col-md-12">
             <input type="hidden" id="hidden_id" name="id" value="{{ $eclessia->id ?? '' }}">
             <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Roles<span class="text-danger">*</span></label>
+                        <select name="role" id="role" class="form-control">
+                            <option value="">Select Role</option>
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->name }}"
+                                    {{ $eclessia->getRoleNames()->first() == $role->name ? 'selected' : '' }}>
+                                    {{ $role->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
                 {{-- user_name --}}
                 <div class="col-md-6">
                     <div class="form-group">

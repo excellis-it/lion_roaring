@@ -75,16 +75,16 @@
                             href="{{ route('plans.index') }}"> Plan List</a></li>
                 </ul>
             </li> --}}
-            @if (Gate::check('Manage Ecclessia'))
+            @if (Gate::check('Manage All Users'))
                 <li class="dropdown {{ Request::is('admin/ecclessias*') ? 'active' : ' ' }}">
                     <a href="{{ route('ecclessias.index') }}">
                         <i class="ph ph-user-list"></i>
-                        <span>Ecclessias</span>
+                        <span>All Users</span>
                     </a>
                 </li>
             @endif
 
-            @if (Gate::check('Manage All Members'))
+            @if (Gate::check('Manage Members Access'))
                 <li class="dropdown {{ Request::is('admin/members*') ? 'active' : ' ' }}">
                     <a href="{{ route('members.index') }}">
                         <i class="ph ph-user-list"></i>
