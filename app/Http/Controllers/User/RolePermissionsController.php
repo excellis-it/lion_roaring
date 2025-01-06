@@ -22,9 +22,9 @@ class RolePermissionsController extends Controller
     {
         if (Auth::user()->hasRole('ADMIN') || Auth::user()->hasRole('LEADER')) {
             if (Auth::user()->hasRole('LEADER')) {
-                $roles = Role::where('name', 'MEMBER')->get();
+                $roles = Role::where('name', 'MEMBER')->whereIn('type', [2])->get();
             } else {
-                $roles = Role::where('name', '!=', 'ADMIN')->get();
+                $roles = Role::where('name', '!=', 'ADMIN')->whereIn('type', [2])->get();
             }
 
             return view('user.role_permission.list', compact('roles'));
@@ -64,6 +64,7 @@ class RolePermissionsController extends Controller
         $name             = $request['role_name'];
         $role             = new Role();
         $role->name       = $name;
+        $role->type = 2;
         $permissions      = $request['permissions'];
         $role->save();
 
