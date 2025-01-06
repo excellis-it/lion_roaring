@@ -128,8 +128,11 @@ class ChatController extends Controller
     public function chats(Request $request)
     {
         try {
-            $chat_users = User::where('id', '!=', auth()->id())
+            $chat_users = User::with('roles')->where('id', '!=', auth()->id())
                 ->where('status', 1)
+                ->whereHas('roles', function ($query) {
+                    $query->whereIn('type', [1, 2]);
+                })
                 ->get();
 
             // Calculate unseen chat count and last message for each user

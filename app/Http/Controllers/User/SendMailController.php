@@ -20,7 +20,9 @@ class SendMailController extends Controller
         if (auth()->user()->can('Manage Email')) {
 
             // $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-            $allMailIds = User::where('status', true)->get(['id', 'email']);
+            $allMailIds = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
+                $query->whereIn('type', [1, 2]);
+            })->get(['id', 'email']);
 
             return view('user.mail.list', ['allMailIds' => $allMailIds]);
         } else {
@@ -33,7 +35,9 @@ class SendMailController extends Controller
         if (auth()->user()->can('Manage Email')) {
 
             // $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-            $allMailIds = User::where('status', true)->get(['id', 'email']);
+            $allMailIds = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
+                $query->whereIn('type', [1, 2]);
+            })->get(['id', 'email']);
 
             return view('user.mail.sent', ['allMailIds' => $allMailIds]);
         } else {
@@ -46,7 +50,9 @@ class SendMailController extends Controller
         if (auth()->user()->can('Manage Email')) {
 
             //  $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-            $allMailIds = User::where('status', true)->get(['id', 'email']);
+            $allMailIds = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
+                $query->whereIn('type', [1, 2]);
+            })->get(['id', 'email']);
 
             return view('user.mail.star', ['allMailIds' => $allMailIds]);
         } else {
@@ -59,7 +65,9 @@ class SendMailController extends Controller
         if (auth()->user()->can('Manage Email')) {
 
             // $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
-            $allMailIds = User::where('status', true)->get(['id', 'email']);
+            $allMailIds = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
+                $query->whereIn('type', [1, 2]);
+            })->get(['id', 'email']);
 
             return view('user.mail.trash', ['allMailIds' => $allMailIds]);
         } else {
@@ -384,7 +392,9 @@ class SendMailController extends Controller
         });
 
         // Fetch all mail IDs for other users (to avoid sending mails to yourself)
-        $allMailIds = User::where('status', true)->get(['id', 'email']);
+        $allMailIds = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
+            $query->whereIn('type', [1, 2]);
+        })->get(['id', 'email']);
 
         // return $allMailIds;
 
@@ -426,7 +436,9 @@ class SendMailController extends Controller
     public function compose()
     {
         if (auth()->user()->can('Manage Email')) {
-            $users = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']); // Adjust fields as needed
+            $users = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
+                $query->whereIn('type', [1, 2]);
+            })->where('id', '!=', auth()->id())->get(['id', 'email']); // Adjust fields as needed
             return view('user.mail.compose')->with(compact('users'));
         } else {
             abort(403, 'You do not have permission to access this page.');

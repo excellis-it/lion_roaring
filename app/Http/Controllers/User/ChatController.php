@@ -18,7 +18,9 @@ class ChatController extends Controller
     public function chats()
     {
         if (auth()->user()->can('Manage Chat')) {
-            $users = User::with('chatSender')->where('id', '!=', auth()->id())->where('status', 1)->get()->toArray();
+            $users = User::with('roles', 'chatSender')->where('id', '!=', auth()->id())->where('status', 1)->whereHas('roles', function ($query) {
+                $query->whereIn('type', [1, 2]);
+            })->get()->toArray();
             // return user orderBy latest message
             $users = array_map(function ($user) {
                 $user['last_message'] = Chat::where(function ($query) use ($user) {
@@ -40,6 +42,13 @@ class ChatController extends Controller
 
                 return $b['last_message']->created_at <=> $a['last_message']->created_at; // Sort by latest message timestamp
             });
+
+            // foreach ($users as $user) {
+            //     $user['user_role'] = User::find($user['id'])->roles()->first();
+            // }
+
+            // return $users;
+
             return view('user.chat.list')->with(compact('users'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -49,7 +58,9 @@ class ChatController extends Controller
     public function chatsList()
     {
         if (auth()->user()->can('Manage Chat')) {
-            $users = User::with('chatSender')->where('id', '!=', auth()->id())->where('status', 1)->get()->toArray();
+            $users = User::with('roles', 'chatSender')->where('id', '!=', auth()->id())->where('status', 1)->whereHas('roles', function ($query) {
+                $query->whereIn('type', [1, 2]);
+            })->get()->toArray();
             // return user orderBy latest message
             $users = array_map(function ($user) {
                 $user['last_message'] = Chat::where(function ($query) use ($user) {
@@ -153,7 +164,9 @@ class ChatController extends Controller
             $chat->created_at_formatted = $chat->created_at->setTimezone('America/New_York')->format('Y-m-d H:i:s');
             // return $chat;
             // dd($chat);
-            $users = User::with('chatSender')->where('id', '!=', auth()->id())->where('status', 1)->get()->toArray();
+            $users = User::with('roles', 'chatSender')->where('id', '!=', auth()->id())->where('status', 1)->whereHas('roles', function ($query) {
+                $query->whereIn('type', [1, 2]);
+            })->get()->toArray();
             // return user orderBy latest message
             $users = array_map(function ($user) {
                 $user['last_message'] = Chat::where(function ($query) use ($user) {
@@ -182,10 +195,13 @@ class ChatController extends Controller
             });
 
             $reciver_id = $request->reciver_id; // Corrected the variable name to match the request
-            $receiver_users = User::with('chatSender') // Assuming 'chatSender' is the relationship to the Chat model
+            $receiver_users = User::with('roles', 'chatSender') // Assuming 'chatSender' is the relationship to the Chat model
                 // ->role('MEMBER')
                 ->where('id', '!=', $reciver_id)
                 ->where('status', 1)
+                ->whereHas('roles', function ($query) {
+                    $query->whereIn('type', [1, 2]);
+                })
                 ->get()
                 ->toArray();
 
