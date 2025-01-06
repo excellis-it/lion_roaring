@@ -53,7 +53,7 @@ class AdminController extends Controller
                 $admin->email = $request->email;
                 $admin->user_name = $request->user_name;
                 $admin->password = bcrypt($request->password);
-                $admin->phone = $request->phone;
+                $admin->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
                 $admin->status = true;
                 $admin->save();
                 $admin->assignRole('ADMIN');
@@ -69,7 +69,9 @@ class AdminController extends Controller
     {
         if (auth()->user()->can('Edit Admin List')) {
             $admin = User::where('id', $id)->first();
-            return response()->json(['admin' => $admin, 'message' => 'Admin details found successfully.']);
+            $edit = true;
+            return response()->json(['data' => view('admin.admin.edit', compact('admin', 'edit'))->render()]);
+            // return response()->json(['admin' => $admin, 'message' => 'Admin details found successfully.']);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -102,7 +104,7 @@ class AdminController extends Controller
         $admin->middle_name = $request->edit_middle_name ?? null;
         $admin->email = $request->edit_email;
         $admin->user_name = $request->edit_user_name;
-        $admin->phone = $request->edit_phone;
+        $admin->phone = $request->edit_country_code ? '+' . $request->edit_country_code . ' ' . $request->edit_phone : $request->edit_phone;
         $admin->save();
         session()->flash('message', 'Admin account has been successfully updated.');
         return response()->json(['message' => 'Admin account has been successfully updated.', 'status' => 'success']);

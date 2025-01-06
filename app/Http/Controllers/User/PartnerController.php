@@ -32,7 +32,7 @@ class PartnerController extends Controller
         if (Auth::user()->can('Manage Partners')) {
             // if (Auth::user()->hasRole('ADMIN')) {
             $partners = User::whereHas('roles', function ($q) {
-                $q->whereNotIn('name', ['ADMIN', 'ECCLESIA']);
+                $q->whereNotIn('type', ['3','1']);
             })->where('is_accept', 1)->orderBy('id', 'desc')->paginate(15);
             // } else {
             //     $partners = User::orderBy('id', 'desc')->paginate(15);
@@ -51,7 +51,7 @@ class PartnerController extends Controller
     public function create()
     {
         if (Auth::user()->can('Create Partners')) {
-            $roles = Role::whereNotIn('name', ['ADMIN', 'ECCLESIA'])->get();
+            $roles = Role::whereNotIn('type', [1, 3])->get();
             $eclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
             $countries = Country::orderBy('name', 'asc')->get();
             return view('user.partner.create')->with(compact('roles', 'eclessias', 'countries'));
@@ -161,7 +161,7 @@ class PartnerController extends Controller
         if (Auth::user()->can('Edit Partners')) {
             $id = Crypt::decrypt($id);
             $partner = User::findOrFail($id);
-            $roles = Role::whereNotIn('name', ['ADMIN', 'ECCLESIA'])->get();
+            $roles = Role::whereNotIn('type', [1, 3])->get();
             $ecclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
             $countries = Country::orderBy('name', 'asc')->get();
             return view('user.partner.edit', compact('partner', 'roles', 'ecclessias', 'countries'));
@@ -277,7 +277,7 @@ class PartnerController extends Controller
 
             // Exclude users with the "ADMIN" role
             $partners->whereDoesntHave('roles', function ($q) {
-                $q->where('name', 'ADMIN')->orWhere('name', 'ECCLESIA');
+                $q->where('type', 1)->orWhere('type', 3);
             });
 
             $partners = $partners->where('is_accept', 1)->paginate(15);
