@@ -1,3 +1,6 @@
+@php
+    use App\Helpers\Helper;
+@endphp
 @if ($reply_mails->count() > 0)
     @foreach ($reply_mails as $reply)
         <hr hidden class="ms-5" style="height: 20px;width:5px">
@@ -69,7 +72,7 @@
             </div>
 
             <div class="mail_text">
-                {!! $reply->message !!}
+                {!! Helper::format_links_in_message($reply->message) !!}
             </div>
 
             <div class="mail_text mail_details_attachments">

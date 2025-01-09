@@ -110,7 +110,7 @@
                             <p class="group-des-{{ $team['id'] }}">{{ $team->description }}</p>
                         </div>
                     </div>
-                    <div class="min_height400">
+                    <div class="min_height400 container">
                         <ul>
                             @if (isset($team->members) && count($team->members) > 0)
                                 @foreach ($team->members as $member)
@@ -122,7 +122,8 @@
                                                 alt=""></div>
                                         <p class="GroupName">{{ $member->user ? $member->user->full_name : '' }}</p>
                                         <p class="GroupDescrp">{{ $member->user ? $member->user->email : '' }}</p>
-                                        <div class="time_online mt-3" id="show-permission-{{ $team->id }}-{{ $member->user_id }}">
+                                        <div class="time_online mt-3"
+                                            id="show-permission-{{ $team->id }}-{{ $member->user_id }}">
                                             @if (Helper::checkAdminTeam(auth()->user()->id, $team->id) == true && $member->is_admin == 0)
                                                 <div class="dropdown">
                                                     <button class="eleplish dropdown-toggle" type="button"
@@ -132,18 +133,22 @@
                                                     </button>
                                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                                         <li><a class="dropdown-item make-admin"
-                                                            data-team-id="{{ $team['id'] }}"
-                                                            data-user-id="{{ $member->user_id }}" href="#">
-                                                            <i class="fa-solid fa-shield" style="
+                                                                data-team-id="{{ $team['id'] }}"
+                                                                data-user-id="{{ $member->user_id }}" href="#">
+                                                                <i class="fa-solid fa-shield"
+                                                                    style="
                                                             color: #643271;
-                                                        "></i> Make Admin</a></li>
+                                                        "></i>
+                                                                Make Admin</a></li>
                                                         <li><a class="dropdown-item remove-member-from-group"
                                                                 data-bs-toggle="modal"
                                                                 data-team-id="{{ $team['id'] }}"
                                                                 data-user-id="{{ $member->user_id }}" href="#">
-                                                                <i class="fa-solid fa-trash" style="
+                                                                <i class="fa-solid fa-trash"
+                                                                    style="
                                                                 color: #643271;
-                                                            "></i> Remove</a></li>
+                                                            "></i>
+                                                                Remove</a></li>
 
                                                     </ul>
                                                 </div>

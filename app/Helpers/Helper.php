@@ -223,4 +223,32 @@ class Helper
 
         return implode(', ', $to);
     }
+
+    public static function format_links_in_message($message)
+    {
+        return preg_replace_callback(
+            '/\b((http|https|ftp|ftps):\/\/\S+|www\.\S+)/i',
+            function ($matches) {
+                $url = $matches[0];
+
+                // If the URL starts with 'www', prepend 'http://' to make it a valid URL
+                if (strpos($url, 'www.') === 0) {
+                    $url = 'http://' . $url;
+                }
+
+                // Check if the URL is already inside an <a> tag and skip it
+                if (strpos($url, '<a href=') === false) {
+                    return '<a class="text-decoration-underline" href="' . $url . '" target="_blank">' . $url . '</a>';
+                }
+
+                return $url; // Return the URL as-is if it's already in an <a> tag
+            },
+            // Clean any stray closing HTML tags attached to URLs and fix spacing
+            preg_replace(
+                '/<a[^>]+>(.*?)<\/a>/i',
+                '$1',
+                preg_replace('/(\S)(<\/?[^>]+>)/', '$1 $2', $message)
+            )
+        );
+    }
 }

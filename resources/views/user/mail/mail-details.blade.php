@@ -5,6 +5,9 @@
 @push('styles')
 @endpush
 @section('content')
+    @php
+        use App\Helpers\Helper;
+    @endphp
     <section id="loading">
         <div id="loading-content"></div>
     </section>
@@ -133,7 +136,20 @@
                         </div>
 
                         <div class="mail_text">
-                            {!! $mail_details->message !!}
+                            {{-- {!! $mail_details->message !!} --}}
+
+                            {!! Helper::format_links_in_message($mail_details->message) !!}
+
+
+
+
+
+
+
+
+
+
+
                         </div>
 
                         <div class="mail_text mail_details_attachments">

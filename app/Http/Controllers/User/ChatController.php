@@ -149,13 +149,15 @@ class ChatController extends Controller
                 $chatData = Chat::create([
                     'sender_id' => $request->sender_id,
                     'reciver_id' => $request->reciver_id,
+                    'message' => $request->message,
                     'attachment' => $file
                 ]);
             } else {
                 $chatData = Chat::create([
                     'sender_id' => $request->sender_id,
                     'reciver_id' => $request->reciver_id,
-                    'message' => $request->message
+                    'message' => $request->message,
+                    'attachment' => ''
                 ]);
             }
 

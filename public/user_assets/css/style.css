@@ -1378,6 +1378,10 @@ section {
     color: #036666
 }
 
+.emojionearea .emojionearea-editor {
+    min-height: unset !important;
+}
+
 .me {
     margin-left: auto;
     color: var(--black-color);
@@ -1387,7 +1391,7 @@ section {
 .me .messageContent {
     background-color: rgb(217 139 28 / 30%);
     color: var(--black-color);
-    text-align: right;
+    text-align: start;
     margin-bottom: 0;
     padding: 10px 22px;
     border-radius: 15px 0 15px 15px;
