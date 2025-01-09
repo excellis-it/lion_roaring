@@ -579,7 +579,7 @@ class SendMailController extends Controller
             $senderEmail = $sender_user->email;
             $senderName = $sender_user->full_name;
 
-            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $senderEmail, $senderName));
+            // Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $senderEmail, $senderName));
 
 
             session()->flash('message', 'Your mail has been sent Successfully');
@@ -743,7 +743,7 @@ class SendMailController extends Controller
             $senderEmail = $sender_user->email;
             $senderName = $sender_user->full_name;
 
-            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $senderEmail, $senderName));
+            // Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $senderEmail, $senderName));
 
 
             session()->flash('message', 'Your mail has been sent Successfully');
@@ -903,7 +903,7 @@ class SendMailController extends Controller
             $senderEmail = $sender_user->email;
             $senderName = $sender_user->full_name;
 
-            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $senderEmail, $senderName));
+            // Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $senderEmail, $senderName));
 
 
             session()->flash('message', 'Your mail has been sent Successfully');
