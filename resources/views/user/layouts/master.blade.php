@@ -389,6 +389,10 @@
                     // Append the file if one is selected
                     if (file) {
                         formData.append("file", file);
+                    } else {
+                        if (message.trim() == '') {
+                            return false;
+                        }
                     }
 
 
@@ -414,10 +418,10 @@
 
                                 let html = ` <div class="message me" id="chat-message-${res.chat.id}">
                                   <div class="message-wrap">`;
-
+                                let fileUrl = '';
                                 let attachment = res.chat.attachment;
                                 if (attachment != '') {
-                                    let fileUrl = "{{ Storage::url('') }}" + attachment;
+                                    fileUrl = "{{ Storage::url('') }}" + attachment;
                                     let attachement_extention = attachment.split('.').pop();
 
 
@@ -509,7 +513,8 @@
                                     sender_id: sender_id,
                                     receiver_id: receiver_id,
                                     receiver_users: res.receiver_users,
-                                    chat_id: res.chat.id
+                                    chat_id: res.chat.id,
+                                    file_url: fileUrl,
                                 });
                             } else {
                                 console.log(res.msg);
@@ -521,9 +526,11 @@
                 $("#hit-chat-file").click(function(e) {
                     e.preventDefault();
                     $("#file2").click();
+                    $("#team-file2").click();
                 });
 
-                $(document).on("change", "#file2", function(e) {
+
+                $(document).on("change", "#file2, #team-file2", function(e) {
                     var file = $(this).prop('files')[0]; // Get the selected file
                     var fileName = file?.name || ''; // Get the file name
                     var $fileNameDisplay = $('#file-name-display');
@@ -563,6 +570,7 @@
 
                     // Clear the file input
                     $('#file2').val('');
+                    $('#team-file2').val('');
                 });
 
 
@@ -846,21 +854,45 @@
                     setChatListLastActive();
                     html = `
                          <div class="message you" id="chat-message-${data.chat_id}">
-                             <p class="messageContent">`
-                    if (data.file_url) {
-                        let attachement_extention = data.file_url.split('.').pop();
-                        if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
+                             <p class="messageContent">`;
+                    // if (data.file_url) {
+                    //     let attachement_extention = data.file_url.split('.').pop();
+                    //     if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
+                    //         html +=
+                    //             `<a href="${data.file_url}" target="_blank"><img src="${data.file_url}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a>`;
+                    //     } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
+                    //         html +=
+                    //             `<a href="${data.file_url}" target="_blank"><video width="200" height="200" controls><source src="${data.file_url}" type="video/mp4"><source src="${data.file_url}" type="video/webm"><source src="${data.file_url}" type="video/ogg"></video></a>`;
+                    //     } else {
+                    //         html +=
+                    //             `<a href="${data.file_url}" download="${data.message}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a>`;
+                    //     }
+                    // } else {
+                    //     html += `${data.message.replace(/\n/g, '<br>')}`;
+                    // }
+
+                    let attachment = data.file_url;
+                    if (attachment != '') {
+                        // let fileUrl = "{{ Storage::url('') }}" + attachment;
+                        let attachement_extention = attachment.split('.').pop();
+
+
+
+                        if (['jpg', 'jpeg', 'png', 'gif'].includes(
+                                attachement_extention)) {
                             html +=
-                                `<a href="${data.file_url}" target="_blank"><img src="${data.file_url}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a>`;
-                        } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
+                                ` <a href="${data.file_url}" target="_blank"><img src="${data.file_url}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a><br><span class="">${data.message.replace(/\n/g, '<br>')}</span>`;
+                        } else if (['mp4', 'webm', 'ogg'].includes(
+                                attachement_extention)) {
                             html +=
-                                `<a href="${data.file_url}" target="_blank"><video width="200" height="200" controls><source src="${data.file_url}" type="video/mp4"><source src="${data.file_url}" type="video/webm"><source src="${data.file_url}" type="video/ogg"></video></a>`;
+                                ` <a href="${data.file_url}" target="_blank"><video width="200" height="200" controls><source src="${data.file_url}" type="video/mp4"><source src="${data.file_url}" type="video/webm"><source src="${data.file_url}" type="video/ogg"></video></a><br><span class="">${data.message.replace(/\n/g, '<br>')}</span>`;
                         } else {
                             html +=
-                                `<a href="${data.file_url}" download="${data.message}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a>`;
+                                ` <a href="${data.file_url}" download="${data.message}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a><br><span class="">${data.message.replace(/\n/g, '<br>')}</span>`;
                         }
                     } else {
-                        html += `${data.message.replace(/\n/g, '<br>')}`;
+                        html +=
+                            ` ${data.message.replace(/\n/g, '<br>')}`;
                     }
 
                     html += `</p>
@@ -1204,9 +1236,17 @@
 
                             // Handle Enter key press within the emoji picker
                             emojioneAreaInstance[0].emojioneArea.on('keydown', function(editor, event) {
-                                if (event.which === 13 && !event.shiftKey) {
-                                    event.preventDefault();
-                                    $("#TeamMessageForm").submit();
+                                const $messageInput = $('.emojionearea-editor');
+
+                                console.log('key is : ' + event.key);
+
+                                if (event.key === 'Enter') {
+                                    //
+                                } else {
+                                    if (event.which === 13 && !event.shiftKey) {
+                                        event.preventDefault();
+                                        $("#TeamMessageForm").submit();
+                                    }
                                 }
                             });
 
@@ -1300,25 +1340,51 @@
 
                 $(document).on("submit", "#TeamMessageForm", function(e) {
                     e.preventDefault();
+                    // var message = $("#TeamMessageInput").emojioneArea()[0].emojioneArea.getText();
+                    // var url = "{{ route('team-chats.send') }}";
+
+                    // if (message.trim() == '') {
+                    //     return false;
+                    // }
+
+                    // Get the message from the input field emoji area
                     var message = $("#TeamMessageInput").emojioneArea()[0].emojioneArea.getText();
+                    var team_id = $(".team_id").val();
+                    //  var sender_id = $("input[name=sender_id]").val(); // Assuming sender_id is available
                     var url = "{{ route('team-chats.send') }}";
 
-                    if (message.trim() == '') {
-                        return false;
+                    // Get the file data
+                    var fileInput = $("#team-file2")[0];
+                    var file = fileInput.files[0]; // The selected file
+
+                    // Create a FormData object to send both message and file
+                    var formData = new FormData();
+                    formData.append("_token", $("input[name=_token]").val());
+                    formData.append("message", message);
+                    formData.append("team_id", team_id);
+                    // formData.append("sender_id", sender_id);
+
+                    // Append the file if one is selected
+                    if (file) {
+                        formData.append("file", file);
+                    } else {
+                        if (message.trim() == '') {
+                            return false;
+                        }
                     }
 
                     $.ajax({
                         type: "POST",
                         url: url,
-                        data: {
-                            message: message,
-                            team_id: $(".team_id").val(),
-                            _token: "{{ csrf_token() }}"
-                        },
+                        data: formData,
+                        processData: false, // Don't process the data
+                        contentType: false,
                         success: function(resp) {
                             loadChat($("#team_id").val());
 
                             $("#TeamMessageInput").emojioneArea()[0].emojioneArea.setText('');
+                            $("#team-file2").val('');
+                            $('#file-name-display').hide();
                             let timezone = 'America/New_York';
                             let created_at = resp.chat.created_at;
                             let time = moment.tz(created_at, timezone).format('h:mm A');
@@ -1326,13 +1392,52 @@
                             // append new message to the chat
                             var data = resp.chat;
                             groupList(sender_id, data.team_id);
-                            var html = `<div class="message me" id="team-chat-message-${data.id}"><div class="message-wrap">
-                                        <p class="messageContent">${data.message.replace(/\n/g, '<br>')}</p>
-                                        <div class="messageDetails">
-                                            <div class="messageTime">${time}</div>
-                                        </div>
+                            let html = `<div class="message me" id="team-chat-message-${data.id}">
+                <div class="message-wrap">`;
+
+                            let fileUrl = '';
+                            let attachment = data.attachment;
+
+                            if (attachment && attachment !== '') {
+                                fileUrl = "{{ Storage::url('') }}" + attachment;
+                                let attachement_extention = attachment.split('.').pop();
+
+                                if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
+                                    html += `<p class="messageContent">
+                    <a href="${fileUrl}" target="_blank">
+                        <img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;">
+                    </a><br>
+                    <span>${data.message.replace(/\n/g, '<br>')}</span>
+                 </p>`;
+                                } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
+                                    html += `<p class="messageContent">
+                    <a href="${fileUrl}" target="_blank">
+                        <video width="200" height="200" controls>
+                            <source src="${fileUrl}" type="video/mp4">
+                            <source src="${fileUrl}" type="video/webm">
+                            <source src="${fileUrl}" type="video/ogg">
+                        </video>
+                    </a><br>
+                    <span>${data.message.replace(/\n/g, '<br>')}</span>
+                 </p>`;
+                                } else {
+                                    html += `<p class="messageContent">
+                    <a href="${fileUrl}" download="${attachment}">
+                        <img src="{{ asset('user_assets/images/file.png') }}" alt="file">
+                    </a><br>
+                    <span>${data.message.replace(/\n/g, '<br>')}</span>
+                 </p>`;
+                                }
+                            } else {
+                                html +=
+                                    `<p class="messageContent">${data.message.replace(/\n/g, '<br>')}</p>`;
+                            }
+
+                            html += `<div class="messageDetails">
+                                        <div class="messageTime">${time}</div>
                                     </div>
-                                     <div class="dropdown">
+                                </div>
+                                <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
                                     data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-solid fa-ellipsis-vertical"></i>
@@ -2223,13 +2328,11 @@
                     let chat_member_id_array = data.chat_member_id;
 
                     if (data.chat.user_id != sender_id && chat_member_id_array.includes(sender_id)) {
-
                         let html = `
         <div class="message you" id="team-chat-message-${data.chat.id}">
             <div class="d-flex">
                 <div class="member_image">
                     <span>`;
-
                         if (data.chat.user.profile_picture) {
                             html +=
                                 `<img src="{{ Storage::url('${data.chat.user.profile_picture}') }}" alt="">`;
@@ -2244,21 +2347,34 @@
                         <span class="namemember">
     ${ (data.chat.user.first_name ?? '') + ' ' + (data.chat.user.middle_name ?? '') + ' ' + (data.chat.user.last_name ?? '') }
 </span>`;
-                        if (data.file_url) {
-                            let attachement_extention = data.file_url.split('.').pop();
+
+                        let fileUrl = '';
+                        let attachment = data.chat.attachment;
+                        if (attachment != '') {
+                            fileUrl = "{{ Storage::url('') }}" + attachment;
+                            let attachement_extention = attachment.split('.').pop();
+
                             if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
-                                html +=
-                                    `<a href="${data.file_url}" target="_blank"><img src="${data.file_url}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a>`;
+                                html += `<a href="${fileUrl}" target="_blank">
+                        <img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;">
+                     </a><br><span class="">${data.chat.message.replace(/\n/g, '<br>')}</span>`;
                             } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
-                                html +=
-                                    `<a href="${data.file_url}" target="_blank"><video width="200" height="200" controls><source src="${data.file_url}" type="video/mp4"><source src="${data.file_url}" type="video/webm"><source src="${data.file_url}" type="video/ogg"></video></a>`;
+                                html += `<a href="${fileUrl}" target="_blank">
+                        <video width="200" height="200" controls>
+                            <source src="${fileUrl}" type="video/mp4">
+                            <source src="${fileUrl}" type="video/webm">
+                            <source src="${fileUrl}" type="video/ogg">
+                        </video>
+                     </a><<br><span class="">${data.chat.message.replace(/\n/g, '<br>')}</span>`;
                             } else {
-                                html +=
-                                    `<a href="${data.file_url}" download="${data.file_url}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a>`;
+                                html += `<a href="${fileUrl}" download="${attachment}">
+                        <img src="{{ asset('user_assets/images/file.png') }}" alt="">
+                     </a><br><span class="">${data.chat.message.replace(/\n/g, '<br>')}</span>`;
                             }
                         } else {
-                            html += `${data.chat.message}`;
+                            html += `${data.chat.message.replace(/\n/g, '<br>')}`;
                         }
+
                         html += `</p>
                     <div class="messageDetails">
                         <div class="messageTime">${time}</div>
