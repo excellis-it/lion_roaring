@@ -410,19 +410,27 @@ class ChatController extends Controller
                     ->where('reciver_id', auth()->id());
             })->count();
 
+            $themessage = $request->message;
+            if (!empty($themessage)) {
+                $themessage = $request->message;
+            } else {
+                $themessage = ' ';
+            }
+
             if ($request->file) {
                 $file = $this->imageUpload($request->file('file'), 'chat');
                 $chatData = Chat::create([
                     'sender_id' => auth()->id(),
                     'reciver_id' => $request->reciver_id,
-                    'message' => $request->message,
+                    'message' => $themessage,
                     'attachment' => $file
                 ]);
             } else {
                 $chatData = Chat::create([
                     'sender_id' => auth()->id(),
                     'reciver_id' => $request->reciver_id,
-                    'message' => $request->message
+                    'message' => $themessage,
+                    'attachment' => ''
                 ]);
             }
 
