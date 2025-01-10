@@ -183,9 +183,16 @@ class TeamChatController extends Controller
         $team_chat->team_id = $request->team_id;
         $team_chat->user_id = auth()->id();
         if ($request->file) {
+            if (!empty($request->message)) {
+                $team_chat->message = $request->message;
+            } else {
+                $team_chat->message = ' ';
+            }
+
             $team_chat->attachment = $this->imageUpload($request->file('file'), 'team-chat');
         } else {
             $team_chat->message = $request->message;
+            $team_chat->attachment = '';
         }
         $team_chat->save();
         $teams = TeamMember::where('team_id', $request->team_id)->where('is_removed', false)->get();

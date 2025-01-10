@@ -34,7 +34,8 @@
                         @endif
 
                         @if (Helper::checkAdminTeam(auth()->user()->id, $team['id']) == true)
-                            <li><a class="dropdown-item clear-all-conversation" data-team-id="{{ $team['id'] }}">Clear all historical conversation </a>
+                            <li><a class="dropdown-item clear-all-conversation" data-team-id="{{ $team['id'] }}">Clear
+                                    all historical conversation </a>
                             </li>
                         @endif
 
@@ -60,9 +61,7 @@
                         <div class="message me" id="team-chat-message-{{ $chat->id }}">
                             <div class="message-wrap">
                                 <p class="messageContent">
-                                    @if ($chat->message != null)
-                                        {{ $chat->message }}
-                                    @else
+                                    @if ($chat->attachment != null)
                                         @php
                                             $ext = pathinfo($chat->attachment, PATHINFO_EXTENSION);
                                         @endphp
@@ -82,6 +81,11 @@
                                                 <img src="{{ asset('user_assets/images/file.png') }}" alt="">
                                             </a>
                                         @endif
+                                        <br>
+                                    @endif
+
+                                    @if ($chat->message != null)
+                                        {!! nl2br($chat->message) !!}
                                     @endif
                                 </p>
                                 <div class="dropdown">
@@ -111,22 +115,21 @@
                                 <div class="member_image">
                                     <span>
                                         @if ($chat->user)
-                                        <img
-                                        src="{{ $chat->user->profile_picture ? Storage::url($chat->user->profile_picture) : asset('user_assets/images/profile_dummy.png') }}"
-                                        alt="">
+                                            <img src="{{ $chat->user->profile_picture ? Storage::url($chat->user->profile_picture) : asset('user_assets/images/profile_dummy.png') }}"
+                                                alt="">
                                         @else
-                                        <img src="{{ asset('user_assets/images/profile_dummy.png') }}" alt="">
+                                            <img src="{{ asset('user_assets/images/profile_dummy.png') }}"
+                                                alt="">
                                         @endif
 
 
-                                        </span>
+                                    </span>
                                 </div>
                                 <div class="message_group">
                                     <p class="messageContent">
                                         <span class="namemember">{{ $chat->user ? $chat->user->full_name : '' }}</span>
-                                        @if ($chat->message != null)
-                                            {{ $chat->message }}
-                                        @else
+
+                                        @if ($chat->attachment != null)
                                             @php
                                                 $ext = pathinfo($chat->attachment, PATHINFO_EXTENSION);
                                             @endphp
@@ -147,7 +150,14 @@
                                                         alt="">
                                                 </a>
                                             @endif
+                                            <br>
                                         @endif
+
+                                        @if ($chat->message != null)
+                                            {!! nl2br($chat->message) !!}
+                                        @endif
+
+
                                     </p>
                                     <div class="messageDetails">
                                         <div class="messageTime">{{ $chat->created_at->format('h:i A') }}</div>
@@ -162,10 +172,16 @@
     </div>
     <div id="group-member-form-{{ $team['id'] }}-{{ auth()->user()->id }}">
         @if (Helper::checkRemovedFromTeam($team['id'], auth()->user()->id) == false)
-            <form id="TeamMessageForm">
-                <input type="file" id="team-file" style="display: none" data-team-id="{{ $team['id'] }}">
+            <div id="file-name-display"
+                style="display:none; margin-top: 5px; color: #555; font-size: 14px;background-color: #d5c8e5;"
+                class="p-2 w-100">
+            </div>
+            <form id="TeamMessageForm" enctype="multipart/form-data">
+                @csrf
+                <input type="file" id="team-file2" style="display: none" data-team-id="{{ $team['id'] }}"
+                    name="file">
                 <div class="file-upload">
-                    <label for="team-file">
+                    <label for="team-file" id="hit-chat-file" onclick="$('#team-file2').click()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                             viewBox="0 0 24 24">
                             <path fill="currentColor" fill-rule="evenodd"
@@ -175,7 +191,7 @@
                     </label>
                 </div>
 
-                <input type="text" id="TeamMessageInput" placeholder="Type a message...">
+                <textarea type="text" id="TeamMessageInput" placeholder="Type a message..." rows="1" class="form-control"></textarea>
                 <input type="hidden" id="team_id" value="{{ $team['id'] }}" class="team_id">
                 <div>
                     <button class="Send">

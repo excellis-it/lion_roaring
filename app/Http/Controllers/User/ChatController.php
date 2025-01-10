@@ -140,6 +140,12 @@ class ChatController extends Controller
             })->orWhere(function ($query) use ($request) {
                 $query->where('sender_id', $request->reciver_id)->where('reciver_id', $request->sender_id);
             })->count();
+            $themessage = $request->message;
+            if (!empty($themessage)) {
+                $themessage = $request->message;
+            } else {
+                $themessage = ' ';
+            }
             if ($request->file) {
                 // check the file size
                 // if ($request->file('file')->getSize() > 10240) {
@@ -149,14 +155,14 @@ class ChatController extends Controller
                 $chatData = Chat::create([
                     'sender_id' => $request->sender_id,
                     'reciver_id' => $request->reciver_id,
-                    'message' => $request->message,
+                    'message' => $themessage,
                     'attachment' => $file
                 ]);
             } else {
                 $chatData = Chat::create([
                     'sender_id' => $request->sender_id,
                     'reciver_id' => $request->reciver_id,
-                    'message' => $request->message,
+                    'message' => $themessage,
                     'attachment' => ''
                 ]);
             }
