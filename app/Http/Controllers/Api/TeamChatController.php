@@ -757,9 +757,15 @@ class TeamChatController extends Controller
 
             // Handle file or message content
             if ($request->file) {
+                if (!empty($request->message)) {
+                    $team_chat->message = $request->message;
+                } else {
+                    $team_chat->message = ' ';
+                }
                 $team_chat->attachment = $this->imageUpload($request->file('file'), 'team-chat');
             } else {
                 $team_chat->message = $request->message;
+                $team_chat->attachment = '';
             }
             $team_chat->save();
 
