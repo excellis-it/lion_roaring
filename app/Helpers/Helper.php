@@ -251,4 +251,32 @@ class Helper
             )
         );
     }
+
+    public static function formatChatMessage($message)
+    {
+        // // Regular expression to match words containing a dot (.)
+        // $pattern = '/\b[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}\b/';
+
+        // // Replace matched words with anchor tags
+        // $formattedMessage = preg_replace_callback($pattern, function ($matches) {
+        //     $url = $matches[0];
+        //     return '<a class="text-decoration-underline" href="https://' . htmlspecialchars($url) . '" target="_blank">' . htmlspecialchars($url) . '</a>';
+        // }, $message);
+
+        return nl2br($message);
+    }
+
+    public static function formatChatSendMessage($message)
+    {
+        // Regular expression to match words containing a dot (.)
+        $pattern = '/\b[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}\b/';
+
+        // Replace matched words with anchor tags
+        $formattedMessage = preg_replace_callback($pattern, function ($matches) {
+            $url = $matches[0];
+            return '<a class="text-decoration-underline" href="https://' . htmlspecialchars($url) . '" target="_blank">' . htmlspecialchars($url) . '</a>';
+        }, $message);
+
+        return $formattedMessage;
+    }
 }
