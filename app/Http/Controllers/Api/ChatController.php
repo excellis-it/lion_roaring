@@ -410,7 +410,9 @@ class ChatController extends Controller
                     ->where('reciver_id', auth()->id());
             })->count();
 
-            $themessage = $request->message;
+            $input_message = Helper::formatChatSendMessage($request->message);
+
+            $themessage = $input_message;
             if (!empty($themessage)) {
                 $themessage = $request->message;
             } else {
