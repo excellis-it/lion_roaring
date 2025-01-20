@@ -333,6 +333,24 @@
                 </li>
             @endif
 
+
+
+            <li class="dropdown">
+                <a href="javascript:void(0);"
+                    class="menu-toggle nav-link has-dropdown {{ Request::is('admin/settings*') ? 'active' : ' ' }}">
+                    <i class="ph ph-package"></i>
+                    <span> Site Settings </span>
+                </a>
+                <ul class="dropdown-menu">
+
+                    <li class="{{ Request::is('admin/settings/') ? 'active' : ' ' }}">
+                        <a class="nav-link" href="{{ route('admin.settings.edit') }}">Settings</a>
+                    </li>
+
+                </ul>
+            </li>
+
+
         </ul>
     </aside>
 </div>
