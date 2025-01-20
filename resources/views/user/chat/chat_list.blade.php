@@ -16,7 +16,7 @@
             <p class="GroupDescrp last-chat-{{ isset($user['last_message']) ? $user['last_message']['id'] : '' }}"
                 id="message-app-{{ $user['id'] }}">
                 @if (isset($user['last_message']['message']))
-                    {{ $user['last_message']['message'] }}
+                    {!! $user['last_message']['message'] !!}
                 @endif
 
                 @if (isset($user['last_message']) &&
