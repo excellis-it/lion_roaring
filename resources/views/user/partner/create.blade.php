@@ -16,89 +16,16 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="heading_box mb-5">
-                                            <h3>Login Information</h3>
+                                            <h3>Add New User</h3>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
-
-                                    <div class="col-md-6 mb-2">
+                                <div class="row">                                    
+                                    <div class="col-md-12 col-lg-7 mb-3">
                                         <div class="box_label">
-                                            <label>Email *</label>
-                                            <input type="text" class="form-control" name="email"
-                                                value="{{ old('email') }}" placeholder="">
-                                            @if ($errors->has('email'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('email') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    {{-- phone --}}
-                                    <div class="col-md-6 mb-2">
-                                        <div class="box_label">
-                                            <label>Phone *</label>
-                                            <input type="tel" class="form-control" name="phone" id="mobile_code"
-                                                value="{{ old('full_phone_number') }}" placeholder="">
-                                            @if ($errors->has('phone'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('phone') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                    {{-- password --}}
-                                    <div class="col-md-6 mb-2">
-                                        <div class="box_label position-relative">
-                                            <label>Password *</label>
-                                            <input type="password" class="form-control" name="password" id="password"
-                                                value="{{ old('password') }}" placeholder="">
-                                                <span class="eye-btn-1" id="eye-button-1">
-                                                    <i class="fa fa-eye-slash" aria-hidden="true"
-                                                        id="togglePassword"></i>
-                                                </span>
-                                            @if ($errors->has('password'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('password') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    {{-- confirm_password --}}
-                                    <div class="col-md-6 mb-2">
-                                        <div class="box_label position-relative">
-                                            <label>Confirm Password *</label>
-                                            <input type="password" class="form-control" name="confirm_password" id="confirm_password"
-                                                value="{{ old('confirm_password') }}" placeholder="">
-                                                <span class="eye-btn-1" id="eye-button-2">
-                                                    <i class="fa fa-eye-slash" aria-hidden="true"
-                                                        id="togglePassword"></i>
-                                                </span>
-                                            @if ($errors->has('confirm_password'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('confirm_password') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="heading_box mb-5">
-                                            <h3>Personal Information</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    {{-- user_name --}}
-                                    <div class="col-md-4 mb-2">
-                                        <div class="box_label">
-                                            <label>User Name *</label>
+                                            <label>What should we call you?</label>
                                             <input type="text" class="form-control" name="user_name"
-                                                value="{{ old('user_name') }}" placeholder="">
+                                                value="{{ old('user_name') }}" placeholder="Enter your profile name">
                                             @if ($errors->has('user_name'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('user_name') }}
@@ -106,169 +33,115 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-4 mb-2">
+                                    <div class="col-md-12 col-lg-7 mb-3">
                                         <div class="box_label">
-                                            <label>Roles *</label>
-                                            <select class="form-control" name="role">
-                                                <option value="">Select Role</option>
-                                                @foreach ($roles as $item)
-                                                    <option value="{{ $item->name }}"
-                                                        {{ old('role') == $item->name ? 'selected' : '' }}>
-                                                        {{ $item->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('role'))
+                                            <label>What’s your email?</label>
+                                            <input type="text" class="form-control" name="email"
+                                                value="{{ old('email') }}" placeholder="Enter your email address">
+                                            @if ($errors->has('email'))
                                                 <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('role') }}
+                                                    {{ $errors->first('email') }}
                                                 </div>
                                             @endif
+                                        </div>
+                                    </div>
 
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="heading_box mb-5">
+                                            <h3>Roles</h3>
                                         </div>
                                     </div>
-                                    {{-- eclessias --}}
-                                    <div class="col-md-4 mb-2">
-                                        <div class="box_label">
-                                            <label>Ecclesias </label>
-                                            <select class="form-control" name="ecclesia_id">
-                                                <option value="">Select Ecclesia</option>
-                                                @foreach ($eclessias as $item)
-                                                    <option value="{{ $item->id }}"
-                                                        {{ old('ecclesia_id') == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('ecclesia_id'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('ecclesia_id') }}
+                                    <div class="col-md-12">
+                                        <ul class="rols_ul">
+                                            <li>
+                                                <div class="toggle-redio">
+                                                    <input type="radio" id="test1" name="radio-group" checked>
+                                                    <label for="test1">LEADER</label>
                                                 </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-2">
-                                        <div class="box_label">
-                                            <label>First Name *</label>
-                                            <input type="text" class="form-control" name="first_name"
-                                                value="{{ old('first_name') }}" placeholder="">
-                                            @if ($errors->has('first_name'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('first_name') }}
+                                            </li>
+                                            <li>
+                                                <div class="toggle-redio">
+                                                    <input type="radio" id="test2" name="radio-group">
+                                                    <label for="test2">LEADER NON-SOVEREIGN</label>
                                                 </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    {{-- middle_name --}}
-                                    <div class="col-md-4 mb-2">
-                                        <div class="box_label">
-                                            <label>Middle Name</label>
-                                            <input type="text" class="form-control" name="middle_name"
-                                                value="{{ old('middle_name') }}" placeholder="">
-                                            @if ($errors->has('middle_name'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('middle_name') }}
+                                            </li>
+                                            <li>
+                                                <div class="toggle-redio">
+                                                    <input type="radio" id="test3" name="radio-group">
+                                                    <label for="test3">MEMBER</label>
                                                 </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    {{-- last_name --}}
-                                    <div class="col-md-4 mb-2">
-                                        <div class="box_label">
-                                            <label>Last Name *</label>
-                                            <input type="text" class="form-control" name="last_name"
-                                                value="{{ old('last_name') }}" placeholder="">
-                                            @if ($errors->has('last_name'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('last_name') }}
+                                            </li>
+                                            <li>
+                                                <div class="toggle-redio">
+                                                    <input type="radio" id="test4" name="radio-group">
+                                                    <label for="test4">MEMBER SOVEREIGN</label>
                                                 </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    {{-- country --}}
-                                    <div class="col-md-6 mb-2">
-                                        <div class="box_label">
-                                            <label>Country *</label>
-                                            <select name="country" id="country" class="form-control">
-                                                <option value="">Select Country</option>
-                                                @foreach ($countries as $country)
-                                                    <option value="{{ $country->id }}"
-                                                        @if (old('country') == $country->id) selected @endif
-                                                        {{ $country->code == 'US' ? 'selected' : '' }}>
-                                                        {{ $country->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('country'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('country') }}
+                                            </li>
+                                            <li>
+                                                <div class="toggle-redio">
+                                                    <input type="radio" id="test5" name="radio-group">
+                                                    <label for="test5">SUPER LEADER</label>
                                                 </div>
-                                            @endif
-                                        </div>
+                                            </li>
+                                        </ul>
                                     </div>
-                                    {{-- state --}}
-                                    <div class="col-md-6 mb-2">
-                                        <div class="box_label">
-                                            <label>State *</label>
-                                            <select name="state" id="state" class="form-control">
-                                                <option value="">Select State</option>
-                                            </select>
-                                            @if ($errors->has('state'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('state') }}
-                                                </div>
-                                            @endif
-                                        </div>
+                                    <div class="col-lg-7 col-md-12">
+                                        <h4>Leader</h4>
+                                        <ul class="per_list">
+                                            <li class="">Manage Profile</li>
+                                            <li class="">Manage Password</li>
+                                            <li class="">Manage Chat</li>
+                                            <li class="">Create Team</li>
+                                            <li class="">Delete Team</li>
+                                            <li class="">Manage Team</li>
+                                            <li class="">Manage Email</li>
+                                            <li class="">Manage Becoming Sovereigns</li>
+                                            <li class="">View Becoming Sovereigns</li>
+                                            <li class="">Upload Becoming Sovereigns</li>
+                                            <li class="">Edit Becoming Sovereigns</li>
+                                            <li class="">Delete Becoming Sovereigns</li>
+                                            <li class="">Download Becoming Sovereigns</li>
+                                            <li class="">Manage Becoming Christ Like</li>
+                                            <li class="">View Becoming Christ Like</li>
+                                            <li class="">Upload Becoming Christ Like</li>
+                                            <li class="">Download Becoming Christ Like</li>
+                                            <li class="">Manage Becoming a Leader</li>
+                                            <li class="">View Becoming a Leader</li>
+                                            <li class="">Upload Becoming a Leader</li>
+                                            <li class="">Edit Becoming a Leader</li>
+                                            <li class="">Delete Becoming a Leader</li>
+                                            <li class="">Download Becoming a Leader</li>
+                                            <li class="">Manage Bulletin</li>
+                                            <li class="">Edit Bulletin</li>
+                                            <li class="">Create Bulletin</li>
+                                            <li class="">Delete Bulletin</li>
+                                            <li class="">Manage Job Postings</li>
+                                            <li class="">View Job Postings</li>
+                                            <li class="">Manage Meeting Schedule</li>
+                                            <li class="">View Meeting Schedule</li>
+                                            <li class="">Create Meeting Schedule</li>
+                                            <li class="">Edit Meeting Schedule</li>
+                                            <li class="">Delete Meeting Schedule</li>
+                                            <li class="">Manage Event</li>
+                                            <li class="">Create Event</li>
+                                            <li class="">Edit Event</li>
+                                            <li class="">Manage Partners</li>
+                                            <li class="">Manage Help</li>
+                                            <li class="">Manage Strategy</li>
+                                            <li class="">Upload Strategy</li>
+                                            <li class="">Download Strategy</li>
+                                            <li class="">View Strategy</li>
+                                            <li class="">Delete Strategy</li>
+                                            <li class="">Manage Topic</li>
+                                            <li class="">Edit Topic</li>
+                                            <li class="">Create Topic</li>
+                                            <li class="">Delete Topic</li>
+                                        </ul>
                                     </div>
-                                    {{-- city --}}
-                                    <div class="col-md-6 mb-2">
-                                        <div class="box_label">
-                                            <label>City *</label>
-                                            <input type="text" class="form-control" name="city"
-                                                value="{{ old('city') }}" placeholder="">
-                                            @if ($errors->has('city'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('city') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <div class="box_label">
-                                            <label>Zip *</label>
-                                            <input type="text" class="form-control" name="zip"
-                                                value="{{ old('zip') }}" placeholder="">
-                                            @if ($errors->has('zip'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('zip') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                        <div class="box_label">
-                                            <label>Address *</label>
-                                            <input type="text" class="form-control" name="address"
-                                                value="{{ old('address') }}" placeholder="">
-                                            @if ($errors->has('address'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('address') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    {{-- address2 --}}
-                                    <div class="col-md-6 mb-2">
-                                        <div class="box_label">
-                                            <label>Address 2</label>
-                                            <input type="text" class="form-control" name="address2"
-                                                value="{{ old('address2') }}" placeholder="">
-                                            @if ($errors->has('address2'))
-                                                <div class="error" style="color:red !important;">
-                                                    {{ $errors->first('address2') }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    {{-- zip --}}
 
+                                    
                                 </div>
                                 <div class="w-100 text-end d-flex align-items-center justify-content-end">
                                     <button type="submit" class="print_btn me-2">Save</button>

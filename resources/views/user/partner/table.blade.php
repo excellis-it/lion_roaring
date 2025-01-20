@@ -2,27 +2,15 @@
     @foreach ($partners as $key => $partner)
         <tr>
             <td>
-                {{ $partners->firstItem() + $key }}
-            </td>
-            <td>{{ $partner->full_name }}</td>
-            <td>
-                {{ $partner->ecclesia ?  $partner->ecclesia->name : '' }}
-            </td>
-            <td>{{ $partner->user_name }}</td>
-            <td>{{ $partner->email }}</td>
-            <td>{{ $partner->phone }}</td>
-            <td>{{ $partner->address }}</td>
-            <td>{{$partner->getRoleNames()->first()}}</td>
-            @if (auth()->user()->hasRole('ADMIN') || auth()->user()->hasRole('LEADER') && auth()->user()->can('Edit Partners'))
-            <td>
-                <div class="button-switch">
-                    <input type="checkbox" id="switch-orange" class="switch toggle-class" data-id="{{ $partner['id'] }}"
-                        {{ $partner['status'] ? 'checked' : '' }} />
-                    <label for="switch-orange" class="lbl-off"></label>
-                    <label for="switch-orange" class="lbl-on"></label>
+                <div class="toggle-check">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="" value="" id="">
+                    </div>
                 </div>
             </td>
-            @endif
+            <td>{{ $partner->email }}</td>
+            <td>{{ $partner->full_name }}</td>
+            <td>{{$partner->getRoleNames()->first()}}</td>            
             @if (auth()->user()->can('Edit Partners') || auth()->user()->can('Delete Partners') || auth()->user()->can('View Partners'))
             <td>
                 <div class="d-flex">
@@ -31,20 +19,7 @@
                         <i class="ti ti-edit"></i>
                     </a>
                     @endif
-
-                    @if (Auth::user()->can('View Partners'))
-                    <a href="{{route('partners.show', Crypt::encrypt($partner->id))}}" class="view_icon me-2">
-                        <i class="ti ti-eye"></i>
-                    </a>
-                    @endif
-                    @if (Auth::user()->can('Delete Partners'))
-                    <a href="javascript:void(0);" data-route="{{ route('partners.delete', Crypt::encrypt($partner->id)) }}" class="delete_icon" id="delete">
-                        <i class="ti ti-trash"></i>
-                    </a>
-                    @endif
-
                 </div>
-
             </td>
             @endif
         </tr>

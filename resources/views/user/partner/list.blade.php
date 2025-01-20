@@ -22,15 +22,14 @@
                                     </div>
                                     <div class="col-md-2 float-right">
                                         @if ( auth()->user()->can('Create Partners') )
-                                        <a href="{{ route('partners.create') }}" class="btn btn-primary w-100">+ Add
-                                            Members</a>
+                                        <a href="{{ route('partners.create') }}" class="btn btn-primary w-100">+ Add New User</a>
                                         @endif
 
                                     </div>
                                 </div>
                                 <div class="row ">
                                     <div class="col-md-8">
-                                        <h3 class="mb-3 float-left">Members List</h3>
+                                        <h3 class="mb-3 float-left">User Account Details</h3>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="search-field float-right">
@@ -43,33 +42,22 @@
                                 </div>
                                 <div class="table-responsive">
                                     <table class="table align-middle bg-white color_body_text">
-                                        <thead class="color_head">
+                                        <thead class="">
                                             <tr>
-                                                <th>ID </th>
-                                                <th class="sorting" data-tippy-content="Sort by Name"
-                                                    data-sorting_type="desc" data-column_name="name"
-                                                    style="cursor: pointer"> Name<span id="name_icon"><i
-                                                            class="fa fa-arrow-down"></i></span></th>
-                                                            <th>
-                                                                Ecclesia
-                                                            </th>
-                                                <th class="sorting" data-tippy-content="Sort by User Name"
-                                                    data-sorting_type="desc" data-column_name="user_name"
-                                                    style="cursor: pointer">User Name<span id="user_name_icon"></span></th>
+                                                <th>
+                                                    <div class="toggle-check">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="" value="" id="">
+                                                        </div>
+                                                    </div>
+                                                </th>
                                                 <th class="sorting" data-tippy-content="Sort by Email"
                                                     data-sorting_type="desc" data-column_name="email"
                                                     style="cursor: pointer"> Email <span id="email_icon"></span></th>
-                                                <th class="sorting" data-tippy-content="Sort by Phone"
-                                                    data-sorting_type="desc" data-column_name="phone"
-                                                    style="cursor: pointer"> Phone <span id="phone_icon"></span></th>
-                                                <th class="sorting" data-tippy-content="Sort by Address"
-                                                    data-sorting_type="desc" data-column_name="address"
-                                                    style="cursor: pointer"> Address <span id="address_icon"></span></th>
-
+                                                <th class="sorting" data-tippy-content="Sort by Name"
+                                                    data-sorting_type="desc" data-column_name="name"
+                                                    style="cursor: pointer"> Name </th>
                                                 <th>Role</th>
-                                                @if (auth()->user()->hasRole('ADMIN') || auth()->user()->hasRole('LEADER') && auth()->user()->can('Edit Partners'))
-                                                    <th>Status</th>
-                                                @endif
                                                 @if (auth()->user()->can('Edit Partners') || auth()->user()->can('Delete Partners') || auth()->user()->can('View Partners'))
                                                 <th></th>
                                                 @endif

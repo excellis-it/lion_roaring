@@ -19,7 +19,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12 mb-2">
+                            <div class="col-lg-6 col-md-12 mb-2">
                                 <div class="box_label">
                                     <label>Name</label>
                                     <input type="text" class="form-control" value="{{ old('role_name') }}" placeholder=""
@@ -61,31 +61,31 @@
                                             <thead>
                                                 <tr>
                                                     <th style="width: 50px; text-align: center;">
-                                                        <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" id="checkAll"
-                                                                class="custom-control-input js-check-selected-row">
+                                                        <div class="toggle-check">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input manage-cl js-check-selected-row" type="checkbox" id="checkAll">
+                                                            </div>
                                                         </div>
+
                                                     </th>
                                                     <th>Select All</th>
-                                                    <th>Manage</th>
-                                                    <th>View</th>
-                                                    <th>Create</th>
-                                                    <th>Update</th>
-                                                    <th>Delete</th>
-                                                    <th>Upload</th>
-                                                    <th>Download</th>
+                                                    <th style="text-align: center;">Manage</th>
+                                                    <th style="text-align: center;">View</th>
+                                                    <th style="text-align: center;">Create</th>
+                                                    <th style="text-align: center;">Update</th>
+                                                    <th style="text-align: center;">Delete</th>
+                                                    <th style="text-align: center;">Upload</th>
+                                                    <th style="text-align: center;">Download</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="list">
                                                 @foreach ($modules as $new => $module)
                                                     <tr>
-                                                        <td></td>
-                                                        <td>{{ ucfirst($module) }} </td>
                                                         <td>
-                                                            @if (in_array('Manage ' . $module, (array) $permissions))
+                                                        @if (in_array('Manage ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('Manage ' . $module, $permissions))
                                                                     <div class="toggle-check">
-                                                                        <div class="form-check form-switch">
+                                                                        <div class="form-check">
                                                                             <input class="form-check-input manage-cl" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"
@@ -96,11 +96,27 @@
                                                                 @endif
                                                             @endif
                                                         </td>
-                                                        <td>
+                                                        <td style="color:#0B63F8;">{{ ucfirst($module) }} </td>
+                                                        <td style="text-align: center;">
+                                                            @if (in_array('Manage ' . $module, (array) $permissions))
+                                                                @if ($key = array_search('Manage ' . $module, $permissions))
+                                                                    <div class="toggle-check">
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input manage-cl" type="checkbox"
+                                                                                role="switch" name="permissions[]"
+                                                                                value="{{ $key }}"
+                                                                                data-id="{{ $new }}"
+                                                                                id="flexSwitchCheckChecked">
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+                                                            @endif
+                                                        </td>
+                                                        <td style="text-align: center;">
                                                             @if (in_array('View ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('View ' . $module, $permissions))
                                                                     <div class="toggle-check">
-                                                                        <div class="form-check form-switch">
+                                                                        <div class="form-check">
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"
@@ -111,11 +127,11 @@
                                                                 @endif
                                                             @endif
                                                         </td>
-                                                        <td>
+                                                        <td style="text-align: center;">
                                                             @if (in_array('Create ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('Create ' . $module, $permissions))
                                                                     <div class="toggle-check">
-                                                                        <div class="form-check form-switch">
+                                                                        <div class="form-check">
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"
@@ -127,11 +143,11 @@
                                                             @endif
                                                         </td>
 
-                                                        <td>
+                                                        <td style="text-align: center;">
                                                             @if (in_array('Edit ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('Edit ' . $module, $permissions))
                                                                     <div class="toggle-check">
-                                                                        <div class="form-check form-switch">
+                                                                        <div class="form-check">
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"
@@ -142,11 +158,11 @@
                                                                 @endif
                                                             @endif
                                                         </td>
-                                                        <td>
+                                                        <td style="text-align: center;">
                                                             @if (in_array('Delete ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('Delete ' . $module, $permissions))
                                                                     <div class="toggle-check">
-                                                                        <div class="form-check form-switch">
+                                                                        <div class="form-check">
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"
@@ -158,11 +174,11 @@
                                                             @endif
                                                         </td>
 
-                                                        <td>
+                                                        <td style="text-align: center;">
                                                             @if (in_array('Upload ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('Upload ' . $module, $permissions))
                                                                     <div class="toggle-check">
-                                                                        <div class="form-check form-switch">
+                                                                        <div class="form-check">
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"
@@ -173,11 +189,11 @@
                                                                 @endif
                                                             @endif
                                                         </td>
-                                                        <td>
+                                                        <td style="text-align: center;">
                                                             @if (in_array('Download ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('Download ' . $module, $permissions))
                                                                     <div class="toggle-check">
-                                                                        <div class="form-check form-switch">
+                                                                        <div class="form-check">
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"

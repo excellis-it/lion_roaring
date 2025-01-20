@@ -50,10 +50,8 @@
                                                     <tr>
                                                         <td>{{ $key + 1 }}</td>
                                                         <td> {{ $role->name }}</td>
-                                                        <td>
-                                                            @foreach ($role->permissions as $permission)
-                                                                <span class="round-btn">{{ $permission->name }}</span>
-                                                            @endforeach
+                                                        <td data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                            View Permission
                                                         </td>
                                                         <td>
                                                             <div class="d-flex">
@@ -69,10 +67,10 @@
                                                                         <i class="ti ti-trash"></i>
                                                                     </a>
                                                                 @endif
-
                                                             </div>
                                                         </td>
                                                     </tr>
+
                                                 @endforeach
                                             @else
                                                 <tr>
@@ -90,7 +88,23 @@
         </div>
     </div>
 @endsection
-
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">	Permission</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="per_list">
+            @foreach ($role->permissions as $permission)
+                <li class="">{{ $permission->name }}</li>
+            @endforeach
+        </ul>
+      </div>      
+    </div>
+  </div>
+</div>
 @push('scripts')
     <script>
         $(document).on('click', '#delete', function(e) {

@@ -71,6 +71,19 @@
                                                             <input type="checkbox" id="checkAllEdit"
                                                                 class="custom-control-input js-check-selected-row">
                                                         </div>
+
+                                                        <div class="toggle-check">
+                                                                        <div class="form-check">
+                                                                            {{--   {{ Form::checkbox('permissions[]', $key, $role->permission, ['class' => 'form-check-input isscheck isscheck_' . str_replace(' ', '', $module), 'id' => 'permission' . $key]) }} --}}
+                                                                            <input class="form-check-input manage-cl"
+                                                                                type="checkbox" role="switch"
+                                                                                name="permissions[]"
+                                                                                value="{{ $key }}"
+                                                                                 data-id="{{ $new }}"
+                                                                                @if (in_array($key, $role->permissions()->pluck('id')->toArray())) checked @endif
+                                                                                id="flexSwitchCheckChecked">
+                                                                        </div>
+                                                                    </div>
                                                     </th>
                                                     <th>Select All</th>
                                                     <th>Manage</th>
@@ -92,7 +105,7 @@
                                                             @if (in_array('Manage ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('Manage ' . $module, $permissions))
                                                                     <div class="toggle-check">
-                                                                        <div class="form-check form-switch">
+                                                                        <div class="form-check">
                                                                             {{--   {{ Form::checkbox('permissions[]', $key, $role->permission, ['class' => 'form-check-input isscheck isscheck_' . str_replace(' ', '', $module), 'id' => 'permission' . $key]) }} --}}
                                                                             <input class="form-check-input manage-cl"
                                                                                 type="checkbox" role="switch"
@@ -110,7 +123,7 @@
                                                             @if (in_array('View ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('View ' . $module, $permissions))
                                                                     <div class="toggle-check">
-                                                                        <div class="form-check form-switch">
+                                                                        <div class="form-check">
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 @if (in_array($key, $role->permissions()->pluck('id')->toArray())) checked @endif
                                                                                 role="switch" name="permissions[]"
@@ -126,7 +139,7 @@
                                                             @if (in_array('Create ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('Create ' . $module, $permissions))
                                                                     <div class="toggle-check">
-                                                                        <div class="form-check form-switch">
+                                                                        <div class="form-check">
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"
@@ -143,7 +156,7 @@
                                                             @if (in_array('Edit ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('Edit ' . $module, $permissions))
                                                                     <div class="toggle-check">
-                                                                        <div class="form-check form-switch">
+                                                                        <div class="form-check">
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 role="switch" name="permissions[]"
                                                                                 data-id="{{ $new }}"
@@ -159,7 +172,7 @@
                                                             @if (in_array('Delete ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('Delete ' . $module, $permissions))
                                                                     <div class="toggle-check">
-                                                                        <div class="form-check form-switch">
+                                                                        <div class="form-check">
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 @if (in_array($key, $role->permissions()->pluck('id')->toArray())) checked @endif
                                                                                 role="switch" name="permissions[]"
@@ -176,7 +189,7 @@
                                                             @if (in_array('Upload ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('Upload ' . $module, $permissions))
                                                                     <div class="toggle-check">
-                                                                        <div class="form-check form-switch">
+                                                                        <div class="form-check">
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 @if (in_array($key, $role->permissions()->pluck('id')->toArray())) checked @endif
                                                                                 role="switch" name="permissions[]"
@@ -192,7 +205,7 @@
                                                             @if (in_array('Download ' . $module, (array) $permissions))
                                                                 @if ($key = array_search('Download ' . $module, $permissions))
                                                                     <div class="toggle-check">
-                                                                        <div class="form-check form-switch">
+                                                                        <div class="form-check">
                                                                             <input class="form-check-input" type="checkbox"
                                                                                 @if (in_array($key, $role->permissions()->pluck('id')->toArray())) checked @endif
                                                                                 role="switch" name="permissions[]"
