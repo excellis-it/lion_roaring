@@ -1,3 +1,6 @@
+@php
+    use App\Helpers\Helper;
+@endphp
 @if (isset($is_chat))
     <div class="row align-items-center">
         <div class="col-xxl-3"></div>
@@ -85,8 +88,12 @@
                                 <br>
                             @endif
 
+                            @php
+
+                            @endphp
+
                             @if ($chat->message != null)
-                                {!! nl2br($chat->message) !!}
+                                {!! Helper::formatChatMessage($chat->message) !!}
                             @endif
                         </p>
                         @if ($chat->sender_id == Auth::user()->id)
@@ -126,6 +133,8 @@
 <p class="" style="color: black"></p>
 @endif
 </div>
+
+
 
 <!-- File name display -->
 <div id="file-name-display"

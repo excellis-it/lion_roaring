@@ -65,6 +65,7 @@ use App\Http\Controllers\User\SubscriptionController;
 use App\Http\Controllers\User\TeamChatController;
 use App\Http\Controllers\User\TeamController;
 use App\Http\Controllers\User\TopicController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Models\Category;
 use App\Models\EcomCmsPage;
 use Illuminate\Routing\RouteRegistrar;
@@ -108,6 +109,9 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::get('/', [ProfileController::class, 'password'])->name('admin.password'); // password change
         Route::post('/update', [ProfileController::class, 'passwordUpdate'])->name('admin.password.update'); // password update
     });
+
+    Route::get('settings', [SettingsController::class, 'edit'])->name('admin.settings.edit');
+    Route::post('settings', [SettingsController::class, 'update'])->name('admin.settings.update');
 
     // admin index
     Route::prefix('detail')->group(function () {

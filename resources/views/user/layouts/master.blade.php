@@ -334,6 +334,10 @@
 
                                     console.log('key is : ' + event.key);
 
+                                    var message = $("#MessageInput").emojioneArea()[0].emojioneArea
+                                        .getText();
+                                    console.log('message is ' + message);
+
                                     if (event.key === 'Enter') {
                                         //
                                     } else {
@@ -342,6 +346,17 @@
                                             $("#MessageForm").submit();
                                         }
                                     }
+
+                                    // var formattedMessage = message.replace(
+                                    //     /\b[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}\b/g,
+                                    //     function(word) {
+                                    //         var url = word.startsWith('http') ? word :
+                                    //             'http://' + word; // Add http:// if not present
+                                    //         return `<a href="${url}" target="_blank">${word}</a>`;
+                                    //     });
+
+                                    // var message = $("#MessageInput").emojioneArea()[0].emojioneArea
+                                    //     .setText(formattedMessage);
 
 
 
@@ -378,6 +393,19 @@
                     // Get the file data
                     var fileInput = $("#file2")[0];
                     var file = fileInput.files[0]; // The selected file
+
+                    // // Format the message and replace words containing a dot with links
+                    // var formattedMessage = message.replace(
+                    //     /\b[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}\b/g,
+                    //     function(word) {
+                    //         var link = word.startsWith('http') ? word : 'https://' +
+                    //             word; // Add http:// if not present
+                    //         return `<a class="text-decoration-underline" href="${link}" target="_blank">${word}</a>`;
+                    //     }
+                    // );
+
+                    // // Set the formatted message back into the text area
+                    // $("#MessageInput").emojioneArea()[0].emojioneArea.setText(formattedMessage);
 
                     // Create a FormData object to send both message and file
                     var formData = new FormData();

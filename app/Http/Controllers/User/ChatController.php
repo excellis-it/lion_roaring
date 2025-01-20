@@ -10,6 +10,7 @@ use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
+use App\Helpers\Helper;
 
 class ChatController extends Controller
 {
@@ -140,9 +141,12 @@ class ChatController extends Controller
             })->orWhere(function ($query) use ($request) {
                 $query->where('sender_id', $request->reciver_id)->where('reciver_id', $request->sender_id);
             })->count();
-            $themessage = $request->message;
+
+            $input_message = Helper::formatChatSendMessage($request->message);
+
+            $themessage = $input_message;
             if (!empty($themessage)) {
-                $themessage = $request->message;
+                $themessage = $input_message;
             } else {
                 $themessage = ' ';
             }

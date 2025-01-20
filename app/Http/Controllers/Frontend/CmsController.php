@@ -21,6 +21,10 @@ use App\Models\PrincipleBusinessImage;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use App\Mail\NewsletterSubscription;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactUsForm;
+use App\Models\SiteSetting;
 
 class CmsController extends Controller
 {
@@ -124,6 +128,18 @@ class CmsController extends Controller
             $newsletter->email = $request->newsletter_email;
             $newsletter->message = $request->newsletter_message;
             $newsletter->save();
+
+            $adminEmail = SiteSetting::first()->SITE_CONTACT_EMAIL;
+            $mailData = [
+                'name' => $newsletter->full_name,
+                'email' => $newsletter->email,
+                'message' => $newsletter->message,
+            ];
+
+            // Send mail using Mailable
+            Mail::to($adminEmail)->send(new NewsletterSubscription($mailData));
+
+
             return response()->json(['message' => 'Thank you for subscribing to our newsletter', 'status' => true]);
         }
     }
@@ -149,6 +165,20 @@ class CmsController extends Controller
             }
             $contact->message = $request->message;
             $contact->save();
+
+            $contactData = [
+                'first_name' => $contact->first_name,
+                'last_name' => $contact->last_name,
+                'email' => $contact->email,
+                'phone' => $contact->phone,
+                'message' => $contact->message,
+            ];
+
+            // Send email to admin
+            $adminEmail = SiteSetting::first()->SITE_CONTACT_EMAIL;
+            Mail::to($adminEmail)->send(new ContactUsForm($contactData));
+
+
             session()->flash('success', 'Thank you for contacting us');
             return response()->json(['message' => 'Thank you for contacting us', 'status' => true]);
         }

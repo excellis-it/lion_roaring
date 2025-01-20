@@ -755,16 +755,17 @@ class TeamChatController extends Controller
             $team_chat->team_id = $request->team_id;
             $team_chat->user_id = auth()->id();
 
+            $input_message = Helper::formatChatSendMessage($request->message);
             // Handle file or message content
             if ($request->file) {
-                if (!empty($request->message)) {
-                    $team_chat->message = $request->message;
+                if (!empty($input_message)) {
+                    $team_chat->message = $input_message;
                 } else {
                     $team_chat->message = ' ';
                 }
                 $team_chat->attachment = $this->imageUpload($request->file('file'), 'team-chat');
             } else {
-                $team_chat->message = $request->message;
+                $team_chat->message = $input_message;
                 $team_chat->attachment = '';
             }
             $team_chat->save();
