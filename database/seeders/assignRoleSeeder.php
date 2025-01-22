@@ -16,7 +16,7 @@ class assignRoleSeeder extends Seeder
     {
         $roles = [
             [
-                'name' => 'ADMIN',
+                'name' => 'SUPER ADMIN',
                 'guard_name' => 'web',
             ],
             [
@@ -36,6 +36,5 @@ class assignRoleSeeder extends Seeder
         foreach ($roles as $key => $value) {
             Role::create($value);
         }
-
     }
 }

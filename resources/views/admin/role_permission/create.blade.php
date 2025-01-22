@@ -16,10 +16,10 @@
                     <form action="{{ route('admin.roles.store') }}" method="POST">
                         @csrf
                         <div class="row justify-content-between">
-                            <div class="col-md-12">
+                            <div class="col-md-4">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                        <label for="floatingInputValue">Name*</label>
+                                        <label for="floatingInputValue">Role Name*</label>
                                         <input type="text" class="form-control" id="floatingInputValue" name="role_name"
                                             value="{{ old('role_name') }}" placeholder="Enter Role Name">
                                         @if ($errors->has('role_name'))
@@ -59,7 +59,7 @@
                                                 'Member Privacy Policy Page',
                                                 'PMA Terms Page',
                                                 'All Users',
-                                                'Members Access'
+                                                'Members Access',
                                             ];
 
                                         @endphp
@@ -67,7 +67,7 @@
                                             <thead>
                                                 <tr>
                                                     <th style="width: 50px; text-align: center;">
-                                                        <div class="custom-control custom-checkbox">
+                                                        <div class="custom-checkbox">
                                                             <input type="checkbox" id="checkAll"
                                                                 class=" js-check-selected-row">
                                                         </div>
@@ -85,7 +85,22 @@
                                             <tbody class="list">
                                                 @foreach ($modules as $new => $module)
                                                     <tr>
-                                                        <td></td>
+                                                        <td style="width: 50px; text-align: center;">
+                                                            @if (in_array('Manage ' . $module, (array) $permissions))
+                                                                @if ($key = array_search('Manage ' . $module, $permissions))
+                                                                    <div class="toggle-check">
+                                                                        <div class="form-check form-switch">
+                                                                            <input class="form-check-input manage-cl"
+                                                                                type="checkbox" role="switch"
+                                                                                name="permissions[]"
+                                                                                value="{{ $key }}"
+                                                                                data-id="{{ $new }}"
+                                                                                id="flexSwitchCheckChecked">
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+                                                            @endif
+                                                        </td>
                                                         <td>{{ ucfirst($module) }} </td>
                                                         <td>
                                                             @if (in_array('Manage ' . $module, (array) $permissions))
@@ -212,14 +227,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row justify-content-between">
+                        <div class="row d-flex justify-content-end">
 
-                            <div class="col-xl-12">
-                                <div class="btn-1">
-                                    <button type="submit">Create</button>
-                                    <a href="{{route('admin.roles.index')}}"> <button type="button">Cancel</button></a>
-                                </div>
+
+                            <div class="btn-1 p-3">
+                                <button type="submit">Create</button>
+                                <a href="{{ route('admin.roles.index') }}"> <button type="button">Cancel</button></a>
                             </div>
+
                         </div>
                 </div>
                 </form>

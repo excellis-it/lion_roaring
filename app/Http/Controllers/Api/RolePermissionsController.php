@@ -12,7 +12,7 @@ use Spatie\Permission\Models\Role;
 
 /**
  * @group Role Permission
- * 
+ *
  * @authenticated
  */
 
@@ -364,16 +364,16 @@ class RolePermissionsController extends Controller
     {
         try {
             // Check if the user has the necessary roles
-            if (Auth::user()->hasRole('ADMIN') || Auth::user()->hasRole('LEADER')) {
+            if (Auth::user()->hasRole('SUPER ADMIN') || Auth::user()->hasRole('LEADER')) {
                 // If the user is a LEADER, fetch only the 'MEMBER' roles
                 if (Auth::user()->hasRole('LEADER')) {
                     $roles = Role::where('name', 'MEMBER')
                         ->with('permissions') // Load permissions for the 'MEMBER' role
                         ->get();
                 } else {
-                    // If the user is an ADMIN, fetch all roles except 'ADMIN' and load their permissions
-                    $roles = Role::where('name', '!=', 'ADMIN')
-                        ->with('permissions') // Load permissions for all roles except 'ADMIN'
+                    // If the user is an SUPER ADMIN, fetch all roles except 'SUPER ADMIN' and load their permissions
+                    $roles = Role::where('name', '!=', 'SUPER ADMIN')
+                        ->with('permissions') // Load permissions for all roles except 'SUPER ADMIN'
                         ->get();
                 }
 
@@ -616,7 +616,7 @@ class RolePermissionsController extends Controller
     {
         try {
             // Check if the user has the necessary roles
-            if (Auth::user()->hasRole('ADMIN') || Auth::user()->hasRole('LEADER')) {
+            if (Auth::user()->hasRole('SUPER ADMIN') || Auth::user()->hasRole('LEADER')) {
                 // Decrypt the role ID
                 $id = $id;
                 // Find the role by ID

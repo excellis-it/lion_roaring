@@ -18,7 +18,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             $categories = Category::orderBy('id', 'desc')->paginate(10);
             return view('user.category.list', compact('categories'));
         } else {
@@ -58,7 +58,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             return view('user.category.create');
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -117,7 +117,7 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             $category = Category::findOrFail($id);
             return view('user.category.edit', compact('category'));
         } else {
@@ -134,7 +134,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             $category = Category::findOrFail($id);
 
             $request->validate([

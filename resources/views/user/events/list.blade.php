@@ -246,7 +246,7 @@
                     eventClick: function(info) {
                         var event = info.event;
                         var permission = @json(auth()->user()->can('Edit Event'));
-                        var admin = @json(auth()->user()->hasRole('ADMIN'));
+                        var admin = @json(auth()->user()->hasRole('SUPER ADMIN'));
                         var currentUser = {{ auth()->user()->id }};
 
                         // Check if the user has permission or is an admin
@@ -277,9 +277,9 @@
                                                 .remove(); // Remove event from calendar
                                             $('#eventModal').modal('hide');
                                             socket.emit(
-                                            'event_store_update_delete', {
-                                                'message': 'Event updated'
-                                            });
+                                                'event_store_update_delete', {
+                                                    'message': 'Event updated'
+                                                });
                                         },
                                         error: function() {
                                             alert('Failed to delete event.');

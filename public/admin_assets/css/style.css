@@ -6846,8 +6846,8 @@ body.layout-3 .breadcrumb-style {
     margin-top: 10px;
 }
 
-.main-sidebar .sidebar-menu li .menu-toggle:before {
-    content: "\f0c2";
+/* .main-sidebar .sidebar-menu li .menu-toggle:before {
+    content: "\f0c8";
     font-family: "Phosphor" !important;
     font-style: normal !important;
     font-weight: normal !important;
@@ -6856,15 +6856,42 @@ body.layout-3 .breadcrumb-style {
     right: 0px;
     transform: scale(1);
     transition: all 0.3s;
+} */
+.main-sidebar .sidebar-menu li .menu-toggle:before {
+    content: ""; /* Remove the icon font content */
+    display: inline-block;
+    width: 20px; /* Adjust as needed */
+    height: 20px; /* Adjust as needed */
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0iIzAwMDAwMCIgdmlld0JveD0iMCAwIDI1NiAyNTYiPjxwYXRoIGQ9Ik0yMTMuNjYsMTAxLjY2bC04MCw4MGE4LDgsMCwwLDEtMTEuMzIsMGwtODAtODBBOCw4LDAsMCwxLDUzLjY2LDkwLjM0TDEyOCwxNjQuNjlsNzQuMzQtNzQuMzVhOCw4LDAsMCwxLDExLjMyLDExLjMyWiI+PC9wYXRoPjwvc3ZnPg==");
+    background-size: contain; /* Ensure the image fits properly */
+    background-repeat: no-repeat;
+    position: absolute;
+    right: 0px;
+    transform: scale(1);
+    transition: all 0.3s;
 }
 
-.main-sidebar .sidebar-menu li .menu-toggle:after {
+/* .main-sidebar .sidebar-menu li .menu-toggle:after {
     content: "\f0c5";
     font-family: "Phosphor" !important;
     font-style: normal !important;
     font-weight: normal !important;
     position: absolute;
     font-size: 20px;
+    right: 0px;
+    transform: scale(0);
+    transition: all 0.3s;
+} */
+
+.main-sidebar .sidebar-menu li .menu-toggle:after {
+    content: ""; /* Remove the icon font content */
+    display: inline-block;
+    width: 20px; /* Adjust as needed */
+    height: 20px; /* Adjust as needed */
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0iIzAwMDAwMCIgdmlld0JveD0iMCAwIDI1NiAyNTYiPjxwYXRoIGQ9Ik0yMTMuNjYsMTY1LjY2YTgsOCwwLDAsMS0xMS4zMiwwTDEyOCw5MS4zMSw1My42NiwxNjUuNjZhOCw4LDAsMCwxLTExLjMyLTExLjMybDgwLTgwYTgsOCwwLDAsMSwxMS4zMiwwbDgwLDgwQTgsOCwwLDAsMSwyMTMuNjYsMTY1LjY2WiI+PC9wYXRoPjwvc3ZnPg==");
+    background-size: contain; /* Ensure the image fits properly */
+    background-repeat: no-repeat;
+    position: absolute;
     right: 0px;
     transform: scale(0);
     transition: all 0.3s;
@@ -12390,5 +12417,12 @@ a.dt-button {
     cursor: pointer;
 }
 
+.text-blue{
+    color: royalblue;
+}
+
+.table-center-align .table td, .table-center-align .table th{
+    vertical-align: middle !important;
+}
 
 /*--- Profile ---- */

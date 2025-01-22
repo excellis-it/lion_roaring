@@ -15,9 +15,9 @@ class EcclessiaController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage All Users')) {
-            $roles = Role::where('name', '!=', 'ADMIN')->whereIn('type', [1, 3])->get();
-            $ecclessias = User::whereHas('roles', function($query){
-                $query->whereIn('type', [1, 3])->where('name', '!=', 'ADMIN');
+            $roles = Role::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [1, 3])->get();
+            $ecclessias = User::whereHas('roles', function ($query) {
+                $query->whereIn('type', [1, 3])->where('name', '!=', 'SUPER ADMIN');
             })->where('id', '!=', auth()->user()->id)->orderBy('id', 'desc')->get();
             $countries = Country::orderBy('name', 'asc')->get();
             return view('admin.ecclessia.list')->with(compact('ecclessias', 'countries', 'roles'));
@@ -78,7 +78,7 @@ class EcclessiaController extends Controller
         if (auth()->user()->can('Edit All Users')) {
             $eclessia = User::where('id', $id)->first();
             $countries = Country::orderBy('name', 'asc')->get();
-            $roles = Role::where('name', '!=', 'ADMIN')->whereIn('type', [1, 3])->get();
+            $roles = Role::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [1, 3])->get();
             $edit = true;
             return response()->json(['data' => view('admin.ecclessia.edit', compact('eclessia', 'countries', 'edit', 'roles'))->render()]);
         } else {

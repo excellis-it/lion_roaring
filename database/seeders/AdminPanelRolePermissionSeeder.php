@@ -253,8 +253,8 @@ class AdminPanelRolePermissionSeeder extends Seeder
             $memberRole->givePermissionTo([$profilePermission, $passwordPermission]);
         }
 
-        // Add all permissions to the ADMIN role without removing existing ones
-        $adminRole = Role::where('name', 'ADMIN')->first();
+        // Add all permissions to the SUPER ADMIN role without removing existing ones
+        $adminRole = Role::where('name', 'SUPER ADMIN')->first();
         if ($adminRole) {
             $adminRole->givePermissionTo(Permission::all());
         }

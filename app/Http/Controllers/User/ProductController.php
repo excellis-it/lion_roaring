@@ -19,7 +19,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             $products = Product::orderBy('id', 'desc')->paginate(10);
             return view('user.product.list', compact('products'));
         } else {
@@ -63,7 +63,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             $categories = Category::orderBy('id', 'desc')->get();
             return view('user.product.create')->with('categories', $categories);
         } else {
@@ -159,7 +159,7 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             $product = Product::findOrFail($id);
             $categories = Category::orderBy('id', 'desc')->get();
             return view('user.product.edit', compact('product', 'categories'));
@@ -177,7 +177,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             $request->validate([
                 'category_id' => 'required|numeric|exists:categories,id',
                 'name' => 'required|string|max:255',
@@ -258,7 +258,7 @@ class ProductController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             $product = Product::findOrFail($id);
             $product->delete();
             return redirect()->route('products.index')->with('message', 'Product deleted successfully!');

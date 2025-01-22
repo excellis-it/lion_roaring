@@ -17,7 +17,7 @@ class User
     public function handle(Request $request, Closure $next)
     {
         if (auth()->check() && auth()->user()->status == 1) {
-            $user = auth()->user()->roles()->whereIn('type', [1, 2])->first();
+            $user = auth()->user()->roles()->whereIn('type', [1, 2, 3])->first();
             if ($user) {
                 return $next($request);
             } else {

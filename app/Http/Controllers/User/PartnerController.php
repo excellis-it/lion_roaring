@@ -30,9 +30,9 @@ class PartnerController extends Controller
     public function index()
     {
         if (Auth::user()->can('Manage Partners')) {
-            // if (Auth::user()->hasRole('ADMIN')) {
+            // if (Auth::user()->hasRole('SUPER ADMIN')) {
             $partners = User::whereHas('roles', function ($q) {
-                $q->whereNotIn('type', ['3','1']);
+                $q->whereIn('type', ['3', '1', '2']);
             })->where('is_accept', 1)->orderBy('id', 'desc')->paginate(15);
             // } else {
             //     $partners = User::orderBy('id', 'desc')->paginate(15);
@@ -51,7 +51,14 @@ class PartnerController extends Controller
     public function create()
     {
         if (Auth::user()->can('Create Partners')) {
-            $roles = Role::whereNotIn('type', [1, 3])->get();
+            // $roles = Role::whereNotIn('type', [1, 3])->get();
+            if (Auth::user()->getFirstRoleType() == 1) {
+                $roles = Role::whereIn('type', [2, 3])->get();
+            } elseif (Auth::user()->getFirstRoleType() == 3) {
+                $roles = Role::whereIn('type', [2])->get();
+            } else {
+                $roles = Role::whereIn('type', [2])->get();
+            }
             $eclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
             $countries = Country::orderBy('name', 'asc')->get();
             return view('user.partner.create')->with(compact('roles', 'eclessias', 'countries'));
@@ -86,14 +93,14 @@ class PartnerController extends Controller
             'zip' => 'required',
             'address2' => 'nullable',
             'phone' => 'required',
-        ],[
+        ], [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
         ]);
 
-          $phone_number = $request->full_phone_number;
-          $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
+        $phone_number = $request->full_phone_number;
+        $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
 
-          $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->count();
+        $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->count();
         if ($check > 0) {
             return redirect()->back()->withErrors(['phone' => 'Phone number already exists'])->withInput();
         }
@@ -198,7 +205,7 @@ class PartnerController extends Controller
                 'address2' => 'nullable',
                 'password' => ['nullable', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
                 'confirm_password' => 'nullable|min:8|same:password',
-            ],[
+            ], [
                 'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             ]);
 
@@ -275,7 +282,7 @@ class PartnerController extends Controller
                 $partners->orderBy($sort_by, $sort_type);
             }
 
-            // Exclude users with the "ADMIN" role
+            // Exclude users with the "SUPER ADMIN" role
             $partners->whereDoesntHave('roles', function ($q) {
                 $q->where('type', 1)->orWhere('type', 3);
             });
@@ -284,7 +291,6 @@ class PartnerController extends Controller
 
             return response()->json(['data' => view('user.partner.table', compact('partners'))->render()]);
         }
-
     }
 
 
