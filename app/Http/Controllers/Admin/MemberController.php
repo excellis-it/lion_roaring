@@ -17,14 +17,14 @@ class MemberController extends Controller
     {
         if (Auth::user()->can('Manage Members Access')) {
             if (Auth::user()->hasRole('ECCLESIA')) {
-                // Exclude ADMIN and ECCLESIA roles
+                // Exclude SUPER ADMIN and ECCLESIA roles
                 $partners = User::whereHas('roles', function ($q) {
-                    $q->whereNotIn('name', ['ADMIN', 'ECCLESIA']);
+                    $q->whereNotIn('name', ['SUPER ADMIN', 'ECCLESIA']);
                 })->where('ecclesia_id', auth()->id())->orderBy('id', 'desc')->paginate(15);
             } else {
-                // Exclude ADMIN and ECCLESIA roles, and filter by ecclesia_id
+                // Exclude SUPER ADMIN and ECCLESIA roles, and filter by ecclesia_id
                 $partners = User::whereHas('roles', function ($q) {
-                    $q->whereNotIn('name', ['ADMIN', 'ECCLESIA']);
+                    $q->whereNotIn('name', ['SUPER ADMIN', 'ECCLESIA']);
                 })
 
                     ->orderBy('id', 'desc')
@@ -68,12 +68,12 @@ class MemberController extends Controller
                 $partners->orderBy($sort_by, $sort_type);
             }
 
-            // Exclude users with the "ADMIN" role
+            // Exclude users with the "SUPER ADMIN" role
             $partners->whereDoesntHave('roles', function ($q) {
-                $q->where('name', 'ADMIN')->orWhere('name', 'ECCLESIA');
+                $q->where('name', 'SUPER ADMIN')->orWhere('name', 'ECCLESIA');
             });
 
-            if (Auth::user()->hasRole('ADMIN')) {
+            if (Auth::user()->hasRole('SUPER ADMIN')) {
                 $partners = $partners->paginate(15);
             } else {
                 $partners = $partners->where('ecclesia_id', auth()->id())->paginate(15);

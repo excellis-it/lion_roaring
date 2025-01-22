@@ -8,6 +8,18 @@
                         src="{{ asset('admin_assets/img/logo.png') }}" /></span> </a>
             <a href="{{ route('admin.dashboard') }}"><span class="logo-fm"><img
                         src="{{ asset('admin_assets/img/logo_fm.png') }}" /></span> </a>
+            <h5>
+                {{-- @if (Auth::user()->hasRole('SUPER ADMIN'))
+                    Super Admin
+                @elseif (Auth::user()->hasRole('ECCLESIA'))
+                    ECCLESIA - Admin
+                @elseif (Auth::user()->hasRole('TR LEADER'))
+                    TR LEADER - Admin
+                @elseif (Auth::user()->hasRole('Sub Admin'))
+                    Sub Admin
+                @endif --}}
+                {{ Auth::user()->getRoleNames()->first() }}
+            </h5>
         </div>
         <ul class="sidebar-menu">
             <li class="menu-header"></li>
@@ -33,22 +45,49 @@
                             <li class="{{ Request::is('admin/password*') ? 'active' : ' ' }}"><a class="nav-link"
                                     href="{{ route('admin.password') }}">Change Password</a></li>
                         @endif
-                        @if (Gate::check('Manage Admin List'))
+                        {{-- @if (Gate::check('Manage Admin List'))
                             <li class="{{ Request::is('admin/password*') ? 'active' : ' ' }}"><a class="nav-link"
                                     href="{{ route('admin.index') }}">Admin List</a></li>
-                        @endif
+                        @endif --}}
 
                     </ul>
                 </li>
             @endif
-            @if (Auth::user()->hasRole('ADMIN') || Auth::user()->hasRole('LEADER'))
+
+            {{-- @if (Auth::user()->hasRole('SUPER ADMIN'))
+                @if (Gate::check('Manage Admin List'))
+                    <li class="dropdown {{ Request::is('admin/detail*') ? 'active' : ' ' }}">
+                        <a href="{{ route('admin.index') }}">
+                            <i class="ph ph-identification-badge"></i>
+                            <span>Admin List</span>
+                        </a>
+                    </li>
+                @endif
+            @endif --}}
+            {{-- @if (Auth::user()->hasRole('SUPER ADMIN') || Auth::user()->hasRole('LEADER'))
                 <li class="dropdown {{ Request::is('admin/roles*') ? 'active' : ' ' }}">
                     <a href="{{ route('admin.roles.index') }}">
                         <i class="ph ph-shield-check"></i>
                         <span>Role Permission</span>
                     </a>
                 </li>
-            @endif
+            @endif --}}
+
+            {{-- @if (Auth::user()->getFirstRoleType() == 1)
+                <li class="dropdown {{ Request::is('admin/roles*') ? 'active' : ' ' }}">
+                    <a href="{{ route('admin.roles.index') }}">
+                        <i class="ph ph-shield-check"></i>
+                        <span>Admin Role Permission</span>
+                    </a>
+                </li>
+            @elseif(Auth::user()->getFirstRoleType() == 3)
+                <li class="dropdown {{ Request::is('admin/roles*') ? 'active' : ' ' }}">
+                    <a href="{{ route('admin.roles.index') }}">
+                        <i class="ph ph-shield-check"></i>
+                        <span>Role Permission</span>
+                    </a>
+                </li>
+            @endif --}}
             {{-- <li class="dropdown">
                 <a href="javascript:void(0);"
                     class="menu-toggle nav-link has-dropdown {{ Request::is('admin/customers*') ? 'active' : ' ' }}">
@@ -334,21 +373,22 @@
             @endif
 
 
+            @if (Auth::user()->getFirstRoleType() == 1)
+                <li class="dropdown">
+                    <a href="javascript:void(0);"
+                        class="menu-toggle nav-link has-dropdown {{ Request::is('admin/settings*') ? 'active' : ' ' }}">
+                        <i class="ph ph-package"></i>
+                        <span> Site Settings </span>
+                    </a>
+                    <ul class="dropdown-menu">
 
-            <li class="dropdown">
-                <a href="javascript:void(0);"
-                    class="menu-toggle nav-link has-dropdown {{ Request::is('admin/settings*') ? 'active' : ' ' }}">
-                    <i class="ph ph-package"></i>
-                    <span> Site Settings </span>
-                </a>
-                <ul class="dropdown-menu">
+                        <li class="{{ Request::is('admin/settings/') ? 'active' : ' ' }}">
+                            <a class="nav-link" href="{{ route('admin.settings.edit') }}">Settings</a>
+                        </li>
 
-                    <li class="{{ Request::is('admin/settings/') ? 'active' : ' ' }}">
-                        <a class="nav-link" href="{{ route('admin.settings.edit') }}">Settings</a>
-                    </li>
-
-                </ul>
-            </li>
+                    </ul>
+                </li>
+            @endif
 
 
         </ul>

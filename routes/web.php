@@ -116,6 +116,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     // admin index
     Route::prefix('detail')->group(function () {
         Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+        Route::get('/add', [AdminController::class, 'add'])->name('admin.add');
         Route::post('/store', [AdminController::class, 'store'])->name('admin.store');
         Route::post('/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
         Route::get('/delete/{id}', [AdminController::class, 'delete'])->name('admin.delete');

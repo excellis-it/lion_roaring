@@ -2344,3 +2344,11 @@ section {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.text-blue{
+    color: #643271;
+}
+
+.table-center-align .table td, .table-center-align .table th{
+    vertical-align: middle !important;
+}

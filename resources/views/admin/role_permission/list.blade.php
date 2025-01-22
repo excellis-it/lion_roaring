@@ -19,11 +19,12 @@
     </style>
 @endpush
 @section('head')
-    Role Permission
+    {{ Auth::user()->getFirstRoleType() == 1 ? 'Admin' : '' }} Role Permission
 @endsection
 @section('create_button')
     <a href="{{ route('admin.roles.create') }}" id="create-admin" class="btn btn-primary" data-bs-toggle="modal"
-        data-bs-target="#add_admin"> <i class="ph ph-plus"></i>Add Role Permission</a>
+        data-bs-target="#add_admin"> <i class="ph ph-plus"></i>Add {{ Auth::user()->getFirstRoleType() == 1 ? 'Admin' : '' }}
+        Role Permission</a>
 @endsection
 @section('content')
     <section id="loading">
@@ -32,7 +33,7 @@
     <div class="main-content">
         <div class="inner_page">
 
-            <div class="card table_sec stuff-list-table">
+            <div class="card table_sec stuff-list-table table-center-align">
                 <div class="row justify-content-end">
                     <div class="col-md-6">
                         <div class="row g-1 justify-content-end">
@@ -56,7 +57,7 @@
                         <thead>
                             <tr>
                                 <th>ID (#)</th>
-                                <th>Role</th>
+                                <th>{{ Auth::user()->getFirstRoleType() == 1 ? 'Admin' : '' }} Role</th>
                                 <th>Permissions</th>
                                 <th></th>
                             </tr>
@@ -67,10 +68,26 @@
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
                                         <td> {{ $role->name }}</td>
-                                        <td>
+                                        {{-- <td>
                                             @foreach ($role->permissions()->where('type', 2)->get() as $permission)
                                                 <span class="round-btn">{{ $permission->name }}</span>
                                             @endforeach
+                                        </td> --}}
+                                        <td>
+                                            @if (Auth::user()->getFirstRoleType() == 1)
+                                                <button type="button" class="btn text-blue btn-view-permission"
+                                                    data-permissions="{{ $role->permissions()->where('type', 2)->get() }}"
+                                                    data-role-name="{{ $role->name }}">
+                                                    View Permission
+                                                </button>
+                                            @else
+                                                <button type="button" class="btn text-blue btn-view-permission"
+                                                    data-permissions="{{ $role->permissions()->where('type', 1)->get() }}"
+                                                    data-role-name="{{ $role->name }}">
+                                                    View Permission
+                                                </button>
+                                            @endif
+
                                         </td>
                                         <td>
                                             <div class="edit-1 d-flex align-items-center justify-content-center">
@@ -96,33 +113,88 @@
                         </tbody>
                     </table>
                 </div>
+
+
+
+            </div>
+
+            <div class="card card-body container role_card" style="display: none;">
+                <h5 class="mt-1" id="Role_Name"></h5>
+                <div class="row container mt-1" id="permissions-container">
+
+
+                </div>
             </div>
 
         </div>
-    </div>
-@endsection
+    @endsection
 
-@push('scripts')
-    <script>
-        $(document).on('click', '#delete', function(e) {
-            swal({
-                    title: "Are you sure?",
-                    text: "To delete this Role.",
-                    type: "warning",
-                    confirmButtonText: "Yes",
-                    showCancelButton: true
-                })
-                .then((result) => {
-                    if (result.value) {
-                        window.location = $(this).data('route');
-                    } else if (result.dismiss === 'cancel') {
-                        swal(
-                            'Cancelled',
-                            'Your stay here :)',
-                            'error'
-                        )
-                    }
-                })
-        });
-    </script>
-@endpush
+    @push('scripts')
+        <script>
+            $(document).on('click', '#delete', function(e) {
+                swal({
+                        title: "Are you sure?",
+                        text: "To delete this Role.",
+                        type: "warning",
+                        confirmButtonText: "Yes",
+                        showCancelButton: true
+                    })
+                    .then((result) => {
+                        if (result.value) {
+                            window.location = $(this).data('route');
+                        } else if (result.dismiss === 'cancel') {
+                            swal(
+                                'Cancelled',
+                                'Your stay here :)',
+                                'error'
+                            )
+                        }
+                    })
+            });
+        </script>
+        <script>
+            $(document).ready(function() {
+                $(".btn-view-permission").click(function(e) {
+                    e.preventDefault();
+                    $(".role_card").show();
+                    var permissions = $(this).data('permissions');
+                    var role_name = $(this).data('role-name');
+                    console.log(permissions);
+                    $("#Role_Name").text(role_name);
+
+                    var col1 = $('<div class="col-6"></div>');
+                    var col2 = $('<div class="col-6"></div>');
+
+                    // Create an unordered list to hold the permissions for each column
+                    var permissionsList1 = $('<ul></ul>');
+                    var permissionsList2 = $('<ul></ul>');
+
+                    // Divide the permissions list into two arrays
+                    var half = Math.ceil(permissions.length / 2); // To split the list into two equal parts
+                    var firstHalf = permissions.slice(0, half);
+                    var secondHalf = permissions.slice(half);
+
+                    // Add permissions to the first column
+                    $.each(firstHalf, function(index, permission) {
+                        var listItem = $('<li></li>').text(permission.name);
+                        permissionsList1.append(listItem);
+                    });
+
+                    // Add permissions to the second column
+                    $.each(secondHalf, function(index, permission) {
+                        var listItem = $('<li></li>').text(permission.name);
+                        permissionsList2.append(listItem);
+                    });
+
+                    // Append the lists to the respective columns
+                    col1.append(permissionsList1);
+                    col2.append(permissionsList2);
+
+                    // Append the columns to the container row, replacing the content
+                    $('#permissions-container').html(col1).append(col2);
+
+                });
+
+            });
+        </script>
+    @endpush

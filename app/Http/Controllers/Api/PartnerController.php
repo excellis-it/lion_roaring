@@ -150,7 +150,7 @@ class PartnerController extends Controller
 
             // Build the query with search filters (name, email, phone)
             $partners = User::whereHas('roles', function ($q) {
-                $q->where('name', '!=', 'ADMIN');
+                $q->where('name', '!=', 'SUPER ADMIN');
             })
                 ->when($searchQuery, function ($query) use ($searchQuery) {
                     $query->where('first_name', 'like', "%{$searchQuery}%")
@@ -201,7 +201,7 @@ class PartnerController extends Controller
     public function loadCreateData()
     {
         try {
-            $roles = Role::where('name', '!=', 'ADMIN')->get();
+            $roles = Role::where('name', '!=', 'SUPER ADMIN')->get();
             $ecclesias = Ecclesia::orderBy('id', 'desc')->get();
             $countries = Country::orderBy('name', 'asc')->get();
 

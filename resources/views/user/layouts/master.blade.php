@@ -1168,7 +1168,7 @@
                 let socket_port = '3000';
                 let socket = io(ip_address + ':' + socket_port);
                 var sender_id = {{ auth()->user()->id }};
-                @if (auth()->user()->hasRole('ADMIN'))
+                @if (auth()->user()->hasRole('SUPER ADMIN'))
                     var role = 'admin';
                 @else
                     var role = 'user';

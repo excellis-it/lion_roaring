@@ -33,7 +33,7 @@ class CmsController extends Controller
 
     public function dashboard()
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             $count['pages'] = EcomCmsPage::count() + 2;
             $count['newsletter'] = EcomNewsletter::count();
             return view('user.cms.dashboard')->with('count', $count);
@@ -44,7 +44,7 @@ class CmsController extends Controller
 
     public function list()
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             $pages = EcomCmsPage::get();
             return view('user.cms.list')->with('pages', $pages);
         } else {
@@ -55,7 +55,7 @@ class CmsController extends Controller
     public function cms($page)
     {
 
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             if ($page == 'home') {
                 $cms = EcomHomeCms::orderBy('id', 'desc')->first();
                 return view('user.cms.home_cms')->with('cms', $cms);
@@ -73,7 +73,7 @@ class CmsController extends Controller
 
     public function homeCmsUpdate(Request $request)
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             $request->validate([
                 'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'banner_title' => 'required|string',
@@ -118,7 +118,7 @@ class CmsController extends Controller
 
     public function footerUpdate(Request $request)
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             $request->validate([
                 'footer_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
                 'footer_title' => 'required|string',
@@ -166,7 +166,7 @@ class CmsController extends Controller
 
     public function create()
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             return view('user.cms.create');
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -176,7 +176,7 @@ class CmsController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
 
             $request->validate([
                 'page_name' => 'required|string',
@@ -207,7 +207,7 @@ class CmsController extends Controller
     public function update(Request $request, $id)
     {
         // dd($id);
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
 
             $request->validate([
                 'page_name' => 'required|string',
@@ -235,7 +235,7 @@ class CmsController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
             $cms = EcomCmsPage::find($id);
             $cms->delete();
             return redirect()->back()->with('message', 'CMS page deleted successfully');
