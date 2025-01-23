@@ -2352,3 +2352,17 @@ section {
 .table-center-align .table td, .table-center-align .table th{
     vertical-align: middle !important;
 }
+
+.member-table td
+{
+    border-bottom: 0px !important;
+    border-right: 0px !important;
+    border-left: 0px !important;
+}
+
+.member-table th
+{
+    border-bottom: 0px !important;
+    border-right: 0px !important;
+    border-left: 0px !important;
+}

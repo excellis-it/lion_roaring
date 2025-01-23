@@ -33,7 +33,7 @@ class PartnerController extends Controller
             // if (Auth::user()->hasRole('SUPER ADMIN')) {
             $partners = User::whereHas('roles', function ($q) {
                 $q->whereIn('type', ['3', '1', '2']);
-            })->where('is_accept', 1)->orderBy('id', 'desc')->paginate(15);
+            })->where('is_accept', 1)->whereNotIn('id', [Auth::user()->id])->orderBy('id', 'desc')->paginate(15);
             // } else {
             //     $partners = User::orderBy('id', 'desc')->paginate(15);
             // }
@@ -168,7 +168,14 @@ class PartnerController extends Controller
         if (Auth::user()->can('Edit Partners')) {
             $id = Crypt::decrypt($id);
             $partner = User::findOrFail($id);
-            $roles = Role::whereNotIn('type', [1, 3])->get();
+            // $roles = Role::whereNotIn('type', [1, 3])->get();
+            if (Auth::user()->getFirstRoleType() == 1) {
+                $roles = Role::whereIn('type', [2, 3])->get();
+            } elseif (Auth::user()->getFirstRoleType() == 3) {
+                $roles = Role::whereIn('type', [2])->get();
+            } else {
+                $roles = Role::whereIn('type', [2])->get();
+            }
             $ecclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
             $countries = Country::orderBy('name', 'asc')->get();
             return view('user.partner.edit', compact('partner', 'roles', 'ecclessias', 'countries'));

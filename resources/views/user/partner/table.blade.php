@@ -4,15 +4,18 @@
             <td>
                 {{ $partners->firstItem() + $key }}
             </td>
+            <td>{{ $partner->email }}</td>
             <td>{{ $partner->full_name }}</td>
-            <td>
+            <td>{{ $partner->getRoleNames()->first() }}</td>
+
+            {{-- <td>
                 {{ isset($partner->ecclesia) ? $partner->ecclesia->full_name : '' }}
             </td>
             <td>{{ $partner->user_name }}</td>
-            <td>{{ $partner->email }}</td>
+
             <td>{{ $partner->phone }}</td>
-            <td>{{ $partner->address }}</td>
-            <td>{{ $partner->getRoleNames()->first() }}</td>
+            <td>{{ $partner->address }}</td> --}}
+
             @if (auth()->user()->hasRole('SUPER ADMIN') ||
                     (auth()->user()->hasRole('LEADER') && auth()->user()->can('Edit Partners')))
                 <td>
@@ -30,15 +33,13 @@
                 <td>
                     <div class="d-flex">
                         @if (Auth::user()->can('Edit Partners'))
-                            <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}"
-                                class="edit_icon me-2">
+                            <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}" class="edit_icon me-2">
                                 <i class="ti ti-edit"></i>
                             </a>
                         @endif
 
                         @if (Auth::user()->can('View Partners'))
-                            <a href="{{ route('partners.show', Crypt::encrypt($partner->id)) }}"
-                                class="view_icon me-2">
+                            <a href="{{ route('partners.show', Crypt::encrypt($partner->id)) }}" class="view_icon me-2">
                                 <i class="ti ti-eye"></i>
                             </a>
                         @endif

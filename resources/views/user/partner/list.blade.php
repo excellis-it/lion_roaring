@@ -41,40 +41,46 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="table-responsive">
-                                    <table class="table align-middle bg-white color_body_text">
-                                        <thead class="color_head">
+                                <div class="table-responsive card card-body shadow p-0 mt-2">
+                                    <table
+                                        class="table align-middle color_body_text table-light table-borderless member-table">
+                                        <thead class="bg-light ">
                                             <tr>
-                                                <th>ID </th>
-                                                <th class="sorting" data-tippy-content="Sort by Name"
+                                                <th class="p-3"></th>
+                                                <th class="sorting p-3" data-tippy-content="Sort by Email"
+                                                    data-sorting_type="desc" data-column_name="email"
+                                                    style="cursor: pointer"> Email ID <span id="email_icon"></span></th>
+                                                <th class="sorting p-3" data-tippy-content="Sort by Name"
                                                     data-sorting_type="desc" data-column_name="name"
-                                                    style="cursor: pointer"> Name<span id="name_icon"><i
-                                                            class="fa fa-arrow-down"></i></span></th>
-                                                <th>
+                                                    style="cursor: pointer"> Name
+                                                    {{-- <span id="name_icon"><i
+                                                            class="fa fa-arrow-down"></i></span> --}}
+                                                </th>
+                                                <th class="p-3">Role</th>
+
+                                                {{-- <th>
                                                     Ecclesia
                                                 </th>
                                                 <th class="sorting" data-tippy-content="Sort by User Name"
                                                     data-sorting_type="desc" data-column_name="user_name"
                                                     style="cursor: pointer">User Name<span id="user_name_icon"></span></th>
-                                                <th class="sorting" data-tippy-content="Sort by Email"
-                                                    data-sorting_type="desc" data-column_name="email"
-                                                    style="cursor: pointer"> Email <span id="email_icon"></span></th>
+
                                                 <th class="sorting" data-tippy-content="Sort by Phone"
                                                     data-sorting_type="desc" data-column_name="phone"
                                                     style="cursor: pointer"> Phone <span id="phone_icon"></span></th>
                                                 <th class="sorting" data-tippy-content="Sort by Address"
                                                     data-sorting_type="desc" data-column_name="address"
-                                                    style="cursor: pointer"> Address <span id="address_icon"></span></th>
+                                                    style="cursor: pointer"> Address <span id="address_icon"></span></th> --}}
 
-                                                <th>Role</th>
+
                                                 @if (auth()->user()->hasRole('SUPER ADMIN') ||
                                                         (auth()->user()->hasRole('LEADER') && auth()->user()->can('Edit Partners')))
-                                                    <th>Status</th>
+                                                    <th class="p-3">Status</th>
                                                 @endif
                                                 @if (auth()->user()->can('Edit Partners') ||
                                                         auth()->user()->can('Delete Partners') ||
                                                         auth()->user()->can('View Partners'))
-                                                    <th></th>
+                                                    <th class="p-3"></th>
                                                 @endif
                                             </tr>
                                         </thead>

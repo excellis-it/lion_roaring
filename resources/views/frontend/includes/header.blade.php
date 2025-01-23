@@ -54,7 +54,7 @@
                                 $user = auth()
                                     ->user()
                                     ->roles()
-                                    ->whereIn('type', [1, 2])
+                                    ->whereIn('type', [1, 2, 3])
                                     ->first();
                             @endphp
                             @if ($user)
