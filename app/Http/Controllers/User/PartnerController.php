@@ -32,7 +32,7 @@ class PartnerController extends Controller
         if (Auth::user()->can('Manage Partners')) {
             // if (Auth::user()->hasRole('SUPER ADMIN')) {
             $partners = User::whereHas('roles', function ($q) {
-                $q->whereIn('type', ['3', '1', '2']);
+                $q->whereIn('type', ['3', '2']);
             })->where('is_accept', 1)->whereNotIn('id', [Auth::user()->id])->orderBy('id', 'desc')->paginate(15);
             // } else {
             //     $partners = User::orderBy('id', 'desc')->paginate(15);
