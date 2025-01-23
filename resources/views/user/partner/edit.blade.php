@@ -55,10 +55,9 @@
                                             <label>Password</label>
                                             <input type="password" class="form-control" name="password" id="password"
                                                 value="{{ old('password') }}" placeholder="">
-                                                <span class="eye-btn-1" id="eye-button-1">
-                                                    <i class="fa fa-eye-slash" aria-hidden="true"
-                                                        id="togglePassword"></i>
-                                                </span>
+                                            <span class="eye-btn-1" id="eye-button-1">
+                                                <i class="fa fa-eye-slash" aria-hidden="true" id="togglePassword"></i>
+                                            </span>
                                             @if ($errors->has('password'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('password') }}
@@ -70,12 +69,11 @@
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label position-relative">
                                             <label>Confirm Password</label>
-                                            <input type="password" class="form-control" name="confirm_password" id="confirm_password"
-                                                value="{{ old('confirm_password') }}" placeholder="">
-                                                <span class="eye-btn-1" id="eye-button-2">
-                                                    <i class="fa fa-eye-slash" aria-hidden="true"
-                                                        id="togglePassword"></i>
-                                                </span>
+                                            <input type="password" class="form-control" name="confirm_password"
+                                                id="confirm_password" value="{{ old('confirm_password') }}" placeholder="">
+                                            <span class="eye-btn-1" id="eye-button-2">
+                                                <i class="fa fa-eye-slash" aria-hidden="true" id="togglePassword"></i>
+                                            </span>
                                             @if ($errors->has('confirm_password'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('confirm_password') }}
@@ -107,7 +105,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-4 mb-2">
+                                    {{-- <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>Roles *</label>
                                             <select class="form-control" name="role">
@@ -125,7 +123,7 @@
                                             @endif
 
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     {{-- ecclesia_id --}}
                                     <div class="col-md-4 mb-2">
                                         <div class="box_label">
@@ -273,7 +271,35 @@
                                         </div>
                                     </div>
 
+
                                 </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <h5>Roles*</h5>
+
+
+                                            @foreach ($roles as $role)
+                                                <div class="form-check form-check-inline">
+                                                    <input id="data-roles-{{ $role->id }}"
+                                                        class="form-check-input data-roles" type="radio" name="role"
+                                                        value="{{ $role->name }}"
+                                                        data-permissions="{{ $role->permissions()->where('type', 1)->get() }}"
+                                                        required
+                                                        {{ $partner->getRoleNames()->first() == $role->name ? 'checked' : '' }}>
+                                                    <label class="form-check-label"
+                                                        for="data-roles-{{ $role->id }}">{{ $role->name }}</label>
+                                                </div>
+                                            @endforeach
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
                                 <div class="w-100 text-end d-flex align-items-center justify-content-end">
                                     <button type="submit" class="print_btn me-2">Update</button>
                                     <a class="print_btn print_btn_vv" href="{{ route('partners.index') }}">Cancel</a>
@@ -282,6 +308,14 @@
                             </div>
                         </div>
                     </form>
+
+
+                    <div class="card card-body shadow-lg mt-2">
+                        <h5 class="mt-0" id="Role_Name"></h5>
+                        <div class="row container mt-1" id="permissions-container">
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -289,18 +323,19 @@
 @endsection
 
 @push('scripts')
-<script>
-    $(document).ready(function() {
-        $('#eye-button-1').click(function() {
-            $('#password').attr('type', $('#password').is(':password') ? 'text' : 'password');
-            $(this).find('i').toggleClass('fa-eye-slash fa-eye');
+    <script>
+        $(document).ready(function() {
+            $('#eye-button-1').click(function() {
+                $('#password').attr('type', $('#password').is(':password') ? 'text' : 'password');
+                $(this).find('i').toggleClass('fa-eye-slash fa-eye');
+            });
+            $('#eye-button-2').click(function() {
+                $('#confirm_password').attr('type', $('#confirm_password').is(':password') ? 'text' :
+                    'password');
+                $(this).find('i').toggleClass('fa-eye-slash fa-eye');
+            });
         });
-        $('#eye-button-2').click(function() {
-            $('#confirm_password').attr('type', $('#confirm_password').is(':password') ? 'text' : 'password');
-            $(this).find('i').toggleClass('fa-eye-slash fa-eye');
-        });
-    });
-</script>
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput-jquery.min.js"></script>
@@ -325,7 +360,8 @@
             const dialCode = selectedCountry.dialCode;
             const exampleNumber = intlTelInputUtils.getExampleNumber(selectedCountry.iso2, 0, 0);
 
-            let maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
+            let maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils
+                .numberFormat.NATIONAL);
             maskNumber = maskNumber.replace('+' + dialCode + ' ', '');
 
             let mask;
@@ -349,7 +385,8 @@
                 const newDialCode = newSelectedCountry.dialCode;
                 const newExampleNumber = intlTelInputUtils.getExampleNumber(newSelectedCountry.iso2, 0, 0);
 
-                let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
+                let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry.iso2,
+                    intlTelInputUtils.numberFormat.NATIONAL);
                 newMaskNumber = newMaskNumber.replace('+' + newDialCode + ' ', '');
 
                 let newMask;
@@ -433,6 +470,109 @@
                     }
                 });
             }
+        });
+    </script>
+    {{-- <script>
+        $(document).ready(function() {
+            $(".data-roles").change(function(e) {
+                e.preventDefault();
+                var permissions = $(this).data('permissions');
+                var role_name = $(this).val();
+                console.log(permissions);
+                $("#Role_Name").text(role_name);
+
+                var col1 = $('<div class="col-6"></div>');
+                var col2 = $('<div class="col-6"></div>');
+
+                // Create an unordered list to hold the permissions for each column
+                var permissionsList1 = $('<ul></ul>');
+                var permissionsList2 = $('<ul></ul>');
+
+                // Divide the permissions list into two arrays
+                var half = Math.ceil(permissions.length / 2); // To split the list into two equal parts
+                var firstHalf = permissions.slice(0, half);
+                var secondHalf = permissions.slice(half);
+
+                // Add permissions to the first column
+                $.each(firstHalf, function(index, permission) {
+                    var listItem = $('<li></li>').text(permission.name);
+                    permissionsList1.append(listItem);
+                });
+
+                // Add permissions to the second column
+                $.each(secondHalf, function(index, permission) {
+                    var listItem = $('<li></li>').text(permission.name);
+                    permissionsList2.append(listItem);
+                });
+
+                // Append the lists to the respective columns
+                col1.append(permissionsList1);
+                col2.append(permissionsList2);
+
+                // Append the columns to the container row, replacing the content
+                $('#permissions-container').html(col1).append(col2);
+
+            });
+
+        });
+    </script> --}}
+    <script>
+        $(document).ready(function() {
+            // Function to populate permissions based on the selected role
+            function populatePermissions(roleName, permissions) {
+                $("#Role_Name").text(roleName);
+
+                var col1 = $('<div class="col-6"></div>');
+                var col2 = $('<div class="col-6"></div>');
+
+                // Create unordered lists for permissions
+                var permissionsList1 = $('<ul></ul>');
+                var permissionsList2 = $('<ul></ul>');
+
+                // Divide the permissions list into two arrays
+                var half = Math.ceil(permissions.length / 2); // Split into two halves
+                var firstHalf = permissions.slice(0, half);
+                var secondHalf = permissions.slice(half);
+
+                // Add permissions to the first column
+                $.each(firstHalf, function(index, permission) {
+                    var listItem = $('<li></li>').text(permission.name);
+                    permissionsList1.append(listItem);
+                });
+
+                // Add permissions to the second column
+                $.each(secondHalf, function(index, permission) {
+                    var listItem = $('<li></li>').text(permission.name);
+                    permissionsList2.append(listItem);
+                });
+
+                // Append lists to columns
+                col1.append(permissionsList1);
+                col2.append(permissionsList2);
+
+                // Append columns to container row, replacing content
+                $('#permissions-container').html(col1).append(col2);
+            }
+
+            // On page load: Find the checked radio button
+            var selectedRadio = $(".data-roles:checked");
+            if (selectedRadio.length > 0) {
+                var initialRoleName = selectedRadio.val();
+                var initialPermissions = selectedRadio.data('permissions');
+                if (initialPermissions) {
+                    populatePermissions(initialRoleName, initialPermissions); // Populate on page load
+                }
+            }
+
+            // Event: Handle radio button change
+            $(".data-roles").change(function(e) {
+                e.preventDefault();
+                var permissions = $(this).data('permissions'); // Fetch permissions
+                var roleName = $(this).val(); // Fetch selected role name
+                if (permissions) {
+                    populatePermissions(roleName, permissions); // Populate permissions
+                }
+            });
         });
     </script>
 @endpush

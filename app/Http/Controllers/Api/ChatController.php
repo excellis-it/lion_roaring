@@ -23,7 +23,7 @@ class ChatController extends Controller
     use ImageTrait;
     /**
      * List of Chat Users
-     * 
+     *
      * Retrieves a list of users with whom the authenticated user has chatted, sorted by the most recent message.
      * @authenticated
      * @response 200 [
@@ -131,7 +131,7 @@ class ChatController extends Controller
             $chat_users = User::with('roles')->where('id', '!=', auth()->id())
                 ->where('status', 1)
                 ->whereHas('roles', function ($query) {
-                    $query->whereIn('type', [1, 2]);
+                    $query->whereIn('type', [1, 2, 3]);
                 })
                 ->get();
 
@@ -183,11 +183,11 @@ class ChatController extends Controller
 
     /**
      * Chats with a specific user
-     * 
+     *
      * Retrieves the chat history between the authenticated user and a specified recipient, marking unseen messages as seen.
      * @authenticated
      * @bodyParam sender_receiver_id integer required ID of the sender (the another user). Example: 1
-     * 
+     *
      * @response 200 {
      *    "message": "Show Chat",
      *    "status": true,
@@ -322,13 +322,13 @@ class ChatController extends Controller
 
     /**
      * Send a chat message
-     * 
+     *
      * Allows the authenticated user to send a message or attachment to a specified receiver. Returns the latest message and message counts.
      * @authenticated
      * @bodyParam reciver_id integer required ID of the receiver (chat partner). Example: 2
      * @bodyParam message string Optional message text if sending a text message. Example: Hello there!
      * @bodyParam file file Optional file attachment for the chat message.
-     * 
+     *
      * @response 200 {
      *    "msg": "Message sent successfully",
      *    "chat": {
@@ -455,11 +455,11 @@ class ChatController extends Controller
 
     /**
      * Clear Chat Messages
-     * 
+     *
      * Clears chat messages between the authenticated user and a specified receiver by marking messages as deleted from each side.
      * @authenticated
      * @bodyParam reciver_id int required The ID of the user to clear chat with. Example: 2
-     * 
+     *
      * @response {
      *    "msg": "Chat cleared successfully",
      *    "success": true
@@ -519,12 +519,12 @@ class ChatController extends Controller
 
     /**
      * Mark Chat as Seen
-     * 
+     *
      * Marks a specific chat message as seen by updating its `seen` status.
      * @authenticated
      * @bodyParam chat_id int required The ID of the chat message to mark as seen. Example: 10
      * @bodyParam reciver_id int required The ID of the receiver user. Example: 2
-     * 
+     *
      * @response {
      *    "msg": "Chat seen successfully",
      *    "status": true,
@@ -560,12 +560,12 @@ class ChatController extends Controller
 
     /**
      * Remove Chat Message
-     * 
+     *
      * Removes a specific chat message for the authenticated user. The message can be removed for "everyone" or marked as deleted for the sender only.
      * @authenticated
      * @bodyParam chat_id int required The ID of the chat message to be removed. Example: 10
      * @bodyParam del_from string required Specifies if the message should be deleted for "everyone" or only for the sender ("me"). Example: "me"
-     * 
+     *
      * @response {
      *    "msg": "Chat removed successfully",
      *    "status": true,
@@ -605,13 +605,13 @@ class ChatController extends Controller
 
     /**
      * Manage Chat Notifications
-     * 
+     *
      * Sends a notification to the receiver when they receive a new chat message. If `is_delete` is set, it marks the specified notification as deleted.
      * @authenticated
      * @bodyParam chat_id int required The ID of the chat message related to the notification. Example: 15
      * @bodyParam user_id int required The ID of the receiver of the chat message. Example: 5
      * @bodyParam is_delete int optional Set to 1 to mark the notification as deleted. Example: 1
-     * 
+     *
      * @response {
      *    "msg": "Notification deleted successfully",
      *    "status": true

@@ -18,7 +18,7 @@ class Admin
     public function handle(Request $request, Closure $next)
     {
         if (Auth::check()) {
-            $user = auth()->user()->roles()->whereIn('type', [1, 3])->first();
+            $user = auth()->user()->roles()->whereIn('type', [1])->first();
             if ($user) {
                 return $next($request);
             } else {
