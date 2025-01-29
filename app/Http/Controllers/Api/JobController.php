@@ -5,10 +5,12 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Job;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Services\NotificationService;
 
 /**
  * @group Jobs
- * 
+ *
  * @authenticated
  */
 
@@ -205,6 +207,9 @@ class JobController extends Controller
             $job->list_of_values = $request->list_of_values;
             $job->save();
 
+            $userName = Auth::user()->getFullNameAttribute();
+            $noti = NotificationService::notifyAllUsers('New Job created by ' . $userName, 'job');
+
             // Return success response
             return response()->json([
                 'message' => 'Job has been created successfully.',
@@ -360,7 +365,7 @@ class JobController extends Controller
      * Search Job
      *
      * @bodyParam query string required The title of the job. Example: abc
-     * 
+     *
      * @response 200 {
      *   "data": [
      *     {
@@ -378,7 +383,7 @@ class JobController extends Controller
      *     ...
      *   ]
      * }
-     * 
+     *
      * @response 201 {
      *   "message": "An error occurred during the search"
      * }
@@ -393,7 +398,7 @@ class JobController extends Controller
             $query = str_replace(" ", "%", $query); // Convert spaces to % for SQL LIKE query
 
             // // Validate sort parameters
-            // if (!in_array($sort_by, ['id', 'job_title', 'job_location', 'job_salary']) || 
+            // if (!in_array($sort_by, ['id', 'job_title', 'job_location', 'job_salary']) ||
             //     !in_array($sort_type, ['asc', 'desc'])) {
             //     return response()->json([
             //         'message' => 'Invalid query parameters.'

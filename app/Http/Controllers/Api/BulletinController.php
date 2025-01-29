@@ -7,6 +7,7 @@ use App\Models\Bulletin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Services\NotificationService;
 
 /**
  * @group Bulletins
@@ -223,6 +224,9 @@ class BulletinController extends Controller
                 'title' => $request->title,
                 'description' => $request->description,
             ]);
+
+            $userName = Auth::user()->getFullNameAttribute();
+            $noti = NotificationService::notifyAllUsers('New Bulletin created by ' . $userName, 'bulletin');
 
             return response()->json(['message' => 'Bulletin created successfully.', 'data' => $bulletin], 200);
         } catch (\Exception $e) {

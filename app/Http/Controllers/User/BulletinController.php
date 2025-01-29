@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use App\Services\NotificationService;
 
 class BulletinController extends Controller
 {
@@ -68,6 +69,11 @@ class BulletinController extends Controller
             $bulletin->title = $request->title;
             $bulletin->description = $request->description;
             $bulletin->save();
+
+
+            $userName = Auth::user()->getFullNameAttribute();
+            $noti = NotificationService::notifyAllUsers('New Bulletin created by ' . $userName, 'bulletin');
+
             session()->flash('message', 'Bulletin created successfully');
             return response()->json(['message' => 'Bulletin created successfully', 'status' => true, 'bulletin' => $bulletin]);
         } else {

@@ -58,6 +58,33 @@
 
             </div>
             <div class="dark-transparent sidebartoggler"></div>
+
+            <div class="chatbot-container">
+                <div class="chatbot-btn" id="chatbotBtn">
+                    <img src="{{ asset('user_assets/images/chat-bot.png') }}" class="img-fluid rounded-top"
+                        alt="" />
+
+                </div>
+
+                <div class="chatbox" id="chatbox">
+                    <div class="chatbox-header">
+                        <span>Chat With Us</span>
+                        <button class="close-btn" id="closeChatbox">&times;</button>
+                    </div>
+                    <div class="chatbox-body" id="chatboxBody">
+                        <!-- Chat messages go here -->
+                        <div class="chatbot-message chatbot-bot-message">
+                            <p>Hi! How can I help you today?</p>
+                        </div>
+                        <br>
+                    </div>
+                    <div class="chatbox-footer">
+                        <input type="text" id="chatbotuserInput" placeholder="Type a message...">
+                        <button id="chatbotsendBtn">Send</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <script src="{{ asset('user_assets/js/jquery.min.js') }}"></script>
         <script src="{{ asset('user_assets/js/simplebar.min.js') }}"></script>
@@ -98,6 +125,40 @@
                 "progressBar": true, // Show a progress bar
             }
         </script>
+
+        <script>
+            $(document).ready(function() {
+                $('#chatbotBtn').click(function() {
+                    $('#chatbox').fadeIn();
+                });
+
+                $('#closeChatbox').click(function() {
+                    $('#chatbox').fadeOut();
+                });
+
+                $('#chatbotsendBtn').click(function() {
+                    var message = $('#chatbotuserInput').val().trim();
+                    if (message !== '') {
+                        var userMessage = $('<div class="chatbot-message chatbot-user-message"><p>' + message +
+                            '</p></div><br>');
+                        $('#chatboxBody').append(userMessage);
+                        $('#chatbotuserInput').val('');
+
+                        // Simulate bot response
+                        setTimeout(function() {
+                            var botMessage = $(
+                                '<div class="chatbot-message chatbot-bot-message"><p>Thanks for your message! We\'ll get back to you soon.</p></div>'
+                            );
+                            $('#chatboxBody').append(botMessage);
+                            $('#chatboxBody').scrollTop($('#chatboxBody')[0]
+                                .scrollHeight); // Auto scroll to the bottom
+                        }, 1000);
+                    }
+                });
+            });
+        </script>
+
+
         <script>
             @if (Session::has('message'))
                 toastr.options = {

@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Meeting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use App\Services\NotificationService;
 
 /**
  * @group Meetings
- * 
+ *
  * @authenticated
  */
 
@@ -115,6 +117,9 @@ class MeetingController extends Controller
                 'meeting_link' => $request->meeting_link,
             ]);
 
+            $userName = Auth::user()->getFullNameAttribute();
+            $noti = NotificationService::notifyAllUsers('New Meeting created by ' . $userName, 'meeting');
+
             return response()->json(['message' => 'Meeting created successfully.', 'data' => $meeting], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to create meeting.'], 201);
@@ -187,7 +192,7 @@ class MeetingController extends Controller
      * @bodyParam start_time datetime required The updated start time in ISO 8601 format. Example: 2024-11-11T09:00:00.000000Z
      * @bodyParam end_time datetime required The updated end time in ISO 8601 format. Example: 2024-11-11T10:00:00.000000Z
      * @bodyParam meeting_link string The updated link for the meeting. Example: https://meeting.example.com/updated123
-     * 
+     *
      * @response 200 {
      *   "message": "Meeting updated successfully.",
      *   "status": true
@@ -221,7 +226,7 @@ class MeetingController extends Controller
     /**
      * Delete Meeting
      * @urlParam id int required The ID of the meeting. Example: 1
-     * 
+     *
      * @response 200 {
      *   "message": "Meeting deleted successfully.",
      *   "status": true

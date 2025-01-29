@@ -8,6 +8,8 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Services\NotificationService;
 
 class ProductController extends Controller
 {
@@ -135,6 +137,10 @@ class ProductController extends Controller
                 $image->save();
             }
         }
+
+        // notify users
+        $userName = Auth::user()->getFullNameAttribute();
+        $noti = NotificationService::notifyAllUsers('New Product created by ' . $userName, 'product');
 
 
         return redirect()->route('products.index')->with('message', 'Product created successfully!');

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Meeting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use App\Services\NotificationService;
 
 class MeetingSchedulingController extends Controller
 {
@@ -63,6 +65,10 @@ class MeetingSchedulingController extends Controller
             $meeting->end_time = $request->end_time;
             $meeting->meeting_link = $request->meeting_link;
             $meeting->save();
+
+            // notify users
+            $userName = Auth::user()->getFullNameAttribute();
+            $noti = NotificationService::notifyAllUsers('New Meeting created by ' . $userName, 'meeting');
 
             session()->flash('message', 'Meeting scheduled successfully.');
 

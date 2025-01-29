@@ -10,12 +10,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use App\Services\NotificationService;
 
 /**
  * @authenticated
- * 
+ *
  * @group Education
- *  
+ *
  * @subgroup Becoming Christ Like
  * @subgroupDescription APIs for managing Becoming Christ Like files and topics.
  */
@@ -27,12 +29,12 @@ class BecomingChristLikeController extends Controller
      * Becoming Christ Likes List
      *
      * @queryParam topic int The ID of the topic to filter by. Example: 1
-     * 
+     *
      * @response 200 *{
      *    "data": {
      *        "current_page": 1,
      *        "data": [
-     *            
+     *
      *            {
      *                "id": 60,
      *                "user_id": 1,
@@ -250,7 +252,7 @@ class BecomingChristLikeController extends Controller
      *   ],
      *   "status": true
      * }
-     * 
+     *
      * @response 201 {
      *   "message": "Failed to fetch topics. Please try again later.",
      *   "status": false
@@ -296,12 +298,12 @@ class BecomingChristLikeController extends Controller
      *    },
      *    "status": true
      * }
-     * 
+     *
      * @response 400 {
      *   "message": "The file name has already been taken.",
      *   "status": false
      * }
-     * 
+     *
      * @response 422 {
      *   "message": "Validation errors occurred.",
      *   "errors": {
@@ -355,6 +357,9 @@ class BecomingChristLikeController extends Controller
             $fileModel->type = 'Becoming Christ Like';
             $fileModel->file = $file_upload;
             $fileModel->save();
+
+            $userName = auth()->user()->getFullNameAttribute();
+            $noti = NotificationService::notifyAllUsers('New Becoming Christ Like created by ' . $userName, 'becoming_christ_like');
 
             return response()->json([
                 'message' => 'File uploaded successfully.',

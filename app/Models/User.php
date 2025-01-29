@@ -119,4 +119,8 @@ class User extends Authenticatable
         return $this->roles->pluck('type')->first();
     }
 
+    public function systemNotifications()
+    {
+        return $this->hasMany(SystemNotification::class, 'notifiable_id');
+    }
 }
