@@ -76,7 +76,7 @@
                         <div class="chatbot-message chatbot-bot-message">
                             <p>Hi! How can I help you today?</p>
                         </div>
-                        <br>
+
                     </div>
                     <div class="chatbox-footer">
                         <input type="text" id="chatbotuserInput" placeholder="Type a message...">
@@ -140,19 +140,39 @@
                     var message = $('#chatbotuserInput').val().trim();
                     if (message !== '') {
                         var userMessage = $('<div class="chatbot-message chatbot-user-message"><p>' + message +
-                            '</p></div><br>');
+                            '</p></div>');
                         $('#chatboxBody').append(userMessage);
                         $('#chatbotuserInput').val('');
 
-                        // Simulate bot response
-                        setTimeout(function() {
-                            var botMessage = $(
-                                '<div class="chatbot-message chatbot-bot-message"><p>Thanks for your message! We\'ll get back to you soon.</p></div>'
-                            );
-                            $('#chatboxBody').append(botMessage);
-                            $('#chatboxBody').scrollTop($('#chatboxBody')[0]
-                                .scrollHeight); // Auto scroll to the bottom
-                        }, 1000);
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ route('chatbot.message') }}",
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                message: message
+                            },
+                            dataType: "json",
+                            success: function(response) {
+                                var dataMessage = response.message;
+
+
+                                setTimeout(function() {
+                                    var botMessage = $(
+                                        '<div class="chatbot-message chatbot-bot-message"><p>' +
+                                        dataMessage +
+                                        '</p></div><span class="chatbot-bot-message-lable"> - Lion Roaring AI</span>'
+                                    );
+                                    $('#chatboxBody').append(botMessage);
+                                    $('#chatboxBody').scrollTop($('#chatboxBody')[0]
+                                        .scrollHeight); // Auto scroll to the bottom
+                                }, 500);
+
+                            }
+                        });
+
+
+
+
                     }
                 });
             });

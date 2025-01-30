@@ -339,7 +339,7 @@
                         </a>
                     </li>
                 @endif
-                @if (Gate::check('Manage Help'))
+                {{-- @if (Gate::check('Manage Help'))
                     <li class="sidebar-item">
                         <a class="sidebar-link"
                             href="{{ route('user.page', ['name' => 'Help', 'permission' => 'Manage Help']) }}"
@@ -350,7 +350,7 @@
                             <span class="hide-menu">Help</span>
                         </a>
                     </li>
-                @endif
+                @endif --}}
             </ul>
         </nav>
 

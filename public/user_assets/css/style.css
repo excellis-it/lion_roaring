@@ -2426,7 +2426,7 @@ section {
   .chatbox-body {
     margin-bottom: 20px;
     padding: 15px;
-    height: 320px;
+    height: 345px;
     overflow-y: auto;
     background-color: #f4f4f4;
   }
@@ -2435,9 +2435,10 @@ section {
     bottom: 0;
     left: 0;
     width: 100%;
-    padding: 10px;
+    padding: 5px;
     background-color: #f9f9f9;
     display: flex;
+    max-height: 50px;
   }
   .chatbox-footer input {
     flex-grow: 1;
@@ -2477,6 +2478,18 @@ section {
     margin-right: 15px;
   }
 
+  .chatbot-bot-message p{
+    margin-bottom: 0px !important;
+  }
+
+  .chatbot-bot-message-lable {
+    align-self: flex-start;
+    float: left;
+    margin-right: 15px;
+    color: slategrey;
+    font-size: 12px;
+  }
+
   .chatbot-user-message {
     background-color: #643271;
     color: white;
@@ -2485,7 +2498,9 @@ section {
     margin-left: 15px;
   }
 
-
+  .chatbot-user-message p{
+    margin-bottom: 0px !important;
+  }
 
   @keyframes slideIn {
     from {

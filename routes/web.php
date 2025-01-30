@@ -70,6 +70,7 @@ use App\Models\Category;
 use App\Models\EcomCmsPage;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\User\ChatBotController;
 
 /*
 |--------------------------------------------------------------------------
@@ -574,3 +575,5 @@ Route::prefix('e-learning')->middleware(['user'])->group(function () {
         }
     }
 });
+
+Route::post('/chatbot', [ChatBotController::class, 'FaqChat'])->name('chatbot.message');
