@@ -2400,7 +2400,7 @@ section {
     bottom: 80px;
     right: 0;
     width: 400px;
-    height: 450px;
+    height: 550px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -2426,7 +2426,7 @@ section {
   .chatbox-body {
     margin-bottom: 20px;
     padding: 15px;
-    height: 345px;
+    height: 445px;
     overflow-y: auto;
     background-color: #f4f4f4;
   }

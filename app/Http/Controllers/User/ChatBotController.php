@@ -134,7 +134,7 @@ class ChatBotController extends Controller
                 }
             }
 
-            if ($bestMatch && $bestScore > 30) {  // Adjusted threshold for better accuracy
+            if ($bestMatch && $bestScore > 10) {  // Adjusted threshold for better accuracy
                 return response()->json([
                     'status' => 'success',
                     'message' => $bestMatch->answer
