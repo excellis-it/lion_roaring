@@ -13,16 +13,19 @@
                         <div class="row">
                             <div class="col-md-12">
 
-                                <div class="row ">
-                                    <div class="col-md-10">
+                                <div class="row justify-content-between">
+                                    <div class="col-md-2">
                                         <h3 class="mb-3">Role Permission List</h3>
                                     </div>
-                                    <div class="col-md-2 float-right">
 
-                                        <a href="{{ route('roles.create') }}" class="btn btn-primary w-100">+ Add
+                                    <div class="col-md-4 text-end">
+                                        <a href="{{ route('ecclesias.index') }}" class="btn btn-primary me-3">+
+                                            House Of Ecclesia</a>
+
+                                        <a href="{{ route('roles.create') }}" class="btn btn-primary ">+ Add
                                             Role</a>
-
                                     </div>
+
                                 </div>
                                 <div class="row justify-content-end">
                                     {{-- <div class="col-lg-4">
@@ -41,6 +44,7 @@
                                             <tr class="header-row">
                                                 <th>ID (#)</th>
                                                 <th>Role</th>
+                                                <th>Is ECCLESIA</th>
                                                 <th>Permission</th>
                                                 <th></th>
                                             </tr>
@@ -51,6 +55,7 @@
                                                     <tr>
                                                         <td>{{ $key + 1 }}</td>
                                                         <td> {{ $role->name }}</td>
+                                                        <td>{{ $role->is_ecclesia == 1 ? 'ECCLESIA' : '' }}</td>
                                                         {{-- <td>
                                                             @foreach ($role->permissions()->where('type', 1)->get() as $permission)
                                                                 <span class="round-btn">{{ $permission->name }}</span>
@@ -67,6 +72,7 @@
 
                                                         </td>
                                                         <td>
+
                                                             <div class="d-flex">
                                                                 <a href="{{ route('roles.edit', Crypt::encrypt($role->id)) }}"
                                                                     class="edit_icon me-2">
@@ -74,14 +80,17 @@
                                                                 </a>
                                                                 {{-- @if ($role->name == 'MEMBER' || $role->name == 'LEADER' || $role->name == 'ECCLESIA')
                                                                 @else --}}
-                                                                <a href="javascript:void(0);"
-                                                                    data-route="{{ route('roles.delete', Crypt::encrypt($role->id)) }}"
-                                                                    class="delete_icon" id="delete">
-                                                                    <i class="ti ti-trash"></i>
-                                                                </a>
+                                                                @if ($role->name != 'MEMBER')
+                                                                    <a href="javascript:void(0);"
+                                                                        data-route="{{ route('roles.delete', Crypt::encrypt($role->id)) }}"
+                                                                        class="delete_icon" id="delete">
+                                                                        <i class="ti ti-trash"></i>
+                                                                    </a>
+                                                                @endif
                                                                 {{-- @endif --}}
 
                                                             </div>
+
                                                         </td>
                                                     </tr>
                                                 @endforeach

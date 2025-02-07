@@ -41,7 +41,7 @@ class AuthController extends Controller
         $request->merge([$fieldType => $request->user_name]);
         // return $fieldType;
         if (auth()->attempt($request->only($fieldType, 'password'))) {
-            if (auth()->user()->status == 1) {
+            if (auth()->user()->status == 1 && auth()->user()->is_accept == 1) {
                 session()->flash('message', 'Login success');
                 return response()->json(['message' => 'Login success', 'status' => true, 'redirect' => route('user.profile')]);
             } else {
@@ -55,7 +55,8 @@ class AuthController extends Controller
 
     public function register()
     {
-        $eclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
+        // $eclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
+        $eclessias = Ecclesia::orderBy('id', 'asc')->get();
         $countries = Country::all();
         return view('user.auth.register')->with(compact('eclessias', 'countries'));
     }

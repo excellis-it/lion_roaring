@@ -125,7 +125,7 @@
                                         </div>
                                     </div> --}}
                                     {{-- ecclesia_id --}}
-                                    <div class="col-md-4 mb-2">
+                                    {{-- <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>Ecclesia </label>
                                             <select class="form-control" name="ecclesia_id">
@@ -142,7 +142,29 @@
                                                 </div>
                                             @endif
                                         </div>
+                                    </div> --}}
+
+                                    <div class="col-md-4 mb-2" id="ecclesia_main_input">
+                                        <div class="box_label">
+                                            <label>Ecclesias </label>
+                                            <select class="form-control" name="ecclesia_id">
+                                                <option value="">Select Ecclesia</option>
+                                                @foreach ($eclessias as $item)
+                                                    <option value="{{ $item->id }}"
+                                                        {{ $partner->ecclesia_id == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->name . '(' . $item->countryName->name . ')' ?? '' }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @if ($errors->has('ecclesia_id'))
+                                                <div class="error" style="color:red !important;">
+                                                    {{ $errors->first('ecclesia_id') }}
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
+
+
                                     <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>First Name *</label>
@@ -287,10 +309,12 @@
                                                         class="form-check-input data-roles" type="radio" name="role"
                                                         value="{{ $role->name }}"
                                                         data-permissions="{{ $role->permissions()->where('type', 1)->get() }}"
-                                                        required
-                                                        {{ $partner->getRoleNames()->first() == $role->name ? 'checked' : '' }}>
+                                                        data-isecclesia="{{ $role->is_ecclesia }}"
+                                                        {{ $partner->getRoleNames()->first() == $role->name ? 'checked' : '' }}
+                                                        required>
                                                     <label class="form-check-label"
-                                                        for="data-roles-{{ $role->id }}">{{ $role->name }}</label>
+                                                        for="data-roles-{{ $role->id }}">{{ $role->name }}
+                                                        <small>{{ $role->is_ecclesia == 1 ? '(ECCLESIA)' : '' }}</small></label>
                                                 </div>
                                             @endforeach
 
@@ -299,6 +323,47 @@
                                     </div>
 
                                 </div>
+
+
+                                @if ($errors->has('manage_ecclesia'))
+                                    <div class="error" style="color:red !important;">
+                                        * {{ $errors->first('manage_ecclesia') }}
+                                    </div>
+                                @endif
+
+                                <div class="row mt-3" id="hoe_row" style="display: none">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <h5>Can manage this House Of ECCLESIA*</h5>
+
+                                            @php
+                                                // Convert manage_ecclesia to an array (handle null case)
+                                                $selectedEcclesias =
+                                                    isset($partner->manage_ecclesia) &&
+                                                    $partner->manage_ecclesia !== null
+                                                        ? explode(',', $partner->manage_ecclesia)
+                                                        : [];
+                                            @endphp
+
+                                            @foreach ($eclessias as $eclessia)
+                                                <div class="form-check form-check-inline">
+                                                    <input id="data-eclessia-{{ $eclessia->id }}"
+                                                        class="form-check-input data-eclessia" type="checkbox"
+                                                        name="manage_ecclesia[]" value="{{ $eclessia->id }}"
+                                                        {{ in_array($eclessia->id, $selectedEcclesias) ? 'checked' : '' }}>
+                                                    <label class="form-check-label"
+                                                        for="data-eclessia-{{ $eclessia->id }}">{{ $eclessia->name . ' (' . $eclessia->countryName->name . ')' }}
+                                                    </label>
+                                                </div>
+                                            @endforeach
+
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
 
                                 <div class="w-100 text-end d-flex align-items-center justify-content-end">
                                     <button type="submit" class="print_btn me-2">Update</button>
@@ -519,8 +584,18 @@
     <script>
         $(document).ready(function() {
             // Function to populate permissions based on the selected role
-            function populatePermissions(roleName, permissions) {
+            function populatePermissions(roleName, permissions, is_ecclesia) {
                 $("#Role_Name").text(roleName);
+
+
+
+                if (is_ecclesia == 1) {
+                    $("#hoe_row").show();
+                    $("#ecclesia_main_input").hide();
+                } else {
+                    $("#hoe_row").hide();
+                    $("#ecclesia_main_input").show();
+                }
 
                 var col1 = $('<div class="col-6"></div>');
                 var col2 = $('<div class="col-6"></div>');
@@ -559,8 +634,10 @@
             if (selectedRadio.length > 0) {
                 var initialRoleName = selectedRadio.val();
                 var initialPermissions = selectedRadio.data('permissions');
+                var initialIsEcclesia = selectedRadio.data('isecclesia');
                 if (initialPermissions) {
-                    populatePermissions(initialRoleName, initialPermissions); // Populate on page load
+                    populatePermissions(initialRoleName, initialPermissions,
+                        initialIsEcclesia); // Populate on page load
                 }
             }
 
@@ -569,8 +646,9 @@
                 e.preventDefault();
                 var permissions = $(this).data('permissions'); // Fetch permissions
                 var roleName = $(this).val(); // Fetch selected role name
+                var is_ecclesia = $(this).data('isecclesia');
                 if (permissions) {
-                    populatePermissions(roleName, permissions); // Populate permissions
+                    populatePermissions(roleName, permissions, is_ecclesia); // Populate permissions
                 }
             });
         });

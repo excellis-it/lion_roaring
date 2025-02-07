@@ -69,14 +69,29 @@ class MemberController extends Controller
             }
 
             // Exclude users with the "SUPER ADMIN" role
-            $partners->whereDoesntHave('roles', function ($q) {
-                $q->where('name', 'SUPER ADMIN')->orWhere('name', 'ECCLESIA');
-            });
+            // $partners->whereDoesntHave('roles', function ($q) {
+            //     $q->where('name', 'SUPER ADMIN')->orWhere('name', 'ECCLESIA');
+            // });
+
+            if (Auth::user()->hasRole('ECCLESIA')) {
+                // Exclude SUPER ADMIN and ECCLESIA roles
+                $partners = User::whereHas('roles', function ($q) {
+                    $q->whereNotIn('name', ['SUPER ADMIN', 'ECCLESIA']);
+                })->where('ecclesia_id', auth()->id())->orderBy('id', 'desc')->paginate(15);
+            } else {
+                // Exclude SUPER ADMIN and ECCLESIA roles, and filter by ecclesia_id
+                $partners = User::whereHas('roles', function ($q) {
+                    $q->whereNotIn('name', ['SUPER ADMIN', 'ECCLESIA']);
+                })
+
+                    ->orderBy('id', 'desc')
+                    ->paginate(15);
+            }
 
             if (Auth::user()->hasRole('SUPER ADMIN')) {
                 $partners = $partners->paginate(15);
             } else {
-                $partners = $partners->where('ecclesia_id', auth()->id())->paginate(15);
+                $partners = $partners->paginate(15);
             }
 
             return response()->json(['data' => view('admin.members.table', compact('partners'))->render()]);

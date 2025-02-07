@@ -57,6 +57,7 @@
                                                             class="fa fa-arrow-down"></i></span> --}}
                                                 </th>
                                                 <th class="p-3">Role</th>
+                                                <th class="p-3">House Of Ecclesia</th>
 
                                                 {{-- <th>
                                                     Ecclesia
@@ -73,9 +74,8 @@
                                                     style="cursor: pointer"> Address <span id="address_icon"></span></th> --}}
 
 
-                                                @if (auth()->user()->hasRole('SUPER ADMIN') ||
-                                                        (auth()->user()->hasRole('LEADER') && auth()->user()->can('Edit Partners')))
-                                                    <th class="p-3">Status</th>
+                                                @if (auth()->user()->can('Edit Partners'))
+                                                    <th class="p-3">Status/Approve</th>
                                                 @endif
                                                 @if (auth()->user()->can('Edit Partners') ||
                                                         auth()->user()->can('Delete Partners') ||

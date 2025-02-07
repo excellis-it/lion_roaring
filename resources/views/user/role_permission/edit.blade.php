@@ -27,12 +27,27 @@
                                 <div class="box_label">
                                     <label>Role Name</label>
                                     <input type="text" class="form-control" value="{{ $role->name }}" name="role_name"
-                                        placeholder=""
-                                        {{ $role->name == 'LEADER' || $role->name == 'MEMBER' ? 'readonly' : '' }}>
+                                        placeholder="" {{ $role->name == 'MEMBER' ? 'readonly' : '' }}>
                                     @if ($errors->has('role_name'))
                                         @error('role_name')
                                             <span class="text-danger" style="color: red !important"> {{ $message }}</span>
                                         @enderror
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-2 mt-1">
+                                <div class="box_label">
+                                    <label>Is ECCLESIA?</label>
+                                    <select name="is_ecclesia" id="" class="form-control" required>
+                                        <option value="" disabled>
+                                            Select
+                                        </option>
+                                        <option value="1" {{ $role->is_ecclesia == 1 ? 'selected' : '' }}>Yes</option>
+                                        <option value="0" {{ $role->is_ecclesia == 0 ? 'selected' : '' }}>No</option>
+                                    </select>
+                                    @if ($errors->has('is_ecclesia'))
+                                        <span class="text-danger"
+                                            style="color: red !important">{{ $errors->first('is_ecclesia') }}</span>
                                     @endif
                                 </div>
                             </div>
@@ -195,7 +210,8 @@
                                                                 @if ($key = array_search('Upload ' . $module, $permissions))
                                                                     <div class="toggle-check">
                                                                         <div class=" ">
-                                                                            <input class="form-check-input" type="checkbox"
+                                                                            <input class="form-check-input"
+                                                                                type="checkbox"
                                                                                 @if (in_array($key, $role->permissions()->pluck('id')->toArray())) checked @endif
                                                                                 role="switch" name="permissions[]"
                                                                                 value="{{ $key }}"

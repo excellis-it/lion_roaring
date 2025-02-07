@@ -61,6 +61,7 @@ class RolePermissionsController extends Controller
     {
         $request->validate([
             'role_name' => 'required|unique:roles,name',
+            'is_ecclesia' => 'required',
             'permissions' => 'required'
         ]);
 
@@ -68,6 +69,7 @@ class RolePermissionsController extends Controller
         $role             = new Role();
         $role->name       = $name;
         $role->type = 2;
+        $role->is_ecclesia = $request['is_ecclesia'];
         $permissions      = $request['permissions'];
         $role->save();
 
@@ -135,11 +137,13 @@ class RolePermissionsController extends Controller
         $id = Crypt::decrypt($id);
         $request->validate([
             'role_name' => 'required|unique:roles,name,' . $id,
+            'is_ecclesia' => 'required',
             'permissions' => 'required'
         ]);
 
         $role = Role::findOrFail($id);
         $role->name = $request->role_name;
+        $role->is_ecclesia = $request['is_ecclesia'];
         $permissions = $request['permissions'];
         $role->save();
 

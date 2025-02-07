@@ -755,7 +755,7 @@ class EmailController extends Controller
                 'to' => 'required|json',
                 'subject' => 'required|string',
                 'message' => 'required|string',
-                'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048'
+                'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:512000'
             ]);
 
             $toEmails = json_decode($request->to, true);
@@ -919,7 +919,7 @@ class EmailController extends Controller
                 'to' => 'required|json',
                 'subject' => 'required|string',
                 'message' => 'required|string',
-                'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
+                'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:512000',
                 'main_mail_id' => 'required|integer|exists:send_mails,id'
             ]);
 
@@ -1083,7 +1083,7 @@ class EmailController extends Controller
                 'to' => 'required|json',
                 'subject' => 'required|string',
                 'message' => 'required|string',
-                'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048'
+                'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:512000'
             ]);
 
             $toEmails = json_decode($request->to, true);

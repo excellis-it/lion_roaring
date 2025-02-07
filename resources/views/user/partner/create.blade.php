@@ -124,7 +124,7 @@
                                         </div>
                                     </div> --}}
                                     {{-- eclessias --}}
-                                    <div class="col-md-4 mb-2">
+                                    <div class="col-md-4 mb-2" id="ecclesia_main_input">
                                         <div class="box_label">
                                             <label>Ecclesias </label>
                                             <select class="form-control" name="ecclesia_id">
@@ -132,7 +132,8 @@
                                                 @foreach ($eclessias as $item)
                                                     <option value="{{ $item->id }}"
                                                         {{ old('ecclesia_id') == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->full_name ?? '' }}</option>
+                                                        {{ $item->name . '(' . $item->countryName->name . ')' ?? '' }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                             @if ($errors->has('ecclesia_id'))
@@ -142,6 +143,8 @@
                                             @endif
                                         </div>
                                     </div>
+
+
                                     <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>First Name *</label>
@@ -282,11 +285,42 @@
                                                         class="form-check-input data-roles" type="radio" name="role"
                                                         value="{{ $role->name }}"
                                                         data-permissions="{{ $role->permissions()->where('type', 1)->get() }}"
-                                                        required>
+                                                        data-isecclesia="{{ $role->is_ecclesia }}" required>
                                                     <label class="form-check-label"
-                                                        for="data-roles-{{ $role->id }}">{{ $role->name }}</label>
+                                                        for="data-roles-{{ $role->id }}">{{ $role->name }}
+                                                        <small>{{ $role->is_ecclesia == 1 ? '(ECCLESIA)' : '' }}</small></label>
                                                 </div>
                                             @endforeach
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                @if ($errors->has('manage_ecclesia'))
+                                    <div class="error" style="color:red !important;">
+                                        * {{ $errors->first('manage_ecclesia') }}
+                                    </div>
+                                @endif
+
+                                <div class="row mt-3" id="hoe_row" style="display: none">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <h5>Can manage this House Of ECCLESIA*</h5>
+
+
+                                            @foreach ($eclessias as $eclessia)
+                                                <div class="form-check form-check-inline">
+                                                    <input id="data-eclessia-{{ $eclessia->id }}"
+                                                        class="form-check-input data-eclessia" type="checkbox"
+                                                        name="manage_ecclesia[]" value="{{ $eclessia->id }}">
+                                                    <label class="form-check-label"
+                                                        for="data-eclessia-{{ $eclessia->id }}">{{ $eclessia->name . ' (' . $eclessia->countryName->name . ')' }}
+                                                    </label>
+                                                </div>
+                                            @endforeach
+
 
 
                                         </div>
@@ -472,7 +506,19 @@
                 e.preventDefault();
                 var permissions = $(this).data('permissions');
                 var role_name = $(this).val();
+                var is_ecclesia = $(this).data('isecclesia');
+
                 console.log(permissions);
+
+                if (is_ecclesia == 1) {
+                    $("#hoe_row").show();
+                    $("#ecclesia_main_input").hide();
+                } else {
+                    $("#hoe_row").hide();
+                    $("#ecclesia_main_input").show();
+                }
+
+
                 $("#Role_Name").text(role_name);
 
                 var col1 = $('<div class="col-6"></div>');

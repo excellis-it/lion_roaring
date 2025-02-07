@@ -415,6 +415,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         'ecclesias' => EcclesiaContorller::class,
         'jobs' => JobpostingController::class,
         'meetings' => MeetingSchedulingController::class,
+       // 'meetings' => MeetingSchedulingController::class,
     ]);
 
     Route::prefix('meetings')->group(function () {

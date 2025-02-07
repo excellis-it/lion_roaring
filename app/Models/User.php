@@ -96,7 +96,7 @@ class User extends Authenticatable
 
     public function ecclesia()
     {
-        return $this->belongsTo(User::class, 'ecclesia_id');
+        return $this->belongsTo(Ecclesia::class, 'ecclesia_id');
     }
 
     public function countries()

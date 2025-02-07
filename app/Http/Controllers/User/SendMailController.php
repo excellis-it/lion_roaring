@@ -451,7 +451,7 @@ class SendMailController extends Controller
             'to' => 'required',
             'subject' => 'required',
             'message' => 'required',
-            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048'
+            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:512000'
         ]);
 
         // Decode the JSON strings for 'to' and 'cc' fields
@@ -610,7 +610,7 @@ class SendMailController extends Controller
             'to' => 'required',
             'subject' => 'required',
             'message' => 'required',
-            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048'
+            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:512000'
         ]);
 
         // Decode the JSON strings for 'to' and 'cc' fields
@@ -774,13 +774,13 @@ class SendMailController extends Controller
             'to' => 'required',
             'subject' => 'required',
             'message' => 'required',
-            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048'
+            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:512000'
         ]);
 
         // Decode the JSON strings for 'to' and 'cc' fields
         $toEmails = json_decode($request->to, true);
         // Extract email addresses from the decoded arrays
-        $to = array_column($toEmails, 'value');
+        $to = array_column($toEmails, 'value'); 
         if ($request->cc) {
             $ccEmails = json_decode($request->cc, true);
             $cc = array_column($ccEmails, 'value');

@@ -23,14 +23,31 @@
                                 <div class="box_label">
                                     <label>Role Name</label>
                                     <input type="text" class="form-control" value="{{ old('role_name') }}" placeholder=""
-                                        name="role_name">
+                                        name="role_name" required>
                                     @if ($errors->has('role_name'))
                                         <span class="text-danger"
                                             style="color: red !important">{{ $errors->first('role_name') }}</span>
                                     @endif
                                 </div>
                             </div>
+                            <div class="col-md-4 mb-2 mt-1">
+                                <div class="box_label">
+                                    <label>Is ECCLESIA?</label>
+                                    <select name="is_ecclesia" id="" class="form-control" required>
+                                        <option value="" disabled selected>
+                                            Select
+                                        </option>
+                                        <option value="1">Yes</option>
+                                        <option value="0">No</option>
+                                    </select>
+                                    @if ($errors->has('is_ecclesia'))
+                                        <span class="text-danger"
+                                            style="color: red !important">{{ $errors->first('is_ecclesia') }}</span>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
+
                         <div class="row">
                             <div class="col-lg-12 col-md-12 p-0">
                                 <div class="table-responsive table-center-align" data-toggle="lists">
@@ -180,8 +197,9 @@
                                                                 @if ($key = array_search('Upload ' . $module, $permissions))
                                                                     <div class="toggle-check">
                                                                         <div class="">
-                                                                            <input class="form-check-input" type="checkbox"
-                                                                                role="switch" name="permissions[]"
+                                                                            <input class="form-check-input"
+                                                                                type="checkbox" role="switch"
+                                                                                name="permissions[]"
                                                                                 value="{{ $key }}"
                                                                                 data-id="{{ $new }}"
                                                                                 id="flexSwitchCheckChecked">

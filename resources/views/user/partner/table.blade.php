@@ -8,16 +8,15 @@
             <td>{{ $partner->full_name }}</td>
             <td>{{ $partner->getRoleNames()->first() }}</td>
 
-            {{-- <td>
-                {{ isset($partner->ecclesia) ? $partner->ecclesia->full_name : '' }}
+            <td>
+                {{ isset($partner->ecclesia) ? $partner->ecclesia->name . ' (' . $partner->ecclesia->countryName->name . ')' : '' }}
             </td>
-            <td>{{ $partner->user_name }}</td>
+            {{-- <td>{{ $partner->user_name }}</td>
 
             <td>{{ $partner->phone }}</td>
             <td>{{ $partner->address }}</td> --}}
 
-            @if (auth()->user()->hasRole('SUPER ADMIN') ||
-                    (auth()->user()->hasRole('LEADER') && auth()->user()->can('Edit Partners')))
+            @if (auth()->user()->can('Edit Partners'))
                 <td>
                     <div class="button-switch">
                         <input type="checkbox" id="switch-orange" class="switch toggle-class" data-id="{{ $partner['id'] }}"
