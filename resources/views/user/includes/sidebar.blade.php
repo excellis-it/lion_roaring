@@ -180,7 +180,7 @@
                         </div>
                     </li>
                 @endif
-                @if (Gate::check('Manage Job Postings') || Gate::check('Manage Meeting Schedule') || Gate::check('Manage Event'))
+                @if (Gate::check('Manage Job Postings') || Gate::check('Manage Meeting Schedule') || Gate::check('Manage Event') || Gate::check('Manage Bulletin'))
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExample4">
@@ -193,6 +193,7 @@
                         <div class="collapse {{ Request::is('user/bulletins*') || Request::is('user/view-calender*') || Request::is('user/jobs*') || Request::is('user/meetings*') || Request::is('user/bulletin-board*') || Request::is('user/events*') ? 'show' : '' }}"
                             id="collapseExample4">
                             <div class="menu_bb">
+                                @if (Gate::check('Manage Bulletin'))
                                 {{-- bulletins --}}
                                 <a href="{{ route('bulletin-board.index') }}">
                                     <span>
@@ -201,6 +202,7 @@
                                     </span>
                                     <span>Bulletins Board</span>
                                 </a>
+                                @endif
                                 @if (Gate::check('Manage Bulletin'))
                                     <a href="{{ route('bulletins.index') }}">
                                         <span>
@@ -247,14 +249,14 @@
                         </div>
                     </li>
                 @else
-                    <li class="sidebar-item">
+                    {{-- <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('bulletin-board.index') }}" aria-expanded="false">
                             <span>
                                 <img src="{{ asset('user_assets/images/Meeting Schedule.png') }}" alt="">
                             </span>
                             <span class="hide-menu">Bulletin Board</span>
                         </a>
-                    </li>
+                    </li> --}}
                 @endif
                 @if (Auth::user()->hasRole('SUPER ADMIN'))
                     <li class="sidebar-item">

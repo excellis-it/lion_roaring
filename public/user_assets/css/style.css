@@ -2510,3 +2510,11 @@ section {
       transform: translateY(0);
     }
   }
+
+
+.ecclesia-see-button {
+    height: 20px;
+    font-size: 10px;
+    padding: 0px 5px 0px 5px;
+}
+

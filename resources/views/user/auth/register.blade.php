@@ -216,7 +216,7 @@
                                                 <div class="col-lg-4 mb-3">
                                                     <div class="login-username">
                                                         <label for="user_login">Email ID</label>
-                                                        <input type="text" name="email" id="user_login"
+                                                        <input type="email" name="email" id="user_login"
                                                             class="input" value="{{ old('email') }}">
                                                         @if ($errors->has('email'))
                                                             <div class="error" style="color:red;">
@@ -227,7 +227,7 @@
                                                 <div class="col-lg-4 mb-3">
                                                     <div class="login-username">
                                                         <label for="user_login">Confirm Email ID</label>
-                                                        <input type="text" name="email_confirmation"
+                                                        <input type="email" name="email_confirmation"
                                                             id="user_login" class="input"
                                                             value="{{ old('email_confirmation') }}">
                                                         @if ($errors->has('email_confirmation'))

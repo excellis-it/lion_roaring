@@ -123,4 +123,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(SystemNotification::class, 'notifiable_id');
     }
+
+    public function getEcclesiaAccessAttribute()
+    {
+        if (!$this->manage_ecclesia) {
+            return collect(); // Return an empty collection if null
+        }
+
+        $ecclesiaIds = explode(',', $this->manage_ecclesia); // Convert to an array
+
+        return Ecclesia::whereIn('id', $ecclesiaIds)->get();
+    }
 }
