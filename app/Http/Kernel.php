@@ -69,4 +69,8 @@ class Kernel extends HttpKernel
         'api.member.access' => \App\Http\Middleware\ApiMemberAccess::class,
         'preventBackHistory' => \App\Http\Middleware\PreventBackHistory::class,
     ];
+
+
+    
+
 }

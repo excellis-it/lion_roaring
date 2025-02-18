@@ -20,8 +20,12 @@ class TestimonialController extends Controller
 
     public function index()
     {
-        $testimonials = Testimonial::orderByDesc('id')->paginate(15);
-        return view('admin.testimonials.list', compact('testimonials'));
+        if (auth()->user()->can('Manage Testimonials')) {
+            $testimonials = Testimonial::orderByDesc('id')->paginate(15);
+            return view('admin.testimonials.list', compact('testimonials'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     public function fetchData(Request $request)
@@ -51,7 +55,11 @@ class TestimonialController extends Controller
      */
     public function create()
     {
-        return view('admin.testimonials.create');
+        if (auth()->user()->can('Create Testimonials')) {
+            return view('admin.testimonials.create');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -99,8 +107,12 @@ class TestimonialController extends Controller
      */
     public function edit($id)
     {
+        if (auth()->user()->can('Edit Testimonials')) {
         $testimonial = Testimonial::findOrFail($id);
         return view('admin.testimonials.edit')->with(compact('testimonial'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -147,8 +159,12 @@ class TestimonialController extends Controller
 
     public function delete($id)
     {
+        if (auth()->user()->can('Delete Testimonials')) {
         $testimonials = Testimonial::findOrFail($id);
         $testimonials->delete();
         return redirect()->route('testimonials.index')->with('error', 'Testimonial has been deleted successfully.');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 }

@@ -16,7 +16,11 @@ class ProfileController extends Controller
 
     public function index()
     {
-        return view('admin.profile');
+        if (auth()->user()->can('Manage My Profile')) {
+            return view('admin.profile');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     public function profileUpdate(Request $request)
@@ -25,7 +29,7 @@ class ProfileController extends Controller
         $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
-            'email'    => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix|unique:users,email,'.Auth::user()->id,
+            'email'    => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix|unique:users,email,' . Auth::user()->id,
             'phone_number' => 'required',
             'profile_picture' => 'nullable|mimes:jpg,png,jpeg,gif,svg',
         ]);
@@ -42,7 +46,11 @@ class ProfileController extends Controller
 
     public function password()
     {
-        return view('admin.password');
+        if (auth()->user()->can('Manage My Password')) {
+            return view('admin.password');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     public function passwordUpdate(Request $request)
@@ -53,8 +61,8 @@ class ProfileController extends Controller
             'new_password' => 'required|min:8|different:old_password',
             'confirm_password' => 'required|min:8|same:new_password',
 
-        ],[
-            'old_password.password'=> 'Old password is not correct',
+        ], [
+            'old_password.password' => 'Old password is not correct',
         ]);
 
         $data = User::find(Auth::user()->id);

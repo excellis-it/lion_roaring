@@ -4,7 +4,7 @@
             <div class="navigation navbar">
                 <div class="left_top me-auto">
                     <div class="logo">
-                        <a href="{{route('e-store')}}" class="">
+                        <a href="{{route('e-learning')}}" class="">
                             <img src="{{asset('ecom_assets/images/logo.png')}}" alt="" />
                         </a>
                     </div>
@@ -12,7 +12,7 @@
                 <div class="right_btm">
                     <div id="cssmenu">
                         <ul>
-                            <li><a href="{{route('e-store')}}">Home</a></li>
+                            <li><a href="{{route('e-learning')}}">Home</a></li>
                             <li><a href="{{route('all-products')}}">our collections</a></li>
                             <li><a href="{{route('contact-us')}}">Contact Us</a></li>
                         </ul>

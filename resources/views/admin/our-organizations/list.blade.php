@@ -13,7 +13,9 @@
     All Our Organization Details
 @endsection
 @section('create_button')
-  <a href="{{ route('our-organizations.create') }}" class="btn btn-primary">+ Create New Our Organization</a>
+    @if (auth()->user()->can('Create Our Organization'))
+        <a href="{{ route('our-organizations.create') }}" class="btn btn-primary">+ Create New Our Organization</a>
+    @endif
 @endsection
 @section('content')
     <section id="loading">
@@ -51,9 +53,8 @@
                                 <th class="sorting" data-sorting_type="asc" data-column_name="name" style="cursor: pointer"
                                     data-tippy-content="Sort by Organization Name">
                                     Organization Name<span id="name_icon"></span></th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="slug"
-                                    style="cursor: pointer" data-tippy-content="Sort by Slug">Slug<span
-                                    id="slug_icon"></span></th>
+                                <th class="sorting" data-sorting_type="asc" data-column_name="slug" style="cursor: pointer"
+                                    data-tippy-content="Sort by Slug">Slug<span id="slug_icon"></span></th>
 
                             </tr>
                         </thead>

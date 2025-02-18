@@ -45467,7 +45467,7 @@ ul {
     background: white;
     position: absolute;
     right: 10px;
-    bottom: 10px;
+    bottom: 25px;
     overflow: hidden;
     transition: all ease-in 0.3s;
     z-index: 1;
@@ -45652,4 +45652,41 @@ ul {
     border: none;
 }
 
+.bg-badge-dark {
+    background-color: #dee7f5;
+}
 
+.ck-content {
+    height: 250px;
+}
+
+
+.other_attch{
+    width: auto;
+    display: inline-block;
+}
+
+.attatched_file_box{
+    width: 130px;
+    height: 100px;
+    display: flex;
+    border: 1px solid #ccc;
+    background: #f1f1f1;
+    padding: 10px;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.mail_img_box{
+    display:flex;
+}
+
+.mail_img_box span img{
+    width: 19px;
+    height: 23px;
+    object-fit: contain;
+    margin-right: 5px;
+}
+.mail_img_box p{
+    margin-bottom:0;
+    font-size: 13px;
+}

@@ -7,13 +7,17 @@
         </td>
         <td>
             <div class="edit-1 d-flex align-items-center justify-content-center">
+                @if (auth()->user()->can('Delete Our Governance'))
                 <a title="Edit" href="{{ route('our-governances.edit', $our_governance->id) }}">
                     <span class="edit-icon"><i class="ph ph-pencil-simple"></i></span>
                 </a>
+                @endif
+                @if (auth()->user()->can('Create Our Governance'))
                 <a title="Delete" data-route="{{ route('our-governances.delete', $our_governance->id) }}"
                     href="javascript:void(0);" id="delete">
                     <span class="trash-icon"><i class="ph ph-trash"></i></span>
                 </a>
+                @endif
             </div>
         </td>
     </tr>

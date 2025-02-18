@@ -133,22 +133,40 @@ class DashboardController extends Controller
     public function notificationRead($type, $id)
     {
         $id = $id;
+        $notification = Notification::find($id);
+        $notification->is_read = 1;
+        $notification->update();
+
         if ($type == 'Chat') {
-            $notification = Notification::find($id);
-            $notification->is_read = 1;
-            $notification->update();
             return redirect()->route('chats.index');
         } elseif ($type == 'Team') {
-            $notification = Notification::find($id);
-            $notification->is_read = 1;
-            $notification->update();
             return redirect()->route('team-chats.index');
         } elseif ($type == 'Mail') {
-            $notification = Notification::find($id);
-            $notification->is_read = 1;
-            $notification->update();
             return redirect()->route('mail.index');
+        } elseif ($type == 'topic') {
+            return redirect()->route('topics.index');
+        } elseif ($type == 'becoming_sovereign') {
+            return redirect()->route('becoming-sovereign.index');
+        } elseif ($type == 'becoming_christ_like') {
+            return redirect()->route('becoming-christ-link.index');
+        } elseif ($type == 'becoming_a_leader') {
+            return redirect()->route('leadership-development.index');
+        } elseif ($type == 'file') {
+            return redirect()->route('file.index');
+        } elseif ($type == 'bulletin') {
+            return redirect()->route('bulletins.index');
+        } elseif ($type == 'job') {
+            return redirect()->route('jobs.index');
+        } elseif ($type == 'meeting') {
+            return redirect()->route('meetings.index');
+        } elseif ($type == 'live_event') {
+            return redirect()->route('events.index');
+        } elseif ($type == 'product') {
+            return redirect()->route('products.index');
+        } elseif ($type == 'strategy') {
+            return redirect()->route('strategy.index');
         }
+
 
         return abort(404);
     }

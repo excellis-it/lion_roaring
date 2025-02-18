@@ -7,7 +7,11 @@ use App\Models\File;
 use App\Models\Topic;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use App\Services\NotificationService;
+
 
 class LeadershipDevelopmentController extends Controller
 {
@@ -67,9 +71,12 @@ class LeadershipDevelopmentController extends Controller
         $file->file_name = $file_name;
         $file->file_extension = $file_extension;
         $file->topic_id = $request->topic_id;
-        $file->type = 'Leadership Development';
+        $file->type = 'Becoming a Leader';
         $file->file = $file_upload;
         $file->save();
+
+        $userName = Auth::user()->getFullNameAttribute();
+        $noti = NotificationService::notifyAllUsers('New Becoming a Leader created by ' . $userName, 'becoming_a_leader');
 
         return redirect()->route('leadership-development.index')->with('message', 'File uploaded successfully.');
     }
@@ -78,6 +85,7 @@ class LeadershipDevelopmentController extends Controller
     {
         if (auth()->user()->can('Delete Becoming a Leader')) {
             $file = File::find($id);
+            Log::info($file->file_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             if (isset($request->topic)) {
                 $new_topic = $request->topic;
             } else {
@@ -184,6 +192,7 @@ class LeadershipDevelopmentController extends Controller
             $file->file_extension = $file_extension;
             $file->file = $file_upload;
         }
+        $file->type = 'Becoming a Leader';
         $file->topic_id = $request->topic_id;
         $file->save();
 

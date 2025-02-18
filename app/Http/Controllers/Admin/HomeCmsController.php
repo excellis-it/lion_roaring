@@ -18,8 +18,12 @@ class HomeCmsController extends Controller
 
     public function index()
     {
-        $home = HomeCms::orderBy('id', 'desc')->first();
-        return view('admin.home.update')->with('home', $home);
+        if (auth()->user()->can('Manage Home Page')) {
+            $home = HomeCms::orderBy('id', 'desc')->first();
+            return view('admin.home.update')->with('home', $home);
+        } else {
+            return redirect()->route('admin.dashboard')->with('error', 'You do not have the permission to access this page.');
+        }
     }
 
     /**

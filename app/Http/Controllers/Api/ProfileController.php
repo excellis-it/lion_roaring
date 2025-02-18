@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Validator;
+use App\Models\Notification;
 
 /**
  * @group Profile
@@ -40,7 +43,7 @@ class ProfileController extends Controller
 
     public function profile(Request $request)
     {
-        $user = $request->user();
+        $user = $request->user()->load('ecclesia', 'countries', 'states');
         return response()->json(['status' => true, 'message' => 'Profile details', 'data' => $user], $this->successStatus);
     }
 
@@ -151,5 +154,326 @@ class ProfileController extends Controller
         $user->save();
 
         return response()->json(['status' => true, 'message' => 'Profile picture updated successfully'], $this->successStatus);
+    }
+
+
+    /**
+     * Check User Permission
+     * 
+     * Checks whether the authenticated user has a given permission.
+     * @authenticated
+     * @bodyParam permission_name string required The name of the permission to check. Example: Manage Email
+     * 
+     * @response 200 {
+     *  "status": true,
+     *  "message": "User has permission"
+     * }
+     * @response 403 {
+     *  "status": false,
+     *  "message": "User does not have permission"
+     * }
+     * @response 422 {
+     *  "message": "The permission_name field is required.",
+     *  "status": false
+     * }
+     * @response 500 {
+     *  "status": false,
+     *  "message": "An error occurred: [error_message]"
+     * }
+     */
+    public function checkUserHasPermission(Request $request)
+    {
+        $user = $request->user();
+
+        $validator = Validator::make($request->all(), [
+            'permission_name' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors()->first(),
+                'status' => false
+            ], 422);
+        }
+
+        try {
+            // Check if the user has the requested permission
+            if ($user->hasPermissionTo($request->input('permission_name'), 'web')) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'User has permission'
+                ], 200); // 200 OK
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User does not have permission'
+                ], 403); // 403 Forbidden
+            }
+        } catch (\Exception $e) {
+            // Handle any errors that occur during the permission check
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred: ' . $e->getMessage()
+            ], 201);
+        }
+    }
+
+
+    /**
+     * Check Menu Permissions
+     * 
+     * This endpoint checks the menu permissions for the authenticated user.
+     *
+     * @authenticated
+     *
+     * @response 200 {
+     *   "status": true,
+     *   "menus": [
+     *     {
+     *       "menu_name": "menu_a",
+     *       "permission_name": "permission_name_aa",
+     *       "active": true
+     *     },
+     *     {
+     *       "menu_name": "menu_b",
+     *       "permission_name": "permission_name_bb",
+     *       "active": false
+     *     },
+     *     {
+     *       "menu_name": "menu_c",
+     *       "permission_name": "permission_name_cc",
+     *       "active": true
+     *     }
+     *   ],
+     *   "message": "Menu permissions fetched successfully"
+     * }
+     * 
+     * @response 403 {
+     *   "status": false,
+     *   "message": "User does not have permission"
+     * }
+     * 
+     * @response 201 {
+     *   "status": false,
+     *   "message": "An error occurred: <error_message>"
+     * }
+     */
+    public function checkUserMenuPermission(Request $request)
+    {
+        $user = $request->user();
+        // Define the menu-permission mapping dynamically
+        $menus = [
+            ['menu_name' => 'Chats', 'permission_name' => 'Manage Chat'],
+            ['menu_name' => 'Team', 'permission_name' => 'Manage Team'],
+            ['menu_name' => 'Mail', 'permission_name' => 'Manage Email'],
+            ['menu_name' => 'Topics', 'permission_name' => 'Manage Topic'],
+            ['menu_name' => 'Becoming Sovereign', 'permission_name' => 'Manage Becoming Sovereigns'],
+            ['menu_name' => 'Becoming Christ Like', 'permission_name' => 'Manage Becoming Christ Like'],
+            ['menu_name' => 'Becoming a Leader', 'permission_name' => 'Manage Becoming a Leader'],
+            ['menu_name' => 'Files', 'permission_name' => 'Manage File'],
+            ['menu_name' => 'Bulletin Board', 'permission_name' => 'Manage Bulletin'],
+            ['menu_name' => 'Create Bulletin', 'permission_name' => 'Manage Bulletin'],
+            ['menu_name' => 'Job Posting', 'permission_name' => 'Manage Job Postings'],
+            ['menu_name' => 'Meeting Schedule', 'permission_name' => 'Manage Meeting Schedule'],
+            ['menu_name' => 'Live Events', 'permission_name' => 'Manage Event'],
+            ['menu_name' => 'All Members', 'permission_name' => 'Manage Partners'],
+            ['menu_name' => 'Strategy', 'permission_name' => 'Manage Strategy'],
+            ['menu_name' => 'Help', 'permission_name' => 'Manage Help'],
+        ];
+
+        try {
+            $menuPermissions = [];
+
+            foreach ($menus as $menu) {
+                // $hasPermission = $user->hasPermissionTo($menu['permission_name'], 'web');
+                try {
+                    // Check if the user has the permission
+                    $hasPermission = $user->hasPermissionTo($menu['permission_name'], 'web');
+                } catch (\Spatie\Permission\Exceptions\PermissionDoesNotExist $e) {
+                    // If the permission does not exist, set active to false
+                    $hasPermission = false;
+                }
+
+                $menuPermissions[] = [
+                    'menu_name' => $menu['menu_name'],
+                    'permission_name' => $menu['permission_name'],
+                    'active' => $hasPermission, // Set active based on the permission status
+                ];
+            }
+
+            // Return the list of menus with permission status
+            return response()->json([
+                'status' => true,
+                'menus' => $menuPermissions,
+                'message' => 'Menu permissions fetched successfully',
+            ], 200); // 200 OK
+        } catch (\Exception $e) {
+            // Handle any errors that occur during the permission check
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred: ' . $e->getMessage()
+            ], 201); // 201 Created for error handling (you may want to use 500 for internal errors)
+        }
+    }
+
+    /**
+     * Notifications list
+     *
+     * @authenticated
+     *
+     *
+     * @response 200 
+     *   {
+     *    "list": {
+     *        "current_page": 1,
+     *        "data": [
+     *            {
+     *                "id": 862,
+     *                "user_id": 37,
+     *                "chat_id": null,
+     *                "message": "You have a <b>new mail</b> from masum@excellisit.net",
+     *                "status": 0,
+     *                "type": "Mail",
+     *                "is_read": 0,
+     *                "is_delete": 0,
+     *                "created_at": "2024-12-04T05:40:32.000000Z",
+     *                "updated_at": "2024-12-04T05:40:32.000000Z"
+     *            },
+     *            {
+     *                "id": 860,
+     *                "user_id": 37,
+     *                "chat_id": null,
+     *                "message": "You have a <b>new mail</b> from masum@excellisit.net",
+     *                "status": 0,
+     *                "type": "Mail",
+     *                "is_read": 0,
+     *                "is_delete": 0,
+     *                "created_at": "2024-12-04T05:37:44.000000Z",
+     *                "updated_at": "2024-12-04T05:37:44.000000Z"
+     *            }
+     *        ],
+     *        "first_page_url": "http://127.0.0.1:8000/api/v3/user/notifications?page=1",
+     *        "from": 1,
+     *        "last_page": 15,
+     *        "last_page_url": "http://127.0.0.1:8000/api/v3/user/notifications?page=15",
+     *        "links": [
+     *            {
+     *                "url": null,
+     *                "label": "&laquo; Previous",
+     *                "active": false
+     *            },
+     *            {
+     *                "url": "http://127.0.0.1:8000/api/v3/user/notifications?page=1",
+     *                "label": "1",
+     *                "active": true
+     *            },
+     *            {
+     *                "url": "http://127.0.0.1:8000/api/v3/user/notifications?page=2",
+     *                "label": "2",
+     *                "active": false
+     *            },           
+     *            {
+     *                "url": "http://127.0.0.1:8000/api/v3/user/notifications?page=2",
+     *                "label": "Next &raquo;",
+     *                "active": false
+     *            }
+     *        ],
+     *        "next_page_url": "http://127.0.0.1:8000/api/v3/user/notifications?page=2",
+     *        "path": "http://127.0.0.1:8000/api/v3/user/notifications",
+     *        "per_page": 15,
+     *        "prev_page_url": null,
+     *        "to": 15,
+     *        "total": 216
+     *    }
+     * }
+     * @response 201 {
+     *   "message": "Page not found"
+     * }
+     */
+    public function notifications(Request $request)
+    {
+        try {
+
+
+            $notifications = Notification::where('user_id', auth()->user()->id)->where('is_delete', 0)
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+
+            $is_notification = true;
+
+            return response()->json([
+                'list' => $notifications
+            ], 200);
+
+
+            return response()->json(['message' => 'Page not found'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 201);
+        }
+    }
+
+    /**
+     * Mark a notification as read.
+     *
+     * @authenticated
+     *
+     * @urlParam type string The type of notification (Chat, Team, Mail). Example: Chat
+     * @urlParam id int The ID of the notification. Example: 1
+     *
+     * @response 200 {
+     *   "message": "Notification marked as read"
+     * }
+     * @response 404 {
+     *   "message": "Notification not found"
+     * }
+     */
+    public function notificationRead($type, $id)
+    {
+        try {
+            $notification = Notification::find($id);
+
+            if (!$notification) {
+                return response()->json(['message' => 'Notification not found'], 404);
+            }
+
+            $pagename = 'no';
+
+            if ($type == 'Chat') {
+                $pagename = 'chat';
+            } elseif ($type == 'Team') {
+                $pagename = 'team';
+            } elseif ($type == 'Mail') {
+                $pagename = 'mail';
+            }
+
+            $notification->is_read = 1;
+            $notification->update();
+
+            return response()->json(['page_name' => $pagename, 'message' => 'Notification marked as read'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 201);
+        }
+    }
+
+
+
+    /**
+     * Delete all notifications
+     *
+     * @authenticated
+     *
+     * @response 200 {
+     *   "message": "Notification deleted successfully.",
+     *   "status": true
+     * }
+     */
+    public function notificationClear()
+    {
+        try {
+            Notification::where('user_id', auth()->user()->id)->delete();
+            return response()->json(['message' => 'Notification deleted successfully.', 'status' => true], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 201);
+        }
     }
 }

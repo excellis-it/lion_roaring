@@ -1378,6 +1378,10 @@ section {
     color: #036666
 }
 
+.emojionearea .emojionearea-editor {
+    min-height: unset !important;
+}
+
 .me {
     margin-left: auto;
     color: var(--black-color);
@@ -1387,7 +1391,7 @@ section {
 .me .messageContent {
     background-color: rgb(217 139 28 / 30%);
     color: var(--black-color);
-    text-align: right;
+    text-align: start;
     margin-bottom: 0;
     padding: 10px 22px;
     border-radius: 15px 0 15px 15px;
@@ -2330,3 +2334,187 @@ section {
     background-color: #643271;
     color: #fff;
 }
+
+
+.emailRow__title
+{
+    display: inline-block;
+    max-width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.text-blue{
+    color: #643271;
+}
+
+.table-center-align .table td, .table-center-align .table th{
+    vertical-align: middle !important;
+}
+
+.member-table td
+{
+    border-bottom: 0px !important;
+    border-right: 0px !important;
+    border-left: 0px !important;
+}
+
+.member-table th
+{
+    border-bottom: 0px !important;
+    border-right: 0px !important;
+    border-left: 0px !important;
+}
+
+
+
+.chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+  }
+  .chatbot-btn {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    /* background-color: white; */
+    border-radius: 50%;
+    color: white;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  .chatbot-btn:hover {
+    background-color: #643271;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+  }
+  .chatbox {
+    display: none;
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 400px;
+    height: 550px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: slideIn 0.3s ease;
+  }
+  .chatbox-header {
+    background-color: #643271;
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+  }
+  .chatbox-header .close-btn {
+    cursor: pointer;
+    font-size: 18px;
+    background: none;
+    border: none;
+    color: white;
+  }
+  .chatbox-body {
+    margin-bottom: 20px;
+    padding: 15px;
+    height: 445px;
+    overflow-y: auto;
+    background-color: #f4f4f4;
+  }
+  .chatbox-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 5px;
+    background-color: #f9f9f9;
+    display: flex;
+    max-height: 50px;
+  }
+  .chatbox-footer input {
+    flex-grow: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    margin-right: 10px;
+  }
+  .chatbox-footer button {
+    background-color: #643271;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .chatbox-footer button:hover {
+    background-color: #643271;
+  }
+
+  .chatbot-message {
+    max-width: 70%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    clear: both;
+  }
+
+  .chatbot-bot-message {
+    background-color: #e0e0e0;
+    align-self: flex-start;
+    float: left;
+    margin-right: 15px;
+  }
+
+  .chatbot-bot-message p{
+    margin-bottom: 0px !important;
+  }
+
+  .chatbot-bot-message-lable {
+    align-self: flex-start;
+    float: left;
+    margin-right: 15px;
+    color: slategrey;
+    font-size: 12px;
+  }
+
+  .chatbot-user-message {
+    background-color: #643271;
+    color: white;
+    align-self: flex-end;
+    float: right;
+    margin-left: 15px;
+  }
+
+  .chatbot-user-message p{
+    margin-bottom: 0px !important;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+
+.ecclesia-see-button {
+    height: 20px;
+    font-size: 10px;
+    padding: 0px 5px 0px 5px;
+}
+

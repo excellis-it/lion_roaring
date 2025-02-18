@@ -20,8 +20,12 @@ class OrganizationCenterController extends Controller
 
     public function index()
     {
-        $organization_centers = OrganizationCenter::orderBy('id', 'desc')->paginate(10);
-        return view('admin.organization-centers.list')->with(compact('organization_centers'));
+        if (auth()->user()->can('Manage Organization Center')) {
+            $organization_centers = OrganizationCenter::orderBy('id', 'desc')->paginate(10);
+            return view('admin.organization-centers.list')->with(compact('organization_centers'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     public function fetchData(Request $request)
@@ -52,8 +56,12 @@ class OrganizationCenterController extends Controller
      */
     public function create()
     {
-        $organizations = OurOrganization::orderBy('name', 'asc')->get();
-        return view('admin.organization-centers.create')->with(compact('organizations'));
+        if (auth()->user()->can('Create Organization Center')) {
+            $organizations = OurOrganization::orderBy('name', 'asc')->get();
+            return view('admin.organization-centers.create')->with(compact('organizations'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -117,9 +125,13 @@ class OrganizationCenterController extends Controller
      */
     public function edit($id)
     {
-        $organizations = OurOrganization::orderBy('name', 'asc')->get();
-        $organization_center = OrganizationCenter::find($id);
-        return view('admin.organization-centers.edit')->with(compact('organization_center', 'organizations'));
+        if (auth()->user()->can('Edit Organization Center')) {
+            $organizations = OurOrganization::orderBy('name', 'asc')->get();
+            $organization_center = OrganizationCenter::find($id);
+            return view('admin.organization-centers.edit')->with(compact('organization_center', 'organizations'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -185,8 +197,12 @@ class OrganizationCenterController extends Controller
 
     public function delete(Request $request)
     {
-        $organization_center = OrganizationCenter::findOrfail($request->id);
-        $organization_center->delete();
-        return redirect()->route('organization-centers.index')->with('message', 'Organization Center deleted successfully.');
+        if (auth()->user()->can('Delete Organization Center')) {
+            $organization_center = OrganizationCenter::findOrfail($request->id);
+            $organization_center->delete();
+            return redirect()->route('organization-centers.index')->with('message', 'Organization Center deleted successfully.');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 }

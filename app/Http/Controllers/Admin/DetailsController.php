@@ -17,8 +17,12 @@ class DetailsController extends Controller
      */
     public function index()
     {
+        if (auth()->user()->can('Manage Details Page')) {
         $details = Detail::orderBy('id', 'asc')->get();
         return view('admin.details.update')->with('details', $details);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -39,7 +43,7 @@ class DetailsController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         foreach ($request->description as $key => $value) {
             if (isset($request->image_id[$key])) {
                 $detail = Detail::find($request->image_id[$key]);

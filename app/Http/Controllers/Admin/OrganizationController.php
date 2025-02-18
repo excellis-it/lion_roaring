@@ -21,8 +21,12 @@ class OrganizationController extends Controller
 
     public function index()
     {
+        if (auth()->user()->can('Manage Organizations Page')) {
         $organization = Organization::orderBy('id', 'desc')->first();
         return view('admin.organization.update')->with(compact('organization'));
+        } else {
+            return redirect()->route('admin.dashboard')->with('error', 'You do not have permission to access this page.');
+        }
     }
 
     /**

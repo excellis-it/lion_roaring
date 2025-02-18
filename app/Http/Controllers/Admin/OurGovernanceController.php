@@ -19,8 +19,12 @@ class OurGovernanceController extends Controller
 
     public function index()
     {
-        $our_governances = OurGovernance::orderBy('id', 'desc')->paginate(10);
-        return view('admin.our-governances.list')->with(compact('our_governances'));
+        if (auth()->user()->can('Manage Our Governance')) {
+            $our_governances = OurGovernance::orderBy('id', 'desc')->paginate(10);
+            return view('admin.our-governances.list')->with(compact('our_governances'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     public function fetchData(Request $request)
@@ -48,7 +52,11 @@ class OurGovernanceController extends Controller
      */
     public function create()
     {
-        return view('admin.our-governances.create');
+        if (auth()->user()->can('Create Our Governance')) {
+            return view('admin.our-governances.create');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -110,8 +118,12 @@ class OurGovernanceController extends Controller
      */
     public function edit($id)
     {
-        $our_governance = OurGovernance::find($id);
-        return view('admin.our-governances.edit')->with(compact('our_governance'));
+        if (auth()->user()->can('Edit Our Governance')) {
+            $our_governance = OurGovernance::find($id);
+            return view('admin.our-governances.edit')->with(compact('our_governance'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -176,8 +188,12 @@ class OurGovernanceController extends Controller
 
     public function delete(Request $request)
     {
-        $our_governance = OurGovernance::findOrfail($request->id);
-        $our_governance->delete();
-        return redirect()->route('our-governances.index')->with('message', 'Our Governance deleted successfully.');
+        if (auth()->user()->can('Delete Our Governance')) {
+            $our_governance = OurGovernance::findOrfail($request->id);
+            $our_governance->delete();
+            return redirect()->route('our-governances.index')->with('message', 'Our Governance deleted successfully.');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 }

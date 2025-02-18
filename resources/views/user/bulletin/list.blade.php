@@ -54,20 +54,20 @@
                                         <thead class="color_head">
                                             <tr class="header-row">
                                                 <th>ID (#)</th>
-                                                @if (auth()->user()->hasRole('ADMIN'))
-                                                <th>
-                                                    Upload By
-                                                </th>
+                                                @if (auth()->user()->hasRole('SUPER ADMIN'))
+                                                    <th>
+                                                        Upload By
+                                                    </th>
                                                 @endif
                                                 <th class="sorting" data-tippy-content="Sort by Bulletin Title"
-                                                data-sorting_type="desc" data-column_name="title"
-                                                style="cursor: pointer">Bulletin Title <span id="title_icon"><i
-                                                    class="fa fa-arrow-down"></i></span></th>
-                                                    {{-- Description --}}
-                                                    <th class="sorting" data-tippy-content="Sort by Bulletin Description"
+                                                    data-sorting_type="desc" data-column_name="title"
+                                                    style="cursor: pointer">Bulletin Title <span id="title_icon"><i
+                                                            class="fa fa-arrow-down"></i></span></th>
+                                                {{-- Description --}}
+                                                <th class="sorting" data-tippy-content="Sort by Bulletin Description"
                                                     data-sorting_type="desc" data-column_name="description"
-                                                    style="cursor: pointer">Bulletin Description <span id="description_icon"><i
-                                                        class="fa fa-arrow-down"></i></span></th>
+                                                    style="cursor: pointer">Bulletin Description <span
+                                                        id="description_icon"><i class="fa fa-arrow-down"></i></span></th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -76,10 +76,9 @@
                                         </tbody>
                                     </table>
                                     <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
-                                            <input type="hidden" name="hidden_column_name" id="hidden_column_name"
-                                                value="id" />
-                                            <input type="hidden" name="hidden_sort_type" id="hidden_sort_type"
-                                                value="desc" />
+                                    <input type="hidden" name="hidden_column_name" id="hidden_column_name"
+                                        value="id" />
+                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
                                 </div>
                             </div>
                         </div>

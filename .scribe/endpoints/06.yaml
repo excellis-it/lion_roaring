@@ -4,7 +4,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/user/profile
+    uri: api/v3/user/profile
     metadata:
       groupName: Profile
       groupDescription: ''
@@ -15,6 +15,7 @@ endpoints:
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
@@ -51,7 +52,10 @@ endpoints:
         description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer bD4vZV8kP6g5af63chea1dE'
     controller: null
     method: null
     route: null
@@ -59,7 +63,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/user/update-profile
+    uri: api/v3/user/update-profile
     metadata:
       groupName: Profile
       groupDescription: ''
@@ -70,6 +74,7 @@ endpoints:
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
@@ -85,6 +90,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       middle_name:
         name: middle_name
@@ -94,6 +100,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       last_name:
         name: last_name
@@ -103,6 +110,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       phone:
         name: phone
@@ -112,6 +120,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       address:
         name: address
@@ -121,6 +130,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       first_name: John
@@ -141,7 +151,10 @@ endpoints:
         description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fZV8E4Pav315bkc6hagdD6e'
     controller: null
     method: null
     route: null
@@ -149,7 +162,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/user/profile-picture-update
+    uri: api/v3/user/profile-picture-update
     metadata:
       groupName: Profile
       groupDescription: ''
@@ -160,6 +173,7 @@ endpoints:
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
       Content-Type: multipart/form-data
       Accept: application/json
     urlParameters: []
@@ -175,6 +189,7 @@ endpoints:
         type: file
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanBodyParameters: []
     fileParameters:
@@ -201,7 +216,10 @@ endpoints:
         description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 665Deg4f3aV1vaPbckE8Zdh'
     controller: null
     method: null
     route: null
@@ -209,7 +227,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/user/change-password
+    uri: api/v3/user/change-password
     metadata:
       groupName: Profile
       groupDescription: ''
@@ -220,6 +238,7 @@ endpoints:
       authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
@@ -235,6 +254,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       new_password:
         name: new_password
@@ -244,6 +264,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       confirm_password:
         name: confirm_password
@@ -253,6 +274,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       old_password: password
@@ -271,7 +293,406 @@ endpoints:
         description: ''
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer egfVk1P8DahdEZc664ba3v5'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/check-role-permission
+    metadata:
+      groupName: Profile
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Check User Permission'
+      description: 'Checks whether the authenticated user has a given permission.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      permission_name:
+        name: permission_name
+        description: 'The name of the permission to check.'
+        required: true
+        example: 'Manage Email'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      permission_name: 'Manage Email'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "status": true,
+           "message": "User has permission"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 403
+        content: |-
+          {
+           "status": false,
+           "message": "User does not have permission"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+           "message": "The permission_name field is required.",
+           "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+           "status": false,
+           "message": "An error occurred: [error_message]"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 8hDe5b6kcPEad3Z1Vavg6f4'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/check-menu-permission
+    metadata:
+      groupName: Profile
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Check Menu Permissions'
+      description: 'This endpoint checks the menu permissions for the authenticated user.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "status": true,
+            "menus": [
+              {
+                "menu_name": "menu_a",
+                "permission_name": "permission_name_aa",
+                "active": true
+              },
+              {
+                "menu_name": "menu_b",
+                "permission_name": "permission_name_bb",
+                "active": false
+              },
+              {
+                "menu_name": "menu_c",
+                "permission_name": "permission_name_cc",
+                "active": true
+              }
+            ],
+            "message": "Menu permissions fetched successfully"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "status": false,
+            "message": "An error occurred: <error_message>"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 403
+        content: |-
+          {
+            "status": false,
+            "message": "User does not have permission"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6846gaPvhEVfebd1akZc53D'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/notifications
+    metadata:
+      groupName: Profile
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Notifications list'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "list": {
+                 "current_page": 1,
+                 "data": [
+                     {
+                         "id": 862,
+                         "user_id": 37,
+                         "chat_id": null,
+                         "message": "You have a <b>new mail</b> from masum@excellisit.net",
+                         "status": 0,
+                         "type": "Mail",
+                         "is_read": 0,
+                         "is_delete": 0,
+                         "created_at": "2024-12-04T05:40:32.000000Z",
+                         "updated_at": "2024-12-04T05:40:32.000000Z"
+                     },
+                     {
+                         "id": 860,
+                         "user_id": 37,
+                         "chat_id": null,
+                         "message": "You have a <b>new mail</b> from masum@excellisit.net",
+                         "status": 0,
+                         "type": "Mail",
+                         "is_read": 0,
+                         "is_delete": 0,
+                         "created_at": "2024-12-04T05:37:44.000000Z",
+                         "updated_at": "2024-12-04T05:37:44.000000Z"
+                     }
+                 ],
+                 "first_page_url": "http://127.0.0.1:8000/api/v3/user/notifications?page=1",
+                 "from": 1,
+                 "last_page": 15,
+                 "last_page_url": "http://127.0.0.1:8000/api/v3/user/notifications?page=15",
+                 "links": [
+                     {
+                         "url": null,
+                         "label": "&laquo; Previous",
+                         "active": false
+                     },
+                     {
+                         "url": "http://127.0.0.1:8000/api/v3/user/notifications?page=1",
+                         "label": "1",
+                         "active": true
+                     },
+                     {
+                         "url": "http://127.0.0.1:8000/api/v3/user/notifications?page=2",
+                         "label": "2",
+                         "active": false
+                     },
+                     {
+                         "url": "http://127.0.0.1:8000/api/v3/user/notifications?page=2",
+                         "label": "Next &raquo;",
+                         "active": false
+                     }
+                 ],
+                 "next_page_url": "http://127.0.0.1:8000/api/v3/user/notifications?page=2",
+                 "path": "http://127.0.0.1:8000/api/v3/user/notifications",
+                 "per_page": 15,
+                 "prev_page_url": null,
+                 "to": 15,
+                 "total": 216
+             }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Page not found"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer c3eg16hPVb8f4vDakd65ZaE'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/notification-read/{type}/{id}'
+    metadata:
+      groupName: Profile
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Mark a notification as read.'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      type:
+        name: type
+        description: 'The type of notification (Chat, Team, Mail).'
+        required: false
+        example: Chat
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      id:
+        name: id
+        description: 'The ID of the notification.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      type: Chat
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Notification marked as read"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "Notification not found"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer adb5cg6h6eVPvZED1ak43f8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/user/notification-clear
+    metadata:
+      groupName: Profile
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete all notifications'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Notification deleted successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a65P6aE4h3gdekcV8bDf1vZ'
     controller: null
     method: null
     route: null
