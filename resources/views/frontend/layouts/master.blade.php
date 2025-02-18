@@ -328,7 +328,6 @@
                     <div class="modal-content modal_code">
                         <div class="modal-header">
                             <h5 class="modal-title" id="otpModalLabel">Email Verification</h5>
-
                         </div>
                         <div class="modal-body">
                             <form id="otp-form" action="{{ route('verify.otp') }}" method="post">
@@ -342,9 +341,13 @@
                                         border-radius: 0px;">
                                     <span class="text-danger" id="otp-error"></span>
                                 </div>
+                                <br>
                                 <button style="background-color: #643271;
     border-color: #643271;" type="submit"
                                     class="btn btn-primary w-100 button button-primary">Verify</button>
+                                <br>
+                                <br>
+                                <br>
                             </form>
                         </div>
                     </div>
