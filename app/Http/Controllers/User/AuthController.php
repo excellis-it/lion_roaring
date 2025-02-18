@@ -14,6 +14,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Crypt;
+use App\Mail\OtpMail;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -39,13 +43,17 @@ class AuthController extends Controller
         // login by user_name or email
         $fieldType = filter_var($request->user_name, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
         $request->merge([$fieldType => $request->user_name]);
-        // return $fieldType;
-        if (auth()->attempt($request->only($fieldType, 'password'))) {
-            if (auth()->user()->status == 1 && auth()->user()->is_accept == 1) {
-                session()->flash('message', 'Login success');
-                return response()->json(['message' => 'Login success', 'status' => true, 'redirect' => route('user.profile')]);
+
+        $user = User::where($fieldType, $request->user_name)->first();
+
+        if ($user && \Hash::check($request->password, $user->password)) {
+            if ($user->status == 1 && $user->is_accept == 1) {
+                $otp = rand(1000, 9999);
+                Session::put('otp', Crypt::encrypt($otp));
+                Session::put('user_id', $user->id);
+                Mail::to($user->email)->send(new OtpMail($otp));
+                return response()->json(['message' => 'OTP sent to your email', 'status' => true, 'otp_required' => true]);
             } else {
-                auth()->logout();
                 return response()->json(['message' => 'Your account is not active!', 'status' => false]);
             }
         } else {
@@ -142,7 +150,8 @@ class AuthController extends Controller
         $user->status = 0;
         $user->save();
 
-        $user->assignRole('MEMBER');
+        // $user->assignRole('MEMBER');
+        $user->assignRole('MEMBER_NON_SOVEREIGN');
         $maildata = [
             'name' => $request->full_name,
         ];

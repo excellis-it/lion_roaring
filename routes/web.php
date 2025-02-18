@@ -71,6 +71,7 @@ use App\Models\EcomCmsPage;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\User\ChatBotController;
+use App\Http\Controllers\User\EmailVerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -292,6 +293,9 @@ Route::get('/member-privacy-policy', [UserCmsController::class, 'memberPrivacyPo
 // get.states
 Route::get('/get-states', [UserAuthController::class, 'getStates'])->name('get.states');
 
+Route::post('/send-otp', [EmailVerificationController::class, 'sendOtp'])->name('send.otp');
+Route::post('/verify-otp', [EmailVerificationController::class, 'verifyOtp'])->name('verify.otp');
+
 Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(function () {
     Route::get('/subscription', [SubscriptionController::class, 'subscription'])->name('user.subscription');
     Route::get('/subscription-payment/{id}', [SubscriptionController::class, 'payment'])->name('user.subscription.payment');
@@ -415,7 +419,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         'ecclesias' => EcclesiaContorller::class,
         'jobs' => JobpostingController::class,
         'meetings' => MeetingSchedulingController::class,
-       // 'meetings' => MeetingSchedulingController::class,
+        // 'meetings' => MeetingSchedulingController::class,
     ]);
 
     Route::prefix('meetings')->group(function () {

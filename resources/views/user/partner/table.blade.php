@@ -62,7 +62,7 @@
             </td>
 
             <td>
-                {{ isset($partner->ecclesia) ? $partner->ecclesia->name . ' (' . $partner->ecclesia->countryName->name . ')' : '' }}
+                {{ isset($partner->ecclesia) ? $partner->ecclesia->name . ' (' . $partner->ecclesia->countryName->name . ')' : 'NO NAME' }}
             </td>
             {{-- <td>{{ $partner->user_name }}</td>
 
@@ -124,6 +124,3 @@
         <td colspan="10" class="text-center">No Data Found</td>
     </tr>
 @endif
-
-
-

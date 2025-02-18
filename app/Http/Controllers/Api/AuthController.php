@@ -124,7 +124,8 @@ class AuthController extends Controller
         $user->status = 0;
         $user->save();
 
-        $user->assignRole('MEMBER');
+        // $user->assignRole('MEMBER');
+        $user->assignRole('MEMBER_NON_SOVEREIGN');
         $maildata = [
             'name' => $request->first_name . ' ' . $request->last_name,
         ];
@@ -379,7 +380,6 @@ class AuthController extends Controller
             return response()->json([
                 'states' => $states
             ], 200);
-
         } catch (\Exception $e) {
             // Handle any errors and return a message
             return response()->json([
@@ -387,8 +387,4 @@ class AuthController extends Controller
             ], 201);
         }
     }
-
-
-
-
 }
