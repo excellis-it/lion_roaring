@@ -22,6 +22,6 @@ class assignAdminSeeder extends Seeder
         $admin->password = bcrypt('12345678');
         $admin->status = true;
         $admin->save();
-        $admin->assignRole('ADMIN');
+        $admin->assignRole('SUPER ADMIN');
     }
 }

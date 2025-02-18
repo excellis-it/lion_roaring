@@ -13,7 +13,9 @@
     All Organization Center Details
 @endsection
 @section('create_button')
-  <a href="{{ route('organization-centers.create') }}" class="btn btn-primary">+ Create New Organization Center</a>
+    @if (auth()->user()->can('Create Organization Center'))
+        <a href="{{ route('organization-centers.create') }}" class="btn btn-primary">+ Create New Organization Center</a>
+    @endif
 @endsection
 @section('content')
     <section id="loading">
@@ -53,10 +55,10 @@
 
                                 <th class="sorting" data-sorting_type="asc" data-column_name="name" style="cursor: pointer"
                                     data-tippy-content="Sort by Organization Center Name">
-                                    Organization Center Name<span id="name_icon"><span class="ph ph-caret-down"></span></span></th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="slug"
-                                    style="cursor: pointer" data-tippy-content="Sort by Slug">Slug<span
-                                    id="slug_icon"></span></th>
+                                    Organization Center Name<span id="name_icon"><span
+                                            class="ph ph-caret-down"></span></span></th>
+                                <th class="sorting" data-sorting_type="asc" data-column_name="slug" style="cursor: pointer"
+                                    data-tippy-content="Sort by Slug">Slug<span id="slug_icon"></span></th>
 
                             </tr>
                         </thead>

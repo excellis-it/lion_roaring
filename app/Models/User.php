@@ -10,8 +10,12 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
+
 class User extends Authenticatable
 {
+    //  protected $guard_name = 'api';
+    // protected $guard_name = 'web';
+
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
@@ -92,18 +96,42 @@ class User extends Authenticatable
 
     public function ecclesia()
     {
-        return $this->belongsTo(Ecclesia::class);
+        return $this->belongsTo(Ecclesia::class, 'ecclesia_id');
     }
 
     public function countries()
     {
         return $this->belongsTo(Country::class, 'country');
-
     }
 
     public function states()
     {
         return $this->belongsTo(State::class, 'state');
+    }
 
+    // public function role()
+    // {
+    //     return $this->belongsToMany(Role::class);
+    // }
+
+    public function getFirstRoleType()
+    {
+        return $this->roles->pluck('type')->first();
+    }
+
+    public function systemNotifications()
+    {
+        return $this->hasMany(SystemNotification::class, 'notifiable_id');
+    }
+
+    public function getEcclesiaAccessAttribute()
+    {
+        if (!$this->manage_ecclesia) {
+            return collect(); // Return an empty collection if null
+        }
+
+        $ecclesiaIds = explode(',', $this->manage_ecclesia); // Convert to an array
+
+        return Ecclesia::whereIn('id', $ecclesiaIds)->get();
     }
 }

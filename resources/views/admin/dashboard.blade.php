@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-    Dashboard - {{env('APP_NAME')}} admin
+    Dashboard - {{ env('APP_NAME') }} admin
 @endsection
 @push('styles')
 @endpush
@@ -17,34 +17,35 @@
 
                 <div class="left_right">
                     <div class="row">
-                        <div class="col-md-12">
-                            <!-- <h2 class="flight_titel">Flight</h2> -->
-                            <div class="row">
-                                <div class="col-lg-3 col-md-6 col-12">
-                                    <div class="mini_box small_bg_1">
-                                        <h3>${{$count['today_donation']}}</h3>
-                                        <p>Today Donation</p>
+                        @if (auth()->user()->hasRole('SUPER ADMIN'))
+                            <div class="col-md-12">
+                                <!-- <h2 class="flight_titel">Flight</h2> -->
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-6 col-12">
+                                        <div class="mini_box small_bg_1">
+                                            <h3>${{ $count['today_donation'] }}</h3>
+                                            <p>Today Donation</p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-12">
-                                    <div class="mini_box small_bg_2">
-                                        <h3>${{$count['total_donation_this_month']}}</h3>
-                                        <p>This Month Donation</p>
+                                    <div class="col-lg-3 col-md-6 col-12">
+                                        <div class="mini_box small_bg_2">
+                                            <h3>${{ $count['total_donation_this_month'] }}</h3>
+                                            <p>This Month Donation</p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-12">
-                                    <div class="mini_box small_bg_3">
-                                        <h3>${{$count['total_donation_this_year']}}</h3>
-                                        <p>This Year Donation</p>
+                                    <div class="col-lg-3 col-md-6 col-12">
+                                        <div class="mini_box small_bg_3">
+                                            <h3>${{ $count['total_donation_this_year'] }}</h3>
+                                            <p>This Year Donation</p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-12">
-                                    <div class="mini_box small_bg_4">
-                                        <h3>${{$count['total_donation']}}</h3>
-                                        <p>Total Donation</p>
+                                    <div class="col-lg-3 col-md-6 col-12">
+                                        <div class="mini_box small_bg_4">
+                                            <h3>${{ $count['total_donation'] }}</h3>
+                                            <p>Total Donation</p>
+                                        </div>
                                     </div>
-                                </div>
-                                {{-- <div class="col-lg-3 col-md-6 col-12">
+                                    {{-- <div class="col-lg-3 col-md-6 col-12">
                                     <div class="mini_box small_bg_1">
                                         <h3>0</h3>
                                         <p>New Deposit Request</p>
@@ -68,8 +69,8 @@
                                         <p>All Agent Balance</p>
                                     </div>
                                 </div> --}}
-                            </div>
-                            {{-- <div class="booking_by_sorce">
+                                </div>
+                                {{-- <div class="booking_by_sorce">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="card p-3 min_height355 box_shadow">
@@ -177,7 +178,9 @@
                                     </div>
                                 </div>
                             </div> --}}
-                        </div>
+                            </div>
+                        @endif
+
                     </div>
 
                 </div>

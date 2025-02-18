@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class Admin
 {
@@ -17,10 +17,15 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->hasRole('ADMIN')) {
-            return $next($request);
+        if (Auth::check()) {
+            $user = auth()->user()->roles()->whereIn('type', [1])->first();
+            if ($user) {
+                return $next($request);
+            } else {
+                return redirect()->route('admin.login')->with('error', 'You are not authorized to access this page');
+            }
         } else {
-            return redirect()->route('admin.login');
+            return redirect()->route('admin.login')->with('error', 'You are not authorized to access this page');
         }
     }
 }

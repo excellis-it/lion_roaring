@@ -15,8 +15,12 @@ class MemberPrivacyPolicyContoller extends Controller
      */
     public function index()
     {
+        if (auth()->user()->can('Manage Member Privacy Policy Page')) {
         $policy = MemberPrivacyPolicy::orderBy('id', 'desc')->first();
         return view('admin.member_privacy_policy.update', compact('policy'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**

@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
+use Illuminate\Support\Facades\Auth;
+use App\Services\NotificationService;
 
 class FileController extends Controller
 {
@@ -39,11 +41,12 @@ class FileController extends Controller
 
     public function store(Request $request)
     {
+        // return $request->type;
         $validated = FacadesValidator::make($request->all(), [
             'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
             'file' => 'required|array', // Ensure file is an array
             'file.*' => 'required|file', // Ensure each file is valid
-            'type' => 'required|in:Becoming Sovereign,Becoming Christ Like,Leadership Development',
+            'type' => 'required',
         ]);
 
         // Check if validation fails
@@ -78,6 +81,9 @@ class FileController extends Controller
             $file_upload->save();
         }
 
+        $userName = Auth::user()->getFullNameAttribute();
+        $noti = NotificationService::notifyAllUsers('New File created by ' . $userName, 'file');
+
         // Redirect with success message
         return redirect()->route('file.index')->with('message', 'File(s) uploaded successfully.');
     }
@@ -87,6 +93,7 @@ class FileController extends Controller
         if (auth()->user()->can('Delete File')) {
             $file = File::find($id);
             if ($file) {
+                Log::info($file->file_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
                 $file->delete();
                 // delete file from storage
                 Storage::disk('public')->delete($file->file);
@@ -164,7 +171,7 @@ class FileController extends Controller
         $validated = FacadesValidator::make($request->all(), [
             'topic_id' => 'required|exists:topics,id', // 'exists' checks if the value exists in the 'topics' table 'id' column
             'file' => 'nullable|file', // Ensure file validation if provided
-            'type' => 'required|in:Becoming Sovereign,Becoming Christ Like,Leadership Development',
+            'type' => 'required',
         ]);
 
         // Check if validation fails

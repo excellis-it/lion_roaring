@@ -50,7 +50,7 @@ class AddStrategyPermission extends Seeder
             \DB::table('permissions')->insert($permission);
         }
 
-        $role = \DB::table('roles')->where('name', 'ADMIN')->first();
+        $role = \DB::table('roles')->where('name', 'SUPER ADMIN')->first();
         $permissions = \DB::table('permissions')->whereIn('name', ['Manage Strategy', 'Upload Strategy', 'Download Strategy', 'View Strategy', 'Delete Strategy'])->get();
 
         foreach ($permissions as $permission) {
@@ -68,6 +68,5 @@ class AddStrategyPermission extends Seeder
                 'role_id' => $leader_role->id,
             ]);
         }
-
     }
 }

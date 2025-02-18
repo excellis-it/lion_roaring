@@ -15,8 +15,12 @@ class PmaDisclaimerController extends Controller
      */
     public function index()
     {
-        $term = PmaTerm::orderBy('id', 'desc')->first();
-        return view('admin.pma-disclaimer.update')->with(compact('term'));
+        if (auth()->user()->can('Manage PMA Terms Page')) {
+            $term = PmaTerm::orderBy('id', 'desc')->first();
+            return view('admin.pma-disclaimer.update')->with(compact('term'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -37,7 +41,7 @@ class PmaDisclaimerController extends Controller
      */
     public function store(Request $request)
     {
-       $request->validate([
+        $request->validate([
             'title' => 'required',
             'description' => 'required',
         ]);

@@ -15,13 +15,14 @@ class Kernel extends ConsoleKernel
      */
     protected  $commands = [
         'App\Console\Commands\DeleteJob',
+        '\App\Console\Commands\UpdateDeletedMailsStatus'
     ];
 
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('delete:job')
-            ->daily();
+        $schedule->command('delete:job')->daily();
+        $schedule->command('mails:update-deleted-status')->daily();
     }
 
     /**

@@ -6,7 +6,9 @@ const server = http.createServer(app);
 const io = require('socket.io')(server, {
   cors: {
     origin: '*',
+    methods: ['GET', 'POST'],
   },
+  transports: ['websocket', 'polling'],
 });
 
 // const https = require('https');
@@ -30,11 +32,16 @@ const io = require('socket.io')(server, {
 
 
 io.on('connection', (socket) => {
-    console.log('a user connected');
+    console.log('a user socket connected');
 
     socket.on('chat', (msg) => {
         console.log('message: ' + msg);
         io.sockets.emit('chat', msg);
+    });
+
+    socket.on('read-chat', (msg) => {
+        console.log('message: ' + msg);
+        io.sockets.emit('read-chat', msg);
     });
 
     // remove-chat
@@ -50,11 +57,7 @@ io.on('connection', (socket) => {
         io.sockets.emit('seen', messageId);
     });
 
-    // multiple_seen
-    socket.on('multiple_seen', (msg) => {
-        console.log('multiple_seen: ' + msg);
-        io.sockets.emit('multiple_seen', msg);
-    });
+    
 
     // clear-chat
     socket.on('clear-chat', (msg) => {

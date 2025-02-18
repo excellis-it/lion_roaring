@@ -17,8 +17,12 @@ class GalleryController extends Controller
      */
     public function index()
     {
-        $gallery = Gallery::orderByDesc('id')->paginate(15);
-        return view('admin.gallery.list', compact('gallery'));
+        if (auth()->user()->can('Manage Gallery')) {
+            $gallery = Gallery::orderByDesc('id')->paginate(15);
+            return view('admin.gallery.list', compact('gallery'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
 
@@ -30,7 +34,11 @@ class GalleryController extends Controller
      */
     public function create()
     {
-        return view('admin.gallery.create');
+        if (auth()->user()->can('Create Gallery')) {
+            return view('admin.gallery.create');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -76,8 +84,12 @@ class GalleryController extends Controller
      */
     public function edit($id)
     {
-        $gallery = Gallery::findOrFail($id);
-        return view('admin.gallery.edit')->with(compact('gallery'));
+        if (auth()->user()->can('Edit Gallery')) {
+            $gallery = Gallery::findOrFail($id);
+            return view('admin.gallery.edit')->with(compact('gallery'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -115,8 +127,12 @@ class GalleryController extends Controller
 
     public function delete($id)
     {
-        $gallery = Gallery::findOrFail($id);
-        $gallery->delete();
-        return redirect()->route('gallery.index')->with('error', 'Gallery has been deleted successfully.');
+        if (auth()->user()->can('Delete Gallery')) {
+            $gallery = Gallery::findOrFail($id);
+            $gallery->delete();
+            return redirect()->route('gallery.index')->with('error', 'Gallery has been deleted successfully.');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 }

@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Partners List - {{ env('APP_NAME') }}
+    Topics List - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -14,8 +14,7 @@
                             <div class="col-md-12">
 
                                 <div class="row mb-3">
-                                    <div class="col-md-10">
-                                        {{-- <h3 class="mb-3">Partners List</h3> --}}
+                                    <div class="col-md-10">                                        
                                     </div>
                                     <div class="col-md-2 float-right">
                                         @if (Auth::user()->can('Create Topic'))

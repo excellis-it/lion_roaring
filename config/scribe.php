@@ -24,7 +24,7 @@ return [
                 'domains' => ['*'],
 
                 // [Dingo router only] Match only routes registered under this version. Wildcards are NOT supported.
-                'versions' => ['v1'],
+                'versions' => ['v3'],
             ],
 
             // Include these routes even if they did not match the rules above.
