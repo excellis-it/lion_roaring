@@ -127,7 +127,3 @@
 
 
 
-@if (count($partners) > 0)
-    @foreach ($partners as $key => $partner)
-    @endforeach
-@endif
