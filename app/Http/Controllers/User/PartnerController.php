@@ -46,6 +46,8 @@ class PartnerController extends Controller
 
 
             $user = Auth::user();
+           // return Auth::user()->roles;
+            $user_ecclesia_id = $user->ecclesia_id;
             $is_user_ecclesia_admin = $user->is_ecclesia_admin;
 
             if ($is_user_ecclesia_admin == 1) {
@@ -58,17 +60,28 @@ class PartnerController extends Controller
                     $q->whereIn('type', ['3', '2']);
                 })
                     ->whereIn('ecclesia_id', $manage_ecclesia_ids)
-                    ->whereNotNull('ecclesia_id') // Ensure ecclesia_id is not null
-                    ->where('id', '!=', $user->id) // Use where() instead of whereNotIn() for a single ID
-                    ->orderByDesc('id')
-                    ->paginate(15);
-            } else {
-                $partners = User::whereHas('roles', function ($q) {
-                    $q->whereIn('type', ['3', '2']);
-                })
+                    ->whereNotNull('ecclesia_id')
                     ->where('id', '!=', $user->id)
                     ->orderByDesc('id')
                     ->paginate(15);
+            } else {
+                if (Auth::user()->hasRole('SUPER ADMIN')) {
+                    $partners = User::whereHas('roles', function ($q) {
+                        $q->whereIn('type', ['3', '2']);
+                    })
+                        ->where('id', '!=', $user->id)
+                        ->orderByDesc('id')
+                        ->paginate(15);
+                } else {
+                    $partners = User::whereHas('roles', function ($q) {
+                        $q->whereIn('type', ['3', '2']);
+                    })
+                        ->where('ecclesia_id', $user_ecclesia_id)
+                        ->whereNotNull('ecclesia_id')
+                        ->where('id', '!=', $user->id)
+                        ->orderByDesc('id')
+                        ->paginate(15);
+                }
             }
 
 
