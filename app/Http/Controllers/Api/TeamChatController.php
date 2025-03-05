@@ -32,10 +32,10 @@ class TeamChatController extends Controller
 
     /**
      * List of Group Chats
-     * 
+     *
      * Retrieves the list of teams that the authenticated user is part of, ordered by the last message sent in the team. It also includes the team members.
      * @authenticated
-     * 
+     *
      * @response 200 *{
      *  "msg": "Teams listed successfully",
      *  "status": true,
@@ -252,7 +252,7 @@ class TeamChatController extends Controller
 
             // Get members who are not the authenticated user
             $members = User::with('roles')->orderBy('first_name', 'asc')->where('id', '!=', auth()->id())->where('status', true)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2]);
+                $query->whereIn('type', [1, 2, 3]);
             })->get();
 
             return response()->json([
@@ -273,15 +273,15 @@ class TeamChatController extends Controller
 
     /**
      * Create a New Group
-     * 
+     *
      * Creates a new group with the specified members and a welcome message. The authenticated user will be set as the group admin.
      * @authenticated
-     * 
+     *
      * @bodyParam name string required The name of the team. Example: "Project Z Team"
      * @bodyParam description string required A brief description of the team. Example: "Team for Project Z collaboration"
      * @bodyParam members int[] required The IDs of the users to be added to the group. Example: members[]=1 & members[]=2
      * @bodyParam group_image file required An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB.
-     * 
+     *
      * @response 200 *{
      *    "message": "Team created successfully.",
      *    "status": true,
@@ -404,7 +404,7 @@ class TeamChatController extends Controller
      * Retrieves a team's information and chat history for the authenticated user, along with member details.
      * @authenticated
      * @bodyParam team_id int required The ID of the team to load chats from. Example: 5
-     * 
+     *
      * @response 200 {
      *    "team": {
      *        "id": 32,
@@ -644,7 +644,7 @@ class TeamChatController extends Controller
                 ->where('id', '!=', auth()->id()) // Exclude the current user
                 ->where('status', true)
                 ->whereHas('roles', function ($query) {
-                    $query->whereIn('type', [1, 2]);
+                    $query->whereIn('type', [1, 2, 3]);
                 })
                 ->get();
 
@@ -677,7 +677,7 @@ class TeamChatController extends Controller
      * @bodyParam team_id int required The ID of the team to send the message to. Example: 5
      * @bodyParam message string The text message to send (optional if a file is provided). Example: "Hello team!"
      * @bodyParam file file The attachment file to send, if applicable (optional if a message is provided).
-     * 
+     *
      * @response {
      *    "message": "Message sent successfully.",
      *    "status": true,
@@ -755,16 +755,17 @@ class TeamChatController extends Controller
             $team_chat->team_id = $request->team_id;
             $team_chat->user_id = auth()->id();
 
+            $input_message = Helper::formatChatSendMessage($request->message);
             // Handle file or message content
             if ($request->file) {
-                if (!empty($request->message)) {
-                    $team_chat->message = $request->message;
+                if (!empty($input_message)) {
+                    $team_chat->message = $input_message;
                 } else {
                     $team_chat->message = ' ';
                 }
                 $team_chat->attachment = $this->imageUpload($request->file('file'), 'team-chat');
             } else {
-                $team_chat->message = $request->message;
+                $team_chat->message = $input_message;
                 $team_chat->attachment = '';
             }
             $team_chat->save();
@@ -889,7 +890,7 @@ class TeamChatController extends Controller
                 ->where('id', '!=', auth()->id())
                 ->where('status', true)
                 ->whereHas('roles', function ($query) {
-                    $query->whereIn('type', [1, 2]);
+                    $query->whereIn('type', [1, 2, 3]);
                 })
                 ->get(['id', 'first_name', 'last_name']);
 
@@ -1686,7 +1687,7 @@ class TeamChatController extends Controller
     /**
      * Notification for Group Chat
      *
-     * Manages notifications for group chat messages. If the user has a new message, it sends a notification; 
+     * Manages notifications for group chat messages. If the user has a new message, it sends a notification;
      * otherwise, it marks the notification as read.
      * @authenticated
      * @bodyParam team_id int required The ID of the team associated with the notification. Example: 10

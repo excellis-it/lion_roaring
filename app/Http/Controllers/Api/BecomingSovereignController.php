@@ -10,12 +10,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use App\Services\NotificationService;
 
 /**
  * @authenticated
- * 
+ *
  * @group Education
- *  
+ *
  * @subgroup Becoming Sovereign
  * @subgroupDescription APIs for managing becoming sovereign files and topics.
  */
@@ -27,12 +28,12 @@ class BecomingSovereignController extends Controller
      * Becoming Sovereigns List
      *
      * @queryParam topic int The ID of the topic to filter by. Example: 1
-     * 
+     *
      * @response 200 *{
      *    "data": {
      *        "current_page": 1,
      *        "data": [
-     *            
+     *
      *            {
      *                "id": 60,
      *                "user_id": 1,
@@ -253,7 +254,7 @@ class BecomingSovereignController extends Controller
      *   ],
      *   "status": true
      * }
-     * 
+     *
      * @response 201 {
      *   "message": "Failed to fetch topics. Please try again later.",
      *   "status": false
@@ -299,12 +300,12 @@ class BecomingSovereignController extends Controller
      *    },
      *    "status": true
      * }
-     * 
+     *
      * @response 400 {
      *   "message": "The file name has already been taken.",
      *   "status": false
      * }
-     * 
+     *
      * @response 422 {
      *   "message": "Validation errors occurred.",
      *   "errors": {
@@ -358,6 +359,9 @@ class BecomingSovereignController extends Controller
             $fileModel->type = 'Becoming Sovereign';
             $fileModel->file = $file_upload;
             $fileModel->save();
+
+            $userName = auth()->user()->getFullNameAttribute();
+            $noti = NotificationService::notifyAllUsers('New Becoming Sovereign created by ' . $userName, 'becoming_sovereign');
 
             return response()->json([
                 'message' => 'File uploaded successfully.',

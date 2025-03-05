@@ -19,8 +19,8 @@ class EcclesiaContorller extends Controller
      */
     public function index()
     {
-        if (Auth::user()->hasRole('ADMIN')) {
-            $ecclesias = Ecclesia::orderBy('id', 'desc')->paginate(15);
+        if (Auth::user()->can('Manage Role Permission')) {
+            $ecclesias = Ecclesia::orderBy('id', 'asc')->paginate(15);
             return view('user.ecclesias.list')->with('ecclesias', $ecclesias);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -34,7 +34,7 @@ class EcclesiaContorller extends Controller
      */
     public function create()
     {
-        if (Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->can('Manage Role Permission')) {
             $countries = Country::orderBy('name', 'asc')->get();
             return view('user.ecclesias.create')->with('countries', $countries);
         } else {
@@ -82,7 +82,7 @@ class EcclesiaContorller extends Controller
      */
     public function edit($id)
     {
-        if (Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->can('Manage Role Permission')) {
             $ecclesia = Ecclesia::findOrFail(Crypt::decrypt($id));
             $countries = Country::orderBy('name', 'asc')->get();
             return view('user.ecclesias.edit')->with(compact('ecclesia', 'countries'));
@@ -100,7 +100,7 @@ class EcclesiaContorller extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->can('Manage Role Permission')) {
             $request->validate([
                 'name' => 'required|string|max:255|unique:ecclesias,name,' . Crypt::decrypt($id),
                 'country' => 'required|string|max:255',
@@ -130,7 +130,7 @@ class EcclesiaContorller extends Controller
 
     public function delete($id)
     {
-        if (Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->can('Manage Role Permission')) {
             $ecclesia = Ecclesia::findOrFail(Crypt::decrypt($id));
             Log::info($ecclesia->name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             $ecclesia->delete();
@@ -153,13 +153,13 @@ class EcclesiaContorller extends Controller
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhere('name', 'like', '%' . $query . '%');
                 })
-               ->orWhereHas('countryName', function ($q) use ($query) {
+                ->orWhereHas('countryName', function ($q) use ($query) {
                     $q->where('name', 'like', '%' . $query . '%');
                 })
                 ->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 
-                return response()->json(['data' => view('user.ecclesias.table', compact('ecclesias'))->render()]);
+            return response()->json(['data' => view('user.ecclesias.table', compact('ecclesias'))->render()]);
         }
     }
 }

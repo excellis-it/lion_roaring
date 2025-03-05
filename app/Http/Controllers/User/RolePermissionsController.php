@@ -20,11 +20,14 @@ class RolePermissionsController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->hasRole('ADMIN') || Auth::user()->hasRole('LEADER')) {
-            if (Auth::user()->hasRole('LEADER')) {
-                $roles = Role::where('name', 'MEMBER')->whereIn('type', [2])->get();
+        if (Auth::user()->getFirstRoleType() == 1 || Auth::user()->getFirstRoleType() == 2 || Auth::user()->getFirstRoleType() == 3) {
+            if (Auth::user()->getFirstRoleType() == 1) {
+                $roles = Role::whereIn('type', [2, 3])->orderBy('id', 'DESC')->get();
+            } elseif (Auth::user()->getFirstRoleType() == 3) {
+                $roles = Role::whereIn('type', [2])->orderBy('id', 'DESC')->get();
             } else {
-                $roles = Role::where('name', '!=', 'ADMIN')->whereIn('type', [2])->get();
+                //  $roles = Role::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [2])->get();
+                $roles = Role::whereIn('type', [2])->orderBy('id', 'DESC')->get();
             }
 
             return view('user.role_permission.list', compact('roles'));
@@ -40,7 +43,7 @@ class RolePermissionsController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->getFirstRoleType() == 1 || Auth::user()->getFirstRoleType() == 2 || Auth::user()->getFirstRoleType() == 3) {
             $permissions = Permission::all()->pluck('name', 'id')->toArray();
             return view('user.role_permission.create', compact('permissions'));
         } else {
@@ -58,6 +61,7 @@ class RolePermissionsController extends Controller
     {
         $request->validate([
             'role_name' => 'required|unique:roles,name',
+            'is_ecclesia' => 'required',
             'permissions' => 'required'
         ]);
 
@@ -65,6 +69,7 @@ class RolePermissionsController extends Controller
         $role             = new Role();
         $role->name       = $name;
         $role->type = 2;
+        $role->is_ecclesia = $request['is_ecclesia'];
         $permissions      = $request['permissions'];
         $role->save();
 
@@ -98,15 +103,21 @@ class RolePermissionsController extends Controller
      */
     public function edit($id)
     {
-        if (Auth::user()->hasRole('ADMIN') || Auth::user()->hasRole('LEADER')) {
+        if (Auth::user()->getFirstRoleType() == 1 || Auth::user()->getFirstRoleType() == 2 || Auth::user()->getFirstRoleType() == 3) {
             $id = Crypt::decrypt($id);
             $role = Role::findOrFail($id);
             $user = Auth::user();
             $permissions = new Collection();
-            foreach ($user->roles as $role1) {
-                $permissions = $permissions->merge($role1->permissions);
-            }
+            // foreach ($user->roles as $role1) {
+            //     $permissions = $permissions->merge($role1->permissions);
+            // }
+            $rolePermissions = Permission::where('type', 1)->get();
+            $permissions = $permissions->merge($rolePermissions);
             $permissions = $permissions->pluck('name', 'id')->toArray();
+
+            //  $allPermissions = Permission::where('type', 1)->get();
+
+            // return $allPermissions;
 
             return view('user.role_permission.edit', compact('role', 'permissions'));
         } else {
@@ -126,11 +137,13 @@ class RolePermissionsController extends Controller
         $id = Crypt::decrypt($id);
         $request->validate([
             'role_name' => 'required|unique:roles,name,' . $id,
+            'is_ecclesia' => 'required',
             'permissions' => 'required'
         ]);
 
         $role = Role::findOrFail($id);
         $role->name = $request->role_name;
+        $role->is_ecclesia = $request['is_ecclesia'];
         $permissions = $request['permissions'];
         $role->save();
 
@@ -163,7 +176,7 @@ class RolePermissionsController extends Controller
     {
         $id = Crypt::decrypt($id);
         $role = Role::findOrFail($id);
-        if ($role->name != 'ADMIN') {
+        if ($role->name != 'SUPER ADMIN') {
             Log::info($role->id . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             $role->delete();
             return redirect()->back()->with('message', 'Role deleted successfully.');

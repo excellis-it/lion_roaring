@@ -10,6 +10,7 @@ use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
+use App\Helpers\Helper;
 
 class ChatController extends Controller
 {
@@ -19,7 +20,7 @@ class ChatController extends Controller
     {
         if (auth()->user()->can('Manage Chat')) {
             $users = User::with('roles', 'chatSender')->where('id', '!=', auth()->id())->where('status', 1)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2]);
+                $query->whereIn('type', [1, 2, 3]);
             })->get()->toArray();
             // return user orderBy latest message
             $users = array_map(function ($user) {
@@ -59,7 +60,7 @@ class ChatController extends Controller
     {
         if (auth()->user()->can('Manage Chat')) {
             $users = User::with('roles', 'chatSender')->where('id', '!=', auth()->id())->where('status', 1)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2]);
+                $query->whereIn('type', [1, 2, 3]);
             })->get()->toArray();
             // return user orderBy latest message
             $users = array_map(function ($user) {
@@ -140,9 +141,12 @@ class ChatController extends Controller
             })->orWhere(function ($query) use ($request) {
                 $query->where('sender_id', $request->reciver_id)->where('reciver_id', $request->sender_id);
             })->count();
-            $themessage = $request->message;
+
+            $input_message = Helper::formatChatSendMessage($request->message);
+
+            $themessage = $input_message;
             if (!empty($themessage)) {
-                $themessage = $request->message;
+                $themessage = $input_message;
             } else {
                 $themessage = ' ';
             }
@@ -173,7 +177,7 @@ class ChatController extends Controller
             // return $chat;
             // dd($chat);
             $users = User::with('roles', 'chatSender')->where('id', '!=', auth()->id())->where('status', 1)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2]);
+                $query->whereIn('type', [1, 2, 3]);
             })->get()->toArray();
             // return user orderBy latest message
             $users = array_map(function ($user) {
@@ -208,7 +212,7 @@ class ChatController extends Controller
                 ->where('id', '!=', $reciver_id)
                 ->where('status', 1)
                 ->whereHas('roles', function ($query) {
-                    $query->whereIn('type', [1, 2]);
+                    $query->whereIn('type', [1, 2, 3]);
                 })
                 ->get()
                 ->toArray();

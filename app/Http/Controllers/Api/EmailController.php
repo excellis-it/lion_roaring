@@ -573,7 +573,7 @@ class EmailController extends Controller
      *                }
      *            }
      *        ],
-     *        "allMailIds": [           
+     *        "allMailIds": [
      *            {
      *                "id": 12,
      *                "email": "swarnadwip@excellisit.net"
@@ -581,7 +581,7 @@ class EmailController extends Controller
      *            {
      *                "id": 13,
      *                "email": "john@yopmail.com"
-     *            },           
+     *            },
      *            {
      *                "id": 38,
      *                "email": "masum2@excellisit.net"
@@ -647,7 +647,7 @@ class EmailController extends Controller
 
             // List of all user emails except the authenticated user
             $allMailIds = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2]);
+                $query->whereIn('type', [1, 2, 3]);
             })
                 ->get(['id', 'email']);
 
@@ -677,7 +677,7 @@ class EmailController extends Controller
     /**
      * Compose Emails
      *
-     * This endpoint retrieves a list of active users, excluding the currently authenticated user, 
+     * This endpoint retrieves a list of active users, excluding the currently authenticated user,
      * that can be recipients of a new mail.
      *
      * @authenticated
@@ -703,7 +703,7 @@ class EmailController extends Controller
     {
         try {
             $users = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2]);
+                $query->whereIn('type', [1, 2, 3]);
             })->get(['id', 'email']);
             return response()->json(['message' => 'Users loaded successfully.', 'status' => true, 'users' => $users], 200);
         } catch (\Exception $e) {
@@ -714,17 +714,17 @@ class EmailController extends Controller
     /**
      * Send New Email
      *
-     * This endpoint allows the authenticated user to send an email to specified recipients, 
+     * This endpoint allows the authenticated user to send an email to specified recipients,
      * with the option to include CC recipients and attachments. Notifications are sent to recipients as well.
      *
      * @authenticated
-     * 
+     *
      * @bodyParam to string required JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].
      * @bodyParam cc string JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.
      * @bodyParam subject string required The subject of the email.
      * @bodyParam message string required The body content of the email.
      * @bodyParam attachments file[] Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.
-     * 
+     *
      * @response 200 {
      *   "message": "Mail sent successfully.",
      *   "status": true,
@@ -744,7 +744,7 @@ class EmailController extends Controller
      *     "message": ["The message field is required."]
      *   }
      * }
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -755,7 +755,7 @@ class EmailController extends Controller
                 'to' => 'required|json',
                 'subject' => 'required|string',
                 'message' => 'required|string',
-                'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048'
+                'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:512000'
             ]);
 
             $toEmails = json_decode($request->to, true);
@@ -876,7 +876,7 @@ class EmailController extends Controller
     /**
      * Send Reply Email
      *
-     * This endpoint allows the authenticated user to reply to an existing email thread, 
+     * This endpoint allows the authenticated user to reply to an existing email thread,
      * including attachments and notifications to recipients.
      *
      * @authenticated
@@ -919,7 +919,7 @@ class EmailController extends Controller
                 'to' => 'required|json',
                 'subject' => 'required|string',
                 'message' => 'required|string',
-                'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
+                'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:512000',
                 'main_mail_id' => 'required|integer|exists:send_mails,id'
             ]);
 
@@ -1042,7 +1042,7 @@ class EmailController extends Controller
     /**
      * Forward Email
      *
-     * This endpoint allows the authenticated user to forward an existing email to a list of recipients, 
+     * This endpoint allows the authenticated user to forward an existing email to a list of recipients,
      * including optional CC recipients and attachments.
      *
      * @authenticated
@@ -1083,7 +1083,7 @@ class EmailController extends Controller
                 'to' => 'required|json',
                 'subject' => 'required|string',
                 'message' => 'required|string',
-                'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048'
+                'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:512000'
             ]);
 
             $toEmails = json_decode($request->to, true);
@@ -1598,7 +1598,7 @@ class EmailController extends Controller
      * @authenticated
      *
      * Only mails marked as "trashed" by the authenticated user are affected.
-     * 
+     *
      * @response 200 {
      *     "message": "All trash mails emptied successfully.",
      *     "status": true

@@ -57,7 +57,7 @@ class TeamChatController extends Controller
 
 
             $members = User::with('roles')->orderBy('first_name', 'asc')->where('id', '!=', auth()->id())->where('status', true)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2]);
+                $query->whereIn('type', [1, 2, 3]);
             })->get();
             return view('user.team-chat.index')->with(compact('teams', 'members'));
         } else {
@@ -182,16 +182,17 @@ class TeamChatController extends Controller
         $team_chat = new TeamChat();
         $team_chat->team_id = $request->team_id;
         $team_chat->user_id = auth()->id();
+        $input_message = Helper::formatChatSendMessage($request->message);
         if ($request->file) {
-            if (!empty($request->message)) {
-                $team_chat->message = $request->message;
+            if (!empty($input_message)) {
+                $team_chat->message = $input_message;
             } else {
                 $team_chat->message = ' ';
             }
 
             $team_chat->attachment = $this->imageUpload($request->file('file'), 'team-chat');
         } else {
-            $team_chat->message = $request->message;
+            $team_chat->message = $input_message;
             $team_chat->attachment = '';
         }
         $team_chat->save();
@@ -237,7 +238,7 @@ class TeamChatController extends Controller
                 }, 'members.user'])
                 ->first();
             $members = User::with('roles')->orderBy('first_name', 'asc')->where('id', '!=', auth()->id())->where('status', true)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2]);
+                $query->whereIn('type', [1, 2, 3]);
             })->get();
             $is_group_info = true;
             return response()->json(['view' => (string) view('user.team-chat.group-info')->with(compact('team', 'is_group_info', 'members'))]);

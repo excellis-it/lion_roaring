@@ -9,6 +9,8 @@ use App\Traits\ImageTrait;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use App\Services\NotificationService;
 
 /**
  * @group Strategy
@@ -149,6 +151,9 @@ class StrategyController extends Controller
             $strategy->file_extension = $file_extension;
             $strategy->file = $file_path;
             $strategy->save();
+
+            $userName = Auth::user()->getFullNameAttribute();
+            $noti = NotificationService::notifyAllUsers('New Strategy created by ' . $userName, 'strategy');
 
 
             return response()->json(['message' => 'Strategy(s) uploaded successfully.'], 200);

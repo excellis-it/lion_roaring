@@ -58,6 +58,33 @@
 
             </div>
             <div class="dark-transparent sidebartoggler"></div>
+
+            <div class="chatbot-container">
+                <div class="chatbot-btn" id="chatbotBtn">
+                    <img src="{{ asset('user_assets/images/chat-bot.png') }}" class="img-fluid rounded-top"
+                        alt="" />
+
+                </div>
+
+                <div class="chatbox" id="chatbox">
+                    <div class="chatbox-header">
+                        <span>Chat With Us</span>
+                        <button class="close-btn" id="closeChatbox">&times;</button>
+                    </div>
+                    <div class="chatbox-body" id="chatboxBody">
+                        <!-- Chat messages go here -->
+                        <div class="chatbot-message chatbot-bot-message">
+                            <p>Hi! How can I help you today?</p>
+                        </div>
+
+                    </div>
+                    <div class="chatbox-footer">
+                        <input type="text" id="chatbotuserInput" placeholder="Type a message...">
+                        <button id="chatbotsendBtn">Send</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <script src="{{ asset('user_assets/js/jquery.min.js') }}"></script>
         <script src="{{ asset('user_assets/js/simplebar.min.js') }}"></script>
@@ -98,6 +125,60 @@
                 "progressBar": true, // Show a progress bar
             }
         </script>
+
+        <script>
+            $(document).ready(function() {
+                $('#chatbotBtn').click(function() {
+                    $('#chatbox').fadeIn();
+                });
+
+                $('#closeChatbox').click(function() {
+                    $('#chatbox').fadeOut();
+                });
+
+                $('#chatbotsendBtn').click(function() {
+                    var message = $('#chatbotuserInput').val().trim();
+                    if (message !== '') {
+                        var userMessage = $('<div class="chatbot-message chatbot-user-message"><p>' + message +
+                            '</p></div>');
+                        $('#chatboxBody').append(userMessage);
+                        $('#chatbotuserInput').val('');
+
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ route('chatbot.message') }}",
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                message: message
+                            },
+                            dataType: "json",
+                            success: function(response) {
+                                var dataMessage = response.message;
+
+
+                                setTimeout(function() {
+                                    var botMessage = $(
+                                        '<div class="chatbot-message chatbot-bot-message"><p>' +
+                                        dataMessage +
+                                        '</p></div><span class="chatbot-bot-message-lable"> - Lion Roaring AI</span>'
+                                    );
+                                    $('#chatboxBody').append(botMessage);
+                                    $('#chatboxBody').scrollTop($('#chatboxBody')[0]
+                                        .scrollHeight); // Auto scroll to the bottom
+                                }, 500);
+
+                            }
+                        });
+
+
+
+
+                    }
+                });
+            });
+        </script>
+
+
         <script>
             @if (Session::has('message'))
                 toastr.options = {
@@ -334,6 +415,10 @@
 
                                     console.log('key is : ' + event.key);
 
+                                    var message = $("#MessageInput").emojioneArea()[0].emojioneArea
+                                        .getText();
+                                    console.log('message is ' + message);
+
                                     if (event.key === 'Enter') {
                                         //
                                     } else {
@@ -342,6 +427,17 @@
                                             $("#MessageForm").submit();
                                         }
                                     }
+
+                                    // var formattedMessage = message.replace(
+                                    //     /\b[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}\b/g,
+                                    //     function(word) {
+                                    //         var url = word.startsWith('http') ? word :
+                                    //             'http://' + word; // Add http:// if not present
+                                    //         return `<a href="${url}" target="_blank">${word}</a>`;
+                                    //     });
+
+                                    // var message = $("#MessageInput").emojioneArea()[0].emojioneArea
+                                    //     .setText(formattedMessage);
 
 
 
@@ -378,6 +474,19 @@
                     // Get the file data
                     var fileInput = $("#file2")[0];
                     var file = fileInput.files[0]; // The selected file
+
+                    // // Format the message and replace words containing a dot with links
+                    // var formattedMessage = message.replace(
+                    //     /\b[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}\b/g,
+                    //     function(word) {
+                    //         var link = word.startsWith('http') ? word : 'https://' +
+                    //             word; // Add http:// if not present
+                    //         return `<a class="text-decoration-underline" href="${link}" target="_blank">${word}</a>`;
+                    //     }
+                    // );
+
+                    // // Set the formatted message back into the text area
+                    // $("#MessageInput").emojioneArea()[0].emojioneArea.setText(formattedMessage);
 
                     // Create a FormData object to send both message and file
                     var formData = new FormData();
@@ -1140,7 +1249,7 @@
                 let socket_port = '3000';
                 let socket = io(ip_address + ':' + socket_port);
                 var sender_id = {{ auth()->user()->id }};
-                @if (auth()->user()->hasRole('ADMIN'))
+                @if (auth()->user()->hasRole('SUPER ADMIN'))
                     var role = 'admin';
                 @else
                     var role = 'user';

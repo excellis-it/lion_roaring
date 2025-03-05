@@ -9,6 +9,9 @@ use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use App\Services\NotificationService;
+
 
 class LeadershipDevelopmentController extends Controller
 {
@@ -71,6 +74,9 @@ class LeadershipDevelopmentController extends Controller
         $file->type = 'Becoming a Leader';
         $file->file = $file_upload;
         $file->save();
+
+        $userName = Auth::user()->getFullNameAttribute();
+        $noti = NotificationService::notifyAllUsers('New Becoming a Leader created by ' . $userName, 'becoming_a_leader');
 
         return redirect()->route('leadership-development.index')->with('message', 'File uploaded successfully.');
     }
