@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use App\Services\NotificationService;
 
 class BulletinController extends Controller
 {
@@ -19,7 +20,7 @@ class BulletinController extends Controller
     public function index()
     {
         if (Auth::user()->can('Manage Bulletin')) {
-            if (Auth::user()->hasRole('ADMIN')) {
+            if (Auth::user()->hasRole('SUPER ADMIN')) {
                 $bulletins = Bulletin::orderBy('id', 'desc')->paginate(15);
             } else {
                 $bulletins = Bulletin::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(15);
@@ -68,8 +69,13 @@ class BulletinController extends Controller
             $bulletin->title = $request->title;
             $bulletin->description = $request->description;
             $bulletin->save();
+
+
+            $userName = Auth::user()->getFullNameAttribute();
+            $noti = NotificationService::notifyAllUsers('New Bulletin created by ' . $userName, 'bulletin');
+
             session()->flash('message', 'Bulletin created successfully');
-            return response()->json(['message' => 'Bulletin created successfully', 'status' =>true, 'bulletin' => $bulletin]);
+            return response()->json(['message' => 'Bulletin created successfully', 'status' => true, 'bulletin' => $bulletin]);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -95,7 +101,7 @@ class BulletinController extends Controller
     public function edit($id)
     {
         if (Auth::user()->can('Edit Bulletin')) {
-            if (auth()->user()->hasRole('ADMIN')) {
+            if (auth()->user()->hasRole('SUPER ADMIN')) {
                 $bulletin = Bulletin::find($id);
             } else {
                 $bulletin = Bulletin::where('user_id', Auth::user()->id)->find($id);
@@ -119,7 +125,7 @@ class BulletinController extends Controller
     public function update(Request $request, $id)
     {
         if (Auth::user()->can('Edit Bulletin')) {
-            if (auth()->user()->hasRole('ADMIN')) {
+            if (auth()->user()->hasRole('SUPER ADMIN')) {
                 $bulletin = Bulletin::find($id);
             } else {
                 $bulletin = Bulletin::where('user_id', Auth::user()->id)->find($id);
@@ -160,7 +166,7 @@ class BulletinController extends Controller
     public function delete($id)
     {
         if (Auth::user()->can('Delete Bulletin')) {
-            if (auth()->user()->hasRole('ADMIN')) {
+            if (auth()->user()->hasRole('SUPER ADMIN')) {
                 $bulletin = Bulletin::find($id);
             } else {
                 $bulletin = Bulletin::where('user_id', Auth::user()->id)->find($id);
@@ -190,7 +196,7 @@ class BulletinController extends Controller
                 $query = $request->get('query', '');
                 $query = str_replace(" ", "%", $query);
 
-                if (Auth::user()->hasRole('ADMIN')) {
+                if (Auth::user()->hasRole('SUPER ADMIN')) {
                     $bulletins = Bulletin::query()
                         ->where('title', 'like', '%' . $query . '%')
                         ->orWhere('description', 'like', '%' . $query . '%')
@@ -219,7 +225,7 @@ class BulletinController extends Controller
 
     public function loadTable(Request $request)
     {
-        if (Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->hasRole('SUPER ADMIN')) {
             $bulletins = Bulletin::orderBy('id', 'desc')->paginate(15);
         } else {
             $bulletins = Bulletin::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(15);
@@ -230,7 +236,7 @@ class BulletinController extends Controller
 
     public function single(Request $request)
     {
-        if (Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->hasRole('SUPER ADMIN')) {
             $bulletins = Bulletin::orderBy('id', 'desc')->paginate(15);
         } else {
             $bulletins = Bulletin::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(15);

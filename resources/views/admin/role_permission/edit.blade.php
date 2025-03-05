@@ -18,10 +18,10 @@
                         @method('PUT')
                         @csrf
                         <div class="row justify-content-between">
-                            <div class="col-md-12">
+                            <div class="col-md-4">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                        <label for="floatingInputValue">Name*</label>
+                                        <label for="floatingInputValue">Role Name*</label>
                                         <input type="text" class="form-control" id="floatingInputValue"
                                             value="{{ $role->name }}" name="role_name"
                                             {{ $role->name == 'LEADER' || $role->name == 'MEMBER' ? 'readonly' : '' }}
@@ -36,7 +36,7 @@
                                 <div class="table table-bordered" data-toggle="lists">
                                     @if (!empty($permissions))
                                         @php
-                                           $modules = [
+                                            $modules = [
                                                 'My Profile',
                                                 'My Password',
                                                 'Admin List',
@@ -62,17 +62,16 @@
                                                 'Register Page Agreement Page',
                                                 'Member Privacy Policy Page',
                                                 'PMA Terms Page',
-                                                 'All Users',
-                                                'Members Access'
+                                                'All Users',
+                                                'Members Access',
                                             ];
-
 
                                         @endphp
                                         <table class="table mb-0 table-bordered">
                                             <thead>
                                                 <tr>
                                                     <th style="width: 50px; text-align: center;">
-                                                        <div class="custom-control custom-checkbox">
+                                                        <div class="custom-checkbox">
                                                             <input type="checkbox" id="checkAllEdit"
                                                                 class=" js-check-selected-row">
                                                         </div>
@@ -91,7 +90,22 @@
                                             <tbody class="list">
                                                 @foreach ($modules as $new => $module)
                                                     <tr>
-                                                        <td></td>
+                                                        <td style="width: 50px; text-align: center;">
+                                                            @if (in_array('Manage ' . $module, (array) $permissions))
+                                                                @if ($key = array_search('Manage ' . $module, $permissions))
+                                                                    <div class="toggle-check">
+                                                                        <div class="form-check form-switch">
+                                                                            <input class="form-check-input manage-cl"
+                                                                                type="checkbox" role="switch"
+                                                                                name="permissions[]"
+                                                                                value="{{ $key }}"
+                                                                                data-id="{{ $new }}"
+                                                                                id="flexSwitchCheckChecked">
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+                                                            @endif
+                                                        </td>
                                                         <td>{{ ucfirst($module) }} </td>
                                                         <td>
                                                             @if (in_array('Manage ' . $module, (array) $permissions))
@@ -226,14 +240,14 @@
                             </div>
                         </div>
                 </div>
-                <div class="row justify-content-between">
+                <div class="row d-flex justify-content-end">
 
-                    <div class="col-xl-12">
-                        <div class="btn-1">
-                            <button type="submit">Update</button>
-                          <a href="{{route('admin.roles.index')}}"> <button type="button">Cancel</button></a>
-                        </div>
+
+                    <div class="btn-1 p-3">
+                        <button type="submit">Update</button>
+                        <a href="{{ route('admin.roles.index') }}"> <button type="button">Cancel</button></a>
                     </div>
+
                 </div>
             </div>
             </form>
@@ -244,27 +258,27 @@
 @endsection
 
 @push('scripts')
-<script>
-    $(document).ready(function() {
-        $("#checkAllEdit").click(function() {
-            $('input:checkbox').prop('checked', this.checked);
-        });
+    <script>
+        $(document).ready(function() {
+            $("#checkAllEdit").click(function() {
+                $('input:checkbox').prop('checked', this.checked);
+            });
 
-        // Handle individual checkboxes
-        $('input:checkbox').not("#checkAllEdit").click(function() {
-            if (!this.checked) {
-                $("#checkAllEdit").prop('checked', false);
-            }
-        });
+            // Handle individual checkboxes
+            $('input:checkbox').not("#checkAllEdit").click(function() {
+                if (!this.checked) {
+                    $("#checkAllEdit").prop('checked', false);
+                }
+            });
 
-        $('.manage-cl').click(function() {
-            var id = $(this).data('id');
-            if ($(this).is(':checked')) {
-                $('input[data-id="' + id + '"]').prop('checked', true);
-            } else {
-                $('input[data-id="' + id + '"]').prop('checked', false);
-            }
+            $('.manage-cl').click(function() {
+                var id = $(this).data('id');
+                if ($(this).is(':checked')) {
+                    $('input[data-id="' + id + '"]').prop('checked', true);
+                } else {
+                    $('input[data-id="' + id + '"]').prop('checked', false);
+                }
+            });
         });
-    });
-</script>
+    </script>
 @endpush

@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use App\Services\NotificationService;
 
 class StrategyController extends Controller
 {
@@ -69,6 +71,10 @@ class StrategyController extends Controller
             $file_upload->file = $file_path;
             $file_upload->save();
         }
+
+        // notify users
+        $userName = Auth::user()->getFullNameAttribute();
+        $noti = NotificationService::notifyAllUsers('New Strategy created by ' . $userName, 'strategy');
 
         // Redirect with success message
         return redirect()->route('strategy.index')->with('message', 'Strategy(s) uploaded successfully.');

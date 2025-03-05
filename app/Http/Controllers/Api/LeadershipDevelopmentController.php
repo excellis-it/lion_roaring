@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use App\Services\NotificationService;
 
 /**
  * @authenticated
@@ -355,6 +357,9 @@ class LeadershipDevelopmentController extends Controller
             $fileModel->type = 'Becoming a Leader';
             $fileModel->file = $file_upload;
             $fileModel->save();
+
+            $userName = Auth::user()->getFullNameAttribute();
+            $noti = NotificationService::notifyAllUsers('New Becoming a Leader created by ' . $userName, 'becoming_a_leader');
 
             return response()->json([
                 'message' => 'File uploaded successfully.',

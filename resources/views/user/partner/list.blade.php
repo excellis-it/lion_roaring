@@ -5,9 +5,9 @@
 @push('styles')
 @endpush
 @section('content')
-<section id="loading">
-    <div id="loading-content"></div>
-</section>
+    <section id="loading">
+        <div id="loading-content"></div>
+    </section>
     <div class="container-fluid">
         <div class="bg_white_border">
             <form>
@@ -21,9 +21,9 @@
                                         {{-- <h3 class="mb-3">Partners List</h3> --}}
                                     </div>
                                     <div class="col-md-2 float-right">
-                                        @if ( auth()->user()->can('Create Partners') )
-                                        <a href="{{ route('partners.create') }}" class="btn btn-primary w-100">+ Add
-                                            Members</a>
+                                        @if (auth()->user()->can('Create Partners'))
+                                            <a href="{{ route('partners.create') }}" class="btn btn-primary w-100">+ Add
+                                                Members</a>
                                         @endif
 
                                     </div>
@@ -41,37 +41,46 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="table-responsive">
-                                    <table class="table align-middle bg-white color_body_text">
-                                        <thead class="color_head">
+                                <div class="table-responsive card card-body shadow p-0 mt-2">
+                                    <table
+                                        class="table align-middle color_body_text table-light table-borderless member-table">
+                                        <thead class="bg-light ">
                                             <tr>
-                                                <th>ID </th>
-                                                <th class="sorting" data-tippy-content="Sort by Name"
+                                                <th class="p-3"></th>
+                                                <th class="sorting p-3" data-tippy-content="Sort by Email"
+                                                    data-sorting_type="desc" data-column_name="email"
+                                                    style="cursor: pointer"> Email ID <span id="email_icon"></span></th>
+                                                <th class="sorting p-3" data-tippy-content="Sort by Name"
                                                     data-sorting_type="desc" data-column_name="name"
-                                                    style="cursor: pointer"> Name<span id="name_icon"><i
-                                                            class="fa fa-arrow-down"></i></span></th>
-                                                            <th>
-                                                                Ecclesia
-                                                            </th>
+                                                    style="cursor: pointer"> Name
+                                                    {{-- <span id="name_icon"><i
+                                                            class="fa fa-arrow-down"></i></span> --}}
+                                                </th>
+                                                <th class="p-3">Role</th>
+                                                <th class="p-3">House Of Ecclesia</th>
+
+                                                {{-- <th>
+                                                    Ecclesia
+                                                </th>
                                                 <th class="sorting" data-tippy-content="Sort by User Name"
                                                     data-sorting_type="desc" data-column_name="user_name"
                                                     style="cursor: pointer">User Name<span id="user_name_icon"></span></th>
-                                                <th class="sorting" data-tippy-content="Sort by Email"
-                                                    data-sorting_type="desc" data-column_name="email"
-                                                    style="cursor: pointer"> Email <span id="email_icon"></span></th>
+
                                                 <th class="sorting" data-tippy-content="Sort by Phone"
                                                     data-sorting_type="desc" data-column_name="phone"
                                                     style="cursor: pointer"> Phone <span id="phone_icon"></span></th>
                                                 <th class="sorting" data-tippy-content="Sort by Address"
                                                     data-sorting_type="desc" data-column_name="address"
-                                                    style="cursor: pointer"> Address <span id="address_icon"></span></th>
+                                                    style="cursor: pointer"> Address <span id="address_icon"></span></th> --}}
 
-                                                <th>Role</th>
-                                                @if (auth()->user()->hasRole('ADMIN') || auth()->user()->hasRole('LEADER') && auth()->user()->can('Edit Partners'))
-                                                    <th>Status</th>
+
+                                                @if (auth()->user()->can('Edit Partners'))
+                                                    <th class="p-3">Status/Approve</th>
                                                 @endif
-                                                @if (auth()->user()->can('Edit Partners') || auth()->user()->can('Delete Partners') || auth()->user()->can('View Partners'))
-                                                <th></th>
+                                                @if (auth()->user()->can('Edit Partners') ||
+                                                        auth()->user()->can('Delete Partners') ||
+                                                        auth()->user()->can('View Partners'))
+                                                    <th class="p-3"></th>
                                                 @endif
                                             </tr>
                                         </thead>
@@ -83,8 +92,7 @@
                                     <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
                                     <input type="hidden" name="hidden_column_name" id="hidden_column_name"
                                         value="id" />
-                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type"
-                                        value="desc" />
+                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
                                 </div>
                             </div>
                         </div>
@@ -120,28 +128,28 @@
         });
     </script>
     <script>
-         $(document).ready(function() {
-        $(document).on('change','.toggle-class',function() {
-            var status = $(this).prop('checked') == true ? 1 : 0;
-            var user_id = $(this).data('id');
-            $('#loading').addClass('loading');
-            $('#loading-content').addClass('loading-content');
-            $.ajax({
-                type: "GET",
-                dataType: "json",
-                url: '{{ route('partners.change-status') }}',
-                data: {
-                    'status': status,
-                    'user_id': user_id
-                },
-                success: function(resp) {
-                    $('#loading').removeClass('loading');
-                    $('#loading-content').removeClass('loading-content');
-                    toastr.success(resp.success);
-                }
+        $(document).ready(function() {
+            $(document).on('change', '.toggle-class', function() {
+                var status = $(this).prop('checked') == true ? 1 : 0;
+                var user_id = $(this).data('id');
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
+                $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    url: '{{ route('partners.change-status') }}',
+                    data: {
+                        'status': status,
+                        'user_id': user_id
+                    },
+                    success: function(resp) {
+                        $('#loading').removeClass('loading');
+                        $('#loading-content').removeClass('loading-content');
+                        toastr.success(resp.success);
+                    }
+                });
             });
         });
-    });
     </script>
     <script>
         $(document).ready(function() {

@@ -54,17 +54,17 @@
                                 $user = auth()
                                     ->user()
                                     ->roles()
-                                    ->whereIn('type', [1, 2])
+                                    ->whereIn('type', [1, 2, 3])
                                     ->first();
                             @endphp
                             @if ($user)
                                 <a href="{{ route('user.profile') }}">Profile</a>
                             @else
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#loginModal"
                                     href="{{ route('login') }}">Login</a>
                             @endif
                         @else
-                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#loginModal"
                                 href="{{ route('login') }}">Login</a>
                         @endif
                     </div>

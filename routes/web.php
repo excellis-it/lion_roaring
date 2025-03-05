@@ -70,6 +70,8 @@ use App\Models\Category;
 use App\Models\EcomCmsPage;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\User\ChatBotController;
+use App\Http\Controllers\User\EmailVerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -116,6 +118,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     // admin index
     Route::prefix('detail')->group(function () {
         Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+        Route::get('/add', [AdminController::class, 'add'])->name('admin.add');
         Route::post('/store', [AdminController::class, 'store'])->name('admin.store');
         Route::post('/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
         Route::get('/delete/{id}', [AdminController::class, 'delete'])->name('admin.delete');
@@ -290,6 +293,9 @@ Route::get('/member-privacy-policy', [UserCmsController::class, 'memberPrivacyPo
 // get.states
 Route::get('/get-states', [UserAuthController::class, 'getStates'])->name('get.states');
 
+Route::post('/send-otp', [EmailVerificationController::class, 'sendOtp'])->name('send.otp');
+Route::post('/verify-otp', [EmailVerificationController::class, 'verifyOtp'])->name('verify.otp');
+
 Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(function () {
     Route::get('/subscription', [SubscriptionController::class, 'subscription'])->name('user.subscription');
     Route::get('/subscription-payment/{id}', [SubscriptionController::class, 'payment'])->name('user.subscription.payment');
@@ -413,6 +419,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         'ecclesias' => EcclesiaContorller::class,
         'jobs' => JobpostingController::class,
         'meetings' => MeetingSchedulingController::class,
+        // 'meetings' => MeetingSchedulingController::class,
     ]);
 
     Route::prefix('meetings')->group(function () {
@@ -573,3 +580,5 @@ Route::prefix('e-learning')->middleware(['user'])->group(function () {
         }
     }
 });
+
+Route::post('/chatbot', [ChatBotController::class, 'FaqChat'])->name('chatbot.message');

@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
+use App\Services\NotificationService;
+
 
 class JobpostingController extends Controller
 {
@@ -75,6 +77,9 @@ class JobpostingController extends Controller
             $job->contact_email = $request->contact_email;
             $job->list_of_values = $request->list_of_values;
             $job->save();
+
+            $userName = Auth::user()->getFullNameAttribute();
+            $noti = NotificationService::notifyAllUsers('New Job created by ' . $userName, 'job');
 
             return redirect()->route('jobs.index')->with('message', 'Job has been created successfully.');
         } else {

@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
+use Illuminate\Support\Facades\Auth;
+use App\Services\NotificationService;
 
 class FileController extends Controller
 {
@@ -78,6 +80,9 @@ class FileController extends Controller
             $file_upload->file = $file_path;
             $file_upload->save();
         }
+
+        $userName = Auth::user()->getFullNameAttribute();
+        $noti = NotificationService::notifyAllUsers('New File created by ' . $userName, 'file');
 
         // Redirect with success message
         return redirect()->route('file.index')->with('message', 'File(s) uploaded successfully.');

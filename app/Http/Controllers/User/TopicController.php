@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use App\Services\NotificationService;
 
 class TopicController extends Controller
 {
@@ -65,6 +66,11 @@ class TopicController extends Controller
         $topic->topic_name = $request->topic_name;
         $topic->education_type = $request->education_type;
         $topic->save();
+
+        $userName = Auth::user()->getFullNameAttribute();
+        $noti = NotificationService::notifyAllUsers('New Topic created by ' . $userName, 'topic');
+
+
 
         return redirect()->route('topics.index')->with('message', 'Topic created successfully.');
     }

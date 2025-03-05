@@ -7,6 +7,7 @@ use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Services\NotificationService;
 
 class LiveEventController extends Controller
 {
@@ -23,7 +24,7 @@ class LiveEventController extends Controller
 
     public function calender(Request $request)
     {
-        $events = Event::orderBy('id', 'desc')->get(['id', 'user_id' ,'title', 'description', 'start', 'end']);
+        $events = Event::orderBy('id', 'desc')->get(['id', 'user_id', 'title', 'description', 'start', 'end']);
         return response()->json($events);
     }
 
@@ -43,6 +44,10 @@ class LiveEventController extends Controller
         $event->start = $request->start;
         $event->end = $request->end;
         $event->save();
+
+        // notify users
+        $userName = Auth::user()->getFullNameAttribute();
+        $noti = NotificationService::notifyAllUsers('New Live Event created by ' . $userName, 'live_event');
 
         return response()->json(['message' => 'Event created successfully.', 'event' => $event, 'status' => true]);
     }

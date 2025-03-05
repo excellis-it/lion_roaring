@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use App\Services\NotificationService;
 
 /**
  * @group Events
- * 
+ *
  * @authenticated
  */
 
@@ -110,6 +112,10 @@ class EventController extends Controller
                 'end' => $request->end,
             ]);
 
+            // notify users
+            $userName = Auth::user()->getFullNameAttribute();
+            $noti = NotificationService::notifyAllUsers('New Live Event created by ' . $userName, 'live_event');
+
             return response()->json(['message' => 'event created successfully.', 'data' => $event], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to create event.' . $e], 201);
@@ -180,7 +186,7 @@ class EventController extends Controller
      * @bodyParam description string The description of the event. Example: Updated project sync event.
      * @bodyParam start datetime required The updated start time in ISO 8601 format. Example: 2024-11-22T01:25
      * @bodyParam end datetime required The updated end time in ISO 8601 format. Example: 2024-11-23T01:25
-     * 
+     *
      * @response 200 {
      *   "message": "event updated successfully.",
      *   "status": true
@@ -213,7 +219,7 @@ class EventController extends Controller
     /**
      * Delete event
      * @urlParam id int required The ID of the event. Example: 1
-     * 
+     *
      * @response 200 {
      *   "message": "event deleted successfully",
      *   "status": true

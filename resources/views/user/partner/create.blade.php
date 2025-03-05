@@ -9,7 +9,7 @@
         <div class="bg_white_border">
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('partners.store') }}" method="POST">
+                    <form action="{{ route('partners.store') }}" method="POST" autocomplete="new" autofill="off">
                         @csrf
                         <div class="row">
                             <div class="col-lg-12">
@@ -53,7 +53,7 @@
                                         <div class="box_label position-relative">
                                             <label>Password *</label>
                                             <input type="password" class="form-control" name="password" id="password"
-                                                value="{{ old('password') }}" placeholder="">
+                                                value="{{ old('password') }}" placeholder="" autocomplete="new-password">
                                             <span class="eye-btn-1" id="eye-button-1">
                                                 <i class="fa fa-eye-slash" aria-hidden="true" id="togglePassword"></i>
                                             </span>
@@ -96,7 +96,7 @@
                                         <div class="box_label">
                                             <label>User Name *</label>
                                             <input type="text" class="form-control" name="user_name"
-                                                value="{{ old('user_name') }}" placeholder="">
+                                                value="{{ old('user_name') }}" placeholder="" autocomplete="new-data">
                                             @if ($errors->has('user_name'))
                                                 <div class="error" style="color:red !important;">
                                                     {{ $errors->first('user_name') }}
@@ -104,7 +104,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-4 mb-2">
+                                    {{-- <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>Roles *</label>
                                             <select class="form-control" name="role">
@@ -122,9 +122,9 @@
                                             @endif
 
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     {{-- eclessias --}}
-                                    <div class="col-md-4 mb-2">
+                                    <div class="col-md-4 mb-2" id="ecclesia_main_input">
                                         <div class="box_label">
                                             <label>Ecclesias </label>
                                             <select class="form-control" name="ecclesia_id">
@@ -132,7 +132,8 @@
                                                 @foreach ($eclessias as $item)
                                                     <option value="{{ $item->id }}"
                                                         {{ old('ecclesia_id') == $item->id ? 'selected' : '' }}>
-                                                        {{ $item->full_name ?? '' }}</option>
+                                                        {{ $item->name . '(' . $item->countryName->name . ')' ?? '' }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                             @if ($errors->has('ecclesia_id'))
@@ -142,6 +143,8 @@
                                             @endif
                                         </div>
                                     </div>
+
+
                                     <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label>First Name *</label>
@@ -268,6 +271,63 @@
                                     {{-- zip --}}
 
                                 </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <h5>Roles*</h5>
+
+
+                                            @foreach ($roles as $role)
+                                                <div class="form-check form-check-inline">
+                                                    <input id="data-roles-{{ $role->id }}"
+                                                        class="form-check-input data-roles" type="radio" name="role"
+                                                        value="{{ $role->name }}"
+                                                        data-permissions="{{ $role->permissions()->where('type', 1)->get() }}"
+                                                        data-isecclesia="{{ $role->is_ecclesia }}" required>
+                                                    <label class="form-check-label"
+                                                        for="data-roles-{{ $role->id }}">{{ $role->name }}
+                                                        <small>{{ $role->is_ecclesia == 1 ? '(ECCLESIA)' : '' }}</small></label>
+                                                </div>
+                                            @endforeach
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                @if ($errors->has('manage_ecclesia'))
+                                    <div class="error" style="color:red !important;">
+                                        * {{ $errors->first('manage_ecclesia') }}
+                                    </div>
+                                @endif
+
+                                <div class="row mt-3" id="hoe_row" style="display: none">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <h5>Can manage this House Of ECCLESIA*</h5>
+
+
+                                            @foreach ($eclessias as $eclessia)
+                                                <div class="form-check form-check-inline">
+                                                    <input id="data-eclessia-{{ $eclessia->id }}"
+                                                        class="form-check-input data-eclessia" type="checkbox"
+                                                        name="manage_ecclesia[]" value="{{ $eclessia->id }}">
+                                                    <label class="form-check-label"
+                                                        for="data-eclessia-{{ $eclessia->id }}">{{ $eclessia->name . ' (' . $eclessia->countryName->name . ')' }}
+                                                    </label>
+                                                </div>
+                                            @endforeach
+
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
                                 <div class="w-100 text-end d-flex align-items-center justify-content-end">
                                     <button type="submit" class="print_btn me-2">Save</button>
                                     <a class="print_btn print_btn_vv" href="{{ route('partners.index') }}">Cancel</a>
@@ -276,7 +336,17 @@
                         </div>
                     </form>
 
+
+                    <div class="card card-body shadow-lg mt-2">
+                        <h5 class="mt-0" id="Role_Name"></h5>
+                        <div class="row container mt-1" id="permissions-container">
+                        </div>
+                    </div>
+
+
                 </div>
+
+
             </div>
         </div>
     </div>
@@ -428,6 +498,62 @@
                     }
                 });
             }
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $(".data-roles").change(function(e) {
+                e.preventDefault();
+                var permissions = $(this).data('permissions');
+                var role_name = $(this).val();
+                var is_ecclesia = $(this).data('isecclesia');
+
+                console.log(permissions);
+
+                if (is_ecclesia == 1) {
+                    $("#hoe_row").show();
+                    $("#ecclesia_main_input").hide();
+                } else {
+                    $("#hoe_row").hide();
+                    $("#ecclesia_main_input").show();
+                }
+
+
+                $("#Role_Name").text(role_name);
+
+                var col1 = $('<div class="col-6"></div>');
+                var col2 = $('<div class="col-6"></div>');
+
+                // Create an unordered list to hold the permissions for each column
+                var permissionsList1 = $('<ul></ul>');
+                var permissionsList2 = $('<ul></ul>');
+
+                // Divide the permissions list into two arrays
+                var half = Math.ceil(permissions.length / 2); // To split the list into two equal parts
+                var firstHalf = permissions.slice(0, half);
+                var secondHalf = permissions.slice(half);
+
+                // Add permissions to the first column
+                $.each(firstHalf, function(index, permission) {
+                    var listItem = $('<li></li>').text(permission.name);
+                    permissionsList1.append(listItem);
+                });
+
+                // Add permissions to the second column
+                $.each(secondHalf, function(index, permission) {
+                    var listItem = $('<li></li>').text(permission.name);
+                    permissionsList2.append(listItem);
+                });
+
+                // Append the lists to the respective columns
+                col1.append(permissionsList1);
+                col2.append(permissionsList2);
+
+                // Append the columns to the container row, replacing the content
+                $('#permissions-container').html(col1).append(col2);
+
+            });
+
         });
     </script>
 @endpush

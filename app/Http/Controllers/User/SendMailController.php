@@ -21,7 +21,7 @@ class SendMailController extends Controller
 
             // $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
             $allMailIds = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2]);
+                $query->whereIn('type', [1, 2, 3]);
             })->get(['id', 'email']);
 
             return view('user.mail.list', ['allMailIds' => $allMailIds]);
@@ -36,7 +36,7 @@ class SendMailController extends Controller
 
             // $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
             $allMailIds = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2]);
+                $query->whereIn('type', [1, 2, 3]);
             })->get(['id', 'email']);
 
             return view('user.mail.sent', ['allMailIds' => $allMailIds]);
@@ -51,7 +51,7 @@ class SendMailController extends Controller
 
             //  $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
             $allMailIds = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2]);
+                $query->whereIn('type', [1, 2, 3]);
             })->get(['id', 'email']);
 
             return view('user.mail.star', ['allMailIds' => $allMailIds]);
@@ -66,7 +66,7 @@ class SendMailController extends Controller
 
             // $allMailIds = User::where('status', true)->where('id', '!=', auth()->id())->get(['id', 'email']);
             $allMailIds = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2]);
+                $query->whereIn('type', [1, 2, 3]);
             })->get(['id', 'email']);
 
             return view('user.mail.trash', ['allMailIds' => $allMailIds]);
@@ -393,7 +393,7 @@ class SendMailController extends Controller
 
         // Fetch all mail IDs for other users (to avoid sending mails to yourself)
         $allMailIds = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
-            $query->whereIn('type', [1, 2]);
+            $query->whereIn('type', [1, 2, 3]);
         })->get(['id', 'email']);
 
         // return $allMailIds;
@@ -437,7 +437,7 @@ class SendMailController extends Controller
     {
         if (auth()->user()->can('Manage Email')) {
             $users = User::with('roles')->where('status', true)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2]);
+                $query->whereIn('type', [1, 2, 3]);
             })->where('id', '!=', auth()->id())->get(['id', 'email']); // Adjust fields as needed
             return view('user.mail.compose')->with(compact('users'));
         } else {
@@ -451,7 +451,7 @@ class SendMailController extends Controller
             'to' => 'required',
             'subject' => 'required',
             'message' => 'required',
-            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048'
+            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:512000'
         ]);
 
         // Decode the JSON strings for 'to' and 'cc' fields
@@ -610,7 +610,7 @@ class SendMailController extends Controller
             'to' => 'required',
             'subject' => 'required',
             'message' => 'required',
-            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048'
+            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:512000'
         ]);
 
         // Decode the JSON strings for 'to' and 'cc' fields
@@ -774,13 +774,13 @@ class SendMailController extends Controller
             'to' => 'required',
             'subject' => 'required',
             'message' => 'required',
-            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048'
+            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:512000'
         ]);
 
         // Decode the JSON strings for 'to' and 'cc' fields
         $toEmails = json_decode($request->to, true);
         // Extract email addresses from the decoded arrays
-        $to = array_column($toEmails, 'value');
+        $to = array_column($toEmails, 'value'); 
         if ($request->cc) {
             $ccEmails = json_decode($request->cc, true);
             $cc = array_column($ccEmails, 'value');

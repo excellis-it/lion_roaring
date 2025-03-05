@@ -19,12 +19,12 @@
                                     </div>
                                     <div class="col-md-2 float-right">
                                         <a href="{{ route('ecclesias.create') }}" class="btn btn-primary w-100">+ Add
-                                            ecclesia</a>
+                                            Ecclesia</a>
                                     </div>
                                 </div>
                                 <div class="row ">
                                     <div class="col-md-8">
-                                        <h3 class="mb-3 float-left">Ecclesia List</h3>
+                                        <h3 class="mb-3 float-left">House Of Ecclesia List</h3>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="search-field float-right">
@@ -108,7 +108,7 @@
                         sortby: sort_by,
                         sorttype: sort_type,
                         query: query,
-                        topic_id : topic_id
+                        topic_id: topic_id
                     },
                     success: function(data) {
                         $('tbody').html(data.data);

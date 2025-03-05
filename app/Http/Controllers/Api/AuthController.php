@@ -23,9 +23,9 @@ class AuthController extends Controller
 
     /**
      * Register a new user
-     * 
+     *
      * Registers a new user and sends an email for account pending approval.
-     * 
+     *
      * @bodyParam user_name string required Unique username for the user. Example: johndoe
      * @bodyParam email string required Unique email address. Example: johndoe@example.com
      * @bodyParam ecclesia_id integer nullable Ecclesia ID if applicable.
@@ -35,14 +35,14 @@ class AuthController extends Controller
      * @bodyParam address string required Address of the user. Example: 123 Main St
      * @bodyParam phone string required User's phone number. Example: 1234567890
      * @bodyParam city string required City of residence. Example: Springfield
-     * @bodyParam country integer required Country of residence. 
+     * @bodyParam country integer required Country of residence.
      * @bodyParam state integer required State of residence.
      * @bodyParam address2 string nullable Additional address information. Example: Apt 4B
      * @bodyParam zip string required Zip code. Example: 62704
      * @bodyParam email_confirmation string required Confirmation of the email address. Must match `email`. Example: johndoe@example.com
      * @bodyParam password string required Password for the user. Must be at least 8 characters and include one special character (@$%&). Example: Password@123
      * @bodyParam password_confirmation string required Confirmation of the password. Must match `password`. Example: Password@123
-     * 
+     *
      * @response 200 {
      *  "message": "Please wait for admin approval",
      *  "user": {
@@ -124,7 +124,8 @@ class AuthController extends Controller
         $user->status = 0;
         $user->save();
 
-        $user->assignRole('MEMBER');
+        // $user->assignRole('MEMBER');
+        $user->assignRole('MEMBER_NON_SOVEREIGN');
         $maildata = [
             'name' => $request->first_name . ' ' . $request->last_name,
         ];
@@ -198,7 +199,7 @@ class AuthController extends Controller
             // return $fieldType;
             if (auth()->attempt($request->only($fieldType, 'password'))) {
                 $user = User::where($fieldType, $request->user_name)->first();
-                if ($user->status == 1) {
+                if ($user->status == 1 && $user->is_accept == 1) {
                     $token = $user->createToken('authToken')->accessToken;
                     return response()->json(['token' => $token, 'status' => true, 'message' => 'Login successful'], 200);
                 } else {
@@ -379,7 +380,6 @@ class AuthController extends Controller
             return response()->json([
                 'states' => $states
             ], 200);
-
         } catch (\Exception $e) {
             // Handle any errors and return a message
             return response()->json([
@@ -387,8 +387,4 @@ class AuthController extends Controller
             ], 201);
         }
     }
-
-
-
-
 }

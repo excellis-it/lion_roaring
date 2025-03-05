@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use App\Services\NotificationService;
 
 class BecomingSovereignController extends Controller
 {
@@ -79,6 +81,9 @@ class BecomingSovereignController extends Controller
         $fileModel->file = $file_upload;
         $fileModel->save();
 
+        $userName = auth()->user()->getFullNameAttribute();
+        $noti = NotificationService::notifyAllUsers('New Becoming Sovereign created by ' . $userName, 'becoming_sovereign');
+
         // Redirect with success message
         return redirect()->route('becoming-sovereign.index')->with('message', 'File uploaded successfully.');
     }
@@ -97,9 +102,9 @@ class BecomingSovereignController extends Controller
                 $file->delete();
                 // delete file from storage
                 Storage::disk('public')->delete($file->file);
-                return redirect()->route('becoming-sovereign.index', ['topic'=>  $new_topic])->with('message', 'File deleted successfully.');
+                return redirect()->route('becoming-sovereign.index', ['topic' =>  $new_topic])->with('message', 'File deleted successfully.');
             } else {
-                return redirect()->route('becoming-sovereign.index', ['topic'=>  $new_topic])->with('error', 'File not found.');
+                return redirect()->route('becoming-sovereign.index', ['topic' =>  $new_topic])->with('error', 'File not found.');
             }
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -169,7 +174,7 @@ class BecomingSovereignController extends Controller
                 $topics = Topic::orderBy('topic_name', 'asc')->where('education_type', 'Becoming Sovereign')->get();
                 return view('user.becoming-sovereign.edit')->with(compact('file', 'topics', 'new_topic'));
             } else {
-                return redirect()->route('becoming-sovereign.index', ['topic'=>  $new_topic])->with('error', 'File not found.');
+                return redirect()->route('becoming-sovereign.index', ['topic' =>  $new_topic])->with('error', 'File not found.');
             }
         } else {
             abort(403, 'You do not have permission to access this page.');

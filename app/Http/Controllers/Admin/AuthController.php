@@ -14,7 +14,7 @@ class AuthController extends Controller
         // if (Auth::check()) {
         //     return redirect()->route('admin.dashboard');
         // } else {
-            return view('admin.auth.login');
+        return view('admin.auth.login');
         // }
     }
 
@@ -31,9 +31,12 @@ class AuthController extends Controller
         ]);
         $remember_me = $request->has('remember_me') ? true : false;
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $remember_me  )) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $remember_me)) {
             $user = User::where('email', $request->email)->select('id', 'email', 'status')->first();
-            if ($user->status == 1) {
+            if ($user->getFirstRoleType() != 1) {
+                return redirect()->back()->with('error', 'This User Not Allowed Here!');
+            }
+            if ($user->getFirstRoleType() == 1 && $user->status == 1) {
                 return redirect()->route('admin.dashboard');
             } else {
                 Auth::logout();
