@@ -64,7 +64,7 @@
                     @endif
                     <div class="message-wrap">
                         <p class="messageContent">
-
+                           
                             @if ($chat->attachment != null)
                                 @php
                                     $ext = pathinfo($chat->attachment, PATHINFO_EXTENSION);

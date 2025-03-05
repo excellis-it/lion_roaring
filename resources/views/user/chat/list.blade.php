@@ -14,6 +14,9 @@
     @php
         use App\Helpers\Helper;
     @endphp
+    <section id="loading">
+        <div id="loading-content"></div>
+    </section>
     <div class="container-fluid">
         <div class="bg_white_border">
 

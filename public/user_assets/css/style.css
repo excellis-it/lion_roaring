@@ -2172,7 +2172,7 @@ section {
 /* loader */
 
 .loading {
-    z-index: 15;
+    z-index: 9999999;
     position: fixed;
     top: 0;
     width: 100%;

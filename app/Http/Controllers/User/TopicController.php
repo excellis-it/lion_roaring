@@ -112,6 +112,7 @@ class TopicController extends Controller
     public function update(Request $request, $id)
     {
         if (Auth::user()->can('Edit Topic')) {
+            $id = Crypt::decrypt($id);
             $request->validate([
                 'topic_name' => [
                     'required',
@@ -124,7 +125,7 @@ class TopicController extends Controller
                 'education_type' => 'required|string|max:255',
             ]);
 
-            $topic = Topic::findOrFail(Crypt::decrypt($id));
+            $topic = Topic::findOrFail($id);
             $topic->topic_name = $request->topic_name;
             $topic->education_type = $request->education_type;
             $topic->save();

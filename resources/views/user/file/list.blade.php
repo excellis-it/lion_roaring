@@ -5,6 +5,9 @@
 @push('styles')
 @endpush
 @section('content')
+<section id="loading">
+    <div id="loading-content"></div>
+</section>
     <div class="container-fluid">
         <div class="bg_white_border">
             <form>
@@ -124,6 +127,8 @@
             }
 
             function fetch_data(page, sort_type, sort_by, query, topic_id, type) {
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
                 $.ajax({
                     url: "{{ route('file.fetch-data') }}",
                     data: {
@@ -135,6 +140,8 @@
                         type : type
                     },
                     success: function(data) {
+                        $('#loading').removeClass('loading');
+                        $('#loading-content').removeClass('loading-content');
                         $('tbody').html(data.data);
                     }
                 });
