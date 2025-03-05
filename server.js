@@ -57,7 +57,7 @@ io.on('connection', (socket) => {
         io.sockets.emit('seen', messageId);
     });
 
-    
+
 
     // clear-chat
     socket.on('clear-chat', (msg) => {

@@ -12,6 +12,9 @@
     </style>
 @endpush
 @section('content')
+<section id="loading">
+    <div id="loading-content"></div>
+</section>
     <div class="container-fluid">
         <div class="bg_white_border">
 
@@ -109,6 +112,8 @@
                     var url = form.attr('action');
                     var type = form.attr('method');
                     var data = form.serialize();
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
                     $.ajax({
                         url: url,
                         type: type,
@@ -121,11 +126,17 @@
                                     meeting: response.meeting
                                 });
                                 window.location.href = "{{ route('meetings.index') }}";
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
                             } else {
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
                                 toastr.error(response.message);
                             }
                         },
                         error: function(xhr, status, error) {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
                             $('.text-danger').text('');
                             // show error message in span
                             $.each(xhr.responseJSON.errors, function(key, item) {

@@ -6,13 +6,16 @@
 
 @endpush
 @section('content')
+<section id="loading">
+    <div id="loading-content"></div>
+</section>
     <div class="container-fluid">
         <div class="bg_white_border">
 
             <!--  Row 1 -->
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('jobs.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('jobs.store') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
                         @csrf
                         <div class="row">
                             <div class="col-md-12">
@@ -227,6 +230,15 @@
     @endsection
 
     @push('scripts')
+    <script>
+        $(document).ready(function() {
+            $("#uploadForm").on("submit", function(e) {
+                // e.preventDefault();
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
+            });
+        });
+    </script>
         <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
 
         <script>

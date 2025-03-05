@@ -354,6 +354,8 @@
                 //    $("#chat_list_user_"+getUserID).addClass("active").siblings().removeClass("active");
                 // });
 
+
+
                 $(document).on("click", ".user-list", function(e) {
                     var getUserID = $(this).attr("data-id");
                     receiver_id = getUserID;
@@ -503,7 +505,8 @@
                             return false;
                         }
                     }
-
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
 
                     // Perform Ajax request to send the message to the server
                     $.ajax({
@@ -615,7 +618,8 @@
                                 });
 
                                 $('#group-manage-' + sender_id).append(new_html);
-
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
                                 // Emit chat message to the server
                                 socket.emit("chat", {
                                     message: message,
@@ -626,6 +630,8 @@
                                     file_url: fileUrl,
                                 });
                             } else {
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
                                 console.log(res.msg);
                             }
                         },
@@ -695,7 +701,8 @@
                         'content')); // Retrieve CSRF token from meta tag
                     formData.append('reciver_id', receiver_id);
                     formData.append('sender_id', sender_id);
-
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
                     $.ajax({
                         type: "POST",
                         url: "{{ route('chats.send') }}",
@@ -775,6 +782,8 @@
                                 });
 
                                 $('#group-manage-' + sender_id).append(new_html);
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
 
                                 socket.emit("chat", {
                                     message: file.name,
@@ -785,6 +794,8 @@
                                     chat_id: res.chat.id
                                 });
                             } else {
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
                                 console.log(res.msg);
                             }
                         }
@@ -1259,6 +1270,8 @@
                     e.preventDefault();
                     var form = $(this);
                     var url = form.attr('action');
+                    $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
                     $.ajax({
                         type: "POST",
                         url: url,
@@ -1298,6 +1311,9 @@
                             $('#previewImage01').attr('src',
                                 '{{ asset('user_assets/images/group.jpg') }}');
                             $('#exampleModalToggle').modal('hide');
+
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
                             // Send message to socket
                             socket.emit('createTeam', {
                                 user_id: sender_id,
@@ -1305,6 +1321,8 @@
                             });
                         },
                         error: function(xhr) {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
                             $('.text-danger').html('');
                             var errors = xhr.responseJSON.errors;
                             $.each(errors, function(key, value) {
@@ -1482,6 +1500,9 @@
                         }
                     }
 
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
+
                     $.ajax({
                         type: "POST",
                         url: url,
@@ -1560,7 +1581,8 @@
                             $('#team-chat-container-' + data.team_id).append(html);
 
                             scrollChatToBottom(data.team_id);
-
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
                             // Send message to socket
                             socket.emit('sendTeamMessage', {
                                 chat: data,
@@ -1577,6 +1599,8 @@
                     e.preventDefault();
                     var form = $(this);
                     var url = form.attr('action');
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
                     $.ajax({
                         type: "POST",
                         url: url,
@@ -1584,13 +1608,18 @@
                         processData: false,
                         contentType: false,
                         success: function(resp) {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
                             toastr.success(resp.message);
                             $('.group-name-' + resp.team_id).html(resp.name);
                             $('.group-des-' + resp.team_id).html(resp.description);
                             $('#exampleModalToggle3').modal('hide');
                             $('#groupInfo').modal('show');
+
                         },
                         error: function(xhr) {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
                             $('.text-danger').html('');
                             var errors = xhr.responseJSON.errors;
                             $.each(errors, function(key, value) {
@@ -2062,6 +2091,8 @@
                     e.preventDefault();
                     var form = $(this);
                     var url = form.attr('action');
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
                     $.ajax({
                         type: "POST",
                         url: url,
@@ -2073,9 +2104,13 @@
                             socket.emit('showBulletin', {
                                 'bulletin': resp.bulletin,
                             });
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
                             window.location.href = "{{ route('bulletins.index') }}";
                         },
                         error: function(xhr) {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
                             $('.text-danger').html('');
                             var errors = xhr.responseJSON.errors;
                             $.each(errors, function(key, value) {
@@ -2098,6 +2133,8 @@
                     e.preventDefault();
                     var form = $(this);
                     var url = form.attr('action');
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
                     $.ajax({
                         type: "POST",
                         url: url,
@@ -2109,9 +2146,13 @@
                             socket.emit('updateBulletin', {
                                 'bulletin': resp.bulletin,
                             });
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
                             window.location.href = "{{ route('bulletins.index') }}";
                         },
                         error: function(xhr) {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
                             $('.text-danger').html('');
                             var errors = xhr.responseJSON.errors;
                             $.each(errors, function(key, value) {
