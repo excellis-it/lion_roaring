@@ -29,7 +29,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanQueryParameters:
       search: '"abc"'
@@ -59,7 +58,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z1e458hakDdagc6vVEP3fb6'
+      - 'Bearer h56P4Ed8Zbage3f6v1DVack'
     controller: null
     method: null
     route: null
@@ -90,7 +89,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -129,7 +127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8Pf6d5h64vbVgDa3e1aZkEc'
+      - 'Bearer ZaaDkf15Eb386VvcP46gehd'
     controller: null
     method: null
     route: null
@@ -162,7 +160,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanQueryParameters:
       search: '"abc"'
@@ -253,7 +250,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VZ6k3adE8ePD14cvfa56bgh'
+      - 'Bearer 643vZV5E8dDPa6g1afkcheb'
     controller: null
     method: null
     route: null
@@ -288,7 +285,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       description:
         name: description
@@ -298,7 +294,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       title: '"New Bulletin Title"'
@@ -335,7 +330,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gkPZc1e68b5EfDvV36ad4ha'
+      - 'Bearer VecPkD1Zbv34dfag66aE5h8'
     controller: null
     method: null
     route: null
@@ -366,7 +361,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -381,7 +375,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       description:
         name: description
@@ -391,7 +384,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       title: '"Updated Bulletin Title"'
@@ -428,7 +420,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4cEgZkd3b8Vv6aafPh5D6e1'
+      - 'Bearer bh386fPvgVdZ5cEaD41k6ea'
     controller: null
     method: null
     route: null
@@ -459,7 +451,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -491,7 +482,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ahV6DE43Pe68avgcb5kdZf1'
+      - 'Bearer cV14dhkZfPa686evE53Dbga'
     controller: null
     method: null
     route: null

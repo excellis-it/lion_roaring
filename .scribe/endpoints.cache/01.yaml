@@ -522,7 +522,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       slug: robert-hyde
@@ -580,7 +579,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       slug: 'lion-roaring-innovation-center, lion-roaring-education-center-1709707179.'
@@ -646,7 +644,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       slug: lion-roaring-foundation.

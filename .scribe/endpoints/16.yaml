@@ -377,7 +377,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V3faekD86Zdh4aEcgPvb651'
+      - 'Bearer fcgEb83Zk6PheaV41ad5Dv6'
     controller: null
     method: null
     route: null
@@ -404,14 +404,13 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: quam
+        example: id
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
     cleanUrlParameters:
-      id: quam
+      id: id
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -645,7 +644,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6kcfa16P5hDdgaVZ84bE3ev'
+      - 'Bearer ghdP65Z1vaeEVD8fa6c3kb4'
     controller: null
     method: null
     route: null

@@ -31,7 +31,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanQueryParameters:
       search: '"abc"'
@@ -77,7 +76,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6eavc8ZDfdEb1gVPk4356ah'
+      - 'Bearer df6VebkPhvaZ61D534Egc8a'
     controller: null
     method: null
     route: null
@@ -112,7 +111,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       description:
         name: description
@@ -122,7 +120,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: true
         custom: []
       start:
         name: start
@@ -132,7 +129,6 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       end:
         name: end
@@ -142,7 +138,6 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       title: 'Project Sync'
@@ -183,7 +178,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V84Zb6P56Daefg13ckvahEd'
+      - 'Bearer 68VE3eabgh5v1aZc4P6fDkd'
     controller: null
     method: null
     route: null
@@ -214,7 +209,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -277,7 +271,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D8VEavg3kd56Pa4he1Zb6fc'
+      - 'Bearer 5PkD64Vh3gbdca86Ea1eZfv'
     controller: null
     method: null
     route: null
@@ -308,7 +302,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -323,7 +316,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       description:
         name: description
@@ -333,7 +325,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: true
         custom: []
       start:
         name: start
@@ -343,7 +334,6 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       end:
         name: end
@@ -353,7 +343,6 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       title: 'Project Sync Update'
@@ -376,7 +365,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aPb85ZcEVdav6hf4D6g31ek'
+      - 'Bearer k5dVeD8aPbg3f1aZ6cEv46h'
     controller: null
     method: null
     route: null
@@ -407,7 +396,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -431,7 +419,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer adf61vhEa4kV865Deg3bcZP'
+      - 'Bearer eah843Dgc6a6VP5bdkEvZ1f'
     controller: null
     method: null
     route: null
@@ -513,7 +501,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer acPvDeb5386ZVE64dfgkh1a'
+      - 'Bearer ZEPh4gac6e5bV16va3fDkd8'
     controller: null
     method: null
     route: null

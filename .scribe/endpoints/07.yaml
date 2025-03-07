@@ -133,7 +133,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hk3EPZe8fbcD46a15dagvV6'
+      - 'Bearer b8ZDc3ePvV564gEaa6hfkd1'
     controller: null
     method: null
     route: null
@@ -168,7 +168,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       sender_receiver_id: 1
@@ -259,7 +258,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1PkVhb8EvZ546fDcag3ead6'
+      - 'Bearer g64bfvVZd5hka81Ee3PDc6a'
     controller: null
     method: null
     route: null
@@ -294,7 +293,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       message:
         name: message
@@ -304,7 +302,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       file:
         name: file
@@ -314,7 +311,6 @@ endpoints:
         type: file
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
     cleanBodyParameters:
       reciver_id: 2
@@ -406,7 +402,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D1afv5E6gbZe4dhka83cVP6'
+      - 'Bearer Zb4dgv6c5a8VD163EafhPke'
     controller: null
     method: null
     route: null
@@ -441,7 +437,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       reciver_id: 2
@@ -461,7 +456,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8k3EfDbV4a1acv5heZP6d6g'
+      - 'Bearer 5evd8h61a36bcgZPEkDfVa4'
     controller: null
     method: null
     route: null
@@ -496,7 +491,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       reciver_id:
         name: reciver_id
@@ -506,7 +500,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       chat_id: 10
@@ -536,7 +529,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer begV8563P1ZE46adfackvDh'
+      - 'Bearer k8c4EZDd31hPvg6af6b5aVe'
     controller: null
     method: null
     route: null
@@ -571,7 +564,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       del_from:
         name: del_from
@@ -581,7 +573,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       chat_id: 10
@@ -610,7 +601,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f6ZcEDbgdP53aV1va68hke4'
+      - 'Bearer fZhEe13bdv46c85a6PakDgV'
     controller: null
     method: null
     route: null
@@ -645,7 +636,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       user_id:
         name: user_id
@@ -655,7 +645,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       is_delete:
         name: is_delete
@@ -665,7 +654,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       chat_id: 15
@@ -727,7 +715,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer df3kag6cVehZaDv8b51E64P'
+      - 'Bearer 6aPDc6V48kEgd31hefva5Zb'
     controller: null
     method: null
     route: null
