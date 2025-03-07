@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\VerifyOTP;
 
 class EmailVerificationController extends Controller
 {
@@ -22,21 +23,24 @@ class EmailVerificationController extends Controller
             'otp' => 'required|digits:4',
         ]);
 
-        $encryptedOtp = Session::get('otp');
-        if ($encryptedOtp && Crypt::decrypt($encryptedOtp) == $request->otp) {
-            $userId = Session::get('user_id');
-            $user = User::find($userId);
+        if (!$request->session()->has('user_id')) {
+            return response()->json(['message' => 'User not found', 'status' => false]);
+        }
 
-            if ($user) {
-                Auth::login($user);
-                Session::forget('otp');
-                Session::forget('user_id');
-                return response()->json(['message' => 'OTP verified successfully', 'status' => true, 'redirect' => route('user.profile')]);
-            } else {
-                return response()->json(['message' => 'User not found', 'status' => false]);
-            }
-        } else {
+        $userId = Session::get('user_id');
+
+        $user = User::find($userId);
+
+        $verify_otp = VerifyOTP::where('user_id', $userId)->orderBy('id', 'desc')->first();
+
+        if (!$verify_otp || $verify_otp->otp != $request->otp) {
             return response()->json(['message' => 'Invalid OTP', 'status' => false]);
         }
+
+        $verify_otp->delete();
+
+        Auth::login($user);
+        Session::forget('user_id');
+        return response()->json(['message' => 'OTP verified successfully', 'status' => true, 'redirect' => route('user.profile')]);
     }
 }

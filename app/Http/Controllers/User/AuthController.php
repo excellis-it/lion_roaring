@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Crypt;
 use App\Mail\OtpMail;
+use App\Models\VerifyOTP;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -49,12 +50,16 @@ class AuthController extends Controller
         if ($user && \Hash::check($request->password, $user->password)) {
             if ($user->status == 1 && $user->is_accept == 1) {
                 $otp = rand(1000, 9999);
-                Session::put('otp', Crypt::encrypt($otp));
+                $otp_verify = new VerifyOTP();
+                $otp_verify->user_id = $user->id;
+                $otp_verify->email = $user->email;
+                $otp_verify->otp = $otp;
+                $otp_verify->save();
                 Session::put('user_id', $user->id);
                 try {
                     Mail::to($user->email)->send(new OtpMail($otp));
                 } catch (\Exception $e) {
-                    return response()->json(['message' => 'Email server temporary unavailable. Please try later.', 'status' => false]);
+                    return response()->json(['message' => 'Email server temporary unavailable. Please try later.', 'status' => false, 'otp' => $otp]);
                 }
                 return response()->json(['message' => 'OTP sent to your email', 'status' => true, 'otp_required' => true]);
             } else {
