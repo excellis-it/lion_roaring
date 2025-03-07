@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AccountPendingApprovalMail;
+use App\Mail\OtpMail;
+use App\Models\VerifyOTP;
 
 /**
  *  @group Authentication
@@ -200,8 +202,16 @@ class AuthController extends Controller
             if (auth()->attempt($request->only($fieldType, 'password'))) {
                 $user = User::where($fieldType, $request->user_name)->first();
                 if ($user->status == 1 && $user->is_accept == 1) {
-                    $token = $user->createToken('authToken')->accessToken;
-                    return response()->json(['token' => $token, 'status' => true, 'message' => 'Login successful'], 200);
+                    $otp = rand(1000, 9999);
+                    $otp_verify = new VerifyOTP();
+                    $otp_verify->user_id = $user->id;
+                    $otp_verify->email = $user->email;
+                    $otp_verify->otp = $otp;
+                    $otp_verify->save();
+
+                    Mail::to($user->email)->send(new OtpMail($otp));
+                    // $token = $user->createToken('authToken')->accessToken;
+                    return response()->json(['user' => $user, 'status' => true, 'message' => 'Login successful'], 200);
                 } else {
                     auth()->logout();
                     return response()->json(['message' => 'Your account is not active!', 'status' => false], 201);
@@ -212,6 +222,41 @@ class AuthController extends Controller
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
         }
+    }
+
+    /**
+     * Verify OTP
+     *
+     * @bodyParam otp integer required The OTP to verify. Example: 1234
+     * @bodyParam id integer required The ID of the user. Example: 1
+     *
+     * @response 200{
+     * "status": true
+     * "message": "OTP verified successfully"
+     * }
+     */
+
+    public function verifyOtp(Request $request)
+    {
+        $validator = validator($request->all(), [
+            'otp' => 'required|numeric',
+            'id' => 'required|numeric|exists:users,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
+        }
+
+        $otp_verify = VerifyOTP::where('user_id', $request->id)->where('otp', $request->otp)->orderBy('id', 'desc')->first();
+
+        if (!$otp_verify || $otp_verify->otp != $request->otp) {
+            return response()->json(['message' => 'Invalid OTP', 'status' => false], 201);
+        }
+
+        $otp_verify->delete();
+        $user = User::where('id', $request->id)->first();
+        $token = $user->createToken('authToken')->accessToken;
+        return response()->json(['message' => 'OTP verified successfully', 'status' => true, 'token' => $token], 200);
     }
 
 
