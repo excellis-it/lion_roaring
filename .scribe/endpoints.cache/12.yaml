@@ -31,7 +31,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanQueryParameters:
       search: '"abc"'
@@ -102,7 +101,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d56gZae3ED6Ph4bv8k1cfaV'
+      - 'Bearer 86Dd4PafgekEv3V65bc1Zha'
     controller: null
     method: null
     route: null
@@ -133,7 +132,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -184,7 +182,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 356cek1fgVv8abZ6EDP4hda'
+      - 'Bearer DPh4dk81ceg56avfbZE6a3V'
     controller: null
     method: null
     route: null
@@ -219,7 +217,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       job_description:
         name: job_description
@@ -229,7 +226,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       job_type:
         name: job_type
@@ -239,7 +235,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       job_location:
         name: job_location
@@ -249,7 +244,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       job_salary:
         name: job_salary
@@ -259,7 +253,6 @@ endpoints:
         type: numeric
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       list_of_values:
         name: list_of_values
@@ -269,7 +262,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       currency:
         name: currency
@@ -279,7 +271,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       job_experience:
         name: job_experience
@@ -289,7 +280,6 @@ endpoints:
         type: numeric
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       contact_person:
         name: contact_person
@@ -299,7 +289,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       contact_email:
         name: contact_email
@@ -309,7 +298,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       job_title: 'Software Engineer'
@@ -366,7 +354,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 61a3PvcVkZb5ed8fahgE64D'
+      - 'Bearer dk3c6bV486PhgZDa15aEvef'
     controller: null
     method: null
     route: null
@@ -393,14 +381,13 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: non
+        example: temporibus
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
     cleanUrlParameters:
-      id: non
+      id: temporibus
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -412,7 +399,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       job_description:
         name: job_description
@@ -422,7 +408,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       job_type:
         name: job_type
@@ -432,7 +417,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       job_location:
         name: job_location
@@ -442,7 +426,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       job_salary:
         name: job_salary
@@ -452,7 +435,6 @@ endpoints:
         type: numeric
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       list_of_values:
         name: list_of_values
@@ -462,7 +444,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       currency:
         name: currency
@@ -472,7 +453,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       job_experience:
         name: job_experience
@@ -482,7 +462,6 @@ endpoints:
         type: numeric
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       contact_person:
         name: contact_person
@@ -492,7 +471,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       contact_email:
         name: contact_email
@@ -502,7 +480,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       job_title: 'Software Engineer'
@@ -559,7 +536,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e1gfP6cha5bZ386V4dvaDEk'
+      - 'Bearer hebda3fE184Dv6c6P5kgaVZ'
     controller: null
     method: null
     route: null
@@ -586,14 +563,13 @@ endpoints:
         name: id
         description: 'The ID of the delete.'
         required: true
-        example: quo
+        example: non
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
     cleanUrlParameters:
-      id: quo
+      id: non
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -622,7 +598,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hav8ak3cgDdEP6f461VeZb5'
+      - 'Bearer Df5VZ3k6ah1g8dc6P4eavbE'
     controller: null
     method: null
     route: null
@@ -657,7 +633,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       query: abc
@@ -699,7 +674,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ae54P1fbk368ZdacgvDV6hE'
+      - 'Bearer P6e3bchgvZkD16Vd5aE8a4f'
     controller: null
     method: null
     route: null

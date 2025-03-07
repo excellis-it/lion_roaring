@@ -31,7 +31,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanQueryParameters:
       search: '"abc"'
@@ -78,7 +77,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pa68VDvf3c4db56ghkEae1Z'
+      - 'Bearer 3VeZDkbhg8v61f4PEda56ca'
     controller: null
     method: null
     route: null
@@ -113,7 +112,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       description:
         name: description
@@ -123,7 +121,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: true
         custom: []
       start_time:
         name: start_time
@@ -133,7 +130,6 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       end_time:
         name: end_time
@@ -143,7 +139,6 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       meeting_link:
         name: meeting_link
@@ -153,7 +148,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: true
         custom: []
     cleanBodyParameters:
       title: 'Project Sync'
@@ -196,7 +190,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z6Dc6bgakEavf845e3h1dVP'
+      - 'Bearer ba8v4aDh6Vgd6Ee3kf51PZc'
     controller: null
     method: null
     route: null
@@ -227,7 +221,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -291,7 +284,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dbg6P3faha5618cVEkdZ4ev'
+      - 'Bearer vZDeVcfPkd6bEaagh136845'
     controller: null
     method: null
     route: null
@@ -322,7 +315,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -337,7 +329,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       description:
         name: description
@@ -347,7 +338,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: true
         custom: []
       start_time:
         name: start_time
@@ -357,7 +347,6 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       end_time:
         name: end_time
@@ -367,7 +356,6 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       meeting_link:
         name: meeting_link
@@ -377,7 +365,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: true
         custom: []
     cleanBodyParameters:
       title: 'Project Sync Update'
@@ -401,7 +388,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dev3g5dkV18cba64hfPZa6E'
+      - 'Bearer e4Zkgh66vPDaEa31f8dVbc5'
     controller: null
     method: null
     route: null
@@ -432,7 +419,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -456,7 +442,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4Zcb6E6Ph51a8ekvgD3dVfa'
+      - 'Bearer 6eg4PEZbVdc3aakvh6f5D18'
     controller: null
     method: null
     route: null
@@ -542,7 +528,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k846PfvEedZ5b36haa1gcVD'
+      - 'Bearer eZ4PaEk68635D1cVbvahfgd'
     controller: null
     method: null
     route: null

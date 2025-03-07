@@ -57,7 +57,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bD4vZV8kP6g5af63chea1dE'
+      - 'Bearer 46PgdaD5vb8f6e3Zh1VakEc'
     controller: null
     method: null
     route: null
@@ -92,7 +92,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       middle_name:
         name: middle_name
@@ -102,7 +101,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       last_name:
         name: last_name
@@ -112,7 +110,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       phone:
         name: phone
@@ -122,7 +119,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       address:
         name: address
@@ -132,7 +128,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       first_name: John
@@ -156,7 +151,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fZV8E4Pav315bkc6hagdD6e'
+      - 'Bearer 6V34eZgc1E5vPd8Dah6afbk'
     controller: null
     method: null
     route: null
@@ -191,7 +186,6 @@ endpoints:
         type: file
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
     cleanBodyParameters: []
     fileParameters:
@@ -221,7 +215,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 665Deg4f3aV1vaPbckE8Zdh'
+      - 'Bearer 63kfa6ZE1h8vDbaegcP4Vd5'
     controller: null
     method: null
     route: null
@@ -256,7 +250,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       new_password:
         name: new_password
@@ -266,7 +259,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       confirm_password:
         name: confirm_password
@@ -276,7 +268,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       old_password: password
@@ -298,7 +289,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer egfVk1P8DahdEZc664ba3v5'
+      - 'Bearer E8fvZdkca635PDeV6h1bga4'
     controller: null
     method: null
     route: null
@@ -333,7 +324,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       permission_name: 'Manage Email'
@@ -383,7 +373,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8hDe5b6kcPEad3Z1Vavg6f4'
+      - 'Bearer 6cDhEafV1gZd6v3ak58Pbe4'
     controller: null
     method: null
     route: null
@@ -464,7 +454,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6846gaPvhEVfebd1akZc53D'
+      - 'Bearer 8b6ve36cfad1VhDPkaZ4E5g'
     controller: null
     method: null
     route: null
@@ -576,7 +566,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c3eg16hPVb8f4vDakd65ZaE'
+      - 'Bearer fva38DEP4Vca1k6gbehdZ56'
     controller: null
     method: null
     route: null
@@ -607,7 +597,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       id:
         name: id
@@ -617,7 +606,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanUrlParameters:
       type: Chat
@@ -650,7 +638,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer adb5cg6h6eVPvZED1ak43f8'
+      - 'Bearer 83a5av4e16PdfkhDbVcgZE6'
     controller: null
     method: null
     route: null
@@ -694,7 +682,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a65P6aE4h3gdekcV8bDf1vZ'
+      - 'Bearer badEfkV1a8Zg56Ph6v4Dce3'
     controller: null
     method: null
     route: null

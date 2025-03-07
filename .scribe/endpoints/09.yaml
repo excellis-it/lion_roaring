@@ -29,7 +29,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       search:
         name: search
@@ -39,7 +38,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanQueryParameters:
       type: '"unread"'
@@ -88,7 +86,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 46fkdE5ePVgvDZ8aba1ch63'
+      - 'Bearer e6bZ63kVP185E4vfdaDgcah'
     controller: null
     method: null
     route: null
@@ -121,7 +119,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       search:
         name: search
@@ -131,7 +128,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanQueryParameters:
       type: '"draft"'
@@ -180,7 +176,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3DhvaEfgZP5e6dk1V4b6a8c'
+      - 'Bearer fEcg6a463kV8adDhevb5Z1P'
     controller: null
     method: null
     route: null
@@ -213,7 +209,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       search:
         name: search
@@ -223,7 +218,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanQueryParameters:
       type: '"important"'
@@ -272,7 +266,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Za4fbPcdk6geV56DEavh831'
+      - 'Bearer baefcEa481hVd65D6vkZP3g'
     controller: null
     method: null
     route: null
@@ -305,7 +299,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       search:
         name: search
@@ -315,7 +308,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanQueryParameters:
       type: '"archived"'
@@ -364,7 +356,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Efb6ade1kgvV5ZaP63D4hc8'
+      - 'Bearer Z4kcgfbvP3Dd1a568hEa6Ve'
     controller: null
     method: null
     route: null
@@ -399,7 +391,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       mail_id: 1
@@ -523,7 +514,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k8Dfe4aVhcdE16aZ5Pv36gb'
+      - 'Bearer Pfd61v5Eb4agh3eDc6Va8Zk'
     controller: null
     method: null
     route: null
@@ -594,7 +585,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VbveadPa3Z6gkc4f8hD1E65'
+      - 'Bearer bEVv85faegc36da6DZ1hPk4'
     controller: null
     method: null
     route: null
@@ -627,41 +618,37 @@ endpoints:
         name: to
         description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
         required: true
-        example: sed
+        example: molestias
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
       cc:
         name: cc
         description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: occaecati
+        example: voluptas
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
       subject:
         name: subject
         description: 'The subject of the email.'
         required: true
-        example: consequatur
+        example: ratione
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
       message:
         name: message
         description: 'The body content of the email.'
         required: true
-        example: vero
+        example: quia
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
       attachments:
         name: attachments
@@ -672,13 +659,12 @@ endpoints:
         type: 'file[]'
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
     cleanBodyParameters:
-      to: sed
-      cc: occaecati
-      subject: consequatur
-      message: vero
+      to: molestias
+      cc: voluptas
+      subject: ratione
+      message: quia
     fileParameters:
       attachments:
         - null
@@ -724,7 +710,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vda4bkPfg6ec3a1VD6Z58hE'
+      - 'Bearer 8gv6kD6PbEV31Zda5acfe4h'
     controller: null
     method: null
     route: null
@@ -757,41 +743,37 @@ endpoints:
         name: to
         description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
         required: true
-        example: aliquam
+        example: sed
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
       cc:
         name: cc
         description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: asperiores
+        example: non
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
       subject:
         name: subject
         description: 'The subject of the reply email.'
         required: true
-        example: velit
+        example: non
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
       message:
         name: message
         description: 'The body content of the reply email.'
         required: true
-        example: a
+        example: id
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
       attachments:
         name: attachments
@@ -802,24 +784,22 @@ endpoints:
         type: 'file[]'
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
       main_mail_id:
         name: main_mail_id
         description: 'The ID of the main email thread being replied to.'
         required: true
-        example: 5
+        example: 14
         type: integer
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
     cleanBodyParameters:
-      to: aliquam
-      cc: asperiores
-      subject: velit
-      message: a
-      main_mail_id: 5
+      to: sed
+      cc: non
+      subject: non
+      message: id
+      main_mail_id: 14
     fileParameters:
       attachments:
         - null
@@ -866,7 +846,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k3cDE8665vZh41dgaVebPaf'
+      - 'Bearer fV3cke1b8Zg546vahEDPd6a'
     controller: null
     method: null
     route: null
@@ -899,41 +879,37 @@ endpoints:
         name: to
         description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
         required: true
-        example: ut
+        example: dolorum
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
       cc:
         name: cc
         description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: ipsam
+        example: qui
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
       subject:
         name: subject
         description: 'The subject of the forwarded email.'
         required: true
-        example: asperiores
+        example: quia
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
       message:
         name: message
         description: 'The body content of the forwarded email.'
         required: true
-        example: accusantium
+        example: nihil
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
       attachments:
         name: attachments
@@ -944,13 +920,12 @@ endpoints:
         type: 'file[]'
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
     cleanBodyParameters:
-      to: ut
-      cc: ipsam
-      subject: asperiores
-      message: accusantium
+      to: dolorum
+      cc: qui
+      subject: quia
+      message: nihil
     fileParameters:
       attachments:
         - null
@@ -996,7 +971,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8VZavcd6b564fE3a1kDehPg'
+      - 'Bearer vDEkf4Z6eVPh86d5bg31aca'
     controller: null
     method: null
     route: null
@@ -1036,7 +1011,6 @@ endpoints:
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       mailIds:
@@ -1081,7 +1055,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b56Dkea8hvEcPfg14Z6Va3d'
+      - 'Bearer 66VbEZ8agD5ahf41dPcek3v'
     controller: null
     method: null
     route: null
@@ -1121,7 +1095,6 @@ endpoints:
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       mailIds:
@@ -1166,7 +1139,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer baVc5vZa8h4E1PdgDfk66e3'
+      - 'Bearer ga8d6kc46he3DfvPZ1EaV5b'
     controller: null
     method: null
     route: null
@@ -1204,7 +1177,6 @@ endpoints:
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       mailIds:
@@ -1237,7 +1209,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer daZP1hD6evfEckag65834Vb'
+      - 'Bearer 6kaZg1Dfa53Ee46dhvcPVb8'
     controller: null
     method: null
     route: null
@@ -1272,7 +1244,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       star_value:
         name: star_value
@@ -1282,7 +1253,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       mail_id: 1
@@ -1323,7 +1293,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hV8DP1f646Ed5bvgZk3eaca'
+      - 'Bearer EafPae1gbdv8Dh664kcZ3V5'
     controller: null
     method: null
     route: null
@@ -1358,7 +1328,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       mail_id: 1
@@ -1388,7 +1357,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZkbfD3d4Vahea6g56v81EPc'
+      - 'Bearer D6vfh5E48eZdgaV16Pb3kac'
     controller: null
     method: null
     route: null
@@ -1423,7 +1392,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       mail_id: 1
@@ -1453,7 +1421,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d1hvceEbD6P65ZV34af8kag'
+      - 'Bearer 6Dekbg581aEfacvV64Z3dPh'
     controller: null
     method: null
     route: null
@@ -1488,7 +1456,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       mail_id: 1
@@ -1518,7 +1485,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EvceDfVhZ63a1aP6b4k8dg5'
+      - 'Bearer dPEhba3V6DZakg8c4fve516'
     controller: null
     method: null
     route: null
@@ -1573,7 +1540,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZEhk46D5ad1aP8Vcfb3e6gv'
+      - 'Bearer b8kvDf64PcZdgE3516Vahae'
     controller: null
     method: null
     route: null
@@ -1604,7 +1571,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -1638,7 +1604,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aacg8vd1fE6Zb4Vh3P56keD'
+      - 'Bearer D3ea5Vvbf614ZhPc6Ek8dag'
     controller: null
     method: null
     route: null

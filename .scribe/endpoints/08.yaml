@@ -221,7 +221,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e8fZPEg56dhaav1Vk6b34Dc'
+      - 'Bearer DZ85a4Vfhcke3E6v6a1dPbg'
     controller: null
     method: null
     route: null
@@ -256,7 +256,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       description:
         name: description
@@ -266,7 +265,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       members:
         name: members
@@ -276,7 +274,6 @@ endpoints:
         type: 'integer[]'
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       group_image:
         name: group_image
@@ -286,7 +283,6 @@ endpoints:
         type: file
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
     cleanBodyParameters:
       name: '"Project Z Team"'
@@ -334,7 +330,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hed6b3Z8Pv5k4a6DafE1gcV'
+      - 'Bearer 4bc6PakVgE3h185veZd6Dfa'
     controller: null
     method: null
     route: null
@@ -369,7 +365,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       team_id: 5
@@ -573,7 +568,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Zak1b3PegfV65d684DchavE'
+      - 'Bearer 1Pkha5fD36ea8dcZEVvg64b'
     controller: null
     method: null
     route: null
@@ -608,7 +603,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       message:
         name: message
@@ -618,7 +612,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       file:
         name: file
@@ -628,7 +621,6 @@ endpoints:
         type: file
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
     cleanBodyParameters:
       team_id: 5
@@ -714,7 +706,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6fEVhacd64ev85bkP1gZ3Da'
+      - 'Bearer 51vgc3e6ab8DZf4PVh6adEk'
     controller: null
     method: null
     route: null
@@ -749,7 +741,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       team_id: 5
@@ -800,7 +791,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vb61a84d36D5PkaZVgfhEce'
+      - 'Bearer aa4P1h656fZebvVc3dg8EkD'
     controller: null
     method: null
     route: null
@@ -835,7 +826,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       group_image:
         name: group_image
@@ -845,7 +835,6 @@ endpoints:
         type: file
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
     cleanBodyParameters:
       team_id: 5
@@ -877,7 +866,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VPe1dkahE54bgv38D6a6fcZ'
+      - 'Bearer 83ZcVfvdDPbahe46561gEka'
     controller: null
     method: null
     route: null
@@ -912,7 +901,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       name:
         name: name
@@ -922,7 +910,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       description:
         name: description
@@ -932,7 +919,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       team_id: 5
@@ -967,7 +953,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1gebV6Pca483fZ5kEhvd6aD'
+      - 'Bearer V8fhEdePvD3Z45kacbg66a1'
     controller: null
     method: null
     route: null
@@ -1002,7 +988,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       user_id:
         name: user_id
@@ -1012,7 +997,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       team_id: 10
@@ -1061,7 +1045,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6k85EhV1DdbvP6gae4faZc3'
+      - 'Bearer 8bev65Zd4h1cEa6kfgDP3aV'
     controller: null
     method: null
     route: null
@@ -1096,7 +1080,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       members:
         name: members
@@ -1106,7 +1089,6 @@ endpoints:
         type: 'integer[]'
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       team_id: 10
@@ -1150,7 +1132,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c1D6PZd5kfgh3Va8vb64eaE'
+      - 'Bearer h8d461bPgceE653aZkaVvfD'
     controller: null
     method: null
     route: null
@@ -1185,7 +1167,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       team_id: 10
@@ -1221,7 +1202,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hc5k6PD18aE6Z3Vvedba4gf'
+      - 'Bearer kP1VEZba65ech6gd38a4Dvf'
     controller: null
     method: null
     route: null
@@ -1256,7 +1237,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       team_id: 10
@@ -1299,7 +1279,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a51Z6hkaDE86vbcVg4eP3df'
+      - 'Bearer ega6c6P3adEf58Vhk1DZ4vb'
     controller: null
     method: null
     route: null
@@ -1334,7 +1314,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       user_id:
         name: user_id
@@ -1344,7 +1323,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       team_id: 10
@@ -1394,7 +1372,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z6k4PaDca6ev3bd1f85ghVE'
+      - 'Bearer Zd631ePvc4Dahk5fEab6gV8'
     controller: null
     method: null
     route: null
@@ -1429,7 +1407,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       chat_id: 15
@@ -1470,7 +1447,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a6agVvE5Z3D18Phbdc4fek6'
+      - 'Bearer b8PV6hEgec13dk5f64aaDvZ'
     controller: null
     method: null
     route: null
@@ -1505,7 +1482,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       del_from:
         name: del_from
@@ -1515,7 +1491,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       team_id:
         name: team_id
@@ -1525,7 +1500,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       chat_id: 25
@@ -1580,7 +1554,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 63fcaP1h8avkgZ6Ved5EDb4'
+      - 'Bearer hf36PVDa8k4ac1Z6egvdbE5'
     controller: null
     method: null
     route: null
@@ -1615,7 +1589,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       team_id: 10
@@ -1656,7 +1629,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 53c8dvE6Vbh1kP4DfZaega6'
+      - 'Bearer Zakfg13EaVv5eb64h68PdcD'
     controller: null
     method: null
     route: null
@@ -1693,7 +1666,6 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       chat_id:
         name: chat_id
@@ -1703,22 +1675,20 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       is_delete:
         name: is_delete
         description: 'optional Indicates if the notification should be marked as read and deleted.'
         required: false
-        example: 13
+        example: 2
         type: integer
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
     cleanBodyParameters:
       team_id: 10
       chat_id: 25
-      is_delete: 13
+      is_delete: 2
     fileParameters: []
     responses:
       -
@@ -1773,7 +1743,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1dk6E8g5fVc4ahea3D6vZPb'
+      - 'Bearer 8h3c64kv6bDagEZdf5e1PaV'
     controller: null
     method: null
     route: null
