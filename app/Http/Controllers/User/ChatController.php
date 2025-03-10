@@ -208,7 +208,7 @@ class ChatController extends Controller
 
             $reciver_id = $request->reciver_id; // Corrected the variable name to match the request
             $receiver_users = User::with('roles', 'chatSender') // Assuming 'chatSender' is the relationship to the Chat model
-                // ->role('MEMBER')
+            
                 ->where('id', '!=', $reciver_id)
                 ->where('status', 1)
                 ->whereHas('roles', function ($query) {

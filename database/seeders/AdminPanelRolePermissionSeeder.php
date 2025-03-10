@@ -239,15 +239,15 @@ class AdminPanelRolePermissionSeeder extends Seeder
         // Insert all permissions into the database
         Permission::insert($arrPermissions);
 
-        // Retrieve the LEADER and MEMBER roles
+        // Retrieve the LEADER and MEMBER_NON_SOVEREIGN roles
         $leaderRole = Role::where('name', 'LEADER')->first();
-        $memberRole = Role::where('name', 'MEMBER')->first();
+        $memberRole = Role::where('name', 'MEMBER_NON_SOVEREIGN')->first();
 
         // Fetch specific permissions for profile and password
         $profilePermission = Permission::where('name', 'Manage My Profile')->first();
         $passwordPermission = Permission::where('name', 'Manage My Password')->first();
 
-        // Assign "Manage My Profile" and "Manage My Password" permissions to LEADER and MEMBER
+        // Assign "Manage My Profile" and "Manage My Password" permissions to LEADER and MEMBER_NON_SOVEREIGN
         if ($leaderRole && $memberRole) {
             $leaderRole->givePermissionTo([$profilePermission, $passwordPermission]);
             $memberRole->givePermissionTo([$profilePermission, $passwordPermission]);

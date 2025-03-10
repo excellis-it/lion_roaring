@@ -21,14 +21,14 @@ class ApiMemberAccess
             if (auth()->user()->userLastSubscription->subscription_expire_date >= date('Y-m-d')) {
                 return $next($request);
             } else {
-                if (auth()->check() && auth()->user()->hasRole('MEMBER')) {
+                if (auth()->check() && auth()->user()->hasRole('MEMBER_NON_SOVEREIGN')) {
                     return response()->json(['message' => 'Your subscription has been expired. Please renew your subscription.', 'status' => false], 202);
                 } else {
                     return $next($request);
                 }
             }
         } else {
-            if (auth()->check() && auth()->user()->hasRole('MEMBER')) {
+            if (auth()->check() && auth()->user()->hasRole('MEMBER_NON_SOVEREIGN')) {
                 return response()->json(['message' => 'You have not subscribed to any plan. Please subscribe to a plan.', 'status' => false], 202);
             } else {
                 return $next($request);

@@ -26,7 +26,7 @@ class CustomerController extends Controller
     public function index()
     {
         // first middle and last name
-        $customers = User::Role('MEMBER')->orderBy(DB::raw('CONCAT(first_name, " ", middle_name, " ", last_name)'))->paginate(15);
+        $customers = User::Role('MEMBER_NON_SOVEREIGN')->orderBy(DB::raw('CONCAT(first_name, " ", middle_name, " ", last_name)'))->paginate(15);
         return view('admin.customer.list')->with(compact('customers'));
     }
 
@@ -72,7 +72,7 @@ class CustomerController extends Controller
         $data->phone = $request->phone;
         $data->status = $request->status;
         $data->save();
-        $data->assignRole('MEMBER');
+        $data->assignRole('MEMBER_NON_SOVEREIGN');
         $maildata = [
             'name' => $request->full_name,
             'email' => $request->email,
@@ -189,7 +189,7 @@ class CustomerController extends Controller
             } else {
                 $customers->orderBy($sort_by, $sort_type);
             }
-            $customers = $customers->Role('MEMBER')->paginate(15);
+            $customers = $customers->Role('MEMBER_NON_SOVEREIGN')->paginate(15);
 
             return response()->json(['data' => view('admin.customer.table', compact('customers'))->render()]);
         }

@@ -43,7 +43,7 @@ class ProfileController extends Controller
 
     public function profile(Request $request)
     {
-        $user = $request->user()->load('ecclesia', 'countries', 'states');
+        $user = $request->user()->load('ecclesia', 'countries', 'states', 'roles');
         return response()->json(['status' => true, 'message' => 'Profile details', 'data' => $user], $this->successStatus);
     }
 
@@ -159,11 +159,11 @@ class ProfileController extends Controller
 
     /**
      * Check User Permission
-     * 
+     *
      * Checks whether the authenticated user has a given permission.
      * @authenticated
      * @bodyParam permission_name string required The name of the permission to check. Example: Manage Email
-     * 
+     *
      * @response 200 {
      *  "status": true,
      *  "message": "User has permission"
@@ -221,7 +221,7 @@ class ProfileController extends Controller
 
     /**
      * Check Menu Permissions
-     * 
+     *
      * This endpoint checks the menu permissions for the authenticated user.
      *
      * @authenticated
@@ -247,12 +247,12 @@ class ProfileController extends Controller
      *   ],
      *   "message": "Menu permissions fetched successfully"
      * }
-     * 
+     *
      * @response 403 {
      *   "status": false,
      *   "message": "User does not have permission"
      * }
-     * 
+     *
      * @response 201 {
      *   "status": false,
      *   "message": "An error occurred: <error_message>"
@@ -322,7 +322,7 @@ class ProfileController extends Controller
      * @authenticated
      *
      *
-     * @response 200 
+     * @response 200
      *   {
      *    "list": {
      *        "current_page": 1,
@@ -371,7 +371,7 @@ class ProfileController extends Controller
      *                "url": "http://127.0.0.1:8000/api/v3/user/notifications?page=2",
      *                "label": "2",
      *                "active": false
-     *            },           
+     *            },
      *            {
      *                "url": "http://127.0.0.1:8000/api/v3/user/notifications?page=2",
      *                "label": "Next &raquo;",

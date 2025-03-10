@@ -208,14 +208,14 @@ class NewAdminRolePermissionSeeder extends Seeder
         // Insert all permissions into the database
         Permission::insert($arrPermissions);
 
-        // // Retrieve the LEADER and MEMBER roles
+        // // Retrieve the LEADER and MEMBER_NON_SOVEREIGN roles
         $eccRole = Role::where('name', 'ECCLESIA')->first();
-        // $memberRole = Role::where('name', 'MEMBER')->first();
+        // $memberRole = Role::where('name', 'MEMBER_NON_SOVEREIGN')->first();
 
         // // Fetch specific permissions for profile and password
         $permission1 = Permission::where('name', 'Manage All Members')->first();
 
-        // // Assign "Manage My Profile" and "Manage My Password" permissions to LEADER and MEMBER
+        // // Assign "Manage My Profile" and "Manage My Password" permissions to LEADER and MEMBER_NON_SOVEREIGN
         if ($eccRole) {
             $eccRole->givePermissionTo([$permission1]);
         }
