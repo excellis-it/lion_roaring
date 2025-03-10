@@ -43,6 +43,7 @@ class User extends Authenticatable
         'country',
         'zip',
     ];
+    protected $appends = ['ecclesia_access']; // Add this line
 
     /**
      * The attributes that should be hidden for serialization.
@@ -134,4 +135,5 @@ class User extends Authenticatable
 
         return Ecclesia::whereIn('id', $ecclesiaIds)->get();
     }
+
 }

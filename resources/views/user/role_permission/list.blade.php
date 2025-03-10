@@ -80,7 +80,7 @@
                                                                 </a>
                                                                 {{-- @if ($role->name == 'MEMBER' || $role->name == 'LEADER' || $role->name == 'ECCLESIA')
                                                                 @else --}}
-                                                                @if ($role->name != 'MEMBER' && $role->name != 'MEMBER_NON_SOVEREIGN')
+                                                                @if ($role->name != 'MEMBER_NON_SOVEREIGN')
                                                                     <a href="javascript:void(0);"
                                                                         data-route="{{ route('roles.delete', Crypt::encrypt($role->id)) }}"
                                                                         class="delete_icon" id="delete">

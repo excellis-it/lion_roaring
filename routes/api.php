@@ -259,8 +259,11 @@ Route::prefix('v3')->group(function () {
             Route::get('/list', [PartnerController::class, 'list']);
             Route::get('/create-form-data', [PartnerController::class, 'loadCreateData']);
             // Route::post('/store', [PartnerController::class, 'storePartner']);
+            Route::get('/view/{id}', [PartnerController::class, 'viewPartner']);
             Route::post('/update/{id}', [PartnerController::class, 'updatePartner']);
             Route::post('/delete/{id}', [PartnerController::class, 'deletePartner']);
+            // changePartnerStatus
+            Route::post('/change-status', [PartnerController::class, 'changePartnerStatus']);
         });
 
         Route::prefix('roles')->group(function () {

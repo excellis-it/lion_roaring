@@ -126,7 +126,7 @@ class AuthController extends Controller
         $user->status = 0;
         $user->save();
 
-        // $user->assignRole('MEMBER');
+
         $user->assignRole('MEMBER_NON_SOVEREIGN');
         $maildata = [
             'name' => $request->first_name . ' ' . $request->last_name,

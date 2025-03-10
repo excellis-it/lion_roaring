@@ -27,7 +27,7 @@
                                 <div class="box_label">
                                     <label>Role Name</label>
                                     <input type="text" class="form-control" value="{{ $role->name }}" name="role_name"
-                                        placeholder="" {{ $role->name == 'MEMBER' ? 'readonly' : '' }}>
+                                        placeholder="" {{ $role->name == 'MEMBER_NON_SOVEREIGN' ? 'readonly' : '' }}>
                                     @if ($errors->has('role_name'))
                                         @error('role_name')
                                             <span class="text-danger" style="color: red !important"> {{ $message }}</span>
