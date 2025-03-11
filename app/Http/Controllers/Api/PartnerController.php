@@ -293,7 +293,7 @@ class PartnerController extends Controller
      */
     public function storePartner(Request $request)
     {
-        try {
+
             $request->validate([
                 'user_name' => 'required|unique:users',
                 'ecclesia_id' => 'nullable|exists:ecclesias,id',
@@ -314,7 +314,7 @@ class PartnerController extends Controller
             ], [
                 'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             ]);
-
+            try {
             $phone_number = $request->phone;
             $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
 
@@ -336,9 +336,9 @@ class PartnerController extends Controller
                     return response()->json(['message' => 'Required - House Of ECCLESIA if Role is an ECCLESIA.'], 201);
                 }
             }
-
+            Log::info($request->all());
             $data = new User();
-            $data->created_id = Auth::user()->id;
+            $data->created_id = auth()->id();
             $data->user_name = $request->user_name;
             $data->first_name = $request->first_name;
             $data->last_name = $request->last_name;
@@ -415,7 +415,7 @@ class PartnerController extends Controller
      */
     public function updatePartner(Request $request, $id)
     {
-        try {
+
 
             $request->validate([
                 // 'role' => 'required',
@@ -437,6 +437,8 @@ class PartnerController extends Controller
             ], [
                 'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
             ]);
+
+            try {
 
             $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $request->phone);
 
