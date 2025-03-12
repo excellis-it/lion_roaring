@@ -294,33 +294,41 @@ class PartnerController extends Controller
     public function storePartner(Request $request)
     {
 
-            $request->validate([
-                'user_name' => 'required|unique:users',
-                'ecclesia_id' => 'nullable|exists:ecclesias,id',
-                'role' => 'required',
-                'first_name' => 'required',
-                'last_name' => 'required',
-                'middle_name' => 'nullable',
-                'email' => 'required|unique:users|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
-                'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
-                'confirm_password' => 'required|min:8|same:password',
-                'address' => 'required',
-                'country' => 'required',
-                'state' => 'required',
-                'city' => 'required',
-                'zip' => 'required',
-                'address2' => 'nullable',
-                'phone' => 'required',
-            ], [
-                'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
-            ]);
-            try {
+        $validator = Validator::make($request->all(), [
+            'user_name' => 'required|unique:users',
+            'ecclesia_id' => 'nullable|exists:ecclesias,id',
+            'role' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'middle_name' => 'nullable',
+            'email' => 'required|unique:users|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
+            'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
+            'confirm_password' => 'required|min:8|same:password',
+            'address' => 'required',
+            'country' => 'required',
+            'state' => 'required',
+            'city' => 'required',
+            'zip' => 'required',
+            'address2' => 'nullable',
+            'phone' => 'required',
+        ], [
+            'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ], 201);
+        }
+
+        // try {
             $phone_number = $request->phone;
             $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
 
             $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->count();
             if ($check > 0) {
-                return redirect()->back()->withErrors(['phone' => 'Phone number already exists'])->withInput();
+                return response()->json(['message' => 'Phone number already exists.'], 201);
             }
 
             $uniqueNumber = rand(1000, 9999);
@@ -375,12 +383,12 @@ class PartnerController extends Controller
             ]));
 
             return response()->json(['message' => 'Customer created successfully.'], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Failed to create user.',
-                'error' => $e->getMessage(),
-            ], 201);
-        }
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'message' => 'Failed to create user.',
+        //         'error' => $e->getMessage(),
+        //     ], 201);
+        // }
     }
 
 
@@ -417,75 +425,84 @@ class PartnerController extends Controller
     {
 
 
-            $request->validate([
-                // 'role' => 'required',
-                'role' => 'required',
-                'first_name' => 'required',
-                'last_name' => 'required',
-                'middle_name' => 'nullable',
-                'email' => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix|unique:users,email,' . $id,
-                'address' => 'required',
-                'phone' => 'required',
-                'ecclesia_id' => 'nullable|exists:ecclesias,id',
-                'country' => 'required',
-                'state' => 'required',
-                'city' => 'required',
-                'zip' => 'required',
-                'address2' => 'nullable',
-                'password' => ['nullable', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
-                'confirm_password' => 'nullable|min:8|same:password',
-            ], [
-                'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
-            ]);
+        $validator = Validator::make($request->all(), [
+            // 'role' => 'required',
+            'role' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'middle_name' => 'nullable',
+            'email' => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix|unique:users,email,' . $id,
+            'address' => 'required',
+            'phone' => 'required',
+            'ecclesia_id' => 'nullable|exists:ecclesias,id',
+            'country' => 'required',
+            'state' => 'required',
+            'city' => 'required',
+            'zip' => 'required',
+            'address2' => 'nullable',
+            'password' => ['nullable', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
+            'confirm_password' => 'nullable|min:8|same:password',
+        ], [
+            'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
+        ]);
 
-            try {
-
-            $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $request->phone);
-
-            if (User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->where('id', '!=', $id)->exists()) {
-                return response()->json(['message' => 'Phone number already exists.'], 201);
-            }
-
-            $is_ecclesia_admin = 0;
-            $the_role = Role::where('name', $request->role)->first();
-            if ($the_role->is_ecclesia == 1) {
-                $is_ecclesia_admin = 1;
-                if ($request->manage_ecclesia == [] || $request->manage_ecclesia == null) {
-                    return response()->json(['message' => 'Required - House Of ECCLESIA if Role is an ECCLESIA.'], 201);
-                }
-            }
-
-
-            $data = User::findOrFail($id);
-            $data->first_name = $request->first_name;
-            $data->last_name = $request->last_name;
-            $data->middle_name = $request->middle_name;
-            $data->email = $request->email;
-            $data->address = $request->address;
-            $data->country = $request->country;
-            $data->state = $request->state;
-            $data->city = $request->city;
-            $data->zip = $request->zip;
-            $data->address2 = $request->address2;
-            $data->ecclesia_id = $request->ecclesia_id;
-            $data->is_ecclesia_admin = $is_ecclesia_admin;
-            $data->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
-            if ($request->password) {
-                $data->password = bcrypt($request->password);
-            }
-
-            $data->manage_ecclesia = $request->has('manage_ecclesia') ? implode(',', $request->manage_ecclesia) : null;
-
-            $data->save();
-            $data->syncRoles([$request->role]);
-
-            return response()->json(['message' => 'Member updated successfully.'], 200);
-        } catch (\Exception $e) {
+        if ($validator->fails()) {
             return response()->json([
-                'message' => 'Failed to update member.',
-                'error' => $e->getMessage(),
+                'status' => false,
+                'errors' => $validator->errors()
             ], 201);
         }
+
+
+        // try {
+
+        $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $request->phone);
+
+        if (User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->where('id', '!=', $id)->exists()) {
+            return response()->json(['message' => 'Phone number already exists.'], 201);
+        }
+
+        $is_ecclesia_admin = 0;
+        $the_role = Role::where('name', $request->role)->first();
+        if ($the_role->is_ecclesia == 1) {
+            $is_ecclesia_admin = 1;
+            if ($request->manage_ecclesia == [] || $request->manage_ecclesia == null) {
+                return response()->json(['message' => 'Required - House Of ECCLESIA if Role is an ECCLESIA.'], 201);
+            }
+        }
+
+
+        $data = User::findOrFail($id);
+        $data->first_name = $request->first_name;
+        $data->last_name = $request->last_name;
+        $data->middle_name = $request->middle_name;
+        $data->email = $request->email;
+        $data->address = $request->address;
+        $data->country = $request->country;
+        $data->state = $request->state;
+        $data->city = $request->city;
+        $data->zip = $request->zip;
+        $data->address2 = $request->address2;
+        $data->ecclesia_id = $request->ecclesia_id;
+        $data->is_ecclesia_admin = $is_ecclesia_admin;
+        $data->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
+        if ($request->password) {
+            $data->password = bcrypt($request->password);
+        }
+
+        $data->manage_ecclesia = $request->has('manage_ecclesia') ? implode(',', $request->manage_ecclesia) : null;
+
+        $data->save();
+       // $data->roles()->detach(); // Remove all roles first
+        $data->syncRoles([$the_role->name]); // Assign new role
+
+        return response()->json(['message' => 'Member updated successfully.'], 200);
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'message' => 'Failed to update member.',
+        //         'error' => $e->getMessage(),
+        //     ], 201);
+        // }
     }
 
 
