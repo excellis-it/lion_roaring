@@ -73,9 +73,10 @@ Route::prefix('v3')->group(function () {
     Route::post('register-agreement', [AuthController::class, 'registerAgreement']);
     Route::post('forget-password', [ForgetPasswordController::class, 'forgetPassword']);
 
-    Route::post('create-partner', [PartnerController::class, 'storePartner']);
+
 
     Route::group(['middleware' => ['auth:api', 'user'], 'prefix' => 'user'], function () {
+        Route::post('create-partner', [PartnerController::class, 'storePartner']);
         Route::post('profile', [ProfileController::class, 'profile']);
         Route::post('update-profile', [ProfileController::class, 'updateProfile']);
         Route::post('profile-picture-update', [ProfileController::class, 'profilePictureUpdate']);

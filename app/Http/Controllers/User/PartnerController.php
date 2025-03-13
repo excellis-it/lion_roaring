@@ -62,7 +62,7 @@ class PartnerController extends Controller
                 $partners->where(function ($q) use ($manage_ecclesia_ids, $user) {
                     $q->whereIn('ecclesia_id', $manage_ecclesia_ids)
                         ->whereNotNull('ecclesia_id')
-                        // ->where('id', '!=', $user->id)
+                        ->orWhere('id', $user->id)
                         ->orWhere('created_id', $user->id);
                 });
             } elseif ($user->hasRole('SUPER ADMIN')) {
@@ -73,7 +73,7 @@ class PartnerController extends Controller
                 $partners->where(function ($q) use ($user, $user_ecclesia_id) {
                     $q->where('ecclesia_id', $user_ecclesia_id)
                         ->orWhere('created_id', $user->id);
-                })->whereNotNull('ecclesia_id');
+                })->orWhere('id', $user->id)->whereNotNull('ecclesia_id');
             }
 
             // Order and paginate results
@@ -397,10 +397,9 @@ class PartnerController extends Controller
                     $q->whereIn('type', [2, 3]);
                 })
                     ->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                        $q->whereIn('ecclesia_id', $manage_ecclesia_ids)
-                            ->orWhere('created_id', $user->id);
-                    })
-                    ->whereNotNull('ecclesia_id');
+                        $q->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id')
+                            ->orWhere('created_id', $user->id)->orWhere('id', $user->id);
+                    });
             } elseif ($user->hasRole('SUPER ADMIN')) {
                 $partners->whereHas('roles', function ($q) {
                     $q->whereIn('type', [2, 3]);
@@ -408,10 +407,9 @@ class PartnerController extends Controller
                     ->where('id', '!=', $user->id);
             } else {
                 $partners->where(function ($q) use ($user_ecclesia_id, $user) {
-                    $q->where('ecclesia_id', $user_ecclesia_id)
+                    $q->where('ecclesia_id', $user_ecclesia_id)->whereNotNull('ecclesia_id')->orWhere('id', $user->id)
                         ->orWhere('created_id', $user->id);
-                })
-                    ->whereNotNull('ecclesia_id');
+                });
             }
 
             // Paginate results

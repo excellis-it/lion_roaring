@@ -147,8 +147,8 @@ class PartnerController extends Controller
     {
         try {
             // Get search query if available
-            $searchQuery = $request->get('search');
-
+            $query = $request->get('search');
+            $searchQuery = str_replace(" ", "%", $query);
             $user = Auth::user();
             $is_user_ecclesia_admin = $user->is_ecclesia_admin;
             $user_ecclesia_id = $user->ecclesia_id;
@@ -159,8 +159,8 @@ class PartnerController extends Controller
                     $q->where('name', '!=', 'SUPER ADMIN');
                 })
                 ->when($searchQuery, function ($query) use ($searchQuery) {
-                    $query->where('first_name', 'like', "%{$searchQuery}%")
-                        ->orWhere('last_name', 'like', "%{$searchQuery}%")
+                    $query->where('id', 'like', "%{$searchQuery}%")
+                        ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) LIKE ?', ["%{$searchQuery}%"])
                         ->orWhere('email', 'like', "%{$searchQuery}%")
                         ->orWhere('phone', 'like', "%{$searchQuery}%")
                         ->orWhere('address', 'like', "%{$searchQuery}%")
@@ -179,11 +179,9 @@ class PartnerController extends Controller
                     $q->whereIn('type', [2, 3]);
                 })
                     ->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                        $q->whereIn('ecclesia_id', $manage_ecclesia_ids)
-                            ->orWhere('created_id', $user->id);
-                    })
-                    ->whereNotNull('ecclesia_id')
-                    ->where('id', '!=', $user->id);
+                        $q->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id')
+                            ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
+                    });
             } elseif ($user->hasRole('SUPER ADMIN')) {
                 $partners->whereHas('roles', function ($q) {
                     $q->whereIn('type', [2, 3]);
@@ -191,11 +189,9 @@ class PartnerController extends Controller
                     ->where('id', '!=', $user->id);
             } else {
                 $partners->where(function ($q) use ($user_ecclesia_id, $user) {
-                    $q->where('ecclesia_id', $user_ecclesia_id)
-                        ->orWhere('created_id', $user->id);
-                })
-                    ->whereNotNull('ecclesia_id')
-                    ->where('id', '!=', $user->id);
+                    $q->where('ecclesia_id', $user_ecclesia_id)->whereNotNull('ecclesia_id')
+                        ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
+                });
             }
 
             // Call paginate after the conditions
@@ -318,7 +314,7 @@ class PartnerController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->errors()->first()
             ], 201);
         }
 
@@ -328,7 +324,7 @@ class PartnerController extends Controller
 
             $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->count();
             if ($check > 0) {
-                return response()->json(['message' => 'Phone number already exists.'], 201);
+                return response()->json(['message' => 'Phone number already exists.', 'stauts' => false], 201);
             }
 
             $uniqueNumber = rand(1000, 9999);
@@ -341,7 +337,7 @@ class PartnerController extends Controller
                 $is_ecclesia_admin = 1;
 
                 if ($request->manage_ecclesia == [] || $request->manage_ecclesia == null) {
-                    return response()->json(['message' => 'Required - House Of ECCLESIA if Role is an ECCLESIA.'], 201);
+                    return response()->json(['message' => 'Required - House Of ECCLESIA if Role is an ECCLESIA.', 'stauts' => false], 201);
                 }
             }
             Log::info($request->all());
@@ -363,7 +359,7 @@ class PartnerController extends Controller
             $data->ecclesia_id = $request->ecclesia_id;
             $data->is_ecclesia_admin = $is_ecclesia_admin;
             $data->user_name = $request->user_name;
-            $data->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
+            $data->phone = $request->phone;
             $data->status = 1;
             $data->is_accept = 1;
 
@@ -382,7 +378,7 @@ class PartnerController extends Controller
                 'type' => ucfirst(strtolower($request->role)),
             ]));
 
-            return response()->json(['message' => 'Customer created successfully.'], 200);
+            return response()->json(['message' => 'Customer created successfully.', 'stauts' => true], 200);
         // } catch (\Exception $e) {
         //     return response()->json([
         //         'message' => 'Failed to create user.',
@@ -449,7 +445,7 @@ class PartnerController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->errors()->first()
             ], 201);
         }
 
@@ -459,7 +455,7 @@ class PartnerController extends Controller
         $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $request->phone);
 
         if (User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->where('id', '!=', $id)->exists()) {
-            return response()->json(['message' => 'Phone number already exists.'], 201);
+            return response()->json(['message' => 'Phone number already exists.', 'stauts' => false], 201);
         }
 
         $is_ecclesia_admin = 0;
@@ -467,7 +463,7 @@ class PartnerController extends Controller
         if ($the_role->is_ecclesia == 1) {
             $is_ecclesia_admin = 1;
             if ($request->manage_ecclesia == [] || $request->manage_ecclesia == null) {
-                return response()->json(['message' => 'Required - House Of ECCLESIA if Role is an ECCLESIA.'], 201);
+                return response()->json(['message' => 'Required - House Of ECCLESIA if Role is an ECCLESIA.', 'stauts' => false], 201);
             }
         }
 
@@ -485,7 +481,7 @@ class PartnerController extends Controller
         $data->address2 = $request->address2;
         $data->ecclesia_id = $request->ecclesia_id;
         $data->is_ecclesia_admin = $is_ecclesia_admin;
-        $data->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
+        $data->phone = $request->phone;
         if ($request->password) {
             $data->password = bcrypt($request->password);
         }
@@ -496,7 +492,7 @@ class PartnerController extends Controller
        // $data->roles()->detach(); // Remove all roles first
         $data->syncRoles([$the_role->name]); // Assign new role
 
-        return response()->json(['message' => 'Member updated successfully.'], 200);
+        return response()->json(['message' => 'Member updated successfully.', 'stauts' => true], 200);
         // } catch (\Exception $e) {
         //     return response()->json([
         //         'message' => 'Failed to update member.',
