@@ -111,8 +111,8 @@ class JobpostingController extends Controller
      */
     public function edit($id)
     {
-        if (auth()->user()->can('Edit Job Postings')) {
-            $job = Job::findOrFail($id);
+        $job = Job::findOrFail($id);
+        if ((auth()->user()->can('Edit Job Postings')  && $job->created_by == auth()->user()->id) || auth()->user()->hasRole('SUPER ADMIN')) {
             return view('user.job.edit')->with(compact('job'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -202,8 +202,8 @@ class JobpostingController extends Controller
     }
     public function delete($id)
     {
-        if (Auth::user()->can('Delete Job Postings')) {
-            $job = Job::findOrFail($id);
+        $job = Job::findOrFail($id);
+        if ((Auth::user()->can('Delete Job Postings')  && $job->created_by == auth()->user()->id) || auth()->user()->hasRole('SUPER ADMIN')) {
             Log::info($job->job_title . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             $job->delete();
             return redirect()->route('jobs.index')->with('error', 'Job has been deleted successfully.');
