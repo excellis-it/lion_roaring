@@ -54,10 +54,10 @@ class PolicyGuidenceController extends Controller
      *                "updated_at": "2024-08-27T06:34:46.000000Z"
      *            }
      *        ],
-     *        "first_page_url": "http://127.0.0.1:8000/api/v3/user/strategy/load?page=1",
+     *        "first_page_url": "http://127.0.0.1:8000/api/v3/user/policy/load?page=1",
      *        "from": 1,
      *        "last_page": 1,
-     *        "last_page_url": "http://127.0.0.1:8000/api/v3/user/strategy/load?page=1",
+     *        "last_page_url": "http://127.0.0.1:8000/api/v3/user/policy/load?page=1",
      *        "links": [
      *            {
      *                "url": null,
@@ -65,7 +65,7 @@ class PolicyGuidenceController extends Controller
      *                "active": false
      *            },
      *            {
-     *                "url": "http://127.0.0.1:8000/api/v3/user/strategy/load?page=1",
+     *                "url": "http://127.0.0.1:8000/api/v3/user/policy/load?page=1",
      *                "label": "1",
      *                "active": true
      *            },
@@ -76,7 +76,7 @@ class PolicyGuidenceController extends Controller
      *            }
      *        ],
      *        "next_page_url": null,
-     *        "path": "http://127.0.0.1:8000/api/v3/user/strategy/load",
+     *        "path": "http://127.0.0.1:8000/api/v3/user/policy/load",
      *        "per_page": 15,
      *        "prev_page_url": null,
      *        "to": 3,
@@ -100,7 +100,7 @@ class PolicyGuidenceController extends Controller
                 ->orderBy('id', 'desc')
                 ->paginate(15);
 
-            // Return success response with strategy data
+            // Return success response with policy data
             return response()->json(['data' => $policies], 200);
         } catch (\Exception $e) {
             // Return error response if fetching policies fails
@@ -114,7 +114,7 @@ class PolicyGuidenceController extends Controller
      * @bodyParam file file required files to upload.
      *
      * @response 200 scenario="success" {"message": "Policy(s) uploaded successfully."}
-     * @response 201 scenario="error" {"error": "Validation failed or duplicate strategy found."}
+     * @response 201 scenario="error" {"error": "Validation failed or duplicate policy found."}
      */
     public function store(Request $request)
     {
@@ -138,30 +138,30 @@ class PolicyGuidenceController extends Controller
                 ->first();
 
             if ($check) {
-                return response()->json(['error' => 'The strategy name "' . $file_name . '" has already been taken.'], 201);
+                return response()->json(['error' => 'The policy name "' . $file_name . '" has already been taken.'], 201);
             }
 
-            $strategy = new Policy();
-            $strategy->user_id = auth()->id();
-            $strategy->file_name = $file_name;
-            $strategy->file_extension = $file_extension;
-            $strategy->file = $file_path;
-            $strategy->save();
+            $policy = new Policy();
+            $policy->user_id = auth()->id();
+            $policy->file_name = $file_name;
+            $policy->file_extension = $file_extension;
+            $policy->file = $file_path;
+            $policy->save();
 
             $userName = Auth::user()->getFullNameAttribute();
-            $noti = NotificationService::notifyAllUsers('New Policy created by ' . $userName, 'strategy');
+            $noti = NotificationService::notifyAllUsers('New Policy created by ' . $userName, 'policy');
 
 
             return response()->json(['message' => 'Policy(s) uploaded successfully.'], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to upload strategy(s).' . $e], 201);
+            return response()->json(['error' => 'Failed to upload policy(s).' . $e], 201);
         }
     }
 
     /**
-     * Delete strategy
+     * Delete policy
      *
-     * @urlParam id int required The ID of the strategy to delete.
+     * @urlParam id int required The ID of the policy to delete.
      *
      * @response 200 scenario="success" {"message": "Policy deleted successfully."}
      * @response 201 scenario="error" {"error": "Policy not found or permission denied."}
@@ -170,24 +170,24 @@ class PolicyGuidenceController extends Controller
     {
         try {
 
-            $strategy = Policy::find($id);
-            if ($strategy) {
-                if (Storage::disk('public')->exists($strategy->file)) {
-                    Storage::disk('public')->delete($strategy->file);
+            $policy = Policy::find($id);
+            if ($policy) {
+                if (Storage::disk('public')->exists($policy->file)) {
+                    Storage::disk('public')->delete($policy->file);
                 }
-                Log::info($strategy->file_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
-                $strategy->delete();
+                Log::info($policy->file_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
+                $policy->delete();
                 return response()->json(['message' => 'Policy deleted successfully.'], 200);
             } else {
                 return response()->json(['error' => 'Policy not found.'], 201);
             }
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to delete strategy.'], 201);
+            return response()->json(['error' => 'Failed to delete policy.'], 201);
         }
     }
 
     /**
-     * Download strategy file
+     * Download policy file
      *
      * @response 200 scenario="success" The file download response.
      * @response 201 scenario="error" {"error": "Policy not found or permission denied."}
@@ -196,21 +196,21 @@ class PolicyGuidenceController extends Controller
     {
         try {
 
-            $strategy = Policy::find($id);
-            if ($strategy && Storage::disk('public')->exists($strategy->file)) {
-                return response()->download(Storage::disk('public')->path($strategy->file));
+            $policy = Policy::find($id);
+            if ($policy && Storage::disk('public')->exists($policy->file)) {
+                return response()->download(Storage::disk('public')->path($policy->file));
             } else {
                 return response()->json(['error' => 'Policy not found.'], 201);
             }
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to download strategy.'], 201);
+            return response()->json(['error' => 'Failed to download policy.'], 201);
         }
     }
 
     /**
      * Single Policy details
      *
-     * @urlParam id int required The ID of the strategy to view.
+     * @urlParam id int required The ID of the policy to view.
      *
      * @response 200 scenario="success" {"data": {"id": 1, "file_name": "strategy1.pdf", "file_extension": "pdf", "user_id": 1, "file": "policies/strategy1.pdf"}}
      * @response 201 scenario="error" {"error": "Policy not found or permission denied."}
@@ -219,14 +219,14 @@ class PolicyGuidenceController extends Controller
     {
         try {
 
-            $strategy = Policy::find($id);
-            if ($strategy) {
-                return response()->json(['data' => $strategy], 200);
+            $policy = Policy::find($id);
+            if ($policy) {
+                return response()->json(['data' => $policy], 200);
             } else {
                 return response()->json(['error' => 'Policy not found.'], 201);
             }
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch strategy details.'], 201);
+            return response()->json(['error' => 'Failed to fetch policy details.'], 201);
         }
     }
 }
