@@ -3,27 +3,23 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Policy;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
-use App\Models\Strategy;
-use App\Traits\ImageTrait;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
-use App\Services\NotificationService;
 
 /**
- * @group Strategy
+ * @group Policy
  *
  * @authenticated
  */
-
-class StrategyController extends Controller
+class PolicyGuidenceController extends Controller
 {
-    use ImageTrait;
-
     /**
-     * Strategies List
+     * Policies List
      * @queryParam search string optional for search. Example: "abc"
      *
      * @response 200 {
@@ -35,7 +31,7 @@ class StrategyController extends Controller
      *                "user_id": 37,
      *                "file_name": "dummy (1).pdf",
      *                "file_extension": "pdf",
-     *                "file": "strategies/06C4cc8uACENraZzOjILXIY5QIg4QQrDESsT5Kqv.pdf",
+     *                "file": "policies/06C4cc8uACENraZzOjILXIY5QIg4QQrDESsT5Kqv.pdf",
      *                "created_at": "2024-11-11T07:02:33.000000Z",
      *                "updated_at": "2024-11-11T07:02:33.000000Z"
      *            },
@@ -44,7 +40,7 @@ class StrategyController extends Controller
      *                "user_id": 1,
      *                "file_name": "partner-Photoroom.jpg",
      *                "file_extension": "jpg",
-     *                "file": "strategies/L4u3mwqeGc8BuCuHXR5X9ZYOPbV2SYgQcvqDIiIN.jpg",
+     *                "file": "policies/L4u3mwqeGc8BuCuHXR5X9ZYOPbV2SYgQcvqDIiIN.jpg",
      *                "created_at": "2024-08-27T06:34:46.000000Z",
      *                "updated_at": "2024-08-27T06:34:46.000000Z"
      *            },
@@ -53,7 +49,7 @@ class StrategyController extends Controller
      *                "user_id": 1,
      *                "file_name": "A2ncCVFTo7T9zg1wjM9BPyX9u1PctUGVsPi8oEXb.jpg",
      *                "file_extension": "jpg",
-     *                "file": "strategies/1sk1WN3iEFUA3ztNYNCApyqR5jKg2RyLSBXHk1oP.jpg",
+     *                "file": "policies/1sk1WN3iEFUA3ztNYNCApyqR5jKg2RyLSBXHk1oP.jpg",
      *                "created_at": "2024-08-27T06:34:46.000000Z",
      *                "updated_at": "2024-08-27T06:34:46.000000Z"
      *            }
@@ -87,7 +83,7 @@ class StrategyController extends Controller
      *        "total": 3
      *    }
      * }
-     * @response 201 scenario="error" {"error": "Failed to fetch strategies."}
+     * @response 201 scenario="error" {"error": "Failed to fetch policies."}
      */
     public function index(Request $request)
     {
@@ -96,8 +92,8 @@ class StrategyController extends Controller
             $searchQuery = $request->get('search');
 
 
-            // Query strategies with optional search functionality
-            $strategies = Strategy::when($searchQuery, function ($query) use ($searchQuery) {
+            // Query policies with optional search functionality
+            $policies = Policy::when($searchQuery, function ($query) use ($searchQuery) {
                 $query->where('file_name', 'like', "%$searchQuery%")
                     ->orWhere('file_extension', 'like', "%$searchQuery%");
             })
@@ -105,19 +101,19 @@ class StrategyController extends Controller
                 ->paginate(15);
 
             // Return success response with strategy data
-            return response()->json(['data' => $strategies], 200);
+            return response()->json(['data' => $policies], 200);
         } catch (\Exception $e) {
-            // Return error response if fetching strategies fails
-            return response()->json(['error' => 'Failed to fetch strategies.'], 201);
+            // Return error response if fetching policies fails
+            return response()->json(['error' => 'Failed to fetch policies.'], 201);
         }
     }
 
     /**
-     * Create strategies
+     * Create policies
      *
      * @bodyParam file file required files to upload.
      *
-     * @response 200 scenario="success" {"message": "Strategy(s) uploaded successfully."}
+     * @response 200 scenario="success" {"message": "Policy(s) uploaded successfully."}
      * @response 201 scenario="error" {"error": "Validation failed or duplicate strategy found."}
      */
     public function store(Request $request)
@@ -135,9 +131,9 @@ class StrategyController extends Controller
 
             $file_name = $file->getClientOriginalName();
             $file_extension = $file->getClientOriginalExtension();
-            $file_path = $this->imageUpload($file, 'strategies');
+            $file_path = $this->imageUpload($file, 'policies');
 
-            $check = Strategy::where('file_name', $file_name)
+            $check = Policy::where('file_name', $file_name)
                 ->where('file_extension', $file_extension)
                 ->first();
 
@@ -145,7 +141,7 @@ class StrategyController extends Controller
                 return response()->json(['error' => 'The strategy name "' . $file_name . '" has already been taken.'], 201);
             }
 
-            $strategy = new Strategy();
+            $strategy = new Policy();
             $strategy->user_id = auth()->id();
             $strategy->file_name = $file_name;
             $strategy->file_extension = $file_extension;
@@ -153,10 +149,10 @@ class StrategyController extends Controller
             $strategy->save();
 
             $userName = Auth::user()->getFullNameAttribute();
-            $noti = NotificationService::notifyAllUsers('New Strategy created by ' . $userName, 'strategy');
+            $noti = NotificationService::notifyAllUsers('New Policy created by ' . $userName, 'strategy');
 
 
-            return response()->json(['message' => 'Strategy(s) uploaded successfully.'], 200);
+            return response()->json(['message' => 'Policy(s) uploaded successfully.'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to upload strategy(s).' . $e], 201);
         }
@@ -167,23 +163,23 @@ class StrategyController extends Controller
      *
      * @urlParam id int required The ID of the strategy to delete.
      *
-     * @response 200 scenario="success" {"message": "Strategy deleted successfully."}
-     * @response 201 scenario="error" {"error": "Strategy not found or permission denied."}
+     * @response 200 scenario="success" {"message": "Policy deleted successfully."}
+     * @response 201 scenario="error" {"error": "Policy not found or permission denied."}
      */
     public function delete($id)
     {
         try {
 
-            $strategy = Strategy::find($id);
+            $strategy = Policy::find($id);
             if ($strategy) {
                 if (Storage::disk('public')->exists($strategy->file)) {
                     Storage::disk('public')->delete($strategy->file);
                 }
                 Log::info($strategy->file_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
                 $strategy->delete();
-                return response()->json(['message' => 'Strategy deleted successfully.'], 200);
+                return response()->json(['message' => 'Policy deleted successfully.'], 200);
             } else {
-                return response()->json(['error' => 'Strategy not found.'], 201);
+                return response()->json(['error' => 'Policy not found.'], 201);
             }
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to delete strategy.'], 201);
@@ -194,17 +190,17 @@ class StrategyController extends Controller
      * Download strategy file
      *
      * @response 200 scenario="success" The file download response.
-     * @response 201 scenario="error" {"error": "Strategy not found or permission denied."}
+     * @response 201 scenario="error" {"error": "Policy not found or permission denied."}
      */
     public function download($id)
     {
         try {
 
-            $strategy = Strategy::find($id);
+            $strategy = Policy::find($id);
             if ($strategy && Storage::disk('public')->exists($strategy->file)) {
                 return response()->download(Storage::disk('public')->path($strategy->file));
             } else {
-                return response()->json(['error' => 'Strategy not found.'], 201);
+                return response()->json(['error' => 'Policy not found.'], 201);
             }
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to download strategy.'], 201);
@@ -212,22 +208,22 @@ class StrategyController extends Controller
     }
 
     /**
-     * Single Strategy details
+     * Single Policy details
      *
      * @urlParam id int required The ID of the strategy to view.
      *
-     * @response 200 scenario="success" {"data": {"id": 1, "file_name": "strategy1.pdf", "file_extension": "pdf", "user_id": 1, "file": "strategies/strategy1.pdf"}}
-     * @response 201 scenario="error" {"error": "Strategy not found or permission denied."}
+     * @response 200 scenario="success" {"data": {"id": 1, "file_name": "strategy1.pdf", "file_extension": "pdf", "user_id": 1, "file": "policies/strategy1.pdf"}}
+     * @response 201 scenario="error" {"error": "Policy not found or permission denied."}
      */
     public function view($id)
     {
         try {
 
-            $strategy = Strategy::find($id);
+            $strategy = Policy::find($id);
             if ($strategy) {
                 return response()->json(['data' => $strategy], 200);
             } else {
-                return response()->json(['error' => 'Strategy not found.'], 201);
+                return response()->json(['error' => 'Policy not found.'], 201);
             }
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch strategy details.'], 201);

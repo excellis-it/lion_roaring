@@ -101,7 +101,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 86Dd4PafgekEv3V65bc1Zha'
+      - 'Bearer g5Dckab66Efd4P3hvZeaV18'
     controller: null
     method: null
     route: null
@@ -182,7 +182,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DPh4dk81ceg56avfbZE6a3V'
+      - 'Bearer a4c6ZV1h6e3D5agPvbkd8Ef'
     controller: null
     method: null
     route: null
@@ -354,7 +354,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dk3c6bV486PhgZDa15aEvef'
+      - 'Bearer 5hfkebvVZDa4cE6dgaP8163'
     controller: null
     method: null
     route: null
@@ -381,13 +381,13 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: temporibus
+        example: excepturi
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: temporibus
+      id: excepturi
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -536,7 +536,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hebda3fE184Dv6c6P5kgaVZ'
+      - 'Bearer 85EPDe3kZba6fgvc1haVd64'
     controller: null
     method: null
     route: null
@@ -563,13 +563,13 @@ endpoints:
         name: id
         description: 'The ID of the delete.'
         required: true
-        example: non
+        example: sunt
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: non
+      id: sunt
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -598,7 +598,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Df5VZ3k6ah1g8dc6P4eavbE'
+      - 'Bearer 4PvcahagZ61fbkV8D36e5Ed'
     controller: null
     method: null
     route: null
@@ -674,7 +674,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P6e3bchgvZkD16Vd5aE8a4f'
+      - 'Bearer 81chb4PZge5a66vfVakDEd3'
     controller: null
     method: null
     route: null

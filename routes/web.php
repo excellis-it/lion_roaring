@@ -72,6 +72,7 @@ use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\User\ChatBotController;
 use App\Http\Controllers\User\EmailVerificationController;
+use App\Http\Controllers\User\PolicyGuidenceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -356,6 +357,16 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::get('/download/{strategy}', [StrategyController::class, 'download'])->name('strategy.download');
         Route::get('/fetch-data', [StrategyController::class, 'fetchData'])->name('strategy.fetch-data');
         Route::get('/view/{id}', [StrategyController::class, 'view'])->name('strategy.view');
+    });
+
+    Route::prefix('policy-guidence')->group(function () {
+        Route::get('/', [PolicyGuidenceController::class, 'index'])->name('policy-guidence.index');
+        Route::get('/upload', [PolicyGuidenceController::class, 'upload'])->name('policy-guidence.upload');
+        Route::post('/store', [PolicyGuidenceController::class, 'store'])->name('policy-guidence.store');
+        Route::get('/delete/{id}', [PolicyGuidenceController::class, 'delete'])->name('policy-guidence.delete');
+        Route::get('/download/{file}', [PolicyGuidenceController::class, 'download'])->name('policy-guidence.download');
+        Route::get('/fetch-data', [PolicyGuidenceController::class, 'fetchData'])->name('policy-guidence.fetch-data');
+        Route::get('/view/{id}', [PolicyGuidenceController::class, 'view'])->name('policy-guidence.view');
     });
 
     Route::prefix('file')->group(function () {

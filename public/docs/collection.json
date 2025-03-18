@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Lion Roaring",
-        "_postman_id": "bcbd1344-5f41-4349-ad28-1c0bd91f16e2",
+        "_postman_id": "e3f7cc78-c84d-43a9-a539-47bac968965f",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -173,7 +173,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":19,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"city\":\"Springfield\",\"state\":17,\"address2\":\"Apt 4B\",\"country\":18,\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":16,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"city\":\"Springfield\",\"state\":8,\"address2\":\"Apt 4B\",\"country\":20,\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -1344,7 +1344,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"volkman.thalia@example.org\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"alford36@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1618,7 +1618,7 @@
                                         {
                                             "id": "topic",
                                             "key": "topic",
-                                            "value": "voluptas",
+                                            "value": "tempore",
                                             "description": "The topic."
                                         },
                                         {
@@ -1795,30 +1795,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "sequi",
+                                            "value": "assumenda",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "a",
+                                            "value": "aspernatur",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "hic",
+                                            "value": "sit",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "4",
+                                            "value": "18",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=sequi&sorttype=a&query=hic&topic_id=4"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=assumenda&sorttype=aspernatur&query=sit&topic_id=18"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -1949,12 +1949,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "16",
+                                            "value": "19",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=16",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=19",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2005,7 +2005,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "corrupti",
+                                            "value": "laudantium",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2130,7 +2130,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "voluptatum",
+                                            "value": "molestiae",
                                             "description": ""
                                         }
                                     ]
@@ -2224,30 +2224,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "vel",
+                                            "value": "totam",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "quia",
+                                            "value": "in",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "aliquam",
+                                            "value": "quam",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "12",
+                                            "value": "9",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/list-by-topics?sortby=vel&sorttype=quia&query=aliquam&topic_id=12"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/list-by-topics?sortby=totam&sorttype=in&query=quam&topic_id=9"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2378,12 +2378,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "11",
+                                            "value": "8",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/view\/:id?topic=11",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/view\/:id?topic=8",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2434,7 +2434,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "ipsum",
+                                            "value": "magnam",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2559,7 +2559,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "aut",
+                                            "value": "veniam",
                                             "description": ""
                                         }
                                     ]
@@ -2653,30 +2653,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "tempore",
+                                            "value": "labore",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "aut",
+                                            "value": "tenetur",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "voluptas",
+                                            "value": "aut",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "9",
+                                            "value": "7",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=tempore&sorttype=aut&query=voluptas&topic_id=9"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=labore&sorttype=tenetur&query=aut&topic_id=7"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2807,12 +2807,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "4",
+                                            "value": "18",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=4",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=18",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2863,7 +2863,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "voluptas",
+                                            "value": "facere",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2988,7 +2988,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "ullam",
+                                            "value": "sequi",
                                             "description": ""
                                         }
                                     ]
@@ -3082,30 +3082,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "a",
+                                            "value": "impedit",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "accusamus",
+                                            "value": "et",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "et",
+                                            "value": "excepturi",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "17",
+                                            "value": "5",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/list-by-topics?sortby=a&sorttype=accusamus&query=et&topic_id=17"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/list-by-topics?sortby=impedit&sorttype=et&query=excepturi&topic_id=5"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -3236,12 +3236,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "10",
+                                            "value": "9",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/view\/:id?topic=10",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/view\/:id?topic=9",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -3292,7 +3292,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "vitae",
+                                            "value": "qui",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -3417,7 +3417,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "et",
+                                            "value": "voluptatem",
                                             "description": ""
                                         }
                                     ]
@@ -3773,25 +3773,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "molestias",
+                                    "value": "error",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"masum2@excellisit.net\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "voluptas",
+                                    "value": "optio",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "ratione",
+                                    "value": "consequatur",
                                     "type": "text",
                                     "description": "The subject of the email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "quia",
+                                    "value": "debitis",
                                     "type": "text",
                                     "description": "The body content of the email."
                                 },
@@ -3850,31 +3850,31 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "sed",
+                                    "value": "nisi",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "non",
+                                    "value": "ut",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "non",
+                                    "value": "velit",
                                     "type": "text",
                                     "description": "The subject of the reply email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "id",
+                                    "value": "nemo",
                                     "type": "text",
                                     "description": "The body content of the reply email."
                                 },
                                 {
                                     "key": "main_mail_id",
-                                    "value": 14,
+                                    "value": 10,
                                     "type": "text",
                                     "description": "The ID of the main email thread being replied to."
                                 },
@@ -3933,25 +3933,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "dolorum",
+                                    "value": "vel",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "qui",
+                                    "value": "optio",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "quia",
+                                    "value": "ex",
                                     "type": "text",
                                     "description": "The subject of the forwarded email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "nihil",
+                                    "value": "voluptatem",
                                     "type": "text",
                                     "description": "The body content of the forwarded email."
                                 },
@@ -4661,7 +4661,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"miguel.tremblay@example.com\"}"
+                            "raw": "{\"email\":\"koelpin.terry@example.net\"}"
                         },
                         "description": "",
                         "auth": {
@@ -5383,7 +5383,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":2}"
+                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":4}"
                         },
                         "description": "Manages notifications for group chat messages. If the user has a new message, it sends a notification;\notherwise, it marks the notification as read."
                     },
@@ -5564,7 +5564,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "temporibus",
+                                    "value": "excepturi",
                                     "description": "The ID of the edit."
                                 }
                             ]
@@ -5613,7 +5613,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "non",
+                                    "value": "sunt",
                                     "description": "The ID of the delete."
                                 }
                             ]
@@ -5958,9 +5958,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v3\/create-partner",
+                            "path": "api\/v3\/user\/create-partner",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v3\/create-partner"
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/create-partner"
                         },
                         "method": "POST",
                         "header": [
@@ -6072,6 +6072,52 @@
                     ]
                 },
                 {
+                    "name": "Get Partner Details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/partners\/view\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/partners\/view\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "5",
+                                    "description": "The ID of the partner."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "This endpoint retrieves details of a specific partner by ID, including their ecclesia, roles, and associated data."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"roles\": [\n    {\n      \"id\": 2,\n      \"name\": \"Admin\",\n      \"permissions\": [\n        {\n          \"id\": 1,\n          \"name\": \"Manage Users\"\n        }\n      ]\n    }\n  ],\n  \"eclessias\": [\n    {\n      \"id\": 1,\n      \"name\": \"Saint Peter's Church\"\n    }\n  ],\n  \"countries\": [\n    {\n      \"id\": 1,\n      \"name\": \"United States\"\n    }\n  ],\n  \"partner\": {\n    \"id\": 5,\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"email\": \"john@example.com\",\n    \"ecclesia\": {\n      \"id\": 3,\n      \"name\": \"Grace Church\"\n    },\n    \"roles\": [\n      {\n        \"id\": 2,\n        \"name\": \"Admin\"\n      }\n    ]\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"message\": \"Failed to fetch partner.\",\n  \"error\": \"Partner not found.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
                     "name": "Update Members's details",
                     "request": {
                         "url": {
@@ -6083,7 +6129,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "magnam",
+                                    "value": "ratione",
                                     "description": "The ID of the update."
                                 }
                             ]
@@ -6101,7 +6147,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"Smith\",\"email\":\"johndoe@example.com\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"ecclesia_id\":1,\"country\":1,\"state\":1,\"city\":\"Los Angeles\",\"zip\":\"90001\",\"address2\":\"Apt 4B\",\"password\":\"P@ssword1\",\"confirm_password\":\"P@ssword1\",\"status\":1}"
+                            "raw": "{\"role\":\"laborum\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"Smith\",\"email\":\"johndoe@example.com\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"ecclesia_id\":1,\"country\":1,\"state\":1,\"city\":\"Los Angeles\",\"zip\":\"90001\",\"address2\":\"Apt 4B\",\"password\":\"P@ssword1\",\"confirm_password\":\"P@ssword1\",\"status\":1}"
                         },
                         "description": ""
                     },
@@ -6132,7 +6178,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "14",
+                                    "value": "18",
                                     "description": "The ID of the partner to delete."
                                 }
                             ]
@@ -6163,6 +6209,289 @@
                             "code": 201,
                             "body": "{\n  \"message\": \"Failed to delete member.\",\n  \"error\": \"Validation error or database error\"\n}",
                             "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Change Partner Status",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/partners\/change-status",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/partners\/change-status"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"user_id\":12,\"status\":1}"
+                        },
+                        "description": "This endpoint allows an admin to change the status of a partner.\nIf the status is set to `0`, the user is deactivated and an email notification is sent.\nIf the status is set to `1`, the user is activated and an email notification is sent."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"message\": \"Status activated successfully.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n   \"message\": \"The user_id field is required.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 500,
+                            "body": "{\n   \"message\": \"An error occurred while changing status.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Policy",
+            "description": "",
+            "item": [
+                {
+                    "name": "Policies List",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/policy\/load",
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "%22abc%22",
+                                    "description": "optional for search.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/policy\/load?search=%22abc%22"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n   \"data\": {\n       \"current_page\": 1,\n       \"data\": [\n           {\n               \"id\": 7,\n               \"user_id\": 37,\n               \"file_name\": \"dummy (1).pdf\",\n               \"file_extension\": \"pdf\",\n               \"file\": \"policies\/06C4cc8uACENraZzOjILXIY5QIg4QQrDESsT5Kqv.pdf\",\n               \"created_at\": \"2024-11-11T07:02:33.000000Z\",\n               \"updated_at\": \"2024-11-11T07:02:33.000000Z\"\n           },\n           {\n               \"id\": 6,\n               \"user_id\": 1,\n               \"file_name\": \"partner-Photoroom.jpg\",\n               \"file_extension\": \"jpg\",\n               \"file\": \"policies\/L4u3mwqeGc8BuCuHXR5X9ZYOPbV2SYgQcvqDIiIN.jpg\",\n               \"created_at\": \"2024-08-27T06:34:46.000000Z\",\n               \"updated_at\": \"2024-08-27T06:34:46.000000Z\"\n           },\n           {\n               \"id\": 5,\n               \"user_id\": 1,\n               \"file_name\": \"A2ncCVFTo7T9zg1wjM9BPyX9u1PctUGVsPi8oEXb.jpg\",\n               \"file_extension\": \"jpg\",\n               \"file\": \"policies\/1sk1WN3iEFUA3ztNYNCApyqR5jKg2RyLSBXHk1oP.jpg\",\n               \"created_at\": \"2024-08-27T06:34:46.000000Z\",\n               \"updated_at\": \"2024-08-27T06:34:46.000000Z\"\n           }\n       ],\n       \"first_page_url\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/strategy\/load?page=1\",\n       \"from\": 1,\n       \"last_page\": 1,\n       \"last_page_url\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/strategy\/load?page=1\",\n       \"links\": [\n           {\n               \"url\": null,\n               \"label\": \"&laquo; Previous\",\n               \"active\": false\n           },\n           {\n               \"url\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/strategy\/load?page=1\",\n               \"label\": \"1\",\n               \"active\": true\n           },\n           {\n               \"url\": null,\n               \"label\": \"Next &raquo;\",\n               \"active\": false\n           }\n       ],\n       \"next_page_url\": null,\n       \"path\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/strategy\/load\",\n       \"per_page\": 15,\n       \"prev_page_url\": null,\n       \"to\": 3,\n       \"total\": 3\n   }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"error\": \"Failed to fetch policies.\"}",
+                            "name": "error"
+                        }
+                    ]
+                },
+                {
+                    "name": "Create policies",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/policy\/store",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/policy\/store"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"message\": \"Policy(s) uploaded successfully.\"}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"error\": \"Validation failed or duplicate strategy found.\"}",
+                            "name": "error"
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete strategy",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/policy\/delete\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/policy\/delete\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "17",
+                                    "description": "The ID of the strategy to delete."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"message\": \"Policy deleted successfully.\"}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"error\": \"Policy not found or permission denied.\"}",
+                            "name": "error"
+                        }
+                    ]
+                },
+                {
+                    "name": "Download strategy file",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/policy\/download\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/policy\/download\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "tempora",
+                                    "description": "The ID of the download."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "The file download response.",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"error\": \"Policy not found or permission denied.\"}",
+                            "name": "error"
+                        }
+                    ]
+                },
+                {
+                    "name": "Single Policy details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/policy\/view\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/policy\/view\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "2",
+                                    "description": "The ID of the strategy to view."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"data\": {\"id\": 1, \"file_name\": \"strategy1.pdf\", \"file_extension\": \"pdf\", \"user_id\": 1, \"file\": \"policies\/strategy1.pdf\"}}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\"error\": \"Policy not found or permission denied.\"}",
+                            "name": "error"
                         }
                     ]
                 }
@@ -6573,7 +6902,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n   \"data\": [\n       {\n           \"id\": 2,\n           \"name\": \"MEMBER\",\n           \"guard_name\": \"web\",\n           \"created_at\": \"2024-03-05T15:36:13.000000Z\",\n           \"updated_at\": \"2024-03-05T15:36:13.000000Z\",\n           \"permissions\": [\n               {\n                   \"id\": 1,\n                   \"name\": \"Manage Profile\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 1\n                   }\n               },\n               {\n                   \"id\": 2,\n                   \"name\": \"Manage Password\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 2\n                   }\n               },\n               {\n                   \"id\": 3,\n                   \"name\": \"Manage Chat\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 3\n                   }\n               },\n               {\n                   \"id\": 4,\n                   \"name\": \"Create Team\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 4\n                   }\n               },\n               {\n                   \"id\": 6,\n                   \"name\": \"Delete Team\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 6\n                   }\n               },\n               {\n                   \"id\": 7,\n                   \"name\": \"Manage Team\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 7\n                   }\n               },\n               {\n                   \"id\": 9,\n                   \"name\": \"Manage Email\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 9\n                   }\n               },\n               {\n                   \"id\": 10,\n                   \"name\": \"Manage Becoming Sovereigns\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 10\n                   }\n               },\n               {\n                   \"id\": 11,\n                   \"name\": \"View Becoming Sovereigns\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 11\n                   }\n               },\n               {\n                   \"id\": 12,\n                   \"name\": \"Upload Becoming Sovereigns\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 12\n                   }\n               },\n               {\n                   \"id\": 13,\n                   \"name\": \"Edit Becoming Sovereigns\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 13\n                   }\n               },\n               {\n                   \"id\": 14,\n                   \"name\": \"Delete Becoming Sovereigns\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 14\n                   }\n               },\n               {\n                   \"id\": 15,\n                   \"name\": \"Download Becoming Sovereigns\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 15\n                   }\n               },\n               {\n                   \"id\": 16,\n                   \"name\": \"Manage Becoming Christ Like\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 16\n                   }\n               },\n               {\n                   \"id\": 17,\n                   \"name\": \"View Becoming Christ Like\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 17\n                   }\n               },\n               {\n                   \"id\": 22,\n                   \"name\": \"Manage Becoming a Leader\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 22\n                   }\n               },\n               {\n                   \"id\": 23,\n                   \"name\": \"View Becoming a Leader\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 23\n                   }\n               },\n               {\n                   \"id\": 33,\n                   \"name\": \"Manage Bulletin\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 33\n                   }\n               },\n               {\n                   \"id\": 34,\n                   \"name\": \"Edit Bulletin\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 34\n                   }\n               },\n               {\n                   \"id\": 35,\n                   \"name\": \"Create Bulletin\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 35\n                   }\n               },\n               {\n                   \"id\": 36,\n                   \"name\": \"Delete Bulletin\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 36\n                   }\n               },\n               {\n                   \"id\": 37,\n                   \"name\": \"Manage Job Postings\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 37\n                   }\n               },\n               {\n                   \"id\": 38,\n                   \"name\": \"View Job Postings\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 38\n                   }\n               },\n               {\n                   \"id\": 42,\n                   \"name\": \"Manage Meeting Schedule\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 42\n                   }\n               },\n               {\n                   \"id\": 43,\n                   \"name\": \"View Meeting Schedule\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 43\n                   }\n               },\n               {\n                   \"id\": 47,\n                   \"name\": \"Manage Event\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 47\n                   }\n               },\n               {\n                   \"id\": 48,\n                   \"name\": \"Create Event\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 48\n                   }\n               },\n               {\n                   \"id\": 49,\n                   \"name\": \"Edit Event\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 49\n                   }\n               },\n               {\n                   \"id\": 55,\n                   \"name\": \"Manage Help\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 55\n                   }\n               }\n           ]\n       }\n   ]\n}",
+                            "body": "{\n   \"data\": [\n       {\n           \"id\": 2,\n           \"name\": \"MEMBER_NON_SOVEREIGN\",\n           \"guard_name\": \"web\",\n           \"created_at\": \"2024-03-05T15:36:13.000000Z\",\n           \"updated_at\": \"2024-03-05T15:36:13.000000Z\",\n           \"permissions\": [\n               {\n                   \"id\": 1,\n                   \"name\": \"Manage Profile\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 1\n                   }\n               },\n               {\n                   \"id\": 2,\n                   \"name\": \"Manage Password\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 2\n                   }\n               },\n               {\n                   \"id\": 3,\n                   \"name\": \"Manage Chat\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 3\n                   }\n               },\n               {\n                   \"id\": 4,\n                   \"name\": \"Create Team\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 4\n                   }\n               },\n               {\n                   \"id\": 6,\n                   \"name\": \"Delete Team\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 6\n                   }\n               },\n               {\n                   \"id\": 7,\n                   \"name\": \"Manage Team\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 7\n                   }\n               },\n               {\n                   \"id\": 9,\n                   \"name\": \"Manage Email\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 9\n                   }\n               },\n               {\n                   \"id\": 10,\n                   \"name\": \"Manage Becoming Sovereigns\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 10\n                   }\n               },\n               {\n                   \"id\": 11,\n                   \"name\": \"View Becoming Sovereigns\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 11\n                   }\n               },\n               {\n                   \"id\": 12,\n                   \"name\": \"Upload Becoming Sovereigns\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 12\n                   }\n               },\n               {\n                   \"id\": 13,\n                   \"name\": \"Edit Becoming Sovereigns\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 13\n                   }\n               },\n               {\n                   \"id\": 14,\n                   \"name\": \"Delete Becoming Sovereigns\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 14\n                   }\n               },\n               {\n                   \"id\": 15,\n                   \"name\": \"Download Becoming Sovereigns\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 15\n                   }\n               },\n               {\n                   \"id\": 16,\n                   \"name\": \"Manage Becoming Christ Like\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 16\n                   }\n               },\n               {\n                   \"id\": 17,\n                   \"name\": \"View Becoming Christ Like\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 17\n                   }\n               },\n               {\n                   \"id\": 22,\n                   \"name\": \"Manage Becoming a Leader\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 22\n                   }\n               },\n               {\n                   \"id\": 23,\n                   \"name\": \"View Becoming a Leader\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 23\n                   }\n               },\n               {\n                   \"id\": 33,\n                   \"name\": \"Manage Bulletin\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 33\n                   }\n               },\n               {\n                   \"id\": 34,\n                   \"name\": \"Edit Bulletin\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 34\n                   }\n               },\n               {\n                   \"id\": 35,\n                   \"name\": \"Create Bulletin\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 35\n                   }\n               },\n               {\n                   \"id\": 36,\n                   \"name\": \"Delete Bulletin\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 36\n                   }\n               },\n               {\n                   \"id\": 37,\n                   \"name\": \"Manage Job Postings\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 37\n                   }\n               },\n               {\n                   \"id\": 38,\n                   \"name\": \"View Job Postings\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 38\n                   }\n               },\n               {\n                   \"id\": 42,\n                   \"name\": \"Manage Meeting Schedule\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 42\n                   }\n               },\n               {\n                   \"id\": 43,\n                   \"name\": \"View Meeting Schedule\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 43\n                   }\n               },\n               {\n                   \"id\": 47,\n                   \"name\": \"Manage Event\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 47\n                   }\n               },\n               {\n                   \"id\": 48,\n                   \"name\": \"Create Event\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 48\n                   }\n               },\n               {\n                   \"id\": 49,\n                   \"name\": \"Edit Event\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 49\n                   }\n               },\n               {\n                   \"id\": 55,\n                   \"name\": \"Manage Help\",\n                   \"guard_name\": \"web\",\n                   \"created_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"updated_at\": \"2024-08-05T12:25:46.000000Z\",\n                   \"pivot\": {\n                       \"role_id\": 2,\n                       \"permission_id\": 55\n                   }\n               }\n           ]\n       }\n   ]\n}",
                             "name": ""
                         },
                         {
@@ -6596,7 +6925,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "id",
+                                    "value": "iure",
                                     "description": "The ID of the edit."
                                 }
                             ]
@@ -6740,7 +7069,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "10",
+                                    "value": "8",
                                     "description": "The ID of the strategy to delete."
                                 }
                             ]
@@ -6786,7 +7115,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "rerum",
+                                    "value": "non",
                                     "description": "The ID of the download."
                                 }
                             ]
@@ -6832,7 +7161,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "8",
+                                    "value": "1",
                                     "description": "The ID of the strategy to view."
                                 }
                             ]

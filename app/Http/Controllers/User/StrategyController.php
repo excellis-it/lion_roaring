@@ -82,8 +82,11 @@ class StrategyController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->can('Delete Strategy')) {
-            $strategy = Strategy::find($id);
+        $strategy = Strategy::find($id);
+        if ((auth()->user()->can('Delete Strategy') && $strategy->user_id == auth()->user()->id) ||
+            auth()->user()->hasRole('SUPER ADMIN')
+        ) {
+
             Log::info($strategy->id . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             if ($strategy) {
 
@@ -121,7 +124,6 @@ class StrategyController extends Controller
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
-
     }
 
     public function view($id)
@@ -166,6 +168,4 @@ class StrategyController extends Controller
             return response()->json(['data' => view('user.strategy.table', compact('strategies'))->render()]);
         }
     }
-
-
 }

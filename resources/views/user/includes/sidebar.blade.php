@@ -341,6 +341,17 @@
                         </a>
                     </li>
                 @endif
+
+                @if (Gate::check('Manage Policy'))
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('policy-guidence.index') }}" aria-expanded="false">
+                        <span>
+                            <img src="{{ asset('user_assets/images/ICON/policy_and_guidance.png') }}" alt="">
+                        </span>
+                        <span class="hide-menu">Policy & <br>Guidence</span>
+                    </a>
+                </li>
+            @endif
                 {{-- @if (Gate::check('Manage Help'))
                     <li class="sidebar-item">
                         <a class="sidebar-link"

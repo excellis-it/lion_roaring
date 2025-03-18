@@ -59,9 +59,9 @@ class AuthController extends Controller
                 try {
                     Mail::to($user->email)->send(new OtpMail($otp));
                 } catch (\Exception $e) {
-                    return response()->json(['message' => 'Email server temporary unavailable. Please try later.', 'status' => false, 'otp' => $otp]);
+                    return response()->json(['message' => 'Email server temporary unavailable. Please try later.', 'status' => false]);
                 }
-                return response()->json(['message' => 'OTP sent to your email', 'status' => true, 'otp_required' => true]);
+                return response()->json(['message' => 'OTP sent to your email', 'status' => true, 'otp_required' => true ]);
             } else {
                 return response()->json(['message' => 'Your account is not active!', 'status' => false]);
             }
