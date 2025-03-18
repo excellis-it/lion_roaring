@@ -279,6 +279,7 @@ class ProfileController extends Controller
             ['menu_name' => 'All Members', 'permission_name' => 'Manage Partners'],
             ['menu_name' => 'Strategy', 'permission_name' => 'Manage Strategy'],
             ['menu_name' => 'Help', 'permission_name' => 'Manage Help'],
+            ['menu_name' => 'Policy', 'permission_name' => 'Manage Policy'],
         ];
 
         try {

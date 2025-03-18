@@ -4,7 +4,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/create-partner
+    uri: api/v3/user/create-partner
     metadata:
       groupName: Members
       groupDescription: ''
@@ -209,7 +209,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZPgc8eafVaDv45h66kd3Eb1'
+      - 'Bearer ZadeV1g46hvDE3Pcbf8a6k5'
     controller: null
     method: null
     route: null
@@ -373,7 +373,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dgfvD153c4Zhb6eaa8VkP6E'
+      - 'Bearer 1V38egDb6adfPE5hZcka46v'
     controller: null
     method: null
     route: null
@@ -427,7 +427,109 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c8kfVPga16ev6dh3bD4Z5Ea'
+      - 'Bearer a5Ea6k6V3vbP4gDd8f1Zhec'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v3/user/partners/view/{id}'
+    metadata:
+      groupName: Members
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Partner Details'
+      description: 'This endpoint retrieves details of a specific partner by ID, including their ecclesia, roles, and associated data.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the partner.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      id: 5
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "roles": [
+              {
+                "id": 2,
+                "name": "Admin",
+                "permissions": [
+                  {
+                    "id": 1,
+                    "name": "Manage Users"
+                  }
+                ]
+              }
+            ],
+            "eclessias": [
+              {
+                "id": 1,
+                "name": "Saint Peter's Church"
+              }
+            ],
+            "countries": [
+              {
+                "id": 1,
+                "name": "United States"
+              }
+            ],
+            "partner": {
+              "id": 5,
+              "first_name": "John",
+              "last_name": "Doe",
+              "email": "john@example.com",
+              "ecclesia": {
+                "id": 3,
+                "name": "Grace Church"
+              },
+              "roles": [
+                {
+                  "id": 2,
+                  "name": "Admin"
+                }
+              ]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to fetch partner.",
+            "error": "Partner not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer d68bac6VEkDe5vg43afhZ1P'
     controller: null
     method: null
     route: null
@@ -454,16 +556,25 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: magnam
+        example: ratione
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: magnam
+      id: ratione
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
+      role:
+        name: role
+        description: "'role' => 'required',."
+        required: true
+        example: laborum
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
       first_name:
         name: first_name
         description: 'The first name of the user.'
@@ -600,6 +711,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
+      role: laborum
       first_name: John
       last_name: Doe
       middle_name: Smith
@@ -640,7 +752,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h4E3Df5PVdek8bva6cgZ61a'
+      - 'Bearer 6Ze6Vk5gd1f3Da8bPav4chE'
     controller: null
     method: null
     route: null
@@ -667,13 +779,13 @@ endpoints:
         name: id
         description: 'The ID of the partner to delete.'
         required: true
-        example: 14
+        example: 18
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: 14
+      id: 18
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -703,7 +815,91 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ka6vfa1ghVPD6845ZbcdeE3'
+      - 'Bearer Eda3kv5fP6bace6VZgh8D14'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/partners/change-status
+    metadata:
+      groupName: Members
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Change Partner Status'
+      description: |-
+        This endpoint allows an admin to change the status of a partner.
+        If the status is set to `0`, the user is deactivated and an email notification is sent.
+        If the status is set to `1`, the user is activated and an email notification is sent.
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The ID of the user whose status is being updated.'
+        required: true
+        example: 12
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      status:
+        name: status
+        description: 'The new status of the user (0 = Deactivated, 1 = Activated).'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      user_id: 12
+      status: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Status activated successfully."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+             "message": "The user_id field is required."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+             "message": "An error occurred while changing status."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3VfceaE4bZhk665vDg1d8aP'
     controller: null
     method: null
     route: null

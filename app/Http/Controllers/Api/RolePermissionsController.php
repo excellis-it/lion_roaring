@@ -640,6 +640,7 @@ class RolePermissionsController extends Controller
                     'Event',
                     'Partners',
                     'Strategy',
+                    'Policy',
                     'Help'
                 ];
 

@@ -165,6 +165,8 @@ class DashboardController extends Controller
             return redirect()->route('products.index');
         } elseif ($type == 'strategy') {
             return redirect()->route('strategy.index');
+        }  elseif ($type == 'policy') {
+            return redirect()->route('policy-guidence.index');
         }
 
 

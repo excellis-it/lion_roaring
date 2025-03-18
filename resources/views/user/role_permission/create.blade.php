@@ -70,6 +70,7 @@
                                                 'Event',
                                                 'Partners',
                                                 'Strategy',
+                                                'Policy',
                                                 'Help',
                                                 'Role Permission',
                                             ];

@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\RolePermissionsController;
 use App\Http\Controllers\Api\StrategyController;
 use App\Http\Controllers\Api\TopicController;
 use App\Http\Controllers\Api\FileController;
+use App\Http\Controllers\Api\PolicyGuidenceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -253,6 +254,14 @@ Route::prefix('v3')->group(function () {
             Route::get('/delete/{id}', [StrategyController::class, 'delete']);
             Route::get('/download/{id}', [StrategyController::class, 'download']);
             Route::get('/view/{id}', [StrategyController::class, 'view']);
+        });
+
+        Route::prefix('policy')->group(function () {
+            Route::get('/load', [PolicyGuidenceController::class, 'index']);
+            Route::post('/store', [PolicyGuidenceController::class, 'store']);
+            Route::get('/delete/{id}', [PolicyGuidenceController::class, 'delete']);
+            Route::get('/download/{id}', [PolicyGuidenceController::class, 'download']);
+            Route::get('/view/{id}', [PolicyGuidenceController::class, 'view']);
         });
 
 

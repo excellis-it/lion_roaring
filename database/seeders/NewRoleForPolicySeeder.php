@@ -3,10 +3,10 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Contracts\Permission;
-use Spatie\Permission\Contracts\Role;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
-class AddStrategyPermission extends Seeder
+class NewRoleForPolicySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,31 +17,31 @@ class AddStrategyPermission extends Seeder
     {
         $arrPermissions = [
             [
-                'name' => 'Manage Strategy',
+                'name' => 'Manage Policy',
                 'guard_name' => 'web',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Upload Strategy',
+                'name' => 'Upload Policy',
                 'guard_name' => 'web',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Download Strategy',
+                'name' => 'Download Policy',
                 'guard_name' => 'web',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'View Strategy',
+                'name' => 'View Policy',
                 'guard_name' => 'web',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Delete Strategy',
+                'name' => 'Delete Policy',
                 'guard_name' => 'web',
                 'created_at' => now(),
                 'updated_at' => now(),
