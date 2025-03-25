@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Policy;
 use App\Services\NotificationService;
+use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Validator;
  */
 class PolicyGuidenceController extends Controller
 {
+    use ImageTrait;
     /**
      * Policies List
      * @queryParam search string optional for search. Example: "abc"
