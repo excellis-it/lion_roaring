@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BecomingChristLikeController;
 use App\Http\Controllers\Api\BecomingSovereignController;
 use App\Http\Controllers\Api\BulletinController;
+use App\Http\Controllers\Api\ChatBotController;
 use App\Http\Controllers\Api\CmsController;
 use App\Http\Controllers\Api\ContactUsController;
 use App\Http\Controllers\Api\DonationController;
@@ -79,6 +80,7 @@ Route::prefix('v3')->group(function () {
     Route::group(['middleware' => ['auth:api', 'user'], 'prefix' => 'user'], function () {
         Route::post('create-partner', [PartnerController::class, 'storePartner']);
         Route::post('profile', [ProfileController::class, 'profile']);
+        Route::post('chatbot', [ChatBotController::class, 'chatbot']);
         Route::post('update-profile', [ProfileController::class, 'updateProfile']);
         Route::post('profile-picture-update', [ProfileController::class, 'profilePictureUpdate']);
         Route::post('change-password', [ProfileController::class, 'changePassword']);
