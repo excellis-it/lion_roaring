@@ -7,8 +7,6 @@ use App\Models\TeamMember;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -16,27 +14,8 @@ class AdminController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Admin List')) {
-            // $admins = User::role('SUPER ADMIN')->where('id', '!=', auth()->user()->id)->get();
-            $admins = User::role(Role::whereIn('type', [3])->pluck('name'))
-                ->where('id', '!=', auth()->user()->id)
-                ->get();
+            $admins = User::role('SUPER ADMIN')->where('id', '!=', auth()->user()->id)->get();
             return view('admin.admin.list')->with(compact('admins'));
-        } else {
-            abort(403, 'You do not have permission to access this page.');
-        }
-    }
-
-    public function add()
-    {
-        if (Auth::user()->getFirstRoleType() == 1 || Auth::user()->getFirstRoleType() == 3) {
-            if (Auth::user()->getFirstRoleType() == 1) {
-                $roles = Role::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [1, 3])->get();
-            } elseif (Auth::user()->getFirstRoleType() == 3) {
-                $roles = Role::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [2])->get();
-            } else {
-                $roles = [];
-            }
-            return view('admin.admin.add')->with(compact('roles'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -77,7 +56,7 @@ class AdminController extends Controller
                 $admin->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
                 $admin->status = true;
                 $admin->save();
-                $admin->assignRole($request->role_name);
+                $admin->assignRole('SUPER ADMIN');
                 session()->flash('message', 'Admin account has been successfully created.');
                 return response()->json(['message' => 'Admin account has been successfully created.', 'status' => 'success']);
             }
@@ -91,14 +70,7 @@ class AdminController extends Controller
         if (auth()->user()->can('Edit Admin List')) {
             $admin = User::where('id', $id)->first();
             $edit = true;
-            if (Auth::user()->getFirstRoleType() == 1) {
-                $roles = Role::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [1, 3])->get();
-            } elseif (Auth::user()->getFirstRoleType() == 3) {
-                $roles = Role::where('name', '!=', 'SUPER ADMIN')->whereIn('type', [2])->get();
-            } else {
-                $roles = [];
-            }
-            return response()->json(['data' => view('admin.admin.edit', compact('admin', 'roles', 'edit'))->render()]);
+            return response()->json(['data' => view('admin.admin.edit', compact('admin', 'edit'))->render()]);
             // return response()->json(['admin' => $admin, 'message' => 'Admin details found successfully.']);
         } else {
             abort(403, 'You do not have permission to access this page.');

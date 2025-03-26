@@ -45,10 +45,10 @@
                             <li class="{{ Request::is('admin/password*') ? 'active' : ' ' }}"><a class="nav-link"
                                     href="{{ route('admin.password') }}">Change Password</a></li>
                         @endif
-                        {{-- @if (Gate::check('Manage Admin List'))
+                        @if (Gate::check('Manage Admin List'))
                             <li class="{{ Request::is('admin/password*') ? 'active' : ' ' }}"><a class="nav-link"
                                     href="{{ route('admin.index') }}">Admin List</a></li>
-                        @endif --}}
+                        @endif
 
                     </ul>
                 </li>
@@ -114,7 +114,7 @@
                             href="{{ route('plans.index') }}"> Plan List</a></li>
                 </ul>
             </li> --}}
-            @if (Gate::check('Manage All Users'))
+            {{-- @if (Gate::check('Manage All Users'))
                 <li class="dropdown {{ Request::is('admin/ecclessias*') ? 'active' : ' ' }}">
                     <a href="{{ route('ecclessias.index') }}">
                         <i class="ph ph-user-list"></i>
@@ -130,7 +130,7 @@
                         <span>Members Access</span>
                     </a>
                 </li>
-            @endif
+            @endif --}}
             @if (Gate::check('Manage Donations'))
                 <li class="dropdown {{ Request::is('admin/donations*') ? 'active' : ' ' }}">
                     <a href="{{ route('donations.index') }}">
