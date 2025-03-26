@@ -15,14 +15,12 @@
     </style>
 @endpush
 @section('head')
-    Admin List
+    Admin
 @endsection
 @section('create_button')
     @if (auth()->user()->can('Create Admin List'))
-        {{-- <a href="javascript:void(0)" id="create-admin" class="btn btn-primary" data-bs-toggle="modal"
+        <a href="javascript:void(0)" id="create-admin" class="btn btn-primary" data-bs-toggle="modal"
             data-bs-target="#add_admin">Add
-            Admin</a> --}}
-        <a href="{{ route('admin.add') }}" class="btn btn-primary">Add
             Admin</a>
     @endif
 @endsection
@@ -62,7 +60,6 @@
                                             <input type="text" class="form-control" name="user_name" id="user_name">
                                         </div>
                                     </div>
-
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>First Name<span class="text-danger">*</span></label>
@@ -133,9 +130,8 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Update Information</h5>
-                    <button type="button" class="edit_close btn btn-primary" data-bs-dismiss="modal"
-                        aria-label="Close">
+                    <h5 class="modal-title">Admin Information</h5>
+                    <button type="button" class="edit_close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -168,7 +164,6 @@
                                 <th>
                                     User Name
                                 </th>
-                                <th>Admin Role</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>
@@ -182,7 +177,6 @@
                             @foreach ($admins as $admin)
                                 <tr>
                                     <td>{{ $admin->user_name }}</td>
-                                    <td>{{ $admin->getRoleNames()->first() }}</td>
                                     <td>{{ $admin->full_name }}</td>
                                     <td>{{ $admin->email }}</td>
                                     <td>{{ $admin->phone }}</td>
@@ -552,13 +546,9 @@
 
                             await $('#edit_admin').modal('show');
                             await $('#edit-admin').html(data.data);
-                            // await initializeIntlTelInput();
+                            await initializeIntlTelInput();
                             await $('#loading').removeClass('loading');
                             await $('#loading-content').removeClass('loading-content');
-
-                            await initializeIntlTelInput();
-                            await setPhoneNumber($("#edit_phone2").val());
-                            console.log('phone ' + $("#edit_phone2").val());
                         } catch (error) {
                             console.log(error);
                         }
@@ -638,68 +628,68 @@
                 }
             }
 
+            $(document).ready(function() {
+                initializeIntlTelInput();
+                setPhoneNumber();
 
-            // initializeIntlTelInput();
-            // setPhoneNumber($("#edit_phone_2").val());
+                $(document).on('submit', '#editForm', function(e) {
+                    e.preventDefault();
 
-            $(document).on('submit', '#editForm', function(e) {
-                e.preventDefault();
+                    const phoneInput = $("#edit_phone");
+                    const fullNumber = phoneInput.intlTelInput('getNumber');
+                    const countryCode = phoneInput.intlTelInput('getSelectedCountryData').dialCode;
 
-                const phoneInput = $("#edit_phone");
-                const fullNumber = phoneInput.intlTelInput('getNumber');
-                const countryCode = phoneInput.intlTelInput('getSelectedCountryData').dialCode;
+                    // Append full phone number and country code to the form
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'edit_full_phone_number',
+                        value: fullNumber
+                    }).appendTo('#editForm');
 
-                // Append full phone number and country code to the form
-                $('<input>').attr({
-                    type: 'hidden',
-                    name: 'edit_full_phone_number',
-                    value: fullNumber
-                }).appendTo('#editForm');
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'edit_country_code',
+                        value: countryCode
+                    }).appendTo('#editForm');
 
-                $('<input>').attr({
-                    type: 'hidden',
-                    name: 'edit_country_code',
-                    value: countryCode
-                }).appendTo('#editForm');
-
-                var form = $(this);
-                var url = form.attr('action');
-                var type = form.attr('method');
-                var data = new FormData(form[0]);
-                $('#loading').addClass('loading');
-                $('#loading-content').addClass('loading-content');
-                $.ajax({
-                    url: url,
-                    type: type,
-                    data: data,
-                    processData: false,
-                    contentType: false,
-                    success: function(data) {
-                        if (data.status == 'success') {
-                            $('#loading').removeClass('loading');
-                            $('#loading-content').removeClass('loading-content');
-                            $('#edit_admin').modal('hide');
-                            location.reload();
-                        } else {
-                            $('#loading').removeClass('loading');
-                            $('#loading-content').removeClass('loading-content');
-                            toastr.error(data.message);
+                    var form = $(this);
+                    var url = form.attr('action');
+                    var type = form.attr('method');
+                    var data = new FormData(form[0]);
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
+                    $.ajax({
+                        url: url,
+                        type: type,
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        success: function(data) {
+                            if (data.status == 'success') {
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
+                                $('#edit_admin').modal('hide');
+                                location.reload();
+                            } else {
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
+                                toastr.error(data.message);
+                            }
+                        },
+                        error: function(data) {
+                            // validation error
+                            if (data.status == 422) {
+                                var errors = data.responseJSON.errors;
+                                $.each(errors, function(key, value) {
+                                    toastr.error(value[0]);
+                                });
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
+                            }
                         }
-                    },
-                    error: function(data) {
-                        // validation error
-                        if (data.status == 422) {
-                            var errors = data.responseJSON.errors;
-                            $.each(errors, function(key, value) {
-                                toastr.error(value[0]);
-                            });
-                            $('#loading').removeClass('loading');
-                            $('#loading-content').removeClass('loading-content');
-                        }
-                    }
+                    });
                 });
             });
-
         });
     </script>
 @endpush
