@@ -1,16 +1,16 @@
-name: Events
+name: Meetings
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v3/user/events/load
+    uri: api/v3/user/meetings/load
     metadata:
-      groupName: Events
+      groupName: Meetings
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'List All events'
+      title: 'List All Meetings'
       description: ''
       authenticated: true
       custom: []
@@ -29,6 +29,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanQueryParameters:
       search: '"abc"'
@@ -45,9 +46,10 @@ endpoints:
                       "id": 1,
                       "user_id": 2,
                       "title": "Project Sync",
-                      "description": "Weekly project sync event.",
-                      "start": "2024-11-10T09:00:00.000000Z",
-                      "end": "2024-11-10T10:00:00.000000Z",
+                      "description": "Weekly project sync meeting.",
+                      "start_time": "2024-11-10T09:00:00.000000Z",
+                      "end_time": "2024-11-10T10:00:00.000000Z",
+                      "meeting_link": "https://meeting.example.com/xyz123",
                       "created_at": "2024-11-08T12:00:00.000000Z",
                       "updated_at": "2024-11-08T12:00:00.000000Z",
                       "user": {
@@ -65,7 +67,7 @@ endpoints:
         status: 201
         content: |-
           {
-              "error": "Failed to load events."
+              "error": "Failed to load meetings."
           }
         headers: []
         description: ''
@@ -74,7 +76,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gvPdhE8eaZ5V6akf1bD4c36'
+      - 'Bearer E1ZVk5468vhD3deabgPcaf6'
     controller: null
     method: null
     route: null
@@ -82,13 +84,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/events/store
+    uri: api/v3/user/meetings/store
     metadata:
-      groupName: Events
+      groupName: Meetings
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create event'
+      title: 'Create Meeting'
       description: ''
       authenticated: true
       custom: []
@@ -103,61 +105,77 @@ endpoints:
     bodyParameters:
       title:
         name: title
-        description: 'The title of the event.'
+        description: 'The title of the meeting.'
         required: true
         example: 'Project Sync'
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       description:
         name: description
-        description: 'The description of the event.'
+        description: 'The description of the meeting.'
         required: false
-        example: 'Weekly project sync event.'
+        example: 'Weekly project sync meeting.'
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
-      start:
-        name: start
-        description: 'The start time of the event in ISO 8601 format.'
+      start_time:
+        name: start_time
+        description: 'The start time of the meeting in ISO 8601 format.'
         required: true
         example: '2024-11-22T01:25'
         type: datetime
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
-      end:
-        name: end
-        description: 'The end time of the event in ISO 8601 format.'
+      end_time:
+        name: end_time
+        description: 'The end time of the meeting in ISO 8601 format.'
         required: true
-        example: '2024-11-23T01:25'
+        example: '2024-11-22T02:25'
         type: datetime
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
+        custom: []
+      meeting_link:
+        name: meeting_link
+        description: 'The link to join the meeting.'
+        required: false
+        example: 'https://meeting.example.com/xyz123'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
         custom: []
     cleanBodyParameters:
       title: 'Project Sync'
-      description: 'Weekly project sync event.'
-      start: '2024-11-22T01:25'
-      end: '2024-11-23T01:25'
+      description: 'Weekly project sync meeting.'
+      start_time: '2024-11-22T01:25'
+      end_time: '2024-11-22T02:25'
+      meeting_link: 'https://meeting.example.com/xyz123'
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-              "message": "event created successfully.",
+              "message": "Meeting created successfully.",
               "data": {
                   "id": 1,
                   "user_id": 2,
                   "title": "Project Sync",
-                  "description": "Weekly project sync event.",
-                  "start": "2024-11-22T01:25",
-                  "end": "2024-11-23T01:25",
-                  "created_at": "2024-11-22T01:25",
-                  "updated_at": "2024-11-22T01:25"
+                  "description": "Weekly project sync meeting.",
+                  "start_time": "2024-11-22T01:25",
+                  "end_time": "2024-11-22T02:25",
+                  "meeting_link": "https://meeting.example.com/xyz123",
+                  "created_at": "2024-11-08T12:00:00.000000Z",
+                  "updated_at": "2024-11-08T12:00:00.000000Z"
               }
           }
         headers: []
@@ -167,7 +185,7 @@ endpoints:
         status: 201
         content: |-
           {
-              "error": "Failed to create event."
+              "error": "Failed to create meeting."
           }
         headers: []
         description: ''
@@ -176,7 +194,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a45kf6DeV3EdhcZa6v1g8bP'
+      - 'Bearer 5ae8hVDvc4ZEadk61Pfg3b6'
     controller: null
     method: null
     route: null
@@ -184,13 +202,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v3/user/events/view/{id}'
+    uri: 'api/v3/user/meetings/view/{id}'
     metadata:
-      groupName: Events
+      groupName: Meetings
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Single event Details'
+      title: 'Single Meeting Details'
       description: ''
       authenticated: true
       custom: []
@@ -201,12 +219,13 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the event.'
+        description: 'The ID of the meeting.'
         required: true
         example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -224,9 +243,10 @@ endpoints:
                   "id": 1,
                   "user_id": 2,
                   "title": "Project Sync",
-                  "description": "Weekly project sync event.",
-                  "start": "2024-11-10T09:00:00.000000Z",
-                  "end": "2024-11-10T10:00:00.000000Z",
+                  "description": "Weekly project sync meeting.",
+                  "start_time": "2024-11-10T09:00:00.000000Z",
+                  "end_time": "2024-11-10T10:00:00.000000Z",
+                  "meeting_link": "https://meeting.example.com/xyz123",
                   "created_at": "2024-11-08T12:00:00.000000Z",
                   "updated_at": "2024-11-08T12:00:00.000000Z",
                   "user": {
@@ -260,7 +280,7 @@ endpoints:
         status: 404
         content: |-
           {
-              "error": "event not found."
+              "error": "Meeting not found."
           }
         headers: []
         description: ''
@@ -269,7 +289,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 68a3P4cf6V1EkhZvge5dbDa'
+      - 'Bearer 3Vd4ehE5cgv16Pb8aak6fZD'
     controller: null
     method: null
     route: null
@@ -277,13 +297,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: 'api/v3/user/events/edit/{id}'
+    uri: 'api/v3/user/meetings/edit/{id}'
     metadata:
-      groupName: Events
+      groupName: Meetings
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Update event'
+      title: 'Update Meeting'
       description: ''
       authenticated: true
       custom: []
@@ -294,12 +314,13 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the event.'
+        description: 'The ID of the meeting.'
         required: true
         example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -308,52 +329,67 @@ endpoints:
     bodyParameters:
       title:
         name: title
-        description: 'The title of the event.'
+        description: 'The title of the meeting.'
         required: true
         example: 'Project Sync Update'
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       description:
         name: description
-        description: 'The description of the event.'
+        description: 'The description of the meeting.'
         required: false
-        example: 'Updated project sync event.'
+        example: 'Updated project sync meeting.'
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
-      start:
-        name: start
+      start_time:
+        name: start_time
         description: 'The updated start time in ISO 8601 format.'
         required: true
-        example: '2024-11-22T01:25'
+        example: '2024-11-11T09:00:00.000000Z'
         type: datetime
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
-      end:
-        name: end
+      end_time:
+        name: end_time
         description: 'The updated end time in ISO 8601 format.'
         required: true
-        example: '2024-11-23T01:25'
+        example: '2024-11-11T10:00:00.000000Z'
         type: datetime
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
+        custom: []
+      meeting_link:
+        name: meeting_link
+        description: 'The updated link for the meeting.'
+        required: false
+        example: 'https://meeting.example.com/updated123'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
         custom: []
     cleanBodyParameters:
       title: 'Project Sync Update'
-      description: 'Updated project sync event.'
-      start: '2024-11-22T01:25'
-      end: '2024-11-23T01:25'
+      description: 'Updated project sync meeting.'
+      start_time: '2024-11-11T09:00:00.000000Z'
+      end_time: '2024-11-11T10:00:00.000000Z'
+      meeting_link: 'https://meeting.example.com/updated123'
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-            "message": "event updated successfully.",
+            "message": "Meeting updated successfully.",
             "status": true
           }
         headers: []
@@ -363,7 +399,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vg16EcZdDfkb53Ph48ea6aV'
+      - 'Bearer a46cPbEfV8vg3ZheD5dk61a'
     controller: null
     method: null
     route: null
@@ -371,13 +407,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: 'api/v3/user/events/delete/{id}'
+    uri: 'api/v3/user/meetings/delete/{id}'
     metadata:
-      groupName: Events
+      groupName: Meetings
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Delete event'
+      title: 'Delete Meeting'
       description: ''
       authenticated: true
       custom: []
@@ -388,12 +424,13 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the event.'
+        description: 'The ID of the meeting.'
         required: true
         example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -407,7 +444,7 @@ endpoints:
         status: 200
         content: |-
           {
-            "message": "event deleted successfully",
+            "message": "Meeting deleted successfully.",
             "status": true
           }
         headers: []
@@ -417,7 +454,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a36a1ZE48ekfDVc6dvgb5Ph'
+      - 'Bearer e14aZ8kfP66cadhvDb3gEV5'
     controller: null
     method: null
     route: null
@@ -425,13 +462,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v3/user/events/event-calender-fetch-data
+    uri: api/v3/user/meetings/meetings-calender-fetch-data
     metadata:
-      groupName: Events
+      groupName: Meetings
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Events Calender Data'
+      title: 'Meetings Calender Data'
       description: ''
       authenticated: true
       custom: []
@@ -456,30 +493,34 @@ endpoints:
                  {
                      "id": 15,
                      "title": "Project Sync",
-                     "description": "Weekly project sync event.",
+                     "description": "Weekly project sync meeting.",
                      "start": "2024-11-10T09:00:00.000000Z",
                      "end": "2024-11-10T10:00:00.000000Z",
+                     "meeting_link": "https://meeting.example.com/xyz123"
                  },
                  {
                      "id": 13,
-                     "title": "fourth event",
+                     "title": "fourth meeting",
                      "description": "afd",
                      "start": "2024-10-01T18:57",
                      "end": "2024-10-01T18:58",
+                     "meeting_link": null
                  },
                  {
                      "id": 12,
-                     "title": "Third event",
+                     "title": "Third meeting",
                      "description": "fd",
                      "start": "2024-10-01T18:57",
                      "end": "2024-10-01T18:58",
+                     "meeting_link": null
                  },
                  {
                      "id": 11,
-                     "title": "Second event",
+                     "title": "Second meeting",
                      "description": "adsf",
                      "start": "2024-10-01T18:56",
                      "end": "2024-10-01T18:57",
+                     "meeting_link": null
                  }
              ]
           }
@@ -490,7 +531,7 @@ endpoints:
         status: 404
         content: |-
           {
-              "error": "events not found."
+              "error": "Meetings not found."
           }
         headers: []
         description: ''
@@ -499,7 +540,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6gEVdb5hacav6PD4eZ13kf8'
+      - 'Bearer 66dvcg4eP135ZkbDaEhVaf8'
     controller: null
     method: null
     route: null

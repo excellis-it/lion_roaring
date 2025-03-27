@@ -28,6 +28,8 @@ use App\Http\Controllers\Api\StrategyController;
 use App\Http\Controllers\Api\TopicController;
 use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\PolicyGuidenceController;
+use App\Http\Controllers\Api\RolePermissionController;
+use App\Http\Controllers\Api\EcclesiaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,8 +42,9 @@ use App\Http\Controllers\Api\PolicyGuidenceController;
 |
 */
 
-
-
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::prefix('v3')->group(function () {
     Route::post('contact-us', [ContactUsController::class, 'store']);
@@ -288,6 +291,25 @@ Route::prefix('v3')->group(function () {
             Route::get('/all-products', [EstoreProductController::class, 'products']);
         });
 
+
+        Route::prefix('role-permissions')->group(function () {
+            Route::get('/', [RolePermissionController::class, 'index']);
+            Route::get('/permissions', [RolePermissionController::class, 'getAllPermissions']);
+            Route::get('/{id}', [RolePermissionController::class, 'show']);
+            Route::post('/', [RolePermissionController::class, 'store']);
+            Route::put('/{id}', [RolePermissionController::class, 'update']);
+            Route::delete('/{id}', [RolePermissionController::class, 'destroy']);
+        });
+
+        // Ecclesia routes
+        Route::prefix('ecclesias-manage')->group(function () {
+            Route::get('/', [EcclesiaController::class, 'index']);
+            Route::get('/create', [EcclesiaController::class, 'create']);
+            Route::post('/', [EcclesiaController::class, 'store']);
+            Route::get('/{id}', [EcclesiaController::class, 'show']);
+            Route::put('/{id}', [EcclesiaController::class, 'update']);
+            Route::delete('/{id}', [EcclesiaController::class, 'destroy']);
+        });
 
 
 

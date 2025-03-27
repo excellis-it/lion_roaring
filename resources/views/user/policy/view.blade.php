@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-Policy and guidance View - {{ env('APP_NAME') }}
+Policy and Guidance View - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.2.0/main.min.css">
@@ -25,7 +25,7 @@ Policy and guidance View - {{ env('APP_NAME') }}
                             </div>
                             <div class="row">
                                 <div class="col-md-10">
-                                    <h3 class="mb-3 float-left">Strategy File</h3>
+                                    <h3 class="mb-3 float-left">Policy and Guidance File</h3>
                                 </div>
                                 <div class="col-md-2">
                                     <a href="{{ route('policy-guidence.index') }}" class="btn btn-primary w-100">< Back</a>

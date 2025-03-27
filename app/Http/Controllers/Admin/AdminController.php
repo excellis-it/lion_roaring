@@ -55,6 +55,7 @@ class AdminController extends Controller
                 $admin->password = bcrypt($request->password);
                 $admin->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
                 $admin->status = true;
+                $admin->is_accept = 1;
                 $admin->save();
                 $admin->assignRole('SUPER ADMIN');
                 session()->flash('message', 'Admin account has been successfully created.');
@@ -105,6 +106,7 @@ class AdminController extends Controller
         $admin->email = $request->edit_email;
         $admin->user_name = $request->edit_user_name;
         $admin->phone = $request->edit_country_code ? '+' . $request->edit_country_code . ' ' . $request->edit_phone : $request->edit_phone;
+        $admin->is_accept = 1;
         $admin->save();
         session()->flash('message', 'Admin account has been successfully updated.');
         return response()->json(['message' => 'Admin account has been successfully updated.', 'status' => 'success']);

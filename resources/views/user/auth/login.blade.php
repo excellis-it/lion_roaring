@@ -74,13 +74,13 @@
 
                                     // Determine greeting based on time
                                     if ($time < '12') {
-                                        echo 'Good morning';
+                                        echo 'Perfect morning';
                                     } elseif ($time >= '12' && $time < '17') {
-                                        echo 'Good afternoon';
+                                        echo 'Perfect afternoon';
                                     } elseif ($time >= '17' && $time < '19') {
-                                        echo 'Good evening';
+                                        echo 'Perfect evening';
                                     } else {
-                                        echo 'Good evening';
+                                        echo 'Perfect evening';
                                     }
                                     ?>
                                 </h2>
