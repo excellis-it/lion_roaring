@@ -242,11 +242,11 @@
                                         }
                                         return null;
                                     }
-                                    
+
                                     // Get user's timezone based on IP address
                                     $ip = $_SERVER['REMOTE_ADDR'];
                                     $timezone = getTimezoneFromIp($ip);
-                                    
+
                                     if ($timezone) {
                                         // Set the default timezone
                                         date_default_timezone_set($timezone);
@@ -254,19 +254,19 @@
                                         // Fallback timezone
                                         date_default_timezone_set('UTC');
                                     }
-                                    
+
                                     // Get the current hour in 24-hour format
                                     $time = date('H');
-                                    
+
                                     // Determine greeting based on time
                                     if ($time < '12') {
-                                        echo 'Good morning';
+                                        echo 'Perfect morning';
                                     } elseif ($time >= '12' && $time < '17') {
-                                        echo 'Good afternoon';
+                                        echo 'Perfect afternoon';
                                     } elseif ($time >= '17' && $time < '19') {
-                                        echo 'Good evening';
+                                        echo 'Perfect evening';
                                     } else {
-                                        echo 'Good evening';
+                                        echo 'Perfect evening';
                                     }
                                     ?>
                                 </h2>

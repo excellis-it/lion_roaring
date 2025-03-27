@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Save Policy and guidance - {{ env('APP_NAME') }}
+    Save Policy and Guidance - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
