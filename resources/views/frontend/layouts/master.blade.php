@@ -242,11 +242,11 @@
                                         }
                                         return null;
                                     }
-
+                                    
                                     // Get user's timezone based on IP address
                                     $ip = $_SERVER['REMOTE_ADDR'];
                                     $timezone = getTimezoneFromIp($ip);
-
+                                    
                                     if ($timezone) {
                                         // Set the default timezone
                                         date_default_timezone_set($timezone);
@@ -254,10 +254,10 @@
                                         // Fallback timezone
                                         date_default_timezone_set('UTC');
                                     }
-
+                                    
                                     // Get the current hour in 24-hour format
                                     $time = date('H');
-
+                                    
                                     // Determine greeting based on time
                                     if ($time < '12') {
                                         echo 'Perfect morning';
@@ -333,7 +333,6 @@
                             <form id="otp-form" action="{{ route('verify.otp') }}" method="post">
                                 @csrf
                                 <div class="mb-3">
-                                    {{-- <label for="otp" class="form-label">Enter OTP</label> --}}
                                     <input placeholder="Enter OTP" type="text" class="form-control input"
                                         id="otp" name="otp" maxlength="4" required
                                         style="border: none;
@@ -342,11 +341,18 @@
                                     <span class="text-danger" id="otp-error"></span>
                                 </div>
                                 <br>
-                                <button style="background-color: #643271;
-    border-color: #643271;" type="submit"
+                                <button style="background-color: #643271; border-color: #643271;" type="submit"
                                     class="btn btn-primary w-100 button button-primary">Verify</button>
                                 <br>
-                                <br>
+                                <div class="text-center mt-3">
+                                    <p>Didn't receive the code?</p>
+                                    <button type="button" id="resend-otp-btn" class="btn btn-link">
+                                        Resend OTP
+                                    </button>
+                                    <div id="countdown-timer" class="mt-2" style="display: none;">
+                                        Resend available in <span id="countdown">10:00</span>
+                                    </div>
+                                </div>
                                 <br>
                             </form>
                         </div>
@@ -1112,6 +1118,79 @@
                 });
             });
         </script>
+
+        <script>
+            $(document).ready(function() {
+                let countdownInterval;
+                let remainingSeconds = 0;
+
+                // Function to start countdown timer
+                function startCountdown(seconds) {
+                    remainingSeconds = seconds || 600; // Default to 10 minutes (600 seconds)
+                    $('#resend-otp-btn').prop('disabled', true);
+                    $('#countdown-timer').show();
+
+                    clearInterval(countdownInterval);
+                    countdownInterval = setInterval(function() {
+                        remainingSeconds--;
+
+                        // Format time as MM:SS
+                        let minutes = Math.floor(remainingSeconds / 60);
+                        let seconds = remainingSeconds % 60;
+                        $('#countdown').text(minutes.toString().padStart(2, '0') + ':' + seconds.toString()
+                            .padStart(2, '0'));
+
+                        if (remainingSeconds <= 0) {
+                            clearInterval(countdownInterval);
+                            $('#resend-otp-btn').prop('disabled', false);
+                            $('#countdown-timer').hide();
+                        }
+                    }, 1000);
+                }
+
+                // Handle resend OTP button click
+                $('#resend-otp-btn').click(function() {
+                    $.ajax({
+                        url: "{{ route('resend.otp') }}",
+                        type: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        beforeSend: function() {
+                            $('#resend-otp-btn').prop('disabled', true).text('Sending...');
+                        },
+                        success: function(response) {
+                            if (response.status) {
+                                toastr.success(response.message);
+                                startCountdown();
+                                $('#resend-otp-btn').text('Resend OTP');
+                            } else {
+                                if (response.time_left) {
+                                    startCountdown(response.time_left);
+                                }
+                                toastr.error(response.message);
+                                $('#resend-otp-btn').prop('disabled', false).text('Resend OTP');
+                            }
+                        },
+                        error: function() {
+                            toastr.error('Something went wrong. Please try again.');
+                            $('#resend-otp-btn').prop('disabled', false).text('Resend OTP');
+                        }
+                    });
+                });
+
+                // When OTP modal is shown, start the countdown if a new OTP was just sent
+                $('#otpModal').on('shown.bs.modal', function() {
+                    startCountdown();
+                });
+
+                // When OTP modal is hidden, clear the countdown
+                $('#otpModal').on('hidden.bs.modal', function() {
+                    clearInterval(countdownInterval);
+                });
+            });
+        </script>
+
         @stack('scripts')
     </body>
 

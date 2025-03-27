@@ -296,6 +296,7 @@ Route::get('/get-states', [UserAuthController::class, 'getStates'])->name('get.s
 
 Route::post('/send-otp', [EmailVerificationController::class, 'sendOtp'])->name('send.otp');
 Route::post('/verify-otp', [EmailVerificationController::class, 'verifyOtp'])->name('verify.otp');
+Route::post('/resend-otp', [EmailVerificationController::class, 'resendOtp'])->name('resend.otp');
 
 Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(function () {
     Route::get('/subscription', [SubscriptionController::class, 'subscription'])->name('user.subscription');
