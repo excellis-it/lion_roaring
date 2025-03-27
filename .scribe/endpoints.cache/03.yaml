@@ -171,6 +171,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       country: 1
@@ -247,6 +248,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       email:
         name: email
@@ -256,15 +258,17 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       ecclesia_id:
         name: ecclesia_id
         description: 'nullable Ecclesia ID if applicable.'
         required: false
-        example: 16
+        example: 8
         type: integer
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       first_name:
         name: first_name
@@ -274,6 +278,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       last_name:
         name: last_name
@@ -283,6 +288,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       middle_name:
         name: middle_name
@@ -292,6 +298,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
       address:
         name: address
@@ -301,6 +308,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       phone:
         name: phone
@@ -310,6 +318,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       city:
         name: city
@@ -319,15 +328,17 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       state:
         name: state
         description: 'State of residence.'
         required: true
-        example: 8
+        example: 17
         type: integer
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       address2:
         name: address2
@@ -337,15 +348,17 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
       country:
         name: country
         description: 'Country of residence.'
         required: true
-        example: 20
+        example: 7
         type: integer
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       zip:
         name: zip
@@ -355,6 +368,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       email_confirmation:
         name: email_confirmation
@@ -364,6 +378,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       password:
         name: password
@@ -373,6 +388,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       password_confirmation:
         name: password_confirmation
@@ -382,20 +398,21 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       user_name: johndoe
       email: johndoe@example.com
-      ecclesia_id: 16
+      ecclesia_id: 8
       first_name: John
       last_name: Doe
       middle_name: A.
       address: '123 Main St'
       phone: '1234567890'
       city: Springfield
-      state: 8
+      state: 17
       address2: 'Apt 4B'
-      country: 20
+      country: 7
       zip: '62704'
       email_confirmation: johndoe@example.com
       password: Password@123
@@ -475,6 +492,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       password:
         name: password
@@ -484,6 +502,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       user_name: john_doe
@@ -536,6 +555,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       id:
         name: id
@@ -545,6 +565,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       otp: 1234

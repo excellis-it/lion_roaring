@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Policy and guidance List - {{ env('APP_NAME') }}
+Policy and Guidance List - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -15,7 +15,7 @@
 
                                 <div class="row mb-3">
                                     <div class="col-md-10">
-                                        <h3 class="mb-3">Policy and guidance List</h3>
+                                        <h3 class="mb-3">Policy and Guidance List</h3>
                                     </div>
                                     <div class="col-md-2 float-right">
                                         @if (auth()->user()->can('Upload Policy'))

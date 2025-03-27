@@ -242,13 +242,33 @@ class PartnerController extends Controller
     public function loadCreateData()
     {
         try {
-            $roles = Role::with('permissions')->where('name', '!=', 'SUPER ADMIN')->get();
-            $ecclesias = Ecclesia::orderBy('id', 'desc')->get();
+            // $roles = Role::with('permissions')->where('name', '!=', 'SUPER ADMIN')->get();
+            // $ecclesias = Ecclesia::orderBy('id', 'desc')->get();
+
+
+            $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
+            if (Auth::user()->getFirstRoleType() == 1) {
+                $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
+                $eclessias = Ecclesia::orderBy('id', 'asc')->get();
+            } elseif (Auth::user()->getFirstRoleType() == 2 || Auth::user()->getFirstRoleType() == 3) {
+                $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
+                if (Auth::user()->isEcclesiaUser()) {
+                    $eclessias = Auth::user()->getEcclesiaAccessAttribute();
+                } else {
+                    $eclessias = Ecclesia::where('id', $auth_user_ecclesia_id)->orderBy('id', 'asc')->get();
+                }
+            } else {
+                $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
+                $eclessias = Ecclesia::orderBy('id', 'asc')->get();
+            }
+
             $countries = Country::orderBy('name', 'asc')->get();
+
+
 
             return response()->json([
                 'roles' => $roles,
-                'ecclesias' => $ecclesias,
+                'ecclesias' => $eclessias,
                 'countries' => $countries
             ], 200);
         } catch (\Exception $e) {
@@ -666,9 +686,25 @@ class PartnerController extends Controller
     {
         try {
             $partner = User::with(['ecclesia', 'roles'])->findOrFail($id);
-            $eclessias = Ecclesia::orderBy('id', 'asc')->get();
+         //   $eclessias = Ecclesia::orderBy('id', 'asc')->get();
             $countries = Country::orderBy('name', 'asc')->get();
-            $roles = Role::with('permissions')->where('name', '!=', 'SUPER ADMIN')->get();
+         //   $roles = Role::with('permissions')->where('name', '!=', 'SUPER ADMIN')->get();
+
+         $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
+            if (Auth::user()->getFirstRoleType() == 1) {
+                $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
+                $eclessias = Ecclesia::orderBy('id', 'asc')->get();
+            } elseif (Auth::user()->getFirstRoleType() == 2 || Auth::user()->getFirstRoleType() == 3) {
+                $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
+                if (Auth::user()->isEcclesiaUser()) {
+                    $eclessias = Auth::user()->getEcclesiaAccessAttribute();
+                } else {
+                    $eclessias = Ecclesia::where('id', $auth_user_ecclesia_id)->orderBy('id', 'asc')->get();
+                }
+            } else {
+                $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
+                $eclessias = Ecclesia::orderBy('id', 'asc')->get();
+            }
 
             return response()->json([
                 'roles' => $roles,

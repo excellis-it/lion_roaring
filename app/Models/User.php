@@ -136,4 +136,10 @@ class User extends Authenticatable
         return Ecclesia::whereIn('id', $ecclesiaIds)->get();
     }
 
+    // is ecclesia user
+    public function isEcclesiaUser()
+    {
+        return $this->roles->pluck('is_ecclesia')->first() == 1 ? true : false;
+    }
+
 }
