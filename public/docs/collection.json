@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Lion Roaring",
-        "_postman_id": "e3f7cc78-c84d-43a9-a539-47bac968965f",
+        "_postman_id": "97042fd7-e497-4bb7-9c84-6237f39d2401",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -173,7 +173,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":16,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"city\":\"Springfield\",\"state\":8,\"address2\":\"Apt 4B\",\"country\":20,\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":8,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"city\":\"Springfield\",\"state\":17,\"address2\":\"Apt 4B\",\"country\":7,\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -1344,7 +1344,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"alford36@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"warren63@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1429,7 +1429,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"ut\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"eligendi\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1519,6 +1519,331 @@
                             "header": [],
                             "code": 201,
                             "body": "{\n  \"message\": \"No products found for this category.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Ecclesia Management",
+            "description": "\nAPIs for managing ecclesias (houses of worship)",
+            "item": [
+                {
+                    "name": "List all ecclesias",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/ecclesias-manage",
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "%22First+Church%22",
+                                    "description": "Search query for filtering ecclesias by name.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "sort_by",
+                                    "value": "%22name%22",
+                                    "description": "Field to sort results by (default: id).",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "sort_type",
+                                    "value": "%22desc%22",
+                                    "description": "Sort direction (asc or desc, default: asc).",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number for pagination.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/ecclesias-manage?search=%22First+Church%22&sort_by=%22name%22&sort_type=%22desc%22&page=1"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Returns a paginated list of all ecclesias."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"ecclesias\": {\n    \"current_page\": 1,\n    \"data\": [\n      {\n        \"id\": 1,\n        \"name\": \"First Church of Christ\",\n        \"country\": \"USA\",\n        \"created_at\": \"2023-10-15T10:30:00.000000Z\",\n        \"updated_at\": \"2023-10-15T10:30:00.000000Z\",\n        \"country_name\": {\n          \"id\": 1,\n          \"name\": \"United States\",\n          \"code\": \"US\"\n        }\n      },\n      {\n        \"id\": 2,\n        \"name\": \"Grace Ecclesia\",\n        \"country\": \"UK\",\n        \"created_at\": \"2023-10-16T11:45:00.000000Z\",\n        \"updated_at\": \"2023-10-16T11:45:00.000000Z\",\n        \"country_name\": {\n          \"id\": 2,\n          \"name\": \"United Kingdom\",\n          \"code\": \"UK\"\n        }\n      }\n    ],\n    \"first_page_url\": \"http:\/\/example.com\/api\/ecclesias?page=1\",\n    \"from\": 1,\n    \"last_page\": 1,\n    \"last_page_url\": \"http:\/\/example.com\/api\/ecclesias?page=1\",\n    \"links\": [\n      {\n        \"url\": null,\n        \"label\": \"&laquo; Previous\",\n        \"active\": false\n      },\n      {\n        \"url\": \"http:\/\/example.com\/api\/ecclesias?page=1\",\n        \"label\": \"1\",\n        \"active\": true\n      },\n      {\n        \"url\": null,\n        \"label\": \"Next &raquo;\",\n        \"active\": false\n      }\n    ],\n    \"next_page_url\": null,\n    \"path\": \"http:\/\/example.com\/api\/ecclesias\",\n    \"per_page\": 15,\n    \"prev_page_url\": null,\n    \"to\": 2,\n    \"total\": 2\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\n  \"message\": \"Unauthenticated.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n  \"message\": \"You do not have permission to access this resource.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get ecclesia creation data",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/ecclesias-manage\/create",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/ecclesias-manage\/create"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Returns the list of countries needed for creating a new ecclesia."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"countries\": [\n    {\n      \"id\": 1,\n      \"name\": \"United States\",\n      \"code\": \"US\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"United Kingdom\",\n      \"code\": \"UK\"\n    }\n  ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n  \"message\": \"You do not have permission to access this resource.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create a new ecclesia",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/ecclesias-manage",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/ecclesias-manage"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"\\\"Truth Ecclesia\\\"\",\"country\":1}"
+                        },
+                        "description": "Stores a newly created ecclesia in the database."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"message\": \"Ecclesia created successfully.\",\n  \"ecclesia\": {\n    \"name\": \"Truth Ecclesia\",\n    \"country\": \"US\",\n    \"updated_at\": \"2023-10-28T15:34:56.000000Z\",\n    \"created_at\": \"2023-10-28T15:34:56.000000Z\",\n    \"id\": 3\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n  \"message\": \"You do not have permission to access this resource.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"message\": \"The name has already been taken.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get a specific ecclesia",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/ecclesias-manage\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/ecclesias-manage\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the ecclesia."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Returns details of a specific ecclesia along with country data for editing."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"ecclesia\": {\n    \"id\": 1,\n    \"name\": \"First Church of Christ\",\n    \"country\": \"US\",\n    \"created_at\": \"2023-10-15T10:30:00.000000Z\",\n    \"updated_at\": \"2023-10-15T10:30:00.000000Z\",\n    \"country_name\": {\n      \"id\": 1,\n      \"name\": \"United States\",\n      \"code\": \"US\"\n    }\n  },\n  \"countries\": [\n    {\n      \"id\": 1,\n      \"name\": \"United States\",\n      \"code\": \"US\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"United Kingdom\",\n      \"code\": \"UK\"\n    }\n  ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n  \"message\": \"You do not have permission to access this resource.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n  \"message\": \"Ecclesia not found.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update an ecclesia",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/ecclesias-manage\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/ecclesias-manage\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the ecclesia."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"\\\"First Church of Christ - Updated\\\"\",\"country\":\"\\\"US\\\"\"}"
+                        },
+                        "description": "Updates an existing ecclesia with new information."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Ecclesia updated successfully.\",\n  \"ecclesia\": {\n    \"id\": 1,\n    \"name\": \"First Church of Christ - Updated\",\n    \"country\": \"US\",\n    \"created_at\": \"2023-10-15T10:30:00.000000Z\",\n    \"updated_at\": \"2023-10-28T16:45:30.000000Z\"\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n  \"message\": \"You do not have permission to access this resource.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n  \"message\": \"Ecclesia not found.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"message\": \"The name has already been taken.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete an ecclesia",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/ecclesias-manage\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/ecclesias-manage\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the ecclesia."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Removes an ecclesia from the system."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Ecclesia deleted successfully.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n  \"message\": \"You do not have permission to access this resource.\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n  \"message\": \"Ecclesia not found.\"\n}",
                             "name": ""
                         }
                     ]
@@ -1618,7 +1943,7 @@
                                         {
                                             "id": "topic",
                                             "key": "topic",
-                                            "value": "tempore",
+                                            "value": "pariatur",
                                             "description": "The topic."
                                         },
                                         {
@@ -1795,30 +2120,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "assumenda",
+                                            "value": "quibusdam",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "aspernatur",
+                                            "value": "tenetur",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "sit",
+                                            "value": "totam",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "18",
+                                            "value": "3",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=assumenda&sorttype=aspernatur&query=sit&topic_id=18"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=quibusdam&sorttype=tenetur&query=totam&topic_id=3"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -1949,12 +2274,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "19",
+                                            "value": "6",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=19",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=6",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2005,7 +2330,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "laudantium",
+                                            "value": "voluptatum",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2130,7 +2455,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "molestiae",
+                                            "value": "reprehenderit",
                                             "description": ""
                                         }
                                     ]
@@ -2224,30 +2549,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "totam",
+                                            "value": "minus",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "in",
+                                            "value": "similique",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "quam",
+                                            "value": "ea",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "9",
+                                            "value": "5",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/list-by-topics?sortby=totam&sorttype=in&query=quam&topic_id=9"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/list-by-topics?sortby=minus&sorttype=similique&query=ea&topic_id=5"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2378,12 +2703,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "8",
+                                            "value": "12",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/view\/:id?topic=8",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/view\/:id?topic=12",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2434,7 +2759,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "magnam",
+                                            "value": "quasi",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2559,7 +2884,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "veniam",
+                                            "value": "accusamus",
                                             "description": ""
                                         }
                                     ]
@@ -2653,30 +2978,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "labore",
+                                            "value": "libero",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "tenetur",
+                                            "value": "beatae",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "aut",
+                                            "value": "suscipit",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "7",
+                                            "value": "15",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=labore&sorttype=tenetur&query=aut&topic_id=7"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=libero&sorttype=beatae&query=suscipit&topic_id=15"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2807,12 +3132,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "18",
+                                            "value": "15",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=18",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=15",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2863,7 +3188,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "facere",
+                                            "value": "odit",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2988,7 +3313,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "sequi",
+                                            "value": "necessitatibus",
                                             "description": ""
                                         }
                                     ]
@@ -3082,30 +3407,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "impedit",
+                                            "value": "aut",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "et",
+                                            "value": "libero",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "excepturi",
+                                            "value": "doloribus",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "5",
+                                            "value": "9",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/list-by-topics?sortby=impedit&sorttype=et&query=excepturi&topic_id=5"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/list-by-topics?sortby=aut&sorttype=libero&query=doloribus&topic_id=9"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -3236,12 +3561,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "9",
+                                            "value": "6",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/view\/:id?topic=9",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/view\/:id?topic=6",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -3292,7 +3617,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "qui",
+                                            "value": "et",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -3417,7 +3742,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "voluptatem",
+                                            "value": "hic",
                                             "description": ""
                                         }
                                     ]
@@ -3773,25 +4098,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "error",
+                                    "value": "quibusdam",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"masum2@excellisit.net\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "optio",
+                                    "value": "at",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "consequatur",
+                                    "value": "aperiam",
                                     "type": "text",
                                     "description": "The subject of the email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "debitis",
+                                    "value": "iste",
                                     "type": "text",
                                     "description": "The body content of the email."
                                 },
@@ -3850,25 +4175,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "nisi",
+                                    "value": "accusantium",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "ut",
+                                    "value": "itaque",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "velit",
+                                    "value": "blanditiis",
                                     "type": "text",
                                     "description": "The subject of the reply email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "nemo",
+                                    "value": "at",
                                     "type": "text",
                                     "description": "The body content of the reply email."
                                 },
@@ -3933,25 +4258,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "vel",
+                                    "value": "dolorem",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "optio",
+                                    "value": "vel",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "ex",
+                                    "value": "pariatur",
                                     "type": "text",
                                     "description": "The subject of the forwarded email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "voluptatem",
+                                    "value": "qui",
                                     "type": "text",
                                     "description": "The body content of the forwarded email."
                                 },
@@ -4661,7 +4986,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"koelpin.terry@example.net\"}"
+                            "raw": "{\"email\":\"jocelyn84@example.net\"}"
                         },
                         "description": "",
                         "auth": {
@@ -5383,7 +5708,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":4}"
+                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":16}"
                         },
                         "description": "Manages notifications for group chat messages. If the user has a new message, it sends a notification;\notherwise, it marks the notification as read."
                     },
@@ -5564,7 +5889,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "excepturi",
+                                    "value": "impedit",
                                     "description": "The ID of the edit."
                                 }
                             ]
@@ -5613,7 +5938,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "sunt",
+                                    "value": "possimus",
                                     "description": "The ID of the delete."
                                 }
                             ]
@@ -6129,7 +6454,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "ratione",
+                                    "value": "quo",
                                     "description": "The ID of the update."
                                 }
                             ]
@@ -6147,7 +6472,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"role\":\"laborum\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"Smith\",\"email\":\"johndoe@example.com\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"ecclesia_id\":1,\"country\":1,\"state\":1,\"city\":\"Los Angeles\",\"zip\":\"90001\",\"address2\":\"Apt 4B\",\"password\":\"P@ssword1\",\"confirm_password\":\"P@ssword1\",\"status\":1}"
+                            "raw": "{\"role\":\"cupiditate\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"Smith\",\"email\":\"johndoe@example.com\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"ecclesia_id\":1,\"country\":1,\"state\":1,\"city\":\"Los Angeles\",\"zip\":\"90001\",\"address2\":\"Apt 4B\",\"password\":\"P@ssword1\",\"confirm_password\":\"P@ssword1\",\"status\":1}"
                         },
                         "description": ""
                     },
@@ -6299,7 +6624,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n   \"data\": {\n       \"current_page\": 1,\n       \"data\": [\n           {\n               \"id\": 7,\n               \"user_id\": 37,\n               \"file_name\": \"dummy (1).pdf\",\n               \"file_extension\": \"pdf\",\n               \"file\": \"policies\/06C4cc8uACENraZzOjILXIY5QIg4QQrDESsT5Kqv.pdf\",\n               \"created_at\": \"2024-11-11T07:02:33.000000Z\",\n               \"updated_at\": \"2024-11-11T07:02:33.000000Z\"\n           },\n           {\n               \"id\": 6,\n               \"user_id\": 1,\n               \"file_name\": \"partner-Photoroom.jpg\",\n               \"file_extension\": \"jpg\",\n               \"file\": \"policies\/L4u3mwqeGc8BuCuHXR5X9ZYOPbV2SYgQcvqDIiIN.jpg\",\n               \"created_at\": \"2024-08-27T06:34:46.000000Z\",\n               \"updated_at\": \"2024-08-27T06:34:46.000000Z\"\n           },\n           {\n               \"id\": 5,\n               \"user_id\": 1,\n               \"file_name\": \"A2ncCVFTo7T9zg1wjM9BPyX9u1PctUGVsPi8oEXb.jpg\",\n               \"file_extension\": \"jpg\",\n               \"file\": \"policies\/1sk1WN3iEFUA3ztNYNCApyqR5jKg2RyLSBXHk1oP.jpg\",\n               \"created_at\": \"2024-08-27T06:34:46.000000Z\",\n               \"updated_at\": \"2024-08-27T06:34:46.000000Z\"\n           }\n       ],\n       \"first_page_url\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/strategy\/load?page=1\",\n       \"from\": 1,\n       \"last_page\": 1,\n       \"last_page_url\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/strategy\/load?page=1\",\n       \"links\": [\n           {\n               \"url\": null,\n               \"label\": \"&laquo; Previous\",\n               \"active\": false\n           },\n           {\n               \"url\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/strategy\/load?page=1\",\n               \"label\": \"1\",\n               \"active\": true\n           },\n           {\n               \"url\": null,\n               \"label\": \"Next &raquo;\",\n               \"active\": false\n           }\n       ],\n       \"next_page_url\": null,\n       \"path\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/strategy\/load\",\n       \"per_page\": 15,\n       \"prev_page_url\": null,\n       \"to\": 3,\n       \"total\": 3\n   }\n}",
+                            "body": "{\n   \"data\": {\n       \"current_page\": 1,\n       \"data\": [\n           {\n               \"id\": 7,\n               \"user_id\": 37,\n               \"file_name\": \"dummy (1).pdf\",\n               \"file_extension\": \"pdf\",\n               \"file\": \"policies\/06C4cc8uACENraZzOjILXIY5QIg4QQrDESsT5Kqv.pdf\",\n               \"created_at\": \"2024-11-11T07:02:33.000000Z\",\n               \"updated_at\": \"2024-11-11T07:02:33.000000Z\"\n           },\n           {\n               \"id\": 6,\n               \"user_id\": 1,\n               \"file_name\": \"partner-Photoroom.jpg\",\n               \"file_extension\": \"jpg\",\n               \"file\": \"policies\/L4u3mwqeGc8BuCuHXR5X9ZYOPbV2SYgQcvqDIiIN.jpg\",\n               \"created_at\": \"2024-08-27T06:34:46.000000Z\",\n               \"updated_at\": \"2024-08-27T06:34:46.000000Z\"\n           },\n           {\n               \"id\": 5,\n               \"user_id\": 1,\n               \"file_name\": \"A2ncCVFTo7T9zg1wjM9BPyX9u1PctUGVsPi8oEXb.jpg\",\n               \"file_extension\": \"jpg\",\n               \"file\": \"policies\/1sk1WN3iEFUA3ztNYNCApyqR5jKg2RyLSBXHk1oP.jpg\",\n               \"created_at\": \"2024-08-27T06:34:46.000000Z\",\n               \"updated_at\": \"2024-08-27T06:34:46.000000Z\"\n           }\n       ],\n       \"first_page_url\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/policy\/load?page=1\",\n       \"from\": 1,\n       \"last_page\": 1,\n       \"last_page_url\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/policy\/load?page=1\",\n       \"links\": [\n           {\n               \"url\": null,\n               \"label\": \"&laquo; Previous\",\n               \"active\": false\n           },\n           {\n               \"url\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/policy\/load?page=1\",\n               \"label\": \"1\",\n               \"active\": true\n           },\n           {\n               \"url\": null,\n               \"label\": \"Next &raquo;\",\n               \"active\": false\n           }\n       ],\n       \"next_page_url\": null,\n       \"path\": \"http:\/\/127.0.0.1:8000\/api\/v3\/user\/policy\/load\",\n       \"per_page\": 15,\n       \"prev_page_url\": null,\n       \"to\": 3,\n       \"total\": 3\n   }\n}",
                             "name": ""
                         },
                         {
@@ -6352,13 +6677,13 @@
                         {
                             "header": [],
                             "code": 201,
-                            "body": "{\"error\": \"Validation failed or duplicate strategy found.\"}",
+                            "body": "{\"error\": \"Validation failed or duplicate policy found.\"}",
                             "name": "error"
                         }
                     ]
                 },
                 {
-                    "name": "Delete strategy",
+                    "name": "Delete policy",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -6369,8 +6694,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "17",
-                                    "description": "The ID of the strategy to delete."
+                                    "value": "5",
+                                    "description": "The ID of the policy to delete."
                                 }
                             ]
                         },
@@ -6404,7 +6729,7 @@
                     ]
                 },
                 {
-                    "name": "Download strategy file",
+                    "name": "Download policy file",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -6415,7 +6740,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "tempora",
+                                    "value": "amet",
                                     "description": "The ID of the download."
                                 }
                             ]
@@ -6461,8 +6786,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "2",
-                                    "description": "The ID of the strategy to view."
+                                    "value": "14",
+                                    "description": "The ID of the policy to view."
                                 }
                             ]
                         },
@@ -6872,6 +7197,276 @@
             ]
         },
         {
+            "name": "Role & Permissions Management",
+            "description": "\nAPIs for managing roles and permissions",
+            "item": [
+                {
+                    "name": "List all roles",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/role-permissions",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/role-permissions"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Returns a list of all roles with their associated permissions.\nSuper Admin role is excluded for non-super-admin users."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"roles\": [\n    {\n      \"id\": 2,\n      \"name\": \"ECCLESIA ADMIN\",\n      \"guard_name\": \"web\",\n      \"type\": 2,\n      \"is_ecclesia\": 1,\n      \"created_at\": \"2023-10-15T14:30:45.000000Z\",\n      \"updated_at\": \"2023-10-15T14:30:45.000000Z\",\n      \"permissions\": [\n        {\n          \"id\": 1,\n          \"name\": \"Manage Users\",\n          \"guard_name\": \"web\",\n          \"type\": 1,\n          \"created_at\": \"2023-10-15T14:30:45.000000Z\",\n          \"updated_at\": \"2023-10-15T14:30:45.000000Z\",\n          \"pivot\": {\n            \"role_id\": 2,\n            \"permission_id\": 1\n          }\n        }\n      ]\n    }\n  ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\n  \"message\": \"Unauthenticated.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get all available permissions",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/role-permissions\/permissions",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/role-permissions\/permissions"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Returns a list of all available permissions that can be assigned to roles."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"permissions\": [\n    {\n      \"id\": 1,\n      \"name\": \"Manage Users\",\n      \"guard_name\": \"web\",\n      \"type\": 1,\n      \"created_at\": \"2023-10-15T14:30:45.000000Z\",\n      \"updated_at\": \"2023-10-15T14:30:45.000000Z\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Manage Roles\",\n      \"guard_name\": \"web\",\n      \"type\": 1,\n      \"created_at\": \"2023-10-15T14:30:45.000000Z\",\n      \"updated_at\": \"2023-10-15T14:30:45.000000Z\"\n    }\n  ]\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get a specific role",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/role-permissions\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/role-permissions\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "2",
+                                    "description": "The ID of the role."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Returns details of a specific role including its permissions."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"role\": {\n    \"id\": 2,\n    \"name\": \"ECCLESIA ADMIN\",\n    \"guard_name\": \"web\",\n    \"type\": 2,\n    \"is_ecclesia\": 1,\n    \"created_at\": \"2023-10-15T14:30:45.000000Z\",\n    \"updated_at\": \"2023-10-15T14:30:45.000000Z\",\n    \"permissions\": [\n      {\n        \"id\": 1,\n        \"name\": \"Manage Users\",\n        \"guard_name\": \"web\",\n        \"type\": 1,\n        \"created_at\": \"2023-10-15T14:30:45.000000Z\",\n        \"updated_at\": \"2023-10-15T14:30:45.000000Z\",\n        \"pivot\": {\n          \"role_id\": 2,\n          \"permission_id\": 1\n        }\n      }\n    ]\n  },\n  \"permissions\": [\n    {\n      \"id\": 1,\n      \"name\": \"Manage Users\",\n      \"guard_name\": \"web\",\n      \"type\": 1,\n      \"created_at\": \"2023-10-15T14:30:45.000000Z\",\n      \"updated_at\": \"2023-10-15T14:30:45.000000Z\"\n    }\n  ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n  \"message\": \"Role not found\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create a new role",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/role-permissions",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/role-permissions"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"role_name\":\"Manager\",\"is_ecclesia\":1,\"permissions\":[1,2,3]}"
+                        },
+                        "description": "Creates a new role with the specified permissions."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"message\": \"Role created successfully\",\n  \"role\": {\n    \"name\": \"Manager\",\n    \"guard_name\": \"web\",\n    \"type\": 2,\n    \"is_ecclesia\": 1,\n    \"updated_at\": \"2023-10-28T12:34:56.000000Z\",\n    \"created_at\": \"2023-10-28T12:34:56.000000Z\",\n    \"id\": 5\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"message\": \"The role name field is required.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update a role",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/role-permissions\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/role-permissions\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "2",
+                                    "description": "The ID of the role."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"role_name\":\"Senior Manager\",\"is_ecclesia\":1,\"permissions\":[1,2,3,4]}"
+                        },
+                        "description": "Updates an existing role with new name and permissions."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Role updated successfully\",\n  \"role\": {\n    \"id\": 2,\n    \"name\": \"Senior Manager\",\n    \"guard_name\": \"web\",\n    \"type\": 2,\n    \"is_ecclesia\": 1,\n    \"created_at\": \"2023-10-15T14:30:45.000000Z\",\n    \"updated_at\": \"2023-10-28T13:45:30.000000Z\"\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n  \"message\": \"Role not found\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"message\": \"The role name field is required.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete a role",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/role-permissions\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/role-permissions\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "3",
+                                    "description": "The ID of the role."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Deletes an existing role. The Super Admin role cannot be deleted."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Role deleted successfully\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n  \"message\": \"You cannot delete the Super Admin role\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n  \"message\": \"Role not found\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "Role Permission",
             "description": "",
             "item": [
@@ -6925,7 +7520,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "iure",
+                                    "value": "veritatis",
                                     "description": "The ID of the edit."
                                 }
                             ]
@@ -7069,7 +7664,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "8",
+                                    "value": "20",
                                     "description": "The ID of the strategy to delete."
                                 }
                             ]
@@ -7115,7 +7710,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "non",
+                                    "value": "itaque",
                                     "description": "The ID of the download."
                                 }
                             ]
@@ -7161,7 +7756,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "1",
+                                    "value": "14",
                                     "description": "The ID of the strategy to view."
                                 }
                             ]
@@ -7192,6 +7787,47 @@
                             "code": 201,
                             "body": "{\"error\": \"Strategy not found or permission denied.\"}",
                             "name": "error"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "chatbot",
+            "description": "",
+            "item": [
+                {
+                    "name": "chatbot",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/user\/chatbot",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/user\/chatbot"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"message\":\"qui\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Please wait for admin approval\",\n}",
+                            "name": ""
                         }
                     ]
                 }

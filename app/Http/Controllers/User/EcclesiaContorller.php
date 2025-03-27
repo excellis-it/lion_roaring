@@ -52,7 +52,7 @@ class EcclesiaContorller extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:ecclesias',
-            'country' => 'required|string|max:255',
+            'country' => 'required|int|exists:countries,id',
         ]);
 
         $ecclesia = new Ecclesia();
