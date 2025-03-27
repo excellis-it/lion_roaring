@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Update Policy and guidance - {{ env('APP_NAME') }}
+    Update Policy and Guidance - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -16,14 +16,14 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
-                                    <h3>Update Policy and guidance</h3>
+                                    <h3>Update Policy and Guidance</h3>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12 mb-2">
                                 <div class="box_label">
-                                    <label for="policy">Choose Policy and guidance</label>
+                                    <label for="policy">Choose Policy and Guidance</label>
 
                                 <input type="policy" name="policy" id="policy" class="form-control">
                                 @if ($errors->has('policy'))

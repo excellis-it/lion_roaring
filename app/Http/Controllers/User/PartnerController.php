@@ -96,15 +96,23 @@ class PartnerController extends Controller
     {
         if (Auth::user()->can('Create Partners')) {
             // $roles = Role::whereNotIn('type', [1, 3])->get();
+            $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
             if (Auth::user()->getFirstRoleType() == 1) {
                 $roles = Role::whereIn('type', [2, 3])->get();
-            } elseif (Auth::user()->getFirstRoleType() == 3) {
+                $eclessias = Ecclesia::orderBy('id', 'asc')->get();
+            } elseif (Auth::user()->getFirstRoleType() == 2 || Auth::user()->getFirstRoleType() == 3) {
                 $roles = Role::whereIn('type', [2, 3])->get();
+                if (Auth::user()->isEcclesiaUser()) {
+                    $eclessias = Auth::user()->getEcclesiaAccessAttribute();
+                } else {
+                    $eclessias = Ecclesia::where('id', $auth_user_ecclesia_id)->orderBy('id', 'asc')->get();
+                }
             } else {
                 $roles = Role::whereIn('type', [2, 3])->get();
+                $eclessias = Ecclesia::orderBy('id', 'asc')->get();
             }
             // $eclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
-            $eclessias = Ecclesia::orderBy('id', 'asc')->get();
+            //   $eclessias = Ecclesia::orderBy('id', 'asc')->get();
             $countries = Country::orderBy('name', 'asc')->get();
             return view('user.partner.create')->with(compact('roles', 'eclessias', 'countries'));
         } else {
@@ -237,16 +245,31 @@ class PartnerController extends Controller
         if (Auth::user()->can('Edit Partners')) {
             $id = Crypt::decrypt($id);
             $partner = User::findOrFail($id);
-            // $roles = Role::whereNotIn('type', [1, 3])->get();
+            // // $roles = Role::whereNotIn('type', [1, 3])->get();
+            // if (Auth::user()->getFirstRoleType() == 1) {
+            //     $roles = Role::whereIn('type', [2, 3])->get();
+            // } elseif (Auth::user()->getFirstRoleType() == 3) {
+            //     $roles = Role::whereIn('type', [2, 3])->get();
+            // } else {
+            //     $roles = Role::whereIn('type', [2, 3])->get();
+            // }
+            // // $ecclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
+            // $eclessias = Ecclesia::orderBy('id', 'asc')->get();
+            $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
             if (Auth::user()->getFirstRoleType() == 1) {
                 $roles = Role::whereIn('type', [2, 3])->get();
-            } elseif (Auth::user()->getFirstRoleType() == 3) {
+                $eclessias = Ecclesia::orderBy('id', 'asc')->get();
+            } elseif (Auth::user()->getFirstRoleType() == 2 || Auth::user()->getFirstRoleType() == 3) {
                 $roles = Role::whereIn('type', [2, 3])->get();
+                if (Auth::user()->isEcclesiaUser()) {
+                    $eclessias = Auth::user()->getEcclesiaAccessAttribute();
+                } else {
+                    $eclessias = Ecclesia::where('id', $auth_user_ecclesia_id)->orderBy('id', 'asc')->get();
+                }
             } else {
                 $roles = Role::whereIn('type', [2, 3])->get();
+                $eclessias = Ecclesia::orderBy('id', 'asc')->get();
             }
-            // $ecclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
-            $eclessias = Ecclesia::orderBy('id', 'asc')->get();
             $countries = Country::orderBy('name', 'asc')->get();
             return view('user.partner.edit', compact('partner', 'roles', 'eclessias', 'countries'));
         } else {
