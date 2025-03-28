@@ -57,7 +57,7 @@ class EmailVerificationController extends Controller
 
         try {
             Mail::to($user->email)->send(new OtpMail($otp));
-            return response()->json(['message' => 'OTP sent to your email', 'status' => true]);
+            return response()->json(['message' => 'Code sent to your email', 'status' => true]);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Email server temporary unavailable. Please try later.', 'status' => false]);
         }
@@ -80,13 +80,13 @@ class EmailVerificationController extends Controller
         $verify_otp = VerifyOTP::where('user_id', $userId)->orderBy('id', 'desc')->first();
 
         if (!$verify_otp || $verify_otp->otp != $request->otp) {
-            return response()->json(['message' => 'Invalid OTP', 'status' => false]);
+            return response()->json(['message' => 'Invalid Code', 'status' => false]);
         }
 
         $verify_otp->delete();
 
         Auth::login($user);
         Session::forget('user_id');
-        return response()->json(['message' => 'OTP verified successfully', 'status' => true, 'redirect' => route('user.profile')]);
+        return response()->json(['message' => 'Code verified successfully', 'status' => true, 'redirect' => route('user.profile')]);
     }
 }
