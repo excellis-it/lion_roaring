@@ -118,7 +118,7 @@ class CmsController extends Controller
     {
         $request->validate([
             'newsletter_name' => 'required',
-            'newsletter_email' => 'required|email|unique:newsletters,email',
+            'newsletter_email' => 'required|email',
             'newsletter_message' => 'required',
         ]);
 

@@ -61,7 +61,7 @@ class AuthController extends Controller
                 } catch (\Exception $e) {
                     return response()->json(['message' => 'Email server temporary unavailable. Please try later.', 'status' => false]);
                 }
-                return response()->json(['message' => 'OTP sent to your email', 'status' => true, 'otp_required' => true ]);
+                return response()->json(['message' => 'Code sent to your email', 'status' => true, 'otp_required' => true ]);
             } else {
                 return response()->json(['message' => 'Your account is not active!', 'status' => false]);
             }

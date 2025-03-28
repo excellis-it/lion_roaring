@@ -333,7 +333,7 @@
                             <form id="otp-form" action="{{ route('verify.otp') }}" method="post">
                                 @csrf
                                 <div class="mb-3">
-                                    <input placeholder="Enter OTP" type="text" class="form-control input"
+                                    <input placeholder="Enter Code" type="text" class="form-control input"
                                         id="otp" name="otp" maxlength="4" required
                                         style="border: none;
                                         border-bottom: 1px solid rgb(0 0 0 / 29%);
@@ -347,7 +347,7 @@
                                 <div class="text-center mt-3">
                                     <p>Didn't receive the code?</p>
                                     <button type="button" id="resend-otp-btn" class="btn btn-link">
-                                        Resend OTP
+                                        Resend Code
                                     </button>
                                     <div id="countdown-timer" class="mt-2" style="display: none;">
                                         Resend available in <span id="countdown">10:00</span>
@@ -1064,7 +1064,7 @@
                             }
                         },
                         error: function(xhr) {
-                            $('#otp-error').text('Invalid OTP');
+                            $('#otp-error').text('Invalid Code');
                         }
                     });
                 });
@@ -1163,18 +1163,18 @@
                             if (response.status) {
                                 toastr.success(response.message);
                                 startCountdown();
-                                $('#resend-otp-btn').text('Resend OTP');
+                                $('#resend-otp-btn').text('Resend Code');
                             } else {
                                 if (response.time_left) {
                                     startCountdown(response.time_left);
                                 }
                                 toastr.error(response.message);
-                                $('#resend-otp-btn').prop('disabled', false).text('Resend OTP');
+                                $('#resend-otp-btn').prop('disabled', false).text('Resend Code');
                             }
                         },
                         error: function() {
                             toastr.error('Something went wrong. Please try again.');
-                            $('#resend-otp-btn').prop('disabled', false).text('Resend OTP');
+                            $('#resend-otp-btn').prop('disabled', false).text('Resend Code');
                         }
                     });
                 });
