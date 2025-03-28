@@ -242,11 +242,11 @@
                                         }
                                         return null;
                                     }
-                                    
+
                                     // Get user's timezone based on IP address
                                     $ip = $_SERVER['REMOTE_ADDR'];
                                     $timezone = getTimezoneFromIp($ip);
-                                    
+
                                     if ($timezone) {
                                         // Set the default timezone
                                         date_default_timezone_set($timezone);
@@ -254,10 +254,10 @@
                                         // Fallback timezone
                                         date_default_timezone_set('UTC');
                                     }
-                                    
+
                                     // Get the current hour in 24-hour format
                                     $time = date('H');
-                                    
+
                                     // Determine greeting based on time
                                     if ($time < '12') {
                                         echo 'Perfect morning';
@@ -333,7 +333,7 @@
                             <form id="otp-form" action="{{ route('verify.otp') }}" method="post">
                                 @csrf
                                 <div class="mb-3">
-                                    <input placeholder="Enter OTP" type="text" class="form-control input"
+                                    <input placeholder="Enter Code" type="text" class="form-control input"
                                         id="otp" name="otp" maxlength="4" required
                                         style="border: none;
                                         border-bottom: 1px solid rgb(0 0 0 / 29%);
@@ -1064,7 +1064,7 @@
                             }
                         },
                         error: function(xhr) {
-                            $('#otp-error').text('Invalid OTP');
+                            $('#otp-error').text('Invalid Code');
                         }
                     });
                 });
@@ -1163,18 +1163,18 @@
                             if (response.status) {
                                 toastr.success(response.message);
                                 startCountdown();
-                                $('#resend-otp-btn').text('Resend OTP');
+                                $('#resend-otp-btn').text('Resend Code');
                             } else {
                                 if (response.time_left) {
                                     startCountdown(response.time_left);
                                 }
                                 toastr.error(response.message);
-                                $('#resend-otp-btn').prop('disabled', false).text('Resend OTP');
+                                $('#resend-otp-btn').prop('disabled', false).text('Resend Code');
                             }
                         },
                         error: function() {
                             toastr.error('Something went wrong. Please try again.');
-                            $('#resend-otp-btn').prop('disabled', false).text('Resend OTP');
+                            $('#resend-otp-btn').prop('disabled', false).text('Resend Code');
                         }
                     });
                 });

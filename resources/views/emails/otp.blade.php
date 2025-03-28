@@ -2,7 +2,7 @@
 <html>
 
     <head>
-        <title>OTP Verification</title>
+        <title>Code Verification</title>
     </head>
 
     <body>
@@ -95,7 +95,7 @@
                                         <p style="font-size:16px; color:#313131; line-height:24px; font-weight: 400;">
                                             Hello,</p>
                                         <p style="font-size:16px; color:#313131; line-height:24px; font-weight: 400;">
-                                            Please use the following one time password(OTP)
+                                            Please use the following one time password(Code)
                                         </p>
                                         <ul style="list-style: none; padding-left: 0;">
                                             @foreach (str_split($otp) as $digit)
