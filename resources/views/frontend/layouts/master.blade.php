@@ -242,11 +242,11 @@
                                         }
                                         return null;
                                     }
-
+                                    
                                     // Get user's timezone based on IP address
                                     $ip = $_SERVER['REMOTE_ADDR'];
                                     $timezone = getTimezoneFromIp($ip);
-
+                                    
                                     if ($timezone) {
                                         // Set the default timezone
                                         date_default_timezone_set($timezone);
@@ -254,10 +254,10 @@
                                         // Fallback timezone
                                         date_default_timezone_set('UTC');
                                     }
-
+                                    
                                     // Get the current hour in 24-hour format
                                     $time = date('H');
-
+                                    
                                     // Determine greeting based on time
                                     if ($time < '12') {
                                         echo 'Perfect morning';
@@ -347,7 +347,7 @@
                                 <div class="text-center mt-3">
                                     <p>Didn't receive the code?</p>
                                     <button type="button" id="resend-otp-btn" class="btn btn-link">
-                                        Resend OTP
+                                        Resend Code
                                     </button>
                                     <div id="countdown-timer" class="mt-2" style="display: none;">
                                         Resend available in <span id="countdown">10:00</span>
