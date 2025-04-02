@@ -10,7 +10,8 @@
                 <span>{{ $partner->getRoleNames()->first() }}</span>
 
                 @if ($partner->is_ecclesia_admin == 1)
-                    {{-- @dd($partner) --}}
+
+                {{-- @dd($partner) --}}
                     <br>
 
                     <button title="Ecclesia Access" type="button" class="btn btn-primary btn-sm ecclesia-see-button"
@@ -49,26 +50,10 @@
                                         @if (auth()->user()->hasRole('SUPER ADMIN') ||
                                                 $partner->created_id == auth()->user()->id ||
                                                 (auth()->user()->roles()->first()->is_ecclesia == 1 && auth()->id() != $partner->id))
-                                            @if (auth()->user()->roles()->first()->is_ecclesia == 1)
-                                                @php
-                                                    $manage_ecclesia_ids = is_array(auth()->user()->manage_ecclesia)
-                                                        ? auth()->user()->manage_ecclesia
-                                                        : explode(',', auth()->user()->manage_ecclesia);
-                                                @endphp
-
-                                                @if (!in_array($partner->ecclesia_id, $manage_ecclesia_ids))
-                                                @else
-                                                    <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}"
-                                                        type="button" class="btn btn-primary me-3">
-                                                        Edit Member
-                                                    </a>
-                                                @endif
-                                                @else
-                                                <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}"
-                                                    type="button" class="btn btn-primary me-3">
-                                                    Edit Member
-                                                </a>
-                                            @endif
+                                            <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}"
+                                                type="button" class="btn btn-primary me-3">
+                                                Edit Member
+                                            </a>
                                         @endif
                                     @endif
                                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
@@ -95,32 +80,13 @@
                     @if (auth()->user()->hasRole('SUPER ADMIN') ||
                             $partner->created_id == auth()->user()->id ||
                             (auth()->user()->roles()->first()->is_ecclesia == 1 && auth()->id() != $partner->id))
-                        @if (auth()->user()->roles()->first()->is_ecclesia == 1)
-                            @php
-                                $manage_ecclesia_ids = is_array(auth()->user()->manage_ecclesia)
-                                    ? auth()->user()->manage_ecclesia
-                                    : explode(',', auth()->user()->manage_ecclesia);
-                            @endphp
-
-                            @if (!in_array($partner->ecclesia_id, $manage_ecclesia_ids))
-                            @else
-                                <div class="button-switch">
-                                    <input style="cursor: pointer;" type="checkbox" id="switch-orange"
-                                        class="switch toggle-class" data-id="{{ $partner['id'] }}"
-                                        {{ $partner['status'] ? 'checked' : '' }} />
-                                    <label for="switch-orange" class="lbl-off"></label>
-                                    <label for="switch-orange" class="lbl-on"></label>
-                                </div>
-                            @endif
-                            @else
-                            <div class="button-switch">
-                                <input style="cursor: pointer;" type="checkbox" id="switch-orange"
-                                    class="switch toggle-class" data-id="{{ $partner['id'] }}"
-                                    {{ $partner['status'] ? 'checked' : '' }} />
-                                <label for="switch-orange" class="lbl-off"></label>
-                                <label for="switch-orange" class="lbl-on"></label>
-                            </div>
-                        @endif
+                        <div class="button-switch">
+                            <input style="cursor: pointer;" type="checkbox" id="switch-orange"
+                                class="switch toggle-class" data-id="{{ $partner['id'] }}"
+                                {{ $partner['status'] ? 'checked' : '' }} />
+                            <label for="switch-orange" class="lbl-off"></label>
+                            <label for="switch-orange" class="lbl-on"></label>
+                        </div>
                     @else
                         <p>
                             <span>
@@ -139,26 +105,10 @@
                             @if (auth()->user()->hasRole('SUPER ADMIN') ||
                                     $partner->created_id == auth()->user()->id ||
                                     (auth()->user()->roles()->first()->is_ecclesia == 1 && auth()->id() != $partner->id))
-                                @if (auth()->user()->roles()->first()->is_ecclesia == 1)
-                                    @php
-                                        $manage_ecclesia_ids = is_array(auth()->user()->manage_ecclesia)
-                                            ? auth()->user()->manage_ecclesia
-                                            : explode(',', auth()->user()->manage_ecclesia);
-                                    @endphp
-
-                                    @if (!in_array($partner->ecclesia_id, $manage_ecclesia_ids))
-                                    @else
-                                        <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}"
-                                            class="edit_icon me-2">
-                                            <i class="ti ti-edit"></i>
-                                        </a>
-                                    @endif
-                                @else
-                                    <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}"
-                                        class="edit_icon me-2">
-                                        <i class="ti ti-edit"></i>
-                                    </a>
-                                @endif
+                                <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}"
+                                    class="edit_icon me-2">
+                                    <i class="ti ti-edit"></i>
+                                </a>
                             @endif
                         @endif
 
@@ -172,28 +122,11 @@
                             @if (auth()->user()->hasRole('SUPER ADMIN') ||
                                     $partner->created_id == auth()->user()->id ||
                                     (auth()->user()->roles()->first()->is_ecclesia == 1 && auth()->id() != $partner->id))
-                                @if (auth()->user()->roles()->first()->is_ecclesia == 1)
-                                    @php
-                                        $manage_ecclesia_ids = is_array(auth()->user()->manage_ecclesia)
-                                            ? auth()->user()->manage_ecclesia
-                                            : explode(',', auth()->user()->manage_ecclesia);
-                                    @endphp
-
-                                    @if (!in_array($partner->ecclesia_id, $manage_ecclesia_ids))
-                                    @else
-                                        <a href="javascript:void(0);"
-                                            data-route="{{ route('partners.delete', Crypt::encrypt($partner->id)) }}"
-                                            class="delete_icon" id="delete">
-                                            <i class="ti ti-trash"></i>
-                                        </a>
-                                    @endif
-                                @else
-                                    <a href="javascript:void(0);"
-                                        data-route="{{ route('partners.delete', Crypt::encrypt($partner->id)) }}"
-                                        class="delete_icon" id="delete">
-                                        <i class="ti ti-trash"></i>
-                                    </a>
-                                @endif
+                                <a href="javascript:void(0);"
+                                    data-route="{{ route('partners.delete', Crypt::encrypt($partner->id)) }}"
+                                    class="delete_icon" id="delete">
+                                    <i class="ti ti-trash"></i>
+                                </a>
                             @endif
                         @endif
 
