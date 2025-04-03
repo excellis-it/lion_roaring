@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Session;
 use App\Mail\NewsletterSubscription;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactUsForm;
+use App\Mail\ContactUsUserConfirmation;
 use App\Models\SiteSetting;
 
 class CmsController extends Controller
@@ -153,16 +154,13 @@ class CmsController extends Controller
             'phone' => 'required',
             'message' => 'required',
         ]);
+
         if ($request->ajax()) {
             $contact = new ContactUs();
             $contact->first_name = $request->first_name;
             $contact->last_name = $request->last_name;
             $contact->email = $request->email;
-            if ($request->country_code) {
-                $contact->phone = '+' . $request->country_code . ' ' . $request->phone;
-            } else {
-                $contact->phone = $request->phone;
-            }
+            $contact->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
             $contact->message = $request->message;
             $contact->save();
 
@@ -176,13 +174,22 @@ class CmsController extends Controller
 
             // Send email to admin
             $adminEmail = SiteSetting::first()->SITE_CONTACT_EMAIL;
-            Mail::to($adminEmail)->send(new ContactUsForm($contactData));
+            try {
+                Mail::to($adminEmail)->send(new ContactUsForm($contactData));
+
+                // Send confirmation email to the user
+                Mail::to($contact->email)->send(new ContactUsUserConfirmation($contactData));
+            } catch (\Throwable $th) {
+                session()->flash('success', 'Thank you for contacting us');
+            return response()->json(['message' => 'Thank you for contacting us', 'status' => true]);
+            }
 
 
             session()->flash('success', 'Thank you for contacting us');
             return response()->json(['message' => 'Thank you for contacting us', 'status' => true]);
         }
     }
+
 
     public function session(Request $request)
     {
