@@ -368,6 +368,16 @@
                                 <a class="nav-link" href="{{ route('pma-terms.index') }}"> PMA Terms </a>
                             </li>
                         @endif
+                        @if (Auth::user()->hasRole('SUPER ADMIN'))
+                            <li class="{{ Request::is('admin/pages/privacy-policy') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('privacy-policy.index') }}"> Privacy Policy </a>
+                            </li>
+
+                            <li class="{{ Request::is('admin/pages/terms-and-condition') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('terms-and-condition.index') }}"> Terms and
+                                    Conditions </a>
+                            </li>
+                        @endif
                     </ul>
                 </li>
             @endif

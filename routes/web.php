@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\OurOrganizationController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\PmaDisclaimerController;
 use App\Http\Controllers\Admin\PrincipleAndBusinessController;
+use App\Http\Controllers\Admin\PrivacyPolicyController;
 use App\Http\Controllers\Admin\RegisterAgreementController;
 use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\SellerController;
@@ -66,6 +67,7 @@ use App\Http\Controllers\User\TeamChatController;
 use App\Http\Controllers\User\TeamController;
 use App\Http\Controllers\User\TopicController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\TermsAndConditionController;
 use App\Models\Category;
 use App\Models\EcomCmsPage;
 use Illuminate\Routing\RouteRegistrar;
@@ -218,6 +220,12 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
 
         ]);
 
+        // privacy-policy
+        Route::get('/privacy-policy', [PrivacyPolicyController::class, 'index'])->name('privacy-policy.index');
+        Route::post('/privacy-policy/update', [PrivacyPolicyController::class, 'update'])->name('privacy-policy.update');
+        // terms-and-conditions
+        Route::get('/terms-and-condition', [TermsAndConditionController::class, 'index'])->name('terms-and-condition.index');
+        Route::post('/terms-and-condition/update', [TermsAndConditionController::class, 'update'])->name('terms-and-condition.update');
 
         // principle-and-business.image.delete
         Route::get('/principle-and-business-image-delete', [PrincipleAndBusinessController::class, 'imageDelete'])->name('principle-and-business.image.delete');
@@ -267,6 +275,10 @@ Route::Post('/session', [CmsController::class, 'session'])->name('session.store'
 Route::post('/donation', [DonationController::class, 'donation'])->name('donation');
 Route::get('/thankyou', [DonationController::class, 'thankyou'])->name('thankyou');
 
+// terms-and-conditions
+Route::get('/terms-and-conditions', [CmsController::class, 'terms'])->name('terms-and-conditions');
+// privacy-policy
+Route::get('/privacy-policy', [CmsController::class, 'privacy_policy'])->name('privacy-policy');
 
 /*********************************************************** USER ********************************************************************************************* */
 // login
