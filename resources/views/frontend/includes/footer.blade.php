@@ -102,13 +102,19 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="quick_links_ul">
-                        <ul class="menu">
+                        <ul class="menu" style="white-space: nowrap">
                             <li class="active">
                                 <a href="{{route('home')}}" aria-current="page">Home</a>
                             </li>
                             <li>
                                 <a href="{{Helper::getPDFAttribute() ?? 'javascript:void(0);'}}"  target="_blank">Article of
                                     Association</a>
+                            </li>
+                            <li class="active">
+                                <a href="{{route('privacy-policy')}}" aria-current="page">Privacy Policy</a>
+                            </li>
+                            <li class="active">
+                                <a href="{{route('terms-and-conditions')}}" aria-current="page">Terms and Conditions</a>
                             </li>
                             <li>
                                 <a href="{{route('contact-us')}}">Contact Us</a>

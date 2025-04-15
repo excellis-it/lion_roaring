@@ -25,7 +25,9 @@ use App\Mail\NewsletterSubscription;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactUsForm;
 use App\Mail\ContactUsUserConfirmation;
+use App\Models\PrivacyPolicy;
 use App\Models\SiteSetting;
+use App\Models\TermsAndCondition;
 
 class CmsController extends Controller
 {
@@ -202,5 +204,19 @@ class CmsController extends Controller
             session()->flash('error', 'Please agree to the terms and conditions');
             return redirect()->back();
         }
+    }
+
+
+    public function privacy_policy()
+    {
+        $privacy_policy = PrivacyPolicy::orderBy('id', 'desc')->first();
+        return view('frontend.privacy-policy')->with('privacy_policy', $privacy_policy);
+    }
+
+
+    public function terms()
+    {
+        $term = TermsAndCondition::orderBy('id', 'desc')->first();
+        return view('frontend.terms-and-condition')->with('term', $term);
     }
 }
