@@ -3,7 +3,18 @@
         <tr>
             <td> {{ ($faqs->currentPage() - 1) * $faqs->perPage() + $loop->index + 1 }}</td>
             <td>{{ $faq->question }}</td>
-            <td>{{ $faq->answer }}</td>
+            <td>
+                <td>
+                    @php
+                        $message = $faq->answer ?? 'N/A';
+                        $shortMessage = strlen($message) > 50 ? substr($message, 0, 50) . '...' : $message;
+                    @endphp
+                    <span class="short-message">{{ $shortMessage }}</span>
+                    <span class="full-message" style="display:none">{{ $message }}</span>
+                    @if(strlen($message) > 50)
+                        <a href="javascript:void(0)" class="toggle-message">Show More</a>
+                    @endif
+                </td></td>
             <td>
                 <div class="edit-1 d-flex align-items-center justify-content-center">
                     @if (auth()->user()->can('Edit Faq'))
@@ -33,3 +44,16 @@
         <td colspan="5" class="text-center">No FAQ Found</td>
     </tr>
 @endif
+
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('.toggle-message').click(function() {
+                $(this).closest('td').find('.short-message').toggle();
+                $(this).closest('td').find('.full-message').toggle();
+                $(this).text($(this).text() === 'Show More' ? 'Show Less' : 'Show More');
+            });
+        });
+    </script>
+@endpush
