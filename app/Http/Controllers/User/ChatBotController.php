@@ -134,10 +134,12 @@ class ChatBotController extends Controller
                 }
             }
 
+            $content = htmlspecialchars_decode($bestMatch->answer);
+
             if ($bestMatch && $bestScore > 10) {  // Adjusted threshold for better accuracy
                 return response()->json([
                     'status' => 'success',
-                    'message' => $bestMatch->answer
+                    'message' => $content
                 ], 200);
             }
 

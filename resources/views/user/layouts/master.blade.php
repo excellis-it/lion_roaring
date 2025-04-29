@@ -158,7 +158,7 @@
 
                                 setTimeout(function() {
                                     var botMessage = $(
-                                        '<div class="chatbot-message chatbot-bot-message"><p>' +
+                                        '<div class="chatbot-message chatbot-bot-message d-block"><p>' +
                                         dataMessage +
                                         '</p></div><span class="chatbot-bot-message-lable"> - Lion Roaring AI</span>'
                                     );
