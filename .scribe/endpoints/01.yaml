@@ -981,3 +981,83 @@ endpoints:
     method: null
     route: null
     custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/cms/newsletter
+    metadata:
+      groupName: 'CMS Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Submit newsletter form'
+      description: 'This endpoint allows a user to submit a newsletter form. The request must include the name, email, and message.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      newsletter_name:
+        name: newsletter_name
+        description: 'The full name of the subscriber.'
+        required: true
+        example: 'John Doe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      newsletter_email:
+        name: newsletter_email
+        description: "The subscriber's email address."
+        required: true
+        example: john@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      newsletter_message:
+        name: newsletter_message
+        description: 'The message or feedback from the subscriber.'
+        required: true
+        example: "I'd love to hear more about your services!"
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      newsletter_name: 'John Doe'
+      newsletter_email: john@example.com
+      newsletter_message: "I'd love to hear more about your services!"
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Newsletter submit successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+            "message": "Error message details here",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
