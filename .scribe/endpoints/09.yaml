@@ -1,17 +1,17 @@
-name: 'Group Chats'
+name: Chats
 description: ''
 endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/team-chats/list
+    uri: api/v3/user/chats/list
     metadata:
-      groupName: 'Group Chats'
+      groupName: Chats
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'List of Group Chats'
-      description: 'Retrieves the list of teams that the authenticated user is part of, ordered by the last message sent in the team. It also includes the team members.'
+      title: 'List of Chat Users'
+      description: 'Retrieves a list of users with whom the authenticated user has chatted, sorted by the most recent message.'
       authenticated: true
       custom: []
     headers:
@@ -29,157 +29,19 @@ endpoints:
       -
         status: 200
         content: |-
-          *{
-           "msg": "Teams listed successfully",
-           "status": true,
-           "teams": [
-             {
-               "id": 31,
-               "created_by": null,
-               "name": "test group",
-               "group_image": "team/mzw14lBFdUuQKRMiOSjEoZOKPIFvxXPYyJxl3CSq.png",
-               "description": "for testing",
-               "created_at": "2024-11-05T11:10:08.000000Z",
-               "updated_at": "2024-11-05T11:10:08.000000Z",
-               "chats": [
-                 {
-                   "id": 279,
-                   "team_id": 31,
-                   "user_id": 37,
-                   "message": "Welcome to test group group.",
-                   "attachment": null,
-                   "is_seen": 0,
-                   "deleted_at": null,
-                   "created_at": "2024-11-05T11:10:08.000000Z",
-                   "updated_at": "2024-11-05T11:10:08.000000Z",
-                   "chat_members": [
-                     {
-                       "id": 919,
-                       "chat_id": 279,
-                       "user_id": 38,
-                       "is_seen": 0,
-                       "created_at": "2024-11-05T11:10:08.000000Z",
-                       "updated_at": "2024-11-05T11:10:08.000000Z"
-                     },
-                     {
-                       "id": 920,
-                       "chat_id": 279,
-                       "user_id": 12,
-                       "is_seen": 1,
-                       "created_at": "2024-11-05T11:10:08.000000Z",
-                       "updated_at": "2024-11-05T11:10:53.000000Z"
-                     },
-                     {
-                       "id": 921,
-                       "chat_id": 279,
-                       "user_id": 37,
-                       "is_seen": 1,
-                       "created_at": "2024-11-05T11:10:08.000000Z",
-                       "updated_at": "2024-11-05T11:10:46.000000Z"
-                     }
-                   ]
-                 },
-                 {
-                   "id": 280,
-                   "team_id": 31,
-                   "user_id": 37,
-                   "message": "a",
-                   "attachment": null,
-                   "is_seen": 0,
-                   "deleted_at": null,
-                   "created_at": "2024-11-05T11:10:46.000000Z",
-                   "updated_at": "2024-11-05T11:10:46.000000Z",
-                   "chat_members": [
-                     {
-                       "id": 922,
-                       "chat_id": 280,
-                       "user_id": 37,
-                       "is_seen": 1,
-                       "created_at": "2024-11-05T11:10:46.000000Z",
-                       "updated_at": "2024-11-05T11:10:46.000000Z"
-                     },
-                     {
-                       "id": 923,
-                       "chat_id": 280,
-                       "user_id": 38,
-                       "is_seen": 0,
-                       "created_at": "2024-11-05T11:10:46.000000Z",
-                       "updated_at": "2024-11-05T11:10:46.000000Z"
-                     },
-                     {
-                       "id": 924,
-                       "chat_id": 280,
-                       "user_id": 12,
-                       "is_seen": 1,
-                       "created_at": "2024-11-05T11:10:46.000000Z",
-                       "updated_at": "2024-11-05T11:10:53.000000Z"
-                     }
-                   ]
-                 },
-                 {
-                   "id": 281,
-                   "team_id": 31,
-                   "user_id": 12,
-                   "message": "b",
-                   "attachment": null,
-                   "is_seen": 0,
-                   "deleted_at": null,
-                   "created_at": "2024-11-05T11:10:53.000000Z",
-                   "updated_at": "2024-11-05T11:10:53.000000Z",
-                   "chat_members": [
-                     {
-                       "id": 925,
-                       "chat_id": 281,
-                       "user_id": 37,
-                       "is_seen": 1,
-                       "created_at": "2024-11-05T11:10:53.000000Z",
-                       "updated_at": "2024-11-05T11:10:54.000000Z"
-                     },
-                     {
-                       "id": 926,
-                       "chat_id": 281,
-                       "user_id": 38,
-                       "is_seen": 0,
-                       "created_at": "2024-11-05T11:10:53.000000Z",
-                       "updated_at": "2024-11-05T11:10:53.000000Z"
-                     },
-                     {
-                       "id": 927,
-                       "chat_id": 281,
-                       "user_id": 12,
-                       "is_seen": 1,
-                       "created_at": "2024-11-05T11:10:53.000000Z",
-                       "updated_at": "2024-11-05T11:10:53.000000Z"
-                     }
-                   ]
-                 }
-               ],
-               "last_message": {
-                 "id": 281,
-                 "team_id": 31,
-                 "user_id": 12,
-                 "message": "b",
-                 "attachment": null,
-                 "is_seen": 0,
-                 "deleted_at": null,
-                 "created_at": "2024-11-05T11:10:53.000000Z",
-                 "updated_at": "2024-11-05T11:10:53.000000Z"
-               }
-             }
-           ],
-           "members": [
-             {
-               "id": 1,
-               "ecclesia_id": null,
-               "created_id": "0",
-               "user_name": "user1",
-               "first_name": "abc",
+          [
+           {
+               "id": 12,
+               "ecclesia_id": 2,
+               "created_id": "1",
+               "user_name": "swarnadwip_nath",
+               "first_name": "Swarnadwip",
                "middle_name": null,
-               "last_name": "def",
-               "email": "main@test.com",
-               "phone": "+36 12345",
+               "last_name": "Nath",
+               "email": "swarnadwip@excellisit.net",
+               "phone": "+1 0741202022",
                "email_verified_at": null,
-               "profile_picture": "profile/5GI3lBuRJl6QOxp55xLpNEWwxIuedycBSF6WAT6H.png",
+               "profile_picture": "profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg",
                "address": "Kokata",
                "city": "Kolkata",
                "state": "41",
@@ -187,33 +49,83 @@ endpoints:
                "country": "101",
                "zip": "700001",
                "status": 1,
-               "created_at": "2024-03-05T15:36:13.000000Z",
-               "updated_at": "2024-09-04T11:09:09.000000Z"
-             },
-             {
-               "id": 19,
+               "created_at": "2024-06-21T11:31:27.000000Z",
+               "updated_at": "2024-09-09T11:02:59.000000Z",
+               "last_message": {
+                   "id": 551,
+                   "sender_id": 12,
+                   "reciver_id": 37,
+                   "message": "hello",
+                   "deleted_for_sender": 0,
+                   "deleted_for_reciver": 0,
+                   "attachment": null,
+                   "seen": 1,
+                   "created_at": "2024-11-05T11:08:58.000000Z",
+                   "updated_at": "2024-11-05T11:08:58.000000Z",
+                   "delete_from_sender_id": 0,
+                   "delete_from_receiver_id": 0
+               }
+           },
+           {
+               "id": 26,
                "ecclesia_id": null,
-               "created_id": "1",
-               "user_name": "Allen",
-               "first_name": "Allen",
+               "created_id": null,
+               "user_name": "ss011",
+               "first_name": "TEST",
                "middle_name": null,
-               "last_name": "Allen",
-               "email": "allen@yopmail.com",
-               "phone": "516-313-5564",
-               "email_verified_at": null,
+               "last_name": "1",
+               "email": "ss011@yopmail.com",
+               "phone": "+1 849-804-8085",
+               "email_verified_at": "2024-08-03T05:53:38.000000Z",
                "profile_picture": null,
-               "address": "santa Ana",
-               "city": "Orange",
-               "state": "California",
-               "address2": null,
-               "country": "United States",
-               "zip": "915467",
+               "address": "123, Main street",
+               "city": "santa Ana",
+               "state": "165",
+               "address2": "TEST",
+               "country": "4",
+               "zip": "98377",
                "status": 1,
-               "created_at": "2024-07-27T07:16:03.000000Z",
-               "updated_at": "2024-07-27T07:16:03.000000Z"
-             },
-           ]
-          }
+               "created_at": "2024-08-03T05:53:38.000000Z",
+               "updated_at": "2024-09-09T06:27:33.000000Z",
+               "last_message": {
+                   "id": 548,
+                   "sender_id": 26,
+                   "reciver_id": 37,
+                   "message": "dafad",
+                   "deleted_for_sender": 0,
+                   "deleted_for_reciver": 0,
+                   "attachment": null,
+                   "seen": 1,
+                   "created_at": "2024-10-28T09:48:47.000000Z",
+                   "updated_at": "2024-10-28T09:48:50.000000Z",
+                   "delete_from_sender_id": 0,
+                   "delete_from_receiver_id": 0
+               }
+           },
+           {
+               "id": 30,
+               "ecclesia_id": null,
+               "created_id": null,
+               "user_name": "kalyan",
+               "first_name": "Kalyan",
+               "middle_name": null,
+               "last_name": "Vaduri",
+               "email": "kalyan@yopmail.com",
+               "phone": "+1 (444) 444-4444",
+               "email_verified_at": "2024-08-14T11:30:31.000000Z",
+               "profile_picture": null,
+               "address": "51 DN Block Merlin Infinite Building, 9th Floor, Unit, 907, Sector V, Bidhannagar, Kolkata, West Bengal 700091",
+               "city": "Kolkata",
+               "state": "3983",
+               "address2": "East Riding Of Yorkshire",
+               "country": "233",
+               "zip": "700091",
+               "status": 1,
+               "created_at": "2024-08-14T11:30:31.000000Z",
+               "updated_at": "2024-08-26T15:06:47.000000Z",
+               "last_message": null
+           }
+          ]
         headers: []
         description: ''
         custom: []
@@ -221,7 +133,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8e3bagE61Dvdkcf5P4ZhV6a'
+      - 'Bearer dPakacf5V46D86h1bEgZv3e'
     controller: null
     method: null
     route: null
@@ -229,127 +141,14 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/team-chats/create
+    uri: api/v3/user/chats/load
     metadata:
-      groupName: 'Group Chats'
+      groupName: Chats
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create a New Group'
-      description: 'Creates a new group with the specified members and a welcome message. The authenticated user will be set as the group admin.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      name:
-        name: name
-        description: 'The name of the team.'
-        required: true
-        example: '"Project Z Team"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      description:
-        name: description
-        description: 'A brief description of the team.'
-        required: true
-        example: '"Team for Project Z collaboration"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      members:
-        name: members
-        description: 'The IDs of the users to be added to the group.'
-        required: true
-        example: null
-        type: 'integer[]'
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      group_image:
-        name: group_image
-        description: 'An image file for the team group. Supported formats: jpeg, png, jpg, gif, svg. Maximum size: 2MB.'
-        required: true
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      name: '"Project Z Team"'
-      description: '"Team for Project Z collaboration"'
-      members: null
-    fileParameters:
-      group_image: null
-    responses:
-      -
-        status: 200
-        content: |-
-          *{
-             "message": "Team created successfully.",
-             "status": true,
-             "team": {
-                 "id": 33,
-                 "created_by": null,
-                 "name": "abc",
-                 "group_image": "team/hEjqR3bR46pdpRncBqugbo9aZNC7gFVkNNi9cMzG.png",
-                 "description": "test 2",
-                 "created_at": "2024-11-07T10:32:47.000000Z",
-                 "updated_at": "2024-11-07T10:32:47.000000Z",
-                 "last_message": {
-                     "id": 283,
-                     "team_id": 33,
-                     "user_id": 37,
-                     "message": "Welcome to abc group.",
-                     "attachment": null,
-                     "is_seen": 0,
-                     "deleted_at": null,
-                     "created_at": "2024-11-07T10:32:47.000000Z",
-                     "updated_at": "2024-11-07T10:32:47.000000Z"
-                 }
-             },
-             "chat_member_id": [
-                 12,
-                 38,
-                 37
-             ]
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer eg6Dc6d31fVa8h5PZvbakE4'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/team-chats/load
-    metadata:
-      groupName: 'Group Chats'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Load Specific Group Chats'
-      description: "Retrieves a team's information and chat history for the authenticated user, along with member details."
+      title: 'Chats with a specific user'
+      description: 'Retrieves the chat history between the authenticated user and a specified recipient, marking unseen messages as seen.'
       authenticated: true
       custom: []
     headers:
@@ -361,200 +160,86 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      team_id:
-        name: team_id
-        description: 'The ID of the team to load chats from.'
+      sender_receiver_id:
+        name: sender_receiver_id
+        description: 'ID of the sender (the another user).'
         required: true
-        example: 5
+        example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
-      team_id: 5
+      sender_receiver_id: 1
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-             "team": {
-                 "id": 32,
-                 "created_by": null,
-                 "name": "abc 1",
-                 "group_image": "team\/S7oRcO09C1lQad6zaPE8JgU1vrwnRY7fhiMQLCpj.png",
-                 "description": "test 1",
-                 "created_at": "2024-11-07T10:16:41.000000Z",
-                 "updated_at": "2024-11-07T10:16:41.000000Z",
-                 "members": [
-                     {
-                         "id": 118,
-                         "team_id": 32,
-                         "user_id": 37,
-                         "is_removed": 0,
-                         "is_admin": 1,
-                         "is_removed_at": null,
-                         "created_at": "2024-11-07T10:16:41.000000Z",
-                         "updated_at": "2024-11-07T10:16:41.000000Z",
-                         "user": {
-                             "id": 37,
-                             "ecclesia_id": 4,
-                             "created_id": null,
-                             "user_name": "masum1",
-                             "first_name": "masum",
-                             "middle_name": null,
-                             "last_name": "ali",
-                             "email": "masum@excellisit.net",
-                             "phone": "+91 9123456789",
-                             "email_verified_at": "2024-10-28T08:35:17.000000Z",
-                             "profile_picture": "profile_picture\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp",
-                             "address": "kolkata",
-                             "city": "kolkata",
-                             "state": "41",
-                             "address2": "kolkata",
-                             "country": "101",
-                             "zip": "700001",
-                             "status": 1,
-                             "created_at": "2024-10-28T08:35:17.000000Z",
-                             "updated_at": "2024-11-06T07:42:16.000000Z"
-                         }
-                     },
-                     {
-                         "id": 119,
-                         "team_id": 32,
-                         "user_id": 38,
-                         "is_removed": 0,
-                         "is_admin": 0,
-                         "is_removed_at": null,
-                         "created_at": "2024-11-07T10:16:41.000000Z",
-                         "updated_at": "2024-11-07T10:16:41.000000Z",
-                         "user": {
-                             "id": 38,
-                             "ecclesia_id": 4,
-                             "created_id": null,
-                             "user_name": "masum2",
-                             "first_name": "Masum",
-                             "middle_name": null,
-                             "last_name": "2",
-                             "email": "masum2@excellisit.net",
-                             "phone": "+91 11 1111 1111",
-                             "email_verified_at": "2024-11-05T07:17:07.000000Z",
-                             "profile_picture": null,
-                             "address": "Kolkata",
-                             "city": "Kolkata",
-                             "state": "41",
-                             "address2": null,
-                             "country": "101",
-                             "zip": "700001",
-                             "status": 1,
-                             "created_at": "2024-11-05T07:17:07.000000Z",
-                             "updated_at": "2024-11-05T07:17:07.000000Z"
-                         }
-                     },
-                     {
-                         "id": 120,
-                         "team_id": 32,
-                         "user_id": 12,
-                         "is_removed": 0,
-                         "is_admin": 0,
-                         "is_removed_at": null,
-                         "created_at": "2024-11-07T10:16:41.000000Z",
-                         "updated_at": "2024-11-07T10:16:41.000000Z",
-                         "user": {
-                             "id": 12,
-                             "ecclesia_id": 2,
-                             "created_id": "1",
-                             "user_name": "swarnadwip_nath",
-                             "first_name": "Swarnadwip",
-                             "middle_name": null,
-                             "last_name": "Nath",
-                             "email": "swarnadwip@excellisit.net",
-                             "phone": "+1 0741202022",
-                             "email_verified_at": null,
-                             "profile_picture": "profile_picture\/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg",
-                             "address": "Kokata",
-                             "city": "Kolkata",
-                             "state": "41",
-                             "address2": null,
-                             "country": "101",
-                             "zip": "700001",
-                             "status": 1,
-                             "created_at": "2024-06-21T11:31:27.000000Z",
-                             "updated_at": "2024-09-09T11:02:59.000000Z"
-                         }
-                     }
-                 ]
-             },
-             "team_chats": [
+             "message": "Show Chat",
+             "status": true,
+             "chat_count": 3,
+             "unseen_chat": [
                  {
-                     "id": 282,
-                     "team_id": 32,
-                     "user_id": 37,
-                     "message": "Welcome to abc 1 group.",
-                     "attachment": null,
-                     "is_seen": 0,
-                     "deleted_at": null,
-                     "created_at": "2024-11-07T10:16:41.000000Z",
-                     "updated_at": "2024-11-07T10:16:41.000000Z",
-                     "user": {
-                         "id": 37,
-                         "ecclesia_id": 4,
-                         "created_id": null,
-                         "user_name": "masum1",
-                         "first_name": "masum",
-                         "middle_name": null,
-                         "last_name": "ali",
-                         "email": "masum@excellisit.net",
-                         "phone": "+91 9123456789",
-                         "email_verified_at": "2024-10-28T08:35:17.000000Z",
-                         "profile_picture": "profile_picture\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp",
-                         "address": "kolkata",
-                         "city": "kolkata",
-                         "state": "41",
-                         "address2": "kolkata",
-                         "country": "101",
-                         "zip": "700001",
-                         "status": 1,
-                         "created_at": "2024-10-28T08:35:17.000000Z",
-                         "updated_at": "2024-11-06T07:42:16.000000Z"
-                     }
-                 },
-                 {
-                     "id": 284,
-                     "team_id": 32,
-                     "user_id": 37,
-                     "message": "good",
-                     "attachment": null,
-                     "is_seen": 0,
-                     "deleted_at": null,
-                     "created_at": "2024-11-07T10:51:54.000000Z",
-                     "updated_at": "2024-11-07T10:51:54.000000Z",
-                     "user": {
-                         "id": 37,
-                         "ecclesia_id": 4,
-                         "created_id": null,
-                         "user_name": "masum1",
-                         "first_name": "masum",
-                         "middle_name": null,
-                         "last_name": "ali",
-                         "email": "masum@excellisit.net",
-                         "phone": "+91 9123456789",
-                         "email_verified_at": "2024-10-28T08:35:17.000000Z",
-                         "profile_picture": "profile_picture\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp",
-                         "address": "kolkata",
-                         "city": "kolkata",
-                         "state": "41",
-                         "address2": "kolkata",
-                         "country": "101",
-                         "zip": "700001",
-                         "status": 1,
-                         "created_at": "2024-10-28T08:35:17.000000Z",
-                         "updated_at": "2024-11-06T07:42:16.000000Z"
-                     }
+                     "id": 277,
+                     "sender_id": null,
+                     "reciver_id": null,
+                     "message": null,
+                     "deleted_for_sender": 0,
+                     "deleted_for_reciver": 0,
+                     "attachment": "chat/M74Omwgv7inwepyRBswxsKeCPuKjp2jnypqeoTL5.jpg",
+                     "seen": 0,
+                     "created_at": "2024-08-20T13:00:18.000000Z",
+                     "updated_at": "2024-08-20T13:00:18.000000Z",
+                     "delete_from_sender_id": 0,
+                     "delete_from_receiver_id": 0
                  }
              ],
-             "team_member_names": "Test User, Masum  2, Swarnadwip  Nath"
+             "chats": [
+                 {
+                     "id": 549,
+                     "sender_id": 37,
+                     "reciver_id": 12,
+                     "message": "hii",
+                     "deleted_for_sender": 0,
+                     "deleted_for_reciver": 0,
+                     "attachment": null,
+                     "seen": 1,
+                     "created_at": "2024-11-05T11:08:36.000000Z",
+                     "updated_at": "2024-11-05T11:08:42.000000Z",
+                     "delete_from_sender_id": 0,
+                     "delete_from_receiver_id": 0
+                 },
+                 {
+                     "id": 550,
+                     "sender_id": 12,
+                     "reciver_id": 37,
+                     "message": null,
+                     "deleted_for_sender": 0,
+                     "deleted_for_reciver": 0,
+                     "attachment": "chat/wTFuaiG3kyE7DVDZVcQ8q3eB06Zlb5Mp0VlMeCe6.pdf",
+                     "seen": 1,
+                     "created_at": "2024-11-05T11:08:52.000000Z",
+                     "updated_at": "2024-11-05T11:08:53.000000Z",
+                     "delete_from_sender_id": 0,
+                     "delete_from_receiver_id": 0
+                 },
+                 {
+                     "id": 551,
+                     "sender_id": 12,
+                     "reciver_id": 37,
+                     "message": "hello",
+                     "deleted_for_sender": 0,
+                     "deleted_for_reciver": 0,
+                     "attachment": null,
+                     "seen": 1,
+                     "created_at": "2024-11-05T11:08:58.000000Z",
+                     "updated_at": "2024-11-05T11:08:58.000000Z",
+                     "delete_from_sender_id": 0,
+                     "delete_from_receiver_id": 0
+                 }
+             ]
           }
         headers: []
         description: ''
@@ -573,7 +258,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ha634fPadc61bVevDgkEZ85'
+      - 'Bearer v4165DZa38cVdkeEhP6bgaf'
     controller: null
     method: null
     route: null
@@ -581,14 +266,14 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/team-chats/send
+    uri: api/v3/user/chats/send
     metadata:
-      groupName: 'Group Chats'
+      groupName: Chats
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Send Group Chat Message'
-      description: 'Sends a message or attachment to a group chat for the authenticated user. If a file is provided, it will be uploaded as an attachment; otherwise, the message text will be sent.'
+      title: 'Send a chat message'
+      description: 'Allows the authenticated user to send a message or attachment to a specified receiver. Returns the latest message and message counts.'
       authenticated: true
       custom: []
     headers:
@@ -600,39 +285,36 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      team_id:
-        name: team_id
-        description: 'The ID of the team to send the message to.'
+      reciver_id:
+        name: reciver_id
+        description: 'ID of the receiver (chat partner).'
         required: true
-        example: 5
+        example: 2
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       message:
         name: message
-        description: 'The text message to send (optional if a file is provided).'
+        description: 'Optional message text if sending a text message.'
         required: false
-        example: '"Hello team!"'
+        example: 'Hello there!'
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       file:
         name: file
-        description: 'The attachment file to send, if applicable (optional if a message is provided).'
+        description: 'Optional file attachment for the chat message.'
         required: false
         example: null
         type: file
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
     cleanBodyParameters:
-      team_id: 5
-      message: '"Hello team!"'
+      reciver_id: 2
+      message: 'Hello there!'
     fileParameters:
       file: null
     responses:
@@ -640,30 +322,33 @@ endpoints:
         status: 200
         content: |-
           {
-             "message": "Message sent successfully.",
-             "status": true,
+             "msg": "Message sent successfully",
              "chat": {
-                 "id": 289,
-                 "team_id": 32,
-                 "user_id": 37,
-                 "message": "hello teams",
-                 "attachment": null,
-                 "is_seen": 0,
-                 "deleted_at": null,
-                 "created_at": "2024-11-07T11:23:20.000000Z",
-                 "updated_at": "2024-11-07T11:23:20.000000Z",
-                 "user": {
+                 "id": 564,
+                 "sender_id": 37,
+                 "reciver_id": 12,
+                 "message": "hello testing",
+                 "deleted_for_sender": 0,
+                 "deleted_for_reciver": 0,
+                 "attachment": "chat/wXKPA5V0cft8m66c3nR1QWdHnmxgZWv4NBj07zhL.pdf",
+                 "seen": 0,
+                 "created_at": "2024-11-07T07:25:54.000000Z",
+                 "updated_at": "2024-11-07T07:25:54.000000Z",
+                 "delete_from_sender_id": 0,
+                 "delete_from_receiver_id": 0,
+                 "created_at_formatted": "2024-11-07 02:25:54",
+                 "sender": {
                      "id": 37,
                      "ecclesia_id": 4,
                      "created_id": null,
                      "user_name": "masum1",
-                     "first_name": "Test",
+                     "first_name": "masum",
                      "middle_name": null,
-                     "last_name": "User",
+                     "last_name": "ali",
                      "email": "masum@excellisit.net",
-                     "phone": "+91 9123456789",
+                     "phone": "+91 96470 38098",
                      "email_verified_at": "2024-10-28T08:35:17.000000Z",
-                     "profile_picture": "profile_picture\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp",
+                     "profile_picture": "profile_picture/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp",
                      "address": "kolkata",
                      "city": "kolkata",
                      "state": "41",
@@ -674,375 +359,31 @@ endpoints:
                      "created_at": "2024-10-28T08:35:17.000000Z",
                      "updated_at": "2024-11-06T07:42:16.000000Z"
                  },
-                 "chat_members": [
-                     {
-                         "id": 949,
-                         "chat_id": 289,
-                         "user_id": 37,
-                         "is_seen": 1,
-                         "created_at": "2024-11-07T11:23:20.000000Z",
-                         "updated_at": "2024-11-07T11:23:20.000000Z"
-                     },
-                     {
-                         "id": 950,
-                         "chat_id": 289,
-                         "user_id": 38,
-                         "is_seen": 0,
-                         "created_at": "2024-11-07T11:23:20.000000Z",
-                         "updated_at": "2024-11-07T11:23:20.000000Z"
-                     },
-                     {
-                         "id": 951,
-                         "chat_id": 289,
-                         "user_id": 12,
-                         "is_seen": 0,
-                         "created_at": "2024-11-07T11:23:20.000000Z",
-                         "updated_at": "2024-11-07T11:23:20.000000Z"
-                     }
-                 ]
-             },
-             "chat_member_id": [
-                 37,
-                 38,
-                 12
-             ]
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 8Db5a6EVh3ag1Zd4c6Pvkfe'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/team-chats/group-info
-    metadata:
-      groupName: 'Group Chats'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Group Information'
-      description: 'Retrieves detailed information about a team, including its active members and other available users.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      team_id:
-        name: team_id
-        description: 'The ID of the team to retrieve information for.'
-        required: true
-        example: 5
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      team_id: 5
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "Group information retrieved successfully.",
-             "status": true,
-             "team": {
-                 "id": 5,
-                 "name": "Project Alpha",
-                 "description": "Development team for Project Alpha",
-                 "members": [
-                     {
-                         "user_id": 1,
-                         "first_name": "John",
-                         "last_name": "Doe",
-                         "email": "john@example.com"
-                     },
-                     {
-                         "user_id": 2,
-                         "first_name": "Jane",
-                         "last_name": "Smith",
-                         "email": "jane@example.com"
-                     }
-                 ]
-             },
-             "available_members": [
-                 {
-                     "id": 3,
-                     "first_name": "Mike",
-                     "last_name": "Taylor"
-                 },
-                 {
-                     "id": 4,
-                     "first_name": "Alice",
-                     "last_name": "Brown"
+                 "reciver": {
+                     "id": 12,
+                     "ecclesia_id": 2,
+                     "created_id": "1",
+                     "user_name": "swarnadwip_nath",
+                     "first_name": "Swarnadwip",
+                     "middle_name": null,
+                     "last_name": "Nath",
+                     "email": "swarnadwip@excellisit.net",
+                     "phone": "+1 0741202022",
+                     "email_verified_at": null,
+                     "profile_picture": "profile_picture/yCvplMhdpjc0kIeKG63tfkZwhKNYbcF1ZhfQdDFO.jpg",
+                     "address": "Kokata",
+                     "city": "Kolkata",
+                     "state": "41",
+                     "address2": null,
+                     "country": "101",
+                     "zip": "700001",
+                     "status": 1,
+                     "created_at": "2024-06-21T11:31:27.000000Z",
+                     "updated_at": "2024-09-09T11:02:59.000000Z"
                  }
-             ]
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer b5hZEca86Ve6Pkga3Df4dv1'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/team-chats/update-group-image
-    metadata:
-      groupName: 'Group Chats'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update Group Image'
-      description: 'Updates the group image for a specific team.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      team_id:
-        name: team_id
-        description: 'The ID of the team whose image is being updated.'
-        required: true
-        example: 5
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      group_image:
-        name: group_image
-        description: 'The new group image file (JPEG, PNG, JPG, GIF, SVG formats, max size: 2048KB).'
-        required: true
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      team_id: 5
-    fileParameters:
-      group_image: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "Group image updated successfully.",
-             "status": true,
-             "group_image": "team/image.jpg"
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-             "message": "An error occurred while updating the group image.",
-             "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer DvPhabV38gfc1ZaE4e6d56k'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/team-chats/name-des-update
-    metadata:
-      groupName: 'Group Chats'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update Group Name and Description'
-      description: 'Updates the name and description of a specified team group.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      team_id:
-        name: team_id
-        description: 'The ID of the team whose name and description are being updated.'
-        required: true
-        example: 5
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      name:
-        name: name
-        description: 'The new name of the team (maximum 100 characters).'
-        required: true
-        example: '"Developers Group"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      description:
-        name: description
-        description: 'The new description of the team (maximum 255 characters).'
-        required: true
-        example: '"A group for discussing development strategies."'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      team_id: 5
-      name: '"Developers Group"'
-      description: '"A group for discussing development strategies."'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "Group name and description updated successfully.",
-             "status": true,
-             "name": "Developers Group",
-             "description": "A group for discussing development strategies.",
-             "team_id": 5
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-             "message": "An error occurred while updating the group name and description.",
-             "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer ahvEcVPZa8eg1kbfDd63645'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/team-chats/remove-member
-    metadata:
-      groupName: 'Group Chats'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Remove Member from Group'
-      description: 'Removes a member from a team and sends a notification to the removed user. A chat message is also created to notify the group.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      team_id:
-        name: team_id
-        description: 'The ID of the team from which the member will be removed.'
-        required: true
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      user_id:
-        name: user_id
-        description: 'The ID of the user to be removed from the team.'
-        required: true
-        example: 5
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      team_id: 10
-      user_id: 5
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "Member removed successfully.",
-             "status": true,
-             "team_id": 10,
-             "user_id": 5,
-             "chat": {
-                 "id": 15,
-                 "user_id": 1,
-                 "team_id": 10,
-                 "message": "John Doe has been removed from the group.",
-                 "created_at": "2024-11-07T14:52:36.000000Z",
-                 "updated_at": "2024-11-07T15:05:12.000000Z"
              },
-             "chat_member_id": [1, 2, 3],
-             "notification": {
-                 "id": 18,
-                 "user_id": 5,
-                 "message": "You have been removed from Developers group.",
-                 "type": "Team",
-                 "created_at": "2024-11-07T15:05:12.000000Z"
-             }
+             "chat_count": 14,
+             "success": true
           }
         headers: []
         description: ''
@@ -1051,8 +392,8 @@ endpoints:
         status: 201
         content: |-
           {
-             "message": "An error occurred while removing the member from the team.",
-             "status": false
+            "msg": "An error occurred while sending the message.",
+            "success": false
           }
         headers: []
         description: ''
@@ -1061,7 +402,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dPaf1D35avgV466EcheZ8bk'
+      - 'Bearer baP3vec46ZaD65h1gEVk8df'
     controller: null
     method: null
     route: null
@@ -1069,14 +410,14 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/team-chats/add-member-team
+    uri: api/v3/user/chats/clear
     metadata:
-      groupName: 'Group Chats'
+      groupName: Chats
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Add Members to Group'
-      description: 'Adds new members to a team or restores previously removed members. A message is sent to the group and notifications are generated for the added members.'
+      title: 'Clear Chat Messages'
+      description: 'Clears chat messages between the authenticated user and a specified receiver by marking messages as deleted from each side.'
       authenticated: true
       custom: []
     headers:
@@ -1088,60 +429,25 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      team_id:
-        name: team_id
-        description: 'The ID of the team to which members will be added.'
+      reciver_id:
+        name: reciver_id
+        description: 'The ID of the user to clear chat with.'
         required: true
-        example: 10
+        example: 2
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
-        custom: []
-      members:
-        name: members
-        description: 'The IDs of the users to be added to the group.'
-        required: true
-        example: null
-        type: 'integer[]'
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
-      team_id: 10
-      members: null
+      reciver_id: 2
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-             "message": "Members added successfully.",
-             "status": true,
-             "team_id": 10,
-             "team_member_name": "John Doe, Jane Smith",
-             "chat": {
-                 "id": 20,
-                 "user_id": 1,
-                 "team_id": 10,
-                 "message": "New members added to the group. John Doe, Jane Smith",
-                 "created_at": "2024-11-07T15:30:00.000000Z",
-                 "updated_at": "2024-11-07T15:35:00.000000Z"
-             },
-             "chat_member_id": [1, 2, 3],
-             "already_member_arr": [12],
-             "only_added_members": [5, 8]
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-             "message": "An error occurred while adding the members.",
-             "status": false
+             "msg": "Chat cleared successfully",
+             "success": true
           }
         headers: []
         description: ''
@@ -1150,7 +456,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 146d8Eh5bgfZvkaV6Pc3Dae'
+      - 'Bearer Zakb5efh3PV4861dEcav6Dg'
     controller: null
     method: null
     route: null
@@ -1158,258 +464,14 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/team-chats/exit-from-group
+    uri: api/v3/user/chats/seen
     metadata:
-      groupName: 'Group Chats'
+      groupName: Chats
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Exit from Group'
-      description: 'Allows a user to exit from a group, removes from the team, checks for remaining admins, and handles the deletion of the team if no members are left.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      team_id:
-        name: team_id
-        description: 'The ID of the team the user is leaving.'
-        required: true
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      team_id: 10
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "You have left the group successfully.",
-             "status": true,
-             "team_id": 10,
-             "user_id": 1,
-             "team_member_name": "John Doe, Jane Smith",
-             "team_delete": false,
-             "team_member_id": [1, 2, 3]
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-             "message": "An error occurred while leaving the group.",
-             "status": false,
-             "error": "Error details here"
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer ah8Z65PVDcf4eE1g3kvda6b'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/team-chats/delete-group
-    metadata:
-      groupName: 'Group Chats'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Delete A Group'
-      description: 'Allows the deletion of a group and its associated data, such as members and chat history, only if the authenticated user is an admin.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      team_id:
-        name: team_id
-        description: 'The ID of the team to be deleted.'
-        required: true
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      team_id: 10
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "Group deleted successfully.",
-             "status": true,
-             "team_id": 10,
-             "team_member_id": [1, 2, 3]
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-             "message": "You must be an admin to delete this group.",
-             "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-             "message": "An error occurred while deleting the group.",
-             "status": false,
-             "error": "Error details here"
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer dagaDPh16Z53kv864VbcefE'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/team-chats/make-admin
-    metadata:
-      groupName: 'Group Chats'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Make a Member an Admin'
-      description: 'Allows an existing admin to make another member an admin.'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      team_id:
-        name: team_id
-        description: 'The ID of the team.'
-        required: true
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      user_id:
-        name: user_id
-        description: 'The ID of the user to be made an admin.'
-        required: true
-        example: 5
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      team_id: 10
-      user_id: 5
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "Member made admin successfully.",
-             "status": true,
-             "team_id": 10,
-             "user_id": 5,
-             "notification": {
-                 "user_id": 5,
-                 "message": "You have been made admin of <b>ABC</b> group.",
-                 "type": "Team",
-                 "id": 279
-             }
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-             "message": "You must be an admin to make someone else an admin.",
-             "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-             "message": "An error occurred while making the member an admin.",
-             "status": false,
-             "error": "Error details here"
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer ZahcEPgfb6VD45k83v1e6ad'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/team-chats/seen
-    metadata:
-      groupName: 'Group Chats'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Mark Group Message as Seen'
-      description: 'Marks the specified chat message as seen by the authenticated user.'
+      title: 'Mark Chat as Seen'
+      description: 'Marks a specific chat message as seen by updating its `seen` status.'
       authenticated: true
       custom: []
     headers:
@@ -1425,43 +487,40 @@ endpoints:
         name: chat_id
         description: 'The ID of the chat message to mark as seen.'
         required: true
-        example: 15
+        example: 10
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
+        custom: []
+      reciver_id:
+        name: reciver_id
+        description: 'The ID of the receiver user.'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
-      chat_id: 15
+      chat_id: 10
+      reciver_id: 2
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-             "message": "Message seen successfully.",
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-             "message": "Chat member not found.",
-             "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-             "message": "An error occurred while marking the message as seen.",
-             "status": false,
-             "error": "Error details here"
+             "msg": "Chat seen successfully",
+             "status": true,
+             "last_chat": {
+                 "id": 10,
+                 "sender_id": 1,
+                 "reciver_id": 2,
+                 "message": "Hello!",
+                 "seen": 1,
+                 "created_at": "2024-11-07T14:52:36.000000Z",
+                 "updated_at": "2024-11-07T15:05:12.000000Z"
+             }
           }
         headers: []
         description: ''
@@ -1470,7 +529,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fPEaZ3hD616ekad8gbVvc45'
+      - 'Bearer d6eaZE4g8fkVP1cv3ahbD56'
     controller: null
     method: null
     route: null
@@ -1478,14 +537,14 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/team-chats/remove-chat
+    uri: api/v3/user/chats/remove
     metadata:
-      groupName: 'Group Chats'
+      groupName: Chats
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Remove Group Chat Message'
-      description: 'Deletes a chat message from the group. If `del_from` is set to `everyone`, the message is deleted for all members; otherwise, it is deleted only for the authenticated user.'
+      title: 'Remove Chat Message'
+      description: 'Removes a specific chat message for the authenticated user. The message can be removed for "everyone" or marked as deleted for the sender only.'
       authenticated: true
       custom: []
     headers:
@@ -1501,77 +560,39 @@ endpoints:
         name: chat_id
         description: 'The ID of the chat message to be removed.'
         required: true
-        example: 25
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      del_from:
-        name: del_from
-        description: 'Determines if the chat should be deleted for `everyone` or just for the authenticated user.'
-        required: true
-        example: everyone
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      team_id:
-        name: team_id
-        description: 'The ID of the team to which the chat belongs.'
-        required: true
         example: 10
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
+        custom: []
+      del_from:
+        name: del_from
+        description: 'Specifies if the message should be deleted for "everyone" or only for the sender ("me").'
+        required: true
+        example: '"me"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
-      chat_id: 25
-      del_from: everyone
-      team_id: 10
+      chat_id: 10
+      del_from: '"me"'
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-             "message": "Chat removed successfully.",
+             "msg": "Chat removed successfully",
              "status": true,
-             "chat_id": 25,
-             "last_message": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-             "message": "Chat message not found.",
-             "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-             "message": "Chat member not found for the authenticated user.",
-             "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-             "message": "An error occurred while removing the chat message.",
-             "status": false,
-             "error": "Error details here"
+             "chat": {
+                 "id": 10,
+                 "sender_id": 1,
+                 "reciver_id": 2,
+                 "message": "Hello!",
+                 "created_at": "2024-11-07T14:52:36.000000Z",
+                 "updated_at": "2024-11-07T15:05:12.000000Z"
+             }
           }
         headers: []
         description: ''
@@ -1580,7 +601,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EbPfha1d43DZ8evg6Vkca56'
+      - 'Bearer 68akaZV16feP4vhD35dgbEc'
     controller: null
     method: null
     route: null
@@ -1588,14 +609,14 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/team-chats/clear-all-conversation
+    uri: api/v3/user/chats/notification
     metadata:
-      groupName: 'Group Chats'
+      groupName: Chats
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Clear All Conversation'
-      description: 'Clears all chat messages for a specified group. Only admins are permitted to perform this action.'
+      title: 'Manage Chat Notifications'
+      description: 'Sends a notification to the receiver when they receive a new chat message. If `is_delete` is set, it marks the specified notification as deleted.'
       authenticated: true
       custom: []
     headers:
@@ -1607,130 +628,65 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      team_id:
-        name: team_id
-        description: 'The ID of the team for which to clear the conversation.'
+      chat_id:
+        name: chat_id
+        description: 'The ID of the chat message related to the notification.'
         required: true
-        example: 10
+        example: 15
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
+        custom: []
+      user_id:
+        name: user_id
+        description: 'The ID of the receiver of the chat message.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      is_delete:
+        name: is_delete
+        description: 'optional Set to 1 to mark the notification as deleted.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
-      team_id: 10
+      chat_id: 15
+      user_id: 5
+      is_delete: 1
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-             "message": "All conversation cleared successfully.",
+             "msg": "Notification deleted successfully",
              "status": true
           }
         headers: []
         description: ''
         custom: []
       -
-        status: 201
-        content: |-
-          {
-             "message": "You do not have permission to clear the conversation.",
-             "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-             "message": "An error occurred while clearing the conversation.",
-             "status": false,
-             "error": "Error details here"
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer veDag3581h4kcZbPfdV6Ea6'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v3/user/team-chats/notification
-    metadata:
-      groupName: 'Group Chats'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Notification for Group Chat'
-      description: |-
-        Manages notifications for group chat messages. If the user has a new message, it sends a notification;
-        otherwise, it marks the notification as read.
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      team_id:
-        name: team_id
-        description: 'The ID of the team associated with the notification.'
-        required: true
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      chat_id:
-        name: chat_id
-        description: 'The ID of the chat message.'
-        required: true
-        example: 25
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      is_delete:
-        name: is_delete
-        description: 'optional Indicates if the notification should be marked as read and deleted.'
-        required: false
-        example: 16
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      team_id: 10
-      chat_id: 25
-      is_delete: 16
-    fileParameters: []
-    responses:
-      -
         status: 200
         content: |-
           {
-             "message": "Notification read successfully.",
+             "msg": "Notification already sent",
              "status": true,
-             "notification": {
-                 // Notification object details here
-             },
-             "notification_count": 5
+             "notification_count": 3,
+             "notification" : {
+                 "id": 45,
+                 "user_id": 3,
+                 "chat_id": 15,
+                 "message": "You have a <b>new message</b> from John Doe",
+                 "type": "Chat",
+                 "created_at": "2024-11-07T14:35:29.000000Z",
+                 "updated_at": "2024-11-07T14:35:29.000000Z"
+             }
           }
         headers: []
         description: ''
@@ -1739,32 +695,18 @@ endpoints:
         status: 200
         content: |-
           {
-             "message": "Notification sent successfully.",
+             "msg": "Notification sent successfully",
              "status": true,
+             "notification_count": 4,
              "notification": {
-                 // New notification object details here
-             },
-             "notification_count": 6
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-             "message": "Notification not found or could not be processed.",
-             "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-             "message": "Invalid request type.",
-             "status": false
+                 "id": 46,
+                 "user_id": 3,
+                 "chat_id": 15,
+                 "message": "You have a <b>new message</b> from John Doe",
+                 "type": "Chat",
+                 "created_at": "2024-11-07T14:35:29.000000Z",
+                 "updated_at": "2024-11-07T14:35:29.000000Z"
+             }
           }
         headers: []
         description: ''
@@ -1773,7 +715,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D8d1aV6c6b4evZ5kE3aPghf'
+      - 'Bearer gDE8afZb34av661PeVckd5h'
     controller: null
     method: null
     route: null

@@ -1,395 +1,17 @@
-name: Education
+name: Email
 description: ''
 endpoints:
   -
     httpMethods:
-      - GET
-    uri: api/v3/user/topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Topics
-      subgroupDescription: 'APIs for managing topics in the system.'
-      title: 'Topic Lists'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "data": {
-                 "current_page": 1,
-                 "data": [
-                     {
-                         "id": 11,
-                         "topic_name": "Third Topic",
-                         "education_type": "Becoming a Leader",
-                         "created_at": "2024-09-09T11:10:22.000000Z",
-                         "updated_at": "2024-09-09T11:10:22.000000Z"
-                     },
-                     {
-                         "id": 10,
-                         "topic_name": "Third Topic",
-                         "education_type": "Becoming Christ Like",
-                         "created_at": "2024-09-09T11:05:52.000000Z",
-                         "updated_at": "2024-09-09T11:10:04.000000Z"
-                     },
-                 ],
-                 "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/topics?page=1",
-                 "from": 1,
-                 "last_page": 1,
-                 "last_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/topics?page=1",
-                 "links": [
-                     {
-                         "url": null,
-                         "label": "&laquo; Previous",
-                         "active": false
-                     },
-                     {
-                         "url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/topics?page=1",
-                         "label": "1",
-                         "active": true
-                     },
-                     {
-                         "url": null,
-                         "label": "Next &raquo;",
-                         "active": false
-                     }
-                 ],
-                 "next_page_url": null,
-                 "path": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/topics",
-                 "per_page": 15,
-                 "prev_page_url": null,
-                 "to": 8,
-                 "total": 8
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 15ad6PDVEaghf6Z8ck3e4vb'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
       - POST
-    uri: api/v3/user/topics
+    uri: api/v3/user/mail/inbox-email-list
     metadata:
-      groupName: Education
+      groupName: Email
       groupDescription: ''
-      subgroup: Topics
-      subgroupDescription: 'APIs for managing topics in the system.'
-      title: 'Create Topic'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      topic_name:
-        name: topic_name
-        description: 'The name of the topic.'
-        required: true
-        example: '"Sample Topic"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      education_type:
-        name: education_type
-        description: 'The type of education.'
-        required: true
-        example: '"General"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      topic_name: '"Sample Topic"'
-      education_type: '"General"'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "Topic created successfully.",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 400
-        content: |-
-          {
-            "message": "Validation failed for the provided data.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6V6Z15aecah48vbkDdEg3Pf'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/topics/{topic}/edit'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Topics
-      subgroupDescription: 'APIs for managing topics in the system.'
-      title: 'View Topic'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      topic:
-        name: topic
-        description: 'The topic.'
-        required: true
-        example: pariatur
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      id:
-        name: id
-        description: 'The ID of the topic.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      topic: pariatur
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "data": {
-              "id": 1,
-              "topic_name": "Sample Topic",
-              "education_type": "General"
-            },
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer eDv4EafPa1Vdc5khZ668gb3'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - PUT
-      - PATCH
-    uri: 'api/v3/user/topics/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Topics
-      subgroupDescription: 'APIs for managing topics in the system.'
-      title: 'Update Topic'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the topic to update.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      topic_name:
-        name: topic_name
-        description: 'The name of the topic.'
-        required: true
-        example: '"Updated Topic"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      education_type:
-        name: education_type
-        description: 'The type of education.'
-        required: true
-        example: '"General"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      topic_name: '"Updated Topic"'
-      education_type: '"General"'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "Topic updated successfully.",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 400
-        content: |-
-          {
-            "message": "Validation failed for the provided data.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer v8hd61VPaa4g6kEebc35ZfD'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/topics/delete/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Topics
-      subgroupDescription: 'APIs for managing topics in the system.'
-      title: 'Delete Topic'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the topic.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "Topic deleted successfully.",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer f5cadPkavbEh61g48VD36Ze'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/becoming-sovereign
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'Becoming Sovereigns List'
-      description: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Inbox Emails'
+      description: 'API for fetching the inbox email list for the authenticated user.'
       authenticated: true
       custom: []
     headers:
@@ -399,251 +21,27 @@ endpoints:
     urlParameters: []
     cleanUrlParameters: []
     queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by.'
+      type:
+        name: type
+        description: 'The type of emails to filter.'
         required: false
-        example: 1
-        type: integer
+        example: '"unread"'
+        type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
+        custom: []
+      search:
+        name: search
+        description: 'optional for search.'
+        required: false
+        example: '"abc"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanQueryParameters:
-      topic: 1
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          *{
-             "data": {
-                 "current_page": 1,
-                 "data": [
-
-                     {
-                         "id": 60,
-                         "user_id": 1,
-                         "file_name": "topic- Back to the Basics Description and Outline.docx",
-                         "file_extension": "docx",
-                         "topic_id": 4,
-                         "type": "Becoming Sovereign",
-                         "file": "files\/qm5d3aJ5Z6esEep7WZAs19BLo4KRsjXp9w1RITYv.docx",
-                         "created_at": "2024-08-02T09:32:31.000000Z",
-                         "updated_at": "2024-08-02T09:32:31.000000Z"
-                     },
-                     {
-                         "id": 59,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 1.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming Sovereign",
-                         "file": "files\/bv7C4BiH0N1s8WXrVZpPV2s6YTWN5sVUQs5PE584.pptx",
-                         "created_at": "2024-08-02T09:31:40.000000Z",
-                         "updated_at": "2024-08-02T09:31:40.000000Z"
-                     },
-                     {
-                         "id": 57,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 3.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming Sovereign",
-                         "file": "files\/BDp5AHtA4ZIsqziYPUxCbRL91bcbSvAVv4m8S9Zs.pptx",
-                         "created_at": "2024-08-02T09:29:56.000000Z",
-                         "updated_at": "2024-08-02T09:29:56.000000Z"
-                     }
-                 ],
-                 "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "from": 1,
-                 "last_page": 1,
-                 "last_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "links": [
-                     {
-                         "url": null,
-                         "label": "&laquo; Previous",
-                         "active": false
-                     },
-                     {
-                         "url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                         "label": "1",
-                         "active": true
-                     },
-                     {
-                         "url": null,
-                         "label": "Next &raquo;",
-                         "active": false
-                     }
-                 ],
-                 "next_page_url": null,
-                 "path": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign",
-                 "per_page": 15,
-                 "prev_page_url": null,
-                 "to": 11,
-                 "total": 11
-             },
-             "topics": [
-                 {
-                     "id": 12,
-                     "topic_name": "abcd",
-                     "education_type": "Becoming Sovereign",
-                     "created_at": "2024-11-08T09:42:48.000000Z",
-                     "updated_at": "2024-11-08T09:42:48.000000Z"
-                 },
-                 {
-                     "id": 6,
-                     "topic_name": "Leadership Development",
-                     "education_type": "Becoming Sovereign",
-                     "created_at": "2024-08-02T09:17:16.000000Z",
-                     "updated_at": "2024-08-16T08:58:34.000000Z"
-                 },
-             ],
-             "new_topic": "",
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6P6Ek4Z5aDagd31bVchfev8'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/becoming-sovereign/list-by-topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'List by Topic'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      sortby:
-        name: sortby
-        description: 'The column to sort by (optional, default: id).'
-        required: false
-        example: quibusdam
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      sorttype:
-        name: sorttype
-        description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-        required: false
-        example: tenetur
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      query:
-        name: query
-        description: 'The search query to filter files by ID, file name, or file extension (optional).'
-        required: false
-        example: totam
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to filter files by (optional).'
-        required: false
-        example: 3
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      sortby: quibusdam
-      sorttype: tenetur
-      query: totam
-      topic_id: 3
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "Files retrieved successfully.",
-             "data": [
-                 {
-                     "id": 77,
-                     "user_id": 37,
-                     "file_name": "image.png",
-                     "file_extension": "png",
-                     "topic_id": 13,
-                     "type": "Becoming Sovereign",
-                     "file": "files\/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                     "created_at": "2024-11-08T11:01:16.000000Z",
-                     "updated_at": "2024-11-08T11:01:16.000000Z"
-                 }
-             ],
-             "pagination": {
-                 "total": 1,
-                 "per_page": 15,
-                 "current_page": 1,
-                 "last_page": 1
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer e36Ek1Dda8Zhab645vfPVcg'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/becoming-sovereign/topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'Get List of Topics'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+      type: '"unread"'
+      search: '"abc"'
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -655,13 +53,21 @@ endpoints:
             "data": [
               {
                 "id": 1,
-                "topic_name": "Sample Topic",
-                "education_type": "Becoming Sovereign",
-                "created_at": "2024-09-09T11:02:39.000000Z",
-                "updated_at": "2024-09-09T11:02:39.000000Z"
+                "subject": "Hello World",
+                "message": "This is a sample message.",
+                "userToNames": "John Doe, Jane Smith",
+                "lastReplyMessage": "See you soon!",
+                "lastReplyDate": "2024-11-29 10:00:00",
+                "ownUserMailInfo": {
+                  "is_read": true,
+                  "is_delete": false
+                }
               }
             ],
-            "status": true
+            "total": 25,
+            "perPage": 15,
+            "currentPage": 1,
+            "lastPage": 2
           }
         headers: []
         description: ''
@@ -670,8 +76,8 @@ endpoints:
         status: 201
         content: |-
           {
-            "message": "Failed to fetch topics. Please try again later.",
-            "status": false
+            "message": "Unable to fetch inbox email list.",
+            "error": "Detailed error message."
           }
         headers: []
         description: ''
@@ -680,7 +86,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eZkc51avb3Dh4fdaP8E6V6g'
+      - 'Bearer hv1Vad5DefPgEb3ka8c64Z6'
     controller: null
     method: null
     route: null
@@ -688,467 +94,14 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/becoming-sovereign/store
+    uri: api/v3/user/mail/sent-email-list
     metadata:
-      groupName: Education
+      groupName: Email
       groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'Create New'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      file:
-        name: file
-        description: 'The file to upload.'
-        required: true
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate the file with.'
-        required: true
-        example: 0
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      topic_id: 0
-    fileParameters:
-      file: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "File uploaded successfully.",
-             "data": {
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": "13",
-                 "type": "Becoming Sovereign",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "updated_at": "2024-11-08T11:01:16.000000Z",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "id": 77
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 400
-        content: |-
-          {
-            "message": "The file name has already been taken.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 422
-        content: |-
-          {
-            "message": "Validation errors occurred.",
-            "errors": {
-              "file": ["The file field is required."],
-              "topic_id": ["The topic id field is required."]
-            },
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 14v68dDE5aPZ6ekb3ahVcgf'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/becoming-sovereign/view/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'View File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the file to view.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by (optional).'
-        required: false
-        example: 6
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      topic: 6
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "File details retrieved successfully.",
-             "data": {
-                 "id": 77,
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": 13,
-                 "type": "Becoming Sovereign",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "updated_at": "2024-11-08T11:01:16.000000Z"
-             },
-             "new_topic": "",
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer aEV6bfdv13ecP64ZDhkag85'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: 'api/v3/user/becoming-sovereign/update/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'Update File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the update.'
-        required: true
-        example: voluptatum
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: voluptatum
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      file:
-        name: file
-        description: 'The new file to replace the existing one (optional).'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate with the file.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      topic_id: 1
-    fileParameters:
-      file: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "File updated successfully.",
-            "data": {
-              "id": 1,
-              "file_name": "updated_sample.pdf",
-              "file_extension": "pdf",
-              "topic_id": 1,
-              "user_id": 1,
-              "file": "updated_file_path_here"
-            },
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 400
-        content: |-
-          {
-            "message": "Validation failed.",
-            "errors": {
-              "file": ["The file name has already been taken."]
-            },
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 500
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 1d6vZhfeb486cgk35aVPDEa'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/becoming-sovereign/delete/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'Delete File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the file to delete.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "File deleted successfully.",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 500
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 3D16Za6vd8Ph5gkaeVEcb4f'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/becoming-sovereign/download/{file}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Sovereign'
-      subgroupDescription: 'APIs for managing becoming sovereign files and topics.'
-      title: 'Download file'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      file:
-        name: file
-        description: ''
-        required: true
-        example: reprehenderit
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      file: reprehenderit
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: 'A downloadable file response with the specified file.'
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer bV6ecdh45Z3PvEaDk81fga6'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/becoming-christ-like
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'Becoming Christ Likes List'
-      description: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Sent Emails'
+      description: 'API for fetching the sent email list for the authenticated user.'
       authenticated: true
       custom: []
     headers:
@@ -1158,251 +111,27 @@ endpoints:
     urlParameters: []
     cleanUrlParameters: []
     queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by.'
+      type:
+        name: type
+        description: 'The type of emails to filter.'
         required: false
-        example: 1
-        type: integer
+        example: '"draft"'
+        type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
+        custom: []
+      search:
+        name: search
+        description: 'optional for search.'
+        required: false
+        example: '"abc"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanQueryParameters:
-      topic: 1
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          *{
-             "data": {
-                 "current_page": 1,
-                 "data": [
-
-                     {
-                         "id": 60,
-                         "user_id": 1,
-                         "file_name": "topic- Back to the Basics Description and Outline.docx",
-                         "file_extension": "docx",
-                         "topic_id": 4,
-                         "type": "Becoming Christ Like",
-                         "file": "files\/qm5d3aJ5Z6esEep7WZAs19BLo4KRsjXp9w1RITYv.docx",
-                         "created_at": "2024-08-02T09:32:31.000000Z",
-                         "updated_at": "2024-08-02T09:32:31.000000Z"
-                     },
-                     {
-                         "id": 59,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 1.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming Christ Like",
-                         "file": "files\/bv7C4BiH0N1s8WXrVZpPV2s6YTWN5sVUQs5PE584.pptx",
-                         "created_at": "2024-08-02T09:31:40.000000Z",
-                         "updated_at": "2024-08-02T09:31:40.000000Z"
-                     },
-                     {
-                         "id": 57,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 3.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming Christ Like",
-                         "file": "files\/BDp5AHtA4ZIsqziYPUxCbRL91bcbSvAVv4m8S9Zs.pptx",
-                         "created_at": "2024-08-02T09:29:56.000000Z",
-                         "updated_at": "2024-08-02T09:29:56.000000Z"
-                     }
-                 ],
-                 "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "from": 1,
-                 "last_page": 1,
-                 "last_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "links": [
-                     {
-                         "url": null,
-                         "label": "&laquo; Previous",
-                         "active": false
-                     },
-                     {
-                         "url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                         "label": "1",
-                         "active": true
-                     },
-                     {
-                         "url": null,
-                         "label": "Next &raquo;",
-                         "active": false
-                     }
-                 ],
-                 "next_page_url": null,
-                 "path": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign",
-                 "per_page": 15,
-                 "prev_page_url": null,
-                 "to": 11,
-                 "total": 11
-             },
-             "topics": [
-                 {
-                     "id": 12,
-                     "topic_name": "abcd",
-                     "education_type": "Becoming Christ Like",
-                     "created_at": "2024-11-08T09:42:48.000000Z",
-                     "updated_at": "2024-11-08T09:42:48.000000Z"
-                 },
-                 {
-                     "id": 6,
-                     "topic_name": "Leadership Development",
-                     "education_type": "Becoming Christ Like",
-                     "created_at": "2024-08-02T09:17:16.000000Z",
-                     "updated_at": "2024-08-16T08:58:34.000000Z"
-                 },
-             ],
-             "new_topic": "",
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 4k1V3gv8Eba6hec6dDf5aZP'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/becoming-christ-like/list-by-topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'List by Topic'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      sortby:
-        name: sortby
-        description: 'The column to sort by (optional, default: id).'
-        required: false
-        example: minus
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      sorttype:
-        name: sorttype
-        description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-        required: false
-        example: similique
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      query:
-        name: query
-        description: 'The search query to filter files by ID, file name, or file extension (optional).'
-        required: false
-        example: ea
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to filter files by (optional).'
-        required: false
-        example: 5
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      sortby: minus
-      sorttype: similique
-      query: ea
-      topic_id: 5
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "Files retrieved successfully.",
-             "data": [
-                 {
-                     "id": 77,
-                     "user_id": 37,
-                     "file_name": "image.png",
-                     "file_extension": "png",
-                     "topic_id": 13,
-                     "type": "Becoming Christ Like",
-                     "file": "files\/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                     "created_at": "2024-11-08T11:01:16.000000Z",
-                     "updated_at": "2024-11-08T11:01:16.000000Z"
-                 }
-             ],
-             "pagination": {
-                 "total": 1,
-                 "per_page": 15,
-                 "current_page": 1,
-                 "last_page": 1
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer b5ev4aPf6aEhd6ZgD8ck31V'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/becoming-christ-like/topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'Get List of Topics'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+      type: '"draft"'
+      search: '"abc"'
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -1414,13 +143,21 @@ endpoints:
             "data": [
               {
                 "id": 1,
-                "topic_name": "Sample Topic",
-                "education_type": "Becoming Christ Like",
-                "created_at": "2024-09-09T11:02:39.000000Z",
-                "updated_at": "2024-09-09T11:02:39.000000Z"
+                "subject": "Project Update",
+                "message": "Here is the latest update.",
+                "userToNames": "Alice Johnson, Bob Williams",
+                "lastReplyMessage": "Noted, thanks!",
+                "lastReplyDate": "2024-11-29 12:00:00",
+                "ownUserMailInfo": {
+                  "is_read": true,
+                  "is_delete": false
+                }
               }
             ],
-            "status": true
+            "total": 30,
+            "perPage": 15,
+            "currentPage": 1,
+            "lastPage": 2
           }
         headers: []
         description: ''
@@ -1429,8 +166,8 @@ endpoints:
         status: 201
         content: |-
           {
-            "message": "Failed to fetch topics. Please try again later.",
-            "status": false
+            "message": "Unable to fetch sent email list.",
+            "error": "Detailed error message."
           }
         headers: []
         description: ''
@@ -1439,7 +176,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DE6aVa54Zhgbvk1fP6e3c8d'
+      - 'Bearer v15ZhcPakf34aDEgd68eVb6'
     controller: null
     method: null
     route: null
@@ -1447,14 +184,425 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/becoming-christ-like/store
+    uri: api/v3/user/mail/star-email-list
     metadata:
-      groupName: Education
+      groupName: Email
       groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'Create New'
-      description: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Starred Emails'
+      description: 'API for fetching the starred email list for the authenticated user.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      type:
+        name: type
+        description: 'The type of emails to filter.'
+        required: false
+        example: '"important"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      search:
+        name: search
+        description: 'optional for search.'
+        required: false
+        example: '"abc"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      type: '"important"'
+      search: '"abc"'
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 1,
+                "subject": "Meeting Reminder",
+                "message": "Don't forget our meeting tomorrow.",
+                "userToNames": "Eve Adams, Frank Taylor",
+                "lastReplyMessage": "See you at 10 AM!",
+                "lastReplyDate": "2024-11-29 15:00:00",
+                "ownUserMailInfo": {
+                  "is_read": true,
+                  "is_delete": false
+                }
+              }
+            ],
+            "total": 10,
+            "perPage": 15,
+            "currentPage": 1,
+            "lastPage": 1
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Unable to fetch starred email list.",
+            "error": "Detailed error message."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aa1vDhkc8ZbPEd3e46g5fV6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/trash-email-list
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Trashed Emails'
+      description: 'API for fetching the trashed email list for the authenticated user.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      type:
+        name: type
+        description: 'Optional. The type of emails to filter.'
+        required: false
+        example: '"archived"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      search:
+        name: search
+        description: 'optional for search.'
+        required: false
+        example: '"abc"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      type: '"archived"'
+      search: '"abc"'
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 1,
+                "subject": "Weekly Report",
+                "message": "Attached is the weekly report.",
+                "userToNames": "John Doe, Jane Smith",
+                "lastReplyMessage": "Thank you for the report!",
+                "lastReplyDate": "2024-11-29 15:00:00",
+                "ownUserMailInfo": {
+                  "is_read": true,
+                  "is_delete": true
+                }
+              }
+            ],
+            "total": 5,
+            "perPage": 15,
+            "currentPage": 1,
+            "lastPage": 1
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Unable to fetch trashed email list.",
+            "error": "Detailed error message."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6PZk4h165E8vbeafg3DadVc'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/view
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'View Email Details'
+      description: 'Retrieves the details of a specific email along with its replies and user-specific information for the authenticated user.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      mail_id:
+        name: mail_id
+        description: 'The email ID to view.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      mail_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "message": "Email details retrieved successfully.",
+             "status": true,
+             "data": {
+                 "mail_details": {
+                     "id": 72,
+                     "reply_of": null,
+                     "form_id": 37,
+                     "to": "swarnadwip@excellisit.net",
+                     "cc": null,
+                     "subject": "Test Email 10",
+                     "message": "<p>10 msg<\/p>",
+                     "attachment": "[{\"original_name\":\"p3.pdf\",\"encrypted_name\":\"email_files\\\/MG0hSy05bAv8Codx59IoDWjNxvid173ie4oWOgIh.pdf\"},{\"original_name\":\"image.png\",\"encrypted_name\":\"email_files\\\/O5ouE0bgXqG0TDXMhaz1loGLVwUXalYGprPn62K9.png\"},{\"original_name\":\"dummy - 2.pdf\",\"encrypted_name\":\"email_files\\\/l6PwXoc6aGTX80y1LoVb82QadlKnCEx9W4N25zlI.pdf\"}]",
+                     "is_draft": 0,
+                     "is_delete": 0,
+                     "deleted_at": null,
+                     "created_at": "2024-11-06T05:27:05.000000Z",
+                     "updated_at": "2024-11-06T05:27:05.000000Z",
+                     "user": {
+                         "id": 37,
+                         "ecclesia_id": 4,
+                         "created_id": null,
+                         "user_name": "masum1",
+                         "first_name": "Test",
+                         "middle_name": null,
+                         "last_name": "User",
+                         "email": "masum@excellisit.net",
+                         "phone": "+91 9123456789",
+                         "email_verified_at": "2024-10-28T08:35:17.000000Z",
+                         "profile_picture": "profile_picture\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp",
+                         "address": "kolkata",
+                         "city": "kolkata",
+                         "state": "41",
+                         "address2": "kolkata",
+                         "country": "101",
+                         "zip": "700001",
+                         "status": 1,
+                         "created_at": "2024-10-28T08:35:17.000000Z",
+                         "updated_at": "2024-11-06T07:42:16.000000Z"
+                     }
+                 },
+                 "ownUserMailInfo": {
+                     "is_read": 1,
+                     "is_starred": 0,
+                     "is_delete": 0
+                 },
+                 "reply_mails": [
+                     {
+                         "id": 73,
+                         "reply_of": 72,
+                         "form_id": 37,
+                         "to": "swarnadwip@excellisit.net,masum@excellisit.net",
+                         "cc": null,
+                         "subject": "Test Email 10",
+                         "message": "<p>reply own 1<\/p>",
+                         "attachment": "[{\"original_name\":\"Print Email.pdf\",\"encrypted_name\":\"email_files\\\/zWoX12bv6XEDP2kBpU8t3sIk9Z6s5fdxz4EwLXpZ.pdf\"},{\"original_name\":\"dummy - 2.pdf\",\"encrypted_name\":\"email_files\\\/1lgiAan2XVrTAuSjZn6Zi6nU5d6xMU3VLLR0nAci.pdf\"}]",
+                         "is_draft": 0,
+                         "is_delete": 0,
+                         "deleted_at": null,
+                         "created_at": "2024-11-06T05:36:28.000000Z",
+                         "updated_at": "2024-11-06T05:36:28.000000Z",
+                         "ownUserMailInfo": {
+                             "is_read": 1,
+                             "is_starred": 0
+                         },
+                         "user": {
+                             "id": 37,
+                             "ecclesia_id": 4,
+                             "created_id": null,
+                             "user_name": "masum1",
+                             "first_name": "Test",
+                             "middle_name": null,
+                             "last_name": "User",
+                             "email": "masum@excellisit.net",
+                             "phone": "+91 9123456789",
+                             "email_verified_at": "2024-10-28T08:35:17.000000Z",
+                             "profile_picture": "profile_picture\/sLWWnksqS6PHYMdZeBQ4OK3SnbVA0oMc9oykPbCn.webp",
+                             "address": "kolkata",
+                             "city": "kolkata",
+                             "state": "41",
+                             "address2": "kolkata",
+                             "country": "101",
+                             "zip": "700001",
+                             "status": 1,
+                             "created_at": "2024-10-28T08:35:17.000000Z",
+                             "updated_at": "2024-11-06T07:42:16.000000Z"
+                         }
+                     }
+                 ],
+                 "allMailIds": [
+                     {
+                         "id": 12,
+                         "email": "swarnadwip@excellisit.net"
+                     },
+                     {
+                         "id": 13,
+                         "email": "john@yopmail.com"
+                     },
+                     {
+                         "id": 38,
+                         "email": "masum2@excellisit.net"
+                     }
+                 ],
+                 "replyMailIds": [
+                     "masum@excellisit.net"
+                 ]
+             }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer dD4c66eba83aEkZ1fgPhvV5'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/compose-mail-users
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Compose Emails'
+      description: |-
+        This endpoint retrieves a list of active users, excluding the currently authenticated user,
+        that can be recipients of a new mail.
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Users loaded successfully.",
+            "status": true,
+            "users": [
+              {"id": 1, "email": "user1@example.com"},
+              {"id": 2, "email": "user2@example.com"}
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "You do not have permission to access this page.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "An error occurred while loading the compose mail users.",
+            "status": false,
+            "error": "Exception message details"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 4veaVg1P36Zh8f5dbc6DEka'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/send
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Send New Email'
+      description: |-
+        This endpoint allows the authenticated user to send an email to specified recipients,
+        with the option to include CC recipients and attachments. Notifications are sent to recipients as well.
       authenticated: true
       custom: []
     headers:
@@ -1466,58 +614,80 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      file:
-        name: file
-        description: 'The file to upload.'
+      to:
+        name: to
+        description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
         required: true
-        example: null
-        type: file
+        example: voluptate
+        type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate the file with.'
-        required: true
-        example: 0
-        type: integer
+      cc:
+        name: cc
+        description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
+        required: false
+        example: voluptate
+        type: string
         enumValues: []
-        exampleWasSpecified: true
-        nullable: false
+        exampleWasSpecified: false
+        custom: []
+      subject:
+        name: subject
+        description: 'The subject of the email.'
+        required: true
+        example: nobis
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      message:
+        name: message
+        description: 'The body content of the email.'
+        required: true
+        example: aut
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      attachments:
+        name: attachments
+        description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
+        required: false
+        example:
+          - null
+        type: 'file[]'
+        enumValues: []
+        exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      topic_id: 0
+      to: voluptate
+      cc: voluptate
+      subject: nobis
+      message: aut
     fileParameters:
-      file: null
+      attachments:
+        - null
     responses:
       -
         status: 200
         content: |-
           {
-             "message": "File uploaded successfully.",
-             "data": {
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": "13",
-                 "type": "Becoming Christ Like",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "updated_at": "2024-11-08T11:01:16.000000Z",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "id": 77
-             },
-             "status": true
+            "message": "Mail sent successfully.",
+            "status": true,
+            "send_to_ids": [1, 2, 3],
+            "notification_message": "You have a <b>new mail</b> from sender@example.com"
           }
         headers: []
         description: ''
         custom: []
       -
-        status: 400
+        status: 201
         content: |-
           {
-            "message": "The file name has already been taken.",
-            "status": false
+            "message": "Failed to send mail. Please try again later.",
+            "status": false,
+            "error": "Error message here"
           }
         headers: []
         description: ''
@@ -1526,12 +696,12 @@ endpoints:
         status: 422
         content: |-
           {
-            "message": "Validation errors occurred.",
+            "message": "Validation error",
             "errors": {
-              "file": ["The file field is required."],
-              "topic_id": ["The topic id field is required."]
-            },
-            "status": false
+              "to": ["The to field is required."],
+              "subject": ["The subject field is required."],
+              "message": ["The message field is required."]
+            }
           }
         headers: []
         description: ''
@@ -1540,95 +710,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eZP8aVvcbD3gk66f4aEh5d1'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/becoming-christ-like/view/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'View File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the file to view.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by (optional).'
-        required: false
-        example: 12
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      topic: 12
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "File details retrieved successfully.",
-             "data": {
-                 "id": 77,
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": 13,
-                 "type": "Becoming Christ Like",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "updated_at": "2024-11-08T11:01:16.000000Z"
-             },
-             "new_topic": "",
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer dVekgD16a5bE4f6c8vahP3Z'
+      - 'Bearer 48Ze6D5hkVd1g63bafPEcav'
     controller: null
     method: null
     route: null
@@ -1636,550 +718,100 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: 'api/v3/user/becoming-christ-like/update/{id}'
+    uri: api/v3/user/mail/sendReply
     metadata:
-      groupName: Education
+      groupName: Email
       groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'Update File'
-      description: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Send Reply Email'
+      description: |-
+        This endpoint allows the authenticated user to reply to an existing email thread,
+        including attachments and notifications to recipients.
       authenticated: true
       custom: []
     headers:
       Authorization: 'Bearer {YOUR_AUTH_KEY}'
       Content-Type: multipart/form-data
       Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the update.'
-        required: true
-        example: quasi
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: quasi
+    urlParameters: []
+    cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      file:
-        name: file
-        description: 'The new file to replace the existing one (optional).'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate with the file.'
+      to:
+        name: to
+        description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
         required: true
-        example: 1
-        type: integer
+        example: quos
+        type: string
         enumValues: []
-        exampleWasSpecified: true
-        nullable: false
+        exampleWasSpecified: false
         custom: []
-    cleanBodyParameters:
-      topic_id: 1
-    fileParameters:
-      file: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "File updated successfully.",
-            "data": {
-              "id": 1,
-              "file_name": "updated_sample.pdf",
-              "file_extension": "pdf",
-              "topic_id": 1,
-              "user_id": 1,
-              "file": "updated_file_path_here"
-            },
-            "status": true
-          }
-        headers: []
-        description: ''
+      cc:
+        name: cc
+        description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
+        required: false
+        example: maiores
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
         custom: []
-      -
-        status: 400
-        content: |-
-          {
-            "message": "Validation failed.",
-            "errors": {
-              "file": ["The file name has already been taken."]
-            },
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 500
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 685a3ZcgVaPk1h6vbDe4fdE'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/becoming-christ-like/delete/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'Delete File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the file to delete.'
+      subject:
+        name: subject
+        description: 'The subject of the reply email.'
         required: true
-        example: 1
-        type: integer
+        example: veniam
+        type: string
         enumValues: []
-        exampleWasSpecified: true
-        nullable: false
+        exampleWasSpecified: false
         custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "File deleted successfully.",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 500
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer kv8d1cZDP3faEV656hb4age'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/becoming-christ-like/download/{file}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming Christ Like'
-      subgroupDescription: 'APIs for managing Becoming Christ Like files and topics.'
-      title: 'Download file'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      file:
-        name: file
-        description: ''
+      message:
+        name: message
+        description: 'The body content of the reply email.'
         required: true
-        example: accusamus
+        example: fugit
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
-    cleanUrlParameters:
-      file: accusamus
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: 'A downloadable file response with the specified file.'
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 648avEeDgbZa5c3kd6Ph1Vf'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/leadership-development
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'Becoming a Leaders List'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by.'
+      attachments:
+        name: attachments
+        description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
         required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      topic: 1
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          *{
-             "data": {
-                 "current_page": 1,
-                 "data": [
-
-                     {
-                         "id": 60,
-                         "user_id": 1,
-                         "file_name": "topic- Back to the Basics Description and Outline.docx",
-                         "file_extension": "docx",
-                         "topic_id": 4,
-                         "type": "Becoming a Leader",
-                         "file": "files\/qm5d3aJ5Z6esEep7WZAs19BLo4KRsjXp9w1RITYv.docx",
-                         "created_at": "2024-08-02T09:32:31.000000Z",
-                         "updated_at": "2024-08-02T09:32:31.000000Z"
-                     },
-                     {
-                         "id": 59,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 1.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming a Leader",
-                         "file": "files\/bv7C4BiH0N1s8WXrVZpPV2s6YTWN5sVUQs5PE584.pptx",
-                         "created_at": "2024-08-02T09:31:40.000000Z",
-                         "updated_at": "2024-08-02T09:31:40.000000Z"
-                     },
-                     {
-                         "id": 57,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 3.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming a Leader",
-                         "file": "files\/BDp5AHtA4ZIsqziYPUxCbRL91bcbSvAVv4m8S9Zs.pptx",
-                         "created_at": "2024-08-02T09:29:56.000000Z",
-                         "updated_at": "2024-08-02T09:29:56.000000Z"
-                     }
-                 ],
-                 "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "from": 1,
-                 "last_page": 1,
-                 "last_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "links": [
-                     {
-                         "url": null,
-                         "label": "&laquo; Previous",
-                         "active": false
-                     },
-                     {
-                         "url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                         "label": "1",
-                         "active": true
-                     },
-                     {
-                         "url": null,
-                         "label": "Next &raquo;",
-                         "active": false
-                     }
-                 ],
-                 "next_page_url": null,
-                 "path": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign",
-                 "per_page": 15,
-                 "prev_page_url": null,
-                 "to": 11,
-                 "total": 11
-             },
-             "topics": [
-                 {
-                     "id": 12,
-                     "topic_name": "abcd",
-                     "education_type": "Becoming a Leader",
-                     "created_at": "2024-11-08T09:42:48.000000Z",
-                     "updated_at": "2024-11-08T09:42:48.000000Z"
-                 },
-                 {
-                     "id": 6,
-                     "topic_name": "Leadership Development",
-                     "education_type": "Becoming a Leader",
-                     "created_at": "2024-08-02T09:17:16.000000Z",
-                     "updated_at": "2024-08-16T08:58:34.000000Z"
-                 },
-             ],
-             "new_topic": "",
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 65ZbkvV8dfea134PDEgc6ha'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/leadership-development/list-by-topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'List by Topic'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      sortby:
-        name: sortby
-        description: 'The column to sort by (optional, default: id).'
-        required: false
-        example: libero
-        type: string
+        example:
+          - null
+        type: 'file[]'
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
-      sorttype:
-        name: sorttype
-        description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-        required: false
-        example: beatae
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      query:
-        name: query
-        description: 'The search query to filter files by ID, file name, or file extension (optional).'
-        required: false
-        example: suscipit
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to filter files by (optional).'
-        required: false
+      main_mail_id:
+        name: main_mail_id
+        description: 'The ID of the main email thread being replied to.'
+        required: true
         example: 15
         type: integer
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
-    cleanQueryParameters:
-      sortby: libero
-      sorttype: beatae
-      query: suscipit
-      topic_id: 15
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
+    cleanBodyParameters:
+      to: quos
+      cc: maiores
+      subject: veniam
+      message: fugit
+      main_mail_id: 15
+    fileParameters:
+      attachments:
+        - null
     responses:
       -
         status: 200
         content: |-
           {
-             "message": "Files retrieved successfully.",
-             "data": [
-                 {
-                     "id": 77,
-                     "user_id": 37,
-                     "file_name": "image.png",
-                     "file_extension": "png",
-                     "topic_id": 13,
-                     "type": "Becoming a Leader",
-                     "file": "files\/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                     "created_at": "2024-11-08T11:01:16.000000Z",
-                     "updated_at": "2024-11-08T11:01:16.000000Z"
-                 }
-             ],
-             "pagination": {
-                 "total": 1,
-                 "per_page": 15,
-                 "current_page": 1,
-                 "last_page": 1
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer Zc6daPh4k5v1fge6V3D8baE'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/leadership-development/topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'Get List of Topics'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "data": [
-              {
-                "id": 1,
-                "topic_name": "Sample Topic",
-                "education_type": "Becoming a Leader",
-                "created_at": "2024-09-09T11:02:39.000000Z",
-                "updated_at": "2024-09-09T11:02:39.000000Z"
-              }
-            ],
-            "status": true
+            "message": "Mail sent successfully.",
+            "status": true,
+            "send_to_ids": [1, 2, 3],
+            "notification_message": "You have a <b>new mail</b> from sender@example.com"
           }
         headers: []
         description: ''
@@ -2188,8 +820,24 @@ endpoints:
         status: 201
         content: |-
           {
-            "message": "Failed to fetch topics. Please try again later.",
-            "status": false
+            "message": "Failed to send mail. Please try again later.",
+            "status": false,
+            "error": "Error message here"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "Validation error",
+            "errors": {
+              "to": ["The to field is required."],
+              "subject": ["The subject field is required."],
+              "message": ["The message field is required."],
+              "main_mail_id": ["The main_mail_id field is required."]
+            }
           }
         headers: []
         description: ''
@@ -2198,7 +846,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PbZ8c6v4hVE6gdafka1e3D5'
+      - 'Bearer c5dDEe8Pfa4h3b6agkZ61vV'
     controller: null
     method: null
     route: null
@@ -2206,14 +854,16 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/leadership-development/store
+    uri: api/v3/user/mail/sendForward
     metadata:
-      groupName: Education
+      groupName: Email
       groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'Create New'
-      description: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Forward Email'
+      description: |-
+        This endpoint allows the authenticated user to forward an existing email to a list of recipients,
+        including optional CC recipients and attachments.
       authenticated: true
       custom: []
     headers:
@@ -2225,278 +875,94 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      file:
-        name: file
-        description: 'The file to upload.'
+      to:
+        name: to
+        description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
         required: true
-        example: null
-        type: file
+        example: eveniet
+        type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate the file with.'
-        required: true
-        example: 0
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      topic_id: 0
-    fileParameters:
-      file: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "File uploaded successfully.",
-             "data": {
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": "13",
-                 "type": "Becoming a Leader",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "updated_at": "2024-11-08T11:01:16.000000Z",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "id": 77
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 400
-        content: |-
-          {
-            "message": "The file name has already been taken.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 422
-        content: |-
-          {
-            "message": "Validation errors occurred.",
-            "errors": {
-              "file": ["The file field is required."],
-              "topic_id": ["The topic id field is required."]
-            },
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer veE6Vk4acfPh13bdD5g6Za8'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/leadership-development/view/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'View File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the file to view.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by (optional).'
+      cc:
+        name: cc
+        description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: 15
-        type: integer
+        example: quia
+        type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
-    cleanQueryParameters:
-      topic: 15
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "File details retrieved successfully.",
-             "data": {
-                 "id": 77,
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": 13,
-                 "type": "Becoming a Leader",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "updated_at": "2024-11-08T11:01:16.000000Z"
-             },
-             "new_topic": "",
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 8Dv3ab6aPE5fckg4dZ1Ve6h'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: 'api/v3/user/leadership-development/update/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'Update File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the update.'
+      subject:
+        name: subject
+        description: 'The subject of the forwarded email.'
         required: true
         example: odit
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
-    cleanUrlParameters:
-      id: odit
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      file:
-        name: file
-        description: 'The new file to replace the existing one (optional).'
-        required: false
-        example: null
-        type: file
+      message:
+        name: message
+        description: 'The body content of the forwarded email.'
+        required: true
+        example: omnis
+        type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate with the file.'
-        required: true
-        example: 1
-        type: integer
+      attachments:
+        name: attachments
+        description: 'Attachments in file format. Accepted formats: jpg, jpeg, png, pdf, doc, docx. Max size: 2MB each. Optional.'
+        required: false
+        example:
+          - null
+        type: 'file[]'
         enumValues: []
-        exampleWasSpecified: true
-        nullable: false
+        exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      topic_id: 1
+      to: eveniet
+      cc: quia
+      subject: odit
+      message: omnis
     fileParameters:
-      file: null
+      attachments:
+        - null
     responses:
       -
         status: 200
         content: |-
           {
-            "message": "File updated successfully.",
-            "data": {
-              "id": 1,
-              "file_name": "updated_sample.pdf",
-              "file_extension": "pdf",
-              "topic_id": 1,
-              "user_id": 1,
-              "file": "updated_file_path_here"
-            },
-            "status": true
+            "message": "Mail sent successfully.",
+            "status": true,
+            "send_to_ids": [1, 2, 3],
+            "notification_message": "You have a <b>new mail</b> from sender@example.com"
           }
         headers: []
         description: ''
         custom: []
       -
-        status: 400
+        status: 201
         content: |-
           {
-            "message": "Validation failed.",
+            "message": "Failed to send mail. Please try again later.",
+            "status": false,
+            "error": "Error message here"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "Validation error",
             "errors": {
-              "file": ["The file name has already been taken."]
-            },
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 500
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
+              "to": ["The to field is required."],
+              "subject": ["The subject field is required."],
+              "message": ["The message field is required."]
+            }
           }
         headers: []
         description: ''
@@ -2505,459 +971,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bVg8e5fPhcavE6Dkd34Z16a'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/leadership-development/delete/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'Delete File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the file to delete.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "message": "File deleted successfully.",
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 500
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer E854fZVkcvdb66geh1aaPD3'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/leadership-development/download/{file}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: 'Becoming a Leader'
-      subgroupDescription: 'APIs for managing Becoming a Leader files and topics.'
-      title: 'Download file'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      file:
-        name: file
-        description: ''
-        required: true
-        example: necessitatibus
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      file: necessitatibus
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: 'A downloadable file response with the specified file.'
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 58EeDc3PaadhvbVf1g646Zk'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/files
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'Files List'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      topic: 1
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          *{
-             "data": {
-                 "current_page": 1,
-                 "data": [
-
-                     {
-                         "id": 60,
-                         "user_id": 1,
-                         "file_name": "topic- Back to the Basics Description and Outline.docx",
-                         "file_extension": "docx",
-                         "topic_id": 4,
-                         "type": "Becoming Christ Like",
-                         "file": "files\/qm5d3aJ5Z6esEep7WZAs19BLo4KRsjXp9w1RITYv.docx",
-                         "created_at": "2024-08-02T09:32:31.000000Z",
-                         "updated_at": "2024-08-02T09:32:31.000000Z"
-                     },
-                     {
-                         "id": 59,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 1.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming Christ Like",
-                         "file": "files\/bv7C4BiH0N1s8WXrVZpPV2s6YTWN5sVUQs5PE584.pptx",
-                         "created_at": "2024-08-02T09:31:40.000000Z",
-                         "updated_at": "2024-08-02T09:31:40.000000Z"
-                     },
-                     {
-                         "id": 57,
-                         "user_id": 1,
-                         "file_name": "topic-Back to the Basics Part 3.pptx",
-                         "file_extension": "pptx",
-                         "topic_id": 4,
-                         "type": "Becoming Christ Like",
-                         "file": "files\/BDp5AHtA4ZIsqziYPUxCbRL91bcbSvAVv4m8S9Zs.pptx",
-                         "created_at": "2024-08-02T09:29:56.000000Z",
-                         "updated_at": "2024-08-02T09:29:56.000000Z"
-                     }
-                 ],
-                 "first_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "from": 1,
-                 "last_page": 1,
-                 "last_page_url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                 "links": [
-                     {
-                         "url": null,
-                         "label": "&laquo; Previous",
-                         "active": false
-                     },
-                     {
-                         "url": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign?page=1",
-                         "label": "1",
-                         "active": true
-                     },
-                     {
-                         "url": null,
-                         "label": "Next &raquo;",
-                         "active": false
-                     }
-                 ],
-                 "next_page_url": null,
-                 "path": "http:\/\/127.0.0.1:8000\/api\/v3\/user\/becoming-sovereign",
-                 "per_page": 15,
-                 "prev_page_url": null,
-                 "to": 11,
-                 "total": 11
-             },
-             "topics": [
-                 {
-                     "id": 12,
-                     "topic_name": "abcd",
-                     "education_type": "Becoming Christ Like",
-                     "created_at": "2024-11-08T09:42:48.000000Z",
-                     "updated_at": "2024-11-08T09:42:48.000000Z"
-                 },
-                 {
-                     "id": 6,
-                     "topic_name": "Leadership Development",
-                     "education_type": "Becoming Christ Like",
-                     "created_at": "2024-08-02T09:17:16.000000Z",
-                     "updated_at": "2024-08-16T08:58:34.000000Z"
-                 },
-             ],
-             "new_topic": "",
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer f6D15hVZPvE8aed3ck6g4ba'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/files/list-by-topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'List by Topic'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      sortby:
-        name: sortby
-        description: 'The column to sort by (optional, default: id).'
-        required: false
-        example: aut
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      sorttype:
-        name: sorttype
-        description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
-        required: false
-        example: libero
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      query:
-        name: query
-        description: 'The search query to filter files by ID, file name, or file extension (optional).'
-        required: false
-        example: doloribus
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to filter files by (optional).'
-        required: false
-        example: 9
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      sortby: aut
-      sorttype: libero
-      query: doloribus
-      topic_id: 9
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "Files retrieved successfully.",
-             "data": [
-                 {
-                     "id": 77,
-                     "user_id": 37,
-                     "file_name": "image.png",
-                     "file_extension": "png",
-                     "topic_id": 13,
-                     "type": "Becoming Christ Like",
-                     "file": "files\/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                     "created_at": "2024-11-08T11:01:16.000000Z",
-                     "updated_at": "2024-11-08T11:01:16.000000Z"
-                 }
-             ],
-             "pagination": {
-                 "total": 1,
-                 "per_page": 15,
-                 "current_page": 1,
-                 "last_page": 1
-             },
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer de83kE1Za6gDf5vaVPb6ch4'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v3/user/files/topics
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'Get List of Topics'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-            "data": [
-              {
-                "id": 1,
-                "topic_name": "Sample Topic",
-                "education_type": "Becoming Christ Like",
-                "created_at": "2024-09-09T11:02:39.000000Z",
-                "updated_at": "2024-09-09T11:02:39.000000Z"
-              }
-            ],
-            "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Failed to fetch topics. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer Dvg4b685e6fhaEPVa3Z1cdk'
+      - 'Bearer h4Pcb5eD6f1Zvaa6dg3kVE8'
     controller: null
     method: null
     route: null
@@ -2965,76 +979,61 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/files/store
+    uri: api/v3/user/mail/mail-delete
     metadata:
-      groupName: Education
+      groupName: Email
       groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'Create New'
-      description: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete Emails'
+      description: |-
+        This endpoint allows the authenticated user to delete multiple emails by marking them as deleted.
+        The emails are logically deleted by setting the `is_delete` flag and `deleted_at` timestamp.
       authenticated: true
       custom: []
     headers:
       Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: multipart/form-data
+      Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      file:
-        name: file
-        description: 'The file to upload.'
+      mailIds:
+        name: mailIds
+        description: 'An array of mail IDs to be deleted.'
         required: true
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate the file with.'
-        required: true
-        example: 0
-        type: integer
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
-      topic_id: 0
-    fileParameters:
-      file: null
+      mailIds:
+        - 1
+        - 2
+        - 3
+    fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-             "message": "File uploaded successfully.",
-             "data": {
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": "13",
-                 "type": "Becoming Christ Like",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "updated_at": "2024-11-08T11:01:16.000000Z",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "id": 77
-             },
-             "status": true
+            "message": "Mail deleted successfully.",
+            "status": true
           }
         headers: []
         description: ''
         custom: []
       -
-        status: 400
+        status: 404
         content: |-
           {
-            "message": "The file name has already been taken.",
+            "message": "Mail not found.",
             "status": false
           }
         headers: []
@@ -3044,12 +1043,10 @@ endpoints:
         status: 422
         content: |-
           {
-            "message": "Validation errors occurred.",
+            "message": "Validation error.",
             "errors": {
-              "file": ["The file field is required."],
-              "topic_id": ["The topic id field is required."]
-            },
-            "status": false
+              "mailIds": ["The mailIds field is required."]
+            }
           }
         headers: []
         description: ''
@@ -3058,95 +1055,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vgDebhfEZP18k64ad3acV65'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/files/view/{id}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'View File'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the file to view.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters:
-      topic:
-        name: topic
-        description: 'The ID of the topic to filter by (optional).'
-        required: false
-        example: 6
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanQueryParameters:
-      topic: 6
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-             "message": "File details retrieved successfully.",
-             "data": {
-                 "id": 77,
-                 "user_id": 37,
-                 "file_name": "image.png",
-                 "file_extension": "png",
-                 "topic_id": 13,
-                 "type": "Becoming Christ Like",
-                 "file": "files/WoKa3ViZP3eoU6cqhAqcBqBdVfeGgGADoPS5c8WK.png",
-                 "created_at": "2024-11-08T11:01:16.000000Z",
-                 "updated_at": "2024-11-08T11:01:16.000000Z"
-             },
-             "new_topic": "",
-             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 35P61kdvV8DZ6f4abEhacge'
+      - 'Bearer cVfgkZbd64D3Pa5ve8hEa16'
     controller: null
     method: null
     route: null
@@ -3154,88 +1063,52 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: 'api/v3/user/files/update/{id}'
+    uri: api/v3/user/mail/mail-delete-sent
     metadata:
-      groupName: Education
+      groupName: Email
       groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'Update File'
-      description: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete Sent Emails'
+      description: |-
+        This endpoint allows the authenticated user to delete multiple sent emails by marking them as deleted.
+        The emails are logically deleted by setting the `is_delete` flag and `deleted_at` timestamp.
       authenticated: true
       custom: []
     headers:
       Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: multipart/form-data
+      Content-Type: application/json
       Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the update.'
-        required: true
-        example: et
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: et
+    urlParameters: []
+    cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      file:
-        name: file
-        description: 'The new file to replace the existing one (optional).'
-        required: false
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      topic_id:
-        name: topic_id
-        description: 'The ID of the topic to associate with the file.'
+      mailIds:
+        name: mailIds
+        description: 'An array of mail IDs to be deleted.'
         required: true
-        example: 1
-        type: integer
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
-      topic_id: 1
-    fileParameters:
-      file: null
+      mailIds:
+        - 1
+        - 2
+        - 3
+    fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-            "message": "File updated successfully.",
-            "data": {
-              "id": 1,
-              "file_name": "updated_sample.pdf",
-              "file_extension": "pdf",
-              "topic_id": 1,
-              "user_id": 1,
-              "file": "updated_file_path_here"
-            },
+            "message": "Mail deleted successfully.",
             "status": true
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 400
-        content: |-
-          {
-            "message": "Validation failed.",
-            "errors": {
-              "file": ["The file name has already been taken."]
-            },
-            "status": false
           }
         headers: []
         description: ''
@@ -3244,17 +1117,89 @@ endpoints:
         status: 404
         content: |-
           {
-            "message": "File not found.",
+            "message": "Mail not found.",
             "status": false
           }
         headers: []
         description: ''
         custom: []
       -
-        status: 500
+        status: 422
         content: |-
           {
-            "message": "Something went wrong. Please try again later.",
+            "message": "Validation error.",
+            "errors": {
+              "mailIds": ["The mailIds field is required."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 36D8fk56d14gZacheEPavVb'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/mail-restore
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Restore Deleted Mails'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      mailIds:
+        name: mailIds
+        description: 'The IDs of the mails to restore.'
+        required: true
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      mailIds:
+        - 1
+        - 2
+        - 3
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail restored successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to restore mail. Please try again later.",
             "status": false
           }
         headers: []
@@ -3264,7 +1209,338 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 64hdeav3Egf5a1k86PDZcVb'
+      - 'Bearer g46akchf3bD5aV1EZeP86dv'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/mail-star
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Star Mark on a Mail'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      mail_id:
+        name: mail_id
+        description: 'The ID of the mail to be starred or unstarred.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      star_value:
+        name: star_value
+        description: 'The star value (1 for starred, 0 for unstarred).'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      mail_id: 1
+      star_value: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail Starred Success!",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail Star Mark Removed!",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to update star status. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer D4a36bZV5d16kagevfcEhP8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/mail-delete-single
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete Single Email'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      mail_id:
+        name: mail_id
+        description: 'The ID of the mail to be deleted.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      mail_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail deleted successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "message": "Failed to delete mail. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fkE3hZ8Dv6Vd514aacPb6ge'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/mail-delete-single-trash
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete Single Trash Email'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      mail_id:
+        name: mail_id
+        description: 'The ID of the mail to be deleted.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      mail_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail deleted successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "message": "Failed to delete mail. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hb8kf56ge4Da13ZPcd6vVaE'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/mail-restore-single
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Restore Single Email'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      mail_id:
+        name: mail_id
+        description: 'The ID of the mail to be restored.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      mail_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Mail restored successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Failed to restore mail. Please try again later.",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5kbhaevdZa41f63gV8D6PcE'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/mail/mail-trash-empty
+    metadata:
+      groupName: Email
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Empty Trash Mails'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+              "message": "All trash mails emptied successfully.",
+              "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+              "message": "An error occurred while trying to empty the trash.",
+              "status": false,
+              "error": "Detailed error message"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer dh6e5a4Ecbk8Df3VP6gZ1av'
     controller: null
     method: null
     route: null
@@ -3272,13 +1548,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v3/user/files/delete/{id}'
+    uri: 'api/v3/user/mail/print/{id}'
     metadata:
-      groupName: Education
+      groupName: Email
       groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'Delete File'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Print Email'
       description: ''
       authenticated: true
       custom: []
@@ -3289,13 +1565,12 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the file to delete.'
+        description: 'The ID of the mail to be printed.'
         required: true
         example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -3309,27 +1584,17 @@ endpoints:
         status: 200
         content: |-
           {
-            "message": "File deleted successfully.",
+            "message": "Mail details fetched successfully.",
             "status": true
           }
         headers: []
         description: ''
         custom: []
       -
-        status: 404
+        status: 201
         content: |-
           {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 500
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
+            "message": "Failed to fetch mail details. Please try again later.",
             "status": false
           }
         headers: []
@@ -3339,78 +1604,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aP4Zgh8vD6ek3bcV1df5Ea6'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v3/user/files/download/{file}'
-    metadata:
-      groupName: Education
-      groupDescription: ''
-      subgroup: Files
-      subgroupDescription: 'APIs for managing files.'
-      title: 'Download file'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      file:
-        name: file
-        description: ''
-        required: true
-        example: hic
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      file: hic
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: 'A downloadable file response with the specified file.'
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "File not found.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 201
-        content: |-
-          {
-            "message": "Something went wrong. Please try again later.",
-            "status": false
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 54g1E36PkbDefZVchav8da6'
+      - 'Bearer 8dgv65fE4ecaaPVD13k6Zhb'
     controller: null
     method: null
     route: null

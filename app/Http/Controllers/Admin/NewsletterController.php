@@ -36,7 +36,7 @@ class NewsletterController extends Controller
                 ->orWhere('email', 'like', '%' . $query . '%')
                 ->orWhere('message', 'like', '%' . $query . '%')
                 ->orderBy($sort_by, $sort_type)
-                ->paginate(15);
+                ->paginate(10);
 
             return response()->json(['data' => view('admin.newsletter.table', compact('newsletters'))->render()]);
         }

@@ -30,7 +30,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       last_name:
         name: last_name
@@ -40,17 +39,15 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       email:
         name: email
         description: 'Email of the user. Example:'
         required: true
-        example: warren63@example.com
+        example: toy.howe@example.org
         type: string
         enumValues: []
         exampleWasSpecified: false
-        nullable: false
         custom: []
       phone:
         name: phone
@@ -60,7 +57,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
       message:
         name: message
@@ -70,12 +66,11 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       first_name: John
       last_name: Doe
-      email: warren63@example.com
+      email: toy.howe@example.org
       phone: '1234567890'
       message: Hello
     fileParameters: []
