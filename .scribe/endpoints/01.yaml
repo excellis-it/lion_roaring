@@ -520,7 +520,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       slug: robert-hyde
@@ -578,7 +577,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       slug: 'lion-roaring-innovation-center, lion-roaring-education-center-1709707179.'
@@ -644,7 +642,6 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        nullable: false
         custom: []
     cleanBodyParameters:
       slug: lion-roaring-foundation.
@@ -719,6 +716,261 @@ endpoints:
           {
           "message": "No privacy policy found",
           "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/cms/pma-disclaimer-policy
+    metadata:
+      groupName: 'CMS Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'PMA Disclaimer Policy'
+      description: |-
+        This endpoint returns the latest PMA Disclaimer Policy term including title and description.
+        It fetches the latest record from the `pma_terms` table.
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "PMA Term",
+            "status": true,
+            "term": {
+              "title": "Sample PMA Term Title",
+              "description": "Detailed description of the PMA term."
+            }
+          }
+        headers: []
+        description: 'Term found'
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "No PMA Term found",
+            "status": false
+          }
+        headers: []
+        description: 'No term found'
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+            "message": "Error message from exception",
+            "status": false
+          }
+        headers: []
+        description: 'Server error'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/cms/privacy-policy
+    metadata:
+      groupName: 'CMS Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Privacy Policy'
+      description: 'Returns the latest privacy policy content.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "privacy policy",
+            "status": true,
+            "privacy_policy": {
+              "title": "Privacy Policy Title",
+              "description": "Privacy Policy Description"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "No privacy policy found",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+            "message": "Error message",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/cms/terms-and-conditions
+    metadata:
+      groupName: 'CMS Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Terms and Conditions'
+      description: 'Returns the latest terms and conditions content.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Terms and Condition",
+            "status": true,
+            "term": {
+              "title": "Terms Title",
+              "description": "Terms Description"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "No Terms and Condition found",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+            "message": "Error message",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/cms/article-of-association
+    metadata:
+      groupName: 'CMS Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get the Article of Association PDF'
+      description: "This endpoint returns the URL of the company's Article of Association PDF if available."
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "message": "Article of association",
+           "status": true,
+           "url": "https://example.com/path/to/article.pdf"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+           "message": "No Article of association found",
+           "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+           "message": "Error message",
+           "status": false
           }
         headers: []
         description: ''

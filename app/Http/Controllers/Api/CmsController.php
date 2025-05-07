@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\EcclesiaAssociation;
 use App\Models\Faq;
@@ -9,12 +10,17 @@ use App\Models\Footer;
 use App\Models\Gallery;
 use App\Models\HomeCms;
 use App\Models\MemberPrivacyPolicy;
+use App\Models\Newsletter;
 use App\Models\Organization;
 use App\Models\OrganizationCenter;
 use App\Models\OurGovernance;
 use App\Models\OurOrganization;
+use App\Models\PmaTerm;
 use App\Models\PrincipalAndBusiness;
 use App\Models\PrincipleBusinessImage;
+use App\Models\PrivacyPolicy;
+use App\Models\SiteSetting;
+use App\Models\TermsAndCondition;
 use App\Transformers\EcclesiaAssociationTransformers;
 use App\Transformers\FaqTransformers;
 use App\Transformers\FooterTransformers;
@@ -25,8 +31,10 @@ use App\Transformers\OrganizationTransformers;
 use App\Transformers\OurGovernanceTransformers;
 use App\Transformers\PrincipalTransformers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Fractalistic\Fractal;
+use App\Mail\NewsletterSubscription;
 
 /**
  * @group CMS Management
@@ -526,6 +534,214 @@ class CmsController extends Controller
             } else {
                 return response()->json(['message' => 'No privacy policy found', 'status' => false], 201);
             }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+        }
+    }
+
+    /**
+     * PMA Disclaimer Policy
+     *
+     * This endpoint returns the latest PMA Disclaimer Policy term including title and description.
+     * It fetches the latest record from the `pma_terms` table.
+     *
+     * @response 200 scenario="Term found" {
+     *   "message": "PMA Term",
+     *   "status": true,
+     *   "term": {
+     *     "title": "Sample PMA Term Title",
+     *     "description": "Detailed description of the PMA term."
+     *   }
+     * }
+     *
+     * @response 201 scenario="No term found" {
+     *   "message": "No PMA Term found",
+     *   "status": false
+     * }
+     *
+     * @response 401 scenario="Server error" {
+     *   "message": "Error message from exception",
+     *   "status": false
+     * }
+     */
+
+    public function pmaDisclaimerPolicy(Request $request)
+    {
+        try {
+            $term = PmaTerm::orderBy('id', 'desc')->select('title', 'description')->first();
+            if ($term) {
+                return response()->json(['message' => 'PMA Term', 'status' => true, 'term' => $term], $this->successStatus);
+            } else {
+                return response()->json(['message' => 'No PMA Term found', 'status' => false], 201);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+        }
+    }
+
+
+    /**
+     * Get Privacy Policy
+     *
+     * Returns the latest privacy policy content.
+     *
+     * @response 200 {
+     *   "message": "privacy policy",
+     *   "status": true,
+     *   "privacy_policy": {
+     *     "title": "Privacy Policy Title",
+     *     "description": "Privacy Policy Description"
+     *   }
+     * }
+     * @response 201 {
+     *   "message": "No privacy policy found",
+     *   "status": false
+     * }
+     * @response 401 {
+     *   "message": "Error message",
+     *   "status": false
+     * }
+     */
+    public function privacy_policy()
+    {
+        try {
+            $privacy_policy = PrivacyPolicy::orderBy('id', 'desc')->select('title', 'description')->first();
+            if ($privacy_policy) {
+                return response()->json(['message' => 'privacy policy', 'status' => true, 'privacy_policy' => $privacy_policy], $this->successStatus);
+            } else {
+                return response()->json(['message' => 'No privacy policy found', 'status' => false], 201);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+        }
+    }
+
+
+    /**
+     * Get Terms and Conditions
+     *
+     * Returns the latest terms and conditions content.
+     *
+     * @response 200 {
+     *   "message": "Terms and Condition",
+     *   "status": true,
+     *   "term": {
+     *     "title": "Terms Title",
+     *     "description": "Terms Description"
+     *   }
+     * }
+     * @response 201 {
+     *   "message": "No Terms and Condition found",
+     *   "status": false
+     * }
+     * @response 401 {
+     *   "message": "Error message",
+     *   "status": false
+     * }
+     */
+    public function terms()
+    {
+        try {
+            $term = TermsAndCondition::orderBy('id', 'desc')->select('title', 'description')->first();
+            if ($term) {
+                return response()->json(['message' => 'Terms and Condition', 'status' => true, 'term' => $term], $this->successStatus);
+            } else {
+                return response()->json(['message' => 'No Terms and Condition found', 'status' => false], 201);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+        }
+    }
+
+    /**
+     * Get the Article of Association PDF
+     *
+     * This endpoint returns the URL of the company's Article of Association PDF if available.
+     *
+     * @response 200 {
+     *  "message": "Article of association",
+     *  "status": true,
+     *  "url": "https://example.com/path/to/article.pdf"
+     * }
+     *
+     * @response 201 {
+     *  "message": "No Article of association found",
+     *  "status": false
+     * }
+     *
+     * @response 401 {
+     *  "message": "Error message",
+     *  "status": false
+     * }
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function article_of_association()
+    {
+        try {
+            $pdf_url = Helper::getPDFAttribute();
+            if ($pdf_url) {
+                return response()->json(['message' => 'Article of association', 'status' => true, 'url' => $pdf_url], $this->successStatus);
+            } else {
+                return response()->json(['message' => 'No Article of association found', 'status' => false], 201);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+        }
+    }
+
+    /**
+     * Submit newsletter form
+     *
+     * This endpoint allows a user to submit a newsletter form. The request must include the name, email, and message.
+     *
+     * @bodyParam newsletter_name string required The full name of the subscriber. Example: John Doe
+     * @bodyParam newsletter_email string required The subscriber's email address. Example: john@example.com
+     * @bodyParam newsletter_message string required The message or feedback from the subscriber. Example: I'd love to hear more about your services!
+     *
+     * @response 200 {
+     *   "message": "Newsletter submit successfully.",
+     *   "status": true
+     * }
+     *
+     * @response 401 {
+     *   "message": "Error message details here",
+     *   "status": false
+     * }
+     */
+    public function newsletter(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'newsletter_name' => 'required',
+            'newsletter_email' => 'required|email',
+            'newsletter_message' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
+        }
+
+        try {
+            $newsletter = new Newsletter();
+            $newsletter->full_name = $request->newsletter_name;
+            $newsletter->email = $request->newsletter_email;
+            $newsletter->message = $request->newsletter_message;
+            $newsletter->save();
+
+            $adminEmail = SiteSetting::first()->SITE_CONTACT_EMAIL;
+            $mailData = [
+                'name' => $newsletter->full_name,
+                'email' => $newsletter->email,
+                'message' => $newsletter->message,
+            ];
+
+            try {
+                Mail::to($adminEmail)->send(new NewsletterSubscription($mailData));
+            } catch (\Throwable $th) {
+                return response()->json(['message' => 'Newsletter submit successfully.', 'status' => true], $this->successStatus);
+            }
+
+            return response()->json(['message' => 'Newsletter submit successfully.', 'status' => true], $this->successStatus);
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
         }

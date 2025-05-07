@@ -63,6 +63,12 @@ Route::prefix('v3')->group(function () {
         Route::post('organization-center', [CmsController::class, 'organizationCenter']);
         Route::post('organization-center-details', [CmsController::class, 'organizationCenterDetails']);
         Route::post('members-privacy-policy', [CmsController::class, 'membersPrivacyPolicy']);
+
+        Route::post('pma-disclaimer-policy', [CmsController::class, 'pmaDisclaimerPolicy']);
+        Route::post('privacy-policy', [CmsController::class, 'privacy_policy']);
+        Route::post('terms-and-conditions', [CmsController::class, 'terms']);
+        Route::post('article-of-association', [CmsController::class, 'article_of_association']);
+        Route::post('newsletter', [CmsController::class, 'newsletter']);
     });
     // donation
     Route::post('donation', [DonationController::class, 'donation']);

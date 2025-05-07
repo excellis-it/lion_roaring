@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Lion Roaring",
-        "_postman_id": "97042fd7-e497-4bb7-9c84-6237f39d2401",
+        "_postman_id": "bfb448b6-8c7b-4be5-90ef-21213d2a5540",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -173,7 +173,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":8,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"city\":\"Springfield\",\"state\":17,\"address2\":\"Apt 4B\",\"country\":7,\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
+                            "raw": "{\"user_name\":\"johndoe\",\"email\":\"johndoe@example.com\",\"ecclesia_id\":3,\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"A.\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"city\":\"Springfield\",\"state\":2,\"address2\":\"Apt 4B\",\"country\":20,\"zip\":\"62704\",\"email_confirmation\":\"johndoe@example.com\",\"password\":\"Password@123\",\"password_confirmation\":\"Password@123\"}"
                         },
                         "description": "Registers a new user and sends an email for account pending approval.",
                         "auth": {
@@ -1025,6 +1025,194 @@
                             "name": ""
                         }
                     ]
+                },
+                {
+                    "name": "PMA Disclaimer Policy",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/cms\/pma-disclaimer-policy",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/pma-disclaimer-policy"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "This endpoint returns the latest PMA Disclaimer Policy term including title and description.\nIt fetches the latest record from the `pma_terms` table.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"PMA Term\",\n  \"status\": true,\n  \"term\": {\n    \"title\": \"Sample PMA Term Title\",\n    \"description\": \"Detailed description of the PMA term.\"\n  }\n}",
+                            "name": "Term found"
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"message\": \"No PMA Term found\",\n  \"status\": false\n}",
+                            "name": "No term found"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\n  \"message\": \"Error message from exception\",\n  \"status\": false\n}",
+                            "name": "Server error"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Privacy Policy",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/cms\/privacy-policy",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/privacy-policy"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Returns the latest privacy policy content.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"privacy policy\",\n  \"status\": true,\n  \"privacy_policy\": {\n    \"title\": \"Privacy Policy Title\",\n    \"description\": \"Privacy Policy Description\"\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"message\": \"No privacy policy found\",\n  \"status\": false\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\n  \"message\": \"Error message\",\n  \"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Terms and Conditions",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/cms\/terms-and-conditions",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/terms-and-conditions"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Returns the latest terms and conditions content.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Terms and Condition\",\n  \"status\": true,\n  \"term\": {\n    \"title\": \"Terms Title\",\n    \"description\": \"Terms Description\"\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"message\": \"No Terms and Condition found\",\n  \"status\": false\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\n  \"message\": \"Error message\",\n  \"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get the Article of Association PDF",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/cms\/article-of-association",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/article-of-association"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "This endpoint returns the URL of the company's Article of Association PDF if available.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"message\": \"Article of association\",\n \"status\": true,\n \"url\": \"https:\/\/example.com\/path\/to\/article.pdf\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n \"message\": \"No Article of association found\",\n \"status\": false\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\n \"message\": \"Error message\",\n \"status\": false\n}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -1344,7 +1532,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"warren63@example.com\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
+                            "raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"toy.howe@example.org\",\"phone\":\"1234567890\",\"message\":\"Hello\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1429,7 +1617,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"eligendi\"}"
+                            "raw": "{\"first_name\":\"Robert Hyde\",\"last_name\":\"Hyde\",\"email\":\"hyde@yopmail.com\",\"address\":\"New york\",\"city\":\"New york\",\"state\":\"London\",\"postcode\":\"ZP74857\",\"amount\":150,\"country_id\":2,\"stripeToken\":\"deserunt\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1943,7 +2131,7 @@
                                         {
                                             "id": "topic",
                                             "key": "topic",
-                                            "value": "pariatur",
+                                            "value": "et",
                                             "description": "The topic."
                                         },
                                         {
@@ -2120,30 +2308,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "quibusdam",
+                                            "value": "expedita",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "tenetur",
+                                            "value": "laudantium",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "totam",
+                                            "value": "est",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "3",
+                                            "value": "15",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=quibusdam&sorttype=tenetur&query=totam&topic_id=3"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/list-by-topics?sortby=expedita&sorttype=laudantium&query=est&topic_id=15"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2274,12 +2462,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "6",
+                                            "value": "10",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=6",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-sovereign\/view\/:id?topic=10",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2330,7 +2518,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "voluptatum",
+                                            "value": "illum",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2455,7 +2643,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "reprehenderit",
+                                            "value": "dicta",
                                             "description": ""
                                         }
                                     ]
@@ -2549,30 +2737,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "minus",
+                                            "value": "recusandae",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "similique",
+                                            "value": "est",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "ea",
+                                            "value": "distinctio",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "5",
+                                            "value": "14",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/list-by-topics?sortby=minus&sorttype=similique&query=ea&topic_id=5"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/list-by-topics?sortby=recusandae&sorttype=est&query=distinctio&topic_id=14"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2703,12 +2891,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "12",
+                                            "value": "6",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/view\/:id?topic=12",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/becoming-christ-like\/view\/:id?topic=6",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -2759,7 +2947,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "quasi",
+                                            "value": "ratione",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -2884,7 +3072,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "accusamus",
+                                            "value": "et",
                                             "description": ""
                                         }
                                     ]
@@ -2978,30 +3166,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "libero",
+                                            "value": "voluptatem",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "beatae",
+                                            "value": "esse",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "suscipit",
+                                            "value": "molestiae",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "15",
+                                            "value": "19",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=libero&sorttype=beatae&query=suscipit&topic_id=15"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/list-by-topics?sortby=voluptatem&sorttype=esse&query=molestiae&topic_id=19"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -3132,12 +3320,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "15",
+                                            "value": "16",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=15",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/leadership-development\/view\/:id?topic=16",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -3188,7 +3376,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "odit",
+                                            "value": "deserunt",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -3313,7 +3501,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "necessitatibus",
+                                            "value": "maxime",
                                             "description": ""
                                         }
                                     ]
@@ -3407,30 +3595,30 @@
                                     "query": [
                                         {
                                             "key": "sortby",
-                                            "value": "aut",
+                                            "value": "consequatur",
                                             "description": "The column to sort by (optional, default: id).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "sorttype",
-                                            "value": "libero",
+                                            "value": "fugiat",
                                             "description": "The sort direction, either 'asc' or 'desc' (optional, default: 'asc').",
                                             "disabled": false
                                         },
                                         {
                                             "key": "query",
-                                            "value": "doloribus",
+                                            "value": "consequuntur",
                                             "description": "The search query to filter files by ID, file name, or file extension (optional).",
                                             "disabled": false
                                         },
                                         {
                                             "key": "topic_id",
-                                            "value": "9",
+                                            "value": "8",
                                             "description": "The ID of the topic to filter files by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/list-by-topics?sortby=aut&sorttype=libero&query=doloribus&topic_id=9"
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/list-by-topics?sortby=consequatur&sorttype=fugiat&query=consequuntur&topic_id=8"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -3561,12 +3749,12 @@
                                     "query": [
                                         {
                                             "key": "topic",
-                                            "value": "6",
+                                            "value": "12",
                                             "description": "The ID of the topic to filter by (optional).",
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/view\/:id?topic=6",
+                                    "raw": "{{baseUrl}}\/api\/v3\/user\/files\/view\/:id?topic=12",
                                     "variable": [
                                         {
                                             "id": "id",
@@ -3617,7 +3805,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "et",
+                                            "value": "voluptatem",
                                             "description": "The ID of the update."
                                         }
                                     ]
@@ -3742,7 +3930,7 @@
                                         {
                                             "id": "file",
                                             "key": "file",
-                                            "value": "hic",
+                                            "value": "tenetur",
                                             "description": ""
                                         }
                                     ]
@@ -4098,25 +4286,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "quibusdam",
+                                    "value": "voluptate",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"masum2@excellisit.net\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "at",
+                                    "value": "voluptate",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "aperiam",
+                                    "value": "nobis",
                                     "type": "text",
                                     "description": "The subject of the email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "iste",
+                                    "value": "aut",
                                     "type": "text",
                                     "description": "The body content of the email."
                                 },
@@ -4175,31 +4363,31 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "accusantium",
+                                    "value": "quos",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "itaque",
+                                    "value": "maiores",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "blanditiis",
+                                    "value": "veniam",
                                     "type": "text",
                                     "description": "The subject of the reply email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "at",
+                                    "value": "fugit",
                                     "type": "text",
                                     "description": "The body content of the reply email."
                                 },
                                 {
                                     "key": "main_mail_id",
-                                    "value": 10,
+                                    "value": 15,
                                     "type": "text",
                                     "description": "The ID of the main email thread being replied to."
                                 },
@@ -4258,25 +4446,25 @@
                             "formdata": [
                                 {
                                     "key": "to",
-                                    "value": "dolorem",
+                                    "value": "eveniet",
                                     "type": "text",
                                     "description": "JSON-encoded array of recipient emails in the format [{\"value\": \"user1@example.com\"}, {\"value\": \"user2@example.com\"}]."
                                 },
                                 {
                                     "key": "cc",
-                                    "value": "vel",
+                                    "value": "quia",
                                     "type": "text",
                                     "description": "JSON-encoded array of CC recipient emails in the same format as the \"to\" field. Optional."
                                 },
                                 {
                                     "key": "subject",
-                                    "value": "pariatur",
+                                    "value": "odit",
                                     "type": "text",
                                     "description": "The subject of the forwarded email."
                                 },
                                 {
                                     "key": "message",
-                                    "value": "qui",
+                                    "value": "omnis",
                                     "type": "text",
                                     "description": "The body content of the forwarded email."
                                 },
@@ -4986,7 +5174,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"jocelyn84@example.net\"}"
+                            "raw": "{\"email\":\"hamill.myrna@example.com\"}"
                         },
                         "description": "",
                         "auth": {
@@ -5708,7 +5896,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":16}"
+                            "raw": "{\"team_id\":10,\"chat_id\":25,\"is_delete\":7}"
                         },
                         "description": "Manages notifications for group chat messages. If the user has a new message, it sends a notification;\notherwise, it marks the notification as read."
                     },
@@ -5889,7 +6077,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "impedit",
+                                    "value": "excepturi",
                                     "description": "The ID of the edit."
                                 }
                             ]
@@ -5938,7 +6126,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "possimus",
+                                    "value": "totam",
                                     "description": "The ID of the delete."
                                 }
                             ]
@@ -6454,7 +6642,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "quo",
+                                    "value": "recusandae",
                                     "description": "The ID of the update."
                                 }
                             ]
@@ -6472,7 +6660,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"role\":\"cupiditate\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"Smith\",\"email\":\"johndoe@example.com\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"ecclesia_id\":1,\"country\":1,\"state\":1,\"city\":\"Los Angeles\",\"zip\":\"90001\",\"address2\":\"Apt 4B\",\"password\":\"P@ssword1\",\"confirm_password\":\"P@ssword1\",\"status\":1}"
+                            "raw": "{\"role\":\"enim\",\"first_name\":\"John\",\"last_name\":\"Doe\",\"middle_name\":\"Smith\",\"email\":\"johndoe@example.com\",\"address\":\"123 Main St\",\"phone\":\"1234567890\",\"ecclesia_id\":1,\"country\":1,\"state\":1,\"city\":\"Los Angeles\",\"zip\":\"90001\",\"address2\":\"Apt 4B\",\"password\":\"P@ssword1\",\"confirm_password\":\"P@ssword1\",\"status\":1}"
                         },
                         "description": ""
                     },
@@ -6503,7 +6691,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "18",
+                                    "value": "14",
                                     "description": "The ID of the partner to delete."
                                 }
                             ]
@@ -6580,6 +6768,56 @@
                             "header": [],
                             "code": 500,
                             "body": "{\n   \"message\": \"An error occurred while changing status.\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Newsletter",
+            "description": "",
+            "item": [
+                {
+                    "name": "Submit newsletter form\n\nThis endpoint allows a user to submit a newsletter form. The request must include the name, email, and message.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v3\/cms\/newsletter",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v3\/cms\/newsletter"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"newsletter_name\":\"John Doe\",\"newsletter_email\":\"john@example.com\",\"newsletter_message\":\"I'd love to hear more about your services!\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"message\": \"Newsletter submit successfully.\",\n  \"status\": true\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\n  \"message\": \"Error message details here\",\n  \"status\": false\n}",
                             "name": ""
                         }
                     ]
@@ -6694,7 +6932,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "5",
+                                    "value": "7",
                                     "description": "The ID of the policy to delete."
                                 }
                             ]
@@ -6740,7 +6978,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "amet",
+                                    "value": "ex",
                                     "description": "The ID of the download."
                                 }
                             ]
@@ -6786,7 +7024,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "14",
+                                    "value": "19",
                                     "description": "The ID of the policy to view."
                                 }
                             ]
@@ -7520,7 +7758,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "veritatis",
+                                    "value": "voluptas",
                                     "description": "The ID of the edit."
                                 }
                             ]
@@ -7664,7 +7902,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "20",
+                                    "value": "5",
                                     "description": "The ID of the strategy to delete."
                                 }
                             ]
@@ -7710,7 +7948,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "itaque",
+                                    "value": "fuga",
                                     "description": "The ID of the download."
                                 }
                             ]
@@ -7756,7 +7994,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "14",
+                                    "value": "2",
                                     "description": "The ID of the strategy to view."
                                 }
                             ]
@@ -7818,7 +8056,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"message\":\"qui\"}"
+                            "raw": "{\"message\":\"mollitia\"}"
                         },
                         "description": ""
                     },
