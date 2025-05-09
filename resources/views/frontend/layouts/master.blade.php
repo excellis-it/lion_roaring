@@ -329,6 +329,7 @@
                     <div class="modal-body">
                         <form id="otp-form" action="{{ route('verify.otp') }}" method="post">
                             @csrf
+                            <input type="hidden" name="time_zone" id="time_zone">
                             <div class="mb-3">
                                 <input placeholder="Enter Code" type="text" class="form-control input"
                                     id="otp" name="otp" maxlength="4" required
@@ -621,6 +622,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            document.getElementById("time_zone").value = timezone;
+        });
+    </script>
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({

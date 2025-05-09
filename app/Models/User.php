@@ -42,6 +42,7 @@ class User extends Authenticatable
         'address2',
         'country',
         'zip',
+        'time_zone',
     ];
     protected $appends = ['ecclesia_access']; // Add this line
 
