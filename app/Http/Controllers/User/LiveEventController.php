@@ -39,6 +39,7 @@ class LiveEventController extends Controller
 
         $event = new Event();
         $event->user_id = Auth::id();
+        $event->time_zone = auth()->user()->time_zone;
         $event->title = $request->title;
         $event->description = $request->description;
         $event->start = $request->start;
@@ -63,6 +64,7 @@ class LiveEventController extends Controller
 
         $event = Event::find($id);
         $event->title = $request->title;
+        $event->time_zone = auth()->user()->time_zone;
         $event->description = $request->description;
         $event->start = $request->start;
         $event->end = $request->end;

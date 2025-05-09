@@ -59,6 +59,7 @@ class MeetingSchedulingController extends Controller
 
             $meeting = new Meeting();
             $meeting->user_id = auth()->id();
+            $meeting->time_zone = auth()->user()->time_zone;
             $meeting->title = $request->title;
             $meeting->description = $request->description;
             $meeting->start_time = $request->start_time;
@@ -129,6 +130,7 @@ class MeetingSchedulingController extends Controller
             ]);
 
             $meeting = Meeting::find($id);
+            $meeting->time_zone = auth()->user()->time_zone;
             $meeting->title = $request->title;
             $meeting->description = $request->description;
             $meeting->start_time = $request->start_time;
