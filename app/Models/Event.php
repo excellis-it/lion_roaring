@@ -51,7 +51,7 @@ class Event extends Model
         $tz = auth()->check()
             ? $this->resolveUserTimezone(auth()->user()->time_zone)
             : config('app.timezone');
-        $datetime = Carbon::parse($value, $this->time_zone);
+        $datetime = Carbon::parse($value, $this->resolveUserTimezone($this->time_zone));
         return Carbon::parse($datetime)->timezone($tz);
     }
 
@@ -60,7 +60,7 @@ class Event extends Model
         $tz = auth()->check()
             ? $this->resolveUserTimezone(auth()->user()->time_zone)
             : config('app.timezone');
-        $datetime = Carbon::parse($value, $this->time_zone);
+        $datetime = Carbon::parse($value, $this->resolveUserTimezone($this->time_zone));
         return Carbon::parse($datetime)->timezone($tz);
     }
 }
