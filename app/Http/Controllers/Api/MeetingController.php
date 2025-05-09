@@ -110,6 +110,7 @@ class MeetingController extends Controller
         try {
             $meeting = Meeting::create([
                 'user_id' => auth()->id(),
+                'time_zone' => auth()->user()->time_zone,
                 'title' => $request->title,
                 'description' => $request->description,
                 'start_time' => $request->start_time,
@@ -201,7 +202,7 @@ class MeetingController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
+            'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
@@ -209,19 +210,28 @@ class MeetingController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 201);
+            return response()->json(['errors' => $validator->errors()], 422); // Use 422 for validation errors
         }
 
         try {
             $meeting = Meeting::where('user_id', auth()->id())->findOrFail($id);
 
-            $meeting->update($request->only(['title', 'description', 'start_time', 'end_time', 'meeting_link']));
+            $data = $request->only(['title', 'description', 'start_time', 'end_time', 'meeting_link']);
+            $data['time_zone'] = auth()->user()->time_zone;
 
-            return response()->json(['message' => 'Meeting updated successfully.', 'data' => $meeting], 200);
+            $meeting->update($data);
+
+            return response()->json([
+                'message' => 'Meeting updated successfully.',
+                'data' => $meeting
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Meeting not found.'], 404);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to update meeting.'], 201);
+            return response()->json(['error' => 'Failed to update meeting.'], 500);
         }
     }
+
 
     /**
      * Delete Meeting
