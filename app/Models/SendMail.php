@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,10 +21,28 @@ class SendMail extends Model
         'is_draft',
         'is_delete',
         'deleted_at',
+        'created_at',
+        'updated_at',
 
     ];
 
+    public function getCreatedAtAttribute($value)
+    {
+        $timezone = auth()->check() ? auth()->user()->time_zone : config('app.timezone');
+        return Carbon::parse($value)->timezone($timezone);
+    }
 
+    public function getUpdatedAtAttribute($value)
+    {
+        $timezone = auth()->check() ? auth()->user()->time_zone : config('app.timezone');
+        return Carbon::parse($value)->timezone($timezone);
+    }
+
+    public function getDeletedAtAttribute($value)
+    {
+        $timezone = auth()->check() ? auth()->user()->time_zone : config('app.timezone');
+        return Carbon::parse($value)->timezone($timezone);
+    }
     public function mailUsers()
     {
         return $this->hasMany(MailUser::class);

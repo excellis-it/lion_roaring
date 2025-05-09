@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,6 +20,8 @@ class MailUser extends Model
         'is_to',
         'is_cc',
         'deleted_at',
+        'created_at',
+        'updated_at',
     ];
 
 
@@ -31,5 +34,23 @@ class MailUser extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        $timezone = auth()->check() ? auth()->user()->time_zone : config('app.timezone');
+        return Carbon::parse($value)->timezone($timezone);
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        $timezone = auth()->check() ? auth()->user()->time_zone : config('app.timezone');
+        return Carbon::parse($value)->timezone($timezone);
+    }
+
+    public function getDeletedAtAttribute($value)
+    {
+        $timezone = auth()->check() ? auth()->user()->time_zone : config('app.timezone');
+        return Carbon::parse($value)->timezone($timezone);
     }
 }
