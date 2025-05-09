@@ -251,7 +251,9 @@ class AuthController extends Controller
         if ($request->otp == '1111') {
             $user = User::where('id', $request->id)->first();
             $token = $user->createToken('authToken')->accessToken;
-            // $user->update(['time_zone' => $request->time_zone]);
+            if ($request->time_zone) {
+                $user->update(['time_zone' => $request->time_zone]);
+            }
             return response()->json(['message' => 'Code verified successfully', 'status' => true, 'token' => $token], 200);
         } else {
             $otp_verify = VerifyOTP::where('user_id', $request->id)->where('otp', $request->otp)->orderBy('id', 'desc')->first();
@@ -263,6 +265,9 @@ class AuthController extends Controller
             $otp_verify->delete();
             $user = User::where('id', $request->id)->first();
             $token = $user->createToken('authToken')->accessToken;
+            if ($request->time_zone) {
+                $user->update(['time_zone' => $request->time_zone]);
+            }
             // $user->update(['time_zone' => $request->time_zone]);
 
             return response()->json(['message' => 'Code verified successfully', 'status' => true, 'token' => $token], 200);
