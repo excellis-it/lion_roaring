@@ -1270,28 +1270,8 @@
                         contentType: false,
                         success: function(resp) {
                             toastr.success(resp.message);
-                            // append new team to the list
                             var data = resp.team;
                             var group_image = data.group_image;
-                            // var time = data.last_message ?
-                            //     "{{ date('h:i A', strtotime('" + data.last_message.created_at + "')) }}" :
-                            //     '';
-                            // html = `<li class="group group-data" data-id="${data.id}">
-                    //             <div class="avatar">`
-
-                            // if (group_image) {
-                            //     html +=
-                            //         `<img src="{{ Storage::url('${data.group_image}') }}" alt="">`;
-                            // } else {
-                            //     html +=
-                            //         `<img src="{{ asset('user_assets/images/group.jpg') }}" alt="">`;
-
-                            // }
-                            // html += `</div><p class="GroupName">${data.name}</p>
-                    //             <p class="GroupDescrp">${data.last_message ? data.last_message.message : ''}</p>
-                    //             <div class="time_online">${time ? time : ''}</div>
-                    //         </li>`;
-                            // $('.group-list').prepend(html);
 
 
                             groupList(sender_id);
@@ -1447,6 +1427,7 @@
                                     chat: res.chat,
                                     file_url: fileUrl,
                                     chat_member_id: res.chat_member_id,
+                                    created_at: res.chat.new_created_at
                                 });
                             } else {
                                 console.log(res.msg);
@@ -1576,7 +1557,8 @@
                             // Send message to socket
                             socket.emit('sendTeamMessage', {
                                 chat: data,
-                                chat_member_id: resp.chat_member_id
+                                chat_member_id: resp.chat_member_id,
+                                created_at: resp.chat.new_created_at
                             });
                         },
                         error: function(xhr) {
@@ -1775,7 +1757,8 @@
 
                                     socket.emit('sendTeamMessage', {
                                         chat: resp.chat,
-                                        chat_member_id: resp.chat_member_id
+                                        chat_member_id: resp.chat_member_id,
+                                        created_at: resp.chat.new_created_at
                                     });
 
                                 } else {
@@ -1924,7 +1907,8 @@
                             // socket emit
                             socket.emit('sendTeamMessage', {
                                 chat: resp.chat,
-                                chat_member_id: resp.chat_member_id
+                                chat_member_id: resp.chat_member_id,
+                                created_at: resp.chat.new_created_at
                             });
 
                             socket.emit('addMemberToGroup', {
@@ -2461,9 +2445,10 @@
                 socket.on('sendTeamMessage', function(data) {
                     // console.log(data);
 
-                    // let timezone = 'America/New_York';
-                    let created_at = data.chat.created_at;
-                    let time = moment.tz(created_at).format('h:mm A');
+                    let timezone = '{{auth()->user()->time_zone ?? "UTC"}}';
+                    let created_at = data.created_at;
+
+                    let time = moment.tz(created_at, timezone).format('h:mm A');
 
                     let chat_member_id_array = data.chat_member_id;
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,6 +15,9 @@ class Team extends Model
         'name',
         'group_image',
         'description',
+        'created_at',
+        'updated_at',
+        'new_created_at'
     ];
 
     public function members()
@@ -34,6 +38,23 @@ class Team extends Model
 
     public function lastMessage()
     {
-        return $this->hasOne(TeamChat::class, 'team_id', 'id')->latest(); 
+        return $this->hasOne(TeamChat::class, 'team_id', 'id')->latest();
+    }
+
+    public function getNewCreatedAtAttribute($value)
+    {
+        return $this->created_at;
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        $timezone = auth()->check() ? auth()->user()->time_zone : config('app.timezone');
+        return Carbon::parse($value)->timezone($timezone);
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        $timezone = auth()->check() ? auth()->user()->time_zone : config('app.timezone');
+        return Carbon::parse($value)->timezone($timezone);
     }
 }
