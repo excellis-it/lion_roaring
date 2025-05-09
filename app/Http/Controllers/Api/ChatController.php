@@ -438,7 +438,7 @@ class ChatController extends Controller
 
             // Get chat data with sender and receiver
             $chat = Chat::with('sender', 'reciver')->find($chatData->id);
-            $chat->created_at_formatted = $chat->created_at->setTimezone('America/New_York')->format('Y-m-d H:i:s');
+            $chat->created_at_formatted = $chat->created_at->format('Y-m-d H:i:s');
 
             return response()->json([
                 'msg' => 'Message sent successfully',

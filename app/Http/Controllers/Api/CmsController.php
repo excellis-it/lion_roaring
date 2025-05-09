@@ -605,7 +605,7 @@ class CmsController extends Controller
     public function privacy_policy()
     {
         try {
-            $privacy_policy = PrivacyPolicy::orderBy('id', 'desc')->select('title', 'description')->first();
+            $privacy_policy = PrivacyPolicy::orderBy('id', 'desc')->select('text', 'description')->first();
             if ($privacy_policy) {
                 return response()->json(['message' => 'privacy policy', 'status' => true, 'privacy_policy' => $privacy_policy], $this->successStatus);
             } else {
@@ -642,7 +642,7 @@ class CmsController extends Controller
     public function terms()
     {
         try {
-            $term = TermsAndCondition::orderBy('id', 'desc')->select('title', 'description')->first();
+            $term = TermsAndCondition::orderBy('id', 'desc')->select('text', 'description')->first();
             if ($term) {
                 return response()->json(['message' => 'Terms and Condition', 'status' => true, 'term' => $term], $this->successStatus);
             } else {

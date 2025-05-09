@@ -173,7 +173,7 @@ class ChatController extends Controller
 
             // get chat data with sender and reciver
             $chat = Chat::with('sender', 'reciver')->find($chatData->id);
-            $chat->created_at_formatted = $chat->created_at->setTimezone('America/New_York')->format('Y-m-d H:i:s');
+            $chat->created_at_formatted = $chat->created_at->format('Y-m-d H:i:s');
             // return $chat;
             // dd($chat);
             $users = User::with('roles', 'chatSender')->where('id', '!=', auth()->id())->where('status', 1)->whereHas('roles', function ($query) {
@@ -208,7 +208,7 @@ class ChatController extends Controller
 
             $reciver_id = $request->reciver_id; // Corrected the variable name to match the request
             $receiver_users = User::with('roles', 'chatSender') // Assuming 'chatSender' is the relationship to the Chat model
-            
+
                 ->where('id', '!=', $reciver_id)
                 ->where('status', 1)
                 ->whereHas('roles', function ($query) {
