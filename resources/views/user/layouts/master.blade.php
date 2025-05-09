@@ -589,10 +589,10 @@
                                 $('#group-manage-' + sender_id).html('');
                                 var new_html = '';
                                 users.forEach(user => {
-                                    let timezone = 'America/New_York';
+                                    // let timezone = 'America/New_York';
                                     let time_format_13 = user.last_message && user
                                         .last_message.created_at ?
-                                        moment.tz(user.last_message.created_at, timezone)
+                                        moment.tz(user.last_message.created_at)
                                         .format("hh:mm A") :
                                         '';
 
@@ -628,6 +628,7 @@
                                     receiver_users: res.receiver_users,
                                     chat_id: res.chat.id,
                                     file_url: fileUrl,
+                                    created_at: res.chat.new_created_at
                                 });
                             } else {
                                 $('#loading').removeClass('loading');
@@ -715,8 +716,8 @@
                                 let fileUrl = "{{ Storage::url('') }}" + attachment;
                                 let attachement_extention = attachment.split('.').pop();
                                 let created_at = res.chat.created_at;
-                                let timeZome = 'America/New_York';
-                                let time_format_12 = moment.tz(created_at, timeZome).format(
+                                // let timeZome = 'America/New_York';
+                                let time_format_12 = moment.tz(created_at).format(
                                     "hh:mm A");
                                 let html = `<div class="message me">`;
                                 if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
@@ -759,11 +760,11 @@
                                 $('#group-manage-' + sender_id).html('');
                                 var new_html = '';
                                 users.forEach(user => {
-                                    let timeZome = 'America/New_York';
+                                    // let timeZome = 'America/New_York';
                                     let time_format_13 = user.last_message && user
                                         .last_message.created_at ? moment.tz(user
                                             .last_message
-                                            .created_at, timeZome).format(
+                                            .created_at).format(
                                             "hh:mm A") : '';
 
                                     new_html +=
@@ -791,7 +792,8 @@
                                     sender_id: sender_id,
                                     receiver_id: receiver_id,
                                     receiver_users: res.receiver_users,
-                                    chat_id: res.chat.id
+                                    chat_id: res.chat.id,
+                                    created_at: res.chat.new_created_at
                                 });
                             } else {
                                 $('#loading').removeClass('loading');
@@ -969,31 +971,19 @@
 
                 // Listen for incoming chat messages from the server
                 socket.on("chat", function(data) {
-                    let timeZome = 'America/New_York';
+                    let timeZome = '{{auth()->user()->time_zone}}';
+
+                    console.log(timeZome);
+
+
                     load_chat_list();
                     setChatListLastActive();
                     html = `
                          <div class="message you" id="chat-message-${data.chat_id}">
                              <p class="messageContent">`;
-                    // if (data.file_url) {
-                    //     let attachement_extention = data.file_url.split('.').pop();
-                    //     if (['jpg', 'jpeg', 'png', 'gif'].includes(attachement_extention)) {
-                    //         html +=
-                    //             `<a href="${data.file_url}" target="_blank"><img src="${data.file_url}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a>`;
-                    //     } else if (['mp4', 'webm', 'ogg'].includes(attachement_extention)) {
-                    //         html +=
-                    //             `<a href="${data.file_url}" target="_blank"><video width="200" height="200" controls><source src="${data.file_url}" type="video/mp4"><source src="${data.file_url}" type="video/webm"><source src="${data.file_url}" type="video/ogg"></video></a>`;
-                    //     } else {
-                    //         html +=
-                    //             `<a href="${data.file_url}" download="${data.message}"><img src="{{ asset('user_assets/images/file.png') }}" alt=""></a>`;
-                    //     }
-                    // } else {
-                    //     html += `${data.message.replace(/\n/g, '<br>')}`;
-                    // }
 
                     let attachment = data.file_url;
                     if (attachment != '') {
-                        // let fileUrl = "{{ Storage::url('') }}" + attachment;
                         let attachement_extention = attachment.split('.').pop();
 
 
@@ -1014,7 +1004,7 @@
                         html +=
                             ` ${data.message.replace(/\n/g, '<br>')}`;
                     }
-
+                    console.log(moment.tz(data.created_at).format("hh:mm A"));
                     html += `</p>
                         <div class="messageDetails">
                                  <div class="messageTime">${ moment.tz(data.created_at, timeZome).format("hh:mm A")}</div>
@@ -1422,8 +1412,8 @@
                                 let fileUrl = "{{ Storage::url('') }}" + attachment;
                                 let attachement_extention = attachment.split('.').pop();
                                 let created_at = res.chat.created_at;
-                                let timeZome = 'America/New_York';
-                                let time_format_12 = moment.tz(created_at, timeZome).format(
+                                // let timeZome = 'America/New_York';
+                                let time_format_12 = moment.tz(created_at).format(
                                     "hh:mm A");
                                 let html =
                                     `<div class="message me" id="team-chat-message-${res.chat.id}">`;
@@ -1515,9 +1505,9 @@
                             $("#TeamMessageInput").emojioneArea()[0].emojioneArea.setText('');
                             $("#team-file2").val('');
                             $('#file-name-display').hide();
-                            let timezone = 'America/New_York';
+                            // let timezone = 'America/New_York';
                             let created_at = resp.chat.created_at;
-                            let time = moment.tz(created_at, timezone).format('h:mm A');
+                            let time = moment.tz(created_at).format('h:mm A');
 
                             // append new message to the chat
                             var data = resp.chat;
@@ -2471,9 +2461,9 @@
                 socket.on('sendTeamMessage', function(data) {
                     // console.log(data);
 
-                    let timezone = 'America/New_York';
+                    // let timezone = 'America/New_York';
                     let created_at = data.chat.created_at;
-                    let time = moment.tz(created_at, timezone).format('h:mm A');
+                    let time = moment.tz(created_at).format('h:mm A');
 
                     let chat_member_id_array = data.chat_member_id;
 
