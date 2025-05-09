@@ -42,6 +42,7 @@
 
                         <form action="{{ route('admin.login.check') }}" method="POST">
                             @csrf
+                            <input type="hidden" name="time_zone" id="time_zone">
                             <div class="form-group">
                                 <label>Email Address</label>
                                 <input type="email" class="form-control" name="email" id="inputEmailAddress"
@@ -107,6 +108,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        document.getElementById("time_zone").value = timezone;
+    });
+</script>
 <script>
     @if (Session::has('message'))
         toastr.options = {

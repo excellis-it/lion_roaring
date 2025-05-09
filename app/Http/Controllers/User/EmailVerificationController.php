@@ -73,6 +73,11 @@ class EmailVerificationController extends Controller
             return response()->json(['message' => 'User not found', 'status' => false]);
         }
 
+        if (!$request->time_zone) {
+            return response()->json(['message' => 'Something went wrong with the timezone detection. Please refresh the page and try again.', 'status' => false]);
+        }
+
+
         $userId = Session::get('user_id');
 
         $user = User::find($userId);
@@ -84,7 +89,7 @@ class EmailVerificationController extends Controller
         }
 
         $verify_otp->delete();
-
+        $user->update(['time_zone' => $request->time_zone]);
         Auth::login($user);
         Session::forget('user_id');
         return response()->json(['message' => 'Code verified successfully', 'status' => true, 'redirect' => route('user.profile')]);
