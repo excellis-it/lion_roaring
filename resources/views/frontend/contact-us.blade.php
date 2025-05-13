@@ -72,6 +72,12 @@
                                                 <span class="text-danger" id="message_error"></span>
                                             </div>
                                         </div>
+                                        <!-- Inside your <form> -->
+                                        <div class="col-xl-12 text-center mb-3">
+                                            <div class="g-recaptcha" data-sitekey="{{env('RECAPTCHA_SITE_KEY')}}"></div>
+                                            <span class="text-danger" id="g-recaptcha-response_error"></span>
+                                        </div>
+
                                         <div class="col-xl-12 text-center">
                                             <div class="send-msg">
                                                 <button type="submit" class="btn">SEND MESSAGE</button>
@@ -141,6 +147,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput-jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/utils.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
         function initializeIntlTelInput() {
             const phoneInput = $("#mobile_code");
@@ -234,7 +241,7 @@
                     type: "POST",
                     url: url,
                     data: form.serialize(),
-                    success: function(response) {   
+                    success: function(response) {
                         window.location.reload();
                     },
                     error: function(xhr) {

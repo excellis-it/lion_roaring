@@ -28,6 +28,7 @@ use App\Mail\ContactUsUserConfirmation;
 use App\Models\PrivacyPolicy;
 use App\Models\SiteSetting;
 use App\Models\TermsAndCondition;
+use Illuminate\Support\Facades\Http;
 
 class CmsController extends Controller
 {
@@ -155,7 +156,18 @@ class CmsController extends Controller
             'email' => 'required|email',
             'phone' => 'required',
             'message' => 'required',
+            'g-recaptcha-response' => 'required',
         ]);
+
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret'   => env('RECAPTCHA_SECRET_KEY'),
+            'response' => $request->input('g-recaptcha-response'),
+            'remoteip' => $request->ip(),
+        ]);
+
+        if (!$response->json('success')) {
+            return response()->json(['message' => 'reCAPTCHA verification failed', 'status' => false]);
+        }
 
         if ($request->ajax()) {
             $contact = new ContactUs();
@@ -183,7 +195,7 @@ class CmsController extends Controller
                 Mail::to($contact->email)->send(new ContactUsUserConfirmation($contactData));
             } catch (\Throwable $th) {
                 session()->flash('success', 'Thank you for contacting us');
-            return response()->json(['message' => 'Thank you for contacting us', 'status' => true]);
+                return response()->json(['message' => 'Thank you for contacting us', 'status' => true]);
             }
 
 

@@ -37,9 +37,9 @@
                                     <li>
                                         <a href="{{ route('faq') }}">FAQ</a>
                                     </li>
-                                    <li>
+                                    {{-- <li>
                                         <a href="{{ route('contact-us') }}">Contact Us</a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </nav>
                         </div>
