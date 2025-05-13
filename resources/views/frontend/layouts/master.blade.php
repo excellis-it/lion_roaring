@@ -275,6 +275,7 @@
                                 <p class="login-username">
                                     <label for="user_login">Username or Email Address</label>
                                     <input type="text" name="user_name" id="user_login" autocomplete="username"
+                                        @if (isset($_COOKIE['email_user_name'])) value="{{ $_COOKIE['email_user_name'] }}" @endif
                                         class="input" value="" size="20">
                                     <span class="text-danger"></span>
                                 </p>
@@ -283,18 +284,27 @@
                                     <label for="user_password">Password</label>
                                     <input type="password" name="password" id="user_password"
                                         autocomplete="current-password" spellcheck="false" class="input"
-                                        value="" size="20">
+                                        @if (isset($_COOKIE['password'])) value="{{ $_COOKIE['password'] }}" @endif
+                                        size="20">
                                     <span class="eye-btn-1" id="eye-button-1"
                                         style="position: absolute; right: 10px; top: 41px;">
                                         <i class="fa fa-eye-slash" aria-hidden="true" id="togglePassword"></i>
                                     </span>
                                     <span class="text-danger"></span>
                                 </p>
+                                <p class="login-username justify-content-end d-flex">
+                                    <input class="form-check-input me-2" type="checkbox" name="remember"
+                                        id="remember">
+                                    <label class="form-check-label" for="remember">
+                                        Remember Me
+                                    </label>
+                                </p>
                                 <p class="login-submit">
                                     <input type="submit" name="wp-submit" id="login-submit"
                                         class="button button-primary" value="Log In">
                                     <input type="hidden" name="redirect_to" value="">
                                 </p>
+
                             </form>
                             <p class="text-center join_member">
                                 <a href="javascrip:void(0);" data-bs-toggle="modal"
@@ -1194,19 +1204,18 @@
     </script>
 
     <script>
-         $(document).ready(function() {
-        @if (isset($_GET['is_donation']) && $_GET['is_donation'] == 'yes')
+        $(document).ready(function() {
+            @if (isset($_GET['is_donation']) && $_GET['is_donation'] == 'yes')
 
                 $('#onload_popup').modal('hide');
-                    $('#exampleModalToggle2').modal('show');
-
+                $('#exampleModalToggle2').modal('show');
             @else
-            @if (!Session::has('agree'))
+                @if (!Session::has('agree'))
 
-                $('#onload_popup').modal('show');
+                    $('#onload_popup').modal('show');
+                @endif
             @endif
-        @endif
-    });
+        });
     </script>
 
 
