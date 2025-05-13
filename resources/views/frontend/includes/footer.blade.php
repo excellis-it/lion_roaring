@@ -116,9 +116,9 @@
                             <li class="active">
                                 <a href="{{route('terms-and-conditions')}}" aria-current="page">Terms and Conditions</a>
                             </li>
-                            <li>
+                            {{-- <li>
                                 <a href="{{route('contact-us')}}">Contact Us</a>
-                            </li>
+                            </li> --}}
                         </ul>
                     </div>
                 </div>
