@@ -55,13 +55,22 @@ class AuthController extends Controller
                 $otp_verify->email = $user->email;
                 $otp_verify->otp = $otp;
                 $otp_verify->save();
+                if ($request->has('remember')) {
+                    $expire = time() + (86400 * 365 * 5); // 5 years
+                    setcookie('email_user_name', $request->user_name, $expire, '/', '', false, true);
+                    setcookie('password', $request->password, $expire, '/', '', false, true);
+                } else {
+                    // Clear cookies if remember me is unchecked
+                    setcookie('email_user_name', '', time() - 3600, '/');
+                    setcookie('password', '', time() - 3600, '/');
+                }
                 Session::put('user_id', $user->id);
                 try {
                     Mail::to($user->email)->send(new OtpMail($otp));
                 } catch (\Exception $e) {
                     return response()->json(['message' => 'Email server temporary unavailable. Please try later.', 'status' => false]);
                 }
-                return response()->json(['message' => 'Code sent to your email', 'status' => true, 'otp_required' => true ]);
+                return response()->json(['message' => 'Code sent to your email', 'status' => true, 'otp_required' => true]);
             } else {
                 return response()->json(['message' => 'Your account is not active!', 'status' => false]);
             }
