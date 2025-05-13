@@ -456,7 +456,7 @@ class CmsController extends Controller
 
         try {
             $our_organizatiion = OurOrganization::where('slug', $request->slug)->first();
-            $our_organization_centers = OrganizationCenter::where('our_organization_id', $our_organizatiion->id)->get();
+            $our_organization_centers = OrganizationCenter::where('our_organization_id', $our_organizatiion->id)->orderBy('id', 'desc')->get();
 
             if ($our_organization_centers) {
                 return response()->json(['message' => 'Organization center', 'status' => true, 'our_organization_centers' => $our_organization_centers], $this->successStatus);
