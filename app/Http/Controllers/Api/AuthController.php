@@ -211,7 +211,7 @@ class AuthController extends Controller
 
                     Mail::to($user->email)->send(new OtpMail($otp));
                     // $token = $user->createToken('authToken')->accessToken;
-                    return response()->json(['user' => $user, 'status' => true, 'message' => 'Login successful'], 200);
+                    return response()->json(['user' => $user, 'status' => true, 'message' => 'Otp sent successfully. Please check your mail id.', 'otp' => $otp], 200);
                 } else {
                     auth()->logout();
                     return response()->json(['message' => 'Your account is not active!', 'status' => false], 201);
@@ -254,7 +254,7 @@ class AuthController extends Controller
             if ($request->time_zone) {
                 $user->update(['time_zone' => $request->time_zone]);
             }
-            return response()->json(['message' => 'Code verified successfully', 'status' => true, 'token' => $token], 200);
+            return response()->json(['message' => 'Login successfully', 'status' => true, 'token' => $token], 200);
         } else {
             $otp_verify = VerifyOTP::where('user_id', $request->id)->where('otp', $request->otp)->orderBy('id', 'desc')->first();
 
@@ -270,7 +270,7 @@ class AuthController extends Controller
             }
             // $user->update(['time_zone' => $request->time_zone]);
 
-            return response()->json(['message' => 'Code verified successfully', 'status' => true, 'token' => $token], 200);
+            return response()->json(['message' => 'Login successfully', 'status' => true, 'token' => $token], 200);
         }
 
 
