@@ -53,6 +53,8 @@ Route::prefix('v3')->group(function () {
         Route::post('home', [CmsController::class, 'home']);
         Route::post('gallery', [CmsController::class, 'gallery']);
         Route::post('contact-us', [CmsController::class, 'contactUs']);
+        Route::post('about-us-page', [CmsController::class, 'aboutUs']);
+        Route::post('details-page', [CmsController::class, 'detailsPage']);
         Route::get('contact-us-page', [ContactUsController::class, 'contactUs']);
         Route::post('faq', [CmsController::class, 'faq']);
         Route::post('principle-and-business', [CmsController::class, 'principleAndBusiness']);

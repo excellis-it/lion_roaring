@@ -54,8 +54,13 @@ class ProfileController extends Controller
      * @bodyParam first_name string required The first name of the user. Example: John
      * @bodyParam middle_name string optional The middle name of the user. Example: Doe
      * @bodyParam last_name string required The last name of the user. Example: Doe
+     * @bodyParam country_code string optional The country code of the user. Example: 91
      * @bodyParam phone string required The phone number of the user. Example: 7415236986
      * @bodyParam address string required The address of the user. Example: 51 DN Block Merlin Infinite Building, 9th Floor, Unit, 907, Sector V, Bidhannagar, Kolkata, West Bengal 700091
+     * @bodyParam country string required The country of the user. Example: India
+     * @bodyParam state string required The state of the user. Example: West Bengal
+     * @bodyParam city string required The city of the user. Example: Kolkata
+     * @bodyParam zip string required The zip code of the user. Example: 700091
      *
      * @response 200 {
      * "status": true,
@@ -66,11 +71,15 @@ class ProfileController extends Controller
     public function updateProfile(Request $request)
     {
         $validator = validator($request->all(), [
-            'first_name' => 'required',
-            'middle_name' => 'nullable',
-            'last_name' => 'required',
-            'phone' => 'required|numeric',
-            'address' => 'required'
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
+            'address' => 'required|string|max:255',
+            'phone_number' => 'required',
+            'country' => 'required',
+            'state' => 'required',
+            'city' => 'required',
+            'zip' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -81,8 +90,14 @@ class ProfileController extends Controller
         $user->first_name = $request->first_name;
         $user->middle_name = $request->middle_name;
         $user->last_name = $request->last_name;
-        $user->phone = $request->phone;
-        $user->address = $request->address;
+        $user->address = $request->address ?? '';
+        $user->address2 = $request->address2 ?? '';
+        $user->country = $request->country ?? '';
+        $user->state = $request->state ?? '';
+        $user->city = $request->city ?? '';
+        $user->zip = $request->zip ?? '';
+
+        $user->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone_number : $request->phone_number;
         $user->save();
 
         return response()->json(['status' => true, 'message' => 'Profile updated successfully'], $this->successStatus);
