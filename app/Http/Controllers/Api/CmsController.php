@@ -35,6 +35,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Fractalistic\Fractal;
 use App\Mail\NewsletterSubscription;
+use App\Models\AboutUs;
+use App\Models\Detail;
 
 /**
  * @group CMS Management
@@ -742,6 +744,86 @@ class CmsController extends Controller
             }
 
             return response()->json(['message' => 'Newsletter submit successfully.', 'status' => true], $this->successStatus);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+        }
+    }
+
+    // aboutUs
+    /**
+     * Get About Us
+     *
+     * This endpoint retrieves the latest "About Us" content.
+     *
+     * @response 200 {
+     *   "message": "About Us",
+     *   "status": true,
+     *   "about_us": {
+     *     "title": "About Us Title",
+     *     "description": "About Us Description"
+     *   }
+     * }
+     *
+     * @response 201 {
+     *   "message": "No About Us found",
+     *   "status": false
+     * }
+     *
+     * @response 401 {
+     *   "message": "Error message",
+     *   "status": false
+     * }
+     */
+    public function aboutUs()
+    {
+        try {
+            $about_us = AboutUs::orderBy('id', 'desc')->select('banner_title', 'description')->first();
+            if ($about_us) {
+                return response()->json(['message' => 'About Us', 'status' => true, 'about_us' => $about_us], $this->successStatus);
+            } else {
+                return response()->json(['message' => 'No About Us found', 'status' => false], 201);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+        }
+    }
+
+    // detailsPage with multi row data from model Detail
+    /**
+     * Get Details
+     *
+     * This endpoint retrieves the latest details.
+     *
+     * @response 200 {
+     *   "message": "Details",
+     *   "status": true,
+     *   "details": [
+     *     {
+     *       "title": "Detail Title",
+     *       "description": "Detail Description"
+     *     }
+     *   ]
+     * }
+     *
+     * @response 201 {
+     *   "message": "No details found",
+     *   "status": false
+     * }
+     *
+     * @response 401 {
+     *   "message": "Error message",
+     *   "status": false
+     * }
+     */
+    public function detailsPage()
+    {
+        try {
+            $details = Detail::orderBy('id', 'asc')->select('image', 'description')->get();
+            if ($details) {
+                return response()->json(['message' => 'Details', 'status' => true, 'details' => $details], $this->successStatus);
+            } else {
+                return response()->json(['message' => 'No details found', 'status' => false], 201);
+            }
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
         }
