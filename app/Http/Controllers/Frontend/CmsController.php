@@ -54,6 +54,12 @@ class CmsController extends Controller
         return view('frontend.contact-us')->with('contact', $contact);
     }
 
+    // accountDeleteRequest
+    public function accountDeleteRequest()
+    {
+        return view('frontend.account-delete-request');
+    }
+
     public function faq()
     {
         $faqs = Faq::orderBy('id', 'desc')->get();

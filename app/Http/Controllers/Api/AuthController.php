@@ -76,13 +76,13 @@ class AuthController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
-            'address' => 'required|string|max:255',
-            'phone' => 'required',
-            'city' => 'required|string|max:255',
-            'state' => 'required|max:255',
-            'address2' => 'nullable|string|max:255',
-            'country' => 'required|max:255',
-            'zip' => 'required',
+            // 'address' => 'required|string|max:255',
+            // 'phone' => 'required',
+            // 'city' => 'required|string|max:255',
+            // 'state' => 'required|max:255',
+            // 'address2' => 'nullable|string|max:255',
+            // 'country' => 'required|max:255',
+            // 'zip' => 'required',
             'email_confirmation' => 'required|same:email',
             'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
             'password_confirmation' => 'required|same:password',
@@ -272,8 +272,6 @@ class AuthController extends Controller
 
             return response()->json(['message' => 'Login successfully', 'status' => true, 'token' => $token], 200);
         }
-
-
     }
 
 
