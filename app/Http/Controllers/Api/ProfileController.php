@@ -55,7 +55,7 @@ class ProfileController extends Controller
      * @bodyParam middle_name string optional The middle name of the user. Example: Doe
      * @bodyParam last_name string required The last name of the user. Example: Doe
      * @bodyParam country_code string optional The country code of the user. Example: 91
-     * @bodyParam phone string required The phone number of the user. Example: 7415236986
+     * @bodyParam phone_number string required The phone number of the user. Example: 7415236986
      * @bodyParam address string required The address of the user. Example: 51 DN Block Merlin Infinite Building, 9th Floor, Unit, 907, Sector V, Bidhannagar, Kolkata, West Bengal 700091
      * @bodyParam country string required The country of the user. Example: India
      * @bodyParam state string required The state of the user. Example: West Bengal
