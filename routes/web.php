@@ -258,6 +258,7 @@ Route::get('/', [CmsController::class, 'index'])->name('home');
 Route::get('/gallery', [CmsController::class, 'gallery'])->name('gallery');
 Route::get('/faq', [CmsController::class, 'faq'])->name('faq');
 Route::get('/contact-us', [CmsController::class, 'contactUs'])->name('contact-us');
+Route::get('/account-delete-request', [CmsController::class, 'accountDeleteRequest'])->name('account-delete-request');
 Route::get('/principle-and-business', [CmsController::class, 'principleAndBusiness'])->name('principle-and-business');
 Route::get('/ecclesia-associations', [CmsController::class, 'ecclesiaAssociations'])->name('ecclesia-associations');
 Route::get('/organization', [CmsController::class, 'organization'])->name('organization');
