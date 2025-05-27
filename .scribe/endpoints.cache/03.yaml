@@ -171,6 +171,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       country: 1
@@ -247,6 +248,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       email:
         name: email
@@ -256,15 +258,17 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       ecclesia_id:
         name: ecclesia_id
         description: 'nullable Ecclesia ID if applicable.'
         required: false
-        example: 11
+        example: 15
         type: integer
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       first_name:
         name: first_name
@@ -274,6 +278,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       last_name:
         name: last_name
@@ -283,6 +288,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       middle_name:
         name: middle_name
@@ -292,69 +298,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
-        custom: []
-      address:
-        name: address
-        description: 'Address of the user.'
-        required: true
-        example: '123 Main St'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      phone:
-        name: phone
-        description: "User's phone number."
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      city:
-        name: city
-        description: 'City of residence.'
-        required: true
-        example: Springfield
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      state:
-        name: state
-        description: 'State of residence.'
-        required: true
-        example: 6
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        custom: []
-      address2:
-        name: address2
-        description: 'nullable Additional address information.'
-        required: false
-        example: 'Apt 4B'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      country:
-        name: country
-        description: 'Country of residence.'
-        required: true
-        example: 12
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        custom: []
-      zip:
-        name: zip
-        description: 'Zip code.'
-        required: true
-        example: '62704'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
+        nullable: true
         custom: []
       email_confirmation:
         name: email_confirmation
@@ -364,6 +308,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       password:
         name: password
@@ -373,6 +318,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       password_confirmation:
         name: password_confirmation
@@ -382,24 +328,95 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
+        custom: []
+      address:
+        name: address
+        description: 'Address of the user.'
+        required: true
+        example: '123 Main St'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      phone:
+        name: phone
+        description: "User's phone number."
+        required: true
+        example: '1234567890'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      city:
+        name: city
+        description: 'City of residence.'
+        required: true
+        example: Springfield
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country:
+        name: country
+        description: 'Country of residence.'
+        required: true
+        example: 17
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      state:
+        name: state
+        description: 'State of residence.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      address2:
+        name: address2
+        description: 'nullable Additional address information.'
+        required: false
+        example: 'Apt 4B'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      zip:
+        name: zip
+        description: 'Zip code.'
+        required: true
+        example: '62704'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       user_name: johndoe
       email: johndoe@example.com
-      ecclesia_id: 11
+      ecclesia_id: 15
       first_name: John
       last_name: Doe
       middle_name: A.
-      address: '123 Main St'
-      phone: '1234567890'
-      city: Springfield
-      state: 6
-      address2: 'Apt 4B'
-      country: 12
-      zip: '62704'
       email_confirmation: johndoe@example.com
       password: Password@123
       password_confirmation: Password@123
+      address: '123 Main St'
+      phone: '1234567890'
+      city: Springfield
+      country: 17
+      state: 16
+      address2: 'Apt 4B'
+      zip: '62704'
     fileParameters: []
     responses:
       -
@@ -475,6 +492,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       password:
         name: password
@@ -484,6 +502,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       user_name: john_doe
@@ -536,6 +555,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       id:
         name: id
@@ -545,6 +565,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       otp: 1234

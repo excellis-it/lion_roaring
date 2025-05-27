@@ -30,6 +30,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanQueryParameters:
       search: '"abc"'
@@ -127,6 +128,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -208,6 +210,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       job_description:
         name: job_description
@@ -217,6 +220,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       job_type:
         name: job_type
@@ -226,6 +230,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       job_location:
         name: job_location
@@ -235,6 +240,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       job_salary:
         name: job_salary
@@ -244,6 +250,7 @@ endpoints:
         type: numeric
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       list_of_values:
         name: list_of_values
@@ -253,6 +260,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       currency:
         name: currency
@@ -262,6 +270,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       job_experience:
         name: job_experience
@@ -271,6 +280,7 @@ endpoints:
         type: numeric
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       contact_person:
         name: contact_person
@@ -280,6 +290,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       contact_email:
         name: contact_email
@@ -289,6 +300,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       job_title: 'Software Engineer'
@@ -368,13 +380,14 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: id
+        example: dolores
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanUrlParameters:
-      id: id
+      id: dolores
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -386,6 +399,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       job_description:
         name: job_description
@@ -395,6 +409,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       job_type:
         name: job_type
@@ -404,6 +419,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       job_location:
         name: job_location
@@ -413,6 +429,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       job_salary:
         name: job_salary
@@ -422,6 +439,7 @@ endpoints:
         type: numeric
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       list_of_values:
         name: list_of_values
@@ -431,6 +449,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       currency:
         name: currency
@@ -440,6 +459,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       job_experience:
         name: job_experience
@@ -449,6 +469,7 @@ endpoints:
         type: numeric
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       contact_person:
         name: contact_person
@@ -458,6 +479,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       contact_email:
         name: contact_email
@@ -467,6 +489,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       job_title: 'Software Engineer'
@@ -546,13 +569,14 @@ endpoints:
         name: id
         description: 'The ID of the delete.'
         required: true
-        example: quia
+        example: numquam
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanUrlParameters:
-      id: quia
+      id: numquam
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -612,6 +636,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       query: abc
