@@ -14,7 +14,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     //  protected $guard_name = 'api';
-     protected $guard_name = 'web';
+    protected $guard_name = 'web';
 
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
@@ -33,6 +33,7 @@ class User extends Authenticatable
         'address',
         'email',
         'phone',
+        'phone_country_code_name',
         'password',
         'country',
         'state',
@@ -142,5 +143,4 @@ class User extends Authenticatable
     {
         return $this->roles->pluck('is_ecclesia')->first() == 1 ? true : false;
     }
-
 }
