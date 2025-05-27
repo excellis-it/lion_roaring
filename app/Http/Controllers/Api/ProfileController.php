@@ -98,6 +98,7 @@ class ProfileController extends Controller
         $user->zip = $request->zip ?? '';
 
         $user->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone_number : $request->phone_number;
+        $user->phone_country_code_name = $request->phone_country_code_name;
         $user->save();
 
         return response()->json(['status' => true, 'message' => 'Profile updated successfully'], $this->successStatus);

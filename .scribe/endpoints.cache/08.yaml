@@ -165,6 +165,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       sender_receiver_id: 1
@@ -286,6 +287,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       message:
         name: message
@@ -295,6 +297,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       file:
         name: file
@@ -304,6 +307,7 @@ endpoints:
         type: file
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanBodyParameters:
       reciver_id: 2
@@ -426,6 +430,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       reciver_id: 2
@@ -476,6 +481,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       reciver_id:
         name: reciver_id
@@ -485,6 +491,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       chat_id: 10
@@ -545,6 +552,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       del_from:
         name: del_from
@@ -554,6 +562,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       chat_id: 10
@@ -613,6 +622,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       user_id:
         name: user_id
@@ -622,6 +632,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       is_delete:
         name: is_delete
@@ -631,6 +642,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       chat_id: 15
@@ -684,6 +696,64 @@ endpoints:
                  "created_at": "2024-11-07T14:35:29.000000Z",
                  "updated_at": "2024-11-07T14:35:29.000000Z"
              }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/chats/search
+    metadata:
+      groupName: Chats
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Search Chat Users'
+      description: 'Searches for chat users based on a query string. Returns a list of users whose names or usernames match the query.'
+      authenticated: true
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      query:
+        name: query
+        description: 'The search query string.'
+        required: true
+        example: '"john"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      query: '"john"'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             "users": [
+                 {
+                     "id": 1,
+                     "user_name": "john_doe",
+                     "first_name": "John",
+                     "last_name": "Doe",
+                     "email": "john@example.com"
+                 }
+             ]
           }
         headers: []
         description: ''

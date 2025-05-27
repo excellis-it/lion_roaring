@@ -75,6 +75,8 @@ Route::prefix('v3')->group(function () {
     // donation
     Route::post('donation', [DonationController::class, 'donation']);
     Route::post('country-list', [DonationController::class, 'countryList']);
+    // getCountryById
+    Route::post('country-by-id', [AuthController::class, 'getCountryById']);
 
     Route::post('register-ecclesi-list', [AuthController::class, 'ecclesiList']);
     Route::post('register-country-list', [AuthController::class, 'countryList']);
@@ -113,6 +115,8 @@ Route::prefix('v3')->group(function () {
             Route::post('/seen', [ChatController::class, 'seen']);
             Route::post('/remove', [ChatController::class, 'remove']);
             Route::post('/notification', [ChatController::class, 'notification']);
+            // search api
+            Route::post('/search', [ChatController::class, 'search']);
         });
 
         // Team Chat

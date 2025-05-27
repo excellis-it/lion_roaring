@@ -26,13 +26,14 @@ endpoints:
         name: message
         description: ''
         required: false
-        example: laborum
+        example: voluptatem
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanBodyParameters:
-      message: laborum
+      message: voluptatem
     fileParameters: []
     responses:
       -

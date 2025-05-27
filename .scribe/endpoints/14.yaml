@@ -28,6 +28,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanQueryParameters:
       search: '"abc"'
@@ -105,6 +106,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       description:
         name: description
@@ -114,6 +116,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
       start_time:
         name: start_time
@@ -123,6 +126,7 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       end_time:
         name: end_time
@@ -132,6 +136,7 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       meeting_link:
         name: meeting_link
@@ -141,6 +146,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
     cleanBodyParameters:
       title: 'Project Sync'
@@ -210,6 +216,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -300,6 +307,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -314,6 +322,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       description:
         name: description
@@ -323,6 +332,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
       start_time:
         name: start_time
@@ -332,6 +342,7 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       end_time:
         name: end_time
@@ -341,6 +352,7 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       meeting_link:
         name: meeting_link
@@ -350,6 +362,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
     cleanBodyParameters:
       title: 'Project Sync Update'
@@ -400,6 +413,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
