@@ -30,6 +30,7 @@ use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\PolicyGuidenceController;
 use App\Http\Controllers\Api\RolePermissionController;
 use App\Http\Controllers\Api\EcclesiaController;
+use App\Http\Controllers\Api\FCMController;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,6 +88,8 @@ Route::prefix('v3')->group(function () {
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
     Route::post('register-agreement', [AuthController::class, 'registerAgreement']);
     Route::post('forget-password', [ForgetPasswordController::class, 'forgetPassword']);
+    // logout
+    Route::post('logout', [AuthController::class, 'logout']);
 
 
 
@@ -326,6 +329,11 @@ Route::prefix('v3')->group(function () {
 
 
 
-        //
+        // FCM Routes
+        Route::prefix('fcm')->group(function () {
+            Route::post('update-token', [FCMController::class, 'updateToken']);
+            Route::post('remove-token', [FCMController::class, 'removeToken']);
+            Route::post('test-notification', [FCMController::class, 'sendTestNotification']);
+        });
     });
 });
