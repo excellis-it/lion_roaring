@@ -12,6 +12,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Services\FCMService;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 /**
  * @group Email
@@ -20,6 +23,12 @@ use Carbon\Carbon;
 
 class EmailController extends Controller
 {
+    protected $fcmService;
+
+    public function __construct(FCMService $fcmService)
+    {
+        $this->fcmService = $fcmService;
+    }
 
     /**
      * Inbox Emails
@@ -856,6 +865,32 @@ class EmailController extends Controller
             $sender_user = auth()->user();
             Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->email, $sender_user->full_name));
 
+            // Send FCM notifications to recipients
+            if (!empty($to_id) || !empty($cc_id)) {
+                $send_to_ids = array_merge($to_id, $cc_id);
+                $recipients = User::whereIn('id', $send_to_ids)->get();
+                foreach ($recipients as $recipient) {
+                    if ($recipient->fcm_token) {
+                        try {
+                            $this->fcmService->sendToDevice(
+                                $recipient->fcm_token,
+                                'New Email from ' . auth()->user()->full_name,
+                                'Subject: ' . $request->subject,
+                                [
+                                    'type' => 'email',
+                                    'email_id' => (string) $mail->id,
+                                    'sender_name' => auth()->user()->full_name,
+                                    'subject' => $request->subject,
+                                    'sender_email' => auth()->user()->email
+                                ]
+                            );
+                        } catch (Exception $e) {
+                            Log::error('FCM email notification failed: ' . $e->getMessage());
+                        }
+                    }
+                }
+            }
+
             return response()->json([
                 'message' => 'Mail sent successfully.',
                 'status' => true,
@@ -1022,6 +1057,33 @@ class EmailController extends Controller
             $sender_user = auth()->user();
             Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->email, $sender_user->full_name));
 
+            // Send FCM notifications to recipients
+            if (!empty($to_id) || !empty($cc_id)) {
+                $send_to_ids = array_merge($to_id, $cc_id);
+                $recipients = User::whereIn('id', $send_to_ids)->get();
+                foreach ($recipients as $recipient) {
+                    if ($recipient->fcm_token) {
+                        try {
+                            $this->fcmService->sendToDevice(
+                                $recipient->fcm_token,
+                                'Email Reply from ' . auth()->user()->full_name,
+                                'Re: ' . $request->subject,
+                                [
+                                    'type' => 'email_reply',
+                                    'email_id' => (string) $mail->id,
+                                    'main_email_id' => (string) $request->main_mail_id,
+                                    'sender_name' => auth()->user()->full_name,
+                                    'subject' => $request->subject,
+                                    'sender_email' => auth()->user()->email
+                                ]
+                            );
+                        } catch (Exception $e) {
+                            Log::error('FCM email reply notification failed: ' . $e->getMessage());
+                        }
+                    }
+                }
+            }
+
             return response()->json([
                 'message' => 'Mail sent successfully.',
                 'status' => true,
@@ -1184,6 +1246,32 @@ class EmailController extends Controller
             $sender_user = auth()->user();
             Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->email, $sender_user->full_name));
 
+            // Send FCM notifications to recipients
+            if (!empty($to_id) || !empty($cc_id)) {
+                $send_to_ids = array_merge($to_id, $cc_id);
+                $recipients = User::whereIn('id', $send_to_ids)->get();
+                foreach ($recipients as $recipient) {
+                    if ($recipient->fcm_token) {
+                        try {
+                            $this->fcmService->sendToDevice(
+                                $recipient->fcm_token,
+                                'Forwarded Email from ' . auth()->user()->full_name,
+                                'Fwd: ' . $request->subject,
+                                [
+                                    'type' => 'email_forward',
+                                    'email_id' => (string) $mail->id,
+                                    'sender_name' => auth()->user()->full_name,
+                                    'subject' => $request->subject,
+                                    'sender_email' => auth()->user()->email
+                                ]
+                            );
+                        } catch (Exception $e) {
+                            Log::error('FCM email forward notification failed: ' . $e->getMessage());
+                        }
+                    }
+                }
+            }
+
             return response()->json([
                 'message' => 'Mail sent successfully.',
                 'status' => true,
@@ -1196,9 +1284,10 @@ class EmailController extends Controller
                 'message' => 'Failed to send mail. Please try again later.',
                 'status' => false,
                 'error' => $e->getMessage()
-            ], 500);
+            ], 201);
         }
     }
+
 
     /**
      * Delete Emails

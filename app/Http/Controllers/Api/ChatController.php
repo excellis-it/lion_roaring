@@ -10,17 +10,24 @@ use App\Models\User;
 use App\Traits\ImageTrait;
 use Illuminate\Support\Facades\Storage;
 use App\Helpers\Helper;
+use App\Services\FCMService;
 
 /**
  * @group Chats
  */
 
-
 class ChatController extends Controller
 {
-
     protected $successStatus = 200;
     use ImageTrait;
+
+    protected $fcmService;
+
+    public function __construct(FCMService $fcmService)
+    {
+        $this->fcmService = $fcmService;
+    }
+
     /**
      * List of Chat Users
      *
@@ -472,6 +479,28 @@ class ChatController extends Controller
             $chat = Chat::with('sender', 'reciver')->find($chatData->id);
             $chat->created_at_formatted = $chat->created_at->format('Y-m-d H:i:s');
 
+            // Send FCM notification to receiver
+            $receiver = User::find($request->reciver_id);
+            if ($receiver && $receiver->fcm_token) {
+                try {
+                    $this->fcmService->sendToDevice(
+                        $receiver->fcm_token,
+                        'New Message from ' . auth()->user()->full_name,
+                        $request->file ? 'Sent an attachment' : $themessage,
+                        [
+                            'type' => 'chat',
+                            'chat_id' => (string) $chat->id,
+                            'sender_id' => (string) auth()->id(),
+                            'sender_name' => auth()->user()->full_name,
+                            'message' => $themessage,
+                            'timestamp' => $chat->created_at_formatted
+                        ]
+                    );
+                } catch (Exception $e) {
+                    Log::error('FCM chat notification failed: ' . $e->getMessage());
+                }
+            }
+
             return response()->json([
                 'msg' => 'Message sent successfully',
                 'chat' => $chat,
@@ -724,6 +753,27 @@ class ChatController extends Controller
                 $notification->message = 'You have a <b>new message</b> from ' . $sender->full_name;
                 $notification->type = 'Chat';
                 $notification->save();
+
+                // Send FCM notification
+                $receiver = User::find($user_id);
+                if ($receiver && $receiver->fcm_token) {
+                    try {
+                        $this->fcmService->sendToDevice(
+                            $receiver->fcm_token,
+                            'New Message',
+                            'You have a new message from ' . $sender->full_name,
+                            [
+                                'type' => 'chat_notification',
+                                'chat_id' => (string) $chat_id,
+                                'sender_id' => (string) $sender_id,
+                                'sender_name' => $sender->full_name,
+                                'notification_id' => (string) $notification->id
+                            ]
+                        );
+                    } catch (Exception $e) {
+                        Log::error('FCM chat notification failed: ' . $e->getMessage());
+                    }
+                }
 
                 $notification_count = Notification::where('user_id', $user_id)
                     ->where('is_read', 0)

@@ -12,9 +12,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Services\FCMService;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class SendMailController extends Controller
 {
+    protected $fcmService;
+
+    public function __construct(FCMService $fcmService)
+    {
+        $this->fcmService = $fcmService;
+    }
+
     public function list()
     {
         if (auth()->user()->can('Manage Email')) {
@@ -488,28 +498,21 @@ class SendMailController extends Controller
         $mail->subject = $request->subject;
         $mail->message = $request->message;
 
-
         // Handle file uploads
         if ($request->hasFile('attachments')) {
             $attachments = [];
 
             foreach ($request->file('attachments') as $file) {
-
                 $filePath = $file->store('email_files', 'public');
-
-
                 $attachments[] = [
                     'original_name' => $file->getClientOriginalName(),
                     'encrypted_name' => $filePath,
                 ];
             }
-
-
             $mail->attachment = json_encode($attachments);
         }
 
         $mail->save();
-
 
         // Save users associated with CC
         $notification_message = 'You have a <b>new mail</b> from ' . auth()->user()->email;
@@ -525,18 +528,37 @@ class SendMailController extends Controller
                     $mail_user->is_cc = 1;
                     $mail_user->save();
 
-
                     if ($user->id != auth()->id()) {
                         $notification = new Notification();
                         $notification->user_id =  $user->id;
                         $notification->message = $notification_message;
                         $notification->type = 'Mail';
                         $notification->save();
+
+                        // Send FCM notification
+                        if ($user->fcm_token) {
+                            try {
+                                $this->fcmService->sendToDevice(
+                                    $user->fcm_token,
+                                    'New Email from ' . auth()->user()->full_name,
+                                    'Subject: ' . $request->subject,
+                                    [
+                                        'type' => 'email',
+                                        'email_id' => (string) $mail->id,
+                                        'sender_name' => auth()->user()->full_name,
+                                        'subject' => $request->subject,
+                                        'sender_email' => auth()->user()->email,
+                                        'notification_id' => (string) $notification->id
+                                    ]
+                                );
+                            } catch (Exception $e) {
+                                Log::error('FCM email notification failed: ' . $e->getMessage());
+                            }
+                        }
                     }
                 }
             }
         }
-
 
         // Save users associated with TO
         $to_id = [];
@@ -556,6 +578,27 @@ class SendMailController extends Controller
                     $notification->message = $notification_message;
                     $notification->type = 'Mail';
                     $notification->save();
+
+                    // Send FCM notification
+                    if ($user->fcm_token) {
+                        try {
+                            $this->fcmService->sendToDevice(
+                                $user->fcm_token,
+                                'New Email from ' . auth()->user()->full_name,
+                                'Subject: ' . $request->subject,
+                                [
+                                    'type' => 'email',
+                                    'email_id' => (string) $mail->id,
+                                    'sender_name' => auth()->user()->full_name,
+                                    'subject' => $request->subject,
+                                    'sender_email' => auth()->user()->email,
+                                    'notification_id' => (string) $notification->id
+                                ]
+                            );
+                        } catch (Exception $e) {
+                            Log::error('FCM email notification failed: ' . $e->getMessage());
+                        }
+                    }
                 }
             }
         }
@@ -567,20 +610,10 @@ class SendMailController extends Controller
         $mail_user->is_from = 1;
         $mail_user->save();
 
-        // Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
-
-        // session()->flash('message', 'Your mail has been sent Successfully');
-
-        // return response()->json(['message' => 'Mail sent successfully.', 'status' => true, 'send_to_ids' => array_merge($cc_id, $to_id), 'notification_message' => $notification_message]);
-
         try {
-
             $sender_user = auth()->user();
             $senderEmail = $sender_user->email;
             $senderName = $sender_user->full_name;
-
-            // Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $senderEmail, $senderName));
-
 
             session()->flash('message', 'Your mail has been sent Successfully');
 
@@ -694,11 +727,33 @@ class SendMailController extends Controller
                         $notification->message = $notification_message;
                         $notification->type = 'Mail';
                         $notification->save();
+
+
+                        // Send FCM notification
+                        if ($user->fcm_token) {
+                            try {
+                                $this->fcmService->sendToDevice(
+                                    $user->fcm_token,
+                                    'Email Reply from ' . auth()->user()->full_name,
+                                    'Re: ' . $request->subject,
+                                    [
+                                        'type' => 'email_reply',
+                                        'email_id' => (string) $mail->id,
+                                        'main_email_id' => (string) $request->main_mail_id,
+                                        'sender_name' => auth()->user()->full_name,
+                                        'subject' => $request->subject,
+                                        'sender_email' => auth()->user()->email,
+                                        'notification_id' => (string) $notification->id
+                                    ]
+                                );
+                            } catch (Exception $e) {
+                                Log::error('FCM email reply notification failed: ' . $e->getMessage());
+                            }
+                        }
                     }
                 }
             }
         }
-
 
         // Save users associated with TO
         $to_id = [];
@@ -718,10 +773,32 @@ class SendMailController extends Controller
                     $notification->message = $notification_message;
                     $notification->type = 'Mail';
                     $notification->save();
+
+
+                    // Send FCM notification
+                    if ($user->fcm_token) {
+                        try {
+                            $this->fcmService->sendToDevice(
+                                $user->fcm_token,
+                                'Email Reply from ' . auth()->user()->full_name,
+                                'Re: ' . $request->subject,
+                                [
+                                    'type' => 'email_reply',
+                                    'email_id' => (string) $mail->id,
+                                    'main_email_id' => (string) $request->main_mail_id,
+                                    'sender_name' => auth()->user()->full_name,
+                                    'subject' => $request->subject,
+                                    'sender_email' => auth()->user()->email,
+                                    'notification_id' => (string) $notification->id
+                                ]
+                            );
+                        } catch (Exception $e) {
+                            Log::error('FCM email reply notification failed: ' . $e->getMessage());
+                        }
+                    }
                 }
             }
         }
-
 
         // Save users associated with FROM
         $mail_user = new MailUser();
@@ -730,21 +807,10 @@ class SendMailController extends Controller
         $mail_user->is_from = 1;
         $mail_user->save();
 
-        // Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
-
-        // session()->flash('message', 'Your mail has been sent Successfully');
-
-        // return response()->json(['message' => 'Mail sent successfully.', 'status' => true, 'send_to_ids' => array_merge($cc_id, $to_id), 'notification_message' => $notification_message]);
-
         try {
-
-            // Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
             $sender_user = auth()->user();
             $senderEmail = $sender_user->email;
             $senderName = $sender_user->full_name;
-
-            // Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $senderEmail, $senderName));
-
 
             session()->flash('message', 'Your mail has been sent Successfully');
 
@@ -767,7 +833,6 @@ class SendMailController extends Controller
         }
     }
 
-
     public function sendMailForward(Request $request)
     {
         $request->validate([
@@ -780,7 +845,7 @@ class SendMailController extends Controller
         // Decode the JSON strings for 'to' and 'cc' fields
         $toEmails = json_decode($request->to, true);
         // Extract email addresses from the decoded arrays
-        $to = array_column($toEmails, 'value'); 
+        $to = array_column($toEmails, 'value');
         if ($request->cc) {
             $ccEmails = json_decode($request->cc, true);
             $cc = array_column($ccEmails, 'value');
@@ -855,11 +920,32 @@ class SendMailController extends Controller
                         $notification->message = $notification_message;
                         $notification->type = 'Mail';
                         $notification->save();
+
+
+                        // Send FCM notification
+                        if ($user->fcm_token) {
+                            try {
+                                $this->fcmService->sendToDevice(
+                                    $user->fcm_token,
+                                    'Forwarded Email from ' . auth()->user()->full_name,
+                                    'Fwd: ' . $request->subject,
+                                    [
+                                        'type' => 'email_forward',
+                                        'email_id' => (string) $mail->id,
+                                        'sender_name' => auth()->user()->full_name,
+                                        'subject' => $request->subject,
+                                        'sender_email' => auth()->user()->email,
+                                        'notification_id' => (string) $notification->id
+                                    ]
+                                );
+                            } catch (Exception $e) {
+                                Log::error('FCM email forward notification failed: ' . $e->getMessage());
+                            }
+                        }
                     }
                 }
             }
         }
-
 
         // Save users associated with TO
         $to_id = [];
@@ -879,6 +965,28 @@ class SendMailController extends Controller
                     $notification->message = $notification_message;
                     $notification->type = 'Mail';
                     $notification->save();
+
+
+                    // Send FCM notification
+                    if ($user->fcm_token) {
+                        try {
+                            $this->fcmService->sendToDevice(
+                                $user->fcm_token,
+                                'Forwarded Email from ' . auth()->user()->full_name,
+                                'Fwd: ' . $request->subject,
+                                [
+                                    'type' => 'email_forward',
+                                    'email_id' => (string) $mail->id,
+                                    'sender_name' => auth()->user()->full_name,
+                                    'subject' => $request->subject,
+                                    'sender_email' => auth()->user()->email,
+                                    'notification_id' => (string) $notification->id
+                                ]
+                            );
+                        } catch (Exception $e) {
+                            Log::error('FCM email forward notification failed: ' . $e->getMessage());
+                        }
+                    }
                 }
             }
         }
@@ -890,21 +998,10 @@ class SendMailController extends Controller
         $mail_user->is_from = 1;
         $mail_user->save();
 
-        // Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
-
-        // session()->flash('message', 'Your mail has been sent Successfully');
-
-        // return response()->json(['message' => 'Mail sent successfully.', 'status' => true, 'send_to_ids' => array_merge($cc_id, $to_id), 'notification_message' => $notification_message]);
-
         try {
-
-            // Mail::to($to)->cc($cc)->send(new MailSendMail($mail));
             $sender_user = auth()->user();
             $senderEmail = $sender_user->email;
             $senderName = $sender_user->full_name;
-
-            // Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $senderEmail, $senderName));
-
 
             session()->flash('message', 'Your mail has been sent Successfully');
 
@@ -926,6 +1023,7 @@ class SendMailController extends Controller
             ], 500);
         }
     }
+
 
     // public function view($id)
     // {

@@ -255,6 +255,10 @@ class AuthController extends Controller
             if ($request->time_zone) {
                 $user->update(['time_zone' => $request->time_zone]);
             }
+            // save fcm_token
+            if ($request->fcm_token) {
+                $user->update(['fcm_token' => $request->fcm_token]);
+            }
             return response()->json(['message' => 'Login successfully', 'status' => true, 'token' => $token], 200);
         } else {
             $otp_verify = VerifyOTP::where('user_id', $request->id)->where('otp', $request->otp)->orderBy('id', 'desc')->first();
@@ -270,6 +274,10 @@ class AuthController extends Controller
                 $user->update(['time_zone' => $request->time_zone]);
             }
             // $user->update(['time_zone' => $request->time_zone]);
+            // save fcm_token
+            if ($request->fcm_token) {
+                $user->update(['fcm_token' => $request->fcm_token]);
+            }
 
             return response()->json(['message' => 'Login successfully', 'status' => true, 'token' => $token], 200);
         }
@@ -492,6 +500,34 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'An error occurred while fetching states.'
             ], 201);
+        }
+    }
+
+
+
+
+    /**
+     * Logout
+     *
+     * Logs out the user by revoking their access token.
+     *
+     * @response 200 {
+     *   "message": "User logged out successfully"
+     * }
+     */
+    public function logout()
+    {
+        try {
+            // Revoke the user's access token
+            Auth::user()->token()->revoke();
+            // clear fcm_token
+            Auth::user()->update(['fcm_token' => null]);
+
+            // Return a success response
+            return response()->json(['message' => 'User logged out successfully'], 200);
+        } catch (\Exception $e) {
+            // Handle any exceptions and return an error response
+            return response()->json(['message' => 'An error occurred while logging out.'], 500);
         }
     }
 }
