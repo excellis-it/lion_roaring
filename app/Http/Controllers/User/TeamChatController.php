@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use App\Services\FCMService;
 use Illuminate\Support\Facades\Log;
 use Exception;
+use Illuminate\Support\Facades\Storage;
 
 class TeamChatController extends Controller
 {
@@ -218,9 +219,11 @@ class TeamChatController extends Controller
                 $team_chat->message = ' ';
             }
             $team_chat->attachment = $this->imageUpload($request->file('file'), 'team-chat');
+            $message_type = $this->detectMessageType($request->file('file'));
         } else {
             $team_chat->message = $input_message;
             $team_chat->attachment = '';
+            $message_type = 'text';
         }
         $team_chat->save();
 
@@ -263,6 +266,8 @@ class TeamChatController extends Controller
                                 'sender_id' => (string) auth()->id(),
                                 'sender_name' => auth()->user()->full_name,
                                 'message' => $input_message,
+                                'attachment' => $request->file ? Storage::url($team_chat->attachment) : '',
+                                'msg_type' => $message_type,
                                 'notification_id' => (string) $notification->id
                             ]
                         );
@@ -279,6 +284,32 @@ class TeamChatController extends Controller
 
         return response()->json(['message' => 'Message sent successfully.', 'status' => true, 'chat' => $chat, 'chat_member_id' => $chat_member_id]);
     }
+
+    /**
+     * Determine message type based on file extension.
+     */
+    private function detectMessageType($file): string
+    {
+        if (!$file) {
+            return 'text';
+        }
+
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        $image_extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
+        $audio_extensions = ['mp3', 'wav', 'ogg', 'aac', 'm4a'];
+        $video_extensions = ['mp4', 'mov', 'avi', 'mkv', 'webm'];
+        $doc_extensions   = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'csv'];
+
+        return match (true) {
+            in_array($extension, $image_extensions) => 'image',
+            in_array($extension, $audio_extensions) => 'audio',
+            in_array($extension, $video_extensions) => 'video',
+            in_array($extension, $doc_extensions)   => 'doc',
+            default => 'text',
+        };
+    }
+
 
     public function groupInfo(Request $request)
     {
