@@ -32,6 +32,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       last_name:
         name: last_name
@@ -41,6 +42,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       email:
         name: email
@@ -50,6 +52,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       address:
         name: address
@@ -59,6 +62,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       city:
         name: city
@@ -68,6 +72,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       state:
         name: state
@@ -77,6 +82,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       postcode:
         name: postcode
@@ -86,6 +92,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       amount:
         name: amount
@@ -95,6 +102,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       country_id:
         name: country_id
@@ -104,15 +112,17 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       stripeToken:
         name: stripeToken
         description: required.
         required: false
-        example: dolorem
+        example: velit
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanBodyParameters:
       first_name: 'Robert Hyde'
@@ -124,7 +134,7 @@ endpoints:
       postcode: ZP74857
       amount: 150
       country_id: 2
-      stripeToken: dolorem
+      stripeToken: velit
     fileParameters: []
     responses: []
     responseFields: []

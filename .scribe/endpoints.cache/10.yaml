@@ -30,6 +30,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       search:
         name: search
@@ -39,6 +40,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanQueryParameters:
       type: '"unread"'
@@ -116,6 +118,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       search:
         name: search
@@ -125,6 +128,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanQueryParameters:
       type: '"draft"'
@@ -202,6 +206,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       search:
         name: search
@@ -211,6 +216,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanQueryParameters:
       type: '"important"'
@@ -288,6 +294,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       search:
         name: search
@@ -297,6 +304,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanQueryParameters:
       type: '"archived"'
@@ -376,6 +384,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       mail_id: 1
@@ -595,37 +604,41 @@ endpoints:
         name: to
         description: 'JSON-encoded array of recipient emails in the format [{"value": "masum2@excellisit.net"}, {"value": "user2@example.com"}].'
         required: true
-        example: placeat
+        example: soluta
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       cc:
         name: cc
         description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: assumenda
+        example: autem
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       subject:
         name: subject
         description: 'The subject of the email.'
         required: true
-        example: nihil
+        example: autem
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       message:
         name: message
         description: 'The body content of the email.'
         required: true
-        example: nemo
+        example: facere
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       attachments:
         name: attachments
@@ -636,12 +649,13 @@ endpoints:
         type: 'file[]'
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanBodyParameters:
-      to: placeat
-      cc: assumenda
-      subject: nihil
-      message: nemo
+      to: soluta
+      cc: autem
+      subject: autem
+      message: facere
     fileParameters:
       attachments:
         - null
@@ -720,33 +734,37 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       cc:
         name: cc
         description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: consequatur
+        example: consequuntur
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       subject:
         name: subject
         description: 'The subject of the reply email.'
         required: true
-        example: dicta
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       message:
         name: message
         description: 'The body content of the reply email.'
         required: true
-        example: rerum
+        example: nemo
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       attachments:
         name: attachments
@@ -757,22 +775,24 @@ endpoints:
         type: 'file[]'
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       main_mail_id:
         name: main_mail_id
         description: 'The ID of the main email thread being replied to.'
         required: true
-        example: 7
+        example: 2
         type: integer
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanBodyParameters:
       to: doloribus
-      cc: consequatur
-      subject: dicta
-      message: rerum
-      main_mail_id: 7
+      cc: consequuntur
+      subject: et
+      message: nemo
+      main_mail_id: 2
     fileParameters:
       attachments:
         - null
@@ -848,37 +868,41 @@ endpoints:
         name: to
         description: 'JSON-encoded array of recipient emails in the format [{"value": "user1@example.com"}, {"value": "user2@example.com"}].'
         required: true
-        example: illum
+        example: sit
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       cc:
         name: cc
         description: 'JSON-encoded array of CC recipient emails in the same format as the "to" field. Optional.'
         required: false
-        example: nemo
+        example: ex
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       subject:
         name: subject
         description: 'The subject of the forwarded email.'
         required: true
-        example: itaque
+        example: laborum
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       message:
         name: message
         description: 'The body content of the forwarded email.'
         required: true
-        example: eum
+        example: placeat
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       attachments:
         name: attachments
@@ -889,12 +913,13 @@ endpoints:
         type: 'file[]'
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanBodyParameters:
-      to: illum
-      cc: nemo
-      subject: itaque
-      message: eum
+      to: sit
+      cc: ex
+      subject: laborum
+      message: placeat
     fileParameters:
       attachments:
         - null
@@ -976,6 +1001,7 @@ endpoints:
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       mailIds:
@@ -1056,6 +1082,7 @@ endpoints:
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       mailIds:
@@ -1134,6 +1161,7 @@ endpoints:
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       mailIds:
@@ -1197,6 +1225,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       star_value:
         name: star_value
@@ -1206,6 +1235,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       mail_id: 1
@@ -1277,6 +1307,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       mail_id: 1
@@ -1337,6 +1368,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       mail_id: 1
@@ -1397,6 +1429,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       mail_id: 1
@@ -1504,6 +1537,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1

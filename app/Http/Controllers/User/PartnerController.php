@@ -196,6 +196,7 @@ class PartnerController extends Controller
         $data->is_ecclesia_admin = $is_ecclesia_admin;
         $data->user_name = $request->user_name;
         $data->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
+        $data->phone_country_code_name = $request->phone_country_code_name;
         $data->status = 1;
         $data->is_accept = 1;
 
@@ -342,6 +343,7 @@ class PartnerController extends Controller
             $data->ecclesia_id = $request->ecclesia_id;
             $data->is_ecclesia_admin = $is_ecclesia_admin;
             $data->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
+            $data->phone_country_code_name = $request->phone_country_code_name;
             if ($request->password) {
                 $data->password = bcrypt($request->password);
             }

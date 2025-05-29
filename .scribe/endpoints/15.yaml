@@ -28,6 +28,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanQueryParameters:
       search: '"abc"'
@@ -104,6 +105,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       description:
         name: description
@@ -113,6 +115,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
       start:
         name: start
@@ -122,6 +125,7 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       end:
         name: end
@@ -131,6 +135,7 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       title: 'Project Sync'
@@ -198,6 +203,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -287,6 +293,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1
@@ -301,6 +308,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       description:
         name: description
@@ -310,6 +318,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
       start:
         name: start
@@ -319,6 +328,7 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       end:
         name: end
@@ -328,6 +338,7 @@ endpoints:
         type: datetime
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       title: 'Project Sync Update'
@@ -377,6 +388,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 1

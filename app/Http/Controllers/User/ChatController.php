@@ -11,10 +11,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use App\Helpers\Helper;
+use App\Services\FCMService;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class ChatController extends Controller
 {
     use ImageTrait;
+
+    protected $fcmService;
+
+    public function __construct(FCMService $fcmService)
+    {
+        $this->fcmService = $fcmService;
+    }
 
     public function chats()
     {
@@ -151,10 +161,6 @@ class ChatController extends Controller
                 $themessage = ' ';
             }
             if ($request->file) {
-                // check the file size
-                // if ($request->file('file')->getSize() > 10240) {
-                //     return response()->json(['msg' => 'File size is too large', 'success' => false]);
-                // }
                 $file = $this->imageUpload($request->file('file'), 'chat');
                 $chatData = Chat::create([
                     'sender_id' => $request->sender_id,
@@ -174,8 +180,35 @@ class ChatController extends Controller
             // get chat data with sender and reciver
             $chat = Chat::with('sender', 'reciver')->find($chatData->id);
             $chat->created_at_formatted = $chat->created_at->format('Y-m-d H:i:s');
-            // return $chat;
-            // dd($chat);
+
+            // Send FCM notification to receiver
+            $receiver = User::find($request->reciver_id);
+            if ($receiver && $receiver->fcm_token) {
+                try {
+                    $this->fcmService->sendToDevice(
+                        $receiver->fcm_token,
+                        'New Message from ' . auth()->user()->full_name,
+                        $request->file ? 'Sent an attachment' : $themessage,
+                        [
+                            'type' => 'chat',
+                            'chat_id' => (string) $chat->id,
+                            'sender_id' => (string) auth()->id(),
+                            'sender_name' => auth()->user()->full_name,
+                            'message' => $themessage,
+                            'timestamp' => $chat->created_at_formatted
+                        ]
+                    );
+                    Log::info('FCM chat notification sent successfully', [
+                        'receiver_id' => $receiver->id,
+                        'chat_id' => $chat->id,
+                        'message' => $themessage
+                    ]);
+                } catch (Exception $e) {
+                    Log::error('FCM chat notification failed: ' . $e->getMessage());
+                }
+            }
+
+            // ...existing code... (users array processing)
             $users = User::with('roles', 'chatSender')->where('id', '!=', auth()->id())->where('status', 1)->whereHas('roles', function ($query) {
                 $query->whereIn('type', [1, 2, 3]);
             })->get()->toArray();
@@ -248,7 +281,6 @@ class ChatController extends Controller
 
                 return $b['last_message']->created_at <=> $a['last_message']->created_at; // Sort by latest message timestamp
             });
-
 
             return response()->json(['msg' => 'Message sent successfully', 'chat' => $chat, 'users' => $users, 'receiver_users' => $receiver_users, 'chat_count' => $chat_count, 'success' => true]);
         } catch (\Throwable $th) {
@@ -343,7 +375,7 @@ class ChatController extends Controller
             $sender_id = $request->sender_id;
             $chat_id = $request->chat_id;
             $sender = User::find($sender_id);
-            // return $request->is_delete;
+
             if (isset($request->is_delete)) {
                 Notification::where('user_id', $user_id)->where('chat_id', $chat_id)->update(['is_delete' => 1]);
                 return response()->json(['msg' => 'Notification deleted successfully', 'status' => true]);
@@ -352,6 +384,7 @@ class ChatController extends Controller
             $count = Notification::where(function ($query) use ($request) {
                 $query->where('user_id', $request->user_id)->where('is_read', 0)->where('chat_id', $request->chat_id)->where('type', 'Chat');
             })->count();
+
             if ($count > 0) {
                 $notification = Notification::where('user_id', $request->user_id)->where('is_read', 0)->where('chat_id', $request->chat_id)->where('type', 'Chat')->first();
                 $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->where('is_delete', 0)->count();
@@ -363,6 +396,28 @@ class ChatController extends Controller
                 $notification->message = 'You have a <b>new message</b> from ' . $sender->full_name;
                 $notification->type = 'Chat';
                 $notification->save();
+
+                // Send FCM notification
+                $receiver = User::find($user_id);
+                if ($receiver && $receiver->fcm_token) {
+                    try {
+                        $this->fcmService->sendToDevice(
+                            $receiver->fcm_token,
+                            'New Message',
+                            'You have a new message from ' . $sender->full_name,
+                            [
+                                'type' => 'chat_notification',
+                                'chat_id' => (string) $chat_id,
+                                'sender_id' => (string) $sender_id,
+                                'sender_name' => $sender->full_name,
+                                'notification_id' => (string) $notification->id
+                            ]
+                        );
+                    } catch (Exception $e) {
+                        Log::error('FCM chat notification failed: ' . $e->getMessage());
+                    }
+                }
+
                 $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->where('is_delete', 0)->count();
                 return response()->json(['msg' => 'Notification sent successfully', 'status' => true, 'notification_count' => $notification_count, 'notification' => $notification]);
             }

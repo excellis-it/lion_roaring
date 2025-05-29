@@ -166,6 +166,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 2
@@ -262,6 +263,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       is_ecclesia:
         name: is_ecclesia
@@ -271,6 +273,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       permissions:
         name: permissions
@@ -283,6 +286,7 @@ endpoints:
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       role_name: Manager
@@ -353,6 +357,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 2
@@ -367,6 +372,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       is_ecclesia:
         name: is_ecclesia
@@ -376,6 +382,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       permissions:
         name: permissions
@@ -389,6 +396,7 @@ endpoints:
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       role_name: 'Senior Manager'
@@ -469,6 +477,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 3

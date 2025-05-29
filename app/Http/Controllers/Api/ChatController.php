@@ -10,17 +10,24 @@ use App\Models\User;
 use App\Traits\ImageTrait;
 use Illuminate\Support\Facades\Storage;
 use App\Helpers\Helper;
+use App\Services\FCMService;
 
 /**
  * @group Chats
  */
 
-
 class ChatController extends Controller
 {
-
     protected $successStatus = 200;
     use ImageTrait;
+
+    protected $fcmService;
+
+    public function __construct(FCMService $fcmService)
+    {
+        $this->fcmService = $fcmService;
+    }
+
     /**
      * List of Chat Users
      *
@@ -128,12 +135,44 @@ class ChatController extends Controller
     public function chats(Request $request)
     {
         try {
-            $chat_users = User::with('roles')->where('id', '!=', auth()->id())
-                ->where('status', 1)
-                ->whereHas('roles', function ($query) {
-                    $query->whereIn('type', [1, 2, 3]);
-                })
-                ->get();
+            $search_query = $request->input('search');
+
+            if (!empty($search_query)) {
+                // return $chat_users = [];
+                // If search query is provided, filter users based on the search
+                $chat_users = User::with('roles')
+                    ->where('id', '!=', auth()->id())
+                    ->where('status', 1)
+                    ->whereHas('roles', function ($query) {
+                        $query->whereIn('type', [1, 2, 3]);
+                    })
+                    ->where(function ($q) use ($search_query) {
+                        $q->where('user_name', 'LIKE', "%{$search_query}%")
+                            ->orWhere('first_name', 'LIKE', "%{$search_query}%")
+                            ->orWhere('middle_name', 'LIKE', "%{$search_query}%")
+                            ->orWhere('last_name', 'LIKE', "%{$search_query}%")
+                            ->orWhere('email', 'LIKE', "%{$search_query}%")
+                            // ->orWhereRaw("CONCAT(IFNULL(first_name, ''), ' ', IFNULL(middle_name, ''), ' ', IFNULL(last_name, '')) LIKE ?", ["%{$search_query}%"]);
+                            ->orWhereRaw("TRIM(CONCAT_WS(' ', first_name, middle_name, last_name)) LIKE ?", ["%{$search_query}%"]);
+                    })
+                    ->get();
+            } else {
+                // If no search query, get all chat users
+                $chat_users = User::with('roles')
+                    ->where('id', '!=', auth()->id())
+                    ->where('status', 1)
+                    ->whereHas('roles', function ($query) {
+                        $query->whereIn('type', [1, 2, 3]);
+                    })
+                    ->get();
+            }
+
+            // $chat_users = User::with('roles')->where('id', '!=', auth()->id())
+            //     ->where('status', 1)
+            //     ->whereHas('roles', function ($query) {
+            //         $query->whereIn('type', [1, 2, 3]);
+            //     })
+            //     ->get();
 
             // Calculate unseen chat count and last message for each user
             $chat_users->each(function ($chat_user) {
@@ -440,6 +479,28 @@ class ChatController extends Controller
             $chat = Chat::with('sender', 'reciver')->find($chatData->id);
             $chat->created_at_formatted = $chat->created_at->format('Y-m-d H:i:s');
 
+            // Send FCM notification to receiver
+            $receiver = User::find($request->reciver_id);
+            if ($receiver && $receiver->fcm_token) {
+                try {
+                    $this->fcmService->sendToDevice(
+                        $receiver->fcm_token,
+                        'New Message from ' . auth()->user()->full_name,
+                        $request->file ? 'Sent an attachment' : $themessage,
+                        [
+                            'type' => 'chat',
+                            'chat_id' => (string) $chat->id,
+                            'sender_id' => (string) auth()->id(),
+                            'sender_name' => auth()->user()->full_name,
+                            'message' => $themessage,
+                            'timestamp' => $chat->created_at_formatted
+                        ]
+                    );
+                } catch (Exception $e) {
+                    Log::error('FCM chat notification failed: ' . $e->getMessage());
+                }
+            }
+
             return response()->json([
                 'msg' => 'Message sent successfully',
                 'chat' => $chat,
@@ -693,6 +754,27 @@ class ChatController extends Controller
                 $notification->type = 'Chat';
                 $notification->save();
 
+                // Send FCM notification
+                $receiver = User::find($user_id);
+                if ($receiver && $receiver->fcm_token) {
+                    try {
+                        $this->fcmService->sendToDevice(
+                            $receiver->fcm_token,
+                            'New Message',
+                            'You have a new message from ' . $sender->full_name,
+                            [
+                                'type' => 'chat_notification',
+                                'chat_id' => (string) $chat_id,
+                                'sender_id' => (string) $sender_id,
+                                'sender_name' => $sender->full_name,
+                                'notification_id' => (string) $notification->id
+                            ]
+                        );
+                    } catch (Exception $e) {
+                        Log::error('FCM chat notification failed: ' . $e->getMessage());
+                    }
+                }
+
                 $notification_count = Notification::where('user_id', $user_id)
                     ->where('is_read', 0)
                     ->where('is_delete', 0)
@@ -710,10 +792,90 @@ class ChatController extends Controller
     }
 
 
+    // search API function for app
+    /**
+     * Search Chat Users
+     *
+     * Searches for chat users based on a query string. Returns a list of users whose names or usernames match the query.
+     * @authenticated
+     * @bodyParam query string required The search query string. Example: "john"
+     *
+     * @response 200 {
+     *    "users": [
+     *        {
+     *            "id": 1,
+     *            "user_name": "john_doe",
+     *            "first_name": "John",
+     *            "last_name": "Doe",
+     *            "email": "john@example.com"
+     *        }
+     *    ]
+     * }
+     */
+    public function search(Request $request)
+    {
+        try {
+            $query = $request->input('query');
+
+            $chat_users = User::with('roles')
+                ->where('id', '!=', auth()->id())
+                ->where('status', 1)
+                ->whereHas('roles', function ($query) {
+                    $query->whereIn('type', [1, 2, 3]);
+                })
+                ->where(function ($q) use ($query) {
+                    $q->where('user_name', 'LIKE', "%{$query}%")
+                        ->orWhere('first_name', 'LIKE', "%{$query}%")
+                        ->orWhere('last_name', 'LIKE', "%{$query}%")
+                        ->orWhere('email', 'LIKE', "%{$query}%");
+                })
+                ->get();
+
+            // Calculate unseen chat count and last message for each user
+            $chat_users->each(function ($chat_user) {
+                $chat_user->chat_count = Helper::getCountUnseenMessage(auth()->id(), $chat_user->id);
+
+                // Get the last message
+                $chat_user->last_message = Chat::where(function ($query) use ($chat_user) {
+                    $query->where(function ($subQuery) use ($chat_user) {
+                        $subQuery->where('sender_id', $chat_user->id)
+                            ->where('reciver_id', auth()->id())
+                            ->where('deleted_for_reciver', 0)
+                            ->where('delete_from_receiver_id', 0);
+                    })->orWhere(function ($subQuery) use ($chat_user) {
+                        $subQuery->where('sender_id', auth()->id())
+                            ->where('reciver_id', $chat_user->id)
+                            ->where('deleted_for_sender', 0)
+                            ->where('delete_from_sender_id', 0);
+                    });
+                })
+                    ->orderBy('created_at', 'desc')->first();
+            });
+
+            // Convert to array
+            $chat_users = $chat_users->toArray();
+
+            // Sort users based on the latest message timestamp, placing users with no messages at the end
+            usort($chat_users, function ($a, $b) {
+                if ($a['last_message'] === null) {
+                    return 1; // Move users with no messages to the end
+                }
+                if ($b['last_message'] === null) {
+                    return -1; // Move users with no messages to the end
+                }
+
+                return strtotime($b['last_message']['created_at']) <=> strtotime($a['last_message']['created_at']);
+            });
+
+            return response()->json($chat_users, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error searching for users.',
+                'error' => $e->getMessage()
+            ], 201);
+        }
+    }
 
 
-
-
-
-    //
+    ///////
 }

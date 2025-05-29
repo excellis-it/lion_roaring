@@ -263,7 +263,8 @@
             const dialCode = selectedCountry.dialCode;
             const exampleNumber = intlTelInputUtils.getExampleNumber(selectedCountry.iso2, 0, 0);
 
-            let maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
+            let maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils
+                .numberFormat.NATIONAL);
             maskNumber = maskNumber.replace('+' + dialCode + ' ', '');
 
             let mask;
@@ -285,11 +286,13 @@
                 $(this).val('');
                 const newSelectedCountry = $(this).intlTelInput('getSelectedCountryData');
                 const newDialCode = newSelectedCountry.dialCode;
+                const newCountryCodeName = newSelectedCountry;
                 const newExampleNumber = intlTelInputUtils.getExampleNumber(newSelectedCountry.iso2, 0, 0);
-
-                let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry.iso2, intlTelInputUtils.numberFormat.NATIONAL);
+                console.log('Selected country code name:', newCountryCodeName.iso2);
+                let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry.iso2,
+                    intlTelInputUtils.numberFormat.NATIONAL);
                 newMaskNumber = newMaskNumber.replace('+' + newDialCode + ' ', '');
-                
+
                 let newMask;
                 if (newDialCode.length > 2) {
                     // If dial code length is more than 2, use a 999 999 999 mask (or a similar format)
@@ -323,6 +326,8 @@
                 const phoneInput = $("#mobile_code");
                 const fullNumber = phoneInput.intlTelInput('getNumber');
                 const countryCode = phoneInput.intlTelInput('getSelectedCountryData').dialCode;
+                const countryData = phoneInput.intlTelInput('getSelectedCountryData');
+                const countryCodeName = countryData.iso2;
 
                 $('<input>').attr({
                     type: 'hidden',
@@ -334,6 +339,12 @@
                     type: 'hidden',
                     name: 'country_code',
                     value: countryCode
+                }).appendTo('form');
+
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'phone_country_code_name',
+                    value: countryCodeName
                 }).appendTo('form');
             });
         });

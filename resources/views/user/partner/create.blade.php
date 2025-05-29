@@ -465,6 +465,8 @@
                 const phoneInput = $("#mobile_code");
                 const fullNumber = phoneInput.intlTelInput('getNumber');
                 const countryCode = phoneInput.intlTelInput('getSelectedCountryData').dialCode;
+                const countryData = phoneInput.intlTelInput('getSelectedCountryData');
+                const countryCodeName = countryData.iso2;
 
                 $('<input>').attr({
                     type: 'hidden',
@@ -476,6 +478,12 @@
                     type: 'hidden',
                     name: 'country_code',
                     value: countryCode
+                }).appendTo('form');
+
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'phone_country_code_name',
+                    value: countryCodeName
                 }).appendTo('form');
             });
         });

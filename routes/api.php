@@ -30,6 +30,7 @@ use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\PolicyGuidenceController;
 use App\Http\Controllers\Api\RolePermissionController;
 use App\Http\Controllers\Api\EcclesiaController;
+use App\Http\Controllers\Api\FCMController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +49,15 @@ use App\Http\Controllers\Api\EcclesiaController;
 
 Route::prefix('v3')->group(function () {
     Route::post('contact-us', [ContactUsController::class, 'store']);
+
+    Route::prefix('e-store')->group(function () {
+        // Route::get('/all-products', [EstoreProductController::class, 'products']);
+        Route::get('/store-home', [EstoreProductController::class, 'storeHome']);
+        Route::get('/category-products/{slug}', [EstoreProductController::class, 'productsByCategorySlug']);
+        Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails']);
+        Route::get('/products-filter', [EstoreProductController::class, 'productsFilter']);
+    });
+
 
     Route::prefix('cms')->group(function () {
         Route::post('home', [CmsController::class, 'home']);
@@ -75,6 +85,8 @@ Route::prefix('v3')->group(function () {
     // donation
     Route::post('donation', [DonationController::class, 'donation']);
     Route::post('country-list', [DonationController::class, 'countryList']);
+    // getCountryById
+    Route::post('country-by-id', [AuthController::class, 'getCountryById']);
 
     Route::post('register-ecclesi-list', [AuthController::class, 'ecclesiList']);
     Route::post('register-country-list', [AuthController::class, 'countryList']);
@@ -85,6 +97,8 @@ Route::prefix('v3')->group(function () {
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
     Route::post('register-agreement', [AuthController::class, 'registerAgreement']);
     Route::post('forget-password', [ForgetPasswordController::class, 'forgetPassword']);
+    // logout
+    Route::post('logout', [AuthController::class, 'logout']);
 
 
 
@@ -113,6 +127,8 @@ Route::prefix('v3')->group(function () {
             Route::post('/seen', [ChatController::class, 'seen']);
             Route::post('/remove', [ChatController::class, 'remove']);
             Route::post('/notification', [ChatController::class, 'notification']);
+            // search api
+            Route::post('/search', [ChatController::class, 'search']);
         });
 
         // Team Chat
@@ -295,9 +311,11 @@ Route::prefix('v3')->group(function () {
         });
 
 
-        Route::prefix('e-store')->group(function () {
-            Route::get('/all-products', [EstoreProductController::class, 'products']);
-        });
+        // Route::prefix('e-store')->group(function () {
+        //     Route::get('/all-products', [EstoreProductController::class, 'products']);
+        //     Route::get('/store-home', [EstoreProductController::class, 'storeHome']);
+        //     Route::get('/product/{id}', [EstoreProductController::class, 'productDetails']);
+        // });
 
 
         Route::prefix('role-permissions')->group(function () {
@@ -322,6 +340,11 @@ Route::prefix('v3')->group(function () {
 
 
 
-        //
+        // FCM Routes
+        Route::prefix('fcm')->group(function () {
+            Route::post('update-token', [FCMController::class, 'updateToken']);
+            Route::post('remove-token', [FCMController::class, 'removeToken']);
+            Route::post('test-notification', [FCMController::class, 'sendTestNotification']);
+        });
     });
 });
