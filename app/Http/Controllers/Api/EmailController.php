@@ -877,7 +877,7 @@ class EmailController extends Controller
                                 'New Email from ' . auth()->user()->full_name,
                                 'Subject: ' . $request->subject,
                                 [
-                                    'type' => 'email',
+                                    'type' => 'mail',
                                     'email_id' => (string) $mail->id,
                                     'sender_name' => auth()->user()->full_name,
                                     'subject' => $request->subject,
@@ -1069,7 +1069,7 @@ class EmailController extends Controller
                                 'Email Reply from ' . auth()->user()->full_name,
                                 'Re: ' . $request->subject,
                                 [
-                                    'type' => 'email_reply',
+                                    'type' => 'mail',
                                     'email_id' => (string) $mail->id,
                                     'main_email_id' => (string) $request->main_mail_id,
                                     'sender_name' => auth()->user()->full_name,
@@ -1258,7 +1258,7 @@ class EmailController extends Controller
                                 'Forwarded Email from ' . auth()->user()->full_name,
                                 'Fwd: ' . $request->subject,
                                 [
-                                    'type' => 'email_forward',
+                                    'type' => 'mail',
                                     'email_id' => (string) $mail->id,
                                     'sender_name' => auth()->user()->full_name,
                                     'subject' => $request->subject,
