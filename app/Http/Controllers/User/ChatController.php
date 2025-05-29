@@ -429,25 +429,25 @@ class ChatController extends Controller
                 $notification->save();
 
                 // Send FCM notification
-                $receiver = User::find($user_id);
-                if ($receiver && $receiver->fcm_token) {
-                    try {
-                        $this->fcmService->sendToDevice(
-                            $receiver->fcm_token,
-                            'New Message',
-                            'You have a new message from ' . $sender->full_name,
-                            [
-                                'type' => 'chat_notification',
-                                'chat_id' => (string) $chat_id,
-                                'sender_id' => (string) $sender_id,
-                                'sender_name' => $sender->full_name,
-                                'notification_id' => (string) $notification->id
-                            ]
-                        );
-                    } catch (Exception $e) {
-                        Log::error('FCM chat notification failed: ' . $e->getMessage());
-                    }
-                }
+                // $receiver = User::find($user_id);
+                // if ($receiver && $receiver->fcm_token) {
+                //     try {
+                //         $this->fcmService->sendToDevice(
+                //             $receiver->fcm_token,
+                //             'New Message',
+                //             'You have a new message from ' . $sender->full_name,
+                //             [
+                //                 'type' => 'chat_notification',
+                //                 'chat_id' => (string) $chat_id,
+                //                 'sender_id' => (string) $sender_id,
+                //                 'sender_name' => $sender->full_name,
+                //                 'notification_id' => (string) $notification->id
+                //             ]
+                //         );
+                //     } catch (Exception $e) {
+                //         Log::error('FCM chat notification failed: ' . $e->getMessage());
+                //     }
+                // }
 
                 $notification_count = Notification::where('user_id', $user_id)->where('is_read', 0)->where('is_delete', 0)->count();
                 return response()->json(['msg' => 'Notification sent successfully', 'status' => true, 'notification_count' => $notification_count, 'notification' => $notification]);
