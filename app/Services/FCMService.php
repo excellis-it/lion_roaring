@@ -8,6 +8,8 @@ use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Kreait\Firebase\Messaging\AndroidConfig;
+
 
 class FCMService
 {
@@ -34,9 +36,24 @@ class FCMService
         try {
             $notification = Notification::create($title, $body);
 
+
+            $androidConfig = AndroidConfig::fromArray([
+                // 'ttl' => '3600s',
+                'priority' => 'high',
+                'notification' => [
+                    // 'title' => '$GOOG up 1.43% on the day',
+                    // 'body' => '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.',
+                    // 'icon' => 'stock_ticker_update',
+                    // 'color' => '#f45342',
+                    'sound' => 'default',
+                    'visibility' => 'public',
+                ],
+            ]);
+
             $message = CloudMessage::withTarget('token', $token)
                 ->withNotification($notification)
-                ->withData($data);
+                ->withData($data)
+                ->withAndroidConfig($androidConfig);
 
             $result = $this->messaging->send($message);
 
