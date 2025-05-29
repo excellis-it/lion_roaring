@@ -191,14 +191,14 @@ endpoints:
         name: id
         description: 'The ID of the strategy to delete.'
         required: true
-        example: 6
+        example: 17
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 6
+      id: 17
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -244,14 +244,14 @@ endpoints:
         name: id
         description: 'The ID of the download.'
         required: true
-        example: quisquam
+        example: consectetur
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: quisquam
+      id: consectetur
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -297,14 +297,14 @@ endpoints:
         name: id
         description: 'The ID of the strategy to view.'
         required: true
-        example: 14
+        example: 8
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 14
+      id: 8
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []

@@ -50,6 +50,15 @@ use App\Http\Controllers\Api\FCMController;
 Route::prefix('v3')->group(function () {
     Route::post('contact-us', [ContactUsController::class, 'store']);
 
+    Route::prefix('e-store')->group(function () {
+        // Route::get('/all-products', [EstoreProductController::class, 'products']);
+        Route::get('/store-home', [EstoreProductController::class, 'storeHome']);
+        Route::get('/category-products/{slug}', [EstoreProductController::class, 'productsByCategorySlug']);
+        Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails']);
+        Route::get('/products-filter', [EstoreProductController::class, 'productsFilter']);
+    });
+
+
     Route::prefix('cms')->group(function () {
         Route::post('home', [CmsController::class, 'home']);
         Route::post('gallery', [CmsController::class, 'gallery']);
@@ -302,9 +311,11 @@ Route::prefix('v3')->group(function () {
         });
 
 
-        Route::prefix('e-store')->group(function () {
-            Route::get('/all-products', [EstoreProductController::class, 'products']);
-        });
+        // Route::prefix('e-store')->group(function () {
+        //     Route::get('/all-products', [EstoreProductController::class, 'products']);
+        //     Route::get('/store-home', [EstoreProductController::class, 'storeHome']);
+        //     Route::get('/product/{id}', [EstoreProductController::class, 'productDetails']);
+        // });
 
 
         Route::prefix('role-permissions')->group(function () {

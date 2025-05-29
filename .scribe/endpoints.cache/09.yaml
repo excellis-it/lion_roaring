@@ -1650,7 +1650,7 @@ endpoints:
         name: is_delete
         description: 'optional Indicates if the notification should be marked as read and deleted.'
         required: false
-        example: 19
+        example: 12
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -1659,7 +1659,7 @@ endpoints:
     cleanBodyParameters:
       team_id: 10
       chat_id: 25
-      is_delete: 19
+      is_delete: 12
     fileParameters: []
     responses:
       -

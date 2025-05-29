@@ -399,14 +399,14 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: ratione
+        example: numquam
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: ratione
+      id: numquam
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
