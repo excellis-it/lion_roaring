@@ -98,7 +98,7 @@ Route::prefix('v3')->group(function () {
     Route::post('register-agreement', [AuthController::class, 'registerAgreement']);
     Route::post('forget-password', [ForgetPasswordController::class, 'forgetPassword']);
     // logout
-    Route::post('logout', [AuthController::class, 'logout']);
+
 
 
 
@@ -117,6 +117,8 @@ Route::prefix('v3')->group(function () {
         Route::get('/notification-read/{type}/{id}', [ProfileController::class, 'notificationRead'])->name('notification.read');
         // notification.clear
         Route::get('/notification-clear', [ProfileController::class, 'notificationClear'])->name('notification.clear');
+
+        Route::post('logout', [AuthController::class, 'logout']);
 
 
         Route::prefix('chats')->name('chats.')->group(function () {
