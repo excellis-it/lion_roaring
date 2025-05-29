@@ -168,6 +168,7 @@ class ChatController extends Controller
                     'message' => $themessage,
                     'attachment' => $file
                 ]);
+                $message_type = $this->detectMessageType($request->file('file'));
             } else {
                 $chatData = Chat::create([
                     'sender_id' => $request->sender_id,
@@ -175,11 +176,14 @@ class ChatController extends Controller
                     'message' => $themessage,
                     'attachment' => ''
                 ]);
+                $message_type = 'text';
             }
 
             // get chat data with sender and reciver
             $chat = Chat::with('sender', 'reciver')->find($chatData->id);
             $chat->created_at_formatted = $chat->created_at->format('Y-m-d H:i:s');
+
+            //  $message_type = $this->detectMessageType($request->file);
 
             // Send FCM notification to receiver
             $receiver = User::find($request->reciver_id);
@@ -187,7 +191,7 @@ class ChatController extends Controller
                 try {
                     $this->fcmService->sendToDevice(
                         $receiver->fcm_token,
-                        'New Message from ' . auth()->user()->full_name,
+                        'Message from ' . auth()->user()->full_name,
                         $request->file ? 'Sent an attachment' : $themessage,
                         [
                             'type' => 'chat',
@@ -195,6 +199,8 @@ class ChatController extends Controller
                             'sender_id' => (string) auth()->id(),
                             'sender_name' => auth()->user()->full_name,
                             'message' => $themessage,
+                            'attachment' => $request->file ? Storage::url($chat->attachment) : '',
+                            'msg_type' => $message_type,
                             'timestamp' => $chat->created_at_formatted
                         ]
                     );
@@ -286,6 +292,31 @@ class ChatController extends Controller
         } catch (\Throwable $th) {
             return response()->json(['msg' => $th->getMessage(), 'success' => false]);
         }
+    }
+
+    /**
+     * Determine message type based on file extension.
+     */
+    private function detectMessageType($file): string
+    {
+        if (!$file) {
+            return 'text';
+        }
+
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        $image_extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
+        $audio_extensions = ['mp3', 'wav', 'ogg', 'aac', 'm4a'];
+        $video_extensions = ['mp4', 'mov', 'avi', 'mkv', 'webm'];
+        $doc_extensions   = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'csv'];
+
+        return match (true) {
+            in_array($extension, $image_extensions) => 'image',
+            in_array($extension, $audio_extensions) => 'audio',
+            in_array($extension, $video_extensions) => 'video',
+            in_array($extension, $doc_extensions)   => 'doc',
+            default => 'text',
+        };
     }
 
     // public function clear(Request $request)

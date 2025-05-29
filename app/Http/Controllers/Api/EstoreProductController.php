@@ -153,8 +153,8 @@ class EstoreProductController extends Controller
     {
         try {
             $categories = Category::where('status', 1)->orderBy('id', 'DESC')->get();
-            $feature_products = Product::where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
-            $new_products = Product::where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
+            $feature_products = Product::with('image')->where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
+            $new_products = Product::with('image')->where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
             $section_titles = EcomHomeCms::orderBy('id', 'desc')->first();
 
             return response()->json([
