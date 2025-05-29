@@ -407,7 +407,7 @@ class TeamChatController extends Controller
                             'Added to Group',
                             'You have been added to ' . $team->name . ' group.',
                             [
-                                'type' => 'team_added',
+                                'type' => 'team',
                                 'team_id' => (string) $team->id,
                                 'team_name' => $team->name,
                                 'added_by' => auth()->user()->full_name,
@@ -855,7 +855,7 @@ class TeamChatController extends Controller
                                 $team->name,
                                 auth()->user()->full_name . ': ' . $messageText,
                                 [
-                                    'type' => 'team_chat',
+                                    'type' => 'team',
                                     'team_id' => (string) $request->team_id,
                                     'team_name' => $team->name,
                                     'chat_id' => (string) $team_chat->id,
@@ -1191,25 +1191,25 @@ class TeamChatController extends Controller
             $notification->save();
 
             // Send FCM notification to removed member
-            $removedMember = User::find($user_id);
-            if ($removedMember && $removedMember->fcm_token) {
-                try {
-                    $this->fcmService->sendToDevice(
-                        $removedMember->fcm_token,
-                        'Removed from Group',
-                        'You have been removed from ' . Team::find($team_id)->name . ' group.',
-                        [
-                            'type' => 'team_member_removed',
-                            'team_id' => (string) $team_id,
-                            'team_name' => Team::find($team_id)->name,
-                            'removed_by' => auth()->user()->full_name,
-                            'notification_id' => (string) $notification->id
-                        ]
-                    );
-                } catch (Exception $e) {
-                    Log::error('FCM team member removal notification failed: ' . $e->getMessage());
-                }
-            }
+            // $removedMember = User::find($user_id);
+            // if ($removedMember && $removedMember->fcm_token) {
+            //     try {
+            //         $this->fcmService->sendToDevice(
+            //             $removedMember->fcm_token,
+            //             'Removed from Group',
+            //             'You have been removed from ' . Team::find($team_id)->name . ' group.',
+            //             [
+            //                 'type' => 'team',
+            //                 'team_id' => (string) $team_id,
+            //                 'team_name' => Team::find($team_id)->name,
+            //                 'removed_by' => auth()->user()->full_name,
+            //                 'notification_id' => (string) $notification->id
+            //             ]
+            //         );
+            //     } catch (Exception $e) {
+            //         Log::error('FCM team member removal notification failed: ' . $e->getMessage());
+            //     }
+            // }
 
             // Add chat members and mark their status
             foreach ($members as $team) {
@@ -1322,7 +1322,7 @@ class TeamChatController extends Controller
                                 'Added to Group',
                                 'You have been added to ' . Team::find($team_id)->name . ' group.',
                                 [
-                                    'type' => 'team_member_added',
+                                    'type' => 'team',
                                     'team_id' => (string) $team_id,
                                     'team_name' => Team::find($team_id)->name,
                                     'added_by' => auth()->user()->full_name,
@@ -1621,7 +1621,7 @@ class TeamChatController extends Controller
                         'Made Group Admin',
                         'You have been made admin of ' . Team::find($team_id)->name . ' group.',
                         [
-                            'type' => 'team_admin_promotion',
+                            'type' => 'team',
                             'team_id' => (string) $team_id,
                             'team_name' => Team::find($team_id)->name,
                             'promoted_by' => auth()->user()->full_name,
