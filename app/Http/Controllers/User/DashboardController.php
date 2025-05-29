@@ -96,6 +96,7 @@ class DashboardController extends Controller
             $data->zip = $request->zip;
 
             $data->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone_number : $request->phone_number;
+            $data->phone_country_code_name = $request->phone_country_code_name;
             if ($request->hasFile('profile_picture')) {
                 $data->profile_picture = $this->imageUpload($request->file('profile_picture'), 'profile_picture');
             }
@@ -165,7 +166,7 @@ class DashboardController extends Controller
             return redirect()->route('products.index');
         } elseif ($type == 'strategy') {
             return redirect()->route('strategy.index');
-        }  elseif ($type == 'policy') {
+        } elseif ($type == 'policy') {
             return redirect()->route('policy-guidence.index');
         }
 

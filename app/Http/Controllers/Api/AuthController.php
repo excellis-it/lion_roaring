@@ -116,6 +116,7 @@ class AuthController extends Controller
         $user->middle_name = $request->middle_name;
         $user->address = $request->address;
         $user->phone = $request->phone;
+        $user->phone_country_code_name = $request->phone_country_code_name;
         $user->city = $request->city;
         $user->state = $request->state;
         $user->address2 = $request->address2;
@@ -248,11 +249,15 @@ class AuthController extends Controller
             return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
         }
 
-        if ($request->otp == '1111') {
+        if ($request->id == '90' && $request->otp == '1111') {
             $user = User::where('id', $request->id)->first();
             $token = $user->createToken('authToken')->accessToken;
             if ($request->time_zone) {
                 $user->update(['time_zone' => $request->time_zone]);
+            }
+            // save fcm_token
+            if ($request->fcm_token) {
+                $user->update(['fcm_token' => $request->fcm_token]);
             }
             return response()->json(['message' => 'Login successfully', 'status' => true, 'token' => $token], 200);
         } else {
@@ -269,6 +274,10 @@ class AuthController extends Controller
                 $user->update(['time_zone' => $request->time_zone]);
             }
             // $user->update(['time_zone' => $request->time_zone]);
+            // save fcm_token
+            if ($request->fcm_token) {
+                $user->update(['fcm_token' => $request->fcm_token]);
+            }
 
             return response()->json(['message' => 'Login successfully', 'status' => true, 'token' => $token], 200);
         }
@@ -396,6 +405,52 @@ class AuthController extends Controller
         }
     }
 
+    // get cuntry by id
+    /**
+     * Get Country by ID
+     *
+     * @bodyParam id integer required The ID of the country to fetch. Example: 1
+     *
+     * @response 200 {
+     *   "country": {
+     *     "id": 1,
+     *     "name": "Country Name",
+     *     "created_at": "2024-11-11T00:00:00.000000Z",
+     *     "updated_at": "2024-11-11T00:00:00.000000Z"
+     *   }
+     * }
+     *
+     * @response 201 {
+     *   "message": "Country not found."
+     * }
+     */
+    public function getCountryById(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:countries,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
+        }
+
+        try {
+            // Fetch the country by ID
+            $country = Country::find($request->id);
+
+            // Check if the country exists
+            if (!$country) {
+                return response()->json(['message' => 'Country not found.'], 201);
+            }
+
+            // Return a success response with the country data
+            return response()->json(['country' => $country], 200);
+        } catch (\Exception $e) {
+            // Handle any exceptions and return an error response
+            return response()->json(['message' => 'An error occurred while fetching the country.'], 201);
+        }
+    }
+
 
     /**
      * States by country
@@ -445,6 +500,34 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'An error occurred while fetching states.'
             ], 201);
+        }
+    }
+
+
+
+
+    /**
+     * Logout
+     *
+     * Logs out the user by revoking their access token.
+     *
+     * @response 200 {
+     *   "message": "User logged out successfully"
+     * }
+     */
+    public function logout()
+    {
+        try {
+            // Revoke the user's access token
+            Auth::user()->token()->revoke();
+            // clear fcm_token
+            Auth::user()->update(['fcm_token' => null]);
+
+            // Return a success response
+            return response()->json(['message' => 'User logged out successfully'], 200);
+        } catch (\Exception $e) {
+            // Handle any exceptions and return an error response
+            return response()->json(['message' => 'An error occurred while logging out.'], 500);
         }
     }
 }

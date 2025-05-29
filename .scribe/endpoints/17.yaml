@@ -28,6 +28,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanQueryParameters:
       search: '"abc"'
@@ -143,6 +144,7 @@ endpoints:
         type: file
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanBodyParameters: []
     fileParameters:
@@ -191,6 +193,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 14
@@ -239,13 +242,14 @@ endpoints:
         name: id
         description: 'The ID of the download.'
         required: true
-        example: consequuntur
+        example: aut
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanUrlParameters:
-      id: consequuntur
+      id: aut
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -291,13 +295,14 @@ endpoints:
         name: id
         description: 'The ID of the policy to view.'
         required: true
-        example: 20
+        example: 2
         type: integer
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanUrlParameters:
-      id: 20
+      id: 2
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []

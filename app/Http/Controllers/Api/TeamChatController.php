@@ -13,6 +13,9 @@ use App\Models\User;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\FCMService;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 /**
  * @group Group Chats
@@ -20,8 +23,14 @@ use Illuminate\Support\Facades\DB;
 
 class TeamChatController extends Controller
 {
-
     use ImageTrait;
+
+    protected $fcmService;
+
+    public function __construct(FCMService $fcmService)
+    {
+        $this->fcmService = $fcmService;
+    }
 
     public function userLastMessage($team_id, $user_id)
     {
@@ -225,10 +234,29 @@ class TeamChatController extends Controller
     public function list(Request $request)
     {
         try {
+            $search_query = $request->input('search');
             // Get the teams that the authenticated user is a member of
-            $teams = Team::with('chats.chatMembers')->whereHas('members', function ($query) {
-                $query->where('user_id', auth()->id());
-            })->orderBy('id', 'desc')->get()->toArray();
+            if (!empty($search_query)) {
+                $teams = Team::with('chats.chatMembers')
+                    ->whereHas('members', function ($query) {
+                        $query->where('user_id', auth()->id());
+                    })
+                    ->where('name', 'like', '%' . $search_query . '%')
+                    ->orderBy('id', 'desc')
+                    ->get()
+                    ->toArray();
+            } else {
+                $teams = Team::with('chats.chatMembers')
+                    ->whereHas('members', function ($query) {
+                        $query->where('user_id', auth()->id());
+                    })
+                    ->orderBy('id', 'desc')
+                    ->get()
+                    ->toArray();
+            }
+            // $teams = Team::with('chats.chatMembers')->whereHas('members', function ($query) {
+            //     $query->where('user_id', auth()->id());
+            // })->orderBy('id', 'desc')->get()->toArray();
 
             // Get the last message sent in each team
             $teams = array_map(function ($team) {
@@ -368,6 +396,27 @@ class TeamChatController extends Controller
                 $notification->message = 'You have been added to <b>' . $team->name . '</b> group.';
                 $notification->type = 'Team';
                 $notification->save();
+
+                // Send FCM notification
+                $member = User::find($member_id);
+                if ($member && $member->fcm_token) {
+                    try {
+                        $this->fcmService->sendToDevice(
+                            $member->fcm_token,
+                            'Added to Group',
+                            'You have been added to ' . $team->name . ' group.',
+                            [
+                                'type' => 'team_added',
+                                'team_id' => (string) $team->id,
+                                'team_name' => $team->name,
+                                'added_by' => auth()->user()->full_name,
+                                'notification_id' => (string) $notification->id
+                            ]
+                        );
+                    } catch (Exception $e) {
+                        Log::error('FCM team creation notification failed: ' . $e->getMessage());
+                    }
+                }
             }
 
             // Add the admin to the chat as well
@@ -775,6 +824,8 @@ class TeamChatController extends Controller
                 ->where('is_removed', false)
                 ->get();
 
+            $team = Team::find($request->team_id);
+
             foreach ($team_members as $team_member) {
                 $chat_member = new ChatMember();
                 $chat_member->chat_id = $team_chat->id;
@@ -787,9 +838,34 @@ class TeamChatController extends Controller
                     $notification = new Notification();
                     $notification->user_id = $team_member->user_id;
                     $notification->chat_id = $team_chat->id;
-                    $notification->message = 'You have a new message in <b>' . Team::find($request->team_id)->name . '</b> group.';
+                    $notification->message = 'You have a new message in <b>' . $team->name . '</b> group.';
                     $notification->type = 'Team';
                     $notification->save();
+
+                    // Send FCM notification
+                    $member = User::find($team_member->user_id);
+                    if ($member && $member->fcm_token) {
+                        try {
+                            $messageText = $request->file ? 'Sent an attachment' : $input_message;
+                            $this->fcmService->sendToDevice(
+                                $member->fcm_token,
+                                $team->name,
+                                auth()->user()->full_name . ': ' . $messageText,
+                                [
+                                    'type' => 'team_chat',
+                                    'team_id' => (string) $request->team_id,
+                                    'team_name' => $team->name,
+                                    'chat_id' => (string) $team_chat->id,
+                                    'sender_id' => (string) auth()->id(),
+                                    'sender_name' => auth()->user()->full_name,
+                                    'message' => $input_message,
+                                    'notification_id' => (string) $notification->id
+                                ]
+                            );
+                        } catch (Exception $e) {
+                            Log::error('FCM team chat notification failed: ' . $e->getMessage());
+                        }
+                    }
                 }
             }
 
@@ -1085,6 +1161,27 @@ class TeamChatController extends Controller
             $notification->type = 'Team';
             $notification->save();
 
+            // Send FCM notification to removed member
+            $removedMember = User::find($user_id);
+            if ($removedMember && $removedMember->fcm_token) {
+                try {
+                    $this->fcmService->sendToDevice(
+                        $removedMember->fcm_token,
+                        'Removed from Group',
+                        'You have been removed from ' . Team::find($team_id)->name . ' group.',
+                        [
+                            'type' => 'team_member_removed',
+                            'team_id' => (string) $team_id,
+                            'team_name' => Team::find($team_id)->name,
+                            'removed_by' => auth()->user()->full_name,
+                            'notification_id' => (string) $notification->id
+                        ]
+                    );
+                } catch (Exception $e) {
+                    Log::error('FCM team member removal notification failed: ' . $e->getMessage());
+                }
+            }
+
             // Add chat members and mark their status
             foreach ($members as $team) {
                 $chat_member = new ChatMember();
@@ -1186,6 +1283,27 @@ class TeamChatController extends Controller
                     $notification->message = 'You have been added to <b>' . Team::find($team_id)->name . '</b> group.';
                     $notification->type = 'Team';
                     $notification->save();
+
+                    // Send FCM notification
+                    $memberUser = User::find($member);
+                    if ($memberUser && $memberUser->fcm_token) {
+                        try {
+                            $this->fcmService->sendToDevice(
+                                $memberUser->fcm_token,
+                                'Added to Group',
+                                'You have been added to ' . Team::find($team_id)->name . ' group.',
+                                [
+                                    'type' => 'team_member_added',
+                                    'team_id' => (string) $team_id,
+                                    'team_name' => Team::find($team_id)->name,
+                                    'added_by' => auth()->user()->full_name,
+                                    'notification_id' => (string) $notification->id
+                                ]
+                            );
+                        } catch (Exception $e) {
+                            Log::error('FCM team member addition notification failed: ' . $e->getMessage());
+                        }
+                    }
                 }
             }
 
@@ -1464,6 +1582,27 @@ class TeamChatController extends Controller
             $notification->message = 'You have been made admin of <b>' . Team::find($team_id)->name . '</b> group.';
             $notification->type = 'Team';
             $notification->save();
+
+            // Send FCM notification
+            $newAdmin = User::find($user_id);
+            if ($newAdmin && $newAdmin->fcm_token) {
+                try {
+                    $this->fcmService->sendToDevice(
+                        $newAdmin->fcm_token,
+                        'Made Group Admin',
+                        'You have been made admin of ' . Team::find($team_id)->name . ' group.',
+                        [
+                            'type' => 'team_admin_promotion',
+                            'team_id' => (string) $team_id,
+                            'team_name' => Team::find($team_id)->name,
+                            'promoted_by' => auth()->user()->full_name,
+                            'notification_id' => (string) $notification->id
+                        ]
+                    );
+                } catch (Exception $e) {
+                    Log::error('FCM admin promotion notification failed: ' . $e->getMessage());
+                }
+            }
 
             return response()->json([
                 'message' => 'Member made admin successfully.',
@@ -1799,8 +1938,6 @@ class TeamChatController extends Controller
             ], 201);
         }
     }
-
-
 
 
 

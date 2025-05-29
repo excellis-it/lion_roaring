@@ -30,6 +30,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanQueryParameters:
       search: '"abc"'
@@ -145,6 +146,7 @@ endpoints:
         type: file
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanBodyParameters: []
     fileParameters:
@@ -189,13 +191,14 @@ endpoints:
         name: id
         description: 'The ID of the strategy to delete.'
         required: true
-        example: 7
+        example: 17
         type: integer
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanUrlParameters:
-      id: 7
+      id: 17
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -241,13 +244,14 @@ endpoints:
         name: id
         description: 'The ID of the download.'
         required: true
-        example: aut
+        example: consectetur
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanUrlParameters:
-      id: aut
+      id: consectetur
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -293,13 +297,14 @@ endpoints:
         name: id
         description: 'The ID of the strategy to view.'
         required: true
-        example: 3
+        example: 8
         type: integer
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanUrlParameters:
-      id: 3
+      id: 8
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []

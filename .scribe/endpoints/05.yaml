@@ -30,6 +30,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       ecclesia_id:
         name: ecclesia_id
@@ -39,6 +40,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
       role:
         name: role
@@ -48,6 +50,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       first_name:
         name: first_name
@@ -57,6 +60,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       last_name:
         name: last_name
@@ -66,6 +70,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       middle_name:
         name: middle_name
@@ -75,6 +80,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
       email:
         name: email
@@ -84,6 +90,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       password:
         name: password
@@ -93,6 +100,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       confirm_password:
         name: confirm_password
@@ -102,6 +110,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       address:
         name: address
@@ -111,6 +120,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       country:
         name: country
@@ -120,6 +130,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       state:
         name: state
@@ -129,6 +140,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       city:
         name: city
@@ -138,6 +150,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       zip:
         name: zip
@@ -147,6 +160,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       address2:
         name: address2
@@ -156,6 +170,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
       phone:
         name: phone
@@ -165,6 +180,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       user_name: johndoe
@@ -237,6 +253,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanQueryParameters:
       search: '"abc"'
@@ -445,6 +462,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       id: 5
@@ -539,13 +557,14 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: adipisci
+        example: ea
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanUrlParameters:
-      id: adipisci
+      id: ea
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -553,10 +572,11 @@ endpoints:
         name: role
         description: "'role' => 'required',."
         required: true
-        example: mollitia
+        example: ipsam
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       first_name:
         name: first_name
@@ -566,6 +586,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       last_name:
         name: last_name
@@ -575,6 +596,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       middle_name:
         name: middle_name
@@ -584,6 +606,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
       email:
         name: email
@@ -593,6 +616,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       address:
         name: address
@@ -602,6 +626,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       phone:
         name: phone
@@ -611,6 +636,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       ecclesia_id:
         name: ecclesia_id
@@ -620,6 +646,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
       country:
         name: country
@@ -629,6 +656,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       state:
         name: state
@@ -638,6 +666,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       city:
         name: city
@@ -647,6 +676,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       zip:
         name: zip
@@ -656,6 +686,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       address2:
         name: address2
@@ -665,6 +696,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
       password:
         name: password
@@ -674,6 +706,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
       confirm_password:
         name: confirm_password
@@ -683,6 +716,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
         custom: []
       status:
         name: status
@@ -692,9 +726,10 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
-      role: mollitia
+      role: ipsam
       first_name: John
       last_name: Doe
       middle_name: Smith
@@ -758,13 +793,14 @@ endpoints:
         name: id
         description: 'The ID of the partner to delete.'
         required: true
-        example: 9
+        example: 6
         type: integer
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanUrlParameters:
-      id: 9
+      id: 6
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -828,6 +864,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       status:
         name: status
@@ -837,6 +874,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       user_id: 12

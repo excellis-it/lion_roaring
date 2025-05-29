@@ -93,6 +93,12 @@ Route::get('clear', function () {
     return "Optimize clear has been successfully";
 });
 
+// make migration
+Route::get('dbmigrate', function () {
+    Artisan::call('migrate');
+    return "Migration has been successfully";
+});
+
 
 
 Route::get('/admin', [AuthController::class, 'redirectAdminLogin']);

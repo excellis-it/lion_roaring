@@ -158,6 +158,7 @@ class AuthController extends Controller
         $user->middle_name = $request->middle_name;
         $user->address = $request->address;
         $user->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone_number : $request->phone_number;
+        $user->phone_country_code_name = $request->phone_country_code_name;
         $user->city = $request->city;
         $user->state = $request->state;
         $user->address2 = $request->address2;

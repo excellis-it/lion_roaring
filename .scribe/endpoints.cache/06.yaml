@@ -87,6 +87,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       middle_name:
         name: middle_name
@@ -96,6 +97,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       last_name:
         name: last_name
@@ -105,15 +107,27 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
-      phone:
-        name: phone
+      country_code:
+        name: country_code
+        description: 'optional The country code of the user.'
+        required: false
+        example: '91'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      phone_number:
+        name: phone_number
         description: 'The phone number of the user.'
         required: true
         example: '7415236986'
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       address:
         name: address
@@ -123,13 +137,59 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country:
+        name: country
+        description: 'The country of the user.'
+        required: true
+        example: India
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      state:
+        name: state
+        description: 'The state of the user.'
+        required: true
+        example: 'West Bengal'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      city:
+        name: city
+        description: 'The city of the user.'
+        required: true
+        example: Kolkata
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      zip:
+        name: zip
+        description: 'The zip code of the user.'
+        required: true
+        example: '700091'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       first_name: John
       middle_name: Doe
       last_name: Doe
-      phone: '7415236986'
+      country_code: '91'
+      phone_number: '7415236986'
       address: '51 DN Block Merlin Infinite Building, 9th Floor, Unit, 907, Sector V, Bidhannagar, Kolkata, West Bengal 700091'
+      country: India
+      state: 'West Bengal'
+      city: Kolkata
+      zip: '700091'
     fileParameters: []
     responses:
       -
@@ -177,6 +237,7 @@ endpoints:
         type: file
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanBodyParameters: []
     fileParameters:
@@ -237,6 +298,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       new_password:
         name: new_password
@@ -246,6 +308,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       confirm_password:
         name: confirm_password
@@ -255,6 +318,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       old_password: password
@@ -307,6 +371,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       permission_name: 'Manage Email'
@@ -568,6 +633,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       id:
         name: id
@@ -577,6 +643,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanUrlParameters:
       type: Chat
