@@ -378,14 +378,14 @@ endpoints:
         name: id
         description: 'The ID of the edit.'
         required: true
-        example: dolores
+        example: deleniti
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: dolores
+      id: deleniti
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -567,14 +567,14 @@ endpoints:
         name: id
         description: 'The ID of the delete.'
         required: true
-        example: numquam
+        example: deserunt
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: numquam
+      id: deserunt
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []

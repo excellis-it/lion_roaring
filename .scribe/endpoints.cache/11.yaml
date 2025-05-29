@@ -181,7 +181,7 @@ endpoints:
         name: topic
         description: 'The topic.'
         required: true
-        example: laborum
+        example: est
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -198,7 +198,7 @@ endpoints:
         nullable: false
         custom: []
     cleanUrlParameters:
-      topic: laborum
+      topic: est
       id: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -517,7 +517,7 @@ endpoints:
         name: sortby
         description: 'The column to sort by (optional, default: id).'
         required: false
-        example: ut
+        example: molestias
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -527,7 +527,7 @@ endpoints:
         name: sorttype
         description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
         required: false
-        example: nam
+        example: voluptatibus
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -537,7 +537,7 @@ endpoints:
         name: query
         description: 'The search query to filter files by ID, file name, or file extension (optional).'
         required: false
-        example: voluptas
+        example: sed
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -554,9 +554,9 @@ endpoints:
         nullable: false
         custom: []
     cleanQueryParameters:
-      sortby: ut
-      sorttype: nam
-      query: voluptas
+      sortby: molestias
+      sorttype: voluptatibus
+      query: sed
       topic_id: 18
     bodyParameters: []
     cleanBodyParameters: []
@@ -786,14 +786,14 @@ endpoints:
         name: topic
         description: 'The ID of the topic to filter by (optional).'
         required: false
-        example: 8
+        example: 5
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanQueryParameters:
-      topic: 8
+      topic: 5
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -857,14 +857,14 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: repudiandae
+        example: aliquam
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: repudiandae
+      id: aliquam
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -1042,14 +1042,14 @@ endpoints:
         name: file
         description: ''
         required: true
-        example: autem
+        example: tempora
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      file: autem
+      file: tempora
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -1244,7 +1244,7 @@ endpoints:
         name: sortby
         description: 'The column to sort by (optional, default: id).'
         required: false
-        example: rem
+        example: necessitatibus
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1254,7 +1254,7 @@ endpoints:
         name: sorttype
         description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
         required: false
-        example: aut
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1264,7 +1264,7 @@ endpoints:
         name: query
         description: 'The search query to filter files by ID, file name, or file extension (optional).'
         required: false
-        example: accusamus
+        example: quidem
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1274,17 +1274,17 @@ endpoints:
         name: topic_id
         description: 'The ID of the topic to filter files by (optional).'
         required: false
-        example: 13
+        example: 9
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanQueryParameters:
-      sortby: rem
-      sorttype: aut
-      query: accusamus
-      topic_id: 13
+      sortby: necessitatibus
+      sorttype: et
+      query: quidem
+      topic_id: 9
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -1513,14 +1513,14 @@ endpoints:
         name: topic
         description: 'The ID of the topic to filter by (optional).'
         required: false
-        example: 16
+        example: 4
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanQueryParameters:
-      topic: 16
+      topic: 4
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -1584,14 +1584,14 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: et
+        example: at
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: et
+      id: at
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -1769,14 +1769,14 @@ endpoints:
         name: file
         description: ''
         required: true
-        example: voluptatem
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      file: voluptatem
+      file: et
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -1971,7 +1971,7 @@ endpoints:
         name: sortby
         description: 'The column to sort by (optional, default: id).'
         required: false
-        example: non
+        example: officia
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1981,7 +1981,7 @@ endpoints:
         name: sorttype
         description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
         required: false
-        example: illo
+        example: tempora
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1991,7 +1991,7 @@ endpoints:
         name: query
         description: 'The search query to filter files by ID, file name, or file extension (optional).'
         required: false
-        example: ea
+        example: quia
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -2001,17 +2001,17 @@ endpoints:
         name: topic_id
         description: 'The ID of the topic to filter files by (optional).'
         required: false
-        example: 18
+        example: 19
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanQueryParameters:
-      sortby: non
-      sorttype: illo
-      query: ea
-      topic_id: 18
+      sortby: officia
+      sorttype: tempora
+      query: quia
+      topic_id: 19
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -2240,14 +2240,14 @@ endpoints:
         name: topic
         description: 'The ID of the topic to filter by (optional).'
         required: false
-        example: 3
+        example: 13
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanQueryParameters:
-      topic: 3
+      topic: 13
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -2311,14 +2311,14 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: corporis
+        example: ipsam
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: corporis
+      id: ipsam
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -2496,14 +2496,14 @@ endpoints:
         name: file
         description: ''
         required: true
-        example: consequatur
+        example: labore
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      file: consequatur
+      file: labore
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -2698,7 +2698,7 @@ endpoints:
         name: sortby
         description: 'The column to sort by (optional, default: id).'
         required: false
-        example: voluptas
+        example: ut
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -2708,7 +2708,7 @@ endpoints:
         name: sorttype
         description: "The sort direction, either 'asc' or 'desc' (optional, default: 'asc')."
         required: false
-        example: iure
+        example: quo
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -2718,7 +2718,7 @@ endpoints:
         name: query
         description: 'The search query to filter files by ID, file name, or file extension (optional).'
         required: false
-        example: nostrum
+        example: doloribus
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -2728,17 +2728,17 @@ endpoints:
         name: topic_id
         description: 'The ID of the topic to filter files by (optional).'
         required: false
-        example: 17
+        example: 19
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanQueryParameters:
-      sortby: voluptas
-      sorttype: iure
-      query: nostrum
-      topic_id: 17
+      sortby: ut
+      sorttype: quo
+      query: doloribus
+      topic_id: 19
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -2967,14 +2967,14 @@ endpoints:
         name: topic
         description: 'The ID of the topic to filter by (optional).'
         required: false
-        example: 19
+        example: 3
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanQueryParameters:
-      topic: 19
+      topic: 3
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -3038,14 +3038,14 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: illo
+        example: nobis
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: illo
+      id: nobis
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -3223,14 +3223,14 @@ endpoints:
         name: file
         description: ''
         required: true
-        example: inventore
+        example: in
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      file: inventore
+      file: in
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
