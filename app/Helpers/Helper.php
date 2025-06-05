@@ -21,6 +21,7 @@ use App\Models\TeamChat;
 use App\Models\TeamMember;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Count;
+use App\Models\User;
 
 class Helper
 {
@@ -278,5 +279,38 @@ class Helper
         }, $message);
 
         return $formattedMessage;
+    }
+
+    public static function unreadMessagesCount(string $fcmtoken)
+    {
+        $user = User::where('fcm_token', $fcmtoken)->first();
+        if (!$user) {
+            return 0; // or throw an exception
+        }
+
+        // Count unread emails where user is recipient and email is not deleted
+        $mailCount = \App\Models\MailUser::where('user_id', $user->id)
+            ->where('is_read', 0)
+            ->where('is_delete', 0)
+            ->count();
+
+        // Count unread individual chats where user is receiver
+        $chatCount = \App\Models\Chat::where('reciver_id', $user->id)
+            ->where('seen', 0)
+            ->where('deleted_for_reciver', 0)
+            ->where('delete_from_receiver_id', 0)
+            ->count();
+
+        // Count unread team chat messages where user is a member
+        $teamChatCount = \App\Models\ChatMember::where('user_id', $user->id)
+            ->where('is_seen', 0)
+            ->whereHas('chat', function ($query) {
+                $query->whereNull('deleted_at');
+            })
+            ->count();
+
+        $totalCount = $mailCount + $chatCount + $teamChatCount;
+
+        return $totalCount;
     }
 }
