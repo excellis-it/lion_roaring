@@ -37,10 +37,9 @@ class FCMService
     public function sendToDevice(string $token, string $title, string $body, array $data = [])
     {
         try {
+            $notification = Notification::create($title, $body);
+
             $badge_count = Helper::unreadMessagesCount($token);
-            $notification = Notification::create($badge_count, $body);
-
-
 
 
             $androidConfig = AndroidConfig::fromArray([
