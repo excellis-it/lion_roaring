@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Helpers\Helper;
+use App\Http\Middleware\User;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
 use Kreait\Firebase\Factory;
@@ -35,7 +37,10 @@ class FCMService
     public function sendToDevice(string $token, string $title, string $body, array $data = [])
     {
         try {
-            $notification = Notification::create($title, $body);
+            $badge_count = Helper::unreadMessagesCount($token);
+            $notification = Notification::create($badge_count, $body);
+
+
 
 
             $androidConfig = AndroidConfig::fromArray([
@@ -49,6 +54,7 @@ class FCMService
                     'sound' => 'default',
                     'visibility' => 'public',
                     'channel_id' => 'high_importance_channel',
+                    // 'notification_count' => $badge_count,
                 ],
             ]);
 
@@ -63,9 +69,11 @@ class FCMService
                             'title' => $title,
                             'body' => $body,
                         ],
-                        'sound' => 'default', // <-- move here
+                        'badge' => $badge_count,
+                        'sound' => 'default',
                         'content-available' => 1,
                         'mutable-content' => 1,
+                        //   'badge' => 5,
                     ],
                 ],
             ]);
