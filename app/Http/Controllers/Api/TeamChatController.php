@@ -238,19 +238,17 @@ class TeamChatController extends Controller
             $search_query = $request->input('search');
             // Get the teams that the authenticated user is a member of
             if (!empty($search_query)) {
-                $teams = Team::with('chats.chatMembers')
-                    ->whereHas('members', function ($query) {
-                        $query->where('user_id', auth()->id());
-                    })
+                $teams = Team::whereHas('members', function ($query) {
+                    $query->where('user_id', auth()->id());
+                })
                     ->where('name', 'like', '%' . $search_query . '%')
                     ->orderBy('id', 'desc')
                     ->get()
                     ->toArray();
             } else {
-                $teams = Team::with('chats.chatMembers')
-                    ->whereHas('members', function ($query) {
-                        $query->where('user_id', auth()->id());
-                    })
+                $teams = Team::whereHas('members', function ($query) {
+                    $query->where('user_id', auth()->id());
+                })
                     ->orderBy('id', 'desc')
                     ->get()
                     ->toArray();

@@ -118,6 +118,12 @@ Route::prefix('v3')->group(function () {
         // notification.clear
         Route::get('/notification-clear', [ProfileController::class, 'notificationClear'])->name('notification.clear');
 
+        // Get total unread messages count mail,chat,team-chat
+        Route::get('unread-messages-count', [ProfileController::class, 'unreadMessagesCount'])->name('unread.messages.count');
+
+        // Update Fcm Token
+        Route::post('update-fcm-token', [ProfileController::class, 'updateFcmToken']);
+
         Route::post('logout', [AuthController::class, 'logout']);
 
 

@@ -274,9 +274,9 @@ class EstoreProductController extends Controller
     public function productsFilter(Request $request)
     {
         try {
-            $page = $request->get('page', 1);
-            $limit = 12;
-            $offset = ($page - 1) * $limit;
+            // $page = $request->get('page', 1);
+            // $limit = 12;
+            // $offset = ($page - 1) * $limit;
             $category_id = $request->category_id ?? [];
             $latest_filter = $request->latestFilter ?? '';
             $search = $request->search ?? '';
@@ -305,7 +305,8 @@ class EstoreProductController extends Controller
 
             $products_count = $products->count();
 
-            $products = $products->skip($offset)->take($limit)->get();
+            //  $products = $products->skip($offset)->take($limit)->get();
+            $products = $products->paginate(12);
 
             return response()->json([
                 'products' => $products,
