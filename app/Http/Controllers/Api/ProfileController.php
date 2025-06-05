@@ -493,4 +493,88 @@ class ProfileController extends Controller
             return response()->json(['message' => $e->getMessage()], 201);
         }
     }
+
+    // updateFcmToken
+    /**
+     * Update FCM Token
+     *
+     * @authenticated
+     *
+     * @bodyParam fcm_token string required The FCM token of the user. Example: fcm_token_example
+     *
+     * @response 200 {
+     *   "status": true,
+     *   "message": "FCM token updated successfully"
+     * }
+     */
+    public function updateFcmToken(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'fcm_token' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first(), 'status' => false], 201);
+        }
+
+        $user = $request->user();
+        $user->fcm_token = $request->fcm_token;
+        $user->save();
+
+        return response()->json(['status' => true, 'message' => 'FCM token updated successfully'], $this->successStatus);
+    }
+
+    // // Get total unread messages count mail,chat,team-chat unreadMessagesCount
+    /**
+     * Get Total Unread Messages Count
+     *
+     * @authenticated
+     *
+     * @response 200 {
+     *   "status": true,
+     *   "data": {
+     *       "mail": 5,
+     *       "chat": 3,
+     *       "team_chat": 2,
+     *       "total": 10
+     *   }
+     * }
+     */
+    public function unreadMessagesCount(Request $request)
+    {
+        $user = $request->user();
+
+        // Count unread emails where user is recipient and email is not deleted
+        $mailCount = \App\Models\MailUser::where('user_id', $user->id)
+            ->where('is_read', 0)
+            ->where('is_delete', 0)
+            ->count();
+
+        // Count unread individual chats where user is receiver
+        $chatCount = \App\Models\Chat::where('reciver_id', $user->id)
+            ->where('seen', 0)
+            ->where('deleted_for_reciver', 0)
+            ->where('delete_from_receiver_id', 0)
+            ->count();
+
+        // Count unread team chat messages where user is a member
+        $teamChatCount = \App\Models\ChatMember::where('user_id', $user->id)
+            ->where('is_seen', 0)
+            ->whereHas('chat', function ($query) {
+                $query->whereNull('deleted_at');
+            })
+            ->count();
+
+        $totalCount = $mailCount + $chatCount + $teamChatCount;
+
+        return response()->json([
+            'status' => true,
+            'data' => [
+                'mail' => $mailCount,
+                'chat' => $chatCount,
+                'team_chat' => $teamChatCount,
+                'total' => $totalCount
+            ]
+        ], $this->successStatus);
+    }
 }
