@@ -9,6 +9,7 @@ use Kreait\Firebase\Messaging;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Kreait\Firebase\Messaging\AndroidConfig;
+use Kreait\Firebase\Messaging\ApnsConfig;
 
 
 class FCMService
@@ -47,13 +48,33 @@ class FCMService
                     // 'color' => '#f45342',
                     'sound' => 'default',
                     'visibility' => 'public',
+                    'channel_id' => 'high_importance_channel',
+                ],
+            ]);
+
+            // apns config
+            $apnsConfig = ApnsConfig::fromArray([
+                'headers' => [
+                    'apns-priority' => '10',
+                ],
+                'payload' => [
+                    'aps' => [
+                        'alert' => [
+                            'title' => $title,
+                            'body' => $body,
+                        ],
+                        'sound' => 'default', // <-- move here
+                        'content-available' => 1,
+                        'mutable-content' => 1,
+                    ],
                 ],
             ]);
 
             $message = CloudMessage::withTarget('token', $token)
                 ->withNotification($notification)
                 ->withData($data)
-                ->withAndroidConfig($androidConfig);
+                ->withAndroidConfig($androidConfig)
+                ->withApnsConfig($apnsConfig);
 
             $result = $this->messaging->send($message);
 
