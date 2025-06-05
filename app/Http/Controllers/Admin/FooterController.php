@@ -15,9 +15,9 @@ class FooterController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Footer')) {
-        $footer = Footer::orderBy('id', 'desc')->first();
-        $social_links = FooterSocialLink::get();
-        return view('admin.footer.update')->with(compact('footer', 'social_links'));
+            $footer = Footer::orderBy('id', 'desc')->first();
+            $social_links = FooterSocialLink::get();
+            return view('admin.footer.update')->with(compact('footer', 'social_links'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -55,7 +55,7 @@ class FooterController extends Controller
         $footer->footer_appstore_link = $request->footer_appstore_link;
         if ($request->hasFile('footer_logo')) {
             $request->validate([
-                'footer_logo' => 'mimes:jpeg,jpg,png,gif|required',
+                'footer_logo' => 'mimes:jpeg,jpg,png,gif,webp|required',
             ]);
             $footer->footer_logo = $this->imageUpload($request->file('footer_logo'), 'footer');
         }
