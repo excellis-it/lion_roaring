@@ -144,4 +144,6 @@ class User extends Authenticatable
     {
         return $this->roles->pluck('is_ecclesia')->first() == 1 ? true : false;
     }
+
+   
 }

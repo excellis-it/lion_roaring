@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+
 /**
  * @group Forget Password
  */
@@ -38,22 +39,23 @@ class ForgetPasswordController extends Controller
             return response()->json(['status' => false, 'message' => $validator->errors()->first()], 201);
         }
 
-        $count = User::where('email', $request->email)->role('MEMBER_NON_SOVEREIGN')->count();
+        // $count = User::where('email', $request->email)->role('MEMBER_NON_SOVEREIGN')->count();
+        $count = User::where('email', $request->email)->count();
         if ($count > 0) {
             $user = User::where('email', $request->email)->select('id', 'email')->first();
             PasswordReset::where('email', $request->email)->delete();
-             $id = Crypt::encrypt($user->id);
-             $token = Str::random(20) . 'pass' . $user->id;
-             PasswordReset::create([
+            $id = Crypt::encrypt($user->id);
+            $token = Str::random(20) . 'pass' . $user->id;
+            PasswordReset::create([
                 'email' => $request->email,
                 'token' => $token,
                 'created_at' => Carbon::now()
-             ]);
+            ]);
 
-             $details = [
+            $details = [
                 'id' => $id,
                 'token' => $token
-             ];
+            ];
 
             Mail::to($request->email)->send(new SendUserCodeResetPassword($details));
             return response()->json(['status' => true, 'message' => 'Password reset link sent to your email'], $this->successStatus);
