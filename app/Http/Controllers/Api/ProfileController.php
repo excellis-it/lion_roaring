@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Notification;
+use App\Models\MailUser;
+use App\Models\Chat;
+use App\Models\ChatMember;
+use App\Models\TeamChat;
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * @group Profile
@@ -544,26 +549,46 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        $mailCount = \App\Models\MailUser::where('user_id', $user->id)
+        $mailCount = MailUser::where('user_id', $user->id)
             ->where('is_delete', 0) // Check not deleted first
             ->where('is_read', 0)   // message can be deleted but not read
             ->where('is_to', 1)   // Only count mails where user is receiver
             ->count();
 
         // Count unread individual chats where user is receiver
-        $chatCount = \App\Models\Chat::where('reciver_id', $user->id)
+        $chatCount = Chat::where('reciver_id', $user->id)
             ->where('seen', 0)
             ->where('deleted_for_reciver', 0)
             ->where('delete_from_receiver_id', 0)
             ->count();
 
-        // Count unread team chat messages where user is a member
-        $teamChatCount = \App\Models\ChatMember::where('user_id', $user->id)
+        $all_team_chats_ids = TeamChat::pluck('id');
+        $teamChatCount = ChatMember::whereIn('chat_id', $all_team_chats_ids)
+            ->where('user_id', $user->id)
             ->where('is_seen', 0)
-            ->whereHas('chat', function ($query) {
-                $query->whereNull('deleted_at');
-            })
+            // ->whereHas('chat', function ($query) {
+            //     $query->whereNull('deleted_at');
+            // })
             ->count();
+
+
+        // ChatMember::whereNotIn('chat_id', $all_team_chats_ids)
+        //     ->where('is_seen', 0)
+        //     ->update(['is_seen' => 1]); // Mark all team chat messages as seen
+
+
+        // Count unread team chat messages where user is a member
+        // $teamChatCount = ChatMember::where('user_id', $user->id)
+        //     ->where('is_seen', 0)
+        //     // ->whereHas('chat', function ($query) {
+        //     //     $query->whereNull('deleted_at');
+        //     // })
+        //     ->count();
+        //  $maildata = Crypt::encryptString($mailCount);
+
+
+
+
 
         $totalCount = $mailCount + $chatCount + $teamChatCount;
 
@@ -573,7 +598,8 @@ class ProfileController extends Controller
                 'mail' => $mailCount,
                 'chat' => $chatCount,
                 'team_chat' => $teamChatCount,
-                'total' => $totalCount
+                'total' => $totalCount,
+                // 'maildata' => $originalMailCount,
             ]
         ], $this->successStatus);
     }
