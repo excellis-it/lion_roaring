@@ -544,10 +544,10 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        // Count unread emails where user is recipient and email is not deleted
         $mailCount = \App\Models\MailUser::where('user_id', $user->id)
-            ->where('is_read', 0)
-            ->where('is_delete', 0)
+            ->where('is_delete', 0) // Check not deleted first
+            ->where('is_read', 0)   // message can be deleted but not read
+            ->where('is_to', 1)   // Only count mails where user is receiver
             ->count();
 
         // Count unread individual chats where user is receiver
