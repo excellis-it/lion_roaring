@@ -319,7 +319,7 @@ class ChatController extends Controller
             // Mark unseen messages as seen
             $chats->each(function ($chat) {
                 if ($chat->reciver_id == auth()->id() && $chat->seen == 0) {
-                    $chat->update(['seen' => 1]);
+                       $chat->update(['seen' => 1]);
                 }
                 $chat->isMe = ($chat->sender_id == auth()->id()) ? true : false;
                 $chat->isSeen = ($chat->seen == 1) ? true : false;
@@ -637,9 +637,11 @@ class ChatController extends Controller
             $sender_id = auth()->id();
             $reciver_id = $request->reciver_id;
 
+            $rcvId = auth()->id(); // Get the authenticated user's ID
+
             Chat::where('id', $request->chat_id)
                 // ->where('sender_id', $reciver_id)
-                //  ->where('reciver_id', $sender_id)
+                ->where('reciver_id', $rcvId)
                 ->update(['seen' => 1]);
 
             $last_chat = Chat::findOrFail($request->chat_id);

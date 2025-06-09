@@ -1515,9 +1515,18 @@ class TeamChatController extends Controller
             $team_member_id = TeamMember::where('team_id', $team_id)->pluck('user_id')->toArray();
 
             // Delete the team, its members, and chat history
-            $team->delete();
-            TeamMember::where('team_id', $team_id)->delete();
+            //  $team->delete();
+            //   TeamMember::where('team_id', $team_id)->delete();
+            //   TeamChat::where('team_id', $team_id)->delete();
+            //  ChatMember::where('team_id', $team_id)->delete();
+
+            $all_team_chats = TeamChat::where('team_id', $team_id)->get();
+            foreach ($all_team_chats as $chat) {
+                ChatMember::where('chat_id', $chat->id)->delete();
+            }
             TeamChat::where('team_id', $team_id)->delete();
+            TeamMember::where('team_id', $team_id)->delete();
+            $team->delete();
 
             return response()->json([
                 'message' => 'Group deleted successfully.',
