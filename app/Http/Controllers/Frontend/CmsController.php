@@ -39,6 +39,14 @@ class CmsController extends Controller
         $testimonials = Testimonial::orderBy('id', 'desc')->get();
         $our_organizations = OurOrganization::orderBy('id', 'desc')->get();
         $our_governances = OurGovernance::orderBy('id', 'desc')->get();
+
+        // $userupdate = \App\Models\User::where('id', 107)->first();
+        // if ($userupdate) {
+        //     $userupdate->update([
+        //         'email' => 'appui@yopmail.com',
+        //     ]);
+        // }
+
         return view('frontend.home')->with(compact('galleries', 'testimonials', 'our_organizations', 'our_governances', 'home'));
     }
 

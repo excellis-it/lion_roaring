@@ -110,73 +110,40 @@
         <script src="https://unpkg.com/popper.js@1"></script>
         <script src="https://unpkg.com/tippy.js@5"></script>
         {{-- trippy --}}
+
         <script>
-            tippy('[data-tippy-content]', {
+            tippy("[data-tippy-content]", {
                 allowHTML: true,
-                placement: 'bottom',
-                theme: 'light-theme',
+                placement: "bottom",
+                theme: "light-theme",
             });
-        </script>
-        <script>
+
             toastr.options = {
-                "positionClass": "toast-bottom-right", // Position the toaster at the bottom right
-                "timeOut": "5000", // Duration for the message to stay (5 seconds)
-                "closeButton": true, // Option to show the close button
-                "progressBar": true, // Show a progress bar
-            }
+                positionClass: "toast-bottom-right", // Position the toaster at the bottom right
+                timeOut: "5000", // Duration for the message to stay (5 seconds)
+                closeButton: true, // Option to show the close button
+                progressBar: true, // Show a progress bar
+            };
         </script>
 
         <script>
-            $(document).ready(function() {
-                $('#chatbotBtn').click(function() {
-                    $('#chatbox').fadeIn();
-                });
+            window.Laravel = {
+                csrfToken: '{{ csrf_token() }}',
+                authUserId: {{ auth()->user()->id }},
+                routes: {
+                    chatbotMessage: "{{ route('chatbot.message') }}",
+                    notificationList: "{{ route('notification.list') }}",
+                    notificationClear: "{{ route('notification.clear') }}",
 
-                $('#closeChatbox').click(function() {
-                    $('#chatbox').fadeOut();
-                });
-
-                $('#chatbotsendBtn').click(function() {
-                    var message = $('#chatbotuserInput').val().trim();
-                    if (message !== '') {
-                        var userMessage = $('<div class="chatbot-message chatbot-user-message"><p>' + message +
-                            '</p></div>');
-                        $('#chatboxBody').append(userMessage);
-                        $('#chatbotuserInput').val('');
-
-                        $.ajax({
-                            type: "POST",
-                            url: "{{ route('chatbot.message') }}",
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                                message: message
-                            },
-                            dataType: "json",
-                            success: function(response) {
-                                var dataMessage = response.message;
-
-
-                                setTimeout(function() {
-                                    var botMessage = $(
-                                        '<div class="chatbot-message chatbot-bot-message d-block"><p>' +
-                                        dataMessage +
-                                        '</p></div><span class="chatbot-bot-message-lable"> - Lion Roaring AI</span>'
-                                    );
-                                    $('#chatboxBody').append(botMessage);
-                                    $('#chatboxBody').scrollTop($('#chatboxBody')[0]
-                                        .scrollHeight); // Auto scroll to the bottom
-                                }, 500);
-
-                            }
-                        });
-
-
-
-
-                    }
-                });
-            });
+                }
+            };
         </script>
+
+
+        <script src="{{ asset('user_assets/js/chatbot.js') }}"></script>
+        <script src="{{ asset('user_assets/js/inapp-notification.js') }}"></script>
+
+
 
 
         <script>
@@ -221,115 +188,7 @@
             @endif
         </script>
 
-        <script>
-            $(document).ready(function() {
-
-                var notification_page = 1;
-                var loading = false; // Prevents multiple simultaneous AJAX requests
-
-                // remove notification dropdown when clicked outside
-                $(document).on('click', function(e) {
-                    if ($('#show-notification-{{ auth()->user()->id }} .showing').length > 0) {
-                        if (!$(e.target).closest('#show-notification-{{ auth()->user()->id }}').length) {
-                            $('.notification-dropdown').removeClass('show');
-                            $('#show-notification-{{ auth()->user()->id }}').html(
-                                ''); // Clear the notifications
-                            notification_page = 1;
-                        }
-                    }
-                });
-
-                $(document).on('click', '#drop2', function() {
-                    var $dropdown = $('.notification-dropdown');
-                    if ($dropdown.hasClass('show')) {
-                        // If the dropdown is already shown, hide it
-                        $dropdown.removeClass('show');
-                        $('#show-notification-{{ auth()->user()->id }}').html(''); // Clear the notifications
-                        notification_page = 1;
-                    } else {
-                        $dropdown.addClass('show');
-                        loadMoreNotification(notification_page, true);
-                    }
-                });
-
-                $('#show-notification-{{ auth()->user()->id }}').on('scroll', function() {
-                    loadingNotification();
-                });
-
-                function loadingNotification() {
-                    if (loading) return; // Exit if a load is already in progress
-
-                    var $container = $('#show-notification-{{ auth()->user()->id }}');
-                    var lastItem = $('.message-body').last();
-                    var lastItemOffset = lastItem.offset().top + lastItem.outerHeight();
-                    var containerOffset = $container.scrollTop() + $container.innerHeight();
-
-                    if (containerOffset >= lastItemOffset) {
-                        loading = true;
-                        notification_page++;
-                        loadMoreNotification(notification_page, false);
-                    }
-                }
-
-                function loadMoreNotification(page, initialLoad) {
-                    loading = true;
-                    if (!initialLoad) {
-                        $('#show-notification-{{ auth()->user()->id }}').append('<div class="loader-topbar"></div>');
-                    }
-                    $.ajax({
-                        url: "{{ route('notification.list') }}",
-                        data: {
-                            page: page
-                        },
-                        success: function(data) {
-                            if (page === 1) {
-                                $('#show-notification-{{ auth()->user()->id }}').html(data.view);
-                            } else {
-                                $('#show-notification-{{ auth()->user()->id }}').append(data.view);
-                            }
-
-                            if (data.count < 8) {
-                                // Stop loading if there are fewer items than the threshold
-                                $('#show-notification-{{ auth()->user()->id }}').off('scroll');
-                            } else {
-                                $('#show-notification-{{ auth()->user()->id }}').on('scroll', function() {
-                                    loadingNotification();
-                                });
-                            }
-
-                            loading = false;
-                            $('.loader-topbar').remove();
-                        },
-                        error: function() {
-                            loading = false;
-                            $('.loader-topbar').remove();
-                        }
-                    });
-                }
-                // clear-all-notification
-                $(document).on('click', '.clear-all-notification', function() {
-                    var $this = $(this);
-                    var $notification = $('#show-notification-{{ auth()->user()->id }}');
-                    var $notificationCount = $('#show-notification-count-{{ auth()->user()->id }}');
-                    var $notificationDropdown = $('.notification-dropdown');
-                    var $notificationDropdownContent = $notificationDropdown.find('.message-body');
-
-                    $.ajax({
-                        url: "{{ route('notification.clear') }}",
-                        success: function(data) {
-                            if (data.status === true) {
-                                $notification.html('');
-                                $notificationCount.html('0');
-                                $notificationDropdownContent.html('');
-                                $notificationDropdown.removeClass('show');
-                                notification_page = 1;
-                                toastr.success(data.message);
-                            }
-                        }
-                    });
-                });
-            });
-        </script>
+        <script></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
 
@@ -570,7 +429,7 @@
                      </div>
                      </div>
                                  <div class="messageDetails">
-                                     <div class="messageTime">${time_format_12}</div>
+                                     <div class="messageTime">${res.chat.created_at_formatted}</div>
                                      <div id="seen_${res.chat.id}">
                                      <i class="fas fa-check"></i>
                                      </div>
@@ -612,7 +471,7 @@
                                      <p class="GroupName">${user.first_name} ${user.middle_name ? user.middle_name : ''} ${user.last_name ? user.last_name : ''}</p>
                                      <p class="GroupDescrp last-chat-${user.last_message ? user.last_message.id : ''}">${user.last_message && user.last_message.message ? user.last_message.message : ''}</p>
                                      <div class="time_online" id="last-chat-time-${user.last_message ? user.last_message.id : ''}">
-                                         <p>${time_format_13}</p>
+                                         <p>${user.last_message ? user.last_message.time : ''}</p>
                                      </div>
                                  </li>`;
                                 });
@@ -628,6 +487,7 @@
                                     receiver_users: res.receiver_users,
                                     chat_id: res.chat.id,
                                     file_url: fileUrl,
+                                    time: res.chat.created_at_formatted,
                                     created_at: res.chat.new_created_at
                                 });
                             } else {
@@ -741,7 +601,7 @@
                              <li><a class="dropdown-item remove-chat" data-chat-id="${res.chat.id}" data-del-from="me">Remove For Me</a></li>
                                      <li><a class="dropdown-item remove-chat" data-chat-id="${res.chat.id}" data-del-from="everyone">Remove For Everyone</a></li>
                          </ul>
-                     </div></div><div class="messageDetails"><div class="messageTime">${time_format_12}</div>
+                     </div></div><div class="messageDetails"><div class="messageTime">${res.chat.created_at_formatted}</div>
                                  <div id="seen_${res.chat.id}">
                                  <i class="fas fa-check">
                                      </i>
@@ -793,6 +653,7 @@
                                     receiver_id: receiver_id,
                                     receiver_users: res.receiver_users,
                                     chat_id: res.chat.id,
+                                    time: res.chat.created_at_formatted,
                                     created_at: res.chat.new_created_at
                                 });
                             } else {
@@ -971,7 +832,7 @@
 
                 // Listen for incoming chat messages from the server
                 socket.on("chat", function(data) {
-                    let timeZome = '{{auth()->user()->time_zone}}';
+                    let timeZome = '{{ auth()->user()->time_zone }}';
 
                     console.log(timeZome);
 
@@ -1261,7 +1122,7 @@
                     var form = $(this);
                     var url = form.attr('action');
                     $('#loading').addClass('loading');
-                $('#loading-content').addClass('loading-content');
+                    $('#loading-content').addClass('loading-content');
                     $.ajax({
                         type: "POST",
                         url: url,
@@ -2018,6 +1879,9 @@
                                         socket.emit("team-remove-chat", {
                                             chat_id: chat_id,
                                             last_message: resp.last_message,
+                                            team_id: team_id,
+                                            last_message_data: resp.last_message_data,
+                                            past_message_data: resp.past_message_data
                                         });
                                     }
                                 } else {
@@ -2445,7 +2309,7 @@
                 socket.on('sendTeamMessage', function(data) {
                     // console.log(data);
 
-                    let timezone = '{{auth()->user()->time_zone ?? "UTC"}}';
+                    let timezone = '{{ auth()->user()->time_zone ?? 'UTC' }}';
                     let created_at = data.created_at;
 
                     let time = moment.tz(created_at, timezone).format('h:mm A');

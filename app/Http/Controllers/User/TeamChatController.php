@@ -718,16 +718,16 @@ class TeamChatController extends Controller
 
         $team_chat = TeamChat::find($chat_id);
         if ($del_from == 'everyone') {
-            $last_message = Helper::userLastMessage($team_id, auth()->id());
-            if ($last_message->id == $chat_id) {
+            $last_message_data = Helper::userLastMessage($team_id, auth()->id());
+            if ($last_message_data->id == $chat_id) {
                 $last_message = true;
             } else {
                 $last_message = false;
             }
             $team_chat->delete();
         } else {
-            $last_message = Helper::userLastMessage($team_id, auth()->id());
-            if ($last_message->id == $chat_id) {
+            $last_message_data = Helper::userLastMessage($team_id, auth()->id());
+            if ($last_message_data->id == $chat_id) {
                 $last_message = true;
             } else {
                 $last_message = false;
@@ -736,7 +736,9 @@ class TeamChatController extends Controller
             $chat_member->delete();
         }
 
-        return response()->json(['message' => 'Chat removed successfully.', 'status' => true, 'chat_id' => $chat_id, 'last_message' => $last_message]);
+        $past_message_data = Helper::userLastMessage($team_id, auth()->id());
+
+        return response()->json(['message' => 'Chat removed successfully.', 'status' => true, 'chat_id' => $chat_id, 'last_message' => $last_message, 'last_message_data' => $last_message_data, 'team_id' => $team_id, 'past_message_data' => $past_message_data]);
     }
 
     public function clearAllConversation(Request $request)
