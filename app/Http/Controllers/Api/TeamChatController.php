@@ -1760,8 +1760,8 @@ class TeamChatController extends Controller
             }
 
             // Determine if this is the user's last message in the team
-            $last_message = Helper::userLastMessage($team_id, auth()->id());
-            $is_last_message = $last_message && $last_message->id == $chat_id;
+            $last_message_data = Helper::userLastMessage($team_id, auth()->id());
+            $is_last_message = $last_message_data && $last_message_data->id == $chat_id;
 
             if ($del_from == 'everyone') {
                 $team_chat->delete();
@@ -1781,11 +1781,16 @@ class TeamChatController extends Controller
                 $chat_member->delete();
             }
 
+            $past_message_data = Helper::userLastMessage($team_id, auth()->id());
+
             return response()->json([
                 'message' => 'Chat removed successfully.',
                 'status' => true,
                 'chat_id' => $chat_id,
-                'last_message' => $is_last_message
+                'last_message' => $is_last_message,
+                'last_message_data' => $last_message_data,
+                'team_id' => $team_id,
+                'past_message_data' => $past_message_data
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
