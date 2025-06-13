@@ -181,7 +181,7 @@ class ChatController extends Controller
 
             // get chat data with sender and reciver
             $chat = Chat::with('sender', 'reciver')->find($chatData->id);
-            $chat->created_at_formatted = $chat->created_at->format('Y-m-d H:i:s'); // Format the created_at timestamp
+            $chat->created_at_formatted = $chat->created_at->format('h:i a') . ' Today'; // Format the created_at timestamp
 
             //  $message_type = $this->detectMessageType($request->file);
 

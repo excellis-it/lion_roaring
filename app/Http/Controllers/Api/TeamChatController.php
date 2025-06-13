@@ -351,6 +351,14 @@ class TeamChatController extends Controller
                 'group_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
+            // if image size is greater than 2MB, return error
+            if ($request->file('group_image')->getSize() > 2048000) {
+                return response()->json([
+                    'message' => 'Image size should not be greater than 2MB.',
+                    'status' => false
+                ], 201);
+            }
+
             // Create the new team
             $team = new Team();
             $team->name = $request->name;
@@ -366,12 +374,14 @@ class TeamChatController extends Controller
             $admin_member->save();
 
             // Add other members to the team
+            $count = 0;
             foreach ($request->members as $member_id) {
                 $team_member = new TeamMember();
                 $team_member->team_id = $team->id;
                 $team_member->user_id = $member_id;
                 $team_member->is_admin = false;
                 $team_member->save();
+                $count++;
             }
 
             // Create a team chat and a welcome message
@@ -875,12 +885,14 @@ class TeamChatController extends Controller
             // Get chat member IDs and chat details
             $chat_member_id = ChatMember::where('chat_id', $team_chat->id)->pluck('user_id')->toArray();
             $chat = TeamChat::where('id', $team_chat->id)->with('user', 'chatMembers')->first();
+            $chat->created_at_formatted = $chat->created_at->format('h:i a') . ' Today';
 
             // JSON response with chat and member IDs
             return response()->json([
                 'message' => 'Message sent successfully.',
                 'status' => true,
                 'chat' => $chat,
+                'created_at_formatted' => $chat->created_at_formatted,
                 'chat_member_id' => $chat_member_id
             ], 200);
         } catch (\Throwable $th) {
