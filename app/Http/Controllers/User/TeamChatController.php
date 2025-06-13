@@ -282,7 +282,25 @@ class TeamChatController extends Controller
 
         $chat = TeamChat::where('id', $team_chat->id)->with('user', 'chatMembers')->first();
 
-        return response()->json(['message' => 'Message sent successfully.', 'status' => true, 'chat' => $chat, 'chat_member_id' => $chat_member_id]);
+        // Add formatted timestamp for frontend
+        $chat->new_created_at = $chat->created_at->format('Y-m-d H:i:s');
+        $chat->created_at_formatted = $chat->created_at->format('h:i a') . ' Today';
+
+        // Get unseen counts for each team member
+        $unseenCounts = [];
+        foreach ($chat_member_id as $memberId) {
+            $unseenCounts[$memberId] = Helper::getTeamCountUnseenMessage($memberId, $request->team_id);
+        }
+
+        return response()->json([
+            'message' => 'Message sent successfully.',
+            'status' => true,
+            'chat' => $chat,
+            'chat_member_id' => $chat_member_id,
+            'formatted_time' => $chat->created_at->format('h:i A'),
+            'created_at_formatted' => $chat->created_at_formatted,
+            'unseen_counts' => $unseenCounts
+        ]);
     }
 
     /**

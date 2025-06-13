@@ -153,7 +153,7 @@ $(document).ready(function () {
             contentType: false,
             success: function (res) {
                 if (res.status == true) {
-                    groupList(sender_id);
+                   // groupList(sender_id);
                     let attachment = res.chat.attachment;
                     let fileUrl = storageUrl + attachment;
                     let attachement_extention = attachment.split(".").pop();
@@ -195,6 +195,7 @@ $(document).ready(function () {
                         file_url: fileUrl,
                         chat_member_id: res.chat_member_id,
                         created_at: res.chat.new_created_at,
+                        time: res.created_at_formatted,
                     });
                 } else {
                     console.log(res.msg);
@@ -254,7 +255,7 @@ $(document).ready(function () {
 
                 // append new message to the chat
                 var data = resp.chat;
-                groupList(sender_id, data.team_id);
+              //  groupList(sender_id, data.team_id);
                 let html = `<div class="message me" id="team-chat-message-${data.id}">
                 <div class="message-wrap">`;
 
@@ -329,6 +330,7 @@ $(document).ready(function () {
                     chat: data,
                     chat_member_id: resp.chat_member_id,
                     created_at: resp.chat.new_created_at,
+                    time: resp.created_at_formatted,
                 });
             },
             error: function (xhr) {
@@ -1020,13 +1022,67 @@ $(document).ready(function () {
         );
     });
 
+    // Updated UI update functions
+    function updateGroupLastMessage(teamId, message, time, chatId) {
+        // Update the last message text
+        const messageElement = $(
+            `.group-data[data-id="${teamId}"] .GroupDescrp`
+        );
+        messageElement.html(message);
+
+        // Update the time element
+        const timeElement = $(`.group-data[data-id="${teamId}"] .time_online`);
+        timeElement.text(time);
+
+        // Update the class and id for the message element to track the latest chat
+        messageElement
+            .removeClass()
+            .addClass(`GroupDescrp team-last-chat-${chatId}`);
+        timeElement.attr("id", `team-last-chat-time-${chatId}`);
+
+        // Move group to top of list
+        moveGroupToTop(teamId);
+    }
+
+    function updateUnseenCount(teamId, count = 0) {
+        const unseenElement = $(`#count-team-unseen-${teamId}`);
+        if (count > 0) {
+            unseenElement.html(`<span><p>${count}</p></span>`);
+        } else {
+            unseenElement.html("");
+        }
+    }
+
+    function moveGroupToTop(teamId) {
+        const groupElement = $(`.group-data[data-id="${teamId}"]`);
+        if (groupElement.length && groupElement.parent().length) {
+            const parentContainer = groupElement.parent();
+            parentContainer.prepend(groupElement);
+        }
+    }
+
+    function incrementUnseenCount(teamId) {
+        const unseenElement = $(`#count-team-unseen-${teamId}`);
+        const currentText = unseenElement.find("p").text();
+        const currentCount = parseInt(currentText) || 0;
+        const newCount = currentCount + 1;
+        unseenElement.html(`<span><p>${newCount}</p></span>`);
+    }
+
+    function getMessageDisplayText(chat) {
+        if (chat.attachment && chat.attachment !== "") {
+            return chat.message && chat.message.trim() !== ""
+                ? chat.message
+                : '<i class="fa-solid fa-file"></i> File uploaded';
+        }
+        return chat.message || "";
+    }
+
     // Receive message from socket
     socket.on("sendTeamMessage", function (data) {
         let timezone = authTimeZone;
         let created_at = data.created_at;
-
         let time = moment.tz(created_at, timezone).format("h:mm A");
-
         let chat_member_id_array = data.chat_member_id;
 
         if (
@@ -1111,13 +1167,24 @@ $(document).ready(function () {
             $("#team-chat-container-" + data.chat.team_id).append(html);
             scrollChatToBottom(data.chat.team_id);
         }
+
         if (
             data.chat.user_id != sender_id &&
             chat_member_id_array.includes(sender_id)
         ) {
+            // Update group list UI instead of API call
+            let messageText = getMessageDisplayText(data.chat);
+            updateGroupLastMessage(
+                data.chat.team_id,
+                messageText,
+                time,
+                data.chat.id
+            );
+
             if ($(".chat-body").length > 0) {
                 if ($("#team-chat-container-" + data.chat.team_id).length > 0) {
-                    $("#count-team-unseen-" + data.chat.team_id).html("");
+                    // User is viewing this team's chat - mark as seen
+                    updateUnseenCount(data.chat.team_id, 0);
                     $.ajax({
                         type: "POST",
                         url: window.Laravel.routes.teamChatSeen,
@@ -1150,6 +1217,8 @@ $(document).ready(function () {
                         },
                     });
                 } else {
+                    // User is not viewing this team's chat - increment unseen count
+                    incrementUnseenCount(data.chat.team_id);
                     $.ajax({
                         type: "POST",
                         url: window.Laravel.routes.teamChatNotification,
@@ -1188,6 +1257,8 @@ $(document).ready(function () {
                     });
                 }
             } else {
+                // User is not in chat page - increment unseen count
+                incrementUnseenCount(data.chat.team_id);
                 $.ajax({
                     type: "POST",
                     url: window.Laravel.routes.teamChatNotification,
@@ -1224,7 +1295,17 @@ $(document).ready(function () {
                     },
                 });
             }
-            groupList(sender_id, data.chat.team_id);
+        }
+
+        // Also update for sender's own messages
+        if (data.chat.user_id == sender_id) {
+            let messageText = getMessageDisplayText(data.chat);
+            updateGroupLastMessage(
+                data.chat.team_id,
+                messageText,
+                time,
+                data.chat.id
+            );
         }
     });
 });
