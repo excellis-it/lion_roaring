@@ -97,16 +97,8 @@ $(function () {
             $(this).addClass("active-theme");
     }),
     $(".preloader").fadeOut();
-$(document).ready(function () {
-    $(".btn_all_open").on("click", function () {
-        var target = $(this).data("target");
-        $(target).toggleClass("active");
-    });
-});
 
-function dltFun() {
-    $(".box_slae").removeClass("active");
-}
+
 
 
 

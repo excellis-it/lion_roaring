@@ -181,7 +181,7 @@ class ChatController extends Controller
 
             // get chat data with sender and reciver
             $chat = Chat::with('sender', 'reciver')->find($chatData->id);
-            $chat->created_at_formatted = $chat->created_at->format('h:i A'); // Format the created_at timestamp
+            $chat->created_at_formatted = $chat->created_at->format('Y-m-d H:i:s'); // Format the created_at timestamp
 
             //  $message_type = $this->detectMessageType($request->file);
 
@@ -215,35 +215,35 @@ class ChatController extends Controller
             }
 
             // ...existing code... (users array processing)
-            $users = User::with('roles', 'chatSender')->where('id', '!=', auth()->id())->where('status', 1)->whereHas('roles', function ($query) {
-                $query->whereIn('type', [1, 2, 3]);
-            })->get()->toArray();
-            // return user orderBy latest message
-            $users = array_map(function ($user) {
-                $user['last_message'] = Chat::where(function ($query) use ($user) {
-                    $query->where('sender_id', $user['id'])->where('reciver_id', auth()->id())->where('deleted_for_reciver', 0)->where('delete_from_receiver_id', 0);
-                })->orWhere(function ($query) use ($user) {
-                    $query->where('sender_id', auth()->id())->where('reciver_id', $user['id'])->where('deleted_for_sender', 0)->where('delete_from_sender_id', 0);
-                })->orderBy('created_at', 'desc')->first();
+            // $users = User::with('roles', 'chatSender')->where('id', '!=', auth()->id())->where('status', 1)->whereHas('roles', function ($query) {
+            //     $query->whereIn('type', [1, 2, 3]);
+            // })->get()->toArray();
+            // // return user orderBy latest message
+            // $users = array_map(function ($user) {
+            //     $user['last_message'] = Chat::where(function ($query) use ($user) {
+            //         $query->where('sender_id', $user['id'])->where('reciver_id', auth()->id())->where('deleted_for_reciver', 0)->where('delete_from_receiver_id', 0);
+            //     })->orWhere(function ($query) use ($user) {
+            //         $query->where('sender_id', auth()->id())->where('reciver_id', $user['id'])->where('deleted_for_sender', 0)->where('delete_from_sender_id', 0);
+            //     })->orderBy('created_at', 'desc')->first();
 
-                if ($user['last_message']) {
-                    $user['last_message']->created_at = $user['last_message']->created_at->format('Y-m-d H:i:s'); // Format to string
-                }
+            //     if ($user['last_message']) {
+            //         $user['last_message']->created_at = $user['last_message']->created_at->format('Y-m-d H:i:s'); // Format to string
+            //     }
 
-                return $user;
-            }, $users);
+            //     return $user;
+            // }, $users);
 
-            // Sort users based on the latest message
-            usort($users, function ($a, $b) {
-                if ($a['last_message'] === null) {
-                    return 1; // Move users with no messages to the end
-                }
-                if ($b['last_message'] === null) {
-                    return -1; // Move users with no messages to the end
-                }
+            // // Sort users based on the latest message
+            // usort($users, function ($a, $b) {
+            //     if ($a['last_message'] === null) {
+            //         return 1; // Move users with no messages to the end
+            //     }
+            //     if ($b['last_message'] === null) {
+            //         return -1; // Move users with no messages to the end
+            //     }
 
-                return $b['last_message']->created_at <=> $a['last_message']->created_at; // Sort by latest message timestamp
-            });
+            //     return $b['last_message']->created_at <=> $a['last_message']->created_at; // Sort by latest message timestamp
+            // });
 
             // $reciver_id = $request->reciver_id; // Corrected the variable name to match the request
             // $receiver_users = User::
@@ -292,48 +292,48 @@ class ChatController extends Controller
 
             $reciver_id = $request->reciver_id;
 
-            $receiver_user = User::where('id', $reciver_id)
-                ->where('status', 1)
-                ->whereHas('roles', function ($query) {
-                    $query->whereIn('type', [1, 2, 3]);
-                })
-                ->first();
+            // $receiver_user = User::where('id', $reciver_id)
+            //     ->where('status', 1)
+            //     ->whereHas('roles', function ($query) {
+            //         $query->whereIn('type', [1, 2, 3]);
+            //     })
+            //     ->first();
 
 
-            // Fetch last message
-            $lastMessage = Chat::where(function ($query) use ($receiver_user, $reciver_id) {
-                $query->where('sender_id', $receiver_user->id)
-                    ->where('reciver_id', $reciver_id)
-                    ->where('deleted_for_reciver', 0)
-                    ->where('delete_from_receiver_id', 0);
-            })
-                ->orWhere(function ($query) use ($receiver_user, $reciver_id) {
-                    $query->where('sender_id', $reciver_id)
-                        ->where('reciver_id', $receiver_user->id)
-                        ->where('deleted_for_sender', 0)
-                        ->where('delete_from_sender_id', 0);
-                })
-                ->orderBy('created_at', 'desc')
-                ->first();
+            // // Fetch last message
+            // $lastMessage = Chat::where(function ($query) use ($receiver_user, $reciver_id) {
+            //     $query->where('sender_id', $receiver_user->id)
+            //         ->where('reciver_id', $reciver_id)
+            //         ->where('deleted_for_reciver', 0)
+            //         ->where('delete_from_receiver_id', 0);
+            // })
+            //     ->orWhere(function ($query) use ($receiver_user, $reciver_id) {
+            //         $query->where('sender_id', $reciver_id)
+            //             ->where('reciver_id', $receiver_user->id)
+            //             ->where('deleted_for_sender', 0)
+            //             ->where('delete_from_sender_id', 0);
+            //     })
+            //     ->orderBy('created_at', 'desc')
+            //     ->first();
 
-            if ($lastMessage) {
-                $lastMessage->formatted_time = $lastMessage->created_at->format('h:i A');
-                $lastMessage->formatted_date = $lastMessage->created_at->format('Y-m-d H:i:s');
-            }
+            // if ($lastMessage) {
+            //     $lastMessage->formatted_time = $lastMessage->created_at->format('h:i A');
+            //     $lastMessage->formatted_date = $lastMessage->created_at->format('Y-m-d H:i:s');
+            // }
 
-            // Count unseen messages
-            $unseenChat = Chat::where('sender_id', $receiver_user->id)
-                ->where('reciver_id', $reciver_id)
-                ->where('delete_from_receiver_id', 0)
-                ->where('seen', 0)
-                ->count();
+            // // Count unseen messages
+            // $unseenChat = Chat::where('sender_id', $receiver_user->id)
+            //     ->where('reciver_id', $reciver_id)
+            //     ->where('delete_from_receiver_id', 0)
+            //     ->where('seen', 0)
+            //     ->count();
 
-            // Combine and return
-            $receiver_user = $receiver_user->toArray();
-            $receiver_user['last_message'] = $lastMessage;
-            $receiver_user['unseen_chat'] = $unseenChat;
+            // // Combine and return
+            // $receiver_user = $receiver_user->toArray();
+            // $receiver_user['last_message'] = $lastMessage;
+            // $receiver_user['unseen_chat'] = $unseenChat;
 
-            return response()->json(['msg' => 'Message sent successfully', 'chat' => $chat, 'users' => $users, 'receiver_users' => $receiver_user, 'chat_count' => $chat_count, 'success' => true]);
+            return response()->json(['msg' => 'Message sent successfully', 'chat' => $chat, 'chat_count' => $chat_count, 'success' => true]);
         } catch (\Throwable $th) {
             return response()->json(['msg' => $th->getMessage(), 'success' => false]);
         }

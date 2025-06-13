@@ -142,7 +142,12 @@
                 assetUrls: {
                     profileDummy: '{{ asset('user_assets/images/profile_dummy.png') }}',
                     fileIcon: '{{ asset('user_assets/images/file.png') }}',
-
+                },
+                userInfo: {
+                    firstName: "{{ auth()->user()->first_name }}",
+                    middleName: "{{ auth()->user()->middle_name }}",
+                    lastName: "{{ auth()->user()->last_name }}",
+                    profilePicture: "{{ auth()->user()->profile_picture }}"
                 },
                 routes: {
                     chatbotMessage: "{{ route('chatbot.message') }}",
@@ -214,7 +219,18 @@
         </script>
 
 
+        <script>
+            $(document).ready(function() {
+                $(".btn_all_open").on("click", function() {
+                    var target = $(this).data("target");
+                    $(target).toggleClass("active");
+                });
+            });
 
+            function dltFun() {
+                $(".box_slae").removeClass("active");
+            }
+        </script>
 
         <script src="{{ asset('user_assets/js/web-chat.js') }}"></script>
 
