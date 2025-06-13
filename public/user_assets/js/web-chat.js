@@ -1,5 +1,6 @@
 $(document).ready(function () {
     var sender_id = window.Laravel.authUserId;
+    var receiver_id = null;
     $.ajaxSetup({
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -19,6 +20,7 @@ $(document).ready(function () {
         socket.emit("read-chat", {
             read_chat: 1,
             receiver_id: receiver_id,
+            sender_id: sender_id,
         });
 
         // Add "active" class to the clicked element
@@ -41,7 +43,7 @@ $(document).ready(function () {
                     $(".chat-module").html(resp.view);
 
                     // unseen_chat count remove
-                    $("#count-unseen-" + receiver_id).remove();
+                    removeUnseenCount(receiver_id);
 
                     socket.emit("multiple_seen", {
                         unseen_chat: resp.unseen_chat,
@@ -62,34 +64,10 @@ $(document).ready(function () {
                     emojioneAreaInstance[0].emojioneArea.on(
                         "keydown",
                         function (editor, event) {
-                            const $messageInput = $(".emojionearea-editor");
-
-                            console.log("key is : " + event.key);
-
-                            var message = $("#MessageInput")
-                                .emojioneArea()[0]
-                                .emojioneArea.getText();
-                            console.log("message is " + message);
-
-                            if (event.key === "Enter") {
-                                //
-                            } else {
-                                if (event.which === 13 && !event.shiftKey) {
-                                    event.preventDefault();
-                                    $("#MessageForm").submit();
-                                }
+                            if (event.which === 13 && !event.shiftKey) {
+                                event.preventDefault();
+                                $("#MessageForm").submit();
                             }
-
-                            // var formattedMessage = message.replace(
-                            //     /\b[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}\b/g,
-                            //     function(word) {
-                            //         var url = word.startsWith('http') ? word :
-                            //             'http://' + word; // Add http:// if not present
-                            //         return `<a href="${url}" target="_blank">${word}</a>`;
-                            //     });
-
-                            // var message = $("#MessageInput").emojioneArea()[0].emojioneArea
-                            //     .setText(formattedMessage);
                         }
                     );
                 } else {
@@ -106,7 +84,125 @@ $(document).ready(function () {
 
     function scrollChatToBottom(receiver_id) {
         var messages = document.getElementById("chat-container-" + receiver_id);
-        messages.scrollTop = messages.scrollHeight;
+        if (messages) {
+            messages.scrollTop = messages.scrollHeight;
+        }
+    }
+
+    function updateChatListItem(
+        user,
+        isNewMessage = false,
+        messageText = "",
+        isFile = false
+    ) {
+        let timeZone = window.Laravel.authTimeZone;
+        let time_format =
+            user.last_message && user.last_message.created_at
+                ? moment
+                      .tz(user.last_message.created_at, timeZone)
+                      .format("hh:mm A")
+                : moment().format("hh:mm A");
+
+        let chatListItem = $("#chat_list_user_" + user.id);
+        let chatContainer = $("#group-manage-" + sender_id);
+
+        // If chat list item doesn't exist, create it
+        if (chatListItem.length === 0) {
+            createNewChatListItem(user, messageText, isFile, time_format);
+            return;
+        }
+
+        // Update existing chat list item
+        let messageContent = "";
+        if (isNewMessage) {
+            if (isFile) {
+                messageContent =
+                    "<span>📎 File </span>   <span>" + messageText + "</span>";
+            } else {
+                messageContent = messageText || "";
+            }
+        } else if (user.last_message && user.last_message.message) {
+            messageContent = user.last_message.message;
+        } else if (user.last_message && user.last_message.attachment) {
+            messageContent = "<span>📎 File </span>";
+        }
+
+        // Update message content
+        chatListItem.find("#message-app-" + user.id).html(messageContent);
+
+        // Update time
+        let timeElement = chatListItem.find('[id^="last-chat-time-"]');
+        timeElement.html(`<p>${time_format}</p>`);
+
+        // Update the time element ID if we have a new message
+        if (isNewMessage && user.last_message) {
+            timeElement.attr("id", "last-chat-time-" + user.last_message.id);
+        }
+
+        // Move to top of chat list (most recent conversation first)
+        chatListItem.prependTo(chatContainer);
+    }
+
+    function createNewChatListItem(
+        user,
+        messageText = "",
+        isFile = false,
+        timeFormat = ""
+    ) {
+        let profileImage = user.profile_picture
+            ? window.Laravel.storageUrl + user.profile_picture
+            : window.Laravel.assetUrls.profileDummy;
+
+        let messageContent = "";
+        if (isFile) {
+            messageContent = '<span><i class="ti ti-file"></i></span>';
+        } else {
+            messageContent = messageText || "";
+        }
+
+        let timeId = user.last_message
+            ? "last-chat-time-" + user.last_message.id
+            : "last-chat-time-default-" + user.id;
+
+        let chatListHtml = `
+            <li class="group user-list" id="chat_list_user_${
+                user.id
+            }" data-id="${user.id}">
+                <div class="avatar">
+                    <img src="${profileImage}" alt="">
+                </div>
+                <p class="GroupName">${user.first_name || ""} ${
+            user.middle_name || ""
+        } ${user.last_name || ""}</p>
+                <p class="GroupDescrp" id="message-app-${user.id}">
+                    ${messageContent}
+                </p>
+                <div class="time_online" id="${timeId}">
+                    ${timeFormat ? `<p>${timeFormat}</p>` : ""}
+                </div>
+            </li>
+        `;
+
+        $("#group-manage-" + sender_id).prepend(chatListHtml);
+    }
+
+    function addUnseenCount(userId, count) {
+        let unseenElement = $("#count-unseen-" + userId);
+
+        if (unseenElement.length === 0 && count > 0) {
+            let unseenHtml = `<div class="count-unseen" id="count-unseen-${userId}">
+                <span><p>${count}</p></span>
+            </div>`;
+            $("#chat_list_user_" + userId).append(unseenHtml);
+        } else if (unseenElement.length > 0) {
+            // Update existing count
+            let currentCount = parseInt(unseenElement.find("p").text()) || 0;
+            unseenElement.find("p").text(currentCount + count);
+        }
+    }
+
+    function removeUnseenCount(userId) {
+        $("#count-unseen-" + userId).remove();
     }
 
     $(document).on("submit", "#MessageForm", function (e) {
@@ -117,12 +213,11 @@ $(document).ready(function () {
             .emojioneArea()[0]
             .emojioneArea.getText();
         var receiver_id = $(".reciver_id").val();
-        //  var sender_id = $("input[name=sender_id]").val(); // Assuming sender_id is available
         var url = window.Laravel.routes.chatSend;
 
         // Get the file data
         var fileInput = $("#file2")[0];
-        var file = fileInput.files[0]; // The selected file
+        var file = fileInput.files[0];
 
         // Create a FormData object to send both message and file
         var formData = new FormData();
@@ -139,239 +234,219 @@ $(document).ready(function () {
                 return false;
             }
         }
-        $("#loading").addClass("loading");
-        $("#loading-content").addClass("loading-content");
+
+        //  $("#loading").addClass("loading");
+        //  $("#loading-content").addClass("loading-content");
+
+        const sendButton = $(".Send");
+        sendButton.addClass("sendloading");
 
         // Perform Ajax request to send the message to the server
         $.ajax({
             type: "POST",
             url: url,
             data: formData,
-            processData: false, // Don't process the data
+            processData: false,
             contentType: false,
             success: function (res) {
+                sendButton.removeClass("sendloading");
                 if (res.success) {
                     $("#MessageInput").data("emojioneArea").setText("");
                     $("#file2").val("");
                     $("#file-name-display").hide();
 
-                    let chat = res.chat.message;
-                    let created_at = res.chat.created_at_formatted;
-                    // use timezones to format the time America/New_York
-                    let time_format_12 = moment(
-                        created_at,
-                        "YYYY-MM-DD HH:mm:ss"
-                    ).format("hh:mm A");
+                    let chat = res.chat.message || "";
+                    let html = generateMessageHtml(res.chat, "me", chat);
 
-                    let html = ` <div class="message me" id="chat-message-${res.chat.id}">
-                                  <div class="message-wrap">`;
-                    let fileUrl = "";
-                    let attachment = res.chat.attachment;
-                    if (attachment != "") {
-                        fileUrl = window.Laravel.storageUrl + attachment;
-                        let attachement_extention = attachment.split(".").pop();
-
-                        if (
-                            ["jpg", "jpeg", "png", "gif"].includes(
-                                attachement_extention
-                            )
-                        ) {
-                            html += ` <p class="messageContent"><a href="${fileUrl}" target="_blank"><img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a><br><span class="">${chat.replace(
-                                /\n/g,
-                                "<br>"
-                            )}</span></p>`;
-                        } else if (
-                            ["mp4", "webm", "ogg"].includes(
-                                attachement_extention
-                            )
-                        ) {
-                            html += ` <p class="messageContent"><a href="${fileUrl}" target="_blank"><video width="200" height="200" controls><source src="${fileUrl}" type="video/mp4"><source src="${fileUrl}" type="video/webm"><source src="${fileUrl}" type="video/ogg"></video></a><br><span class="">${chat.replace(
-                                /\n/g,
-                                "<br>"
-                            )}</span></p>`;
-                        } else {
-                            html += ` <p class="messageContent"><a href="${fileUrl}" download="${attachment}"><img src="${
-                                window.Laravel.assetUrls.fileIcon
-                            }" alt=""></a><br><span class="">${chat.replace(
-                                /\n/g,
-                                "<br>"
-                            )}</span></p>`;
-                        }
-                    } else {
-                        html += ` <p class="messageContent">${chat.replace(
-                            /\n/g,
-                            "<br>"
-                        )}</p>`;
-                    }
-
-                    html += `<div class="dropdown">
-                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="fa-solid fa-ellipsis-vertical"></i>
-                                            </button>
-                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                <li><a class="dropdown-item remove-chat" data-chat-id="${res.chat.id}" data-del-from="me">Remove For Me</a></li>
-                                                        <li><a class="dropdown-item remove-chat" data-chat-id="${res.chat.id}" data-del-from="everyone">Remove For Everyone</a></li>
-                                            </ul>
-                                        </div>
-                                        </div>
-                                 <div class="messageDetails">
-                                     <div class="messageTime">${res.chat.created_at_formatted}</div>
-                                     <div id="seen_${res.chat.id}">
-                                     <i class="fas fa-check"></i>
-                                     </div>
-                                 </div>
-                             </div>
-                         `;
-                    $("#message-app-" + receiver_id).html(chat);
+                    // Append message to chat container
                     if (res.chat_count > 0) {
                         $("#chat-container-" + receiver_id).append(html);
-                        scrollChatToBottom(receiver_id);
                     } else {
                         $("#chat-container-" + receiver_id).html(html);
                     }
+                    scrollChatToBottom(receiver_id);
 
-                    var users = res.users;
-                    $("#group-manage-" + sender_id).html("");
-                    var new_html = "";
+                    // Update chat list immediately without API call
+                    let receiverUser = {
+                        id: parseInt(receiver_id),
+                        first_name: $(".GroupName").text().split(" ")[0] || "",
+                        last_name:
+                            $(".GroupName")
+                                .text()
+                                .split(" ")
+                                .slice(1)
+                                .join(" ") || "",
+                        profile_picture: null, // Will be handled by existing image
+                        last_message: {
+                            id: res.chat.id,
+                            message: res.chat.attachment
+                                ? null
+                                : res.chat.message,
+                            attachment: res.chat.attachment,
+                            created_at: res.chat.created_at,
+                        },
+                    };
 
-                    users.forEach((user) => {
-                        // let timezone = 'America/New_York';
-                        let time_format_13 =
-                            user.last_message && user.last_message.created_at
-                                ? moment
-                                      .tz(user.last_message.created_at)
-                                      .format("hh:mm A")
-                                : "";
+                    updateChatListItem(
+                        receiverUser,
+                        true,
+                        res.chat.message,
+                        !!res.chat.attachment
+                    );
 
-                        new_html += `
-                                 <li class="group user-list ${
-                                     user.id == receiver_id ? "active" : ""
-                                 }" data-id="${user.id}">
-                                     <div class="avatar">`;
-
-                        if (user.profile_picture) {
-                            var profile_picture =
-                                window.Laravel.storageUrl +
-                                user.profile_picture;
-                            new_html += `<img src="${profile_picture}" alt="">`;
-                        } else {
-                            new_html += `<img src="${window.Laravel.assetUrls.profileDummy}" alt="">`;
-                        }
-
-                        new_html += `</div>
-                                     <p class="GroupName">${user.first_name} ${
-                            user.middle_name ? user.middle_name : ""
-                        } ${user.last_name ? user.last_name : ""}</p>
-                                     <p class="GroupDescrp last-chat-${
-                                         user.last_message
-                                             ? user.last_message.id
-                                             : ""
-                                     }">${
-                            user.last_message && user.last_message.message
-                                ? user.last_message.message
-                                : ""
-                        }</p>
-                                     <div class="time_online" id="last-chat-time-${
-                                         user.last_message
-                                             ? user.last_message.id
-                                             : ""
-                                     }">
-                                         <p>${
-                                             user.last_message
-                                                 ? user.last_message.time
-                                                 : ""
-                                         }</p>
-                                     </div>
-                                 </li>`;
-                    });
-
-                    $("#group-manage-" + sender_id).append(new_html);
                     $("#loading").removeClass("loading");
                     $("#loading-content").removeClass("loading-content");
+
                     // Emit chat message to the server
+                    let fileUrl = res.chat.attachment
+                        ? window.Laravel.storageUrl + res.chat.attachment
+                        : "";
+
                     socket.emit("chat", {
                         message: message,
                         sender_id: sender_id,
                         receiver_id: receiver_id,
-                        receiver_users: res.receiver_users,
+                        // receiver_users: res.receiver_users,
                         chat_id: res.chat.id,
                         file_url: fileUrl,
                         time: res.chat.created_at_formatted,
                         created_at: res.chat.new_created_at,
+                        // Add sender info for chat list updates
+                        sender_info: {
+                            id: sender_id,
+                            first_name: window.Laravel.userInfo.firstName,
+                            middle_name: window.Laravel.userInfo.middleName,
+                            last_name: window.Laravel.userInfo.lastName,
+                            profile_picture:
+                                window.Laravel.userInfo.profilePicture,
+                        },
                     });
                 } else {
-                    $("#loading").removeClass("loading");
-                    $("#loading-content").removeClass("loading-content");
+                    //  $("#loading").removeClass("loading");
+                    //  $("#loading-content").removeClass("loading-content");
                     console.log(res.msg);
                 }
             },
         });
     });
 
+    function generateMessageHtml(chat, messageType, messageText) {
+        let fileUrl = "";
+        let html = `<div class="message ${messageType}" id="chat-message-${chat.id}">
+                        <div class="message-wrap">`;
+
+        if (chat.attachment) {
+            fileUrl = window.Laravel.storageUrl + chat.attachment;
+            let extension = chat.attachment.split(".").pop().toLowerCase();
+
+            if (
+                ["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(extension)
+            ) {
+                html += `<p class="messageContent"><a href="${fileUrl}" target="_blank">
+                    <img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;">
+                </a><br><span>${messageText.replace(/\n/g, "<br>")}</span></p>`;
+            } else if (["mp4", "webm", "ogg"].includes(extension)) {
+                html += `<p class="messageContent"><a href="${fileUrl}" target="_blank">
+                    <video width="200" height="200" controls>
+                        <source src="${fileUrl}" type="video/${extension}">
+                    </video>
+                </a><br><span>${messageText.replace(/\n/g, "<br>")}</span></p>`;
+            } else {
+                html += `<p class="messageContent"><a href="${fileUrl}" download="${
+                    chat.attachment
+                }">
+                    <img src="${window.Laravel.assetUrls.fileIcon}" alt="">
+                </a><br><span>${messageText.replace(/\n/g, "<br>")}</span></p>`;
+            }
+        } else {
+            html += `<p class="messageContent">${messageText.replace(
+                /\n/g,
+                "<br>"
+            )}</p>`;
+        }
+
+        if (messageType === "me") {
+            html += `<div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item remove-chat" data-chat-id="${chat.id}" data-del-from="me">Remove For Me</a></li>
+                            <li><a class="dropdown-item remove-chat" data-chat-id="${chat.id}" data-del-from="everyone">Remove For Everyone</a></li>
+                        </ul>
+                    </div>`;
+        }
+
+        html += `</div>
+                <div class="messageDetails">
+                    <div class="messageTime">${chat.created_at_formatted}</div>`;
+
+        if (messageType === "me") {
+            html += `<div id="seen_${chat.id}">
+                        <i class="fas fa-check"></i>
+                    </div>`;
+        }
+
+        html += `</div></div>`;
+        return html;
+    }
+
     $("#hit-chat-file").click(function (e) {
         e.preventDefault();
         $("#file2").click();
-        $("#team-file2").click();
     });
 
-    $(document).on("change", "#file2, #team-file2", function (e) {
-        var file = $(this).prop("files")[0]; // Get the selected file
-        var fileName = file?.name || ""; // Get the file name
+    $(document).on("change", "#file2", function (e) {
+        var file = $(this).prop("files")[0];
+        var fileName = file?.name || "";
         var $fileNameDisplay = $("#file-name-display");
 
         if (file && fileName) {
-            // Check if the file is an image
-            var isImage = file.type.startsWith("image/"); // Check if it's an image
+            var isImage = file.type.startsWith("image/");
             var displayContent = "";
 
             if (isImage) {
-                // Create an image preview
                 var reader = new FileReader();
                 reader.onload = function (e) {
-                    // Display image preview with remove button
-                    displayContent =
-                        '<img src="' +
-                        e.target.result +
-                        '" alt="Image preview" style="max-width: 100px; max-height: 100px; margin-right: 10px;" />' +
-                        fileName +
-                        ' <i class="fas fa-times remove-file" style="cursor: pointer; color: red; margin-left: 10px;"></i>';
+                    displayContent = `<img src="${e.target.result}" alt="Image preview"
+                        style="max-width: 100px; max-height: 100px; margin-right: 10px;" />
+                        ${fileName}
+                        <i class="fas fa-times remove-file" style="cursor: pointer; color: red; margin-left: 10px;"></i>`;
                     $fileNameDisplay.html(displayContent).show();
                 };
-                reader.readAsDataURL(file); // Read the file as a data URL
+                reader.readAsDataURL(file);
             } else {
-                // Display default file icon with remove button
-                displayContent =
-                    '<i class="fas fa-file"></i> ' +
-                    fileName +
-                    ' <i class="fas fa-times remove-file" style="cursor: pointer; color: red; margin-left: 10px;"></i>';
+                displayContent = `<i class="fas fa-file"></i> ${fileName}
+                    <i class="fas fa-times remove-file" style="cursor: pointer; color: red; margin-left: 10px;"></i>`;
                 $fileNameDisplay.html(displayContent).show();
             }
         } else {
-            $fileNameDisplay.hide(); // Hide if no file selected
+            $fileNameDisplay.hide();
         }
     });
 
-    // Remove file on click of cross icon
     $(document).on("click", ".remove-file", function () {
-        var $fileNameDisplay = $("#file-name-display");
-        $fileNameDisplay.hide(); // Hide the file display area
-
-        // Clear the file input
+        $("#file-name-display").hide();
         $("#file2").val("");
-        $("#team-file2").val("");
     });
 
+    // Handle direct file upload
     $(document).on("change", "#file", function (e) {
         var file = e.target.files[0];
         var receiver_id = $(".reciver_id").val();
+
+        if (!file || !receiver_id) return;
+
         var formData = new FormData();
         formData.append("file", file);
-        formData.append("_token", $("meta[name='csrf-token']").attr("content")); // Retrieve CSRF token from meta tag
+        formData.append("_token", $("meta[name='csrf-token']").attr("content"));
         formData.append("reciver_id", receiver_id);
         formData.append("sender_id", sender_id);
+
         $("#loading").addClass("loading");
         $("#loading-content").addClass("loading-content");
+
         $.ajax({
             type: "POST",
             url: window.Laravel.routes.chatSend,
@@ -380,106 +455,58 @@ $(document).ready(function () {
             contentType: false,
             success: function (res) {
                 if (res.success) {
-                    let attachment = res.chat.attachment;
-                    let fileUrl = window.Laravel.storageUrl + attachment;
-                    let attachement_extention = attachment.split(".").pop();
-                    let created_at = res.chat.created_at;
-                    // let timeZome = 'America/New_York';
-                    let time_format_12 = moment
-                        .tz(created_at)
-                        .format("hh:mm A");
-                    let html = `<div class="message me">`;
-                    if (
-                        ["jpg", "jpeg", "png", "gif"].includes(
-                            attachement_extention
-                        )
-                    ) {
-                        html += ` <div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank"><img src="${fileUrl}" alt="attachment" style="max-width: 200px; max-height: 200px;"></a></p>`;
-                    } else if (
-                        ["mp4", "webm", "ogg"].includes(attachement_extention)
-                    ) {
-                        html += ` <div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" target="_blank"><video width="200" height="200" controls><source src="${fileUrl}" type="video/mp4"><source src="${fileUrl}" type="video/webm"><source src="${fileUrl}" type="video/ogg"></video></a></p>`;
-                    } else {
-                        html += ` <div class="message-wrap"><p class="messageContent"><a href="${fileUrl}" download="${attachment}"><img src="${window.Laravel.assetUrls.fileIcon}" alt=""></a></p>`;
-                    }
-
-                    html += ` <div class="dropdown">
-                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                             data-bs-toggle="dropdown" aria-expanded="false">
-                             <i class="fa-solid fa-ellipsis-vertical"></i>
-                         </button>
-                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                             <li><a class="dropdown-item remove-chat" data-chat-id="${res.chat.id}" data-del-from="me">Remove For Me</a></li>
-                                     <li><a class="dropdown-item remove-chat" data-chat-id="${res.chat.id}" data-del-from="everyone">Remove For Everyone</a></li>
-                         </ul>
-                     </div></div><div class="messageDetails"><div class="messageTime">${res.chat.created_at_formatted}</div>
-                                 <div id="seen_${res.chat.id}">
-                                 <i class="fas fa-check">
-                                     </i>
-                                 </div>
-                                 </div></div>`;
+                    let html = generateMessageHtml(res.chat, "me", "");
 
                     if (res.chat_count > 0) {
                         $("#chat-container-" + receiver_id).append(html);
-                        scrollChatToBottom(receiver_id);
                     } else {
                         $("#chat-container-" + receiver_id).html(html);
                     }
+                    scrollChatToBottom(receiver_id);
 
-                    // Update the user list
-                    var users = res.users;
-                    $("#group-manage-" + sender_id).html("");
-                    var new_html = "";
-                    users.forEach((user) => {
-                        // let timeZome = 'America/New_York';
-                        let time_format_13 =
-                            user.last_message && user.last_message.created_at
-                                ? moment
-                                      .tz(user.last_message.created_at)
-                                      .format("hh:mm A")
-                                : "";
+                    // Update chat list immediately without API call
+                    let receiverUser = {
+                        id: parseInt(receiver_id),
+                        first_name: $(".GroupName").text().split(" ")[0] || "",
+                        last_name:
+                            $(".GroupName")
+                                .text()
+                                .split(" ")
+                                .slice(1)
+                                .join(" ") || "",
+                        profile_picture: null,
+                        last_message: {
+                            id: res.chat.id,
+                            message: null,
+                            attachment: res.chat.attachment,
+                            created_at: res.chat.created_at,
+                        },
+                    };
 
-                        new_html += `<li class="group user-list ${
-                            user.id == receiver_id ? "active" : ""
-                        }" data-id="${user.id}"><div class="avatar">`;
+                    updateChatListItem(receiverUser, true, "", true);
 
-                        if (user.profile_picture) {
-                            var profile_picture =
-                                window.Laravel.storageUrl +
-                                user.profile_picture;
-                            new_html += `<img src="${profile_picture}" alt="">`;
-                        } else {
-                            new_html += `<img src="${window.Laravel.assetUrls.profileDummy}" alt="">`;
-                        }
-
-                        new_html += `</div><p class="GroupName">${
-                            user.first_name
-                        } ${user.middle_name ? user.middle_name : ""} ${
-                            user.last_name ? user.last_name : ""
-                        }</p><p class="GroupDescrp last-chat-${
-                            user.last_message ? user.last_message.id : ""
-                        }">${
-                            user.last_message && user.last_message.message
-                                ? user.last_message.message
-                                : ""
-                        }</p><div class="time_online" id="last-chat-time-${
-                            user.last_message ? user.last_message.id : ""
-                        }"><p>${time_format_13}</p></div></li>`;
-                    });
-
-                    $("#group-manage-" + sender_id).append(new_html);
                     $("#loading").removeClass("loading");
                     $("#loading-content").removeClass("loading-content");
 
+                    let fileUrl =
+                        window.Laravel.storageUrl + res.chat.attachment;
                     socket.emit("chat", {
                         message: file.name,
                         file_url: fileUrl,
                         sender_id: sender_id,
                         receiver_id: receiver_id,
-                        receiver_users: res.receiver_users,
+                        // receiver_users: res.receiver_users,
                         chat_id: res.chat.id,
                         time: res.chat.created_at_formatted,
                         created_at: res.chat.new_created_at,
+                        sender_info: {
+                            id: sender_id,
+                            first_name: window.Laravel.userInfo.firstName,
+                            middle_name: window.Laravel.userInfo.middleName,
+                            last_name: window.Laravel.userInfo.lastName,
+                            profile_picture:
+                                window.Laravel.userInfo.profilePicture,
+                        },
                     });
                 } else {
                     $("#loading").removeClass("loading");
@@ -490,137 +517,133 @@ $(document).ready(function () {
         });
     });
 
-    function setChatListLastActive(activeid = 0) {
-        if (activeid != 0) {
-            var lastActiveUserId = $("#last_activate_user").val();
-        } else {
-            var lastActiveUserId = $("#last_activate_user").val();
+    // clear-chat
+    $(document).on("click", ".clear-chat", function (e) {
+        var receiver_id = $(this).data("reciver-id");
+        if (!confirm("Are you sure you want to clear chat?")) {
+            return false;
         }
 
-        if (lastActiveUserId && lastActiveUserId != "0") {
-            $("#chat_list_user_" + lastActiveUserId).addClass("active");
-            // alert('active set done');
-        }
-    }
-
-    // load left chat list
-
-    function load_chat_list() {
-        var lastActiveUserId = $("#last_activate_user").val();
         $.ajax({
-            type: "GET",
-            url: window.Laravel.routes.chatList,
+            type: "POST",
+            url: window.Laravel.routes.chatClear,
             data: {
                 _token: $("input[name=_token]").val(),
+                reciver_id: receiver_id,
+                sender_id: sender_id,
             },
             success: function (res) {
-                if (res) {
-                    $(".main-sidebar-chat-list").html(res);
+                if (res.success) {
+                    $("#chat-container-" + receiver_id).html("");
+                    $("#message-app-" + receiver_id).html("");
 
-                    setChatListLastActive(lastActiveUserId);
+                    // Clear last message time in chat list
+                    let chatListItem = $("#chat_list_user_" + receiver_id);
+                    chatListItem.find('[id^="last-chat-time-"]').html("");
+
+                    socket.emit("clear-chat", {
+                        receiver_id: receiver_id,
+                        sender_id: sender_id,
+                    });
                 } else {
                     console.log(res.msg);
                 }
             },
         });
-    }
-
-    // clear-chat
-
-    $(document).on("click", ".clear-chat", function (e) {
-        var receiver_id = $(this).data("reciver-id");
-        r = confirm("Are you sure you want to clear chat?");
-        if (r == false) {
-            return false;
-        } else {
-            $.ajax({
-                type: "POST",
-                url: window.Laravel.routes.chatClear,
-                data: {
-                    _token: $("input[name=_token]").val(),
-                    reciver_id: receiver_id,
-                    sender_id: sender_id,
-                },
-                success: function (res) {
-                    if (res.success) {
-                        $("#chat-container-" + receiver_id).html("");
-                        $("#message-app-" + receiver_id).html("");
-
-                        //socket.emit("clear-chat", {
-                        //   receiver_id: receiver_id,
-                        // sender_id: sender_id,
-                        // });
-                    } else {
-                        console.log(res.msg);
-                    }
-                },
-            });
-        }
     });
 
     //remove-chat
     $(document).on("click", ".remove-chat", function (e) {
         var chat_id = $(this).data("chat-id");
         var del_from = $(this).data("del-from");
-        r = confirm("Are you sure you want to remove chat?");
-        if (r == false) {
+
+        if (!confirm("Are you sure you want to remove chat?")) {
             return false;
-        } else {
-            $.ajax({
-                type: "POST",
-                url: window.Laravel.routes.chatRemove,
-                data: {
-                    _token: $("input[name=_token]").val(),
-                    chat_id: chat_id,
-                    del_from: del_from,
-                },
-                success: function (res) {
-                    if (res.status == true) {
-                        if (del_from == "me") {
-                            $("#chat-message-" + chat_id).remove();
-                            $("#last-chat-time-" + chat_id).remove();
-                            $(".last-chat-" + chat_id).html("");
-                        } else {
-                            $("#chat-message-" + chat_id).remove();
-                            $("#last-chat-time-" + chat_id).remove();
-                            $(".last-chat-" + chat_id).html("");
-
-                            socket.emit("remove-chat", {
-                                chat: res.chat,
-                            });
-
-                            //   socket.emit('chat', res.chat.message);
-                        }
-                    } else {
-                        console.log(res.msg);
-                    }
-                },
-            });
         }
+
+        $.ajax({
+            type: "POST",
+            url: window.Laravel.routes.chatRemove,
+            data: {
+                _token: $("input[name=_token]").val(),
+                chat_id: chat_id,
+                del_from: del_from,
+            },
+            success: function (res) {
+                if (res.status == true) {
+                    $("#chat-message-" + chat_id).remove();
+
+                    if (res.last_message_update) {
+                        updateLastMessageInChatList(res);
+                    }
+
+                    if (del_from == "everyone") {
+                        socket.emit("remove-chat", {
+                            chat: res.chat,
+                            last_message_update: res.last_message_update,
+                            new_last_message: res.new_last_message,
+                            other_user_id: res.other_user_id,
+                        });
+                    }
+                } else {
+                    console.log(res.msg);
+                }
+            },
+        });
     });
 
-    //remove-chat
+    function updateLastMessageInChatList(res) {
+        if (res.new_last_message) {
+            $("#message-app-" + res.other_user_id).html(
+                res.new_last_message.message ||
+                    '<span><i class="ti ti-file"></i></span>'
+            );
+            let chatListItem = $("#chat_list_user_" + res.other_user_id);
+            let timeFormat = moment(res.new_last_message.created_at).format(
+                "h:mm A"
+            );
+            chatListItem
+                .find('[id^="last-chat-time-"]')
+                .html(`<p>${timeFormat}</p>`);
+        } else {
+            $("#message-app-" + res.other_user_id).html("");
+            let chatListItem = $("#chat_list_user_" + res.other_user_id);
+            chatListItem.find('[id^="last-chat-time-"]').html("");
+        }
+    }
+
+    //remove-chat socket listener
     socket.on("remove-chat", function (data) {
-        // console.log(data);
         if (data.chat.reciver_id == sender_id) {
             $("#chat-message-" + data.chat.id).remove();
-            $("#last-chat-time-" + data.chat.id).remove();
-            $(".last-chat-" + data.chat.id).html("");
+
+            if (data.last_message_update) {
+                updateLastMessageInChatList(data);
+            }
         }
-        load_chat_list();
     });
 
-    // clear-chat
+    // clear-chat socket listener
     socket.on("clear-chat", function (data) {
-        if (data.reciver_id == sender_id) {
+        if (data.receiver_id == sender_id) {
             $("#chat-container-" + data.sender_id).html("");
             $("#message-app-" + data.sender_id).html("");
-            load_chat_list();
+            let chatListItem = $("#chat_list_user_" + data.sender_id);
+            chatListItem.find('[id^="last-chat-time-"]').html("");
         }
     });
 
     socket.on("read-chat", function (data) {
-        load_chat_list();
+        var receiver_id = $(".reciver_id").val();
+        if (receiver_id == data.sender_id) {
+            removeUnseenCount(data.receiver_id);
+            if (sender_id == data.receiver_id) {
+                // $("#seen_").html(
+                //     '<i class="fas fa-check-double"></i>'
+                // );
+                $('[id^="seen_"]').html('<i class="fas fa-check-double"></i>');
+            }
+        }
     });
 
     function getNotificationReadUrl(type, id) {
@@ -631,72 +654,98 @@ $(document).ready(function () {
 
     // Listen for incoming chat messages from the server
     socket.on("chat", function (data) {
-        let timeZome = window.Laravel.authTimeZone;
+        let timeZone = window.Laravel.authTimeZone;
 
-        console.log(timeZome);
-
-        load_chat_list();
-        setChatListLastActive();
-        html = `
-                         <div class="message you" id="chat-message-${data.chat_id}">
-                             <p class="messageContent">`;
-
-        let attachment = data.file_url;
-        if (attachment != "") {
-            let attachement_extention = attachment.split(".").pop();
-
-            if (["jpg", "jpeg", "png", "gif"].includes(attachement_extention)) {
-                html += ` <a href="${
-                    data.file_url
-                }" target="_blank"><img src="${
-                    data.file_url
-                }" alt="attachment" style="max-width: 200px; max-height: 200px;"></a><br><span class="">${data.message.replace(
-                    /\n/g,
-                    "<br>"
-                )}</span>`;
-            } else if (["mp4", "webm", "ogg"].includes(attachement_extention)) {
-                html += ` <a href="${
-                    data.file_url
-                }" target="_blank"><video width="200" height="200" controls><source src="${
-                    data.file_url
-                }" type="video/mp4"><source src="${
-                    data.file_url
-                }" type="video/webm"><source src="${
-                    data.file_url
-                }" type="video/ogg"></video></a><br><span class="">${data.message.replace(
-                    /\n/g,
-                    "<br>"
-                )}</span>`;
-            } else {
-                html += ` <a href="${data.file_url}" download="${
-                    data.message
-                }"><img src="${
-                    window.Laravel.assetUrls.fileIcon
-                }" alt=""></a><br><span class="">${data.message.replace(
-                    /\n/g,
-                    "<br>"
-                )}</span>`;
-            }
-        } else {
-            html += ` ${data.message.replace(/\n/g, "<br>")}`;
-        }
-        console.log(moment.tz(data.created_at).format("hh:mm A"));
-        html += `</p>
-                        <div class="messageDetails">
-                                 <div class="messageTime">${moment
-                                     .tz(data.created_at, timeZome)
-                                     .format("hh:mm A")}</div>
-                             </div>
-                         </div>
-                     `;
         if (data.receiver_id == sender_id) {
+            // Generate incoming message HTML
+            let html = `<div class="message you" id="chat-message-${data.chat_id}">
+                            <div class="message-wrap">
+                                <p class="messageContent">`;
+
+            let attachment = data.file_url;
+            if (attachment && attachment !== "") {
+                let extension = attachment.split(".").pop().toLowerCase();
+
+                if (
+                    ["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(
+                        extension
+                    )
+                ) {
+                    html += `<a href="${data.file_url}" target="_blank">
+                        <img src="${
+                            data.file_url
+                        }" alt="attachment" style="max-width: 200px; max-height: 200px;">
+                    </a><br><span>${data.message.replace(
+                        /\n/g,
+                        "<br>"
+                    )}</span>`;
+                } else if (["mp4", "webm", "ogg"].includes(extension)) {
+                    html += `<a href="${data.file_url}" target="_blank">
+                        <video width="200" height="200" controls>
+                            <source src="${
+                                data.file_url
+                            }" type="video/${extension}">
+                        </video>
+                    </a><br><span>${data.message.replace(
+                        /\n/g,
+                        "<br>"
+                    )}</span>`;
+                } else {
+                    html += `<a href="${data.file_url}" download="${
+                        data.message
+                    }">
+                        <img src="${window.Laravel.assetUrls.fileIcon}" alt="">
+                    </a><br><span>${data.message.replace(
+                        /\n/g,
+                        "<br>"
+                    )}</span>`;
+                }
+            } else {
+                html += `${data.message.replace(/\n/g, "<br>")}`;
+            }
+
+            html += `</p>
+                        </div>
+                        <div class="messageDetails">
+                            <div class="messageTime">${moment
+                                .tz(data.created_at, timeZone)
+                                .format("hh:mm A")}</div>
+                        </div>
+                    </div>`;
+
+            // Update chat list for incoming message
+            if (data.sender_info) {
+                let senderUser = {
+                    id: data.sender_id,
+                    first_name: data.sender_info.first_name || "",
+                    middle_name: data.sender_info.middle_name || "",
+                    last_name: data.sender_info.last_name || "",
+                    profile_picture: data.sender_info.profile_picture,
+                    last_message: {
+                        id: data.chat_id,
+                        message: data.file_url ? null : data.message,
+                        attachment: data.file_url
+                            ? data.file_url.split("/").pop()
+                            : null,
+                        created_at: data.created_at,
+                    },
+                };
+
+                updateChatListItem(
+                    senderUser,
+                    true,
+                    data.message,
+                    !!data.file_url
+                );
+            }
+
             if ($(".chat-module").length > 0) {
                 if ($("#chat-container-" + data.sender_id).length > 0) {
                     $("#chat-container-" + data.sender_id).append(html);
                     scrollChatToBottom(data.sender_id);
-                    // remove unseen count
-                    $("#count-unseen-" + data.sender_id).remove();
-                    // seen message
+                    removeUnseenCount(data.sender_id);
+
+                    // Mark message as seen
                     $.ajax({
                         type: "POST",
                         url: window.Laravel.routes.chatSeen,
@@ -711,179 +760,80 @@ $(document).ready(function () {
                                 socket.emit("seen", {
                                     last_chat: res.last_chat,
                                 });
-                            } else {
-                                console.log(res.msg);
                             }
                         },
-                    });
-                }
-            }
-
-            $("#message-app-" + data.sender_id).html(data.message);
-            var users = data.receiver_users;
-            $("#group-manage-" + sender_id).html("");
-            var new_html = "";
-        }
-
-        if (data.receiver_id == sender_id) {
-            if ($(".chat-module").length > 0) {
-                if ($("#chat-container-" + data.sender_id).length > 0) {
-                    $("#count-unseen-" + data.sender_id).remove();
-                    $.ajax({
-                        type: "POST",
-                        url: window.Laravel.routes.chatNotification,
-                        data: {
-                            _token: $("input[name=_token]").val(),
-                            user_id: sender_id,
-                            sender_id: data.sender_id, // sender_id
-                            chat_id: data.chat_id,
-                            is_delete: true,
-                        },
-                        success: function (res) {},
                     });
                 } else {
-                    $.ajax({
-                        type: "POST",
-                        url: window.Laravel.routes.chatNotification,
-                        data: {
-                            _token: $("input[name=_token]").val(),
-                            user_id: sender_id,
-                            sender_id: data.sender_id, // sender_id
-                            chat_id: data.chat_id,
-                        },
-                        success: function (res) {
-                            console.log("go");
-
-                            if (res.status == true) {
-                                $("#show-notification-count-" + sender_id).html(
-                                    res.notification_count
-                                );
-                                var route = getNotificationReadUrl(
-                                    "Chat",
-                                    res.notification.id
-                                );
-                                var html = `<li>
-                                                 <a href="${route}" class="top-text-block">
-                                                     <div class="top-text-heading">${
-                                                         res.notification
-                                                             .message
-                                                     }</div>
-                                                     <div class="top-text-light">${moment(
-                                                         res.notification
-                                                             .created_at
-                                                     ).fromNow()}</div>
-                                                 </a>
-                                             </li>`;
-                                $("#show-notification-" + sender_id).prepend(
-                                    html
-                                ); // Use prepend to add new notification at the top
-                            } else {
-                                console.log(res.msg);
-                            }
-                        },
-                    });
+                    addUnseenCount(data.sender_id, 1);
                 }
             } else {
-                $.ajax({
-                    type: "POST",
-                    url: window.Laravel.routes.chatNotification,
-                    data: {
-                        _token: $("input[name=_token]").val(),
-                        user_id: sender_id,
-                        sender_id: data.sender_id, // sender_id
-                        chat_id: data.chat_id,
-                    },
-                    success: function (res) {
-                        console.log("yes");
-
-                        if (res.status == true) {
-                            $("#show-notification-count-" + sender_id).html(
-                                res.notification_count
-                            );
-                            var route = getNotificationReadUrl(
-                                "Chat",
-                                res.notification.id
-                            );
-                            var html = `<li>
-                                                 <a href="${route}" class="top-text-block">
-                                                     <div class="top-text-heading">${
-                                                         res.notification
-                                                             .message
-                                                     }</div>
-                                                     <div class="top-text-light">${moment(
-                                                         res.notification
-                                                             .created_at
-                                                     ).fromNow()}</div>
-                                                 </a>
-                                             </li>`;
-                            $("#show-notification-" + sender_id).prepend(html); // Use prepend to add new notification at the top
-                        } else {
-                            console.log(res.msg);
-                        }
-                    },
-                });
+                addUnseenCount(data.sender_id, 1);
             }
-        } else {
-            $.ajax({
-                type: "POST",
-                url: window.Laravel.routes.chatNotification,
-                data: {
-                    _token: $("input[name=_token]").val(),
-                    user_id: data.receiver_id,
-                    sender_id: data.sender_id, // sender_id
-                    chat_id: data.chat_id,
-                },
-                success: function (res) {
-                    if (res.status == true) {
-                        $(
-                            "#show-notification-count-" +
-                                res.notification.user_id
-                        ).html(res.notification_count);
-                        var route = getNotificationReadUrl(
-                            "Chat",
-                            res.notification.id
-                        );
-                        var html = `<li>
-                                                 <a href="${route}" class="top-text-block">
-                                                     <div class="top-text-heading">${
-                                                         res.notification
-                                                             .message
-                                                     }</div>
-                                                     <div class="top-text-light">${moment(
-                                                         res.notification
-                                                             .created_at
-                                                     ).fromNow()}</div>
-                                                 </a>
-                                             </li>`;
-                        $(
-                            "#show-notification-" + res.notification.user_id
-                        ).prepend(html); // Use prepend to add new notification at the top
-                    }
-                },
-            });
+
+            // Handle notifications
+            handleChatNotification(data);
         }
-        // load_chat_list();
+    });
+
+    // Update socket listeners for better chat list management
+    socket.on("remove-chat", function (data) {
+        if (data.chat.reciver_id == sender_id) {
+            $("#chat-message-" + data.chat.id).remove();
+
+            if (data.last_message_update) {
+                if (data.new_last_message) {
+                    let otherUser = {
+                        id: data.other_user_id,
+                        last_message: data.new_last_message,
+                    };
+                    updateChatListItem(
+                        otherUser,
+                        true,
+                        data.new_last_message.message,
+                        !!data.new_last_message.attachment
+                    );
+                } else {
+                    $("#message-app-" + data.other_user_id).html("");
+                    let chatListItem = $(
+                        "#chat_list_user_" + data.other_user_id
+                    );
+                    chatListItem.find('[id^="last-chat-time-"]').html("");
+                }
+            }
+        }
+    });
+
+    socket.on("clear-chat", function (data) {
+        if (data.receiver_id == sender_id) {
+            $("#chat-container-" + data.sender_id).html("");
+            $("#message-app-" + data.sender_id).html("");
+            let chatListItem = $("#chat_list_user_" + data.sender_id);
+            chatListItem.find('[id^="last-chat-time-"]').html("");
+        }
     });
 
     // seen message
     socket.on("seen", function (data) {
-        if (sender_id == data.last_chat.sender_id) {
-            $("#seen_" + data.last_chat.id).html(
-                '<i class="fas fa-check-double"></i>'
-            );
-            load_chat_list();
+        var receiver_id = $(".reciver_id").val();
+        if (receiver_id == data.last_chat.reciver_id) {
+            if (sender_id == data.last_chat.sender_id) {
+                $("#seen_" + data.last_chat.id).html(
+                    '<i class="fas fa-check-double"></i>'
+                );
+            }
         }
     });
 
     //multiple_seen
     socket.on("multiple_seen", function (data) {
-        data.unseen_chat.forEach(function (chat) {
-            if (sender_id == chat.sender_id) {
-                $("#seen_" + chat.id).html(
-                    '<i class="fas fa-check-double"></i>'
-                );
-            }
-        });
-        load_chat_list();
+        if (data.unseen_chat && Array.isArray(data.unseen_chat)) {
+            data.unseen_chat.forEach(function (chat) {
+                if (sender_id == chat.sender_id) {
+                    $("#seen_" + chat.id).html(
+                        '<i class="fas fa-check-double"></i>'
+                    );
+                }
+            });
+        }
     });
 });
