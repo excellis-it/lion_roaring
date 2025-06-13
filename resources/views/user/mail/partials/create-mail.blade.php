@@ -43,6 +43,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://unpkg.com/@yaireo/tagify"></script>
 <script>
+
     document.addEventListener('DOMContentLoaded', function() {
         // Ensure that you are encoding this correctly
         const userEmails = {!! json_encode($allMailIds->pluck('email')) !!};
@@ -98,7 +99,7 @@
 
         // function updateFileDisplay() {
         //     const fileDisplay = selectedFiles.map((file, index) => {
-        //         return `<span><i class="fa fa-paperclip"></i> ${file.name} 
+        //         return `<span><i class="fa fa-paperclip"></i> ${file.name}
         //             <button type="button" class="remove-file-btn btn btn-transparent ms-2" data-index="${index}">
         //                 <i class="fa fa-times"></i>
         //             </button></span>`;

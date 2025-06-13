@@ -13,21 +13,15 @@
             </div>
             <p class="GroupName">{{ $user['first_name'] }} {{ $user['middle_name'] ?? '' }}
                 {{ $user['last_name'] ?? '' }}</p>
-            <p class="GroupDescrp last-chat-{{ isset($user['last_message']) ? $user['last_message']['id'] : '' }}"
-                id="message-app-{{ $user['id'] }}">
+            <p class="GroupDescrp" id="message-app-{{ $user['id'] }}">
                 @if (isset($user['last_message']['message']))
                     {!! $user['last_message']['message'] !!}
-                @endif
-
-                @if (isset($user['last_message']) &&
-                        $user['last_message']['message'] == null &&
-                        $user['last_message']['attachment'] != null)
+                @elseif (isset($user['last_message']) && $user['last_message']['attachment'])
                     <span><i class="ti ti-file"></i></span>
                 @endif
-
             </p>
             <div class="time_online"
-                id="last-chat-time-{{ isset($user['last_message']) ? $user['last_message']['id'] : '' }}">
+                id="last-chat-time-{{ isset($user['last_message']) ? $user['last_message']['id'] : 'default-' . $user['id'] }}">
                 @if (isset($user['last_message']['created_at']))
                     <p>{{ $user['last_message']['created_at']->format('h:i A') }}</p>
                 @endif
@@ -35,12 +29,10 @@
             @if (Helper::getCountUnseenMessage(Auth::user()->id, $user['id']) > 0)
                 <div class="count-unseen" id="count-unseen-{{ $user['id'] }}">
                     <span>
-                        <p>{{ Helper::getCountUnseenMessage(Auth::user()->id, $user['id']) }}
-                        </p>
+                        <p>{{ Helper::getCountUnseenMessage(Auth::user()->id, $user['id']) }}</p>
                     </span>
                 </div>
             @endif
-
         </li>
     @endforeach
 @else

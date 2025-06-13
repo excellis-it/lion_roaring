@@ -344,6 +344,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/remove', [ChatController::class, 'remove'])->name('remove');
         Route::post('/notification', [ChatController::class, 'notification'])->name('notification');
         Route::get('/chat-list', [ChatController::class, 'chatsList'])->name('chat-list');
+        Route::get('/load-chat-list', [ChatController::class, 'loadChatList'])->name('load-chat-list');
     });
 
     // Team Chat
