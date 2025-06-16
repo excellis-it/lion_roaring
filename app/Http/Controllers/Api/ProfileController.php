@@ -491,6 +491,7 @@ class ProfileController extends Controller
      */
     public function notificationClear()
     {
+      //  return response()->json(['message' => 'hello'], 200);
         try {
             Notification::where('user_id', auth()->user()->id)->delete();
             return response()->json(['message' => 'Notification deleted successfully.', 'status' => true], 200);

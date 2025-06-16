@@ -185,6 +185,15 @@ class ChatController extends Controller
 
             //  $message_type = $this->detectMessageType($request->file);
 
+            // if ($request->sender_id != auth()->id()) {
+                    $notification = new Notification();
+                    $notification->user_id = $request->reciver_id;
+                    $notification->chat_id = $chat->id;
+                    $notification->message = 'You have a <b>new message</b> from ' . auth()->user()->full_name;
+                    $notification->type = 'Chat';
+                    $notification->save();
+         //   }
+
             // Send FCM notification to receiver
             $receiver = User::find($request->reciver_id);
             if ($receiver && $receiver->fcm_token) {
