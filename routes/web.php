@@ -333,6 +333,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     // notification.clear
     Route::get('/notification-clear', [UserDashboardController::class, 'notificationClear'])->name('notification.clear');
 
+
+    Route::get('unread-messages-count', [UserDashboardController::class, 'unreadMessagesCount'])->name('unread.messages.count');
+
     Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
 
     Route::prefix('chats')->name('chats.')->group(function () {

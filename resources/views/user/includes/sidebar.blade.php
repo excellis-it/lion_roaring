@@ -51,11 +51,13 @@
                         <a class="sidebar-link {{ Request::is('user/chats') ? 'active' : '' }}"
                             href="javascript:void(0);" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExample">
+
                             <span>
                                 <img src="{{ asset('user_assets/images/ICON/Messaging/Messaging.svg') }}"
                                     alt="">
                             </span>
                             <span class="hide-menu">Messaging</span>
+                            <div class="count_chat_sidebar count_chat_sidebar_count_all" style="display: none;"></div>
                         </a>
                         {{-- collapse --}}
                         <div class="collapse {{ Request::is('user/chats*') || Request::is('user/page/Team*') || Request::is('user/mail*') ? 'show' : '' }}"
@@ -63,6 +65,7 @@
                             <div class="menu_bb">
                                 @if (Gate::check('Manage Chat'))
                                     <a href="{{ route('chats.index') }}">
+                                        <div class="count_chat_sidebar count_chat_sidebar_count_chat" style="display: none;"></div>
                                         <span>
                                             <img src="{{ asset('user_assets/images/ICON/Messaging/chat.svg') }}"
                                                 alt="">
@@ -72,6 +75,7 @@
                                 @endif
                                 @if (Gate::check('Manage Team'))
                                     <a href="{{ route('team-chats.index') }}">
+                                        <div class="count_chat_sidebar count_chat_sidebar_count_team" style="display: none;"></div>
                                         <span>
                                             <img src="{{ asset('user_assets/images/ICON/Messaging/Team.svg') }}"
                                                 alt="">
@@ -98,6 +102,7 @@
                                 </a> --}}
                                 @if (Gate::check('Manage Email'))
                                     <a href="{{ route('mail.index') }}">
+                                        <div class="count_chat_sidebar count_chat_sidebar_count_mail" style="display: none;"></div>
                                         <span>
                                             <img src="{{ asset('user_assets/images/ICON/Messaging/Mail.svg') }}"
                                                 alt="">
@@ -180,7 +185,10 @@
                         </div>
                     </li>
                 @endif
-                @if (Gate::check('Manage Job Postings') || Gate::check('Manage Meeting Schedule') || Gate::check('Manage Event') || Gate::check('Manage Bulletin'))
+                @if (Gate::check('Manage Job Postings') ||
+                        Gate::check('Manage Meeting Schedule') ||
+                        Gate::check('Manage Event') ||
+                        Gate::check('Manage Bulletin'))
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExample4">
@@ -194,14 +202,14 @@
                             id="collapseExample4">
                             <div class="menu_bb">
                                 @if (Gate::check('Manage Bulletin'))
-                                {{-- bulletins --}}
-                                <a href="{{ route('bulletin-board.index') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Bulletin/Meeting_Schedule.svg') }}"
-                                            alt="">
-                                    </span>
-                                    <span>Bulletins Board</span>
-                                </a>
+                                    {{-- bulletins --}}
+                                    <a href="{{ route('bulletin-board.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Bulletin/Meeting_Schedule.svg') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Bulletins Board</span>
+                                    </a>
                                 @endif
                                 @if (Gate::check('Manage Bulletin'))
                                     <a href="{{ route('bulletins.index') }}">
@@ -343,15 +351,16 @@
                 @endif
 
                 @if (Gate::check('Manage Policy'))
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('policy-guidence.index') }}" aria-expanded="false">
-                        <span>
-                            <img src="{{ asset('user_assets/images/ICON/policy_and_guidance.png') }}" alt="">
-                        </span>
-                        <span class="hide-menu">Policy & <br>Guidence</span>
-                    </a>
-                </li>
-            @endif
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('policy-guidence.index') }}" aria-expanded="false">
+                            <span>
+                                <img src="{{ asset('user_assets/images/ICON/policy_and_guidance.png') }}"
+                                    alt="">
+                            </span>
+                            <span class="hide-menu">Policy & <br>Guidence</span>
+                        </a>
+                    </li>
+                @endif
                 {{-- @if (Gate::check('Manage Help'))
                     <li class="sidebar-item">
                         <a class="sidebar-link"
