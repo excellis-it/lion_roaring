@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 
+
 class PartnerController extends Controller
 {
     /**
@@ -490,4 +491,6 @@ class PartnerController extends Controller
             abort(403, 'You do not have permission to access this page.');
         }
     }
+
+
 }

@@ -11,6 +11,10 @@ use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\MailUser;
+use App\Models\Chat;
+use App\Models\TeamChat;
+use App\Models\ChatMember;
 
 class DashboardController extends Controller
 {
@@ -178,5 +182,50 @@ class DashboardController extends Controller
     {
         Notification::where('user_id', Auth::user()->id)->delete();
         return response()->json(['message' => 'Notification deleted successfully.', 'status' => true]);
+    }
+
+    public function unreadMessagesCount(Request $request)
+    {
+        $user = $request->user();
+
+        // Chat::where('id', '!=', null)->update(['seen' => 1]);
+        // MailUser::where('id', '!=', null)->update(['is_read' => 1]);
+        // TeamChat::where('id', '!=', null)->update(['is_seen' => 1]);
+        // ChatMember::where('id', '!=', null)->update(['is_seen' => 1]);
+
+        $mailCount = MailUser::where('user_id', $user->id)
+            ->where('is_delete', 0) // Check not deleted first
+            ->where('is_read', 0)   // message can be deleted but not read
+            ->where('is_to', 1)   // Only count mails where user is receiver
+            ->count();
+
+        // Count unread individual chats where user is receiver
+        $chatCount = Chat::where('reciver_id', $user->id)
+            ->where('seen', 0)
+            ->where('deleted_for_reciver', 0)
+            ->where('delete_from_receiver_id', 0)
+            ->count();
+
+        $all_team_chats_ids = TeamChat::pluck('id');
+        $teamChatCount = ChatMember::whereIn('chat_id', $all_team_chats_ids)
+            ->where('user_id', $user->id)
+            ->where('is_seen', 0)
+            // ->whereHas('chat', function ($query) {
+            //     $query->whereNull('deleted_at');
+            // })
+            ->count();
+
+        $totalCount = $mailCount + $chatCount + $teamChatCount;
+
+        return response()->json([
+            'status' => true,
+            'data' => [
+                'mail' => $mailCount,
+                'chat' => $chatCount,
+                'team_chat' => $teamChatCount,
+                'total' => $totalCount,
+                // 'maildata' => $originalMailCount,
+            ]
+        ], 200);
     }
 }

@@ -491,7 +491,7 @@ class ProfileController extends Controller
      */
     public function notificationClear()
     {
-      //  return response()->json(['message' => 'hello'], 200);
+        //  return response()->json(['message' => 'hello'], 200);
         try {
             Notification::where('user_id', auth()->user()->id)->delete();
             return response()->json(['message' => 'Notification deleted successfully.', 'status' => true], 200);
@@ -549,6 +549,11 @@ class ProfileController extends Controller
     public function unreadMessagesCount(Request $request)
     {
         $user = $request->user();
+
+        // Chat::where('id', '!=', null)->update(['seen' => 1]);
+        // MailUser::where('id', '!=', null)->update(['is_read' => 1]);
+        // TeamChat::where('id', '!=', null)->update(['is_seen' => 1]);
+        // ChatMember::where('id', '!=', null)->update(['is_seen' => 1]);
 
         $mailCount = MailUser::where('user_id', $user->id)
             ->where('is_delete', 0) // Check not deleted first

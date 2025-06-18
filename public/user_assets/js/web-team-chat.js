@@ -109,6 +109,7 @@ $(document).ready(function () {
                 );
 
                 // scrollChatToBottom(teamId);
+                getSidebarNotiCounts();
             },
             error: function (xhr) {
                 toastr.error("Something went wrong");
@@ -152,8 +153,9 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (res) {
+                getSidebarNotiCounts();
                 if (res.status == true) {
-                   // groupList(sender_id);
+                    // groupList(sender_id);
                     let attachment = res.chat.attachment;
                     let fileUrl = storageUrl + attachment;
                     let attachement_extention = attachment.split(".").pop();
@@ -197,6 +199,7 @@ $(document).ready(function () {
                         created_at: res.chat.new_created_at,
                         time: res.created_at_formatted,
                     });
+                    getSidebarNotiCounts();
                 } else {
                     console.log(res.msg);
                 }
@@ -244,6 +247,7 @@ $(document).ready(function () {
             contentType: false,
             success: function (resp) {
                 loadChat($("#team_id").val());
+                getSidebarNotiCounts();
 
                 $("#TeamMessageInput")
                     .emojioneArea()[0]
@@ -255,7 +259,7 @@ $(document).ready(function () {
 
                 // append new message to the chat
                 var data = resp.chat;
-              //  groupList(sender_id, data.team_id);
+                //  groupList(sender_id, data.team_id);
                 let html = `<div class="message me" id="team-chat-message-${data.id}">
                 <div class="message-wrap">`;
 
@@ -332,6 +336,7 @@ $(document).ready(function () {
                     created_at: resp.chat.new_created_at,
                     time: resp.created_at_formatted,
                 });
+                getSidebarNotiCounts();
             },
             error: function (xhr) {
                 toastr.error("Something went wrong");
@@ -352,6 +357,7 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (resp) {
+                getSidebarNotiCounts();
                 $("#loading").removeClass("loading");
                 $("#loading-content").removeClass("loading-content");
                 toastr.success(resp.message);
@@ -409,7 +415,7 @@ $(document).ready(function () {
             },
             success: function (resp) {
                 // model open
-
+                getSidebarNotiCounts();
                 $("#group-information").html(resp.view);
                 $("#groupInfo").modal("show");
                 $("#loading").removeClass("loading");
@@ -437,6 +443,7 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (resp) {
+                getSidebarNotiCounts();
                 if (resp.status == true) {
                     var group_image = resp.group_image;
                     var group_image_url = storageUrl + group_image;
@@ -486,6 +493,7 @@ $(document).ready(function () {
                 _token: csrfToken,
             },
             success: function (resp) {
+                getSidebarNotiCounts();
                 $("#change-group-details").html(resp.view);
                 $("#groupInfo").modal("hide");
                 $("#exampleModalToggle3").modal("show");
@@ -512,6 +520,7 @@ $(document).ready(function () {
                     _token: csrfToken,
                 },
                 success: function (resp) {
+                    getSidebarNotiCounts();
                     if (resp.status == true) {
                         $("#groupInfo").modal("hide");
                         loadChat(team_id);
@@ -531,6 +540,7 @@ $(document).ready(function () {
                             chat_member_id: resp.chat_member_id,
                             created_at: resp.chat.new_created_at,
                         });
+                        getSidebarNotiCounts();
                     } else {
                         toastr.error(resp.message);
                     }
@@ -559,6 +569,7 @@ $(document).ready(function () {
                     _token: csrfToken,
                 },
                 success: function (resp) {
+                    getSidebarNotiCounts();
                     if (resp.status == true) {
                         toastr.success(resp.message);
                         $("#show-permission-" + team_id + "-" + user_id).html(
@@ -596,6 +607,7 @@ $(document).ready(function () {
             },
             success: function (resp) {
                 $(".group-list").html(resp.view);
+                getSidebarNotiCounts();
             },
             error: function (xhr) {
                 toastr.error("Something went wrong");
@@ -615,6 +627,7 @@ $(document).ready(function () {
                     _token: csrfToken,
                 },
                 success: function (resp) {
+                    getSidebarNotiCounts();
                     if (resp.status == true) {
                         toastr.success(resp.message);
                         if (resp.team_delete == true) {
@@ -681,6 +694,7 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (resp) {
+                getSidebarNotiCounts();
                 toastr.success(resp.message);
                 $("#add-member-team")[0].reset();
                 $("#exampleModalToggle2").modal("hide");
@@ -700,6 +714,8 @@ $(document).ready(function () {
                     already_member_arr: resp.already_member_arr,
                     only_added_members: resp.only_added_members,
                 });
+
+                getSidebarNotiCounts();
             },
             error: function (xhr) {
                 $(".text-danger").html("");
@@ -732,6 +748,7 @@ $(document).ready(function () {
                     _token: csrfToken,
                 },
                 success: function (resp) {
+                    getSidebarNotiCounts();
                     if (resp.status == true) {
                         toastr.success(resp.message);
                         groupList(sender_id);
@@ -783,6 +800,7 @@ $(document).ready(function () {
                     _token: csrfToken,
                 },
                 success: function (resp) {
+                    getSidebarNotiCounts();
                     if (resp.status == true) {
                         if (del_from == "me") {
                             $("#team-chat-message-" + chat_id).remove();
@@ -830,6 +848,7 @@ $(document).ready(function () {
                     _token: csrfToken,
                 },
                 success: function (response) {
+                    getSidebarNotiCounts();
                     if (response.status == true) {
                         $("#team-chat-container-" + teamId).html("");
                         groupList(sender_id);
@@ -848,6 +867,7 @@ $(document).ready(function () {
 
     // clearAllConversation
     socket.on("clearAllConversation", function (data) {
+        getSidebarNotiCounts();
         if (data.user_id != sender_id) {
             $("#team-chat-container-" + data.team_id).html("");
             groupList(sender_id);
@@ -856,6 +876,7 @@ $(document).ready(function () {
 
     // team-remove-chat
     socket.on("team-remove-chat", function (data) {
+        getSidebarNotiCounts();
         $("#team-chat-message-" + data.chat_id).remove();
         if (data.last_message == true) {
             $("#team-last-chat-time-" + data.chat_id).remove();
@@ -866,6 +887,7 @@ $(document).ready(function () {
     // deleteGroup
 
     socket.on("deleteGroup", function (data) {
+        getSidebarNotiCounts();
         if (
             data.user_id != sender_id &&
             data.team_member_id.includes(sender_id)
@@ -887,6 +909,7 @@ $(document).ready(function () {
 
     // addMemberToGroup
     socket.on("addMemberToGroup", function (data) {
+        getSidebarNotiCounts();
         if (
             data.user_id != sender_id &&
             data.chat_member_id.includes(sender_id)
@@ -942,6 +965,7 @@ $(document).ready(function () {
 
     // exitFromGroup
     socket.on("exitFromGroup", function (data) {
+        getSidebarNotiCounts();
         if (data.user_id != sender_id) {
             $("#group-member-" + data.team_id + "-" + data.user_id).remove();
             $("#all-member-" + data.team_id).html(
@@ -974,6 +998,7 @@ $(document).ready(function () {
     });
 
     socket.on("createTeam", function (data) {
+        getSidebarNotiCounts();
         if (
             sender_id != data.user_id &&
             data.chat_member_id.includes(sender_id)
@@ -988,6 +1013,7 @@ $(document).ready(function () {
     });
 
     socket.on("removeMemberFromGroup", function (data) {
+        getSidebarNotiCounts();
         if (data.user_id == sender_id) {
             var notification = data.notification;
             var count = $("#show-notification-count-" + sender_id).text();
@@ -1017,6 +1043,7 @@ $(document).ready(function () {
     });
 
     socket.on("updateGroupImage", function (data) {
+        getSidebarNotiCounts();
         $(".team-image-" + data.team_id).html(
             `<img src="${data.group_image}" alt="">`
         );
@@ -1193,6 +1220,7 @@ $(document).ready(function () {
                             _token: csrfToken,
                         },
                         success: function (res) {
+                            getSidebarNotiCounts();
                             if (res.status == true) {
                                 // socket.emit('teamSeenChat', {
                                 //     last_chat: data.chat
@@ -1269,6 +1297,7 @@ $(document).ready(function () {
                         _token: csrfToken,
                     },
                     success: function (res) {
+                        getSidebarNotiCounts();
                         if (res.status == true) {
                             $("#show-notification-count-" + sender_id).html(
                                 res.notification_count
@@ -1307,5 +1336,6 @@ $(document).ready(function () {
                 data.chat.id
             );
         }
+        getSidebarNotiCounts();
     });
 });
