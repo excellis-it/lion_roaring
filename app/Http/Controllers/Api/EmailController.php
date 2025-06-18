@@ -863,7 +863,7 @@ class EmailController extends Controller
             $mail_user->save();
 
             $sender_user = auth()->user();
-            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->email, $sender_user->full_name));
+            //  Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->email, $sender_user->full_name));
 
             // Send FCM notifications to recipients
             if (!empty($to_id) || !empty($cc_id)) {
@@ -1055,7 +1055,7 @@ class EmailController extends Controller
             $mail_user->save();
 
             $sender_user = auth()->user();
-            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->email, $sender_user->full_name));
+            //  Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->email, $sender_user->full_name));
 
             // Send FCM notifications to recipients
             if (!empty($to_id) || !empty($cc_id)) {
@@ -1244,7 +1244,7 @@ class EmailController extends Controller
             $mail_user->save();
 
             $sender_user = auth()->user();
-            Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->email, $sender_user->full_name));
+            // Mail::to($to)->cc($cc)->send(new MailSendMail($mail, $sender_user->email, $sender_user->full_name));
 
             // Send FCM notifications to recipients
             if (!empty($to_id) || !empty($cc_id)) {

@@ -45047,6 +45047,7 @@ ul {
     padding:5px;
     text-align:center;
     color:#fff;
+    position: relative;
 
 }
 .menu_bb a span{
@@ -45689,4 +45690,19 @@ ul {
 .mail_img_box p{
     margin-bottom:0;
     font-size: 13px;
+}
+.count_chat_sidebar{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: #ff0202;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

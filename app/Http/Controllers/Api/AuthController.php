@@ -210,7 +210,12 @@ class AuthController extends Controller
                     $otp_verify->otp = $otp;
                     $otp_verify->save();
 
-                    Mail::to($user->email)->send(new OtpMail($otp));
+                    //  Mail::to($user->email)->send(new OtpMail($otp));
+                    try {
+                        Mail::to($user->email)->send(new OtpMail($otp));
+                    } catch (\Exception $e) {
+                        return response()->json(['message' => 'Email server temporary unavailable. Please try later.', 'status' => false], 200);
+                    }
                     // $token = $user->createToken('authToken')->accessToken;
                     return response()->json(['user' => $user, 'status' => true, 'message' => 'Otp sent successfully. Please check your mail id.', 'otp' => $otp], 200);
                 } else {

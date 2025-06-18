@@ -614,6 +614,7 @@ $(document).ready(function () {
 
     //remove-chat socket listener
     socket.on("remove-chat", function (data) {
+        getSidebarNotiCounts();
         if (data.chat.reciver_id == sender_id) {
             $("#chat-message-" + data.chat.id).remove();
 
@@ -625,6 +626,7 @@ $(document).ready(function () {
 
     // clear-chat socket listener
     socket.on("clear-chat", function (data) {
+        getSidebarNotiCounts();
         if (data.receiver_id == sender_id) {
             $("#chat-container-" + data.sender_id).html("");
             $("#message-app-" + data.sender_id).html("");
@@ -634,6 +636,7 @@ $(document).ready(function () {
     });
 
     socket.on("read-chat", function (data) {
+        getSidebarNotiCounts();
         var receiver_id = $(".reciver_id").val();
         if (receiver_id == data.sender_id) {
             removeUnseenCount(data.receiver_id);
@@ -655,6 +658,7 @@ $(document).ready(function () {
     // Listen for incoming chat messages from the server
     socket.on("chat", function (data) {
         let timeZone = window.Laravel.authTimeZone;
+
 
         if (data.receiver_id == sender_id) {
             // Generate incoming message HTML
@@ -760,14 +764,17 @@ $(document).ready(function () {
                                 socket.emit("seen", {
                                     last_chat: res.last_chat,
                                 });
+                                getSidebarNotiCounts();
                             }
                         },
                     });
                 } else {
                     addUnseenCount(data.sender_id, 1);
+                    getSidebarNotiCounts();
                 }
             } else {
                 addUnseenCount(data.sender_id, 1);
+                getSidebarNotiCounts();
             }
 
             // Handle notifications
@@ -777,6 +784,7 @@ $(document).ready(function () {
 
     // Update socket listeners for better chat list management
     socket.on("remove-chat", function (data) {
+        getSidebarNotiCounts();
         if (data.chat.reciver_id == sender_id) {
             $("#chat-message-" + data.chat.id).remove();
 
@@ -804,6 +812,7 @@ $(document).ready(function () {
     });
 
     socket.on("clear-chat", function (data) {
+        getSidebarNotiCounts();
         if (data.receiver_id == sender_id) {
             $("#chat-container-" + data.sender_id).html("");
             $("#message-app-" + data.sender_id).html("");
@@ -814,6 +823,7 @@ $(document).ready(function () {
 
     // seen message
     socket.on("seen", function (data) {
+        getSidebarNotiCounts();
         var receiver_id = $(".reciver_id").val();
         if (receiver_id == data.last_chat.reciver_id) {
             if (sender_id == data.last_chat.sender_id) {
@@ -826,6 +836,7 @@ $(document).ready(function () {
 
     //multiple_seen
     socket.on("multiple_seen", function (data) {
+        getSidebarNotiCounts();
         if (data.unseen_chat && Array.isArray(data.unseen_chat)) {
             data.unseen_chat.forEach(function (chat) {
                 if (sender_id == chat.sender_id) {

@@ -319,7 +319,7 @@ class ChatController extends Controller
             // Mark unseen messages as seen
             $chats->each(function ($chat) {
                 if ($chat->reciver_id == auth()->id() && $chat->seen == 0) {
-                       $chat->update(['seen' => 1]);
+                    $chat->update(['seen' => 1]);
                 }
                 $chat->isMe = ($chat->sender_id == auth()->id()) ? true : false;
                 $chat->isSeen = ($chat->seen == 1) ? true : false;
@@ -481,6 +481,13 @@ class ChatController extends Controller
             $chat = Chat::with('sender', 'reciver')->find($chatData->id);
             $chat->created_at_formatted = $chat->created_at->format('Y-m-d H:i:s');
 
+
+            $notification = new Notification();
+            $notification->user_id = $request->reciver_id;
+            $notification->chat_id = $chat->id;
+            $notification->message = 'You have a <b>new message</b> from ' . auth()->user()->full_name;
+            $notification->type = 'Chat';
+            $notification->save();
 
 
             // Send FCM notification to receiver

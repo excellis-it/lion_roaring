@@ -247,6 +247,59 @@
             }
         </script>
 
+
+        <script>
+            $(document).ready(function() {
+                // Fetch the initial notification count
+                getSidebarNotiCounts();
+
+                // Set an interval to fetch the notification count every 5 seconds
+                // setInterval(getSidebarNotiCounts, 5000);
+            });
+
+            function getSidebarNotiCounts() {
+                $.ajax({
+                    url: "{{ route('unread.messages.count') }}",
+                    method: "GET",
+                    success: function(response) {
+                        console.log('Notification count fetched successfully:', response);
+                        if (response.status) {
+                            if (response.data.total > 0) {
+                                $('.count_chat_sidebar_count_all').show();
+                                $('.count_chat_sidebar_count_all').text(response.data.total);
+                            } else {
+                                $('.count_chat_sidebar_count_all').hide();
+                            }
+                            if (response.data.chat > 0) {
+                                $('.count_chat_sidebar_count_chat').show();
+                                $('.count_chat_sidebar_count_chat').text(response.data.chat);
+                            } else {
+                                $('.count_chat_sidebar_count_chat').hide();
+                            }
+                            if (response.data.team_chat > 0) {
+                                $('.count_chat_sidebar_count_team').show();
+                                $('.count_chat_sidebar_count_team').text(response.data.team_chat);
+                            } else {
+                                $('.count_chat_sidebar_count_team').hide();
+                            }
+                            if (response.data.mail > 0) {
+                                $('.count_chat_sidebar_count_mail').show();
+                                $('.count_chat_sidebar_count_mail').text(response.data.mail);
+                            } else {
+                                $('.count_chat_sidebar_count_mail').hide();
+                            }
+
+                        } else {
+                            console.error('Failed to fetch notification count');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error fetching notification count:', xhr);
+                    }
+                });
+            }
+        </script>
+
         <script src="{{ asset('user_assets/js/web-chat.js') }}"></script>
         <script src="{{ asset('user_assets/js/web-team-chat.js') }}"></script>
 
@@ -288,6 +341,7 @@
 
                 // sendAdminNotification
                 socket.on('sendAdminNotification', function(data) {
+                    getSidebarNotiCounts();
                     if (data.user_id == sender_id) {
                         // get count notification
                         var count = $('#show-notification-count-' + sender_id).text();
@@ -529,6 +583,8 @@
 
 
                 socket.on('send_mail', function(data) {
+
+                    getSidebarNotiCounts();
                     var send_to_ids = data.send_to_ids;
                     var notification_message = data.notification_message;
 
