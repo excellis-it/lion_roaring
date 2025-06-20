@@ -657,9 +657,10 @@ class TeamChatController extends Controller
                 ->first();
             $team->isMeAdmin = Helper::checkAdminTeam(auth()->user()->id, $team->id);
             $team->isMeRemoved = Helper::checkRemovedFromTeam($team->id, auth()->user()->id);
-
+            $allusers = User::where('status', 1)->pluck('id')->toArray();
             // Get team chat messages
             $team_chats = TeamChat::where('team_id', $team_id)
+                ->whereIn('user_id', $allusers)
                 ->whereHas('chatMembers', function ($query) {
                     $query->where('user_id', auth()->id());
                 })

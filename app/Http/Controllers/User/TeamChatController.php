@@ -183,7 +183,8 @@ class TeamChatController extends Controller
         if ($request->ajax()) {
             $team_id = $request->team_id;
             $team = Team::where('id', $team_id)->with(['members', 'members.user'])->first()->toArray();
-            $team_chats = TeamChat::where('team_id', $team_id)->orderBy('created_at', 'asc')->whereHas('chatMembers', function ($query) {
+            $allusers = User::where('status',1)->pluck('id')->toArray();
+            $team_chats = TeamChat::where('team_id', $team_id)->whereIn('user_id', $allusers)->orderBy('created_at', 'asc')->whereHas('chatMembers', function ($query) {
                 $query->where('user_id', auth()->id());
             })->with('user')->get();
             ChatMember::where('user_id', auth()->id())->whereHas('chat', function ($query) use ($team_id) {
