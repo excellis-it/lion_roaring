@@ -162,7 +162,20 @@
                 $('#user_name_icon').html('');
             }
 
-            function fetch_data(page, sort_type, sort_by, query) {
+            function fetch_data(page, sort_type, sort_by, query, is_paginate_click = 0) {
+
+                // if query empty or null then set page no else set page no to null
+                if (query == '' || query == null) {
+                    page = page;
+                } else {
+                    page = null;
+                }
+
+                if (is_paginate_click == 1) {
+
+                    page = $('#hidden_page').val();
+                }
+
                 $.ajax({
                     url: "{{ route('partners.fetch-data') }}",
                     data: {
@@ -182,7 +195,7 @@
                 var column_name = $('#hidden_column_name').val();
                 var sort_type = $('#hidden_sort_type').val();
                 var page = $('#hidden_page').val();
-                fetch_data(page, sort_type, column_name, query);
+                fetch_data(page, sort_type, column_name, query, 0);
             });
 
             $(document).on('click', '.sorting', function() {
@@ -207,7 +220,7 @@
                 $('#hidden_sort_type').val(reverse_order);
                 var page = $('#hidden_page').val();
                 var query = $('#search').val();
-                fetch_data(page, reverse_order, column_name, query);
+                fetch_data(page, reverse_order, column_name, query, 0);
             });
 
             $(document).on('click', '.pagination a', function(event) {
@@ -221,7 +234,7 @@
 
                 $('li').removeClass('active');
                 $(this).parent().addClass('active');
-                fetch_data(page, sort_type, column_name, query);
+                fetch_data(page, sort_type, column_name, query, 1);
             });
 
         });
