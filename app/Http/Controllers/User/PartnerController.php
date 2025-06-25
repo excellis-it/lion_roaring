@@ -31,54 +31,43 @@ class PartnerController extends Controller
     public function index()
     {
         if (Auth::user()->can('Manage Partners')) {
-            // if (Auth::user()->hasRole('SUPER ADMIN')) {
-            // $partners = User::whereHas('roles', function ($q) {
-            //     $q->whereIn('type', ['3', '2']);
-            // })->where('is_accept', 1)->whereNotIn('id', [Auth::user()->id])->orderBy('id', 'desc')->paginate(15);
-            // } else {
-            //     $partners = User::orderBy('id', 'desc')->paginate(15);
-            // }
-
-            // $partners = User::whereHas('roles', function ($q) {
-            //     $q->whereIn('type', ['3', '2']);
-            // })->whereNotIn('id', [Auth::user()->id])->orderBy('id', 'desc')->paginate(15);
-
-            // $user_role = Auth::user()->is_ecclesia_admin;
 
 
             $user = Auth::user();
             $user_ecclesia_id = $user->ecclesia_id;
             $is_user_ecclesia_admin = $user->is_ecclesia_admin;
 
-            $partners = User::whereHas('roles', function ($q) {
-                $q->whereIn('type', ['3', '2']);
-            });
+            $partners = User::with(['ecclesia', 'roles'])
+                ->whereHas('roles', function ($q) {
+                    $q->where('name', '!=', 'SUPER ADMIN');
+                });
 
-            // If user is an Ecclesia Admin
             if ($is_user_ecclesia_admin == 1) {
                 $manage_ecclesia_ids = is_array($user->manage_ecclesia)
                     ? $user->manage_ecclesia
                     : explode(',', $user->manage_ecclesia);
 
-                $partners->where(function ($q) use ($manage_ecclesia_ids, $user) {
-                    $q->whereIn('ecclesia_id', $manage_ecclesia_ids)
-                        ->whereNotNull('ecclesia_id')
-                        ->orWhere('id', $user->id)
-                        ->orWhere('created_id', $user->id);
-                });
+                $partners->whereHas('roles', function ($q) {
+                    $q->whereIn('type', [2, 3]);
+                })
+                    ->where(function ($q) use ($manage_ecclesia_ids, $user) {
+                        $q->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id')
+                            ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
+                    });
             } elseif ($user->hasRole('SUPER ADMIN')) {
-                // If user is SUPER ADMIN
-                $partners->where('id', '!=', $user->id);
+                $partners->whereHas('roles', function ($q) {
+                    $q->whereIn('type', [2, 3]);
+                })
+                    ->where('id', '!=', $user->id);
             } else {
-                // For other users
-                $partners->where(function ($q) use ($user, $user_ecclesia_id) {
-                    $q->where('ecclesia_id', $user_ecclesia_id)
-                        ->orWhere('created_id', $user->id);
-                })->orWhere('id', $user->id)->whereNotNull('ecclesia_id');
+                $partners->where(function ($q) use ($user_ecclesia_id, $user) {
+                    $q->where('ecclesia_id', $user_ecclesia_id)->whereNotNull('ecclesia_id')
+                        ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
+                });
             }
 
             // Order and paginate results
-            $partners = $partners->orderByDesc('id')->paginate(15);
+            $partners = $partners->orderBy('id', 'desc')->paginate(15);
 
 
 
@@ -372,6 +361,7 @@ class PartnerController extends Controller
 
     public function fetchData(Request $request)
     {
+       // return $request->all();
         if ($request->ajax()) {
             $sort_by = $request->get('sortby', 'id'); // Default sorting by 'id'
             $sort_type = $request->get('sorttype', 'asc'); // Default sorting type
@@ -382,38 +372,26 @@ class PartnerController extends Controller
             $is_user_ecclesia_admin = $user->is_ecclesia_admin;
             $user_ecclesia_id = $user->ecclesia_id;
 
-            // Base query
+            // Base query with roles filter
             $partners = User::with(['ecclesia', 'roles'])
-                ->where(function ($q) use ($query) {
-                    $q->where('id', 'like', "%{$query}%")
-                        ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) LIKE ?', ["%{$query}%"])
-                        ->orWhere('email', 'like', "%{$query}%")
-                        ->orWhere('phone', 'like', "%{$query}%")
-                        ->orWhere('address', 'like', "%{$query}%")
-                        ->orWhere('user_name', 'like', "%{$query}%")
-                        ->orWhereHas('ecclesia', function ($q) use ($query) {
-                            $q->where('name', 'like', "%{$query}%");
-                        })
-                        ->orWhereHas('roles', function ($q) use ($query) {
-                            $q->where('name', 'like', "%{$query}%");
-                        });
+                ->whereHas('roles', function ($q) {
+                    $q->where('name', '!=', 'SUPER ADMIN');
+                })
+                ->when($query, function ($query_builder) use ($query) {
+                    $query_builder->where(function ($q) use ($query) {
+                        $q->where('id', 'like', "%{$query}%")
+                            ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) LIKE ?', ["%{$query}%"])
+                            ->orWhere('email', 'like', "%{$query}%")
+                            ->orWhere('phone', 'like', "%{$query}%")
+                          //  ->orWhere('address', 'like', "%{$query}%")
+                            ->orWhere('user_name', 'like', "%{$query}%");
+                         //   ->orWhere('city', 'like', "%{$query}%")
+                         //   ->orWhere('state', 'like', "%{$query}%")
+                         //   ->orWhere('country', 'like', "%{$query}%");
+                    });
                 });
 
-            // Sorting logic
-            if ($sort_by == 'name') {
-                $partners->orderByRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) ' . $sort_type);
-            } else {
-                $partners->orderBy($sort_by, $sort_type);
-            }
-
-            // // Exclude users with the "SUPER ADMIN" role
-            // $partners->whereDoesntHave('roles', function ($q) {
-            //     $q->where('type', 1)->orWhere('type', 3);
-            // });
-
-            //   $partners = $partners->paginate(15);
-
-            // Filtering based on user role
+            // Apply role and ecclesia filters
             if ($is_user_ecclesia_admin == 1) {
                 $manage_ecclesia_ids = is_array($user->manage_ecclesia)
                     ? $user->manage_ecclesia
@@ -424,7 +402,7 @@ class PartnerController extends Controller
                 })
                     ->where(function ($q) use ($manage_ecclesia_ids, $user) {
                         $q->whereIn('ecclesia_id', $manage_ecclesia_ids)->whereNotNull('ecclesia_id')
-                            ->orWhere('created_id', $user->id)->orWhere('id', $user->id);
+                            ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
                     });
             } elseif ($user->hasRole('SUPER ADMIN')) {
                 $partners->whereHas('roles', function ($q) {
@@ -433,13 +411,20 @@ class PartnerController extends Controller
                     ->where('id', '!=', $user->id);
             } else {
                 $partners->where(function ($q) use ($user_ecclesia_id, $user) {
-                    $q->where('ecclesia_id', $user_ecclesia_id)->whereNotNull('ecclesia_id')->orWhere('id', $user->id)
-                        ->orWhere('created_id', $user->id);
+                    $q->where('ecclesia_id', $user_ecclesia_id)->whereNotNull('ecclesia_id')
+                        ->orWhere('created_id', $user->id)->orWhere('id', auth()->id());
                 });
             }
 
+            // Sorting logic
+            if ($sort_by == 'name') {
+                $partners->orderByRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) ' . $sort_type);
+            } else {
+                $partners->orderBy($sort_by, $sort_type);
+            }
+
             // Paginate results
-            $partners = $partners->orderByDesc('id')->paginate(15);
+            $partners = $partners->orderBy('id', 'desc')->paginate(15);
 
             return response()->json(['data' => view('user.partner.table', compact('partners'))->render()]);
         }
@@ -491,6 +476,4 @@ class PartnerController extends Controller
             abort(403, 'You do not have permission to access this page.');
         }
     }
-
-
 }
