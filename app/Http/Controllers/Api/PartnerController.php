@@ -159,14 +159,16 @@ class PartnerController extends Controller
                     $q->where('name', '!=', 'SUPER ADMIN');
                 })
                 ->when($searchQuery, function ($query) use ($searchQuery) {
-                    $query->where('id', 'like', "%{$searchQuery}%")
-                        ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) LIKE ?', ["%{$searchQuery}%"])
-                        ->orWhere('email', 'like', "%{$searchQuery}%")
-                        ->orWhere('phone', 'like', "%{$searchQuery}%")
-                        ->orWhere('address', 'like', "%{$searchQuery}%")
-                        ->orWhere('city', 'like', "%{$searchQuery}%")
-                        ->orWhere('state', 'like', "%{$searchQuery}%")
-                        ->orWhere('country', 'like', "%{$searchQuery}%");
+                    $query->where(function ($q) use ($searchQuery) {
+                        $q->where('id', 'like', "%{$searchQuery}%")
+                            ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) LIKE ?', ["%{$searchQuery}%"])
+                            ->orWhere('email', 'like', "%{$searchQuery}%")
+                            ->orWhere('phone', 'like', "%{$searchQuery}%");
+                         //   ->orWhere('address', 'like', "%{$searchQuery}%")
+                         //   ->orWhere('city', 'like', "%{$searchQuery}%")
+                         //   ->orWhere('state', 'like', "%{$searchQuery}%")
+                         //   ->orWhere('country', 'like', "%{$searchQuery}%");
+                    });
                 })
                 ->orderBy('id', 'desc');
 
@@ -339,67 +341,67 @@ class PartnerController extends Controller
         }
 
         // try {
-            $phone_number = $request->phone;
-            $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
+        $phone_number = $request->phone;
+        $phone_number_cleaned = preg_replace('/[\s\-\(\)]+/', '', $phone_number);
 
-            $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->count();
-            if ($check > 0) {
-                return response()->json(['message' => 'Phone number already exists.', 'stauts' => false], 201);
+        $check = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', '') = ?", [$phone_number_cleaned])->count();
+        if ($check > 0) {
+            return response()->json(['message' => 'Phone number already exists.', 'stauts' => false], 201);
+        }
+
+        $uniqueNumber = rand(1000, 9999);
+        $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
+
+
+        $is_ecclesia_admin = 0;
+        $the_role = Role::where('name', $request->role)->first();
+        if ($the_role->is_ecclesia == 1) {
+            $is_ecclesia_admin = 1;
+
+            if ($request->manage_ecclesia == [] || $request->manage_ecclesia == null) {
+                return response()->json(['message' => 'Required - House Of ECCLESIA if Role is an ECCLESIA.', 'stauts' => false], 201);
             }
-
-            $uniqueNumber = rand(1000, 9999);
-            $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
-
-
-            $is_ecclesia_admin = 0;
-            $the_role = Role::where('name', $request->role)->first();
-            if ($the_role->is_ecclesia == 1) {
-                $is_ecclesia_admin = 1;
-
-                if ($request->manage_ecclesia == [] || $request->manage_ecclesia == null) {
-                    return response()->json(['message' => 'Required - House Of ECCLESIA if Role is an ECCLESIA.', 'stauts' => false], 201);
-                }
-            }
-            Log::info($request->all());
-            $data = new User();
-            $data->created_id = auth()->id();
-            $data->user_name = $request->user_name;
-            $data->first_name = $request->first_name;
-            $data->last_name = $request->last_name;
-            $data->middle_name = $request->middle_name;
-            $data->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
-            $data->email = $request->email;
-            $data->password = bcrypt($request->password);
-            $data->address = $request->address;
-            $data->country = $request->country;
-            $data->state = $request->state;
-            $data->city = $request->city;
-            $data->zip = $request->zip;
-            $data->address2 = $request->address2;
-            $data->ecclesia_id = $request->ecclesia_id;
-            $data->is_ecclesia_admin = $is_ecclesia_admin;
-            $data->user_name = $request->user_name;
-            $data->phone = $request->phone;
-            $data->phone_country_code_name = $request->phone_country_code_name;
-            $data->status = 1;
-            $data->is_accept = 1;
+        }
+        Log::info($request->all());
+        $data = new User();
+        $data->created_id = auth()->id();
+        $data->user_name = $request->user_name;
+        $data->first_name = $request->first_name;
+        $data->last_name = $request->last_name;
+        $data->middle_name = $request->middle_name;
+        $data->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
+        $data->email = $request->email;
+        $data->password = bcrypt($request->password);
+        $data->address = $request->address;
+        $data->country = $request->country;
+        $data->state = $request->state;
+        $data->city = $request->city;
+        $data->zip = $request->zip;
+        $data->address2 = $request->address2;
+        $data->ecclesia_id = $request->ecclesia_id;
+        $data->is_ecclesia_admin = $is_ecclesia_admin;
+        $data->user_name = $request->user_name;
+        $data->phone = $request->phone;
+        $data->phone_country_code_name = $request->phone_country_code_name;
+        $data->status = 1;
+        $data->is_accept = 1;
 
 
-            $data->manage_ecclesia = $request->has('manage_ecclesia') ? implode(',', $request->manage_ecclesia) : null;
+        $data->manage_ecclesia = $request->has('manage_ecclesia') ? implode(',', $request->manage_ecclesia) : null;
 
 
 
-            $data->save();
-            $data->assignRole($request->role);
+        $data->save();
+        $data->assignRole($request->role);
 
-            Mail::to($request->email)->send(new RegistrationMail([
-                'name' => $request->first_name . ' ' . $request->last_name,
-                'email' => $request->email,
-                'password' => $request->password,
-                'type' => ucfirst(strtolower($request->role)),
-            ]));
+        Mail::to($request->email)->send(new RegistrationMail([
+            'name' => $request->first_name . ' ' . $request->last_name,
+            'email' => $request->email,
+            'password' => $request->password,
+            'type' => ucfirst(strtolower($request->role)),
+        ]));
 
-            return response()->json(['message' => 'Customer created successfully.', 'stauts' => true], 200);
+        return response()->json(['message' => 'Customer created successfully.', 'stauts' => true], 200);
         // } catch (\Exception $e) {
         //     return response()->json([
         //         'message' => 'Failed to create user.',
@@ -511,7 +513,7 @@ class PartnerController extends Controller
         $data->manage_ecclesia = $request->has('manage_ecclesia') ? implode(',', $request->manage_ecclesia) : null;
 
         $data->save();
-       // $data->roles()->detach(); // Remove all roles first
+        // $data->roles()->detach(); // Remove all roles first
         $data->syncRoles([$the_role->name]); // Assign new role
 
         return response()->json(['message' => 'Member updated successfully.', 'stauts' => true], 200);
@@ -688,11 +690,11 @@ class PartnerController extends Controller
     {
         try {
             $partner = User::with(['ecclesia', 'roles'])->findOrFail($id);
-         //   $eclessias = Ecclesia::orderBy('id', 'asc')->get();
+            //   $eclessias = Ecclesia::orderBy('id', 'asc')->get();
             $countries = Country::orderBy('name', 'asc')->get();
-         //   $roles = Role::with('permissions')->where('name', '!=', 'SUPER ADMIN')->get();
+            //   $roles = Role::with('permissions')->where('name', '!=', 'SUPER ADMIN')->get();
 
-         $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
+            $auth_user_ecclesia_id = Auth::user()->ecclesia_id;
             if (Auth::user()->getFirstRoleType() == 1) {
                 $roles = Role::with('permissions')->whereIn('type', [2, 3])->get();
                 $eclessias = Ecclesia::orderBy('id', 'asc')->get();
