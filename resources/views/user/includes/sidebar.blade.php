@@ -357,7 +357,7 @@
                                 <img src="{{ asset('user_assets/images/ICON/policy_and_guidance.png') }}"
                                     alt="">
                             </span>
-                            <span class="hide-menu">Policy & <br>Guidence</span>
+                            <span class="hide-menu">Policy & <br>Guidance</span>
                         </a>
                     </li>
                 @endif
