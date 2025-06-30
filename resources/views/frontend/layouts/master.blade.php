@@ -386,7 +386,7 @@
                                 </div>
                                 <div style="clear:both;"></div>
                                 <div class="asp_product_description">
-                                    <p>Lion Roaring is a Private Member Association,thus any donations will not be
+                                    <p>Lion Roaring is a Private Member Agreement, thus any donations will not be
                                         eligible for tax deductible purposes under the IRS Code. Please consult with
                                         your tax advisor should there be any questions related to your donation.</p>
 
