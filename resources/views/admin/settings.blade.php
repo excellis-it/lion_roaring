@@ -58,6 +58,14 @@
                         @enderror
                     </div>
 
+                    <div class="mb-3">
+                        <label for="DONATE_TEXT" class="form-label">Donate Text</label>
+                        <textarea class="form-control" id="DONATE_TEXT" name="DONATE_TEXT">{{ old('DONATE_TEXT', $settings->DONATE_TEXT) }}</textarea>
+                        @error('DONATE_TEXT')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Update Settings</button>
                 </form>
 
