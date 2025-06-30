@@ -828,4 +828,19 @@ class CmsController extends Controller
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
         }
     }
+
+    // get site settings
+
+     public function siteSettings() {
+         try {
+             $settings = SiteSetting::first();
+             if ($settings) {
+                 return response()->json(['message' => 'Site Settings', 'status' => true, 'settings' => $settings], $this->successStatus);
+             } else {
+                 return response()->json(['message' => 'No Site Settings found', 'status' => false], 201);
+             }
+         } catch (\Throwable $th) {
+             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+         }
+     }
 }

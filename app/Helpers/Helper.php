@@ -22,6 +22,7 @@ use App\Models\TeamMember;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Count;
 use App\Models\User;
+use App\Models\SiteSetting;
 
 class Helper
 {
@@ -39,6 +40,12 @@ class Helper
     {
         $organizations = OurOrganization::orderBy('id', 'desc')->get();
         return $organizations;
+    }
+
+    public static function getSettings()
+    {
+        $settings = SiteSetting::orderBy('id', 'desc')->first();
+        return $settings;
     }
 
     public static function getCountries()
