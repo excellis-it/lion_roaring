@@ -60,7 +60,7 @@
 
                     <div class="mb-3">
                         <label for="DONATE_TEXT" class="form-label">Donate Text</label>
-                        <textarea class="form-control" id="DONATE_TEXT" name="DONATE_TEXT">{{ old('DONATE_TEXT', $settings->DONATE_TEXT) }}</textarea>
+                        <textarea class="form-control description" id="DONATE_TEXT" name="DONATE_TEXT">{{ old('DONATE_TEXT', $settings->DONATE_TEXT) }}</textarea>
                         @error('DONATE_TEXT')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -73,3 +73,16 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script>
+        // ClassicEditor.create(document.querySelector("#description"));
+        $('.description').summernote({
+            placeholder: 'Description*',
+            tabsize: 2,
+            height: 200
+        });
+    </script>
+@endpush
