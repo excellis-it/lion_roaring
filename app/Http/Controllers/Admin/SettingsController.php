@@ -24,6 +24,7 @@ class SettingsController extends Controller
             'SITE_LOGO' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',  // Validate logo file
             'SITE_CONTACT_EMAIL' => 'required|email|max:255',
             'SITE_CONTACT_PHONE' => 'required|string',
+            'DONATE_TEXT' => 'nullable|string',  // Validate donate text
         ]);
 
         $settings = SiteSetting::first();
@@ -51,6 +52,7 @@ class SettingsController extends Controller
         $settings->SITE_NAME = $request->SITE_NAME;
         $settings->SITE_CONTACT_EMAIL = $request->SITE_CONTACT_EMAIL;
         $settings->SITE_CONTACT_PHONE = $request->SITE_CONTACT_PHONE;
+        $settings->DONATE_TEXT = $request->DONATE_TEXT;  // Update donate text
 
         $settings->save();
 

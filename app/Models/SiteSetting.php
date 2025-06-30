@@ -14,5 +14,6 @@ class SiteSetting extends Model
         'SITE_LOGO',
         'SITE_CONTACT_EMAIL',
         'SITE_CONTACT_PHONE',
+        'DONATE_TEXT'
     ];
 }

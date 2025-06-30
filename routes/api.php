@@ -81,6 +81,8 @@ Route::prefix('v3')->group(function () {
         Route::post('terms-and-conditions', [CmsController::class, 'terms']);
         Route::post('article-of-association', [CmsController::class, 'article_of_association']);
         Route::post('newsletter', [CmsController::class, 'newsletter']);
+        // site settings
+        Route::get('site-settings', [CmsController::class, 'siteSettings']);
     });
     // donation
     Route::post('donation', [DonationController::class, 'donation']);
