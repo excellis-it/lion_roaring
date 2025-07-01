@@ -16,9 +16,7 @@
                             <i class="fa-solid fa-download"></i>
                         </a>
                     @endif
-                    @if (
-                        (auth()->user()->can('Delete Policy') && $policy->user_id == auth()->user()->id) ||
-                            auth()->user()->hasRole('SUPER ADMIN'))
+                    @if (auth()->user()->can('Delete Policy'))
                         <a href="javascript:void(0)" id="delete"
                             data-route="{{ route('policy-guidence.delete', $policy->id) }}" class="delete_icon">
                             <i class="fa-solid fa-trash"></i>
