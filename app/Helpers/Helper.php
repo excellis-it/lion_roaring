@@ -276,13 +276,21 @@ class Helper
 
     public static function formatChatSendMessage($message)
     {
-        // Regular expression to match words containing a dot (.)
-        $pattern = '/\b[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}\b/';
+        // Regular expression to match full URLs with protocols and without protocols
+        $pattern = '/\b((https?|ftp):\/\/[^\s<>"]+|www\.[^\s<>"]+|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}[^\s<>"]*)/i';
 
-        // Replace matched words with anchor tags
+        // Replace matched URLs with anchor tags
         $formattedMessage = preg_replace_callback($pattern, function ($matches) {
             $url = $matches[0];
-            return '<a class="text-decoration-underline" href="https://' . htmlspecialchars($url) . '" target="_blank">' . htmlspecialchars($url) . '</a>';
+
+            // If URL doesn't start with protocol, add https://
+            if (!preg_match('/^https?:\/\//i', $url)) {
+                $href = 'https://' . $url;
+            } else {
+                $href = $url;
+            }
+
+            return '<a class="text-decoration-underline" href="' . htmlspecialchars($href) . '" target="_blank">' . htmlspecialchars($url) . '</a>';
         }, $message);
 
         return $formattedMessage;
