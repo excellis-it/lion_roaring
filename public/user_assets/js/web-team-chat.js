@@ -207,6 +207,26 @@ $(document).ready(function () {
         });
     });
 
+    function formatChatSendMessage(message) {
+        const pattern =
+            /\b((https?|ftp):\/\/[^\s<>"]+|www\.[^\s<>"]+|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}[^\s<>"]*)/gi;
+
+        const formattedMessage = message.replace(pattern, function (url) {
+            let href = url;
+
+            // If URL doesn't start with http or https, prepend https://
+            if (!/^https?:\/\//i.test(url)) {
+                href = "https://" + url;
+            }
+
+            return `<a class="text-decoration-underline" href="${$("<div>")
+                .text(href)
+                .html()}" target="_blank">${$("<div>").text(url).html()}</a>`;
+        });
+
+        return formattedMessage;
+    }
+
     $(document).on("submit", "#TeamMessageForm", function (e) {
         e.preventDefault();
 
@@ -216,6 +236,8 @@ $(document).ready(function () {
             .emojioneArea.getText();
         var team_id = $(".team_id").val();
         var url = window.Laravel.routes.teamChatSend;
+
+        var formattedMessage = formatChatSendMessage(message);
 
         // Get the file data
         var fileInput = $("#team-file2")[0];
