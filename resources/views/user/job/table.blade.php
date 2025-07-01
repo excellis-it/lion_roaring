@@ -21,9 +21,7 @@
             </td>
             <td>
                 <div class="d-flex">
-                    @if (
-                        (auth()->user()->can('Edit Job Postings') && $job->created_by == auth()->user()->id) ||
-                            auth()->user()->hasRole('SUPER ADMIN'))
+                    @if (auth()->user()->can('Edit Job Postings'))
                         <a href="{{ route('jobs.edit', $job->id) }}" class="delete_icon">
                             <i class="fa-solid fa-edit"></i>
                         </a> &nbsp; &nbsp;
@@ -33,9 +31,7 @@
                             <i class="fa-solid fa-eye"></i>
                         </a> &nbsp; &nbsp;
                     @endif
-                    @if (
-                        (auth()->user()->can('Delete Job Postings') && $job->created_by == auth()->user()->id) ||
-                            auth()->user()->hasRole('SUPER ADMIN'))
+                    @if (auth()->user()->can('Delete Job Postings'))
                         <a href="javascript:void(0)" id="delete" data-route="{{ route('jobs.delete', $job->id) }}"
                             class="delete_icon">
                             <i class="fa-solid fa-trash"></i>
