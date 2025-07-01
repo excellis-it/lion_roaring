@@ -205,6 +205,26 @@ $(document).ready(function () {
         $("#count-unseen-" + userId).remove();
     }
 
+    function formatChatSendMessage(message) {
+        const pattern =
+            /\b((https?|ftp):\/\/[^\s<>"]+|www\.[^\s<>"]+|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}[^\s<>"]*)/gi;
+
+        const formattedMessage = message.replace(pattern, function (url) {
+            let href = url;
+
+            // If URL doesn't start with http or https, prepend https://
+            if (!/^https?:\/\//i.test(url)) {
+                href = "https://" + url;
+            }
+
+            return `<a class="text-decoration-underline" href="${$("<div>")
+                .text(href)
+                .html()}" target="_blank">${$("<div>").text(url).html()}</a>`;
+        });
+
+        return formattedMessage;
+    }
+
     $(document).on("submit", "#MessageForm", function (e) {
         e.preventDefault();
 
@@ -214,6 +234,8 @@ $(document).ready(function () {
             .emojioneArea.getText();
         var receiver_id = $(".reciver_id").val();
         var url = window.Laravel.routes.chatSend;
+
+        var formattedMessage = formatChatSendMessage(message);
 
         // Get the file data
         var fileInput = $("#file2")[0];
@@ -303,7 +325,7 @@ $(document).ready(function () {
                         : "";
 
                     socket.emit("chat", {
-                        message: message,
+                        message: formattedMessage,
                         sender_id: sender_id,
                         receiver_id: receiver_id,
                         // receiver_users: res.receiver_users,
@@ -658,7 +680,6 @@ $(document).ready(function () {
     // Listen for incoming chat messages from the server
     socket.on("chat", function (data) {
         let timeZone = window.Laravel.authTimeZone;
-
 
         if (data.receiver_id == sender_id) {
             // Generate incoming message HTML
