@@ -814,7 +814,8 @@ class TeamChatController extends Controller
             $team_chat->team_id = $request->team_id;
             $team_chat->user_id = auth()->id();
 
-            $input_message = Helper::formatChatSendMessage($request->message);
+           // $input_message = Helper::formatChatSendMessage($request->message);
+            $input_message = $request->message;
             // Handle file or message content
             if ($request->file) {
                 if (!empty($input_message)) {
