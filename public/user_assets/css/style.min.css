@@ -45073,8 +45073,10 @@ ul {
 
 .count-unseen {
     position: absolute;
-    right: 0;
-    margin: 28px;
+    right: -9px;
+    margin: 0px;
+    top: -4px;
+    line-height: 1;
 }
 .count-unseen span p{
     color: #fff;

@@ -1179,12 +1179,12 @@ section {
 
 .GroupName {
     font-weight: 900;
-    padding: 5px 10px;
+    padding: 7px 10px 0px;
     color: var(--text-color);
     margin-bottom: 0px;
     white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .group:hover {
