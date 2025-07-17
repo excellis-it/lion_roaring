@@ -379,6 +379,14 @@ class SendMailController extends Controller
             $init_ownUserMailInfo->save();
         }
 
+        MailUser::whereIn('send_mail_id', function ($query) use ($fetch_mailId) {
+            $query->select('id')
+                ->from('send_mails')
+                ->where('id', $fetch_mailId)
+                ->orWhere('reply_of', $fetch_mailId);
+        })->where('user_id', auth()->id())
+            ->update(['is_read' => 1]);
+
         // Fetch the main mail details
         $mail_details = SendMail::with('user')->findOrFail($fetch_mailId);
 

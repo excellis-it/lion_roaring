@@ -559,6 +559,9 @@ class ProfileController extends Controller
             ->where('is_delete', 0) // Check not deleted first
             ->where('is_read', 0)   // message can be deleted but not read
             ->where('is_to', 1)   // Only count mails where user is receiver
+            // ->whereHas('sendMail', function ($query) {
+            //     $query->whereNull('reply_of');
+            // })
             ->count();
 
         // Count unread individual chats where user is receiver

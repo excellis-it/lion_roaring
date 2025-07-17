@@ -90,6 +90,8 @@ use App\Http\Controllers\User\PolicyGuidenceController;
 // Clear cache
 Route::get('clear', function () {
     Artisan::call('optimize:clear');
+    Artisan::call('config:cache');
+    //  Artisan::call('route:clear');
     return "Optimize clear has been successfully";
 });
 

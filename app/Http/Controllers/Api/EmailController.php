@@ -9,9 +9,6 @@ use App\Models\MailUser;
 use App\Models\Notification;
 use App\Models\SendMail;
 use App\Models\User;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 use App\Services\FCMService;
 use Illuminate\Support\Facades\Log;
 use Exception;
@@ -55,7 +52,7 @@ class EmailController extends Controller
      *   ],
      *   "total": 25,
      *   "perPage": 15,
-     *   "currentPage": 1,
+     *   "currentPage": 1
      *   "lastPage": 2
      * }
      *
@@ -66,6 +63,7 @@ class EmailController extends Controller
      */
     public function inboxEmailList(Request $request)
     {
+        // return $request->all();
         try {
             $type = $request->get('type');
 
@@ -104,13 +102,23 @@ class EmailController extends Controller
                 // Determine the main mail's ID (if it's a reply, use the parent mail's ID)
                 if (!empty($init_mail->reply_of)) {
                     $fetch_mailId = $init_mail->reply_of;
+
+                    $mail->ownUserMailInfo = MailUser::where('send_mail_id', $mail->id)
+                        ->where('user_id', auth()->id())
+                        ->first();
                 } else {
                     $fetch_mailId = $mail->id;
+                    $mail->ownUserMailInfo = MailUser::where('send_mail_id', $fetch_mailId)
+                        ->where('user_id', auth()->id())
+                        ->first();
                 }
 
-                $mail->ownUserMailInfo = MailUser::where('send_mail_id', $fetch_mailId)
-                    ->where('user_id', auth()->id())
-                    ->first();
+                $mail->theMainMailId = $fetch_mailId;
+
+
+                // $mail->ownUserMailInfo = MailUser::where('send_mail_id', $fetch_mailId)
+                //     ->where('user_id', auth()->id())
+                //     ->first();
 
                 $emails = explode(',', $mail->to);
 
