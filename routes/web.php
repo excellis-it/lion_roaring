@@ -49,6 +49,7 @@ use App\Http\Controllers\User\BecomingSovereignController;
 use App\Http\Controllers\User\BulletinBoardController;
 use App\Http\Controllers\User\BulletinController;
 use App\Http\Controllers\User\CategoryController;
+use App\Http\Controllers\User\ElearningCategoryController;
 use App\Http\Controllers\User\ChatController;
 use App\Http\Controllers\User\CmsController as UserCmsController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
@@ -454,6 +455,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         'bulletins' => BulletinController::class,
         'topics' => TopicController::class,
         'categories' => CategoryController::class,
+        'elearning-categories' => ElearningCategoryController::class,
         'products' => ProductController::class,
         'elearning' => ElearningController::class,
         'ecclesias' => EcclesiaContorller::class,
@@ -468,6 +470,10 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     });
     Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
     Route::get('/products-fetch-data', [ProductController::class, 'fetchData'])->name('products.fetch-data');
+    Route::get('/categories-fetch-data', [CategoryController::class, 'fetchData'])->name('categories.fetch-data');
+    Route::prefix('categories')->group(function () {
+        Route::get('/category-delete/{id}', [CategoryController::class, 'delete'])->name('categories.delete');
+    });
 
     // e-learning routes
     Route::prefix('elearning')->group(function () {
@@ -475,6 +481,10 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     });
     Route::get('/elearning-products-image-delete', [ElearningController::class, 'imageDelete'])->name('elearning.image.delete');
     Route::get('/elearning-products-fetch-data', [ElearningController::class, 'fetchData'])->name('elearning.fetch-data');
+    Route::get('/elearning-categories-fetch-data', [ElearningCategoryController::class, 'fetchData'])->name('elearning-categories.fetch-data');
+    Route::prefix('elearning-categories')->group(function () {
+        Route::get('/elearning-category-delete/{id}', [ElearningCategoryController::class, 'delete'])->name('elearning-categories.delete');
+    });
 
     Route::prefix('meetings')->group(function () {
         Route::get('/meeting-delete/{id}', [MeetingSchedulingController::class, 'delete'])->name('meetings.delete');
@@ -499,11 +509,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
 
 
 
-    Route::get('/categories-fetch-data', [CategoryController::class, 'fetchData'])->name('categories.fetch-data');
 
-    Route::prefix('categories')->group(function () {
-        Route::get('/category-delete/{id}', [CategoryController::class, 'delete'])->name('categories.delete');
-    });
 
     Route::prefix('topics')->group(function () {
         Route::get('/topic-delete/{id}', [TopicController::class, 'delete'])->name('topics.delete');

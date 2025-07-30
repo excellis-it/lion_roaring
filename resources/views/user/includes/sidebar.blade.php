@@ -331,7 +331,7 @@
                                     <span>E-learning Dashboard</span>
                                 </a>
 
-                                <a href="{{ route('categories.index') }}">
+                                <a href="{{ route('elearning-categories.index') }}">
                                     <span>
                                         <img src="{{ asset('user_assets/images/ICON/Store/Product_Categories.svg') }}"
                                             alt="">
