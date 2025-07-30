@@ -5,6 +5,9 @@
 @push('styles')
 @endpush
 @section('content')
+<section id="loading">
+    <div id="loading-content"></div>
+</section>
     <div class="container-fluid">
         <div class="bg_white_border">
 
@@ -107,6 +110,8 @@
                     let url = form.attr('action');
                     let type = form.attr('method');
                     let data = form.serialize();
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
                     $.ajax({
                         url: url,
                         type: type,
@@ -118,14 +123,20 @@
                                 socket.emit('meeting_updated', {
                                     meeting_id: response.id,
                                 });
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
                                 window.location.href = "{{ route('meetings.index') }}";
 
 
                             } else {
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
                                 toastr.error(response.message);
                             }
                         },
                         error: function(xhr, status, error) {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
                             // show error message in span
                             $('.text-danger').text('');
                             $.each(xhr.responseJSON.errors, function(key, item) {

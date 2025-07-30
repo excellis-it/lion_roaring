@@ -7,6 +7,9 @@ use App\Models\Job;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
+use App\Services\NotificationService;
+
 
 class JobpostingController extends Controller
 {
@@ -75,6 +78,9 @@ class JobpostingController extends Controller
             $job->list_of_values = $request->list_of_values;
             $job->save();
 
+            $userName = Auth::user()->getFullNameAttribute();
+            $noti = NotificationService::notifyAllUsers('New Job created by ' . $userName, 'job');
+
             return redirect()->route('jobs.index')->with('message', 'Job has been created successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -105,8 +111,8 @@ class JobpostingController extends Controller
      */
     public function edit($id)
     {
-        if (auth()->user()->can('Edit Job Postings')) {
-            $job = Job::findOrFail($id);
+        $job = Job::findOrFail($id);
+        if ((auth()->user()->can('Edit Job Postings')  && $job->created_by == auth()->user()->id) || auth()->user()->hasRole('SUPER ADMIN')) {
             return view('user.job.edit')->with(compact('job'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -196,8 +202,9 @@ class JobpostingController extends Controller
     }
     public function delete($id)
     {
-        if (Auth::user()->can('Delete Job Postings')) {
-            $job = Job::findOrFail($id);
+        $job = Job::findOrFail($id);
+        if ((Auth::user()->can('Delete Job Postings')  && $job->created_by == auth()->user()->id) || auth()->user()->hasRole('SUPER ADMIN')) {
+            Log::info($job->job_title . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             $job->delete();
             return redirect()->route('jobs.index')->with('error', 'Job has been deleted successfully.');
         } else {

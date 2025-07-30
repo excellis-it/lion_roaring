@@ -13,7 +13,9 @@
     All Testimonial Details
 @endsection
 @section('create_button')
-    <a href="{{ route('testimonials.create') }}" class="btn btn-primary">+ Create New Testmonial</a>
+    @if (auth()->user()->can('Create Testimonials'))
+        <a href="{{ route('testimonials.create') }}" class="btn btn-primary">+ Create New Testmonial</a>
+    @endif
 @endsection
 @section('content')
     <section id="loading">

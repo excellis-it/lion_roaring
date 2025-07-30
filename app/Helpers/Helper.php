@@ -21,6 +21,8 @@ use App\Models\TeamChat;
 use App\Models\TeamMember;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Count;
+use App\Models\User;
+use App\Models\SiteSetting;
 
 class Helper
 {
@@ -38,6 +40,12 @@ class Helper
     {
         $organizations = OurOrganization::orderBy('id', 'desc')->get();
         return $organizations;
+    }
+
+    public static function getSettings()
+    {
+        $settings = SiteSetting::orderBy('id', 'desc')->first();
+        return $settings;
     }
 
     public static function getCountries()
@@ -170,6 +178,7 @@ class Helper
         $chats = Chat::where('reciver_id', $sender_id)
             ->where('sender_id', $reciver_id)
             ->where('seen', 0)
+            ->where('delete_from_receiver_id', 0)
             ->count();
         return $chats;
     }
@@ -221,5 +230,102 @@ class Helper
         }
 
         return implode(', ', $to);
+    }
+
+    public static function format_links_in_message($message)
+    {
+        return preg_replace_callback(
+            '/\b((http|https|ftp|ftps):\/\/\S+|www\.\S+)/i',
+            function ($matches) {
+                $url = $matches[0];
+
+                // If the URL starts with 'www', prepend 'http://' to make it a valid URL
+                if (strpos($url, 'www.') === 0) {
+                    $url = 'http://' . $url;
+                }
+
+                // Check if the URL is already inside an <a> tag and skip it
+                if (strpos($url, '<a href=') === false) {
+                    return '<a class="text-decoration-underline" href="' . $url . '" target="_blank">' . $url . '</a>';
+                }
+
+                return $url; // Return the URL as-is if it's already in an <a> tag
+            },
+            // Clean any stray closing HTML tags attached to URLs and fix spacing
+            preg_replace(
+                '/<a[^>]+>(.*?)<\/a>/i',
+                '$1',
+                preg_replace('/(\S)(<\/?[^>]+>)/', '$1 $2', $message)
+            )
+        );
+    }
+
+    public static function formatChatMessage($message)
+    {
+        // // Regular expression to match words containing a dot (.)
+        // $pattern = '/\b[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}\b/';
+
+        // // Replace matched words with anchor tags
+        // $formattedMessage = preg_replace_callback($pattern, function ($matches) {
+        //     $url = $matches[0];
+        //     return '<a class="text-decoration-underline" href="https://' . htmlspecialchars($url) . '" target="_blank">' . htmlspecialchars($url) . '</a>';
+        // }, $message);
+
+        return nl2br($message);
+    }
+
+    public static function formatChatSendMessage($message)
+    {
+        // Regular expression to match full URLs with protocols and without protocols
+        $pattern = '/\b((https?|ftp):\/\/[^\s<>"]+|www\.[^\s<>"]+|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}[^\s<>"]*)/i';
+
+        // Replace matched URLs with anchor tags
+        $formattedMessage = preg_replace_callback($pattern, function ($matches) {
+            $url = $matches[0];
+
+            // If URL doesn't start with protocol, add https://
+            if (!preg_match('/^https?:\/\//i', $url)) {
+                $href = 'https://' . $url;
+            } else {
+                $href = $url;
+            }
+
+            return '<a class="text-decoration-underline" href="' . htmlspecialchars($href) . '" target="_blank">' . htmlspecialchars($url) . '</a>';
+        }, $message);
+
+        return $formattedMessage;
+    }
+
+    public static function unreadMessagesCount(string $fcmtoken)
+    {
+        $user = User::where('fcm_token', $fcmtoken)->first();
+        if (!$user) {
+            return 0; // or throw an exception
+        }
+
+        // Count unread emails where user is recipient and email is not deleted
+        $mailCount = \App\Models\MailUser::where('user_id', $user->id)
+            ->where('is_read', 0)
+            ->where('is_delete', 0)
+            ->count();
+
+        // Count unread individual chats where user is receiver
+        $chatCount = \App\Models\Chat::where('reciver_id', $user->id)
+            ->where('seen', 0)
+            ->where('deleted_for_reciver', 0)
+            ->where('delete_from_receiver_id', 0)
+            ->count();
+
+        // Count unread team chat messages where user is a member
+        $teamChatCount = \App\Models\ChatMember::where('user_id', $user->id)
+            ->where('is_seen', 0)
+            ->whereHas('chat', function ($query) {
+                $query->whereNull('deleted_at');
+            })
+            ->count();
+
+        $totalCount = $mailCount + $chatCount + $teamChatCount;
+
+        return $totalCount;
     }
 }

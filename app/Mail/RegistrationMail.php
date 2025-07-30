@@ -16,7 +16,7 @@ class RegistrationMail extends Mailable
      *
      * @return void
      */
-     public $maildata;
+    public $maildata;
     public function __construct($maildata)
     {
         $this->maildata = $maildata;
@@ -30,6 +30,8 @@ class RegistrationMail extends Mailable
     public function build()
     {
         return $this->markdown('admin.emails.registrationMail')
-                    ->with('maildata', $this->maildata);
+            ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
+            ->subject(env('APP_NAME') . ' Sign Up')
+            ->with('maildata', $this->maildata);
     }
 }

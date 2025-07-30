@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ContactUs;
+use App\Models\ContactUsCms;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -54,6 +55,43 @@ class ContactUsController extends Controller
             return response()->json(['message' => 'Thank you for contacting us', 'status' => true], $this->successStatus);
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => false], 401);
+        }
+    }
+
+
+    /**
+     * Contact us page
+     * 
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *     "address": "123 Main St, Springfield, USA",
+     *     "phone": "+123456789",
+     *     "email": "info@example.com",
+     *     "created_at": "2024-12-09T10:00:00.000000Z",
+     *     "updated_at": "2024-12-09T10:00:00.000000Z"
+     *   }
+     * }
+     * @response 201 {
+     *   "message": "Failed to retrieve contact us information.",
+     *   "error": "Database error or contact information not found."
+     * }
+     */
+    public function contactUs()
+    {
+        try {
+            $contact = ContactUsCms::first();
+
+            if (!$contact) {
+                return response()->json(['message' => 'Contact information not found.'], 201);
+            }
+
+            return response()->json(['data' => $contact], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to retrieve contact us information.',
+                'error' => $e->getMessage(),
+            ], 201);
         }
     }
 }

@@ -15,8 +15,12 @@ class DonationController extends Controller
      */
     public function index()
     {
-        $donations = Donation::orderBy('id', 'desc')->paginate(15);
-        return view('admin.donations.list')->with(compact('donations'));
+        if (auth()->user()->can('Manage Donations')) {
+            $donations = Donation::orderBy('id', 'desc')->paginate(15);
+            return view('admin.donations.list')->with(compact('donations'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     public function fetchData(Request $request)
@@ -114,7 +118,11 @@ class DonationController extends Controller
 
     public function delete($id)
     {
-        Donation::where('id', $id)->delete();
-        return redirect()->route('donations.index')->with('message', 'Donation has been deleted successfully');
+        if (auth()->user()->can('Manage Donations')) {
+            Donation::where('id', $id)->delete();
+            return redirect()->route('donations.index')->with('message', 'Donation has been deleted successfully');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 }

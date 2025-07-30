@@ -18,8 +18,12 @@ class HomeCmsController extends Controller
 
     public function index()
     {
-        $home = HomeCms::orderBy('id', 'desc')->first();
-        return view('admin.home.update')->with('home', $home);
+        if (auth()->user()->can('Manage Home Page')) {
+            $home = HomeCms::orderBy('id', 'desc')->first();
+            return view('admin.home.update')->with('home', $home);
+        } else {
+            return redirect()->route('admin.dashboard')->with('error', 'You do not have the permission to access this page.');
+        }
     }
 
     /**
@@ -64,17 +68,17 @@ class HomeCmsController extends Controller
 
         $request->validate([
             'banner_title' => 'required',
-            'banner_image' => 'nullable|mimes:jpeg,jpg,png,gif',
+            'banner_image' => 'nullable|mimes:jpeg,jpg,png,gif,webp',
             'banner_video' => 'nullable|mimes:mp4,ogx,oga,ogv,ogg,webm',
             'section_1_title' => 'required',
             'section_1_sub_title' => 'required',
             'section_1_video' => 'nullable|mimes:mp4,ogx,oga,ogv,ogg,webm',
             'section_1_description' => 'required',
             'section_2_left_title' => 'required',
-            'section_2_left_image' => 'nullable|mimes:jpeg,jpg,png,gif',
+            'section_2_left_image' => 'nullable|mimes:jpeg,jpg,png,gif,webp',
             'section_2_left_description' => 'required',
             'section_2_right_title' => 'required',
-            'section_2_right_image' => 'nullable|mimes:jpeg,jpg,png,gif',
+            'section_2_right_image' => 'nullable|mimes:jpeg,jpg,png,gif,webp',
             'section_2_right_description' => 'required',
             'section_3_title' => 'required',
             'section_3_description' => 'required',

@@ -18,8 +18,11 @@
     Admin
 @endsection
 @section('create_button')
-    <a href="javascript:void(0)" id="create-admin" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_admin">Add
-        Admin</a>
+    @if (auth()->user()->can('Create Admin List'))
+        <a href="javascript:void(0)" id="create-admin" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#add_admin">Add
+            Admin</a>
+    @endif
 @endsection
 
 @section('content')
@@ -132,68 +135,9 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <form action="{{ route('admin.update') }}" method="POST" id="editForm"
-                        enctype="multipart/form-data">
-                        @csrf
-                        <div class="row">
-                            <div class="col-md-12">
-                                <input type="hidden" id="hidden_id" name="id" value="">
-                                <div class="row">
-                                    {{-- user_name --}}
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label>User Name<span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" name="edit_user_name"
-                                                id="edit_user_name">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>First Name<span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" name="edit_first_name"
-                                                id="edit_first_name">
-                                        </div>
-                                    </div>
-                                    {{-- middle_name --}}
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Middle Name</label>
-                                            <input type="text" class="form-control" name="edit_middle_name"
-                                                id="edit_middle_name">
-                                        </div>
-                                    </div>
-                                    {{-- last name --}}
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Last Name<span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" name="edit_last_name"
-                                                id="edit_last_name">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Email<span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" name="edit_email"
-                                                id="edit_email">
-                                        </div>
-                                    </div>
-                                    {{-- phone --}}
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Phone<span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" name="edit_phone"
-                                                id="edit_phone">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="modal-body" id="edit-admin">
+                    @include('admin.admin.edit')
 
-                        <div class="submit-section">
-                            <button class="btn btn-primary submit-btn">Update</button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -239,14 +183,17 @@
                                     <td>{{ date('d M Y', strtotime($admin->created_at)) }}</td>
                                     <td align="center">
                                         <div class="edit-1 d-flex align-items-center justify-content-center">
-                                            <a class="edit-admins edit-icon" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit_admin" data-id="{{ $admin->id }}"
-                                                data-route="{{ route('admin.edit', $admin->id) }}"> <span
-                                                    class="edit-icon"><i class="ph ph-pencil-simple"></i></span></a>
-
-                                            <a href="{{ route('admin.delete', $admin->id) }}"
-                                                onclick="return confirm('Are you sure to delete this admin?')"> <span
-                                                    class="trash-icon"><i class="ph ph-trash"></i></span></a>
+                                            @if (auth()->user()->can('Edit Admin List'))
+                                                <a class="edit-admins edit-icon" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#edit_admin" data-id="{{ $admin->id }}"
+                                                    data-route="{{ route('admin.edit', $admin->id) }}"> <span
+                                                        class="edit-icon"><i class="ph ph-pencil-simple"></i></span></a>
+                                            @endif
+                                            @if (auth()->user()->can('Delete Admin List'))
+                                                <a href="{{ route('admin.delete', $admin->id) }}"
+                                                    onclick="return confirm('Are you sure to delete this admin?')"> <span
+                                                        class="trash-icon"><i class="ph ph-trash"></i></span></a>
+                                            @endif
                                         </div>
 
                                     </td>
@@ -272,7 +219,7 @@
         });
     </script>
 
-    <script>
+    {{-- <script>
         $(document).ready(function() {
 
             $('.edit-admins').on('click', function() {
@@ -313,10 +260,10 @@
                 });
             });
         });
-    </script>
+    </script> --}}
 
     {{-- createForm  submit --}}
-    <script>
+    {{-- <script>
         $(document).ready(function() {
             $('#createForm').on('submit', function(e) {
                 e.preventDefault();
@@ -359,7 +306,7 @@
                 });
             });
         });
-    </script>
+    </script> --}}
 
     {{-- editForm  submit --}}
     <script>
@@ -427,6 +374,321 @@
                 $('#confirm_password').attr('type', $('#confirm_password').is(':password') ? 'text' :
                     'password');
                 $(this).find('i').toggleClass('ph-eye-slash ph-eye');
+            });
+        });
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput-jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/utils.min.js"></script>
+    <script>
+        function initializeIntlTelInput() {
+            const phoneInput = $("#phone");
+
+            phoneInput.intlTelInput({
+                geoIpLookup: function(callback) {
+                    $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                        const countryCode = (resp && resp.country) ? resp.country : "US";
+                        callback(countryCode);
+                    });
+                },
+                initialCountry: "auto",
+                separateDialCode: true,
+            });
+
+            const selectedCountry = phoneInput.intlTelInput('getSelectedCountryData');
+            const dialCode = selectedCountry.dialCode;
+            const exampleNumber = intlTelInputUtils.getExampleNumber(selectedCountry.iso2, 0, 0);
+
+            let maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2, intlTelInputUtils
+                .numberFormat.NATIONAL);
+            maskNumber = maskNumber.replace('+' + dialCode + ' ', '');
+
+            // Define the mask
+            let mask;
+            if (dialCode && dialCode.length > 2) {
+                // Use a fixed mask pattern for countries with dial codes of length greater than 2
+                mask = '999 999 999';
+                maskNumber = '999 999 999';
+            } else {
+                // Dynamically create a mask by replacing digits with 0 for shorter dial codes
+                mask = maskNumber.replace(/[0-9+]/g, '0');
+            }
+
+            // Apply the mask with the placeholder
+            phoneInput.mask(mask, {
+                placeholder: 'Enter Phone Number',
+            });
+
+            phoneInput.on('countrychange', function() {
+                $(this).val(''); // Clear the input field when country changes
+                const newSelectedCountry = $(this).intlTelInput('getSelectedCountryData');
+                const newDialCode = newSelectedCountry.dialCode;
+                const newExampleNumber = intlTelInputUtils.getExampleNumber(newSelectedCountry.iso2, 0, 0);
+
+                let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry.iso2,
+                    intlTelInputUtils.numberFormat.NATIONAL);
+                newMaskNumber = newMaskNumber.replace('+' + newDialCode + ' ', '');
+
+                let newMask;
+
+                if (newDialCode.length > 2) {
+                    // If dial code length is more than 2, use a 999 999 999 mask (or a similar format)
+                    newMask = '999 999 999';
+                    newMaskNumber = '999 999 999';
+                } else {
+                    // Otherwise, replace all digits with 0
+                    newMask = newMaskNumber.replace(/[0-9+]/g, '0');
+                }
+
+                phoneInput.mask(newMask, {
+                    placeholder: 'Enter Phone Number',
+                });
+            });
+        }
+
+        function setPhoneNumber() {
+            const phoneInput = $("#phone");
+            const fullNumber = "{{ old('full_phone_number') }}";
+
+            if (fullNumber) {
+                phoneInput.intlTelInput("setNumber", fullNumber);
+            }
+        }
+
+        $(document).ready(function() {
+            initializeIntlTelInput();
+            setPhoneNumber();
+
+            $('#createForm').on('submit', function(e) {
+                e.preventDefault();
+                const phoneInput = $("#phone");
+                const fullNumber = phoneInput.intlTelInput('getNumber');
+                const countryCode = phoneInput.intlTelInput('getSelectedCountryData').dialCode;
+
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'full_phone_number',
+                    value: fullNumber
+                }).appendTo('#createForm');
+
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'country_code',
+                    value: countryCode
+                }).appendTo('#createForm');
+
+                var form = $(this);
+                var url = form.attr('action');
+                var type = form.attr('method');
+                var data = new FormData(form[0]);
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
+                $.ajax({
+                    url: url,
+                    type: type,
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        if (data.status == 'success') {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
+                            $('#add_ecclessia').modal('hide');
+                            location.reload();
+
+                        } else {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
+                            toastr.error(data.message);
+                        }
+                    },
+                    error: function(data) {
+                        // validation error
+                        if (data.status == 422) {
+                            var errors = data.responseJSON.errors;
+                            $.each(errors, function(key, value) {
+                                toastr.error(value[0]);
+                            });
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+
+            $('.edit-admins').on('click', function() {
+                var id = $(this).data('id');
+                var route = $(this).data('route');
+                var img_url = $('#img-' + id).data('url');
+                $('#loading').addClass('loading');
+                $('#loading-content').addClass('loading-content');
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: route,
+                    type: 'POST',
+                    data: {
+                        id: id,
+                    },
+                    dataType: 'JSON',
+                    success: async function(data) {
+                        try {
+                            // Open modal
+
+                            await $('#edit_admin').modal('show');
+                            await $('#edit-admin').html(data.data);
+                            await initializeIntlTelInput();
+                            await $('#loading').removeClass('loading');
+                            await $('#loading-content').removeClass('loading-content');
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    }
+                });
+            });
+
+            function initializeIntlTelInput() {
+                const phoneInput = $("#edit_phone");
+
+                phoneInput.intlTelInput({
+                    geoIpLookup: function(callback) {
+                        $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                            const countryCode = (resp && resp.country) ? resp.country : "US";
+                            callback(countryCode);
+                        });
+                    },
+                    initialCountry: "auto",
+                    separateDialCode: true,
+                });
+
+                const selectedCountry = phoneInput.intlTelInput('getSelectedCountryData');
+                const dialCode = selectedCountry.dialCode;
+                const exampleNumber = intlTelInputUtils.getExampleNumber(selectedCountry.iso2, 0, 0);
+
+                let maskNumber = intlTelInputUtils.formatNumber(exampleNumber, selectedCountry.iso2,
+                    intlTelInputUtils
+                    .numberFormat.NATIONAL);
+                maskNumber = maskNumber.replace('+' + dialCode + ' ', '');
+
+                let mask;
+                if (dialCode && dialCode.length > 2) {
+                    mask = '999 999 999';
+                    maskNumber = '999 999 999';
+                } else {
+                    mask = maskNumber.replace(/[0-9+]/g, '0');
+                }
+
+                phoneInput.mask(mask, {
+                    placeholder: 'Enter Phone Number',
+                });
+
+                phoneInput.on('countrychange', function() {
+                    $(this).val('');
+                    const newSelectedCountry = $(this).intlTelInput('getSelectedCountryData');
+                    const newDialCode = newSelectedCountry.dialCode;
+                    const newExampleNumber = intlTelInputUtils.getExampleNumber(newSelectedCountry.iso2, 0,
+                        0);
+
+                    let newMaskNumber = intlTelInputUtils.formatNumber(newExampleNumber, newSelectedCountry
+                        .iso2,
+                        intlTelInputUtils.numberFormat.NATIONAL);
+                    newMaskNumber = newMaskNumber.replace('+' + newDialCode + ' ', '');
+
+                    let newMask;
+
+                    if (newDialCode.length > 2) {
+                        newMask = '999 999 999';
+                        newMaskNumber = '999 999 999';
+                    } else {
+                        newMask = newMaskNumber.replace(/[0-9+]/g, '0');
+                    }
+
+                    phoneInput.mask(newMask, {
+                        placeholder: 'Enter Phone Number',
+                    });
+                });
+            }
+
+            // Pre-fill phone number when editing
+            function setPhoneNumber(number) {
+                const phoneInput = $("#edit_phone");
+                const fullNumber = number;
+
+                if (fullNumber) {
+                    phoneInput.intlTelInput("setNumber", fullNumber);
+                }
+            }
+
+            $(document).ready(function() {
+                initializeIntlTelInput();
+                setPhoneNumber();
+
+                $(document).on('submit', '#editForm', function(e) {
+                    e.preventDefault();
+
+                    const phoneInput = $("#edit_phone");
+                    const fullNumber = phoneInput.intlTelInput('getNumber');
+                    const countryCode = phoneInput.intlTelInput('getSelectedCountryData').dialCode;
+
+                    // Append full phone number and country code to the form
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'edit_full_phone_number',
+                        value: fullNumber
+                    }).appendTo('#editForm');
+
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'edit_country_code',
+                        value: countryCode
+                    }).appendTo('#editForm');
+
+                    var form = $(this);
+                    var url = form.attr('action');
+                    var type = form.attr('method');
+                    var data = new FormData(form[0]);
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
+                    $.ajax({
+                        url: url,
+                        type: type,
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        success: function(data) {
+                            if (data.status == 'success') {
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
+                                $('#edit_admin').modal('hide');
+                                location.reload();
+                            } else {
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
+                                toastr.error(data.message);
+                            }
+                        },
+                        error: function(data) {
+                            // validation error
+                            if (data.status == 422) {
+                                var errors = data.responseJSON.errors;
+                                $.each(errors, function(key, value) {
+                                    toastr.error(value[0]);
+                                });
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
+                            }
+                        }
+                    });
+                });
             });
         });
     </script>

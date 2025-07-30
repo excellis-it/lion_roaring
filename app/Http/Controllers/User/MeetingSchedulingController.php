@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Meeting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use App\Services\NotificationService;
 
 class MeetingSchedulingController extends Controller
 {
@@ -57,12 +59,17 @@ class MeetingSchedulingController extends Controller
 
             $meeting = new Meeting();
             $meeting->user_id = auth()->id();
+            $meeting->time_zone = auth()->user()->time_zone;
             $meeting->title = $request->title;
             $meeting->description = $request->description;
             $meeting->start_time = $request->start_time;
             $meeting->end_time = $request->end_time;
             $meeting->meeting_link = $request->meeting_link;
             $meeting->save();
+
+            // notify users
+            $userName = Auth::user()->getFullNameAttribute();
+            $noti = NotificationService::notifyAllUsers('New Meeting created by ' . $userName, 'meeting');
 
             session()->flash('message', 'Meeting scheduled successfully.');
 
@@ -96,7 +103,7 @@ class MeetingSchedulingController extends Controller
      */
     public function edit($id)
     {
-        if (auth()->user()->can('Edit Meeting Schedule') && auth()->user()->id == Meeting::find($id)->user_id || auth()->user()->hasRole('ADMIN')) {
+        if (auth()->user()->can('Edit Meeting Schedule') && auth()->user()->id == Meeting::find($id)->user_id || auth()->user()->hasRole('SUPER ADMIN')) {
             $meeting = Meeting::find($id);
             return view('user.meeting.edit')->with('meeting', $meeting);
         } else {
@@ -123,6 +130,7 @@ class MeetingSchedulingController extends Controller
             ]);
 
             $meeting = Meeting::find($id);
+            $meeting->time_zone = auth()->user()->time_zone;
             $meeting->title = $request->title;
             $meeting->description = $request->description;
             $meeting->start_time = $request->start_time;
@@ -175,7 +183,7 @@ class MeetingSchedulingController extends Controller
     }
     public function delete($id)
     {
-        if (Auth::user()->can('Delete Meeting Schedule') && Auth::user()->id == Meeting::find($id)->user_id || Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->can('Delete Meeting Schedule') && Auth::user()->id == Meeting::find($id)->user_id || Auth::user()->hasRole('SUPER ADMIN')) {
             $meeting = Meeting::findOrFail($id);
             $meeting->delete();
             return response()->json(['message' => 'Meeting deleted successfully.', 'status' => true, 'id' => $id]);

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use App\Services\NotificationService;
 
 class LiveEventController extends Controller
 {
@@ -22,7 +24,7 @@ class LiveEventController extends Controller
 
     public function calender(Request $request)
     {
-        $events = Event::orderBy('id', 'desc')->get(['id', 'user_id' ,'title', 'description', 'start', 'end']);
+        $events = Event::orderBy('id', 'desc')->get(['id', 'user_id', 'title', 'description', 'start', 'end']);
         return response()->json($events);
     }
 
@@ -37,11 +39,16 @@ class LiveEventController extends Controller
 
         $event = new Event();
         $event->user_id = Auth::id();
+        $event->time_zone = auth()->user()->time_zone;
         $event->title = $request->title;
         $event->description = $request->description;
         $event->start = $request->start;
         $event->end = $request->end;
         $event->save();
+
+        // notify users
+        $userName = Auth::user()->getFullNameAttribute();
+        $noti = NotificationService::notifyAllUsers('New Live Event created by ' . $userName, 'live_event');
 
         return response()->json(['message' => 'Event created successfully.', 'event' => $event, 'status' => true]);
     }
@@ -57,6 +64,7 @@ class LiveEventController extends Controller
 
         $event = Event::find($id);
         $event->title = $request->title;
+        $event->time_zone = auth()->user()->time_zone;
         $event->description = $request->description;
         $event->start = $request->start;
         $event->end = $request->end;
@@ -68,6 +76,7 @@ class LiveEventController extends Controller
     public function destroy($id)
     {
         $event = Event::findOrFail($id);
+        Log::info($event->title . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
         $event->delete();
 
         return response()->json(['success' => 'Event deleted successfully.']);

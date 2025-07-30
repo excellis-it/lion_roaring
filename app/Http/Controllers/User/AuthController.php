@@ -14,6 +14,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Crypt;
+use App\Mail\OtpMail;
+use App\Models\VerifyOTP;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -39,13 +44,34 @@ class AuthController extends Controller
         // login by user_name or email
         $fieldType = filter_var($request->user_name, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
         $request->merge([$fieldType => $request->user_name]);
-        // return $fieldType;
-        if (auth()->attempt($request->only($fieldType, 'password'))) {
-            if (auth()->user()->status == 1) {
-                session()->flash('message', 'Login success');
-                return response()->json(['message' => 'Login success', 'status' => true, 'redirect' => route('user.profile')]);
+
+        $user = User::where($fieldType, $request->user_name)->first();
+
+        if ($user && \Hash::check($request->password, $user->password)) {
+            if ($user->status == 1 && $user->is_accept == 1) {
+                $otp = rand(1000, 9999);
+                $otp_verify = new VerifyOTP();
+                $otp_verify->user_id = $user->id;
+                $otp_verify->email = $user->email;
+                $otp_verify->otp = $otp;
+                $otp_verify->save();
+                if ($request->has('remember')) {
+                    $expire = time() + (86400 * 365 * 5); // 5 years
+                    setcookie('email_user_name', $request->user_name, $expire, '/', '', false, true);
+                    setcookie('password', $request->password, $expire, '/', '', false, true);
+                } else {
+                    // Clear cookies if remember me is unchecked
+                    setcookie('email_user_name', '', time() - 3600, '/');
+                    setcookie('password', '', time() - 3600, '/');
+                }
+                Session::put('user_id', $user->id);
+                try {
+                    Mail::to($user->email)->send(new OtpMail($otp));
+                } catch (\Exception $e) {
+                    return response()->json(['message' => 'Email server temporary unavailable. Please try later.', 'status' => false]);
+                }
+                return response()->json(['message' => 'Code sent to your email', 'status' => true, 'otp_required' => true]);
             } else {
-                auth()->logout();
                 return response()->json(['message' => 'Your account is not active!', 'status' => false]);
             }
         } else {
@@ -55,7 +81,8 @@ class AuthController extends Controller
 
     public function register()
     {
-        $eclessias = Ecclesia::orderBy('id', 'desc')->get();
+        // $eclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
+        $eclessias = Ecclesia::orderBy('id', 'asc')->get();
         $countries = Country::all();
         return view('user.auth.register')->with(compact('eclessias', 'countries'));
     }
@@ -99,7 +126,7 @@ class AuthController extends Controller
             'email_confirmation' => 'required|same:email',
             'password' => ['required', 'string', 'regex:/^(?=.*[@$%&])[^\s]{8,}$/'],
             'password_confirmation' => 'required|same:password',
-        ],[
+        ], [
             'password.regex' => 'The password must be at least 8 characters long and include at least one special character from @$%&.',
         ]);
 
@@ -118,15 +145,20 @@ class AuthController extends Controller
             return redirect()->back()->withErrors(['phone_number' => 'Phone number already exists'])->withInput();
         }
 
+        $uniqueNumber = rand(1000, 9999);
+        $lr_email = strtolower(trim($request->first_name)) . strtolower(trim($request->middle_name)) . strtolower(trim($request->last_name)) . $uniqueNumber . '@lionroaring.us';
+
         $user = new User();
         $user->user_name = $request->user_name;
         $user->ecclesia_id = $request->ecclesia_id;
         $user->email = $request->email;
+        $user->personal_email = $lr_email ? str_replace(' ', '', $lr_email) : null;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->middle_name = $request->middle_name;
         $user->address = $request->address;
         $user->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone_number : $request->phone_number;
+        $user->phone_country_code_name = $request->phone_country_code_name;
         $user->city = $request->city;
         $user->state = $request->state;
         $user->address2 = $request->address2;
@@ -137,7 +169,8 @@ class AuthController extends Controller
         $user->status = 0;
         $user->save();
 
-        $user->assignRole('MEMBER');
+
+        $user->assignRole('MEMBER_NON_SOVEREIGN');
         $maildata = [
             'name' => $request->full_name,
         ];
@@ -157,6 +190,4 @@ class AuthController extends Controller
         $states = State::where('country_id', $request->country)->get();
         return response()->json($states);
     }
-
-
 }

@@ -6,7 +6,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/home
+    uri: api/v3/cms/home
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -108,7 +108,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/gallery
+    uri: api/v3/cms/gallery
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -163,7 +163,137 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/faq
+    uri: api/v3/cms/about-us-page
+    metadata:
+      groupName: 'CMS Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get About Us'
+      description: 'This endpoint retrieves the latest "About Us" content.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "About Us",
+            "status": true,
+            "about_us": {
+              "title": "About Us Title",
+              "description": "About Us Description"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "No About Us found",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+            "message": "Error message",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/cms/details-page
+    metadata:
+      groupName: 'CMS Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Details'
+      description: 'This endpoint retrieves the latest details.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Details",
+            "status": true,
+            "details": [
+              {
+                "title": "Detail Title",
+                "description": "Detail Description"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "No details found",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+            "message": "Error message",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/cms/faq
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -219,7 +349,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/principle-and-business
+    uri: api/v3/cms/principle-and-business
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -276,7 +406,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/ecclesia-associations
+    uri: api/v3/cms/ecclesia-associations
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -332,7 +462,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/our-organization
+    uri: api/v3/cms/our-organization
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -430,7 +560,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/common
+    uri: api/v3/cms/common
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -496,7 +626,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/our-governance
+    uri: api/v3/cms/our-governance
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -522,6 +652,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       slug: robert-hyde
@@ -553,7 +684,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/organization-center
+    uri: api/v3/cms/organization-center
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -579,6 +710,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       slug: 'lion-roaring-innovation-center, lion-roaring-education-center-1709707179.'
@@ -618,7 +750,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/organization-center-details
+    uri: api/v3/cms/organization-center-details
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -644,6 +776,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       slug: lion-roaring-foundation.
@@ -675,7 +808,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/cms/members-privacy-policy
+    uri: api/v3/cms/members-privacy-policy
     metadata:
       groupName: 'CMS Management'
       groupDescription: ''
@@ -718,6 +851,344 @@ endpoints:
           {
           "message": "No privacy policy found",
           "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/cms/pma-disclaimer-policy
+    metadata:
+      groupName: 'CMS Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'PMA Disclaimer Policy'
+      description: |-
+        This endpoint returns the latest PMA Disclaimer Policy term including title and description.
+        It fetches the latest record from the `pma_terms` table.
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "PMA Term",
+            "status": true,
+            "term": {
+              "title": "Sample PMA Term Title",
+              "description": "Detailed description of the PMA term."
+            }
+          }
+        headers: []
+        description: 'Term found'
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "No PMA Term found",
+            "status": false
+          }
+        headers: []
+        description: 'No term found'
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+            "message": "Error message from exception",
+            "status": false
+          }
+        headers: []
+        description: 'Server error'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/cms/privacy-policy
+    metadata:
+      groupName: 'CMS Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Privacy Policy'
+      description: 'Returns the latest privacy policy content.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "privacy policy",
+            "status": true,
+            "privacy_policy": {
+              "title": "Privacy Policy Title",
+              "description": "Privacy Policy Description"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "No privacy policy found",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+            "message": "Error message",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/cms/terms-and-conditions
+    metadata:
+      groupName: 'CMS Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Terms and Conditions'
+      description: 'Returns the latest terms and conditions content.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Terms and Condition",
+            "status": true,
+            "term": {
+              "title": "Terms Title",
+              "description": "Terms Description"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+            "message": "No Terms and Condition found",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+            "message": "Error message",
+            "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/cms/article-of-association
+    metadata:
+      groupName: 'CMS Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get the Article of Association PDF'
+      description: "This endpoint returns the URL of the company's Article of Association PDF if available."
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "message": "Article of association",
+           "status": true,
+           "url": "https://example.com/path/to/article.pdf"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+           "message": "No Article of association found",
+           "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+           "message": "Error message",
+           "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/cms/newsletter
+    metadata:
+      groupName: 'CMS Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Submit newsletter form'
+      description: 'This endpoint allows a user to submit a newsletter form. The request must include the name, email, and message.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      newsletter_name:
+        name: newsletter_name
+        description: 'The full name of the subscriber.'
+        required: true
+        example: 'John Doe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      newsletter_email:
+        name: newsletter_email
+        description: "The subscriber's email address."
+        required: true
+        example: john@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      newsletter_message:
+        name: newsletter_message
+        description: 'The message or feedback from the subscriber.'
+        required: true
+        example: "I'd love to hear more about your services!"
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      newsletter_name: 'John Doe'
+      newsletter_email: john@example.com
+      newsletter_message: "I'd love to hear more about your services!"
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Newsletter submit successfully.",
+            "status": true
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 401
+        content: |-
+          {
+            "message": "Error message details here",
+            "status": false
           }
         headers: []
         description: ''

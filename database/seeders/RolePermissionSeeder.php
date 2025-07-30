@@ -339,11 +339,11 @@ class RolePermissionSeeder extends Seeder
         ];
 
         Permission::insert($arrPermissions);
-        $adminRole = Role::where('name', 'ADMIN')->first();
+        $adminRole = Role::where('name', 'SUPER ADMIN')->first();
 
         $adminRole->syncPermissions(Permission::all());
 
-        $customerRole = Role::where('name', 'MEMBER')->first();
+        $customerRole = Role::where('name', 'MEMBER_NON_SOVEREIGN')->first();
 
         $customerRole->syncPermissions([
             'Manage Profile',
@@ -393,6 +393,5 @@ class RolePermissionSeeder extends Seeder
             'Edit Bulletin',
             'Delete Bulletin',
         ]);
-
     }
 }

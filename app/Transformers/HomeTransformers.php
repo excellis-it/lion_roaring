@@ -33,7 +33,7 @@ class HomeTransformers extends TransformerAbstract
             'section_4_title' => $home->section_4_title ?? null,
             'section_4_description' => $home->section_4_description ?? null,
             'section_5_title' => $home->section_5_title ?? null,
-            'our_governance' => OurGovernance::all()->map(function ($governance) {
+            'our_governance' => OurGovernance::orderBy('id', 'desc')->get()->map(function ($governance) {
                 return [
                     'slug' => $governance->slug,
                     'name' => $governance->name,
@@ -41,7 +41,7 @@ class HomeTransformers extends TransformerAbstract
                 ];
             }),
 
-            'our_organization' => OurOrganization::all()->map(function ($organization) {
+            'our_organization' => OurOrganization::orderBy('id', 'desc')->get()->map(function ($organization) {
                 return [
                     'slug' => $organization->slug,
                     'name' => $organization->name,
@@ -50,14 +50,16 @@ class HomeTransformers extends TransformerAbstract
                 ];
             }),
 
-            'testimonial' => Testimonial::all()->map(function ($testimonial) {
+            'testimonial' => Testimonial::orderBy('id', 'desc')->get()->map(function ($testimonial) {
                 return [
                     'image' => Storage::url($testimonial->image),
+                    'name' => $testimonial->name,
+                    'address' => $testimonial->address,
                     'description' => $testimonial->description,
                 ];
             }),
 
-            'gallery' => Gallery::all()->map(function ($gallery) {
+            'gallery' => Gallery::orderBy('id', 'desc')->get()->map(function ($gallery) {
                 return [
                     'image' => Storage::url($gallery->image),
                 ];

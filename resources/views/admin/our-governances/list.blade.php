@@ -13,7 +13,9 @@
     All Our Governance Details
 @endsection
 @section('create_button')
-  <a href="{{ route('our-governances.create') }}" class="btn btn-primary">+ Create New Our Governance</a>
+    @if (auth()->user()->can('Create Our Governance'))
+        <a href="{{ route('our-governances.create') }}" class="btn btn-primary">+ Create New Our Governance</a>
+    @endif
 @endsection
 @section('content')
     <section id="loading">
@@ -51,9 +53,8 @@
                                 <th class="sorting" data-sorting_type="asc" data-column_name="name" style="cursor: pointer"
                                     data-tippy-content="Sort by Governance Name">
                                     Governance Name<span id="name_icon"></span></th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="slug"
-                                    style="cursor: pointer" data-tippy-content="Sort by Slug">Slug<span
-                                    id="slug_icon"></span></th>
+                                <th class="sorting" data-sorting_type="asc" data-column_name="slug" style="cursor: pointer"
+                                    data-tippy-content="Sort by Slug">Slug<span id="slug_icon"></span></th>
 
                             </tr>
                         </thead>

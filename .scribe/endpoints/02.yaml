@@ -4,7 +4,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/donation
+    uri: api/v3/donation
     metadata:
       groupName: Donation
       groupDescription: ''
@@ -30,6 +30,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       last_name:
         name: last_name
@@ -39,6 +40,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       email:
         name: email
@@ -48,6 +50,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       address:
         name: address
@@ -57,6 +60,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       city:
         name: city
@@ -66,6 +70,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       state:
         name: state
@@ -75,6 +80,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       postcode:
         name: postcode
@@ -84,6 +90,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       amount:
         name: amount
@@ -93,6 +100,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       country_id:
         name: country_id
@@ -102,15 +110,17 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       stripeToken:
         name: stripeToken
         description: required.
         required: false
-        example: exercitationem
+        example: velit
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanBodyParameters:
       first_name: 'Robert Hyde'
@@ -122,9 +132,75 @@ endpoints:
       postcode: ZP74857
       amount: 150
       country_id: 2
-      stripeToken: exercitationem
+      stripeToken: velit
     fileParameters: []
     responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/country-list
+    metadata:
+      groupName: Donation
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Country List'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Country list.",
+          "status": true,
+          "data": [
+             {
+                 "id": 1,
+                 "code": "AF",
+                 "name": "Afghanistan",
+                 "created_at": null,
+                 "updated_at": null
+             },
+             {
+                 "id": 2,
+                 "code": "AX",
+                 "name": "Åland Islands",
+                 "created_at": null,
+                 "updated_at": null
+             }
+          ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 201
+        content: |-
+          {
+          "message": "Country not found.",
+          "status": false
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null

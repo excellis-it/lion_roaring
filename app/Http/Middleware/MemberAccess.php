@@ -19,15 +19,15 @@ class MemberAccess
         if (auth()->check() && isset(auth()->user()->userSubscription) && auth()->user()->userLastSubscription != null) {
             if (auth()->user()->userLastSubscription->subscription_expire_date >= date('Y-m-d')) {
                 return $next($request);
-            } else { 
-                if (auth()->check() && auth()->user()->hasRole('MEMBER')) {
+            } else {
+                if (auth()->check() && auth()->user()->hasRole('MEMBER_NON_SOVEREIGN')) {
                     return redirect()->route('user.subscription')->with('error', 'Your subscription has been expired. Please renew your subscription.');
                 } else {
                     return $next($request);
                 }
             }
         } else {
-            if (auth()->check() && auth()->user()->hasRole('MEMBER')) {
+            if (auth()->check() && auth()->user()->hasRole('MEMBER_NON_SOVEREIGN')) {
                 return redirect()->route('user.subscription')->with('error', 'You have not subscribed to any plan. Please subscribe to a plan.');
             } else {
                 return $next($request);

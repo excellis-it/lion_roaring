@@ -37094,8 +37094,8 @@ fieldset:disabled .btn {
 .sidebar-nav ul .sidebar-item .sidebar-link img {
         flex-shrink: 0;
     /* font-size: 20px; */
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     /* background: #F6BC41; */
     display: flex;
     align-items: center;
@@ -45047,6 +45047,7 @@ ul {
     padding:5px;
     text-align:center;
     color:#fff;
+    position: relative;
 
 }
 .menu_bb a span{
@@ -45072,8 +45073,10 @@ ul {
 
 .count-unseen {
     position: absolute;
-    right: 0;
-    margin: 28px;
+    right: -9px;
+    margin: 0px;
+    top: -4px;
+    line-height: 1;
 }
 .count-unseen span p{
     color: #fff;
@@ -45467,7 +45470,7 @@ ul {
     background: white;
     position: absolute;
     right: 10px;
-    bottom: 10px;
+    bottom: 25px;
     overflow: hidden;
     transition: all ease-in 0.3s;
     z-index: 1;
@@ -45652,4 +45655,56 @@ ul {
     border: none;
 }
 
+.bg-badge-dark {
+    background-color: #dee7f5;
+}
 
+.ck-content {
+    height: 250px;
+}
+
+
+.other_attch{
+    width: auto;
+    display: inline-block;
+}
+
+.attatched_file_box{
+    width: 130px;
+    height: 100px;
+    display: flex;
+    border: 1px solid #ccc;
+    background: #f1f1f1;
+    padding: 10px;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.mail_img_box{
+    display:flex;
+}
+
+.mail_img_box span img{
+    width: 19px;
+    height: 23px;
+    object-fit: contain;
+    margin-right: 5px;
+}
+.mail_img_box p{
+    margin-bottom:0;
+    font-size: 13px;
+}
+.count_chat_sidebar{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: #ff0202;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

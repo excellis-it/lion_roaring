@@ -51,7 +51,7 @@ class TopicRolePermissionSeeder extends Seeder
         }
 
         // Fetch roles
-        $adminRole = \DB::table('roles')->where('name', 'ADMIN')->first();
+        $adminRole = \DB::table('roles')->where('name', 'SUPER ADMIN')->first();
         $leaderRole = \DB::table('roles')->where('name', 'LEADER')->first();
 
         // Define permissions to assign
@@ -65,7 +65,7 @@ class TopicRolePermissionSeeder extends Seeder
         // Fetch permissions
         $permissions = \DB::table('permissions')->whereIn('name', $permissionsToAssign)->get();
 
-        // Assign permissions to ADMIN role
+        // Assign permissions to SUPER ADMIN role
         foreach ($permissions as $permission) {
             \DB::table('role_has_permissions')->updateOrInsert(
                 [
@@ -92,6 +92,5 @@ class TopicRolePermissionSeeder extends Seeder
                 ]
             );
         }
-
     }
 }

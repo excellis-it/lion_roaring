@@ -37,9 +37,9 @@
                                     <li>
                                         <a href="{{ route('faq') }}">FAQ</a>
                                     </li>
-                                    <li>
+                                    {{-- <li>
                                         <a href="{{ route('contact-us') }}">Contact Us</a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </nav>
                         </div>
@@ -49,9 +49,23 @@
                     </div>
                     <div class="login_prf">
                         @if (auth()->check())
-                            <a href="{{ route('user.profile') }}">Profile</a>
+                            @php
+
+                                $user = auth()
+                                    ->user()
+                                    ->roles()
+                                    ->whereIn('type', [1, 2, 3])
+                                    ->first();
+                            @endphp
+                            @if ($user)
+                                <a href="{{ route('user.profile') }}">Profile</a>
+                            @else
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#loginModal"
+                                    href="{{ route('login') }}">Login</a>
+                            @endif
                         @else
-                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal" href="{{ route('login') }}">Login</a>
+                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#loginModal"
+                                href="{{ route('login') }}">Login</a>
                         @endif
                     </div>
                     <div class="login_prf">

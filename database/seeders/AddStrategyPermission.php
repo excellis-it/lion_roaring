@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Contracts\Permission;
+use Spatie\Permission\Contracts\Role;
 
 class AddStrategyPermission extends Seeder
 {
@@ -50,24 +52,9 @@ class AddStrategyPermission extends Seeder
             \DB::table('permissions')->insert($permission);
         }
 
-        $role = \DB::table('roles')->where('name', 'ADMIN')->first();
-        $permissions = \DB::table('permissions')->whereIn('name', ['Manage Strategy', 'Upload Strategy', 'Download Strategy', 'View Strategy', 'Delete Strategy'])->get();
-
-        foreach ($permissions as $permission) {
-            \DB::table('role_has_permissions')->insert([
-                'permission_id' => $permission->id,
-                'role_id' => $role->id,
-            ]);
+        $adminRole = Role::where('name', 'SUPER ADMIN')->first();
+        if ($adminRole) {
+            $adminRole->givePermissionTo(Permission::all());
         }
-
-        $leader_role = \DB::table('roles')->where('name', 'LEADER')->first();
-
-        foreach ($permissions as $permission) {
-            \DB::table('role_has_permissions')->insert([
-                'permission_id' => $permission->id,
-                'role_id' => $leader_role->id,
-            ]);
-        }
-
     }
 }

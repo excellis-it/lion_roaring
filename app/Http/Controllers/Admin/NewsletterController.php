@@ -15,8 +15,12 @@ class NewsletterController extends Controller
      */
     public function index()
     {
-        $newsletters = Newsletter::orderBy('id', 'desc')->paginate(10);
-        return view('admin.newsletter.list')->with('newsletters', $newsletters);
+        if (auth()->user()->can('Manage Newsletters')) {
+            $newsletters = Newsletter::orderBy('id', 'desc')->paginate(10);
+            return view('admin.newsletter.list')->with('newsletters', $newsletters);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     public function fetchData(Request $request)
@@ -32,7 +36,7 @@ class NewsletterController extends Controller
                 ->orWhere('email', 'like', '%' . $query . '%')
                 ->orWhere('message', 'like', '%' . $query . '%')
                 ->orderBy($sort_by, $sort_type)
-                ->paginate(15);
+                ->paginate(10);
 
             return response()->json(['data' => view('admin.newsletter.table', compact('newsletters'))->render()]);
         }
@@ -106,12 +110,16 @@ class NewsletterController extends Controller
 
     public function delete($id)
     {
-        $newsletter = Newsletter::find($id);
-        if ($newsletter) {
-            $newsletter->delete();
-            return redirect()->route('newsletters.index')->with('message', 'Newsletter deleted successfully.');
+        if (auth()->user()->can('Delete Newsletters')) {
+            $newsletter = Newsletter::find($id);
+            if ($newsletter) {
+                $newsletter->delete();
+                return redirect()->route('newsletters.index')->with('message', 'Newsletter deleted successfully.');
+            } else {
+                return redirect()->route('newsletters.index')->with('error', 'Newsletter not found.');
+            }
         } else {
-            return redirect()->route('newsletters.index')->with('error', 'Newsletter not found.');
+            abort(403, 'You do not have permission to access this page.');
         }
     }
 }

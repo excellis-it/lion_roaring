@@ -21,6 +21,14 @@ use App\Models\PrincipleBusinessImage;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use App\Mail\NewsletterSubscription;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactUsForm;
+use App\Mail\ContactUsUserConfirmation;
+use App\Models\PrivacyPolicy;
+use App\Models\SiteSetting;
+use App\Models\TermsAndCondition;
+use Illuminate\Support\Facades\Http;
 
 class CmsController extends Controller
 {
@@ -31,6 +39,14 @@ class CmsController extends Controller
         $testimonials = Testimonial::orderBy('id', 'desc')->get();
         $our_organizations = OurOrganization::orderBy('id', 'desc')->get();
         $our_governances = OurGovernance::orderBy('id', 'desc')->get();
+
+        // $userupdate = \App\Models\User::where('id', 107)->first();
+        // if ($userupdate) {
+        //     $userupdate->update([
+        //         'email' => 'appui@yopmail.com',
+        //     ]);
+        // }
+
         return view('frontend.home')->with(compact('galleries', 'testimonials', 'our_organizations', 'our_governances', 'home'));
     }
 
@@ -44,6 +60,12 @@ class CmsController extends Controller
     {
         $contact = ContactUsCms::first();
         return view('frontend.contact-us')->with('contact', $contact);
+    }
+
+    // accountDeleteRequest
+    public function accountDeleteRequest()
+    {
+        return view('frontend.account-delete-request');
     }
 
     public function faq()
@@ -114,7 +136,7 @@ class CmsController extends Controller
     {
         $request->validate([
             'newsletter_name' => 'required',
-            'newsletter_email' => 'required|email|unique:newsletters,email',
+            'newsletter_email' => 'required|email',
             'newsletter_message' => 'required',
         ]);
 
@@ -124,6 +146,18 @@ class CmsController extends Controller
             $newsletter->email = $request->newsletter_email;
             $newsletter->message = $request->newsletter_message;
             $newsletter->save();
+
+            $adminEmail = SiteSetting::first()->SITE_CONTACT_EMAIL;
+            $mailData = [
+                'name' => $newsletter->full_name,
+                'email' => $newsletter->email,
+                'message' => $newsletter->message,
+            ];
+
+            // Send mail using Mailable
+            Mail::to($adminEmail)->send(new NewsletterSubscription($mailData));
+
+
             return response()->json(['message' => 'Thank you for subscribing to our newsletter', 'status' => true]);
         }
     }
@@ -136,23 +170,54 @@ class CmsController extends Controller
             'email' => 'required|email',
             'phone' => 'required',
             'message' => 'required',
+            'g-recaptcha-response' => 'required',
         ]);
+
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret'   => env('RECAPTCHA_SECRET_KEY'),
+            'response' => $request->input('g-recaptcha-response'),
+            'remoteip' => $request->ip(),
+        ]);
+
+        if (!$response->json('success')) {
+            return response()->json(['message' => 'reCAPTCHA verification failed', 'status' => false]);
+        }
+
         if ($request->ajax()) {
             $contact = new ContactUs();
             $contact->first_name = $request->first_name;
             $contact->last_name = $request->last_name;
             $contact->email = $request->email;
-            if ($request->country_code) {
-                $contact->phone = '+' . $request->country_code . ' ' . $request->phone;
-            } else {
-                $contact->phone = $request->phone;
-            }
+            $contact->phone = $request->country_code ? '+' . $request->country_code . ' ' . $request->phone : $request->phone;
             $contact->message = $request->message;
             $contact->save();
+
+            $contactData = [
+                'first_name' => $contact->first_name,
+                'last_name' => $contact->last_name,
+                'email' => $contact->email,
+                'phone' => $contact->phone,
+                'message' => $contact->message,
+            ];
+
+            // Send email to admin
+            $adminEmail = SiteSetting::first()->SITE_CONTACT_EMAIL;
+            try {
+                Mail::to($adminEmail)->send(new ContactUsForm($contactData));
+
+                // Send confirmation email to the user
+                Mail::to($contact->email)->send(new ContactUsUserConfirmation($contactData));
+            } catch (\Throwable $th) {
+                session()->flash('success', 'Thank you for contacting us');
+                return response()->json(['message' => 'Thank you for contacting us', 'status' => true]);
+            }
+
+
             session()->flash('success', 'Thank you for contacting us');
             return response()->json(['message' => 'Thank you for contacting us', 'status' => true]);
         }
     }
+
 
     public function session(Request $request)
     {
@@ -165,5 +230,19 @@ class CmsController extends Controller
             session()->flash('error', 'Please agree to the terms and conditions');
             return redirect()->back();
         }
+    }
+
+
+    public function privacy_policy()
+    {
+        $privacy_policy = PrivacyPolicy::orderBy('id', 'desc')->first();
+        return view('frontend.privacy-policy')->with('privacy_policy', $privacy_policy);
+    }
+
+
+    public function terms()
+    {
+        $term = TermsAndCondition::orderBy('id', 'desc')->first();
+        return view('frontend.terms-and-condition')->with('term', $term);
     }
 }

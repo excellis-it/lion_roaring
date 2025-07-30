@@ -7,18 +7,20 @@
             <td>
                 <div class="d-flex">
                     @if (auth()->user()->can('View Strategy'))
-                    <a href="{{ route('strategy.view', $strategy->id) }}" class="edit_icon me-2">
-                        <i class="fa-solid fa-eye"></i>
-                    </a>
+                        <a href="{{ route('strategy.view', $strategy->id) }}" class="edit_icon me-2">
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
                     @endif
                     @if (auth()->user()->can('Download Strategy'))
-                    <a href="{{ route('strategy.download', $strategy->id) }}" class="edit_icon me-2">
-                        <i class="fa-solid fa-download"></i>
-                    </a>
+                        <a href="{{ route('strategy.download', $strategy->id) }}" class="edit_icon me-2">
+                            <i class="fa-solid fa-download"></i>
+                        </a>
                     @endif
-                    @if (auth()->user()->can('Delete Strategy'))
-                        <a href="javascript:void(0)" id="delete" data-route="{{ route('strategy.delete', $strategy->id) }}"
-                            class="delete_icon">
+                    @if (
+                        (auth()->user()->can('Delete Strategy') && $strategy->user_id == auth()->user()->id) ||
+                            auth()->user()->hasRole('SUPER ADMIN'))
+                        <a href="javascript:void(0)" id="delete"
+                            data-route="{{ route('strategy.delete', $strategy->id) }}" class="delete_icon">
                             <i class="fa-solid fa-trash"></i>
                         </a>
                     @endif

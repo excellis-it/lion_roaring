@@ -19,8 +19,12 @@ class OurOrganizationController extends Controller
 
     public function index()
     {
-        $our_organizations = OurOrganization::orderBy('id', 'desc')->paginate(10);
-        return view('admin.our-organizations.list')->with(compact('our_organizations'));
+        if (auth()->user()->can('Manage Our Organization')) {
+            $our_organizations = OurOrganization::orderBy('id', 'desc')->paginate(10);
+            return view('admin.our-organizations.list')->with(compact('our_organizations'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     public function fetchData(Request $request)
@@ -48,7 +52,11 @@ class OurOrganizationController extends Controller
      */
     public function create()
     {
-        return view('admin.our-organizations.create');
+        if (auth()->user()->can('Create Our Organization')) {
+            return view('admin.our-organizations.create');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -102,8 +110,12 @@ class OurOrganizationController extends Controller
      */
     public function edit($id)
     {
-        $our_organization = OurOrganization::find($id);
-        return view('admin.our-organizations.edit')->with(compact('our_organization'));
+        if (auth()->user()->can('Edit Our Organization')) {
+            $our_organization = OurOrganization::find($id);
+            return view('admin.our-organizations.edit')->with(compact('our_organization'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -156,8 +168,12 @@ class OurOrganizationController extends Controller
 
     public function delete(Request $request)
     {
-        $our_organization = OurOrganization::findOrfail($request->id);
-        $our_organization->delete();
-        return redirect()->route('our-organizations.index')->with('message', 'Our Organization deleted successfully.');
+        if (auth()->user()->can('Delete Our Organization')) {
+            $our_organization = OurOrganization::findOrfail($request->id);
+            $our_organization->delete();
+            return redirect()->route('our-organizations.index')->with('message', 'Our Organization deleted successfully.');
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
     }
 }

@@ -13,7 +13,9 @@
     All Faq Details
 @endsection
 @section('create_button')
-  <a href="{{ route('faq.create') }}" class="btn btn-primary">+ Create New FAQ</a>
+    @if (auth()->user()->can('Create Faq'))
+        <a href="{{ route('faq.create') }}" class="btn btn-primary">+ Create New FAQ</a>
+    @endif
 @endsection
 @section('content')
     <section id="loading">
@@ -48,11 +50,11 @@
                                 <th class="sorting" data-tippy-content="Sort by Id" data-sorting_type="asc"
                                     data-column_name="id" style="cursor: pointer">Id<span id="id_icon"></span>
                                 </th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="question" style="cursor: pointer"
-                                    data-tippy-content="Sort by Question">
+                                <th class="sorting" data-sorting_type="asc" data-column_name="question"
+                                    style="cursor: pointer" data-tippy-content="Sort by Question">
                                     Question<span id="question_icon"></span></th>
-                                <th class="sorting" data-sorting_type="asc" data-column_name="answer" style="cursor: pointer"
-                                    data-tippy-content="Sort by answer">
+                                <th class="sorting" data-sorting_type="asc" data-column_name="answer"
+                                    style="cursor: pointer" data-tippy-content="Sort by answer">
                                     Answer<span id="answer_icon"></span></th>
 
                             </tr>

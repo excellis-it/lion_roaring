@@ -7,7 +7,9 @@ use App\Models\Topic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use App\Services\NotificationService;
 
 class TopicController extends Controller
 {
@@ -65,6 +67,11 @@ class TopicController extends Controller
         $topic->education_type = $request->education_type;
         $topic->save();
 
+        $userName = Auth::user()->getFullNameAttribute();
+        $noti = NotificationService::notifyAllUsers('New Topic created by ' . $userName, 'topic');
+
+
+
         return redirect()->route('topics.index')->with('message', 'Topic created successfully.');
     }
 
@@ -105,6 +112,7 @@ class TopicController extends Controller
     public function update(Request $request, $id)
     {
         if (Auth::user()->can('Edit Topic')) {
+            $id = Crypt::decrypt($id);
             $request->validate([
                 'topic_name' => [
                     'required',
@@ -117,7 +125,7 @@ class TopicController extends Controller
                 'education_type' => 'required|string|max:255',
             ]);
 
-            $topic = Topic::findOrFail(Crypt::decrypt($id));
+            $topic = Topic::findOrFail($id);
             $topic->topic_name = $request->topic_name;
             $topic->education_type = $request->education_type;
             $topic->save();
@@ -143,6 +151,7 @@ class TopicController extends Controller
     {
         if (Auth::user()->can('Delete Topic')) {
             $topic = Topic::findOrFail(Crypt::decrypt($id));
+            Log::info($topic->topic_name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
             $topic->delete();
             return redirect()->route('topics.index')->with('message', 'Topic deleted successfully.');
         } else {

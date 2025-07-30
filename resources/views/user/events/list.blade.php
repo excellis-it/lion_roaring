@@ -16,6 +16,9 @@
     @php
         use App\Helpers\Helper;
     @endphp
+    <section id="loading">
+        <div id="loading-content"></div>
+    </section>
     <div class="container-fluid">
         <div class="bg_white_border">
             <div class="row">
@@ -246,7 +249,7 @@
                     eventClick: function(info) {
                         var event = info.event;
                         var permission = @json(auth()->user()->can('Edit Event'));
-                        var admin = @json(auth()->user()->hasRole('ADMIN'));
+                        var admin = @json(auth()->user()->hasRole('SUPER ADMIN'));
                         var currentUser = {{ auth()->user()->id }};
 
                         // Check if the user has permission or is an admin
@@ -277,9 +280,9 @@
                                                 .remove(); // Remove event from calendar
                                             $('#eventModal').modal('hide');
                                             socket.emit(
-                                            'event_store_update_delete', {
-                                                'message': 'Event updated'
-                                            });
+                                                'event_store_update_delete', {
+                                                    'message': 'Event updated'
+                                                });
                                         },
                                         error: function() {
                                             alert('Failed to delete event.');
@@ -356,6 +359,8 @@
                     },
                 },
                 submitHandler: function(form) {
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
                     // Submit form data via AJAX
                     $.ajax({
                         url: $(form).attr('action'),
@@ -371,11 +376,17 @@
                                 socket.emit('event_store_update_delete', {
                                     'message': 'Event updated'
                                 });
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
                             } else {
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
                                 toastr.error('Failed to add event.');
                             }
                         },
                         error: function(xhr) {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
                             $('.text-danger').html('');
                             var errors = xhr.responseJSON.errors;
                             $.each(errors, function(key, value) {
@@ -418,6 +429,8 @@
                 },
                 submitHandler: function(form) {
                     // Submit form data via AJAX
+                    $('#loading').addClass('loading');
+                    $('#loading-content').addClass('loading-content');
                     $.ajax({
                         url: $(form).attr('action'),
                         method: 'POST',
@@ -432,12 +445,18 @@
                                 socket.emit('event_store_update_delete', {
                                     'message': 'Event updated'
                                 });
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
 
                             } else {
+                                $('#loading').removeClass('loading');
+                                $('#loading-content').removeClass('loading-content');
                                 toastr.error('Failed to update event.');
                             }
                         },
                         error: function(xhr) {
+                            $('#loading').removeClass('loading');
+                            $('#loading-content').removeClass('loading-content');
                             $('.text-danger').html('');
                             var errors = xhr.responseJSON.errors;
                             $.each(errors, function(key, value) {

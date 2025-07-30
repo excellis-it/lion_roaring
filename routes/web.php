@@ -14,10 +14,12 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DetailsController;
 use App\Http\Controllers\Admin\DonationController as AdminDonationController;
 use App\Http\Controllers\Admin\EcclesiaAssociationController;
+use App\Http\Controllers\Admin\EcclessiaController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FooterController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\HomeCmsController;
+use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\MemberPrivacyPolicyContoller;
 use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\OrganizationCenterController;
@@ -27,7 +29,9 @@ use App\Http\Controllers\Admin\OurOrganizationController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\PmaDisclaimerController;
 use App\Http\Controllers\Admin\PrincipleAndBusinessController;
+use App\Http\Controllers\Admin\PrivacyPolicyController;
 use App\Http\Controllers\Admin\RegisterAgreementController;
+use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\ServiceContoller;
 use App\Http\Controllers\Admin\TestimonialController;
@@ -62,10 +66,15 @@ use App\Http\Controllers\User\SubscriptionController;
 use App\Http\Controllers\User\TeamChatController;
 use App\Http\Controllers\User\TeamController;
 use App\Http\Controllers\User\TopicController;
+use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\TermsAndConditionController;
 use App\Models\Category;
 use App\Models\EcomCmsPage;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\User\ChatBotController;
+use App\Http\Controllers\User\EmailVerificationController;
+use App\Http\Controllers\User\PolicyGuidenceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,6 +92,12 @@ Route::get('clear', function () {
     Artisan::call('optimize:clear');
     return "Optimize clear has been successfully";
 });
+
+// make migration
+// Route::get('dbmigrate', function () {
+//     Artisan::call('migrate');
+//     return "Migration has been successfully";
+// });
 
 
 
@@ -106,13 +121,34 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::post('/update', [ProfileController::class, 'passwordUpdate'])->name('admin.password.update'); // password update
     });
 
+    Route::get('settings', [SettingsController::class, 'edit'])->name('admin.settings.edit');
+    Route::post('settings', [SettingsController::class, 'update'])->name('admin.settings.update');
+
     // admin index
     Route::prefix('detail')->group(function () {
-        Route::get('/',[AdminController::class,'index'])->name('admin.index');
-        Route::post('/store',[AdminController::class,'store'])->name('admin.store');
+        Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+        Route::get('/add', [AdminController::class, 'add'])->name('admin.add');
+        Route::post('/store', [AdminController::class, 'store'])->name('admin.store');
         Route::post('/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
         Route::get('/delete/{id}', [AdminController::class, 'delete'])->name('admin.delete');
-        Route::post('/update',[AdminController::class, 'update'])->name('admin.update');
+        Route::post('/update', [AdminController::class, 'update'])->name('admin.update');
+    });
+
+    // admin index
+    Route::prefix('ecclessias')->group(function () {
+        Route::get('/', [EcclessiaController::class, 'index'])->name('ecclessias.index');
+        Route::post('/store', [EcclessiaController::class, 'store'])->name('ecclessias.store');
+        Route::post('/edit/{id}', [EcclessiaController::class, 'edit'])->name('ecclessias.edit');
+        Route::get('/delete/{id}', [EcclessiaController::class, 'delete'])->name('ecclessias.delete');
+        Route::post('/update', [EcclessiaController::class, 'update'])->name('ecclessias.update');
+    });
+
+    Route::prefix('members')->group(function () {
+        Route::get('/', [MemberController::class, 'index'])->name('members.index');
+        Route::put('/accept/{id}', [MemberController::class, 'accept'])->name('members.accept');
+        Route::put('/rejected/{id}', [MemberController::class, 'rejected'])->name('members.reject');
+        Route::get('/rejected-view/{id}', [MemberController::class, 'rejectedView'])->name('members.reject-view');
+        Route::get('/fetch-data', [MemberController::class, 'fetchData'])->name('members.fetch-data');
     });
 
     Route::resources([
@@ -124,8 +160,15 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         'services' => ServiceContoller::class,
         'donations' => AdminDonationController::class,
         'plans' => PlanController::class,
-
     ]);
+
+    Route::name('admin.')->group(function () {
+        Route::resource('roles', RolePermissionController::class);
+    });
+
+    Route::prefix('roles')->group(function () {
+        Route::get('/role-delete/{id}', [RolePermissionsController::class, 'delete'])->name('admin.roles.delete');
+    });
 
     Route::prefix('plans')->group(function () {
         Route::get('/plan-delete/{id}', [PlanController::class, 'delete'])->name('plans.delete');
@@ -183,6 +226,12 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
 
         ]);
 
+        // privacy-policy
+        Route::get('/privacy-policy', [PrivacyPolicyController::class, 'index'])->name('privacy-policy.index');
+        Route::post('/privacy-policy/update', [PrivacyPolicyController::class, 'update'])->name('privacy-policy.update');
+        // terms-and-conditions
+        Route::get('/terms-and-condition', [TermsAndConditionController::class, 'index'])->name('terms-and-condition.index');
+        Route::post('/terms-and-condition/update', [TermsAndConditionController::class, 'update'])->name('terms-and-condition.update');
 
         // principle-and-business.image.delete
         Route::get('/principle-and-business-image-delete', [PrincipleAndBusinessController::class, 'imageDelete'])->name('principle-and-business.image.delete');
@@ -215,6 +264,7 @@ Route::get('/', [CmsController::class, 'index'])->name('home');
 Route::get('/gallery', [CmsController::class, 'gallery'])->name('gallery');
 Route::get('/faq', [CmsController::class, 'faq'])->name('faq');
 Route::get('/contact-us', [CmsController::class, 'contactUs'])->name('contact-us');
+Route::get('/account-delete-request', [CmsController::class, 'accountDeleteRequest'])->name('account-delete-request');
 Route::get('/principle-and-business', [CmsController::class, 'principleAndBusiness'])->name('principle-and-business');
 Route::get('/ecclesia-associations', [CmsController::class, 'ecclesiaAssociations'])->name('ecclesia-associations');
 Route::get('/organization', [CmsController::class, 'organization'])->name('organization');
@@ -232,6 +282,10 @@ Route::Post('/session', [CmsController::class, 'session'])->name('session.store'
 Route::post('/donation', [DonationController::class, 'donation'])->name('donation');
 Route::get('/thankyou', [DonationController::class, 'thankyou'])->name('thankyou');
 
+// terms-and-conditions
+Route::get('/terms-and-conditions', [CmsController::class, 'terms'])->name('terms-and-conditions');
+// privacy-policy
+Route::get('/privacy-policy', [CmsController::class, 'privacy_policy'])->name('privacy-policy');
 
 /*********************************************************** USER ********************************************************************************************* */
 // login
@@ -259,6 +313,10 @@ Route::get('/member-privacy-policy', [UserCmsController::class, 'memberPrivacyPo
 // get.states
 Route::get('/get-states', [UserAuthController::class, 'getStates'])->name('get.states');
 
+Route::post('/send-otp', [EmailVerificationController::class, 'sendOtp'])->name('send.otp');
+Route::post('/verify-otp', [EmailVerificationController::class, 'verifyOtp'])->name('verify.otp');
+Route::post('/resend-otp', [EmailVerificationController::class, 'resendOtp'])->name('resend.otp');
+
 Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(function () {
     Route::get('/subscription', [SubscriptionController::class, 'subscription'])->name('user.subscription');
     Route::get('/subscription-payment/{id}', [SubscriptionController::class, 'payment'])->name('user.subscription.payment');
@@ -275,6 +333,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     // notification.clear
     Route::get('/notification-clear', [UserDashboardController::class, 'notificationClear'])->name('notification.clear');
 
+
+    Route::get('unread-messages-count', [UserDashboardController::class, 'unreadMessagesCount'])->name('unread.messages.count');
+
     Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
 
     Route::prefix('chats')->name('chats.')->group(function () {
@@ -285,6 +346,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/seen', [ChatController::class, 'seen'])->name('seen');
         Route::post('/remove', [ChatController::class, 'remove'])->name('remove');
         Route::post('/notification', [ChatController::class, 'notification'])->name('notification');
+        Route::get('/chat-list', [ChatController::class, 'chatsList'])->name('chat-list');
+        Route::get('/load-chat-list', [ChatController::class, 'loadChatList'])->name('load-chat-list');
     });
 
     // Team Chat
@@ -318,6 +381,16 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::get('/download/{strategy}', [StrategyController::class, 'download'])->name('strategy.download');
         Route::get('/fetch-data', [StrategyController::class, 'fetchData'])->name('strategy.fetch-data');
         Route::get('/view/{id}', [StrategyController::class, 'view'])->name('strategy.view');
+    });
+
+    Route::prefix('policy-guidence')->group(function () {
+        Route::get('/', [PolicyGuidenceController::class, 'index'])->name('policy-guidence.index');
+        Route::get('/upload', [PolicyGuidenceController::class, 'upload'])->name('policy-guidence.upload');
+        Route::post('/store', [PolicyGuidenceController::class, 'store'])->name('policy-guidence.store');
+        Route::get('/delete/{id}', [PolicyGuidenceController::class, 'delete'])->name('policy-guidence.delete');
+        Route::get('/download/{file}', [PolicyGuidenceController::class, 'download'])->name('policy-guidence.download');
+        Route::get('/fetch-data', [PolicyGuidenceController::class, 'fetchData'])->name('policy-guidence.fetch-data');
+        Route::get('/view/{id}', [PolicyGuidenceController::class, 'view'])->name('policy-guidence.view');
     });
 
     Route::prefix('file')->group(function () {
@@ -381,6 +454,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         'ecclesias' => EcclesiaContorller::class,
         'jobs' => JobpostingController::class,
         'meetings' => MeetingSchedulingController::class,
+        // 'meetings' => MeetingSchedulingController::class,
     ]);
 
     Route::prefix('meetings')->group(function () {
@@ -449,13 +523,35 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     // Mail
     Route::prefix('mail')->group(function () {
         Route::get('/', [SendMailController::class, 'list'])->name('mail.index');
+        Route::get('/sent', [SendMailController::class, 'sentList'])->name('mail.sentList');
+        Route::get('/star', [SendMailController::class, 'starList'])->name('mail.starList');
+        Route::get('/trash', [SendMailController::class, 'trashList'])->name('mail.trashList');
+
+        Route::get('/inbox-email-list', [SendMailController::class, 'inboxEmailList'])->name('mail.inbox-email-list');
+        Route::get('/sent-email-list', [SendMailController::class, 'sentEmailList'])->name('mail.sent-email-list');
+        Route::get('/star-email-list', [SendMailController::class, 'starEmailList'])->name('mail.star-email-list');
+        Route::get('/trash-email-list', [SendMailController::class, 'trashEmailList'])->name('mail.trash-email-list');
+
+        Route::get('/view/{id}', [SendMailController::class, 'view'])->name('mail.view');
+        Route::get('/sent-mail-view/{id}', [SendMailController::class, 'sentMailView'])->name('mail.sent.view');
+        Route::get('/star-mail-view/{id}', [SendMailController::class, 'starMailView'])->name('mail.star.view');
+        Route::get('/trash-mail-view/{id}', [SendMailController::class, 'trashMailView'])->name('mail.trash.view');
+
         Route::get('/compose', [SendMailController::class, 'compose'])->name('mail.compose');
         Route::post('/send', [SendMailController::class, 'sendMail'])->name('mail.send');
-        Route::get('/view/{id}', [SendMailController::class, 'view'])->name('mail.view');
+        Route::post('/sendReply', [SendMailController::class, 'sendMailReply'])->name('mail.sendReply');
+        Route::post('/sendForward', [SendMailController::class, 'sendMailForward'])->name('mail.sendForward');
+
         Route::post('/mail-delete', [SendMailController::class, 'delete'])->name('mail.delete');
-        Route::get('/sent', [SendMailController::class, 'sent'])->name('mail.sent');
-        Route::get('/sent-mail-view/{id}', [SendMailController::class, 'sentMailView'])->name('mail.sent.view');
-        Route::get('/inbox-email-list', [SendMailController::class, 'inboxEmailList'])->name('mail.inbox-email-list');
+        Route::post('/mail-delete-sent', [SendMailController::class, 'deleteSentsMail'])->name('mail.deleteSentsMail');
+        Route::post('/mail-restore', [SendMailController::class, 'restore'])->name('mail.restore');
+        Route::post('/mail-trash-empty', [SendMailController::class, 'trashEmpty'])->name('mail.trash-empty');
+        Route::post('/mail-star', [SendMailController::class, 'star'])->name('mail.star');
+
+        Route::post('/mail-delete-single', [SendMailController::class, 'deleteSingleMail'])->name('mail.deleteSingleMail');
+        Route::post('/mail-restore-single', [SendMailController::class, 'restoreSingleMail'])->name('mail.restoreSingleMail');
+
+        Route::get('/print/{id}', [SendMailController::class, 'printMail'])->name('mail.print');
     });
 
     // live-event
@@ -487,16 +583,15 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/cms-page/{page}', [UserCmsController::class, 'cms'])->name('user.cms.edit');
     Route::post('/cms/home/update', [UserCmsController::class, 'homeCmsUpdate'])->name('user.cms.home.update');
     Route::post('/cms/footer/update', [UserCmsController::class, 'footerUpdate'])->name('user.cms.footer.update');
-
 });
 // });
 
 
 /**************************************************----------------------------ECOM--------------------------****************************************************************/
 
-Route::prefix('e-store')->middleware(['user'])->group(function () {
-    Route::get('/', [HomeController::class, 'eStore'])->name('e-store');
-    Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-store.newsletter');
+Route::prefix('e-learning')->middleware(['user'])->group(function () {
+    Route::get('/', [HomeController::class, 'eStore'])->name('e-learning');
+    Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-learning.newsletter');
     Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails'])->name('product-details');
     Route::get('/all-products', [EstoreProductController::class, 'products'])->name('all-products');
     Route::get('/products-filter', [EstoreProductController::class, 'productsFilter'])->name('products-filter');
@@ -520,3 +615,5 @@ Route::prefix('e-store')->middleware(['user'])->group(function () {
         }
     }
 });
+
+Route::post('/chatbot', [ChatBotController::class, 'FaqChat'])->name('chatbot.message');
