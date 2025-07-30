@@ -38,6 +38,9 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Estore\CmsController as EstoreCmsController;
 use App\Http\Controllers\Estore\HomeController;
 use App\Http\Controllers\Estore\ProductController as EstoreProductController;
+use App\Http\Controllers\Elearning\ElearningCmsController as ElearningCmsController;
+use App\Http\Controllers\Elearning\ElearningHomeController;
+use App\Http\Controllers\Elearning\ElearningProductController as ElearningProductController;
 use App\Http\Controllers\Frontend\CmsController;
 use App\Http\Controllers\Frontend\DonationController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
@@ -59,6 +62,7 @@ use App\Http\Controllers\User\MeetingSchedulingController;
 use App\Http\Controllers\User\NewsletterController as UserNewsletterController;
 use App\Http\Controllers\User\PartnerController;
 use App\Http\Controllers\User\ProductController;
+use App\Http\Controllers\User\ElearningController;
 use App\Http\Controllers\User\RolePermissionsController;
 use App\Http\Controllers\User\SendMailController;
 use App\Http\Controllers\User\StrategyController;
@@ -451,11 +455,26 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         'topics' => TopicController::class,
         'categories' => CategoryController::class,
         'products' => ProductController::class,
+        'elearning' => ElearningController::class,
         'ecclesias' => EcclesiaContorller::class,
         'jobs' => JobpostingController::class,
         'meetings' => MeetingSchedulingController::class,
         // 'meetings' => MeetingSchedulingController::class,
     ]);
+
+    // e-store routes
+    Route::prefix('products')->group(function () {
+        Route::get('/product-delete/{id}', [ProductController::class, 'delete'])->name('products.delete');
+    });
+    Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
+    Route::get('/products-fetch-data', [ProductController::class, 'fetchData'])->name('products.fetch-data');
+
+    // e-learning routes
+    Route::prefix('elearning')->group(function () {
+        Route::get('/elearning-product-delete/{id}', [ElearningController::class, 'delete'])->name('elearning.delete');
+    });
+    Route::get('/elearning-products-image-delete', [ElearningController::class, 'imageDelete'])->name('elearning.image.delete');
+    Route::get('/elearning-products-fetch-data', [ElearningController::class, 'fetchData'])->name('elearning.fetch-data');
 
     Route::prefix('meetings')->group(function () {
         Route::get('/meeting-delete/{id}', [MeetingSchedulingController::class, 'delete'])->name('meetings.delete');
@@ -477,12 +496,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     });
     Route::get('/ecclesias-fetch-data', [EcclesiaContorller::class, 'fetchData'])->name('ecclesias.fetch-data');
 
-    Route::prefix('products')->group(function () {
-        Route::get('/product-delete/{id}', [ProductController::class, 'delete'])->name('products.delete');
-    });
-    // products.image.delete
-    Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
-    Route::get('/products-fetch-data', [ProductController::class, 'fetchData'])->name('products.fetch-data');
+
 
 
     Route::get('/categories-fetch-data', [CategoryController::class, 'fetchData'])->name('categories.fetch-data');
@@ -589,9 +603,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
 
 /**************************************************----------------------------ECOM--------------------------****************************************************************/
 
-Route::prefix('e-learning')->middleware(['user'])->group(function () {
-    Route::get('/', [HomeController::class, 'eStore'])->name('e-learning');
-    Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-learning.newsletter');
+Route::prefix('e-store')->middleware(['user'])->group(function () {
+    Route::get('/', [HomeController::class, 'eStore'])->name('e-store');
+    Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-store.newsletter');
     Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails'])->name('product-details');
     Route::get('/all-products', [EstoreProductController::class, 'products'])->name('all-products');
     Route::get('/products-filter', [EstoreProductController::class, 'productsFilter'])->name('products-filter');
@@ -601,6 +615,38 @@ Route::prefix('e-learning')->middleware(['user'])->group(function () {
     foreach ($categories as $category) {
         if ($category->slug) {
             Route::get($category->slug, [EstoreProductController::class, 'products'])
+                ->name($category->slug . '.page')
+                ->defaults('category_id', $category->id);
+        }
+    }
+
+    $pages = EcomCmsPage::get();
+    foreach ($pages as $page) {
+        if ($page->slug) {
+            Route::get($page->slug, [EstoreCmsController::class, 'cmsPage'])
+                ->name($page->slug . '.cms-page')
+                ->defaults('page_id', $page->id);
+        }
+    }
+});
+
+Route::post('/chatbot', [ChatBotController::class, 'FaqChat'])->name('chatbot.message');
+
+
+/**************************************************----------------------------ELEARNING--------------------------****************************************************************/
+
+Route::prefix('e-learning')->middleware(['user'])->group(function () {
+    Route::get('/', [ElearningHomeController::class, 'eStore'])->name('e-learning');
+    Route::post('/newsletter', [ElearningHomeController::class, 'newsletter'])->name('e-learning.newsletter');
+    Route::get('/product/{slug}', [ElearningProductController::class, 'productDetails'])->name('product-details');
+    Route::get('/all-products', [ElearningProductController::class, 'products'])->name('all-products');
+    Route::get('/products-filter', [ElearningProductController::class, 'productsFilter'])->name('products-filter');
+    Route::post('/product-add-review', [ElearningProductController::class, 'productAddReview'])->name('product-add-review');
+
+    $categories = Category::where('status', 1)->get();
+    foreach ($categories as $category) {
+        if ($category->slug) {
+            Route::get($category->slug, [ElearningProductController::class, 'products'])
                 ->name($category->slug . '.page')
                 ->defaults('category_id', $category->id);
         }

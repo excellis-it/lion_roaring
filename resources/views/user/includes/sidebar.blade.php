@@ -65,7 +65,8 @@
                             <div class="menu_bb">
                                 @if (Gate::check('Manage Chat'))
                                     <a href="{{ route('chats.index') }}">
-                                        <div class="count_chat_sidebar count_chat_sidebar_count_chat" style="display: none;"></div>
+                                        <div class="count_chat_sidebar count_chat_sidebar_count_chat"
+                                            style="display: none;"></div>
                                         <span>
                                             <img src="{{ asset('user_assets/images/ICON/Messaging/chat.svg') }}"
                                                 alt="">
@@ -75,7 +76,8 @@
                                 @endif
                                 @if (Gate::check('Manage Team'))
                                     <a href="{{ route('team-chats.index') }}">
-                                        <div class="count_chat_sidebar count_chat_sidebar_count_team" style="display: none;"></div>
+                                        <div class="count_chat_sidebar count_chat_sidebar_count_team"
+                                            style="display: none;"></div>
                                         <span>
                                             <img src="{{ asset('user_assets/images/ICON/Messaging/Team.svg') }}"
                                                 alt="">
@@ -102,7 +104,8 @@
                                 </a> --}}
                                 @if (Gate::check('Manage Email'))
                                     <a href="{{ route('mail.index') }}">
-                                        <div class="count_chat_sidebar count_chat_sidebar_count_mail" style="display: none;"></div>
+                                        <div class="count_chat_sidebar count_chat_sidebar_count_mail"
+                                            style="display: none;"></div>
                                         <span>
                                             <img src="{{ asset('user_assets/images/ICON/Messaging/Mail.svg') }}"
                                                 alt="">
@@ -301,6 +304,46 @@
                                             alt="">
                                     </span>
                                     <span>Products</span>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                @endif
+                @if (Auth::user()->hasRole('SUPER ADMIN'))
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
+                            data-bs-target="#collapseExample10">
+                            <span>
+                                <img src="{{ asset('user_assets/images/ICON/Store/Store.svg') }}" alt="">
+                            </span>
+                            <span class="hide-menu">E-Learning</span>
+                        </a>
+                        {{-- Collapse content --}}
+                        <div class="collapse {{ Request::is('user/elearning*') || Request::is('user/cms*') || Request::is('user/cms-page/home*') || Request::is('user/cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
+                            id="collapseExample10">
+                            <div class="menu_bb">
+                                {{-- bulletins --}}
+                                <a href="{{ route('user.cms.dashboard') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/E-store_Dashboard.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>E-learning Dashboard</span>
+                                </a>
+
+                                <a href="{{ route('categories.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Product_Categories.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>E-learning Categories</span>
+                                </a>
+                                <a href="{{ route('elearning.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>E-learning Products</span>
                                 </a>
                             </div>
                         </div>
