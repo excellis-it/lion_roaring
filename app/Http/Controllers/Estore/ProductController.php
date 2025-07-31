@@ -49,6 +49,7 @@ class ProductController extends Controller
 
         $products_count  = $products->count();
         $categories = Category::where('status', 1)->orderBy('id', 'DESC')->get();
+      //  return $categories;
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
         return view('ecom.products')->with(compact('products', 'categories', 'category_id', 'products_count', 'category', 'cartCount'));
     }
@@ -108,6 +109,8 @@ class ProductController extends Controller
             $products = $products->skip($offset)
                 ->take($limit)
                 ->get()->toArray();
+
+          //  return $products;
 
             $category = !empty($category_id) ? Category::whereIn('id', $category_id)->get()->toArray() : null;
             $cartCount = EstoreCart::where('user_id', auth()->id())->count();

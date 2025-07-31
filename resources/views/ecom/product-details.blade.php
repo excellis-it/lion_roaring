@@ -85,7 +85,7 @@
                         </div>
                     </div>
 
-                    {{-- @if ($cartItem)
+                    @if ($cartItem)
                         <div class="view-cart-btn">
                             <a href="{{ route('user.profile') }}" class="red_btn w-100 text-center"><span>View
                                     Cart</span></a>
@@ -94,7 +94,7 @@
                         <div class="addtocart" data-id="{{ $product->id }}">
                             <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to Cart</span></a>
                         </div>
-                    @endif --}}
+                    @endif
 
                 </div>
             </div>

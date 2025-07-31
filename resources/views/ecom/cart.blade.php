@@ -110,7 +110,7 @@
                             <a href="{{ route('e-store.all-products') }}" class="red_btn">
                                 <span>Continue Shopping</span>
                             </a>
-                            <a href="javascript:void(0);" class="red_btn clear-cart ms-2">
+                            <a href="javascript:void(0);" class="red_btn cart-clear-cart ms-2">
                                 <span>Clear Cart</span>
                             </a>
                         </div>
@@ -263,73 +263,107 @@
                     total += parseFloat(subtotalText);
                 });
 
-                //   var tax = total * 0.1;
                 var finalTotal = total;
 
                 $('#cart-total').text('$' + total.toFixed(2));
-                //  $('#cart-tax').text('$' + tax.toFixed(2));
                 $('#final-total').text('$' + finalTotal.toFixed(2));
             }
 
-            // Remove item from cart
+            // Remove item from cart with SweetAlert2
             $(document).on('click', '.cart-remove-from-cart', function() {
                 var cartId = $(this).data('id');
                 var $cartItem = $(this).closest('.cart-item');
 
-                if (confirm('Are you sure you want to remove this item from cart?')) {
-                    $.ajax({
-                        url: window.cartRoutes.removeFromCart,
-                        type: 'POST',
-                        data: {
-                            id: cartId,
-                            _token: window.csrfToken
-                        },
-                        success: function(response) {
-                            if (response.status) {
-                                $cartItem.fadeOut(300, function() {
-                                    $(this).remove();
-                                    calculateTotals();
-                                    updateCartCount();
+                Swal.fire({
+                    title: 'Remove Item?',
+                    text: 'Are you sure you want to remove this item from your cart?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, remove it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: window.cartRoutes.removeFromCart,
+                            type: 'POST',
+                            data: {
+                                id: cartId,
+                                _token: window.csrfToken
+                            },
+                            success: function(response) {
+                                if (response.status) {
+                                    $cartItem.fadeOut(300, function() {
+                                        $(this).remove();
+                                        calculateTotals();
+                                        updateCartCount();
 
-                                    // Check if cart is empty
-                                    if ($('.cart-item').length === 0) {
-                                        location.reload();
-                                    }
-                                });
-                                toastr.success('Item removed from cart');
-                            } else {
-                                toastr.error(response.message);
+                                        // Check if cart is empty
+                                        if ($('.cart-item').length === 0) {
+                                            location.reload();
+                                        }
+                                    });
+
+                                    Swal.fire({
+                                        title: 'Removed!',
+                                        text: 'Item has been removed from your cart.',
+                                        icon: 'success',
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                } else {
+                                    toastr.error(response.message);
+                                }
+                            },
+                            error: function() {
+                                toastr.error('Failed to remove item from cart');
                             }
-                        },
-                        error: function() {
-                            toastr.error('Failed to remove item from cart');
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             });
 
-            // Clear entire cart
-            $(document).on('click', '.clear-cart', function() {
-                if (confirm('Are you sure you want to clear your entire cart?')) {
-                    $.ajax({
-                        url: window.cartRoutes.clearCart,
-                        type: 'POST',
-                        data: {
-                            _token: window.csrfToken
-                        },
-                        success: function(response) {
-                            if (response.status) {
-                                location.reload();
-                                toastr.success('Cart cleared successfully');
-                            } else {
-                                toastr.error(response.message);
+            // Clear entire cart with SweetAlert2
+            $(document).on('click', '.cart-clear-cart', function() {
+                Swal.fire({
+                    title: 'Clear Cart?',
+                    text: 'Are you sure you want to clear your entire cart? This action cannot be undone.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, clear cart!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: window.cartRoutes.clearCart,
+                            type: 'POST',
+                            data: {
+                                _token: window.csrfToken
+                            },
+                            success: function(response) {
+                                if (response.status) {
+                                    Swal.fire({
+                                        title: 'Cart Cleared!',
+                                        text: 'Your cart has been cleared successfully.',
+                                        icon: 'success',
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    toastr.error(response.message);
+                                }
+                            },
+                            error: function() {
+                                toastr.error('Failed to clear cart');
                             }
-                        },
-                        error: function() {
-                            toastr.error('Failed to clear cart');
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             });
 
             function updateCartCount() {

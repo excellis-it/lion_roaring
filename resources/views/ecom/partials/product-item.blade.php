@@ -10,7 +10,7 @@
                     <div class="wishlist_icon">
                         <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
                     </div>
-                    <a href="{{ route('e-store.product-details', $product->slug) }}">
+                    <a href="{{ route('e-store.product-details', $product['slug']) }}">
                         @if (isset($product['image']['image']) && $product['image']['image'] != null)
                             <img src="{{ Storage::url($product['image']['image']) }}"
                                 alt="{{ $product['image']['image'] }}">
@@ -36,12 +36,12 @@
                         <li>({{ Helper::getRatingCount($product['id']) ? Helper::getRatingCount($product['id']) : 0 }})
                         </li>
                     </ul>
-                    <a href="{{ route('e-store.product-details', $product->slug) }}">{{ $product['name'] }}</a>
+                    <a href="{{ route('e-store.product-details', $product['slug']) }}">{{ $product['name'] }}</a>
                     <p>{{ strlen($product['short_description']) > 50 ? substr($product['short_description'], 0, 50) . '...' : $product['short_description'] }}
                     </p>
                     <span class="price_text">${{ $product['price'] }}</span>
                 </div>
-                <div class="addtocart" data-id="{{ $product->id }}">
+                <div class="addtocart" data-id="{{ $product['id'] }}">
                     <a href="javascript:void(0);">
                         @php
                             $cartItem = \App\Models\EstoreCart::where('user_id', auth()->id())
