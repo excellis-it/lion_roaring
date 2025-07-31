@@ -625,18 +625,14 @@ Route::prefix('e-store')->middleware(['user'])->group(function () {
     Route::get('/all-products', [EstoreProductController::class, 'products'])->name('e-store.all-products');
     Route::get('/products-filter', [EstoreProductController::class, 'productsFilter'])->name('e-store.products-filter');
     Route::post('/product-add-review', [EstoreProductController::class, 'productAddReview'])->name('e-store.product-add-review');
-    // add to cart
     Route::post('/add-to-cart', [EstoreProductController::class, 'addToCart'])->name('e-store.add-to-cart');
-    // remove from cart
     Route::post('/remove-from-cart', [EstoreProductController::class, 'removeFromCart'])->name('e-store.remove-from-cart');
-    // update cart
     Route::post('/update-cart', [EstoreProductController::class, 'updateCart'])->name('e-store.update-cart');
-    // clear cart
     Route::post('/clear-cart', [EstoreProductController::class, 'clearCart'])->name('e-store.clear-cart');
-    // cart count
     Route::get('/cart-count', [EstoreProductController::class, 'cartCount'])->name('e-store.cart-count');
-    // cart list
     Route::get('/cart-list', [EstoreProductController::class, 'cartList'])->name('e-store.cart-list');
+    Route::get('/check-product-in-cart', [EstoreProductController::class, 'checkProductInCart'])->name('e-store.check-product-in-cart');
+    Route::get('estore-cart', [EstoreProductController::class, 'cart'])->name('e-store.cart');
 
 
     $categories = Category::where('status', 1)->get();

@@ -67,7 +67,7 @@
                     <div class="brief-description">
                         {{ $product->short_description }}
                     </div>
-                    <div class="price my-2">$20.30</div>
+                    <div class="price my-2">${{ $product->price }}</div>
                     <div class="theme-text subtitle">Description:</div>
                     <div class="brief-description">
                         {!! $product->description !!}
@@ -77,15 +77,24 @@
                             <div class="qty-input">
                                 <button class="qty-count qty-count--minus" data-action="minus" type="button">-</button>
                                 <input class="product-qty" type="number" name="product-qty" min="0" max="10"
-                                    value="1">
+                                    value="{{ $cartItem ? $cartItem->quantity : 0 }}"
+                                    data-cart-id="{{ $cartItem ? $cartItem->id : '' }}"
+                                    data-product-id="{{ $product->id }}">
                                 <button class="qty-count qty-count--add" data-action="add" type="button">+</button>
                             </div>
                         </div>
-
-                    </div>
-                    <div class=""><a href="{{isset($product->affiliate_link) ? $product->affiliate_link : 'javascript:void(0);'}}" class="red_btn w-100 text-center"><span> Buy Now</span></a>
                     </div>
 
+                    {{-- @if ($cartItem)
+                        <div class="view-cart-btn">
+                            <a href="{{ route('user.profile') }}" class="red_btn w-100 text-center"><span>View
+                                    Cart</span></a>
+                        </div>
+                    @else
+                        <div class="addtocart" data-id="{{ $product->id }}">
+                            <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to Cart</span></a>
+                        </div>
+                    @endif --}}
 
                 </div>
             </div>
@@ -180,7 +189,8 @@
                                         <ul class="star_ul">
                                             @if (Helper::getTotalProductRating($related_product->id))
                                                 @for ($i = 1; $i <= 5; $i++)
-                                                    <li><i class="fa-{{ $i <= Helper::getTotalProductRating($related_product->id) ? 'solid' : 'regular' }} fa-star"></i>
+                                                    <li><i
+                                                            class="fa-{{ $i <= Helper::getTotalProductRating($related_product->id) ? 'solid' : 'regular' }} fa-star"></i>
                                                     </li>
                                                 @endfor
                                             @else
@@ -200,8 +210,18 @@
                                         </p>
                                         <span class="price_text">$ {{ $related_product->price }}</span>
                                     </div>
-                                    <div class="addtocart" data-id="{{ $product->id }}">
-                                        <a href="javascript:void(0);"> ADD TO CART</a>
+                                    <div class="addtocart" data-id="{{ $related_product->id }}">
+                                        <a href="javascript:void(0);">
+                                            @php
+                                                $relatedCartItem = \App\Models\EstoreCart::where(
+                                                    'user_id',
+                                                    auth()->id(),
+                                                )
+                                                    ->where('product_id', $related_product->id)
+                                                    ->first();
+                                            @endphp
+                                            {{ $relatedCartItem ? 'View Cart' : 'ADD TO CART' }}
+                                        </a>
                                     </div>
                                 </div>
                             </div>

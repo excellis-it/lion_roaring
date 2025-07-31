@@ -23,7 +23,7 @@
                         <div class="d-flex align-items-center justify-content-end">
                             <a href="{{route('user.profile')}}" class="back_main">back to main page</a>
 
-                            <a href="{{route('user.profile')}}" class="back_main"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="cart_count ms-1">{{$cartCount}}</span></a>
+                            <a href="{{route('e-store.cart')}}" class="back_main"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="cart_count ms-1">{{$cartCount}}</span></a>
                             <div class="profile_dropdown">
                                 <div class="dropdown">
                                     <button class="profile_img_round dropdown-toggle" type="button"

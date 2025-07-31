@@ -25,7 +25,13 @@ class ProductController extends Controller
             ->get();
         $reviews = $product->reviews()->where('status', 1)->orderBy('id', 'DESC')->get();
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
-        return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews', 'cartCount'));
+
+        // Check if product is already in cart
+        $cartItem = EstoreCart::where('user_id', auth()->id())
+            ->where('product_id', $product->id)
+            ->first();
+
+        return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews', 'cartCount', 'cartItem'));
     }
 
     public function products(Request $request, $category_id = null)
@@ -166,6 +172,24 @@ class ProductController extends Controller
                 return response()->json(['status' => false, 'message' => 'Product not found']);
             }
 
+            // Check if product already exists in cart
+            $existingCart = EstoreCart::where('user_id', auth()->id())
+                ->where('product_id', $product->id)
+                ->first();
+
+            if ($existingCart) {
+                // Update quantity instead of creating new entry
+                $existingCart->quantity += $request->quantity;
+                $existingCart->save();
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Cart updated successfully',
+                    'action' => 'updated',
+                    'cart_item_id' => $existingCart->id,
+                    'quantity' => $existingCart->quantity
+                ]);
+            }
+
             $cart = new EstoreCart();
             $cart->user_id = auth()->id();
             $cart->product_id = $product->id;
@@ -173,7 +197,36 @@ class ProductController extends Controller
             $cart->quantity = $request->quantity;
             $cart->save();
 
-            return response()->json(['status' => true, 'message' => 'Product added to cart successfully']);
+            return response()->json([
+                'status' => true,
+                'message' => 'Product added to cart successfully',
+                'action' => 'added',
+                'cart_item_id' => $cart->id,
+                'quantity' => $cart->quantity
+            ]);
+        }
+    }
+
+    // Check if product is in cart
+    public function checkProductInCart(Request $request)
+    {
+        if ($request->ajax()) {
+            $request->validate([
+                'product_id' => 'required|integer',
+            ]);
+
+            $cartItem = EstoreCart::where('user_id', auth()->id())
+                ->where('product_id', $request->product_id)
+                ->first();
+
+            return response()->json([
+                'status' => true,
+                'inCart' => $cartItem ? true : false,
+                'cartItem' => $cartItem ? [
+                    'id' => $cartItem->id,
+                    'quantity' => $cartItem->quantity
+                ] : null
+            ]);
         }
     }
 
@@ -241,5 +294,69 @@ class ProductController extends Controller
             $cartCount = EstoreCart::where('user_id', auth()->id())->count();
             return response()->json(['status' => true, 'cartCount' => $cartCount]);
         }
+    }
+
+    // cartList
+    public function cartList(Request $request)
+    {
+        if ($request->ajax()) {
+            $carts = EstoreCart::where('user_id', auth()->id())
+                ->with('product')
+                ->get();
+
+            $cartItems = [];
+            $total = 0;
+
+            foreach ($carts as $cart) {
+                $subtotal = $cart->price * $cart->quantity;
+                $total += $subtotal;
+
+                $cartItems[] = [
+                    'id' => $cart->id,
+                    'product_id' => $cart->product_id,
+                    'product_name' => $cart->product->name ?? 'Unknown Product',
+                    'product_image' => $cart->product->main_image ?? null,
+                    'price' => $cart->price,
+                    'quantity' => $cart->quantity,
+                    'subtotal' => $subtotal
+                ];
+            }
+
+            return response()->json([
+                'status' => true,
+                'cartItems' => $cartItems,
+                'total' => $total,
+                'cartCount' => $carts->count()
+            ]);
+        }
+    }
+
+    // cart page
+    public function cart()
+    {
+        $carts = EstoreCart::where('user_id', auth()->id())
+            ->with('product')
+            ->get();
+        $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+
+        $cartItems = [];
+        $total = 0;
+
+        foreach ($carts as $cart) {
+            $subtotal = $cart->price * $cart->quantity;
+            $total += $subtotal;
+
+            $cartItems[] = [
+                'id' => $cart->id,
+                'product_id' => $cart->product_id,
+                'product_name' => $cart->product->name ?? 'Unknown Product',
+                'product_image' => $cart->product->main_image ?? null,
+                'price' => $cart->price,
+                'quantity' => $cart->quantity,
+                'subtotal' => $subtotal
+            ];
+        }
+
+        return view('ecom.cart')->with(compact('cartItems', 'total', 'cartCount'));
     }
 }

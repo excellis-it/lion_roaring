@@ -42,8 +42,14 @@
                     <span class="price_text">${{ $product['price'] }}</span>
                 </div>
                 <div class="addtocart" data-id="{{ $product->id }}">
-                    <a
-                        href="javascript:void(0);">{{ $product['button_name'] ? $product['button_name'] : 'ADD TO CART' }}</a>
+                    <a href="javascript:void(0);">
+                        @php
+                            $cartItem = \App\Models\EstoreCart::where('user_id', auth()->id())
+                                ->where('product_id', $product['id'])
+                                ->first();
+                        @endphp
+                        {{ $cartItem ? 'View Cart' : ($product['button_name'] ? $product['button_name'] : 'ADD TO CART') }}
+                    </a>
                 </div>
             </div>
         </div>
