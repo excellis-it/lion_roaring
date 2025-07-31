@@ -68,6 +68,50 @@ class EstoreOrder extends Model
         return $address;
     }
 
+    public static function getStatusOptions()
+    {
+        return [
+            'pending' => 'Pending',
+            'processing' => 'Processing',
+            'shipped' => 'Shipped',
+            'delivered' => 'Delivered',
+            'cancelled' => 'Cancelled'
+        ];
+    }
+
+    public static function getPaymentStatusOptions()
+    {
+        return [
+            'pending' => 'Pending',
+            'paid' => 'Paid',
+            'failed' => 'Failed',
+            'refunded' => 'Refunded'
+        ];
+    }
+
+    public function getStatusBadgeClassAttribute()
+    {
+        $classes = [
+            'pending' => 'bg-warning',
+            'processing' => 'bg-info',
+            'shipped' => 'bg-primary',
+            'delivered' => 'bg-success',
+            'cancelled' => 'bg-danger'
+        ];
+        return $classes[$this->status] ?? 'bg-secondary';
+    }
+
+    public function getPaymentStatusBadgeClassAttribute()
+    {
+        $classes = [
+            'pending' => 'bg-warning',
+            'paid' => 'bg-success',
+            'failed' => 'bg-danger',
+            'refunded' => 'bg-secondary'
+        ];
+        return $classes[$this->payment_status] ?? 'bg-secondary';
+    }
+
     protected static function boot()
     {
         parent::boot();

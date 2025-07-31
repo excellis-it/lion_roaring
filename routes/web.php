@@ -485,6 +485,12 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/store-cms-page/{page}', [EstoreCmsController::class, 'cms'])->name('user.store-cms.edit');
     Route::post('/store-cms/home/update', [EstoreCmsController::class, 'homeCmsUpdate'])->name('user.store-cms.home.update');
     Route::post('/store-cms/footer/update', [EstoreCmsController::class, 'footerUpdate'])->name('user.store-cms.footer.update');
+    Route::get('/store-orders/list', [EstoreCmsController::class, 'ordersList'])->name('user.store-orders.list');
+    Route::get('/store-orders/fetch-data', [EstoreCmsController::class, 'fetchOrdersData'])->name('user.store-orders.fetch-data');
+    Route::get('/store-orders/details/{id}', [EstoreCmsController::class, 'orderDetails'])->name('user.store-orders.details');
+    Route::post('/store-orders/update-status', [EstoreCmsController::class, 'updateOrderStatus'])->name('user.store-orders.update-status');
+    Route::delete('/store-orders/delete/{id}', [EstoreCmsController::class, 'deleteOrder'])->name('user.store-orders.delete');
+    Route::get('/store-orders/export', [EstoreCmsController::class, 'exportOrders'])->name('user.store-orders.export');
 
     // e-learning routes
     Route::prefix('elearning')->group(function () {

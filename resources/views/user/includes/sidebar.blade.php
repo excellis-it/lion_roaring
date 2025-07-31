@@ -305,6 +305,14 @@
                                     </span>
                                     <span>Products</span>
                                 </a>
+                                {{-- Orders List --}}
+                                <a href="{{ route('user.store-orders.list') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Orders.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Orders</span>
+                                </a>
                             </div>
                         </div>
                     </li>
