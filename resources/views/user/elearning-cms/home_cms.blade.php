@@ -11,7 +11,7 @@
             <!--  Row 1 -->
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('user.cms.home.update') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('user.elearning-cms.home.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="id" value="{{ isset($cms->id) ? $cms->id : '' }}">
                         <div class="row">
@@ -142,7 +142,7 @@
                             </div>
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                                 <button type="submit" class="print_btn me-2">Update</button>
-                                <a href="{{ route('user.cms.list') }}" class="print_btn print_btn_vv"
+                                <a href="{{ route('user.elearning-cms.list') }}" class="print_btn print_btn_vv"
                                 >Cancel</a>
                             </div>
                         </div>

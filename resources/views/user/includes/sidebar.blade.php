@@ -279,11 +279,11 @@
                             <span class="hide-menu">Store</span>
                         </a>
                         {{-- Collapse content --}}
-                        <div class="collapse {{ Request::is('user/products*') || Request::is('user/cms*') || Request::is('user/cms-page/home*') || Request::is('user/cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
+                        <div class="collapse {{ Request::is('user/products*') || Request::is('user/store-cms*') || Request::is('user/store-cms-page/home*') || Request::is('user/store-cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
                             id="collapseExample10">
                             <div class="menu_bb">
                                 {{-- bulletins --}}
-                                <a href="{{ route('user.cms.dashboard') }}">
+                                <a href="{{ route('user.store-cms.dashboard') }}">
                                     <span>
                                         <img src="{{ asset('user_assets/images/ICON/Store/E-store_Dashboard.svg') }}"
                                             alt="">
@@ -314,16 +314,16 @@
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExample10">
                             <span>
-                                <img src="{{ asset('user_assets/images/ICON/Store/Store.svg') }}" alt="">
+                                <img src="{{ asset('user_assets/images/ICON/elearning.png') }}" alt="">
                             </span>
                             <span class="hide-menu">E-Learning</span>
                         </a>
                         {{-- Collapse content --}}
-                        <div class="collapse {{ Request::is('user/elearning*') || Request::is('user/cms*') || Request::is('user/cms-page/home*') || Request::is('user/cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
+                        <div class="collapse {{ Request::is('user/elearning*') || Request::is('user/elearning-cms*') || Request::is('user/elearning-cms-page/home*') || Request::is('user/elearning-cms-page/footer*') || Request::is('user/elearning-categories*') ? 'show' : '' }}"
                             id="collapseExample10">
                             <div class="menu_bb">
                                 {{-- bulletins --}}
-                                <a href="{{ route('user.cms.dashboard') }}">
+                                <a href="{{ route('user.elearning-cms.dashboard') }}">
                                     <span>
                                         <img src="{{ asset('user_assets/images/ICON/Store/E-store_Dashboard.svg') }}"
                                             alt="">

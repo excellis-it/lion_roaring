@@ -11,7 +11,8 @@
             <!--  Row 1 -->
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('user.cms.update', $cms->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('user.elearning-cms.update', $cms->id) }}" method="POST"
+                        enctype="multipart/form-data">
                         @method('PUT')
                         @csrf
                         <div class="row">
@@ -54,7 +55,7 @@
                                 <div class="box_label">
                                     <label for="page_name"> Page Name *</label>
                                     <input type="text" name="page_name" id="page_name" class="form-control"
-                                        value="{{ $cms->page_name  ? $cms->page_name : old('page_name') }}" placeholder="">
+                                        value="{{ $cms->page_name ? $cms->page_name : old('page_name') }}" placeholder="">
                                     @if ($errors->has('page_name'))
                                         <span class="error">{{ $errors->first('page_name') }}</span>
                                     @endif
@@ -65,7 +66,8 @@
                                 <div class="box_label">
                                     <label for="page_title"> Page Title *</label>
                                     <input type="text" name="page_title" id="page_title" class="form-control"
-                                        value="{{ $cms->page_title ? $cms->page_title : old('page_title') }}" placeholder="">
+                                        value="{{ $cms->page_title ? $cms->page_title : old('page_title') }}"
+                                        placeholder="">
                                     @if ($errors->has('page_title'))
                                         <span class="error">{{ $errors->first('page_title') }}</span>
                                     @endif
@@ -96,7 +98,7 @@
 
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                                 <button type="submit" class="print_btn me-2">Update</button>
-                                <a href="{{ route('user.cms.list') }}" class="print_btn print_btn_vv">Cancel</a>
+                                <a href="{{ route('user.elearning-cms.list') }}" class="print_btn print_btn_vv">Cancel</a>
                             </div>
                         </div>
                 </div>

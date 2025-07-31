@@ -1,6 +1,6 @@
 @extends('ecom.layouts.master')
 @section('title')
-Lion Roaring Ecom | Home
+    Lion Roaring Ecom | Home
 @endsection
 
 @push('styles')
@@ -39,7 +39,7 @@ Lion Roaring Ecom | Home
                         <h2>{!! isset($content['product_category_title']) ? $content['product_category_title'] : '' !!}</h2>
                         <p>
                             {!! isset($content['product_category_subtitle']) ? $content['product_category_subtitle'] : '' !!}
-                            </p>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -101,7 +101,8 @@ Lion Roaring Ecom | Home
 
                                     </div>
                                     <div class="addtocart">
-                                        <a href="{{ $product['affiliate_link'] }}"> {{ $product['button_name'] ? $product['button_name'] : 'go to shop' }}</a>
+                                        <a href="{{ $product['affiliate_link'] }}">
+                                            {{ $product['button_name'] ? $product['button_name'] : 'go to shop' }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -147,7 +148,8 @@ Lion Roaring Ecom | Home
 
                                     </div>
                                     <div class="addtocart">
-                                        <a href="{{ $product['affiliate_link'] }}">{{ $product['button_name'] ? $product['button_name'] : 'go to shop' }}</a>
+                                        <a
+                                            href="{{ $product['affiliate_link'] }}">{{ $product['button_name'] ? $product['button_name'] : 'go to shop' }}</a>
                                     </div>
                                 </div>
                             </div>

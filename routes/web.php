@@ -35,10 +35,8 @@ use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\ServiceContoller;
 use App\Http\Controllers\Admin\TestimonialController;
-use App\Http\Controllers\Estore\CmsController as EstoreCmsController;
 use App\Http\Controllers\Estore\HomeController;
 use App\Http\Controllers\Estore\ProductController as EstoreProductController;
-use App\Http\Controllers\Elearning\ElearningCmsController as ElearningCmsController;
 use App\Http\Controllers\Elearning\ElearningHomeController;
 use App\Http\Controllers\Elearning\ElearningProductController as ElearningProductController;
 use App\Http\Controllers\Frontend\CmsController;
@@ -51,7 +49,8 @@ use App\Http\Controllers\User\BulletinController;
 use App\Http\Controllers\User\CategoryController;
 use App\Http\Controllers\User\ElearningCategoryController;
 use App\Http\Controllers\User\ChatController;
-use App\Http\Controllers\User\CmsController as UserCmsController;
+use App\Http\Controllers\User\EstoreCmsController;
+use App\Http\Controllers\User\ElearningCmsController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\EcclesiaContorller;
 use App\Http\Controllers\User\FileController;
@@ -74,6 +73,7 @@ use App\Http\Controllers\User\TopicController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TermsAndConditionController;
 use App\Models\Category;
+use App\Models\ElearningCategory;
 use App\Models\EcomCmsPage;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Artisan;
@@ -313,7 +313,7 @@ Route::get('reset-username/{id}/{token}', [UserForgetPasswordController::class, 
 // user.username-change
 Route::post('username-change', [UserForgetPasswordController::class, 'changeUsername'])->name('user.username-change');
 
-Route::get('/member-privacy-policy', [UserCmsController::class, 'memberPrivacyPolicy'])->name('member-privacy-policy');
+Route::get('/member-privacy-policy', [EstoreCmsController::class, 'memberPrivacyPolicy'])->name('member-privacy-policy');
 
 // get.states
 Route::get('/get-states', [UserAuthController::class, 'getStates'])->name('get.states');
@@ -474,6 +474,16 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::prefix('categories')->group(function () {
         Route::get('/category-delete/{id}', [CategoryController::class, 'delete'])->name('categories.delete');
     });
+    Route::get('/store-page/{name}/{permission}', [EstoreCmsController::class, 'page'])->name('store-user.page');
+    Route::get('/store-cms/dashboard', [EstoreCmsController::class, 'dashboard'])->name('user.store-cms.dashboard');
+    Route::get('/store-cms/list', [EstoreCmsController::class, 'list'])->name('user.store-cms.list');
+    Route::get('/store-cms/create', [EstoreCmsController::class, 'create'])->name('user.store-cms.create');
+    Route::post('/store-cms/store', [EstoreCmsController::class, 'store'])->name('user.store-cms.store');
+    Route::put('/store-cms/update/{id}', [EstoreCmsController::class, 'update'])->name('user.store-cms.update');
+    Route::get('/store-cms-delete/{id}', [EstoreCmsController::class, 'delete'])->name('user.store-cms.delete');
+    Route::get('/store-cms-page/{page}', [EstoreCmsController::class, 'cms'])->name('user.store-cms.edit');
+    Route::post('/store-cms/home/update', [EstoreCmsController::class, 'homeCmsUpdate'])->name('user.store-cms.home.update');
+    Route::post('/store-cms/footer/update', [EstoreCmsController::class, 'footerUpdate'])->name('user.store-cms.footer.update');
 
     // e-learning routes
     Route::prefix('elearning')->group(function () {
@@ -485,6 +495,16 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::prefix('elearning-categories')->group(function () {
         Route::get('/elearning-category-delete/{id}', [ElearningCategoryController::class, 'delete'])->name('elearning-categories.delete');
     });
+    Route::get('/elearning-page/{name}/{permission}', [ElearningCmsController::class, 'page'])->name('user.elearning-page');
+    Route::get('/elearning-cms/dashboard', [ElearningCmsController::class, 'dashboard'])->name('user.elearning-cms.dashboard');
+    Route::get('/elearning-cms/list', [ElearningCmsController::class, 'list'])->name('user.elearning-cms.list');
+    Route::get('/elearning-cms/create', [ElearningCmsController::class, 'create'])->name('user.elearning-cms.create');
+    Route::post('/elearning-cms/store', [ElearningCmsController::class, 'store'])->name('user.elearning-cms.store');
+    Route::put('/elearning-cms/update/{id}', [ElearningCmsController::class, 'update'])->name('user.elearning-cms.update');
+    Route::get('/elearning-cms-delete/{id}', [ElearningCmsController::class, 'delete'])->name('user.elearning-cms.delete');
+    Route::get('/elearning-cms-page/{page}', [ElearningCmsController::class, 'cms'])->name('user.elearning-cms.edit');
+    Route::post('/elearning-cms/home/update', [ElearningCmsController::class, 'homeCmsUpdate'])->name('user.elearning-cms.home.update');
+    Route::post('/elearning-cms/footer/update', [ElearningCmsController::class, 'footerUpdate'])->name('user.elearning-cms.footer.update');
 
     Route::prefix('meetings')->group(function () {
         Route::get('/meeting-delete/{id}', [MeetingSchedulingController::class, 'delete'])->name('meetings.delete');
@@ -591,18 +611,6 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/user-newsletter-fetch-data', [UserNewsletterController::class, 'fetchData'])->name('user.newsletters.fetch-data');
 
     Route::get('/mail-fetch-data', [SendMailController::class, 'fetchData'])->name('mail.fetch-data');
-
-    Route::get('/page/{name}/{permission}', [UserCmsController::class, 'page'])->name('user.page');
-
-    Route::get('/cms/dashboard', [UserCmsController::class, 'dashboard'])->name('user.cms.dashboard');
-    Route::get('/cms/list', [UserCmsController::class, 'list'])->name('user.cms.list');
-    Route::get('/cms/create', [UserCmsController::class, 'create'])->name('user.cms.create');
-    Route::post('/cms/store', [UserCmsController::class, 'store'])->name('user.cms.store');
-    Route::put('/cms/update/{id}', [UserCmsController::class, 'update'])->name('user.cms.update');
-    Route::get('/cms-delete/{id}', [UserCmsController::class, 'delete'])->name('user.cms.delete');
-    Route::get('/cms-page/{page}', [UserCmsController::class, 'cms'])->name('user.cms.edit');
-    Route::post('/cms/home/update', [UserCmsController::class, 'homeCmsUpdate'])->name('user.cms.home.update');
-    Route::post('/cms/footer/update', [UserCmsController::class, 'footerUpdate'])->name('user.cms.footer.update');
 });
 // });
 
@@ -649,7 +657,7 @@ Route::prefix('e-learning')->middleware(['user'])->group(function () {
     Route::get('/products-filter', [ElearningProductController::class, 'productsFilter'])->name('products-filter');
     Route::post('/product-add-review', [ElearningProductController::class, 'productAddReview'])->name('product-add-review');
 
-    $categories = Category::where('status', 1)->get();
+    $categories = ElearningCategory::where('status', 1)->get();
     foreach ($categories as $category) {
         if ($category->slug) {
             Route::get($category->slug, [ElearningProductController::class, 'products'])
@@ -661,7 +669,7 @@ Route::prefix('e-learning')->middleware(['user'])->group(function () {
     $pages = EcomCmsPage::get();
     foreach ($pages as $page) {
         if ($page->slug) {
-            Route::get($page->slug, [EstoreCmsController::class, 'cmsPage'])
+            Route::get($page->slug, [ElearningCmsController::class, 'cmsPage'])
                 ->name($page->slug . '.cms-page')
                 ->defaults('page_id', $page->id);
         }

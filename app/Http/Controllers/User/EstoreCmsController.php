@@ -11,13 +11,13 @@ use App\Models\MemberPrivacyPolicy;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 
-class CmsController extends Controller
+class EstoreCmsController extends Controller
 {
     use ImageTrait;
     public function memberPrivacyPolicy()
     {
         $policy = MemberPrivacyPolicy::orderBy('id', 'desc')->first();
-        return view('user.cms.member_privacy_policy')->with('policy', $policy);
+        return view('user.store-cms.member_privacy_policy')->with('policy', $policy);
     }
 
     public function page($name, $permission)
@@ -36,7 +36,7 @@ class CmsController extends Controller
         if (auth()->user()->hasRole('SUPER ADMIN')) {
             $count['pages'] = EcomCmsPage::count() + 2;
             $count['newsletter'] = EcomNewsletter::count();
-            return view('user.cms.dashboard')->with('count', $count);
+            return view('user.store-cms.dashboard')->with('count', $count);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -46,7 +46,7 @@ class CmsController extends Controller
     {
         if (auth()->user()->hasRole('SUPER ADMIN')) {
             $pages = EcomCmsPage::get();
-            return view('user.cms.list')->with('pages', $pages);
+            return view('user.store-cms.list')->with('pages', $pages);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -58,13 +58,13 @@ class CmsController extends Controller
         if (auth()->user()->hasRole('SUPER ADMIN')) {
             if ($page == 'home') {
                 $cms = EcomHomeCms::orderBy('id', 'desc')->first();
-                return view('user.cms.home_cms')->with('cms', $cms);
+                return view('user.store-cms.home_cms')->with('cms', $cms);
             } elseif ($page == 'footer') {
                 $cms = EcomFooterCms::orderBy('id', 'desc')->first();
-                return view('user.cms.footer_cms')->with('cms', $cms);
+                return view('user.store-cms.footer_cms')->with('cms', $cms);
             } else {
                 $cms = EcomCmsPage::where('slug', $page)->first();
-                return view('user.cms.cms')->with('cms', $cms);
+                return view('user.store-cms.cms')->with('cms', $cms);
             }
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -167,7 +167,7 @@ class CmsController extends Controller
     public function create()
     {
         if (auth()->user()->hasRole('SUPER ADMIN')) {
-            return view('user.cms.create');
+            return view('user.store-cms.create');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -196,7 +196,7 @@ class CmsController extends Controller
             }
 
             $cms->save();
-            return redirect()->route('user.cms.list')->with('message', 'CMS page added successfully');
+            return redirect()->route('user.store-cms.list')->with('message', 'CMS page added successfully');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -226,7 +226,7 @@ class CmsController extends Controller
             }
 
             $cms->save();
-            return redirect()->route('user.cms.list')->with('message', 'CMS page updated successfully');
+            return redirect()->route('user.store-cms.list')->with('message', 'CMS page updated successfully');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -242,5 +242,12 @@ class CmsController extends Controller
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
+    }
+
+    public function cmsPage($page_id = null)
+    {
+        $page_id = $page_id ?? 1;
+        $cms = EcomCmsPage::findOrfail($page_id);
+        return view('ecom.cms')->with(compact('cms'));
     }
 }

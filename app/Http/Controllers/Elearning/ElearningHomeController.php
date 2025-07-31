@@ -26,6 +26,7 @@ class ElearningHomeController extends Controller
             $q->where('slug', 'lockets');
         })->orderBy('id', 'DESC')->limit(10)->get();
         $content = ElearningEcomHomeCms::orderBy('id', 'desc')->first();
+        // return $content;
         return view('elearning.home')->with(compact('categories', 'feature_products', 'new_products', 'books', 'lockets', 'content'));
     }
 
