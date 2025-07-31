@@ -290,7 +290,7 @@
             function loadMoreProducts(page, prices = [], category_id = [],
                 latestFilter = '', search = '') {
                 $.ajax({
-                    url: '{{ route('products-filter') }}',
+                    url: '{{ route('e-store.products-filter') }}',
                     type: 'GET',
                     data: {
                         page: page,

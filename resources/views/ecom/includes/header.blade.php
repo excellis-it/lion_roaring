@@ -4,7 +4,7 @@
             <div class="navigation navbar">
                 <div class="left_top me-auto">
                     <div class="logo">
-                        <a href="{{route('e-learning')}}" class="">
+                        <a href="{{route('e-store')}}" class="">
                             <img src="{{asset('ecom_assets/images/logo.png')}}" alt="" />
                         </a>
                     </div>
@@ -12,8 +12,8 @@
                 <div class="right_btm">
                     <div id="cssmenu">
                         <ul>
-                            <li><a href="{{route('e-learning')}}">Home</a></li>
-                            <li><a href="{{route('all-products')}}">our collections</a></li>
+                            <li><a href="{{route('e-store')}}">Home</a></li>
+                            <li><a href="{{route('e-store.all-products')}}">our collections</a></li>
                             <li><a href="{{route('contact-us')}}">Contact Us</a></li>
                         </ul>
                     </div>
@@ -22,6 +22,8 @@
                     <div class="right_login">
                         <div class="d-flex align-items-center justify-content-end">
                             <a href="{{route('user.profile')}}" class="back_main">back to main page</a>
+
+                            <a href="{{route('user.profile')}}" class="back_main"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="cart_count ms-1">{{$cartCount}}</span></a>
                             <div class="profile_dropdown">
                                 <div class="dropdown">
                                     <button class="profile_img_round dropdown-toggle" type="button"

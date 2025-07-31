@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Review;
+use App\Models\EstoreCart;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -23,7 +24,8 @@ class ProductController extends Controller
             ->limit(8)
             ->get();
         $reviews = $product->reviews()->where('status', 1)->orderBy('id', 'DESC')->get();
-        return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews'));
+        $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+        return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews', 'cartCount'));
     }
 
     public function products(Request $request, $category_id = null)
@@ -41,7 +43,8 @@ class ProductController extends Controller
 
         $products_count  = $products->count();
         $categories = Category::where('status', 1)->orderBy('id', 'DESC')->get();
-        return view('ecom.products')->with(compact('products', 'categories', 'category_id', 'products_count', 'category'));
+        $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+        return view('ecom.products')->with(compact('products', 'categories', 'category_id', 'products_count', 'category', 'cartCount'));
     }
 
     public static function productsFilter(Request $request)
@@ -101,9 +104,10 @@ class ProductController extends Controller
                 ->get()->toArray();
 
             $category = !empty($category_id) ? Category::whereIn('id', $category_id)->get()->toArray() : null;
+            $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 
-            $view = view('ecom.partials.product-item', compact('products', 'products_count'))->render();
-            $view2 = view('ecom.partials.count-product', compact('products', 'products_count', 'category', 'category_id'))->render();
+            $view = view('ecom.partials.product-item', compact('products', 'products_count', 'cartCount'))->render();
+            $view2 = view('ecom.partials.count-product', compact('products', 'products_count', 'category', 'category_id', 'cartCount'))->render();
 
             return response()->json([
                 'status' => true,
@@ -142,8 +146,100 @@ class ProductController extends Controller
 
         // Render the review view
         $reviews = $product->reviews()->where('status', 1)->orderBy('id', 'DESC')->get();
-        $view = view('ecom.partials.product-review', compact('reviews'))->render();
+        $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+        $view = view('ecom.partials.product-review', compact('reviews', 'cartCount'))->render();
 
         return response()->json(['status' => true, 'message' => 'Review submitted successfully', 'view' => $view]);
+    }
+
+    // addToCart
+    public function addToCart(Request $request)
+    {
+        if ($request->ajax()) {
+            $request->validate([
+                'product_id' => 'required|integer',
+                'quantity' => 'required|integer|min:1',
+            ]);
+
+            $product = Product::find($request->product_id);
+            if (!$product) {
+                return response()->json(['status' => false, 'message' => 'Product not found']);
+            }
+
+            $cart = new EstoreCart();
+            $cart->user_id = auth()->id();
+            $cart->product_id = $product->id;
+            $cart->price = $product->price;
+            $cart->quantity = $request->quantity;
+            $cart->save();
+
+            return response()->json(['status' => true, 'message' => 'Product added to cart successfully']);
+        }
+    }
+
+    // removeFromCart
+    public function removeFromCart(Request $request)
+    {
+        if ($request->ajax()) {
+            $request->validate([
+                'id' => 'required|integer',
+            ]);
+
+            $cart = EstoreCart::find($request->id);
+            if (!$cart || $cart->user_id != auth()->id()) {
+                return response()->json(['status' => false, 'message' => 'Cart item not found']);
+            }
+
+            $cart->delete();
+
+            return response()->json(['status' => true, 'message' => 'Product removed from cart successfully']);
+        }
+    }
+    // updateCart
+    public function updateCart(Request $request)
+    {
+        if ($request->ajax()) {
+            $request->validate([
+                'id' => 'required|integer',
+                'quantity' => 'required|integer|min:0',
+            ]);
+
+            $cart = EstoreCart::find($request->id);
+            if (!$cart || $cart->user_id != auth()->id()) {
+                return response()->json(['status' => false, 'message' => 'Cart item not found']);
+            }
+
+            // if 0 quantity, remove the item
+            if ($request->quantity <= 0) {
+                $cart->delete();
+                return response()->json(['status' => true, 'message' => 'Cart item removed successfully']);
+            }
+
+            $cart->quantity = $request->quantity;
+            $cart->save();
+
+            return response()->json(['status' => true, 'message' => 'Cart updated successfully']);
+        }
+    }
+
+    // clearCart
+    public function clearCart(Request $request)
+    {
+        if ($request->ajax()) {
+            $carts = EstoreCart::where('user_id', auth()->id())->get();
+            foreach ($carts as $cart) {
+                $cart->delete();
+            }
+            return response()->json(['status' => true, 'message' => 'Cart cleared successfully']);
+        }
+    }
+
+    // cartCount
+    public function cartCount(Request $request)
+    {
+        if ($request->ajax()) {
+            $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+            return response()->json(['status' => true, 'cartCount' => $cartCount]);
+        }
     }
 }

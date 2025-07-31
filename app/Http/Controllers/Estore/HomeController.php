@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\EcomHomeCms;
 use App\Models\EcomNewsletter;
 use App\Models\Product;
+use App\Models\EstoreCart;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,7 +24,8 @@ class HomeController extends Controller
             $q->where('slug', 'lockets');
         })->orderBy('id', 'DESC')->limit(10)->get();
          $content = EcomHomeCms::orderBy('id', 'desc')->first();
-        return view('ecom.home')->with(compact('categories', 'feature_products', 'new_products', 'books', 'lockets', 'content'));
+         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+        return view('ecom.home')->with(compact('categories', 'feature_products', 'new_products', 'books', 'lockets', 'content', 'cartCount'));
     }
 
     public function newsletter(Request $request)

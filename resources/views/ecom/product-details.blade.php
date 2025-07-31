@@ -20,9 +20,7 @@
                 <div class="col-xxl-6 col-xl-8 col-md-12">
                     <div class="inner_banner_ontent">
                         <h2>Product Details</h2>
-                        <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing volutpat
-                            consectetur
-                            id purus rhoncus.</p>
+                        <p></p>
                     </div>
                 </div>
             </div>
@@ -158,8 +156,7 @@
                     <div class="col-xl-7">
                         <div class="heading_hp text-center">
                             <h2>Related products</h2>
-                            <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing volutpat
-                                consectetur id purus rhoncus.</p>
+                            <p> </p>
                         </div>
                     </div>
                 </div>
@@ -172,7 +169,7 @@
                                         <div class="wishlist_icon">
                                             <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
                                         </div>
-                                        <a href="{{ route('product-details', $related_product->slug) }}">
+                                        <a href="{{ route('e-store.product-details', $related_product->slug) }}">
                                             @if (isset($related_product->main_image) && $related_product->main_image != null)
                                                 <img src="{{ Storage::url($related_product->main_image) }}"
                                                     alt="{{ $related_product->main_image }}">
@@ -198,13 +195,13 @@
                                             </li>
                                         </ul>
                                         <a
-                                            href="{{ route('product-details', $related_product->slug) }}">{{ $related_product->name }}</a>
+                                            href="{{ route('e-store.product-details', $related_product->slug) }}">{{ $related_product->name }}</a>
                                         <p>{{ strlen($related_product->short_description) > 50 ? substr($related_product->short_description, 0, 50) . '...' : $related_product->short_description }}
                                         </p>
                                         <span class="price_text">$ {{ $related_product->price }}</span>
                                     </div>
-                                    <div class="addtocart">
-                                        <a href="{{ route('product-details', $related_product->slug) }}"> view details</a>
+                                    <div class="addtocart" data-id="{{ $product->id }}">
+                                        <a href="javascript:void(0);"> ADD TO CART</a>
                                     </div>
                                 </div>
                             </div>
@@ -223,7 +220,7 @@
                 var formData = $(this).serialize();
                 var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
                 $.ajax({
-                    url: "{{ route('product-add-review') }}",
+                    url: "{{ route('e-store.product-add-review') }}",
                     type: 'POST',
                     data: formData,
                     // processData: false,

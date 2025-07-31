@@ -75,6 +75,7 @@ use App\Http\Controllers\Admin\TermsAndConditionController;
 use App\Models\Category;
 use App\Models\ElearningCategory;
 use App\Models\EcomCmsPage;
+use App\Models\ElearningEcomCmsPage;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\User\ChatBotController;
@@ -620,16 +621,29 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
 Route::prefix('e-store')->middleware(['user'])->group(function () {
     Route::get('/', [HomeController::class, 'eStore'])->name('e-store');
     Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-store.newsletter');
-    Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails'])->name('product-details');
-    Route::get('/all-products', [EstoreProductController::class, 'products'])->name('all-products');
-    Route::get('/products-filter', [EstoreProductController::class, 'productsFilter'])->name('products-filter');
-    Route::post('/product-add-review', [EstoreProductController::class, 'productAddReview'])->name('product-add-review');
+    Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails'])->name('e-store.product-details');
+    Route::get('/all-products', [EstoreProductController::class, 'products'])->name('e-store.all-products');
+    Route::get('/products-filter', [EstoreProductController::class, 'productsFilter'])->name('e-store.products-filter');
+    Route::post('/product-add-review', [EstoreProductController::class, 'productAddReview'])->name('e-store.product-add-review');
+    // add to cart
+    Route::post('/add-to-cart', [EstoreProductController::class, 'addToCart'])->name('e-store.add-to-cart');
+    // remove from cart
+    Route::post('/remove-from-cart', [EstoreProductController::class, 'removeFromCart'])->name('e-store.remove-from-cart');
+    // update cart
+    Route::post('/update-cart', [EstoreProductController::class, 'updateCart'])->name('e-store.update-cart');
+    // clear cart
+    Route::post('/clear-cart', [EstoreProductController::class, 'clearCart'])->name('e-store.clear-cart');
+    // cart count
+    Route::get('/cart-count', [EstoreProductController::class, 'cartCount'])->name('e-store.cart-count');
+    // cart list
+    Route::get('/cart-list', [EstoreProductController::class, 'cartList'])->name('e-store.cart-list');
+
 
     $categories = Category::where('status', 1)->get();
     foreach ($categories as $category) {
         if ($category->slug) {
             Route::get($category->slug, [EstoreProductController::class, 'products'])
-                ->name($category->slug . '.page')
+                ->name($category->slug . '.e-store.page')
                 ->defaults('category_id', $category->id);
         }
     }
@@ -638,7 +652,7 @@ Route::prefix('e-store')->middleware(['user'])->group(function () {
     foreach ($pages as $page) {
         if ($page->slug) {
             Route::get($page->slug, [EstoreCmsController::class, 'cmsPage'])
-                ->name($page->slug . '.cms-page')
+                ->name($page->slug . '.e-store.cms-page')
                 ->defaults('page_id', $page->id);
         }
     }
@@ -652,25 +666,25 @@ Route::post('/chatbot', [ChatBotController::class, 'FaqChat'])->name('chatbot.me
 Route::prefix('e-learning')->middleware(['user'])->group(function () {
     Route::get('/', [ElearningHomeController::class, 'eStore'])->name('e-learning');
     Route::post('/newsletter', [ElearningHomeController::class, 'newsletter'])->name('e-learning.newsletter');
-    Route::get('/product/{slug}', [ElearningProductController::class, 'productDetails'])->name('product-details');
-    Route::get('/all-products', [ElearningProductController::class, 'products'])->name('all-products');
-    Route::get('/products-filter', [ElearningProductController::class, 'productsFilter'])->name('products-filter');
-    Route::post('/product-add-review', [ElearningProductController::class, 'productAddReview'])->name('product-add-review');
+    Route::get('/product/{slug}', [ElearningProductController::class, 'productDetails'])->name('e-learning.product-details');
+    Route::get('/all-products', [ElearningProductController::class, 'products'])->name('e-learning.all-products');
+    Route::get('/products-filter', [ElearningProductController::class, 'productsFilter'])->name('e-learning.products-filter');
+    Route::post('/product-add-review', [ElearningProductController::class, 'productAddReview'])->name('e-learning.product-add-review');
 
     $categories = ElearningCategory::where('status', 1)->get();
     foreach ($categories as $category) {
         if ($category->slug) {
             Route::get($category->slug, [ElearningProductController::class, 'products'])
-                ->name($category->slug . '.page')
+                ->name($category->slug . '.e-learning.page')
                 ->defaults('category_id', $category->id);
         }
     }
 
-    $pages = EcomCmsPage::get();
+    $pages = ElearningEcomCmsPage::get();
     foreach ($pages as $page) {
         if ($page->slug) {
             Route::get($page->slug, [ElearningCmsController::class, 'cmsPage'])
-                ->name($page->slug . '.cms-page')
+                ->name($page->slug . '.e-learning.cms-page')
                 ->defaults('page_id', $page->id);
         }
     }
