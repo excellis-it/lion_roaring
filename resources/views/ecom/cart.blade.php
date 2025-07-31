@@ -143,7 +143,7 @@
                                                 href="{{ route('terms-and-conditions') }}">Terms of use</a>
                                             & <a href="{{ route('privacy-policy') }}">Privacy Policy</a></label>
                                     </div>
-                                    <a class="red_btn w-100 checkout-btn" href="javascript:void(0);"
+                                    <a class="red_btn w-100 checkout-btn" href="{{ route('e-store.checkout') }}"
                                         style="pointer-events: none; opacity: 0.5;">
                                         <span>Proceed to Checkout</span>
                                     </a>

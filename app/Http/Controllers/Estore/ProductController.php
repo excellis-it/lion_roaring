@@ -362,4 +362,32 @@ class ProductController extends Controller
 
         return view('ecom.cart')->with(compact('cartItems', 'total', 'cartCount'));
     }
+
+    // checkout page
+    public function checkout(){
+        $carts = EstoreCart::where('user_id', auth()->id())
+            ->with('product')
+            ->get();
+        $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+
+        $cartItems = [];
+        $total = 0;
+
+        foreach ($carts as $cart) {
+            $subtotal = $cart->price * $cart->quantity;
+            $total += $subtotal;
+
+            $cartItems[] = [
+                'id' => $cart->id,
+                'product_id' => $cart->product_id,
+                'product_name' => $cart->product->name ?? 'Unknown Product',
+                'product_image' => $cart->product->main_image ?? null,
+                'price' => $cart->price,
+                'quantity' => $cart->quantity,
+                'subtotal' => $subtotal
+            ];
+        }
+
+        return view('ecom.checkout')->with(compact('cartItems', 'total', 'cartCount'));
+    }
 }

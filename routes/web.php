@@ -632,7 +632,8 @@ Route::prefix('e-store')->middleware(['user'])->group(function () {
     Route::get('/cart-count', [EstoreProductController::class, 'cartCount'])->name('e-store.cart-count');
     Route::get('/cart-list', [EstoreProductController::class, 'cartList'])->name('e-store.cart-list');
     Route::get('/check-product-in-cart', [EstoreProductController::class, 'checkProductInCart'])->name('e-store.check-product-in-cart');
-    Route::get('estore-cart', [EstoreProductController::class, 'cart'])->name('e-store.cart');
+    Route::get('/estore-cart', [EstoreProductController::class, 'cart'])->name('e-store.cart');
+    Route::get('/estore-checkout', [EstoreProductController::class, 'checkout'])->name('e-store.checkout');
 
 
     $categories = Category::where('status', 1)->get();
