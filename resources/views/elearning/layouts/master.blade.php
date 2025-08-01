@@ -31,10 +31,10 @@
 
 <body>
     <main>
-       @include('ecom.includes.header')
+       @include('elearning.includes.header')
         @yield('content')
 
-        @include('ecom.includes.footer')
+        @include('elearning.includes.footer')
 
 
     </main>

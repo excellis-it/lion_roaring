@@ -1,4 +1,4 @@
-@extends('ecom.layouts.master')
+@extends('elearning.layouts.master')
 @section('title')
     Lion Roaring Ecom | Home
 @endsection
@@ -49,11 +49,11 @@
                         <div class="feature_slid_padding">
                             <div class="feature_box">
                                 <div class="feature_img">
-                                    <a href="{{ route($category->slug . '.page') }}"><img
+                                    <a href="{{ route($category->slug . '.e-learning.page') }}"><img
                                             src="{{ Storage::url($category->image) }}" /></a>
                                 </div>
                                 <div class="feature_text">
-                                    <a href="{{ route($category->slug . '.page') }}">{{ $category->name }}</a>
+                                    <a href="{{ route($category->slug . '.e-learning.page') }}">{{ $category->name }}</a>
                                 </div>
                             </div>
                         </div>

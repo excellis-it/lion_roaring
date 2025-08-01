@@ -13,7 +13,7 @@
                     <div id="cssmenu">
                         <ul>
                             <li><a href="{{route('e-learning')}}">Home</a></li>
-                            <li><a href="{{route('all-products')}}">our collections</a></li>
+                            <li><a href="{{route('e-learning.all-products')}}">our collections</a></li>
                             <li><a href="{{route('contact-us')}}">Contact Us</a></li>
                         </ul>
                     </div>

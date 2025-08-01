@@ -135,11 +135,11 @@
             <div class="ftr_line_link">
                 <ul>
                     <li><a href="{{ route('e-learning') }}">Home</a></li>
-                    <li><a href="{{ route('all-products') }}">Our Collections</a></li>
+                    <li><a href="{{ route('e-learning.all-products') }}">Our Collections</a></li>
                     <li><a href="{{ route('contact-us') }}">Contact us</a></li>
                     @if (Helper::getCmsPages() && count(Helper::getCmsPages()) > 0)
                         @foreach (Helper::getCmsPages() as $page)
-                            <li><a href="{{ route($page->slug . '.cms-page') }}">{{ $page->page_name }}</a></li>
+                            <li><a href="{{ route($page->slug . '.e-learning.cms-page') }}">{{ $page->page_name }}</a></li>
                         @endforeach
                     @endif
                 </ul>

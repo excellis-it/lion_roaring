@@ -1,4 +1,4 @@
-@extends('ecom.layouts.master')
+@extends('elearning.layouts.master')
 @section('meta')
     <meta name="description" content="{{ isset($category['meta_description']) ? $category['meta_description'] : '' }}">
 @endsection
@@ -290,7 +290,7 @@
             function loadMoreProducts(page, prices = [], category_id = [],
                 latestFilter = '', search = '') {
                 $.ajax({
-                    url: '{{ route('products-filter') }}',
+                    url: '{{ route('e-learning.products-filter') }}',
                     type: 'GET',
                     data: {
                         page: page,

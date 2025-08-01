@@ -1,4 +1,4 @@
-@extends('ecom.layouts.master')
+@extends('elearning.layouts.master')
 @section('meta')
 @endsection
 @section('title')

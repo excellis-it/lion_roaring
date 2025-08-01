@@ -1,4 +1,4 @@
-@extends('ecom.layouts.master')
+@extends('elearning.layouts.master')
 @section('meta')
     <meta name="description" content="{{ isset($product->meta_description) ? $product->meta_description : '' }}">
 @endsection
@@ -172,7 +172,7 @@
                                         <div class="wishlist_icon">
                                             <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
                                         </div>
-                                        <a href="{{ route('product-details', $related_product->slug) }}">
+                                        <a href="{{ route('e-learning.product-details', $related_product->slug) }}">
                                             @if (isset($related_product->main_image) && $related_product->main_image != null)
                                                 <img src="{{ Storage::url($related_product->main_image) }}"
                                                     alt="{{ $related_product->main_image }}">
@@ -198,13 +198,13 @@
                                             </li>
                                         </ul>
                                         <a
-                                            href="{{ route('product-details', $related_product->slug) }}">{{ $related_product->name }}</a>
+                                            href="{{ route('e-learning.product-details', $related_product->slug) }}">{{ $related_product->name }}</a>
                                         <p>{{ strlen($related_product->short_description) > 50 ? substr($related_product->short_description, 0, 50) . '...' : $related_product->short_description }}
                                         </p>
                                         <span class="price_text">$ {{ $related_product->price }}</span>
                                     </div>
                                     <div class="addtocart">
-                                        <a href="{{ route('product-details', $related_product->slug) }}"> view details</a>
+                                        <a href="{{ route('e-learning.product-details', $related_product->slug) }}"> view details</a>
                                     </div>
                                 </div>
                             </div>
@@ -223,7 +223,7 @@
                 var formData = $(this).serialize();
                 var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
                 $.ajax({
-                    url: "{{ route('product-add-review') }}",
+                    url: "{{ route('e-learning.product-add-review') }}",
                     type: 'POST',
                     data: formData,
                     // processData: false,
