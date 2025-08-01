@@ -206,6 +206,19 @@ rangeInput.forEach((input) => {
     });
 });
 
+// Update cart count function
+function updateCartCount() {
+    $.ajax({
+        url: window.cartRoutes.cartCount,
+        type: "GET",
+        success: function (response) {
+            if (response.status) {
+                $(".cart_count").text(response.cartCount);
+            }
+        },
+    });
+}
+
 /*---- qty ---------*/
 var QtyInput = (function () {
     var $qtyInputs = $(".qty-input");
@@ -581,19 +594,6 @@ $(document).ready(function () {
 
     // Check products in cart on page load
     checkProductsInCart();
-
-    // Update cart count function
-    function updateCartCount() {
-        $.ajax({
-            url: window.cartRoutes.cartCount,
-            type: "GET",
-            success: function (response) {
-                if (response.status) {
-                    $(".cart_count").text(response.cartCount);
-                }
-            },
-        });
-    }
 
     // Remove from cart functionality
     $(document).on("click", ".remove-from-cart", function (e) {

@@ -320,7 +320,7 @@
                 @if (Auth::user()->hasRole('SUPER ADMIN'))
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
-                            data-bs-target="#collapseExample10">
+                            data-bs-target="#collapseExample11">
                             <span>
                                 <img src="{{ asset('user_assets/images/ICON/elearning.png') }}" alt="">
                             </span>
@@ -328,7 +328,7 @@
                         </a>
                         {{-- Collapse content --}}
                         <div class="collapse {{ Request::is('user/elearning*') || Request::is('user/elearning-cms*') || Request::is('user/elearning-cms-page/home*') || Request::is('user/elearning-cms-page/footer*') || Request::is('user/elearning-categories*') ? 'show' : '' }}"
-                            id="collapseExample10">
+                            id="collapseExample11">
                             <div class="menu_bb">
                                 {{-- bulletins --}}
                                 <a href="{{ route('user.elearning-cms.dashboard') }}">

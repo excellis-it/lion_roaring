@@ -194,15 +194,14 @@
             </div>
         </div>
     </section>
-    <section class="feature_sec">
+    {{-- <section class="feature_sec">
         <div class="pos_zi">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-xl-7">
                         <div class="heading_hp text-center">
                             <h2>Best in books</h2>
-                            <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing
-                                volutpat consectetur id purus rhoncus.</p>
+                            <p></p>
                         </div>
                     </div>
                 </div>
@@ -264,8 +263,7 @@
                     <div class="col-xl-7">
                         <div class="heading_hp text-center text_white">
                             <h2>Best in lockets</h2>
-                            <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing
-                                volutpat consectetur id purus rhoncus.</p>
+                            <p></p>
                         </div>
                     </div>
                 </div>
@@ -319,7 +317,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
 @endsection
 
 @push('scripts')
