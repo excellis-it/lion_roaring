@@ -20,9 +20,7 @@
                 <div class="col-xxl-6 col-xl-8 col-md-12">
                     <div class="inner_banner_ontent">
                         <h2>Product Details</h2>
-                        <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing volutpat
-                            consectetur
-                            id purus rhoncus.</p>
+                        <p></p>
                     </div>
                 </div>
             </div>
@@ -69,7 +67,7 @@
                     <div class="brief-description">
                         {{ $product->short_description }}
                     </div>
-                    <div class="price my-2">$20.30</div>
+                    <div class="price my-2">${{ $product->price }}</div>
                     <div class="theme-text subtitle">Description:</div>
                     <div class="brief-description">
                         {!! $product->description !!}
@@ -79,15 +77,24 @@
                             <div class="qty-input">
                                 <button class="qty-count qty-count--minus" data-action="minus" type="button">-</button>
                                 <input class="product-qty" type="number" name="product-qty" min="0" max="10"
-                                    value="1">
+                                    value="{{ $cartItem ? $cartItem->quantity : 0 }}"
+                                    data-cart-id="{{ $cartItem ? $cartItem->id : '' }}"
+                                    data-product-id="{{ $product->id }}">
                                 <button class="qty-count qty-count--add" data-action="add" type="button">+</button>
                             </div>
                         </div>
-
-                    </div>
-                    <div class=""><a href="{{isset($product->affiliate_link) ? $product->affiliate_link : 'javascript:void(0);'}}" class="red_btn w-100 text-center"><span> Buy Now</span></a>
                     </div>
 
+                    @if ($cartItem)
+                        <div class="view-cart-btn">
+                            <a href="{{ route('user.profile') }}" class="red_btn w-100 text-center"><span>View
+                                    Cart</span></a>
+                        </div>
+                    @else
+                        <div class="addtocart" data-id="{{ $product->id }}">
+                            <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to Cart</span></a>
+                        </div>
+                    @endif
 
                 </div>
             </div>
@@ -158,8 +165,7 @@
                     <div class="col-xl-7">
                         <div class="heading_hp text-center">
                             <h2>Related products</h2>
-                            <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing volutpat
-                                consectetur id purus rhoncus.</p>
+                            <p> </p>
                         </div>
                     </div>
                 </div>
@@ -172,7 +178,7 @@
                                         <div class="wishlist_icon">
                                             <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
                                         </div>
-                                        <a href="{{ route('product-details', $related_product->slug) }}">
+                                        <a href="{{ route('e-store.product-details', $related_product->slug) }}">
                                             @if (isset($related_product->main_image) && $related_product->main_image != null)
                                                 <img src="{{ Storage::url($related_product->main_image) }}"
                                                     alt="{{ $related_product->main_image }}">
@@ -183,7 +189,8 @@
                                         <ul class="star_ul">
                                             @if (Helper::getTotalProductRating($related_product->id))
                                                 @for ($i = 1; $i <= 5; $i++)
-                                                    <li><i class="fa-{{ $i <= Helper::getTotalProductRating($related_product->id) ? 'solid' : 'regular' }} fa-star"></i>
+                                                    <li><i
+                                                            class="fa-{{ $i <= Helper::getTotalProductRating($related_product->id) ? 'solid' : 'regular' }} fa-star"></i>
                                                     </li>
                                                 @endfor
                                             @else
@@ -198,13 +205,23 @@
                                             </li>
                                         </ul>
                                         <a
-                                            href="{{ route('product-details', $related_product->slug) }}">{{ $related_product->name }}</a>
+                                            href="{{ route('e-store.product-details', $related_product->slug) }}">{{ $related_product->name }}</a>
                                         <p>{{ strlen($related_product->short_description) > 50 ? substr($related_product->short_description, 0, 50) . '...' : $related_product->short_description }}
                                         </p>
                                         <span class="price_text">$ {{ $related_product->price }}</span>
                                     </div>
-                                    <div class="addtocart">
-                                        <a href="{{ route('product-details', $related_product->slug) }}"> view details</a>
+                                    <div class="addtocart" data-id="{{ $related_product->id }}">
+                                        <a href="javascript:void(0);">
+                                            @php
+                                                $relatedCartItem = \App\Models\EstoreCart::where(
+                                                    'user_id',
+                                                    auth()->id(),
+                                                )
+                                                    ->where('product_id', $related_product->id)
+                                                    ->first();
+                                            @endphp
+                                            {{ $relatedCartItem ? 'View Cart' : 'ADD TO CART' }}
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -223,7 +240,7 @@
                 var formData = $(this).serialize();
                 var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
                 $.ajax({
-                    url: "{{ route('product-add-review') }}",
+                    url: "{{ route('e-store.product-add-review') }}",
                     type: 'POST',
                     data: formData,
                     // processData: false,

@@ -11,7 +11,7 @@
             <!--  Row 1 -->
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('user.cms.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('user.store-cms.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-md-12">
@@ -57,8 +57,8 @@
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="slug"> Page Slug *</label>
-                                    <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug') }}"
-                                        placeholder="">
+                                    <input type="text" name="slug" id="slug" class="form-control"
+                                        value="{{ old('slug') }}" placeholder="">
                                     @if ($errors->has('slug'))
                                         <span class="error">{{ $errors->first('slug') }}</span>
                                     @endif
@@ -78,7 +78,7 @@
 
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                                 <button type="submit" class="print_btn me-2">Add</button>
-                                <a href="{{ route('user.cms.list') }}" class="print_btn print_btn_vv">Cancel</a>
+                                <a href="{{ route('user.store-cms.list') }}" class="print_btn print_btn_vv">Cancel</a>
                             </div>
                         </div>
                 </div>
@@ -87,8 +87,8 @@
     @endsection
 
     @push('scripts')
-    <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
-    <script>
-        ClassicEditor.create(document.querySelector("#page_content"));
-    </script>
+        <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
+        <script>
+            ClassicEditor.create(document.querySelector("#page_content"));
+        </script>
     @endpush

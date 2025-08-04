@@ -35,9 +35,10 @@ use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\ServiceContoller;
 use App\Http\Controllers\Admin\TestimonialController;
-use App\Http\Controllers\Estore\CmsController as EstoreCmsController;
 use App\Http\Controllers\Estore\HomeController;
 use App\Http\Controllers\Estore\ProductController as EstoreProductController;
+use App\Http\Controllers\Elearning\ElearningHomeController;
+use App\Http\Controllers\Elearning\ElearningProductController as ElearningProductController;
 use App\Http\Controllers\Frontend\CmsController;
 use App\Http\Controllers\Frontend\DonationController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
@@ -46,8 +47,10 @@ use App\Http\Controllers\User\BecomingSovereignController;
 use App\Http\Controllers\User\BulletinBoardController;
 use App\Http\Controllers\User\BulletinController;
 use App\Http\Controllers\User\CategoryController;
+use App\Http\Controllers\User\ElearningCategoryController;
 use App\Http\Controllers\User\ChatController;
-use App\Http\Controllers\User\CmsController as UserCmsController;
+use App\Http\Controllers\User\EstoreCmsController;
+use App\Http\Controllers\User\ElearningCmsController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\EcclesiaContorller;
 use App\Http\Controllers\User\FileController;
@@ -59,6 +62,7 @@ use App\Http\Controllers\User\MeetingSchedulingController;
 use App\Http\Controllers\User\NewsletterController as UserNewsletterController;
 use App\Http\Controllers\User\PartnerController;
 use App\Http\Controllers\User\ProductController;
+use App\Http\Controllers\User\ElearningController;
 use App\Http\Controllers\User\RolePermissionsController;
 use App\Http\Controllers\User\SendMailController;
 use App\Http\Controllers\User\StrategyController;
@@ -69,7 +73,9 @@ use App\Http\Controllers\User\TopicController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TermsAndConditionController;
 use App\Models\Category;
+use App\Models\ElearningCategory;
 use App\Models\EcomCmsPage;
+use App\Models\ElearningEcomCmsPage;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\User\ChatBotController;
@@ -308,7 +314,7 @@ Route::get('reset-username/{id}/{token}', [UserForgetPasswordController::class, 
 // user.username-change
 Route::post('username-change', [UserForgetPasswordController::class, 'changeUsername'])->name('user.username-change');
 
-Route::get('/member-privacy-policy', [UserCmsController::class, 'memberPrivacyPolicy'])->name('member-privacy-policy');
+Route::get('/member-privacy-policy', [EstoreCmsController::class, 'memberPrivacyPolicy'])->name('member-privacy-policy');
 
 // get.states
 Route::get('/get-states', [UserAuthController::class, 'getStates'])->name('get.states');
@@ -450,12 +456,62 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         'bulletins' => BulletinController::class,
         'topics' => TopicController::class,
         'categories' => CategoryController::class,
+        'elearning-categories' => ElearningCategoryController::class,
         'products' => ProductController::class,
+        'elearning' => ElearningController::class,
         'ecclesias' => EcclesiaContorller::class,
         'jobs' => JobpostingController::class,
         'meetings' => MeetingSchedulingController::class,
         // 'meetings' => MeetingSchedulingController::class,
     ]);
+
+    // e-store routes
+    Route::prefix('products')->group(function () {
+        Route::get('/product-delete/{id}', [ProductController::class, 'delete'])->name('products.delete');
+    });
+    Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
+    Route::get('/products-fetch-data', [ProductController::class, 'fetchData'])->name('products.fetch-data');
+    Route::get('/categories-fetch-data', [CategoryController::class, 'fetchData'])->name('categories.fetch-data');
+    Route::prefix('categories')->group(function () {
+        Route::get('/category-delete/{id}', [CategoryController::class, 'delete'])->name('categories.delete');
+    });
+    Route::get('/store-page/{name}/{permission}', [EstoreCmsController::class, 'page'])->name('store-user.page');
+    Route::get('/store-cms/dashboard', [EstoreCmsController::class, 'dashboard'])->name('user.store-cms.dashboard');
+    Route::get('/store-cms/list', [EstoreCmsController::class, 'list'])->name('user.store-cms.list');
+    Route::get('/store-cms/create', [EstoreCmsController::class, 'create'])->name('user.store-cms.create');
+    Route::post('/store-cms/store', [EstoreCmsController::class, 'store'])->name('user.store-cms.store');
+    Route::put('/store-cms/update/{id}', [EstoreCmsController::class, 'update'])->name('user.store-cms.update');
+    Route::get('/store-cms-delete/{id}', [EstoreCmsController::class, 'delete'])->name('user.store-cms.delete');
+    Route::get('/store-cms-page/{page}', [EstoreCmsController::class, 'cms'])->name('user.store-cms.edit');
+    Route::post('/store-cms/home/update', [EstoreCmsController::class, 'homeCmsUpdate'])->name('user.store-cms.home.update');
+    Route::post('/store-cms/footer/update', [EstoreCmsController::class, 'footerUpdate'])->name('user.store-cms.footer.update');
+    Route::get('/store-orders/list', [EstoreCmsController::class, 'ordersList'])->name('user.store-orders.list');
+    Route::get('/store-orders/fetch-data', [EstoreCmsController::class, 'fetchOrdersData'])->name('user.store-orders.fetch-data');
+    Route::get('/store-orders/details/{id}', [EstoreCmsController::class, 'orderDetails'])->name('user.store-orders.details');
+    Route::post('/store-orders/update-status', [EstoreCmsController::class, 'updateOrderStatus'])->name('user.store-orders.update-status');
+    Route::delete('/store-orders/delete/{id}', [EstoreCmsController::class, 'deleteOrder'])->name('user.store-orders.delete');
+    Route::get('/store-orders/export', [EstoreCmsController::class, 'exportOrders'])->name('user.store-orders.export');
+
+    // e-learning routes
+    Route::prefix('elearning')->group(function () {
+        Route::get('/elearning-product-delete/{id}', [ElearningController::class, 'delete'])->name('elearning.delete');
+    });
+    Route::get('/elearning-products-image-delete', [ElearningController::class, 'imageDelete'])->name('elearning.image.delete');
+    Route::get('/elearning-products-fetch-data', [ElearningController::class, 'fetchData'])->name('elearning.fetch-data');
+    Route::get('/elearning-categories-fetch-data', [ElearningCategoryController::class, 'fetchData'])->name('elearning-categories.fetch-data');
+    Route::prefix('elearning-categories')->group(function () {
+        Route::get('/elearning-category-delete/{id}', [ElearningCategoryController::class, 'delete'])->name('elearning-categories.delete');
+    });
+    Route::get('/elearning-page/{name}/{permission}', [ElearningCmsController::class, 'page'])->name('user.elearning-page');
+    Route::get('/elearning-cms/dashboard', [ElearningCmsController::class, 'dashboard'])->name('user.elearning-cms.dashboard');
+    Route::get('/elearning-cms/list', [ElearningCmsController::class, 'list'])->name('user.elearning-cms.list');
+    Route::get('/elearning-cms/create', [ElearningCmsController::class, 'create'])->name('user.elearning-cms.create');
+    Route::post('/elearning-cms/store', [ElearningCmsController::class, 'store'])->name('user.elearning-cms.store');
+    Route::put('/elearning-cms/update/{id}', [ElearningCmsController::class, 'update'])->name('user.elearning-cms.update');
+    Route::get('/elearning-cms-delete/{id}', [ElearningCmsController::class, 'delete'])->name('user.elearning-cms.delete');
+    Route::get('/elearning-cms-page/{page}', [ElearningCmsController::class, 'cms'])->name('user.elearning-cms.edit');
+    Route::post('/elearning-cms/home/update', [ElearningCmsController::class, 'homeCmsUpdate'])->name('user.elearning-cms.home.update');
+    Route::post('/elearning-cms/footer/update', [ElearningCmsController::class, 'footerUpdate'])->name('user.elearning-cms.footer.update');
 
     Route::prefix('meetings')->group(function () {
         Route::get('/meeting-delete/{id}', [MeetingSchedulingController::class, 'delete'])->name('meetings.delete');
@@ -477,19 +533,10 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     });
     Route::get('/ecclesias-fetch-data', [EcclesiaContorller::class, 'fetchData'])->name('ecclesias.fetch-data');
 
-    Route::prefix('products')->group(function () {
-        Route::get('/product-delete/{id}', [ProductController::class, 'delete'])->name('products.delete');
-    });
-    // products.image.delete
-    Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
-    Route::get('/products-fetch-data', [ProductController::class, 'fetchData'])->name('products.fetch-data');
 
 
-    Route::get('/categories-fetch-data', [CategoryController::class, 'fetchData'])->name('categories.fetch-data');
 
-    Route::prefix('categories')->group(function () {
-        Route::get('/category-delete/{id}', [CategoryController::class, 'delete'])->name('categories.delete');
-    });
+
 
     Route::prefix('topics')->group(function () {
         Route::get('/topic-delete/{id}', [TopicController::class, 'delete'])->name('topics.delete');
@@ -571,37 +618,40 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/user-newsletter-fetch-data', [UserNewsletterController::class, 'fetchData'])->name('user.newsletters.fetch-data');
 
     Route::get('/mail-fetch-data', [SendMailController::class, 'fetchData'])->name('mail.fetch-data');
-
-    Route::get('/page/{name}/{permission}', [UserCmsController::class, 'page'])->name('user.page');
-
-    Route::get('/cms/dashboard', [UserCmsController::class, 'dashboard'])->name('user.cms.dashboard');
-    Route::get('/cms/list', [UserCmsController::class, 'list'])->name('user.cms.list');
-    Route::get('/cms/create', [UserCmsController::class, 'create'])->name('user.cms.create');
-    Route::post('/cms/store', [UserCmsController::class, 'store'])->name('user.cms.store');
-    Route::put('/cms/update/{id}', [UserCmsController::class, 'update'])->name('user.cms.update');
-    Route::get('/cms-delete/{id}', [UserCmsController::class, 'delete'])->name('user.cms.delete');
-    Route::get('/cms-page/{page}', [UserCmsController::class, 'cms'])->name('user.cms.edit');
-    Route::post('/cms/home/update', [UserCmsController::class, 'homeCmsUpdate'])->name('user.cms.home.update');
-    Route::post('/cms/footer/update', [UserCmsController::class, 'footerUpdate'])->name('user.cms.footer.update');
 });
 // });
 
 
 /**************************************************----------------------------ECOM--------------------------****************************************************************/
 
-Route::prefix('e-learning')->middleware(['user'])->group(function () {
-    Route::get('/', [HomeController::class, 'eStore'])->name('e-learning');
-    Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-learning.newsletter');
-    Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails'])->name('product-details');
-    Route::get('/all-products', [EstoreProductController::class, 'products'])->name('all-products');
-    Route::get('/products-filter', [EstoreProductController::class, 'productsFilter'])->name('products-filter');
-    Route::post('/product-add-review', [EstoreProductController::class, 'productAddReview'])->name('product-add-review');
+Route::prefix('e-store')->middleware(['user'])->group(function () {
+    Route::get('/', [HomeController::class, 'eStore'])->name('e-store');
+    Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-store.newsletter');
+    Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails'])->name('e-store.product-details');
+    Route::get('/all-products', [EstoreProductController::class, 'products'])->name('e-store.all-products');
+    Route::get('/products-filter', [EstoreProductController::class, 'productsFilter'])->name('e-store.products-filter');
+    Route::post('/product-add-review', [EstoreProductController::class, 'productAddReview'])->name('e-store.product-add-review');
+    Route::post('/add-to-cart', [EstoreProductController::class, 'addToCart'])->name('e-store.add-to-cart');
+    Route::post('/remove-from-cart', [EstoreProductController::class, 'removeFromCart'])->name('e-store.remove-from-cart');
+    Route::post('/update-cart', [EstoreProductController::class, 'updateCart'])->name('e-store.update-cart');
+    Route::post('/clear-cart', [EstoreProductController::class, 'clearCart'])->name('e-store.clear-cart');
+    Route::get('/cart-count', [EstoreProductController::class, 'cartCount'])->name('e-store.cart-count');
+    Route::get('/cart-list', [EstoreProductController::class, 'cartList'])->name('e-store.cart-list');
+    Route::get('/check-product-in-cart', [EstoreProductController::class, 'checkProductInCart'])->name('e-store.check-product-in-cart');
+    Route::get('/estore-cart', [EstoreProductController::class, 'cart'])->name('e-store.cart');
+    Route::get('/estore-checkout', [EstoreProductController::class, 'checkout'])->name('e-store.checkout');
+    Route::post('/process-checkout', [EstoreProductController::class, 'processCheckout'])->name('e-store.process-checkout');
+    Route::get('/payment-success', [EstoreProductController::class, 'paymentSuccess'])->name('e-store.payment-success');
+    Route::get('/payment-cancelled', [EstoreProductController::class, 'paymentCancelled'])->name('e-store.payment-cancelled');
+    Route::get('/order-success/{orderId}', [EstoreProductController::class, 'orderSuccess'])->name('e-store.order-success');
+    Route::get('/my-orders', [EstoreProductController::class, 'myOrders'])->name('e-store.my-orders');
+    Route::get('/order-details/{orderId}', [EstoreProductController::class, 'orderDetails'])->name('e-store.order-details');
 
     $categories = Category::where('status', 1)->get();
     foreach ($categories as $category) {
         if ($category->slug) {
             Route::get($category->slug, [EstoreProductController::class, 'products'])
-                ->name($category->slug . '.page')
+                ->name($category->slug . '.e-store.page')
                 ->defaults('category_id', $category->id);
         }
     }
@@ -610,7 +660,36 @@ Route::prefix('e-learning')->middleware(['user'])->group(function () {
     foreach ($pages as $page) {
         if ($page->slug) {
             Route::get($page->slug, [EstoreCmsController::class, 'cmsPage'])
-                ->name($page->slug . '.cms-page')
+                ->name($page->slug . '.e-store.cms-page')
+                ->defaults('page_id', $page->id);
+        }
+    }
+});
+
+/**************************************************----------------------------ELEARNING--------------------------****************************************************************/
+
+Route::prefix('e-learning')->middleware(['user'])->group(function () {
+    Route::get('/', [ElearningHomeController::class, 'eStore'])->name('e-learning');
+    Route::post('/newsletter', [ElearningHomeController::class, 'newsletter'])->name('e-learning.newsletter');
+    Route::get('/product/{slug}', [ElearningProductController::class, 'productDetails'])->name('e-learning.product-details');
+    Route::get('/all-products', [ElearningProductController::class, 'products'])->name('e-learning.all-products');
+    Route::get('/products-filter', [ElearningProductController::class, 'productsFilter'])->name('e-learning.products-filter');
+    Route::post('/product-add-review', [ElearningProductController::class, 'productAddReview'])->name('e-learning.product-add-review');
+
+    $categories = ElearningCategory::where('status', 1)->get();
+    foreach ($categories as $category) {
+        if ($category->slug) {
+            Route::get($category->slug, [ElearningProductController::class, 'products'])
+                ->name($category->slug . '.e-learning.page')
+                ->defaults('category_id', $category->id);
+        }
+    }
+
+    $pages = ElearningEcomCmsPage::get();
+    foreach ($pages as $page) {
+        if ($page->slug) {
+            Route::get($page->slug, [ElearningCmsController::class, 'cmsPage'])
+                ->name($page->slug . '.e-learning.cms-page')
                 ->defaults('page_id', $page->id);
         }
     }

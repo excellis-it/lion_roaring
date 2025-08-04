@@ -57,7 +57,7 @@
                                 </div>
                             </div>
                             {{-- price --}}
-                            {{-- <div class="col-md-6 mb-2">
+                            <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="price"> Product Price*</label>
                                     <input type="text" name="price" id="price" class="form-control"
@@ -66,7 +66,7 @@
                                         <span class="error">{{ $errors->first('price') }}</span>
                                     @endif
                                 </div>
-                            </div> --}}
+                            </div>
                             {{-- quantity --}}
                             {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -113,19 +113,41 @@
                                     @endif
                                 </div>
                             </div>
-                              {{-- button_name --}}
-                              <div class="col-md-6 mb-2">
+                            {{-- description --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="description"> Product Description*</label>
+                                    <textarea name="description" id="description" class="form-control" rows="5" cols="30"
+                                        placeholder="Enter Product Description">{{ old('description') }}</textarea>
+                                    @if ($errors->has('description'))
+                                        <span class="error">{{ $errors->first('description') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            {{-- specification --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="specification"> Product Specification*</label>
+                                    <textarea name="specification" id="specification" class="form-control" rows="5" cols="30"
+                                        placeholder="Enter Product Specification">{{ old('specification') }}</textarea>
+                                    @if ($errors->has('specification'))
+                                        <span class="error">{{ $errors->first('specification') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            {{-- button_name --}}
+                            {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="button_name"> Button Name*</label>
                                     <input type="text" name="button_name" id="button_name" class="form-control"
-                                        value="{{ old('button_name') }}">
+                                        value="ADD TO CART">
                                     @if ($errors->has('button_name'))
                                         <span class="error">{{ $errors->first('button_name') }}</span>
                                     @endif
                                 </div>
-                            </div>
+                            </div> --}}
                             {{-- affiliate_link --}}
-                            <div class="col-md-6 mb-2">
+                            {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="affiliate_link"> Affiliate Link*</label>
                                     <input type="text" name="affiliate_link" id="affiliate_link" class="form-control"
@@ -134,7 +156,7 @@
                                         <span class="error">{{ $errors->first('affiliate_link') }}</span>
                                     @endif
                                 </div>
-                            </div>
+                            </div> --}}
                             {{-- sku --}}
                             {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -177,28 +199,7 @@
                                     @endif
                                 </div>
                             </div>
-                            {{-- description --}}
-                            {{-- <div class="col-md-6 mb-2">
-                                <div class="box_label">
-                                    <label for="description"> Product Description*</label>
-                                    <textarea name="description" id="description" class="form-control" rows="5" cols="30"
-                                        placeholder="Enter Product Description">{{ old('description') }}</textarea>
-                                    @if ($errors->has('description'))
-                                        <span class="error">{{ $errors->first('description') }}</span>
-                                    @endif
-                                </div>
-                            </div> --}}
-                            {{-- specification --}}
-                            {{-- <div class="col-md-6 mb-2">
-                                <div class="box_label">
-                                    <label for="specification"> Product Specification*</label>
-                                    <textarea name="specification" id="specification" class="form-control" rows="5" cols="30"
-                                        placeholder="Enter Product Specification">{{ old('specification') }}</textarea>
-                                    @if ($errors->has('specification'))
-                                        <span class="error">{{ $errors->first('specification') }}</span>
-                                    @endif
-                                </div>
-                            </div> --}}
+
                             <div class="col-md-12">
                                 <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image(Drag and drop
                                     atleast 1

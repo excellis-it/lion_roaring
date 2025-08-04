@@ -8,16 +8,18 @@ use App\Models\EcomFooterCms;
 use App\Models\EcomHomeCms;
 use App\Models\EcomNewsletter;
 use App\Models\MemberPrivacyPolicy;
+use App\Models\EstoreOrder;
+use App\Models\EstoreOrderItem;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 
-class CmsController extends Controller
+class EstoreCmsController extends Controller
 {
     use ImageTrait;
     public function memberPrivacyPolicy()
     {
         $policy = MemberPrivacyPolicy::orderBy('id', 'desc')->first();
-        return view('user.cms.member_privacy_policy')->with('policy', $policy);
+        return view('user.store-cms.member_privacy_policy')->with('policy', $policy);
     }
 
     public function page($name, $permission)
@@ -36,7 +38,7 @@ class CmsController extends Controller
         if (auth()->user()->hasRole('SUPER ADMIN')) {
             $count['pages'] = EcomCmsPage::count() + 2;
             $count['newsletter'] = EcomNewsletter::count();
-            return view('user.cms.dashboard')->with('count', $count);
+            return view('user.store-cms.dashboard')->with('count', $count);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -46,7 +48,7 @@ class CmsController extends Controller
     {
         if (auth()->user()->hasRole('SUPER ADMIN')) {
             $pages = EcomCmsPage::get();
-            return view('user.cms.list')->with('pages', $pages);
+            return view('user.store-cms.list')->with('pages', $pages);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -58,13 +60,13 @@ class CmsController extends Controller
         if (auth()->user()->hasRole('SUPER ADMIN')) {
             if ($page == 'home') {
                 $cms = EcomHomeCms::orderBy('id', 'desc')->first();
-                return view('user.cms.home_cms')->with('cms', $cms);
+                return view('user.store-cms.home_cms')->with('cms', $cms);
             } elseif ($page == 'footer') {
                 $cms = EcomFooterCms::orderBy('id', 'desc')->first();
-                return view('user.cms.footer_cms')->with('cms', $cms);
+                return view('user.store-cms.footer_cms')->with('cms', $cms);
             } else {
                 $cms = EcomCmsPage::where('slug', $page)->first();
-                return view('user.cms.cms')->with('cms', $cms);
+                return view('user.store-cms.cms')->with('cms', $cms);
             }
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -167,7 +169,7 @@ class CmsController extends Controller
     public function create()
     {
         if (auth()->user()->hasRole('SUPER ADMIN')) {
-            return view('user.cms.create');
+            return view('user.store-cms.create');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -196,7 +198,7 @@ class CmsController extends Controller
             }
 
             $cms->save();
-            return redirect()->route('user.cms.list')->with('message', 'CMS page added successfully');
+            return redirect()->route('user.store-cms.list')->with('message', 'CMS page added successfully');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -226,7 +228,7 @@ class CmsController extends Controller
             }
 
             $cms->save();
-            return redirect()->route('user.cms.list')->with('message', 'CMS page updated successfully');
+            return redirect()->route('user.store-cms.list')->with('message', 'CMS page updated successfully');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -242,5 +244,208 @@ class CmsController extends Controller
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
+    }
+
+    public function cmsPage($page_id = null)
+    {
+        $page_id = $page_id ?? 1;
+        $cms = EcomCmsPage::findOrfail($page_id);
+        return view('ecom.cms')->with(compact('cms'));
+    }
+
+    // Orders List
+    public function ordersList()
+    {
+        return view('user.estore-orders.list');
+    }
+
+    // Fetch Orders Data for DataTable
+    public function fetchOrdersData(Request $request)
+    {
+        if ($request->ajax()) {
+            $orders = EstoreOrder::with(['user', 'orderItems'])
+                ->orderBy('created_at', 'desc');
+
+            // Apply filters
+            if ($request->has('status') && $request->status != '') {
+                $orders->where('status', $request->status);
+            }
+
+            if ($request->has('payment_status') && $request->payment_status != '') {
+                $orders->where('payment_status', $request->payment_status);
+            }
+
+            if ($request->has('date_from') && $request->date_from != '') {
+                $orders->whereDate('created_at', '>=', $request->date_from);
+            }
+
+            if ($request->has('date_to') && $request->date_to != '') {
+                $orders->whereDate('created_at', '<=', $request->date_to);
+            }
+
+            if ($request->has('search') && $request->search != '') {
+                $search = $request->search;
+                $orders->where(function ($query) use ($search) {
+                    $query->where('order_number', 'LIKE', "%{$search}%")
+                        ->orWhere('email', 'LIKE', "%{$search}%")
+                        ->orWhere('phone', 'LIKE', "%{$search}%")
+                        ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"]);
+                });
+            }
+
+            $orders = $orders->get();
+
+            return view('user.estore-orders.table', compact('orders'))->render();
+        }
+    }
+
+    // Order Details
+    public function orderDetails($orderId)
+    {
+        $order = EstoreOrder::with(['user', 'orderItems.product', 'payments'])
+            ->findOrFail($orderId);
+
+        return view('user.estore-orders.details', compact('order'));
+    }
+
+    // Update Order Status
+    public function updateOrderStatus(Request $request)
+    {
+        $request->validate([
+            'order_id' => 'required|exists:estore_orders,id',
+            'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
+            'payment_status' => 'nullable|in:pending,paid,failed,refunded',
+            'notes' => 'nullable|string|max:1000'
+        ]);
+
+        try {
+            $order = EstoreOrder::findOrFail($request->order_id);
+
+            $order->status = $request->status;
+
+            if ($request->has('payment_status') && $request->payment_status) {
+                $order->payment_status = $request->payment_status;
+            }
+
+            if ($request->has('notes') && $request->notes) {
+                $order->notes = $request->notes;
+            }
+
+            $order->save();
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Order status updated successfully'
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Order status updated successfully');
+        } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Failed to update order status: ' . $e->getMessage()
+                ]);
+            }
+
+            return redirect()->back()->with('error', 'Failed to update order status');
+        }
+    }
+
+    // Delete Order
+    public function deleteOrder($orderId)
+    {
+        try {
+            $order = EstoreOrder::findOrFail($orderId);
+
+            // Delete order items first
+            $order->orderItems()->delete();
+
+            // Delete payments
+            $order->payments()->delete();
+
+            // Delete order
+            $order->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Order deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to delete order: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    // Export Orders
+    public function exportOrders(Request $request)
+    {
+        $orders = EstoreOrder::with(['user', 'orderItems'])
+            ->orderBy('created_at', 'desc');
+
+        // Apply same filters as in fetchOrdersData
+        if ($request->has('status') && $request->status != '') {
+            $orders->where('status', $request->status);
+        }
+
+        if ($request->has('payment_status') && $request->payment_status != '') {
+            $orders->where('payment_status', $request->payment_status);
+        }
+
+        if ($request->has('date_from') && $request->date_from != '') {
+            $orders->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->has('date_to') && $request->date_to != '') {
+            $orders->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $orders = $orders->get();
+
+        $filename = 'orders_' . date('Y-m-d_H-i-s') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function () use ($orders) {
+            $file = fopen('php://output', 'w');
+
+            // CSV headers
+            fputcsv($file, [
+                'Order Number',
+                'Customer Name',
+                'Email',
+                'Phone',
+                'Total Amount',
+                'Status',
+                'Payment Status',
+                'Order Date',
+                'Items Count'
+            ]);
+
+            // CSV data
+            foreach ($orders as $order) {
+                fputcsv($file, [
+                    $order->order_number,
+                    $order->full_name,
+                    $order->email,
+                    $order->phone,
+                    '$' . number_format($order->total_amount, 2),
+                    ucfirst($order->status),
+                    ucfirst($order->payment_status),
+                    $order->created_at->format('Y-m-d H:i:s'),
+                    $order->orderItems->count()
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

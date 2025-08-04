@@ -81,69 +81,74 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'category_id' => 'required|numeric|exists:categories,id',
-            'name' => 'required|string|max:255',
-            // 'description' => 'required|string',
-            'short_description' => 'required|string',
-            // 'sku' => 'required|string|unique:products',
-            // 'specification' => 'required|string',
-            // 'price' => 'required|numeric',
-            // 'quantity' => 'required|numeric',
-            'feature_product' => 'required',
-            'slug' => 'required|string|unique:products',
-            'affiliate_link' => 'required|string',
-            // 'meta_title' => 'nullable|string|max:255',
-            // 'meta_description' => 'nullable|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
-            'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
-            'button_name' => 'required|string',
-        ]);
+        // return $request->all();
+        try {
+            $request->validate([
+                'category_id' => 'required|numeric|exists:categories,id',
+                'name' => 'required|string|max:255',
+                'description' => 'required|string',
+                'short_description' => 'required|string',
+                // 'sku' => 'required|string|unique:products',
+                'specification' => 'required|string',
+                'price' => 'required|numeric',
+                // 'quantity' => 'required|numeric',
+                'feature_product' => 'required',
+                'slug' => 'required|string|unique:products',
+                // 'affiliate_link' => 'required|string',
+                // 'meta_title' => 'nullable|string|max:255',
+                // 'meta_description' => 'nullable|string|max:255',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+                'images' => 'nullable|array',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
+                // 'button_name' => 'required|string',
+            ]);
 
+            $product = new Product();
+            $product->category_id = $request->category_id;
+            $product->user_id = auth()->user()->id;
+            $product->name = $request->name;
+            $product->description = $request->description;
+            $product->short_description = $request->short_description;
+            // $product->sku = $request->sku;
+            $product->specification = $request->specification;
+            $product->price = $request->price;
+            // $product->quantity = $request->quantity;
+            // $product->button_name = 'ADD TO CART';
+            $product->slug = $request->slug;
+            // $product->affiliate_link = $request->affiliate_link;
+            $product->feature_product = $request->feature_product;
+            // $product->meta_title = $request->meta_title;
+            // $product->meta_description = $request->meta_description;
+            // return $product;
+            $product->save();
 
-        $product = new Product();
-        $product->category_id = $request->category_id;
-        $product->user_id = auth()->user()->id;
-        $product->name = $request->name;
-        // $product->description = $request->description;
-        $product->short_description = $request->short_description;
-        // $product->sku = $request->sku;
-        // $product->specification = $request->specification;
-        // $product->price = $request->price;
-        // $product->quantity = $request->quantity;
-        $product->button_name = $request->button_name;
-        $product->slug = $request->slug;
-        $product->affiliate_link = $request->affiliate_link;
-        $product->feature_product = $request->feature_product;
-        // $product->meta_title = $request->meta_title;
-        // $product->meta_description = $request->meta_description;
-        $product->save();
-
-        if ($request->hasFile('image')) {
-            $image = new ProductImage();
-            $image->product_id = $product->id;
-            $image->image = $this->imageUpload($request->file('image'), 'product');
-            $image->featured_image = 1;
-            $image->save();
-        }
-
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $file) {
+            if ($request->hasFile('image')) {
                 $image = new ProductImage();
                 $image->product_id = $product->id;
-                $image->image = $this->imageUpload($file, 'product');
-                $image->featured_image = 0;
+                $image->image = $this->imageUpload($request->file('image'), 'product');
+                $image->featured_image = 1;
                 $image->save();
             }
+
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $file) {
+                    $image = new ProductImage();
+                    $image->product_id = $product->id;
+                    $image->image = $this->imageUpload($file, 'product');
+                    $image->featured_image = 0;
+                    $image->save();
+                }
+            }
+
+            // notify users
+            $userName = Auth::user()->getFullNameAttribute();
+
+            $noti = NotificationService::notifyAllUsers('New Product created by ' . $userName, 'product');
+
+            return redirect()->route('products.index')->with('message', 'Product created successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to create product: ' . $e->getMessage())->withInput();
         }
-
-        // notify users
-        $userName = Auth::user()->getFullNameAttribute();
-        $noti = NotificationService::notifyAllUsers('New Product created by ' . $userName, 'product');
-
-
-        return redirect()->route('products.index')->with('message', 'Product created successfully!');
     }
 
     /**
@@ -187,14 +192,14 @@ class ProductController extends Controller
             $request->validate([
                 'category_id' => 'required|numeric|exists:categories,id',
                 'name' => 'required|string|max:255',
-                // 'description' => 'required|string',
+                'description' => 'required|string',
                 'short_description' => 'required|string',
                 // 'sku' => 'required|string|unique:products,sku,' . $id,
-                // 'specification' => 'required|string',
-                // 'price' => 'required|numeric',
+                'specification' => 'required|string',
+                'price' => 'required|numeric',
                 // 'quantity' => 'required|numeric',
                 'slug' => 'required|string|unique:products,slug,' . $id,
-                'affiliate_link' => 'required|string',
+                // 'affiliate_link' => 'required|string',
                 // 'meta_title' => 'nullable|string|max:255',
                 // 'meta_description' => 'nullable|string|max:255',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
@@ -202,22 +207,22 @@ class ProductController extends Controller
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
                 'feature_product' => 'required',
                 'status' => 'required',
-                'button_name' => 'required|string',
+                // 'button_name' => 'required|string',
             ]);
 
             $product = Product::findOrFail($id);
             $product->category_id = $request->category_id;
             $product->name = $request->name;
-            // $product->description = $request->description;
+            $product->description = $request->description;
             $product->short_description = $request->short_description;
             // $product->sku = $request->sku;
-            // $product->specification = $request->specification;
-            // $product->price = $request->price;
+            $product->specification = $request->specification;
+            $product->price = $request->price;
             // $product->quantity = $request->quantity;
             $product->slug = $request->slug;
-            $product->affiliate_link = $request->affiliate_link;
+            // $product->affiliate_link = $request->affiliate_link;
             $product->feature_product = $request->feature_product;
-            $product->button_name = $request->button_name;
+            // $product->button_name = $request->button_name;
             // $product->meta_title = $request->meta_title;
             // $product->meta_description = $request->meta_description;
             $product->status = $request->status;

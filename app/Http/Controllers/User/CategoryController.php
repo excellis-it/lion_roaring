@@ -183,6 +183,6 @@ class CategoryController extends Controller
         Log::info($category->name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
         $category->delete();
 
-        return response()->json(['message' => 'Category deleted successfully.']);
+        return redirect()->route('categories.index')->with('message', 'Category deleted successfully.');
     }
 }

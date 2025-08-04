@@ -50,6 +50,7 @@ class AuthController extends Controller
         if ($user && \Hash::check($request->password, $user->password)) {
             if ($user->status == 1 && $user->is_accept == 1) {
                 $otp = rand(1000, 9999);
+                // $otp = 1234;
                 $otp_verify = new VerifyOTP();
                 $otp_verify->user_id = $user->id;
                 $otp_verify->email = $user->email;

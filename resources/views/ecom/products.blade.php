@@ -42,40 +42,39 @@
                             </button>
                         </div>
                     </div>
-                    @if ($category_id != '')
-                    @else
-                        <div class="padding_filter">
-                            <div class="accordion" id="agegroup">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingAge">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseAge" aria-expanded="true" aria-controls="collapseAge">
-                                            Categories
-                                        </button>
-                                    </h2>
-                                    <div id="collapseAge" class="accordion-collapse collapse show"
-                                        aria-labelledby="headingAge" data-bs-parent="#agegroup">
-                                        <div class="accordion-body">
-                                            <div class="new">
 
-                                                @if (count($categories) > 0)
-                                                    @foreach ($categories as $category)
-                                                        <div class="form-group">
-                                                            <input type="checkbox" id="catagory{{ $category->id }}"
-                                                                name="category_id" value="{{ $category->id }}">
-                                                            <label
-                                                                for="catagory{{ $category->id }}">{{ $category->name }}</label>
-                                                        </div>
-                                                    @endforeach
-                                                @endif
+                    <div class="padding_filter">
+                        <div class="accordion" id="agegroup">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingAge">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseAge" aria-expanded="true" aria-controls="collapseAge">
+                                        Categories
+                                    </button>
+                                </h2>
+                                <div id="collapseAge" class="accordion-collapse collapse show" aria-labelledby="headingAge"
+                                    data-bs-parent="#agegroup">
+                                    <div class="accordion-body">
+                                        <div class="new">
 
-                                            </div>
+                                            @if (count($categories) > 0)
+                                                @foreach ($categories as $category)
+                                                    <div class="form-group">
+                                                        <input type="checkbox" id="catagory{{ $category->id }}"
+                                                            name="category_id" value="{{ $category->id }}">
+                                                        <label
+                                                            for="catagory{{ $category->id }}">{{ $category->name }}</label>
+                                                    </div>
+                                                @endforeach
+                                            @endif
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    @endif
+                    </div>
+
                     {{-- <div class="padding_filter">
                         <div class="accordion" id="price">
                             <div class="accordion-item">
@@ -290,7 +289,7 @@
             function loadMoreProducts(page, prices = [], category_id = [],
                 latestFilter = '', search = '') {
                 $.ajax({
-                    url: '{{ route('products-filter') }}',
+                    url: '{{ route('e-store.products-filter') }}',
                     type: 'GET',
                     data: {
                         page: page,

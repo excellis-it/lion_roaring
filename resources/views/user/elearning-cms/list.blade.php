@@ -1,6 +1,6 @@
 @extends('user.layouts.master')
 @section('title')
-    Cms List - {{ env('APP_NAME') }}
+    E-learning Cms List - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
 @endpush
@@ -20,10 +20,10 @@
                                 </div>
                                 <div class="row ">
                                     <div class="col-md-10">
-                                        <h3 class="mb-3 float-left">CMS List</h3>
+                                        <h3 class="mb-3 float-left">E-learning CMS List</h3>
                                     </div>
                                     <div class="col-md-2 ">
-                                        <a href="{{ route('user.cms.create') }}" class="btn btn-primary w-100"><i
+                                        <a href="{{ route('user.elearning-cms.create') }}" class="btn btn-primary w-100"><i
                                                 class="fa-solid fa-plus"></i> Create Page</a>
                                     </div>
                                     {{-- <div class="col-lg-4">
@@ -51,7 +51,7 @@
                                                 </td>
                                                 <td>Home Page</td>
                                                 <td>
-                                                    <a href="{{ route('user.cms.edit', ['page' => 'home']) }}"
+                                                    <a href="{{ route('user.elearning-cms.edit', ['page' => 'home']) }}"
                                                         class="edit_icon me-2"> <i class="ti ti-edit"></i></a>
                                                 </td>
                                             </tr>
@@ -62,7 +62,7 @@
                                                 </td>
                                                 <td>Footer Section</td>
                                                 <td>
-                                                    <a href="{{ route('user.cms.edit', ['page' => 'footer']) }}"
+                                                    <a href="{{ route('user.elearning-cms.edit', ['page' => 'footer']) }}"
                                                         class="edit_icon me-2"> <i class="ti ti-edit"></i></a>
                                                 </td>
                                             </tr>
@@ -78,11 +78,11 @@
                                                         <td>{{ $page->page_name }}</td>
                                                         <td>
                                                             <div class="d-flex">
-                                                                <a href="{{ route('user.cms.edit', ['page' => $page->slug]) }}"
+                                                                <a href="{{ route('user.elearning-cms.edit', ['page' => $page->slug]) }}"
                                                                     class="edit_icon me-2"> <i class="ti ti-edit"></i></a>
 
                                                                 <a href="javascript:void(0);"
-                                                                    data-route="{{ route('user.cms.delete', ['id' => $page->id]) }}"
+                                                                    data-route="{{ route('user.elearning-cms.delete', ['id' => $page->id]) }}"
                                                                     class="delete_icon" id="delete"> <i class="fa-solid fa-trash"></i> </a>
                                                             </div>
 

@@ -18,22 +18,32 @@
         <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-center">
             <li class="nav-item m-3">
 
-                <a href="{{ route('e-learning') }}" class="btn btn-primary"> <img src="{{ asset('user_assets/images/e-learning.png') }}" alt="e-Learning"> e-Learning</a>
+                <a href="{{ route('e-learning') }}" class="btn btn-primary"> <img
+                        src="{{ asset('user_assets/images/e-learning.png') }}" alt="e-Learning"> e-Learning</a>
+            </li>
+
+            <li class="nav-item m-3">
+
+                <a href="{{ route('e-store') }}" class="btn btn-primary"> <img
+                        src="{{ asset('user_assets/images/e-learning.png') }}" alt="e-store"> e-Store</a>
             </li>
 
             <li class="nav-item dropdown">
-                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" >
+                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2">
                     <i class="ti ti-bell-ringing"></i>
                     {{-- <span class="round-note"><p>5</p>5</span> --}}
-                    <div class="notification round-note"><p id="show-notification-count-{{auth()->user()->id}}">{{ Helper::notificationCount() }}</p></div>
+                    <div class="notification round-note">
+                        <p id="show-notification-count-{{ auth()->user()->id }}">{{ Helper::notificationCount() }}</p>
+                    </div>
                 </a>
                 <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up notification-dropdown"
                     aria-labelledby="drop2" data-bs-popper="static">
                     <div class="d-flex align-items-center justify-content-between py-3 px-7">
                         <h5 class="mb-0 fs-5 fw-semibold">Notifications</h5>
-                        <span class="badge bg-primary rounded-4 px-3 py-1 lh-sm clear-all-notification" style="color: red; font-size:medium; cursor:pointer">Clear All</span>
+                        <span class="badge bg-primary rounded-4 px-3 py-1 lh-sm clear-all-notification"
+                            style="color: red; font-size:medium; cursor:pointer">Clear All</span>
                     </div>
-                    <ul class="message-body srl" data-simplebar="" id="show-notification-{{auth()->user()->id}}">
+                    <ul class="message-body srl" data-simplebar="" id="show-notification-{{ auth()->user()->id }}">
                         @include('user.includes.notification')
                     </ul>
                 </div>
@@ -79,8 +89,7 @@
                         </div>
                         <div class="message-body">
                             @if (Gate::check('Manage Profile'))
-                                <a href="{{ route('user.profile') }}"
-                                    class="py-8 px-7 mt-8 d-flex align-items-center">
+                                <a href="{{ route('user.profile') }}" class="py-8 px-7 mt-8 d-flex align-items-center">
                                     <span
                                         class="d-flex align-items-center justify-content-center bg-light rounded-1 p-6">
                                         <img src="{{ asset('user_assets/images/icon-account.svg') }}" alt=""
