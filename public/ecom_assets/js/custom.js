@@ -701,3 +701,43 @@ $(document).ready(function () {
         });
     });
 });
+
+// toggle wishlist
+$(document).on("click", ".wishlist_icon", function (e) {
+    e.preventDefault();
+
+    var $button = $(this);
+    var productId = $button.data("id");
+
+    // Show loading state
+    $button.addClass("loading");
+
+    $.ajax({
+        url: window.cartRoutes.addToWishlist,
+        type: "POST",
+        data: {
+            product_id: productId,
+            _token: window.csrfToken,
+        },
+        success: function (response) {
+            if (response.status) {
+                toastr.success(response.message);
+                // Toggle button text based on response
+                if (response.action === "added") {
+                    // wishlist_icon have a tag with i class fa-solid fa-heart then set text-danger class
+                    $button.find("i").addClass("text-danger");
+                } else {
+                    $button.find("i").removeClass("text-danger");
+                }
+            } else {
+                toastr.error(response.message);
+            }
+        },
+        error: function (xhr, status, error) {
+            toastr.error("Failed to toggle wishlist");
+        },
+        complete: function () {
+            $button.removeClass("loading");
+        },
+    });
+});

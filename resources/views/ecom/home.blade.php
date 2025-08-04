@@ -83,8 +83,9 @@
                             <div class="feature_slid_padding">
                                 <div class="feature_box">
                                     <div class="feature_img">
-                                        <div class="wishlist_icon">
-                                            <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
+                                        <div class="wishlist_icon" data-id="{{ $product->id }}">
+                                            <a href="javascript:void(0);"><i
+                                                    class="fa-solid fa-heart {{ $product->isInWishlist() ? 'text-danger' : '' }}"></i></a>
                                         </div>
                                         <a href="{{ route('e-store.product-details', $product->slug) }}">
                                             @if (isset($product->main_image) && $product->main_image != null)
@@ -112,7 +113,8 @@
                                             <li>({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
                                             </li>
                                         </ul>
-                                        <a href="{{ route('e-store.product-details', $product->slug) }}">{{ $product->name }}</a>
+                                        <a
+                                            href="{{ route('e-store.product-details', $product->slug) }}">{{ $product->name }}</a>
                                         <p>{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
                                         </p>
                                         <span class="price_text">$ {{ $product->price }}</span>
@@ -147,7 +149,7 @@
                             <div class="feature_slid_padding">
                                 <div class="feature_box">
                                     <div class="feature_img">
-                                        <div class="wishlist_icon">
+                                        <div class="wishlist_icon" data-id="{{ $product->id }}">
                                             <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
                                         </div>
                                         <a href="{{ route('e-store.product-details', $product->slug) }}">
@@ -176,7 +178,8 @@
                                             <li>({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
                                             </li>
                                         </ul>
-                                        <a href="{{ route('e-store.product-details', $product->slug) }}">{{ $product->name }}</a>
+                                        <a
+                                            href="{{ route('e-store.product-details', $product->slug) }}">{{ $product->name }}</a>
                                         <p>{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
                                         </p>
                                         <span class="price_text">${{ $product->price }}</span>

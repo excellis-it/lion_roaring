@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
 use Illuminate\Support\Facades\DB;
+use App\Models\EcomWishList;
 
 class ProductController extends Controller
 {
@@ -642,5 +643,37 @@ class ProductController extends Controller
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 
         return view('ecom.order-success', compact('order', 'cartCount'));
+    }
+
+    // Add to wishlist with toggle if have then remove either insert
+    public function addToWishlist(Request $request)
+    {
+        if ($request->ajax()) {
+            $request->validate([
+                'product_id' => 'required|integer',
+            ]);
+
+            $product = Product::find($request->product_id);
+            if (!$product) {
+                return response()->json(['status' => false, 'message' => 'Product not found']);
+            }
+
+            $wishlistItem = EcomWishList::where('user_id', auth()->id())
+                ->where('product_id', $product->id)
+                ->first();
+
+            if ($wishlistItem) {
+                // Remove from wishlist
+                $wishlistItem->delete();
+                return response()->json(['status' => true, 'action' => 'remove', 'message' => 'Product removed from wishlist']);
+            } else {
+                // Add to wishlist
+                EcomWishList::create([
+                    'user_id' => auth()->id(),
+                    'product_id' => $product->id,
+                ]);
+                return response()->json(['status' => true, 'action' => 'added', 'message' => 'Product added to wishlist']);
+            }
+        }
     }
 }

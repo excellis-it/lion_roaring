@@ -25,7 +25,7 @@
             <li class="nav-item m-3">
 
                 <a href="{{ route('e-store') }}" class="btn btn-primary"> <img
-                        src="{{ asset('user_assets/images/e-learning.png') }}" alt="e-store"> e-Store</a>
+                        src="{{ asset('user_assets/images/bag.png') }}" alt="e-store"> e-Store</a>
             </li>
 
             <li class="nav-item dropdown">
