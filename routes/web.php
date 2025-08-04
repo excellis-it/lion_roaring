@@ -650,6 +650,8 @@ Route::prefix('e-store')->middleware(['user'])->group(function () {
     Route::post('/product/add-to-wishlist', [EstoreProductController::class, 'addToWishlist'])->name('e-store.add-to-wishlist');
     // wishlist list
     Route::get('/estore/wishlist', [EstoreProductController::class, 'wishlist'])->name('e-store.wishlist');
+    // remove from wishlist
+    Route::post('/product/remove-from-wishlist', [EstoreProductController::class, 'removeFromWishlist'])->name('e-store.remove-from-wishlist');
 
     $categories = Category::where('status', 1)->get();
     foreach ($categories as $category) {

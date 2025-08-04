@@ -676,4 +676,37 @@ class ProductController extends Controller
             }
         }
     }
+
+    // list wishlist for user
+    public function wishlist()
+    {
+        $wishlistItems = EcomWishList::where('user_id', auth()->id())
+            ->with('product')
+            ->get();
+
+        $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+
+        return view('ecom.wishlist')->with(compact('wishlistItems', 'cartCount'));
+    }
+
+    // Remove from wishlist
+    public function removeFromWishlist(Request $request){
+        if ($request->ajax()) {
+            $request->validate([
+                'product_id' => 'required|integer',
+            ]);
+
+            $wishlistItem = EcomWishList::where('user_id', auth()->id())
+                ->where('product_id', $request->product_id)
+                ->first();
+
+            if (!$wishlistItem) {
+                return response()->json(['status' => false, 'message' => 'Wishlist item not found']);
+            }
+
+            $wishlistItem->delete();
+
+            return response()->json(['status' => true, 'message' => 'Product removed from wishlist']);
+        }
+    }
 }

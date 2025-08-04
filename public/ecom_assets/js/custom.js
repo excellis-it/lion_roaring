@@ -741,3 +741,40 @@ $(document).on("click", ".wishlist_icon", function (e) {
         },
     });
 });
+
+// Remove from wishlist
+$(document).on("click", ".remove-from-wishlist", function (e) {
+    e.preventDefault();
+
+    var $button = $(this);
+    var productId = $button.data("id");
+
+    // Show loading state
+    $button.addClass("loading");
+
+    $.ajax({
+        url: window.cartRoutes.removeFromWishlist,
+        type: "POST",
+        data: {
+            product_id: productId,
+            _token: window.csrfToken,
+        },
+        success: function (response) {
+            if (response.status) {
+                toastr.success(response.message);
+                // Remove the wishlist item from the UI
+                $button.closest(".wishlist-item").fadeOut(300, function () {
+                    $(this).remove();
+                });
+            } else {
+                toastr.error(response.message);
+            }
+        },
+        error: function (xhr, status, error) {
+            toastr.error("Failed to remove from wishlist");
+        },
+        complete: function () {
+            $button.removeClass("loading");
+        },
+    });
+});

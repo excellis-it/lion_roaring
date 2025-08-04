@@ -40,6 +40,8 @@
                                         </span>
                                     </button>
                                     <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{{ route('e-store.wishlist') }}">My
+                                                Wishlist</a>
                                         <li><a class="dropdown-item" href="{{ route('user.profile') }}">Profile</a>
                                         </li>
                                         <li><a class="dropdown-item" href="{{ route('e-store.my-orders') }}">My

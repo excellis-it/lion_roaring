@@ -8,7 +8,8 @@
             <div class="feature_box">
                 <div class="feature_img">
                     <div class="wishlist_icon" data-id="{{ $product['id'] }}">
-                        <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
+                        <a href="javascript:void(0);"><i
+                                class="fa-solid fa-heart {{ $product->isInWishlist() ? 'text-danger' : '' }}"></i></a>
                     </div>
                     <a href="{{ route('e-store.product-details', $product['slug']) }}">
                         @if (isset($product['image']['image']) && $product['image']['image'] != null)
