@@ -54,7 +54,9 @@
                 cartCount: "{{ route('e-store.cart-count') }}",
                 cartList: "{{ route('e-store.cart-list') }}",
                 checkProductInCart: "{{ route('e-store.check-product-in-cart') }}",
-                viewCart: "{{ route('e-store.cart') }}"
+                viewCart: "{{ route('e-store.cart') }}",
+                addToWishlist: "{{ route('e-store.add-to-wishlist') }}",
+                removeFromWishlist: "{{ route('e-store.remove-from-wishlist') }}",
             };
             window.csrfToken = "{{ csrf_token() }}";
         </script>

@@ -175,8 +175,8 @@
                             <div class="feature_slid_padding">
                                 <div class="feature_box">
                                     <div class="feature_img">
-                                        <div class="wishlist_icon">
-                                            <a href="javascript:void(0);"><i class="fa-solid fa-heart"></i></a>
+                                        <div class="wishlist_icon" data-id="{{ $related_product->id }}">
+                                            <a href="javascript:void(0);"><i class="fa-solid fa-heart {{ $product->isInWishlist() ? 'text-danger' : '' }}"></i></a>
                                         </div>
                                         <a href="{{ route('e-store.product-details', $related_product->slug) }}">
                                             @if (isset($related_product->main_image) && $related_product->main_image != null)

@@ -50,4 +50,14 @@ class Product extends Model
         return $this->hasMany(Review::class);
     }
 
+
+    public function isInWishlist()
+    {
+        if (auth()->check()) {
+            return EcomWishList::where('product_id', $this->id)
+                ->where('user_id', auth()->id())
+                ->exists();
+        }
+        return false;
+    }
 }
