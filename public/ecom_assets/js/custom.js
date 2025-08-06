@@ -360,7 +360,7 @@ var QtyInput = (function () {
             },
             success: function (response) {
                 if (response.status) {
-                    toastr.success("Cart updated");
+                    // toastr.success("Cart updated");
                     updateCartCount();
                 } else {
                     toastr.error(response.message);
@@ -414,7 +414,7 @@ var QtyInput = (function () {
                     // Update UI to "View Cart" state
                     $(".addtocart").replaceWith(`
                         <div class="view-cart-btn">
-                            <a href="{{route('e-store.cart')}}" class="red_btn w-100 text-center"><span>View Cart</span></a>
+                            <a href="${window.cartRoutes.viewCart}" class="red_btn w-100 text-center"><span>View Cart</span></a>
                         </div>
                     `);
                 }
@@ -641,7 +641,7 @@ $(document).ready(function () {
             },
             success: function (response) {
                 if (response.status) {
-                    toastr.success(response.message);
+                    //   toastr.success(response.message);
                     updateCartCount();
                 } else {
                     toastr.error(response.message);

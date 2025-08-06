@@ -7,6 +7,17 @@
 @endsection
 
 @push('styles')
+    <style>
+        .qty-input .qty-count--minus,
+        .qty-input .qty-count--add {
+            border: 1px solid #181818;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 22px;
+            background-color: transparent;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -245,7 +256,10 @@
                             // Recalculate totals
                             calculateTotals();
                             updateCartCount();
-                            toastr.success('Cart updated successfully');
+                            //  toastr.success('Cart updated successfully');
+                            setTimeout(() => {
+                                calculateTotals();
+                            }, 1000);
                         } else {
                             toastr.error(response.message);
                         }

@@ -7,6 +7,11 @@
 @endsection
 
 @push('styles')
+    <style>
+        .qty-input {
+            border: none;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -87,7 +92,7 @@
 
                     @if ($cartItem)
                         <div class="view-cart-btn">
-                            <a href="{{ route('user.profile') }}" class="red_btn w-100 text-center"><span>View
+                            <a href="{{ route('e-store.cart') }}" class="red_btn w-100 text-center"><span>View
                                     Cart</span></a>
                         </div>
                     @else
@@ -176,7 +181,8 @@
                                 <div class="feature_box">
                                     <div class="feature_img">
                                         <div class="wishlist_icon" data-id="{{ $related_product->id }}">
-                                            <a href="javascript:void(0);"><i class="fa-solid fa-heart {{ $product->isInWishlist() ? 'text-danger' : '' }}"></i></a>
+                                            <a href="javascript:void(0);"><i
+                                                    class="fa-solid fa-heart {{ $product->isInWishlist() ? 'text-danger' : '' }}"></i></a>
                                         </div>
                                         <a href="{{ route('e-store.product-details', $related_product->slug) }}">
                                             @if (isset($related_product->main_image) && $related_product->main_image != null)

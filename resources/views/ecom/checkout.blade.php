@@ -38,14 +38,14 @@
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" name="first_name" id="first_name"
-                                            placeholder="First Name" value="{{ auth()->user()->first_name }}" required>
+                                            placeholder="First Name" value="{{ auth()->user()->first_name }}">
                                         <label for="first_name">First Name</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" name="last_name" id="last_name"
-                                            placeholder="Last Name" value="{{ auth()->user()->last_name ?? '' }}" required>
+                                            placeholder="Last Name" value="{{ auth()->user()->last_name ?? '' }}">
                                         <label for="last_name">Last Name</label>
                                     </div>
                                 </div>
@@ -55,14 +55,14 @@
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" name="phone" id="phone"
-                                            placeholder="Phone Number" value="{{ auth()->user()->phone ?? '' }}" required>
+                                            placeholder="Phone Number" value="{{ auth()->user()->phone ?? '' }}">
                                         <label for="phone">Phone Number</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
                                         <input type="email" class="form-control bg-light" name="email" id="email"
-                                            placeholder="Mail ID" value="{{ auth()->user()->email }}" required readonly>
+                                            placeholder="Mail ID" value="{{ auth()->user()->email }}" readonly>
                                         <label for="email">Mail ID</label>
                                     </div>
                                 </div>
@@ -71,7 +71,7 @@
                                 <div class="col-md-12">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" name="address_line_1" id="address_line_1"
-                                            placeholder="Address Line 1" value="{{ auth()->user()->address ?? '' }}" required>
+                                            placeholder="Address Line 1" value="{{ auth()->user()->address ?? '' }}">
                                         <label for="address_line_1">Address Line 1</label>
                                     </div>
                                 </div>
@@ -87,14 +87,14 @@
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" name="pincode" id="pincode"
-                                            placeholder="ZIP" value="{{ auth()->user()->zip ?? '' }}" required>
+                                            placeholder="ZIP" value="{{ auth()->user()->zip ?? '' }}">
                                         <label for="pincode">ZIP</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" name="city" id="city"
-                                            placeholder="City/District" value="{{ auth()->user()->city ?? '' }}" required>
+                                            placeholder="City/District" value="{{ auth()->user()->city ?? '' }}">
                                         <label for="city">City/District</label>
                                     </div>
                                 </div>
@@ -103,14 +103,14 @@
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" name="state" id="state"
-                                            placeholder="State" value="{{ auth()->user()->state ?? '' }}" required>
+                                            placeholder="State" value="{{ auth()->user()->state ?? '' }}">
                                         <label for="state">State</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" name="country" id="country"
-                                            placeholder="Country" value="{{ auth()->user()->countries?->name ?? '' }}" required>
+                                            placeholder="Country" value="{{ auth()->user()->countries?->name ?? '' }}">
                                         <label for="country">Country</label>
                                     </div>
                                 </div>
@@ -150,9 +150,27 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $('#checkout-form').on('submit', function(e) {
             e.preventDefault();
+
+            // Validate required fields
+            let missingFields = [];
+            if (!$('#first_name').val().trim()) missingFields.push('First Name');
+            if (!$('#last_name').val().trim()) missingFields.push('Last Name');
+            if (!$('#phone').val().trim()) missingFields.push('Phone Number');
+            if (!$('#email').val().trim()) missingFields.push('Mail ID');
+            if (!$('#address_line_1').val().trim()) missingFields.push('Address Line 1');
+            if (!$('#pincode').val().trim()) missingFields.push('ZIP');
+            if (!$('#city').val().trim()) missingFields.push('City/District');
+            if (!$('#state').val().trim()) missingFields.push('State');
+            if (!$('#country').val().trim()) missingFields.push('Country');
+
+            if (missingFields.length > 0) {
+                toastr.error('Please fill in the following fields: ' + missingFields.join(', '));
+                return;
+            }
 
             // Show loading
             $('#submit-payment').prop('disabled', true).find('span').text('Processing...');
@@ -171,7 +189,11 @@
                         // Redirect to Stripe checkout
                         window.location.href = response.checkout_url;
                     } else {
-                        toastr.error(response.message);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message
+                        });
                         $('#submit-payment').prop('disabled', false).find('span').text('PLACE ORDER');
                     }
                 },
@@ -183,10 +205,18 @@
                         const errors = xhr.responseJSON.errors;
                         errorMessage = Object.values(errors)[0][0];
                     }
-                    toastr.error(errorMessage);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage
+                    });
                     $('#submit-payment').prop('disabled', false).find('span').text('PLACE ORDER');
                 }
             });
+
+            setTimeout(() => {
+                $('#submit-payment').prop('disabled', false).find('span').text('PLACE ORDER');
+            }, 6000);
         });
     </script>
 @endpush

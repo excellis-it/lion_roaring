@@ -119,6 +119,11 @@ class ProductController extends Controller
 
             //  return $products;
 
+            // is the product in wishlist
+            foreach ($products as &$product) {
+                $product['is_in_wishlist'] = (new Product())->isInWishlist($product['id']);
+            }
+
             $category = !empty($category_id) ? Category::whereIn('id', $category_id)->get()->toArray() : null;
             $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 

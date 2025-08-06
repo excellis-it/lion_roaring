@@ -110,4 +110,14 @@
     @endsection
 
     @push('scripts')
+        <script>
+            $(document).ready(function() {
+                // auto set slug from name
+                $('#name').on('keyup', function() {
+                    var name = $(this).val();
+                    var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+                    $('#slug').val(slug);
+                });
+            });
+        </script>
     @endpush

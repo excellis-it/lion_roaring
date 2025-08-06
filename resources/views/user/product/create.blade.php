@@ -270,4 +270,14 @@
             ClassicEditor.create(document.querySelector("#description"));
             ClassicEditor.create(document.querySelector("#specification"));
         </script>
+        <script>
+            $(document).ready(function() {
+                // auto set slug from name
+                $('#name').on('keyup', function() {
+                    var name = $(this).val();
+                    var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+                    $('#slug').val(slug);
+                });
+            });
+        </script>
     @endpush
