@@ -10,6 +10,8 @@ use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\NotificationService;
+use App\Models\Size;
+use App\Models\Color;
 
 class ProductController extends Controller
 {
@@ -66,8 +68,11 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::where('status', 1)->get();
+        $sizes = Size::where('status', 1)->get();
+        $colors = Color::where('status', 1)->get();
         if (auth()->user()->hasRole('SUPER ADMIN')) {
-            return view('user.product.create')->with('categories', $categories);
+            return view('user.product.create')
+                ->with(compact('categories', 'sizes', 'colors'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -81,7 +86,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request->all();
+        //  return $request->all();
         try {
             $request->validate([
                 'category_id' => 'required|numeric|exists:categories,id',
@@ -144,18 +149,20 @@ class ProductController extends Controller
             if ($request->filled('sizes')) {
                 foreach ($request->sizes as $size) {
                     if ($size) {
-                        $product->sizes()->create(['size' => $size]);
+                        $product->sizes()->create(['size_id' => $size]);
                     }
                 }
+                // return $request->sizes;
             }
 
             // Save colors
             if ($request->filled('colors')) {
                 foreach ($request->colors as $color) {
                     if ($color) {
-                        $product->colors()->create(['color' => $color]);
+                        $product->colors()->create(['color_id' => $color]);
                     }
                 }
+                //    return $request->colors;
             }
 
             // notify users
@@ -189,10 +196,12 @@ class ProductController extends Controller
     public function edit($id)
     {
         $categories = Category::where('status', 1)->get();
+        $sizes = Size::where('status', 1)->get();
+        $colors = Color::where('status', 1)->get();
         if (auth()->user()->hasRole('SUPER ADMIN')) {
             $product = Product::findOrFail($id);
 
-            return view('user.product.edit', compact('product', 'categories'));
+            return view('user.product.edit', compact('product', 'categories', 'sizes', 'colors'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -274,7 +283,7 @@ class ProductController extends Controller
             if ($request->filled('sizes')) {
                 foreach ($request->sizes as $size) {
                     if ($size) {
-                        $product->sizes()->create(['size' => $size]);
+                        $product->sizes()->create(['size_id' => $size]);
                     }
                 }
             }
@@ -284,7 +293,7 @@ class ProductController extends Controller
             if ($request->filled('colors')) {
                 foreach ($request->colors as $color) {
                     if ($color) {
-                        $product->colors()->create(['color' => $color]);
+                        $product->colors()->create(['color_id' => $color]);
                     }
                 }
             }

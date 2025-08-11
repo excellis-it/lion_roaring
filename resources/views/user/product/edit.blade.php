@@ -4,6 +4,8 @@
 @endsection
 @push('styles')
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/min/dropzone.min.css" rel="stylesheet">
+    <!-- Choices.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
     <style>
         .ck-placeholder {
             color: #a1a1a1;
@@ -329,37 +331,42 @@
                             {{-- Multi Sizes --}}
                             <div class="col-md-4 mb-2">
                                 <div class="box_label">
-                                    <label for="sizes">Product Sizes</label>
+                                    <label>Product Sizes</label>
                                     <div id="sizes-wrapper">
-                                        @foreach ($product->sizes as $size)
-                                            <div class="input-group mb-2">
-                                                <input type="text" name="sizes[]" class="form-control"
-                                                    value="{{ $size->size }}" placeholder="Enter size">
-                                                <button type="button" class="btn btn-danger remove-size"><i
-                                                        class="fa fa-times"></i></button>
-                                            </div>
-                                        @endforeach
+                                        <div class=" mb-2">
+                                            <select multiple name="sizes[]" class="sizeSelect">
+
+                                                @foreach ($sizes as $size)
+                                                    <option value="{{ $size->id }}"
+                                                        {{ $product->sizeIds()->contains($size->id) ? 'selected' : '' }}>
+                                                        {{ $size->size }}</option>
+                                                @endforeach
+                                            </select>
+
+                                        </div>
                                     </div>
-                                    <button type="button" class="btn btn-primary" id="add-size">+ Size</button>
+
                                 </div>
                             </div>
 
                             {{-- Multi Colors --}}
-                            <div class="col-md-2 mb-2">
+                            <div class="col-md-4 mb-2">
                                 <div class="box_label">
-                                    <label for="colors">Product Colors</label>
+                                    <label>Product Colors</label>
                                     <div id="colors-wrapper">
-                                        @foreach ($product->colors as $color)
-                                            <div class="input-group mb-2">
-                                                <input type="color" name="colors[]" class="form-control"
-                                                    value="{{ $color->color }}" placeholder="Enter color"
-                                                    style="min-height: 42px;">
-                                                <button type="button" class="btn btn-danger remove-color"><i
-                                                        class="fa fa-times"></i></button>
-                                            </div>
-                                        @endforeach
+                                        <div class="mb-2">
+                                            <select multiple name="colors[]" class="colorSelect">
+
+                                                @foreach ($colors as $color)
+                                                    <option value="{{ $color->id }}"
+                                                        {{ $product->colorIds()->contains($color->id) ? 'selected' : '' }}>
+                                                        {{ $color->color_name }}</option>
+                                                @endforeach
+                                            </select>
+
+                                        </div>
                                     </div>
-                                    <button type="button" class="btn btn-primary" id="add-color">+ Color</button>
+
                                 </div>
                             </div>
 
@@ -376,6 +383,8 @@
     @push('scripts')
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js"></script>
         <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
+        <!-- Choices.js -->
+        <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
         <script type="text/javascript">
             Dropzone.options.imageUpload = {
                 maxFilesize: 1,
@@ -405,30 +414,24 @@
                     });
                 });
 
-                // Add more sizes
-                $('#add-size').click(function() {
-                    $('#sizes-wrapper').append(`
-                        <div class="input-group mb-2">
-                            <input type="text" name="sizes[]" class="form-control" placeholder="Enter size">
-                            <button type="button" class="btn btn-danger remove-size"><i class="fa fa-times"></i></button>
-                        </div>
-                    `);
-                });
-                $(document).on('click', '.remove-size', function() {
-                    $(this).closest('.input-group').remove();
-                });
 
-                // Add more colors
-                $('#add-color').click(function() {
-                    $('#colors-wrapper').append(`
-                        <div class="input-group mb-2">
-                            <input type="color" name="colors[]" class="form-control" placeholder="Enter color" style="min-height: 42px;">
-                            <button type="button" class="btn btn-danger remove-color"><i class="fa fa-times"></i></button>
-                        </div>
-                    `);
+            });
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                new Choices(".sizeSelect", {
+                    removeItemButton: true,
+                    searchPlaceholderValue: "Type to search...",
+                    closeDropdownOnSelect: 'auto',
+                    //  placeholder: false,
+                    placeholderValue: "Select size",
                 });
-                $(document).on('click', '.remove-color', function() {
-                    $(this).closest('.input-group').remove();
+                new Choices(".colorSelect", {
+                    removeItemButton: true,
+                    searchPlaceholderValue: "Type to search...",
+                    closeDropdownOnSelect: 'auto',
+                    //  placeholder: false,
+                    placeholderValue: "Select color",
                 });
             });
         </script>

@@ -10,6 +10,8 @@
             height: 250px !important;
         }
     </style>
+    <!-- Choices.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 @endpush
 @section('content')
     <div class="container-fluid">
@@ -273,32 +275,36 @@
                                 <div class="box_label">
                                     <label>Product Sizes</label>
                                     <div id="sizes-wrapper">
-                                        <div class="input-group mb-2">
-                                            <input type="text" name="sizes[]" class="form-control"
-                                                placeholder="Enter size">
-                                            <button type="button" class="btn btn-danger remove-size"
-                                                style="display:none;"><i class="fa fa-times"></i>
-                                            </button>
+                                        <div class=" mb-2">
+                                            <select multiple name="sizes[]" class="sizeSelect">
+
+                                                @foreach ($sizes as $size)
+                                                    <option value="{{ $size->id }}">{{ $size->size }}</option>
+                                                @endforeach
+                                            </select>
+
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-primary" id="add-size">+ Size</button>
+
                                 </div>
                             </div>
 
                             {{-- Multi Colors --}}
-                            <div class="col-md-2 mb-2">
+                            <div class="col-md-4 mb-2">
                                 <div class="box_label">
                                     <label>Product Colors</label>
                                     <div id="colors-wrapper">
-                                        <div class="input-group mb-2">
-                                            <input type="color" name="colors[]" class="form-control"
-                                                placeholder="Enter color" style="min-height: 42px;">
-                                            <button type="button" class="btn btn-danger remove-color"
-                                                style="display:none;"><i class="fa fa-times"></i>
-                                            </button>
+                                        <div class="mb-2">
+                                            <select multiple name="colors[]" class="colorSelect">
+
+                                                @foreach ($colors as $color)
+                                                    <option value="{{ $color->id }}">{{ $color->color_name }}</option>
+                                                @endforeach
+                                            </select>
+
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-primary" id="add-color">+ Color</button>
+
                                 </div>
                             </div>
 
@@ -316,6 +322,9 @@
     @push('scripts')
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js"></script>
         <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
+        <!-- Choices.js -->
+        <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
         <script type="text/javascript">
             Dropzone.options.imageUpload = {
                 maxFilesize: 1,
@@ -335,30 +344,24 @@
                     $('#slug').val(slug);
                 });
 
-                // Add more sizes
-                $('#add-size').click(function() {
-                    $('#sizes-wrapper').append(`
-                <div class="input-group mb-2">
-                    <input type="text" name="sizes[]" class="form-control" placeholder="Enter size">
-                    <button type="button" class="btn btn-danger remove-size"><i class="fa fa-times"></i></button>
-                </div>
-            `);
-                });
-                $(document).on('click', '.remove-size', function() {
-                    $(this).closest('.input-group').remove();
-                });
 
-                // Add more colors
-                $('#add-color').click(function() {
-                    $('#colors-wrapper').append(`
-                <div class="input-group mb-2">
-                    <input type="color" name="colors[]" class="form-control" placeholder="Enter color" style="min-height: 42px;">
-                    <button type="button" class="btn btn-danger remove-color"><i class="fa fa-times"></i></button>
-                </div>
-            `);
+            });
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                new Choices(".sizeSelect", {
+                    removeItemButton: true,
+                    searchPlaceholderValue: "Type to search...",
+                    closeDropdownOnSelect: 'auto',
+                    //  placeholder: false,
+                    placeholderValue: "Select size",
                 });
-                $(document).on('click', '.remove-color', function() {
-                    $(this).closest('.input-group').remove();
+                new Choices(".colorSelect", {
+                    removeItemButton: true,
+                    searchPlaceholderValue: "Type to search...",
+                    closeDropdownOnSelect: 'auto',
+                    //  placeholder: false,
+                    placeholderValue: "Select color",
                 });
             });
         </script>

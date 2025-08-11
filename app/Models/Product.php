@@ -27,12 +27,24 @@ class Product extends Model
 
     public function sizes()
     {
-        return $this->hasMany(ProductSize::class);
+        return $this->hasMany(ProductSize::class, 'product_id');
+    }
+
+    // sizeIds
+    public function sizeIds()
+    {
+        return $this->sizes->pluck('size_id');
     }
 
     public function colors()
     {
-        return $this->hasMany(ProductColor::class);
+        return $this->hasMany(ProductColor::class, 'product_id');
+    }
+
+    // colorIds
+    public function colorIds()
+    {
+        return $this->colors->pluck('color_id');
     }
 
     public function images()
