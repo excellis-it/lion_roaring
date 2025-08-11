@@ -298,6 +298,24 @@
                                     </span>
                                     <span>Product Categories</span>
                                 </a>
+
+                                {{-- product size/colors management --}}
+                                <a href="{{ route('sizes.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Product_Sizes.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Product Sizes</span>
+                                </a>
+
+                                <a href="{{ route('colors.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Product_Colors.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Product Colors</span>
+                                </a>
+
                                 <a href="{{ route('products.index') }}">
                                     <span>
                                         <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"

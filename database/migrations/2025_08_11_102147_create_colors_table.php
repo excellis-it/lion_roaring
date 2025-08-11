@@ -17,6 +17,7 @@ class CreateColorsTable extends Migration
             $table->id();
             $table->string('color_name');
             $table->string('color'); // Assuming color is stored as a string (e.g., hex code)
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

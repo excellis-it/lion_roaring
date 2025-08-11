@@ -81,6 +81,10 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\User\ChatBotController;
 use App\Http\Controllers\User\EmailVerificationController;
 use App\Http\Controllers\User\PolicyGuidenceController;
+use App\Http\Controllers\User\ColorController;
+use App\Http\Controllers\User\SizeController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -475,6 +479,13 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::prefix('categories')->group(function () {
         Route::get('/category-delete/{id}', [CategoryController::class, 'delete'])->name('categories.delete');
     });
+
+    // sizes/colors management
+    Route::resource('sizes', SizeController::class);
+    Route::get('/sizes-delete/{id}', [SizeController::class, 'delete'])->name('sizes.delete');
+    Route::resource('colors', ColorController::class);
+    Route::get('/colors-delete/{id}', [ColorController::class, 'delete'])->name('colors.delete');
+
     Route::get('/store-page/{name}/{permission}', [EstoreCmsController::class, 'page'])->name('store-user.page');
     Route::get('/store-cms/dashboard', [EstoreCmsController::class, 'dashboard'])->name('user.store-cms.dashboard');
     Route::get('/store-cms/list', [EstoreCmsController::class, 'list'])->name('user.store-cms.list');
