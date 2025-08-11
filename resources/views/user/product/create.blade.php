@@ -85,10 +85,11 @@
                                     @endif
                                 </div>
                             </div>
+
                             {{-- quantity --}}
                             {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="quantity"> Product Quantity*</label>
+                                    <label for="quantity"> Stock Quantity*</label>
                                     <input type="number" name="quantity" id="quantity" class="form-control"
                                         value="{{ old('quantity') }}">
                                     @if ($errors->has('quantity'))
