@@ -18,15 +18,23 @@ class SizeController extends Controller
 
     public function create()
     {
+
         // Logic to show create size form
         return view('user.estore-sizes.create');
     }
 
     public function store(Request $request)
     {
+        // validate
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'status' => 'required|boolean',
+        ]);
+
         // Logic to store new size
         $size = new Size();
         $size->size = $request->name;
+        $size->status = $request->status;
         $size->save();
 
         return redirect()->route('sizes.index')->with('message', 'Size created successfully.');
@@ -43,7 +51,9 @@ class SizeController extends Controller
     {
         // Logic to update size
         $size = Size::findOrFail($id);
+
         $size->size = $request->name;
+        $size->status = $request->status;
         $size->save();
 
         return redirect()->route('sizes.index')->with('message', 'Size updated successfully.');
