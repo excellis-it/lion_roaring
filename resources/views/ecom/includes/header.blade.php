@@ -30,7 +30,7 @@
                                     <button class="profile_img_round dropdown-toggle" type="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <span>
-                                            @if (Auth::user()->profile_picture)
+                                            @if (Auth::user() && Auth::user()->profile_picture)
                                                 <img src="{{ Storage::url(Auth::user()->profile_picture) }}"
                                                     alt="" />
                                             @else

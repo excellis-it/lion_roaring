@@ -45,11 +45,29 @@
                                     <label for="category_id"> Category*</label>
                                     <select name="category_id" id="category_id" class="form-control">
                                         <option value="">Select Category</option>
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}"
-                                                {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                                {{ $category->name }}</option>
-                                        @endforeach
+                                        @php
+                                            $renderCategoryOptions = function ($nodes, $prefix = '') use (
+                                                &$renderCategoryOptions,
+                                            ) {
+                                                foreach ($nodes as $node) {
+                                                    echo '<option value="' .
+                                                        $node->id .
+                                                        '"' .
+                                                        (old('parent_id') == $node->id ? ' selected' : '') .
+                                                        '>' .
+                                                        e($prefix . $node->name) .
+                                                        '</option>';
+                                                    if (!empty($node->children) && $node->children->count()) {
+                                                        $renderCategoryOptions(
+                                                            $node->children,
+                                                            $prefix . $node->name . '->',
+                                                        );
+                                                    }
+                                                }
+                                            };
+                                            $topLevelCategories = $categories->whereNull('parent_id');
+                                            $renderCategoryOptions($topLevelCategories);
+                                        @endphp
                                     </select>
                                     @if ($errors->has('category_id'))
                                         <span class="error">{{ $errors->first('category_id') }}</span>

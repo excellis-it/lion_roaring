@@ -38,12 +38,64 @@
                                 <div class="box_label">
                                     <label for="slug"> Category Slug*</label>
                                     <input type="text" name="slug" id="slug" class="form-control"
-                                        value="{{ $category->slug }}" placeholder="Enter Category Slug"  @if ($category->main == 1) readonly @endif>
+                                        value="{{ $category->slug }}" placeholder="Enter Category Slug"
+                                        @if ($category->main == 1) readonly @endif>
                                     @if ($errors->has('slug'))
                                         <span class="error">{{ $errors->first('slug') }}</span>
                                     @endif
                                 </div>
                             </div>
+
+                            {{-- Parent Category --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="parent_id"> Parent Category</label>
+                                    <select name="parent_id" id="parent_id" class="form-control">
+                                        <option value="">Select Parent Category</option>
+                                        @php
+                                            $renderCategoryOptions = function (
+                                                $nodes,
+                                                $prefix = '',
+                                                $selectedParentId = null,
+                                                $excludeId = null,
+                                            ) use (&$renderCategoryOptions) {
+                                                foreach ($nodes as $node) {
+                                                    if ($node->id != $excludeId) {
+                                                        echo '<option value="' .
+                                                            $node->id .
+                                                            '"' .
+                                                            ($selectedParentId == $node->id ? ' selected' : '') .
+                                                            '>' .
+                                                            e($prefix . $node->name) .
+                                                            '</option>';
+                                                        if (!empty($node->children) && $node->children->count()) {
+                                                            $renderCategoryOptions(
+                                                                $node->children,
+                                                                $prefix . $node->name . '->',
+                                                                $selectedParentId,
+                                                                $excludeId,
+                                                            );
+                                                        }
+                                                    }
+                                                }
+                                            };
+                                            $topLevelCategories = $categories->whereNull('parent_id');
+                                            $renderCategoryOptions(
+                                                $topLevelCategories,
+                                                '',
+                                                $category->parent_id,
+                                                $category->id,
+                                            );
+                                        @endphp
+                                    </select>
+                                    @if ($errors->has('parent_id'))
+                                        <span class="error">{{ $errors->first('parent_id') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+
+
+
                             {{-- image --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -61,8 +113,10 @@
                                     <label for="status"> Status*</label>
                                     <select name="status" id="status" class="form-control">
                                         <option value="">Select Status</option>
-                                        <option value="1" {{ $category->status == 1 ? 'selected' : '' }}>Active</option>
-                                        <option value="0" {{ $category->status == 0 ? 'selected' : '' }}>Inactive</option>
+                                        <option value="1" {{ $category->status == 1 ? 'selected' : '' }}>Active
+                                        </option>
+                                        <option value="0" {{ $category->status == 0 ? 'selected' : '' }}>Inactive
+                                        </option>
                                     </select>
                                     @if ($errors->has('status'))
                                         <span class="error">{{ $errors->first('status') }}</span>

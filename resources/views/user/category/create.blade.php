@@ -42,6 +42,34 @@
                                     @endif
                                 </div>
                             </div>
+
+                            {{-- Parent Category --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="parent_id"> Parent Category</label>
+                                    <select name="parent_id" id="parent_id" class="form-control">
+                                        <option value="">Select Parent Category</option>
+
+                                        @php
+                                            $renderCategoryOptions = function ($nodes, $prefix = '') use (&$renderCategoryOptions) {
+                                                foreach ($nodes as $node) {
+                                                    echo '<option value="'.$node->id.'"'.(old('parent_id') == $node->id ? ' selected' : '').'>'.e($prefix.$node->name).'</option>';
+                                                    if (!empty($node->children) && $node->children->count()) {
+                                                        $renderCategoryOptions($node->children, $prefix.$node->name.'->');
+                                                    }
+                                                }
+                                            };
+                                            $topLevelCategories = $categories->whereNull('parent_id');
+                                            $renderCategoryOptions($topLevelCategories);
+                                        @endphp
+                                    </select>
+                                    @if ($errors->has('parent_id'))
+                                        <span class="error">{{ $errors->first('parent_id') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+
+
                             {{-- image --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">

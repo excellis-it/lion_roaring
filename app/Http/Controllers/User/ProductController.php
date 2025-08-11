@@ -65,8 +65,8 @@ class ProductController extends Controller
      */
     public function create()
     {
+        $categories = Category::where('status', 1)->get();
         if (auth()->user()->hasRole('SUPER ADMIN')) {
-            $categories = Category::orderBy('id', 'desc')->get();
             return view('user.product.create')->with('categories', $categories);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -170,9 +170,10 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
+        $categories = Category::where('status', 1)->get();
         if (auth()->user()->hasRole('SUPER ADMIN')) {
             $product = Product::findOrFail($id);
-            $categories = Category::orderBy('id', 'desc')->get();
+
             return view('user.product.edit', compact('product', 'categories'));
         } else {
             abort(403, 'You do not have permission to access this page.');
