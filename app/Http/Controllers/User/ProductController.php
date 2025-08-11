@@ -140,6 +140,24 @@ class ProductController extends Controller
                 }
             }
 
+            // Save sizes
+            if ($request->filled('sizes')) {
+                foreach ($request->sizes as $size) {
+                    if ($size) {
+                        $product->sizes()->create(['size' => $size]);
+                    }
+                }
+            }
+
+            // Save colors
+            if ($request->filled('colors')) {
+                foreach ($request->colors as $color) {
+                    if ($color) {
+                        $product->colors()->create(['color' => $color]);
+                    }
+                }
+            }
+
             // notify users
             $userName = Auth::user()->getFullNameAttribute();
 
@@ -248,6 +266,26 @@ class ProductController extends Controller
                     $image->image = $this->imageUpload($file, 'product');
                     $image->featured_image = 0;
                     $image->save();
+                }
+            }
+
+            // Update sizes
+            $product->sizes()->delete();
+            if ($request->filled('sizes')) {
+                foreach ($request->sizes as $size) {
+                    if ($size) {
+                        $product->sizes()->create(['size' => $size]);
+                    }
+                }
+            }
+
+            // Update colors
+            $product->colors()->delete();
+            if ($request->filled('colors')) {
+                foreach ($request->colors as $color) {
+                    if ($color) {
+                        $product->colors()->create(['color' => $color]);
+                    }
                 }
             }
 

@@ -265,6 +265,43 @@
                                 </div>
                             </div> --}}
 
+                            <div class="mt-3 mb-5" style="height: 10px; border-bottom: 2px solid #eee; margin: 20px 0;">
+                            </div>
+
+                            {{-- Multi Sizes --}}
+                            <div class="col-md-4 mb-2">
+                                <div class="box_label">
+                                    <label>Product Sizes</label>
+                                    <div id="sizes-wrapper">
+                                        <div class="input-group mb-2">
+                                            <input type="text" name="sizes[]" class="form-control"
+                                                placeholder="Enter size">
+                                            <button type="button" class="btn btn-danger remove-size"
+                                                style="display:none;"><i class="fa fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" id="add-size">+ Size</button>
+                                </div>
+                            </div>
+
+                            {{-- Multi Colors --}}
+                            <div class="col-md-2 mb-2">
+                                <div class="box_label">
+                                    <label>Product Colors</label>
+                                    <div id="colors-wrapper">
+                                        <div class="input-group mb-2">
+                                            <input type="color" name="colors[]" class="form-control"
+                                                placeholder="Enter color" style="min-height: 42px;">
+                                            <button type="button" class="btn btn-danger remove-color"
+                                                style="display:none;"><i class="fa fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" id="add-color">+ Color</button>
+                                </div>
+                            </div>
+
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                                 <button type="submit" class="print_btn me-2">Add</button>
                                 <a href="{{ route('products.index') }}" class="print_btn print_btn_vv">Cancel</a>
@@ -296,6 +333,32 @@
                     var name = $(this).val();
                     var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
                     $('#slug').val(slug);
+                });
+
+                // Add more sizes
+                $('#add-size').click(function() {
+                    $('#sizes-wrapper').append(`
+                <div class="input-group mb-2">
+                    <input type="text" name="sizes[]" class="form-control" placeholder="Enter size">
+                    <button type="button" class="btn btn-danger remove-size"><i class="fa fa-times"></i></button>
+                </div>
+            `);
+                });
+                $(document).on('click', '.remove-size', function() {
+                    $(this).closest('.input-group').remove();
+                });
+
+                // Add more colors
+                $('#add-color').click(function() {
+                    $('#colors-wrapper').append(`
+                <div class="input-group mb-2">
+                    <input type="color" name="colors[]" class="form-control" placeholder="Enter color" style="min-height: 42px;">
+                    <button type="button" class="btn btn-danger remove-color"><i class="fa fa-times"></i></button>
+                </div>
+            `);
+                });
+                $(document).on('click', '.remove-color', function() {
+                    $(this).closest('.input-group').remove();
                 });
             });
         </script>
