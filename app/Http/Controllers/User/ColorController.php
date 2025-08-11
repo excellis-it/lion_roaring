@@ -25,6 +25,17 @@ class ColorController extends Controller
 
     public function store(Request $request)
     {
+        // validation
+        $request->validate([
+            'color_name' => 'required|string|max:255',
+            'color' => 'required|string|max:7', // Assuming color is a hex code
+            'status' => 'required|boolean',
+        ]);
+
+        if ($request->fails()) {
+            return redirect()->back()->withErrors($request)->withInput()->with('message', 'Color creation failed.');
+        }
+
         // Logic to store new color
         $color = new Color();
         $color->color_name = $request->color_name;
@@ -44,9 +55,16 @@ class ColorController extends Controller
 
     public function update(Request $request, $id)
     {
+        // validation
+        $request->validate([
+            'color_name' => 'required|string|max:255',
+            'color' => 'required|string|max:7', // Assuming color is a hex code
+            'status' => 'required|boolean',
+        ]);
+
         // Logic to update color
         $color = Color::findOrFail($id);
-        $color->color_name = $request->name;
+        $color->color_name = $request->color_name;
         $color->color = $request->color;
         $color->status = $request->status;
         $color->save();
