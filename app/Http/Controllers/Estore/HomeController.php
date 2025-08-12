@@ -14,6 +14,8 @@ class HomeController extends Controller
 {
     public function eStore()
     {
+        $session_id = session()->getId();
+        $this->updateCartUserId();
         $categories = Category::where('status', 1)->orderBy('id', 'DESC')->get();
         $feature_products = Product::where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
         $new_products = Product::where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
@@ -23,8 +25,8 @@ class HomeController extends Controller
         $lockets = Product::where('status', 1)->whereHas('category', function ($q) {
             $q->where('slug', 'lockets');
         })->orderBy('id', 'DESC')->limit(10)->get();
-         $content = EcomHomeCms::orderBy('id', 'desc')->first();
-         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+        $content = EcomHomeCms::orderBy('id', 'desc')->first();
+        $cartCount = EstoreCart::where('user_id', auth()->id())->count();
         return view('ecom.home')->with(compact('categories', 'feature_products', 'new_products', 'books', 'lockets', 'content', 'cartCount'));
     }
 
@@ -43,6 +45,16 @@ class HomeController extends Controller
             $newsletter->message = $request->newsletter_message;
             $newsletter->save();
             return response()->json(['message' => 'Thank you for subscribing to our newsletter', 'status' => true]);
+        }
+    }
+
+    // Function to update user_id in carts if user is logged in
+    public function updateCartUserId()
+    {
+        if (auth()->check()) {
+            $userId = auth()->id();
+            EstoreCart::where('session_id', session()->getId())
+                ->update(['user_id' => $userId]);
         }
     }
 }

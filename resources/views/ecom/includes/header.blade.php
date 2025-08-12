@@ -39,18 +39,27 @@
                                             @endif
                                         </span>
                                     </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{{ route('e-store.wishlist') }}">My
-                                                Wishlist</a>
-                                        <li><a class="dropdown-item" href="{{ route('user.profile') }}">Profile</a>
-                                        </li>
-                                        <li><a class="dropdown-item" href="{{ route('e-store.my-orders') }}">My
-                                                Orders</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('user.change.password') }}">Change
-                                                Password</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a>
-                                        </li>
-                                    </ul>
+                                    @if (Auth::user())
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="{{ route('e-store.wishlist') }}">My
+                                                    Wishlist</a>
+                                            <li><a class="dropdown-item" href="{{ route('user.profile') }}">Profile</a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="{{ route('e-store.my-orders') }}">My
+                                                    Orders</a></li>
+                                            <li><a class="dropdown-item"
+                                                    href="{{ route('user.change.password') }}">Change
+                                                    Password</a></li>
+                                            <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a>
+                                            </li>
+                                        </ul>
+                                    @else
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="{{ route('home') }}">Login</a></li>
+                                            <li><a class="dropdown-item" href="{{ route('home') }}">Register</a>
+                                            </li>
+                                        </ul>
+                                    @endif
                                 </div>
                             </div>
                             <!-- <div class="icon_c ms-2">

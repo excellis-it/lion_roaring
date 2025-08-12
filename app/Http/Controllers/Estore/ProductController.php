@@ -31,12 +31,17 @@ class ProductController extends Controller
             ->limit(8)
             ->get();
         $reviews = $product->reviews()->where('status', 1)->orderBy('id', 'DESC')->get();
-        $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+        $isAuth = auth()->check();
+        $userSessionId = session()->getId();
+        $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
 
         // Check if product is already in cart
-        $cartItem = EstoreCart::where('user_id', auth()->id())
+        $cartItem = $isAuth ? EstoreCart::where('user_id', auth()->id())
+            ->where('product_id', $product->id)
+            ->first() : EstoreCart::where('session_id', $userSessionId)
             ->where('product_id', $product->id)
             ->first();
+
 
         return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews', 'cartCount', 'cartItem'));
     }
@@ -57,7 +62,10 @@ class ProductController extends Controller
         $products_count  = $products->count();
         $categories = Category::where('status', 1)->orderBy('id', 'DESC')->get();
         //  return $categories;
-        $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+        $isAuth = auth()->check();
+        $userSessionId = session()->getId();
+        $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
+
         return view('ecom.products')->with(compact('products', 'categories', 'category_id', 'products_count', 'category', 'cartCount'));
     }
 
@@ -125,7 +133,9 @@ class ProductController extends Controller
             }
 
             $category = !empty($category_id) ? Category::whereIn('id', $category_id)->get()->toArray() : null;
-            $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+            $isAuth = auth()->check();
+            $userSessionId = session()->getId();
+            $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
 
             $view = view('ecom.partials.product-item', compact('products', 'products_count', 'cartCount'))->render();
             $view2 = view('ecom.partials.count-product', compact('products', 'products_count', 'category', 'category_id', 'cartCount'))->render();
@@ -147,6 +157,10 @@ class ProductController extends Controller
             'rate' => 'required|integer',
             'review' => 'required|string',
         ]);
+
+        if (!auth()->check()) {
+            return response()->json(['status' => false, 'message' => 'Please login to add a review']);
+        }
 
         $product = Product::find($request->product_id);
         if (!$product) {
@@ -182,15 +196,26 @@ class ProductController extends Controller
                 'quantity' => 'required|integer|min:1',
             ]);
 
+            $isAuth = auth()->check();
+
+            $userSessionId = session()->getId();
+
+
             $product = Product::find($request->product_id);
             if (!$product) {
                 return response()->json(['status' => false, 'message' => 'Product not found']);
             }
 
             // Check if product already exists in cart
-            $existingCart = EstoreCart::where('user_id', auth()->id())
-                ->where('product_id', $product->id)
-                ->first();
+            if ($isAuth) {
+                $existingCart = EstoreCart::where('user_id', auth()->id())
+                    ->where('product_id', $product->id)
+                    ->first();
+            } else {
+                $existingCart = EstoreCart::where('session_id', $userSessionId)
+                    ->where('product_id', $product->id)
+                    ->first();
+            }
 
             if ($existingCart) {
                 // Update quantity instead of creating new entry
@@ -210,6 +235,7 @@ class ProductController extends Controller
             $cart->product_id = $product->id;
             $cart->price = $product->price;
             $cart->quantity = $request->quantity;
+            $cart->session_id = $userSessionId;
             $cart->save();
 
             return response()->json([
@@ -230,9 +256,11 @@ class ProductController extends Controller
                 'product_id' => 'required|integer',
             ]);
 
-            $cartItem = EstoreCart::where('user_id', auth()->id())
-                ->where('product_id', $request->product_id)
-                ->first();
+            $isAuth = auth()->check();
+            $userSessionId = session()->getId();
+
+            $cartItem = $isAuth ? EstoreCart::where('user_id', auth()->id()) : EstoreCart::where('session_id', $userSessionId);
+            $cartItem = $cartItem->where('product_id', $request->product_id)->first();
 
             return response()->json([
                 'status' => true,
@@ -253,8 +281,11 @@ class ProductController extends Controller
                 'id' => 'required|integer',
             ]);
 
+            $isAuth = auth()->check();
+            $userSessionId = session()->getId();
+
             $cart = EstoreCart::find($request->id);
-            if (!$cart || $cart->user_id != auth()->id()) {
+            if (!$cart || ($isAuth && $cart->user_id != auth()->id()) || (!$isAuth && $cart->session_id != $userSessionId)) {
                 return response()->json(['status' => false, 'message' => 'Cart item not found']);
             }
 
@@ -272,8 +303,11 @@ class ProductController extends Controller
                 'quantity' => 'required|integer|min:0',
             ]);
 
+            $isAuth = auth()->check();
+            $userSessionId = session()->getId();
+
             $cart = EstoreCart::find($request->id);
-            if (!$cart || $cart->user_id != auth()->id()) {
+            if (!$cart || ($isAuth && $cart->user_id != auth()->id()) || (!$isAuth && $cart->session_id != $userSessionId)) {
                 return response()->json(['status' => false, 'message' => 'Cart item not found']);
             }
 
@@ -294,7 +328,11 @@ class ProductController extends Controller
     public function clearCart(Request $request)
     {
         if ($request->ajax()) {
-            $carts = EstoreCart::where('user_id', auth()->id())->get();
+            $isAuth = auth()->check();
+            $userSessionId = session()->getId();
+
+            $carts = $isAuth ? EstoreCart::where('user_id', auth()->id())->get() : EstoreCart::where('session_id', $userSessionId)->get();
+
             foreach ($carts as $cart) {
                 $cart->delete();
             }
@@ -306,7 +344,9 @@ class ProductController extends Controller
     public function cartCount(Request $request)
     {
         if ($request->ajax()) {
-            $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+            $isAuth = auth()->check();
+            $userSessionId = session()->getId();
+            $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
             return response()->json(['status' => true, 'cartCount' => $cartCount]);
         }
     }
@@ -315,9 +355,9 @@ class ProductController extends Controller
     public function cartList(Request $request)
     {
         if ($request->ajax()) {
-            $carts = EstoreCart::where('user_id', auth()->id())
-                ->with('product')
-                ->get();
+            $isAuth = auth()->check();
+            $userSessionId = session()->getId();
+            $carts = $isAuth ? EstoreCart::where('user_id', auth()->id())->with('product')->get() : EstoreCart::where('session_id', $userSessionId)->with('product')->get();
 
             $cartItems = [];
             $total = 0;
@@ -349,10 +389,11 @@ class ProductController extends Controller
     // cart page
     public function cart()
     {
-        $carts = EstoreCart::where('user_id', auth()->id())
-            ->with('product')
-            ->get();
-        $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+        $isAuth = auth()->check();
+        $userSessionId = session()->getId();
+
+        $carts = $isAuth ? EstoreCart::where('user_id', auth()->id())->with('product')->get() : EstoreCart::where('session_id', $userSessionId)->with('product')->get();
+        $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
 
         $cartItems = [];
         $total = 0;
@@ -378,6 +419,10 @@ class ProductController extends Controller
     // checkout page
     public function checkout()
     {
+        if (!auth()->check()) {
+            return redirect()->route('home')->with('error', 'Please login to continue');
+        }
+
         $carts = EstoreCart::where('user_id', auth()->id())
             ->with('product')
             ->get();
@@ -411,6 +456,9 @@ class ProductController extends Controller
     // Process checkout
     public function processCheckout(Request $request)
     {
+        if (!auth()->check()) {
+            return response()->json(['status' => false, 'message' => 'Please login to continue']);
+        }
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -423,6 +471,8 @@ class ProductController extends Controller
             'pincode' => 'required|string|max:20',
             'country' => 'required|string|max:255',
         ]);
+
+
 
         $carts = EstoreCart::where('user_id', auth()->id())->with('product')->get();
 
@@ -527,6 +577,9 @@ class ProductController extends Controller
     // Payment success
     public function paymentSuccess(Request $request)
     {
+        if (!auth()->check()) {
+            return redirect()->route('home')->with('error', 'Please login to continue');
+        }
         $request->validate([
             'session_id' => 'required|string',
             'order_id' => 'required|integer'
@@ -606,10 +659,14 @@ class ProductController extends Controller
     // My Orders page
     public function myOrders()
     {
+        if (!auth()->check()) {
+            return redirect()->route('home')->with('error', 'Please login to view your orders');
+        }
         $orders = EstoreOrder::with('orderItems')
             ->where('user_id', auth()->id())
             ->orderBy('created_at', 'desc')
             ->paginate(10);
+
 
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 
@@ -619,6 +676,9 @@ class ProductController extends Controller
     // Order details
     public function orderDetails($orderId)
     {
+        if (!auth()->check()) {
+            return redirect()->route('home')->with('error', 'Please login to view your orders');
+        }
         $order = EstoreOrder::with(['orderItems', 'payments'])
             ->where('id', $orderId)
             ->where('user_id', auth()->id())
@@ -658,6 +718,10 @@ class ProductController extends Controller
                 'product_id' => 'required|integer',
             ]);
 
+            if (!auth()->check()) {
+                return response()->json(['status' => false, 'message' => 'Please login to add products to your wishlist']);
+            }
+
             $product = Product::find($request->product_id);
             if (!$product) {
                 return response()->json(['status' => false, 'message' => 'Product not found']);
@@ -685,6 +749,12 @@ class ProductController extends Controller
     // list wishlist for user
     public function wishlist()
     {
+
+        // if not auth then redirect to login
+        if (!auth()->check()) {
+            return redirect()->route('home')->with('error', 'Please login to view your wishlist');
+        }
+
         $wishlistItems = EcomWishList::where('user_id', auth()->id())
             ->with('product')
             ->get();
@@ -695,7 +765,8 @@ class ProductController extends Controller
     }
 
     // Remove from wishlist
-    public function removeFromWishlist(Request $request){
+    public function removeFromWishlist(Request $request)
+    {
         if ($request->ajax()) {
             $request->validate([
                 'product_id' => 'required|integer',

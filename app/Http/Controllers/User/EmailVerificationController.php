@@ -12,6 +12,7 @@ use App\Models\VerifyOTP;
 use App\Mail\OtpMail;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
+use App\Models\EstoreCart;
 
 class EmailVerificationController extends Controller
 {
@@ -90,8 +91,21 @@ class EmailVerificationController extends Controller
 
         $verify_otp->delete();
         $user->update(['time_zone' => $request->time_zone]);
+        $this->updateCartUserId($userId);
         Auth::login($user);
         Session::forget('user_id');
         return response()->json(['message' => 'Code verified successfully', 'status' => true, 'redirect' => route('user.profile')]);
+    }
+
+    // Function to update user_id in carts if user is logged in
+    public function updateCartUserId($userId)
+    {
+        if ($userId) {
+            $userId = auth()->id() ?: $userId; // Use the provided user ID or the authenticated user ID
+        } else {
+            return;
+        }
+        EstoreCart::where('session_id', session()->getId())
+            ->update(['user_id' => $userId]);
     }
 }

@@ -330,7 +330,7 @@ var QtyInput = (function () {
 
                     // Reset UI to "Add to Cart" state
                     $input.data("cart-id", "");
-                    $input.val(1);
+                    $input.val(0);
                     $(".view-cart-btn").replaceWith(`
                         <div class="addtocart" data-id="${$input.data(
                             "product-id"
