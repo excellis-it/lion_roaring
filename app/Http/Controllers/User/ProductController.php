@@ -165,6 +165,15 @@ class ProductController extends Controller
                 //    return $request->colors;
             }
 
+            // save other charges if available other_charges[0][charge_name] and other_charges[0][charge_amount]
+            if ($request->filled('other_charges')) {
+                foreach ($request->other_charges as $charge) {
+                    if ($charge['charge_name'] && $charge['charge_amount']) {
+                        $product->otherCharges()->create($charge);
+                    }
+                }
+            }
+
             // notify users
             $userName = Auth::user()->getFullNameAttribute();
 
@@ -294,6 +303,16 @@ class ProductController extends Controller
                 foreach ($request->colors as $color) {
                     if ($color) {
                         $product->colors()->create(['color_id' => $color]);
+                    }
+                }
+            }
+
+            // save other charges
+            $product->otherCharges()->delete();
+            if ($request->filled('other_charges')) {
+                foreach ($request->other_charges as $charge) {
+                    if ($charge['charge_name'] && $charge['charge_amount']) {
+                        $product->otherCharges()->create($charge);
                     }
                 }
             }

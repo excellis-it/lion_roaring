@@ -369,7 +369,82 @@
 
                                 </div>
                             </div>
+                        </div>
 
+                        <div class="mt-3 mb-5" style="height: 10px; border-bottom: 2px solid #eee; margin: 20px 0;">
+                        </div>
+
+                        <div class="row" id="other-charges-wrapper">
+                            <p>Other Charges</p>
+                            @foreach ($product->otherCharges as $otherCharge)
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+
+                                            <input type="text" name="other_charges[{{ $loop->index }}][charge_name]"
+                                                class="form-control" value="{{ $otherCharge->charge_name }}"
+                                                placeholder="Ex. Shipping Charge">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+
+                                            <input step="any" type="number"
+                                                name="other_charges[{{ $loop->index }}][charge_amount]"
+                                                class="form-control" value="{{ $otherCharge->charge_amount }}"
+                                                placeholder="Charge Amount">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+                                            <div class="mb-2 mt-1">
+                                                <button type="button"
+                                                    class="btn btn-danger text-danger remove-other-charge"><i
+                                                        class="fas fa-close"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                            <p>Add More Other Charges</p>
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <div class="box_label">
+
+                                        <div>
+                                            <div class="mb-2">
+                                                <input type="text"
+                                                    name="other_charges[{{ $product->otherCharges->count() }}][charge_name]"
+                                                    class="form-control" placeholder="Ex. Shipping Charge">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 mb-2">
+                                    <div class="box_label">
+                                        <div>
+                                            <div class="mb-2">
+                                                <input step="any" type="number"
+                                                    name="other_charges[{{ $product->otherCharges->count() }}][charge_amount]"
+                                                    class="form-control" placeholder="Charge Amount">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 mb-2">
+                                    <div class="box_label">
+                                        <div class="mb-2 mt-1">
+                                            <button type="button"
+                                                class="btn btn-primary add-more-other-charge">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                                 <button type="submit" class="print_btn me-2">Update</button>
                                 <a href="{{ route('products.index') }}" class="print_btn print_btn_vv">Cancel</a>
@@ -432,6 +507,47 @@
                     closeDropdownOnSelect: 'auto',
                     //  placeholder: false,
                     placeholderValue: "Select color",
+                });
+            });
+        </script>
+
+        <script>
+            $(document).ready(function() {
+
+                // Add more other charges
+                let otherChargeIndex =
+                    {{ $product->otherCharges->count() + 1 }}; // Start from last index
+
+
+                $('.add-more-other-charge').on('click', function() {
+                    const newChargeHtml = `
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <div class="box_label">
+                                <input type="text" name="other_charges[${otherChargeIndex}][charge_name]" class="form-control" placeholder="Ex. Shipping Charge">
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="box_label">
+                                <input step="any" type="number" name="other_charges[${otherChargeIndex}][charge_amount]" class="form-control" placeholder="Charge Amount">
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="box_label">
+                                <div class="mb-2 mt-1">
+                                    <button type="button" class="btn btn-danger text-danger remove-other-charge"><i class="fas fa-close"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                    $('#other-charges-wrapper').append(newChargeHtml);
+                    otherChargeIndex++;
+                });
+
+                // Remove other charge
+                $(document).on('click', '.remove-other-charge', function() {
+                    $(this).closest('.row').remove();
                 });
             });
         </script>

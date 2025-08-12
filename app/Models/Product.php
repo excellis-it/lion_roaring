@@ -47,6 +47,11 @@ class Product extends Model
         return $this->colors->pluck('color_id');
     }
 
+    public function otherCharges()
+    {
+        return $this->hasMany(ProductOtherCharge::class, 'product_id');
+    }
+
     public function images()
     {
         return $this->hasMany(ProductImage::class);
