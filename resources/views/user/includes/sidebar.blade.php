@@ -316,6 +316,14 @@
                                     <span>Product Colors</span>
                                 </a>
 
+                                <a href="{{ route('store-promo-codes.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Product_Promotions.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Product Promo Codes</span>
+                                </a>
+
                                 <a href="{{ route('products.index') }}">
                                     <span>
                                         <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"

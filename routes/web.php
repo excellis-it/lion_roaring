@@ -83,6 +83,7 @@ use App\Http\Controllers\User\EmailVerificationController;
 use App\Http\Controllers\User\PolicyGuidenceController;
 use App\Http\Controllers\User\ColorController;
 use App\Http\Controllers\User\SizeController;
+use App\Http\Controllers\User\EstorePromoCodeController;
 
 
 
@@ -499,6 +500,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::post('/store-orders/update-status', [EstoreCmsController::class, 'updateOrderStatus'])->name('user.store-orders.update-status');
     Route::delete('/store-orders/delete/{id}', [EstoreCmsController::class, 'deleteOrder'])->name('user.store-orders.delete');
     Route::get('/store-orders/export', [EstoreCmsController::class, 'exportOrders'])->name('user.store-orders.export');
+    // promo code management routes
+    Route::resource('/store-promo-codes', EstorePromoCodeController::class);
+    Route::get('/store-promo-codes-delete/{id}', [EstorePromoCodeController::class, 'delete'])->name('store-promo-codes.delete');
 
     // e-learning routes
     Route::prefix('elearning')->group(function () {
