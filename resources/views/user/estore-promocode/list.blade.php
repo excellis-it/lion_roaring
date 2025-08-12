@@ -38,9 +38,10 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $promoCode->code }}</td>
-                                <td>{{ $promoCode->discount_amount }} <span> ({{ $promoCode->is_percentage ? '%' : 'Flat' }})</span></td>
-                                <td>{{ $promoCode->start_date }}</td>
-                                <td>{{ $promoCode->end_date }}</td>
+                                <td>{{ $promoCode->discount_amount }} <span>
+                                        ({{ $promoCode->is_percentage ? '%' : 'Flat' }})</span></td>
+                                <td>{{ \Carbon\Carbon::parse($promoCode->start_date)->format('d-m-Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($promoCode->end_date)->format('d-m-Y') }}</td>
                                 <td>{{ $promoCode->status == 1 ? 'Active' : 'Inactive' }}</td>
                                 <td class="d-flex">
                                     <a href="{{ route('store-promo-codes.edit', $promoCode->id) }}"
