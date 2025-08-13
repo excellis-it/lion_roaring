@@ -406,15 +406,13 @@ class ProductController extends Controller
         $isAuth = auth()->check();
         $userSessionId = session()->getId();
 
-        $carts = $isAuth ? EstoreCart::where('user_id', auth()->id())->with('product')->get() : EstoreCart::where('session_id', $userSessionId)->with('product')->get();
+        $carts = $isAuth ? EstoreCart::where('user_id', auth()->id())->with('product.otherCharges')->get() : EstoreCart::where('session_id', $userSessionId)->with('product.otherCharges')->get();
         $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
-
 
         $total = 0;
 
         foreach ($carts as $cart) {
-
-            // other charges then sub and total amount
+            // Calculate other charges for this cart item
             $otherCharges = $cart->product->otherCharges->sum('charge_amount');
             $cart->subtotal = ($cart->product->price * $cart->quantity) + $otherCharges;
             $total += $cart->subtotal;
@@ -431,7 +429,7 @@ class ProductController extends Controller
         }
 
         $carts = EstoreCart::where('user_id', auth()->id())
-            ->with('product')
+            ->with('product.otherCharges')
             ->get();
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 
@@ -439,20 +437,23 @@ class ProductController extends Controller
             return redirect()->route('e-store.cart')->with('error', 'Your cart is empty');
         }
 
-        $cartItems = [];
         $total = 0;
+        $cartItems = [];
 
         foreach ($carts as $cart) {
-            $subtotal = $cart->price * $cart->quantity;
+            // Calculate other charges for this cart item
+            $otherCharges = $cart->product->otherCharges->sum('charge_amount');
+            $subtotal = ($cart->product->price * $cart->quantity) + $otherCharges;
             $total += $subtotal;
 
             $cartItems[] = [
                 'id' => $cart->id,
                 'product_id' => $cart->product_id,
-                'product_name' => $cart->product->name ?? 'Unknown Product',
-                'product_image' => $cart->product->main_image ?? null,
-                'price' => $cart->price,
+                'product_name' => $cart->product->name,
+                'product_image' => $cart->product->main_image,
+                'price' => $cart->product->price,
                 'quantity' => $cart->quantity,
+                'other_charges' => $otherCharges,
                 'subtotal' => $subtotal
             ];
         }
@@ -717,7 +718,7 @@ class ProductController extends Controller
         return view('ecom.order-success', compact('order', 'cartCount'));
     }
 
-    // Add to wishlist with toggle if have then remove either insert
+    // Add to wishlist with toggle if have then remove either set null
     public function addToWishlist(Request $request)
     {
         if ($request->ajax()) {

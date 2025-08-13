@@ -127,6 +127,12 @@
                                             <li>{{ $item['product_name'] }} ({{ $item['quantity'] }}x)</li>
                                             <li>${{ number_format($item['subtotal'], 2) }}</li>
                                         </ul>
+                                        @if ($item['other_charges'] > 0)
+                                            <ul class="text-muted small">
+                                                <li style="padding-left: 15px;">• Additional charges</li>
+                                                <li>${{ number_format($item['other_charges'], 2) }}</li>
+                                            </ul>
+                                        @endif
                                     @endforeach
 
                                     <hr />

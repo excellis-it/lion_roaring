@@ -245,7 +245,6 @@
             function updateCartItem($input) {
                 var cartId = $input.data('id');
                 var quantity = parseInt($input.val());
-                var price = parseFloat($input.data('price'));
                 var $cartItem = $input.closest('.cart-item');
 
                 if (quantity < 1) {
@@ -263,17 +262,8 @@
                     },
                     success: function(response) {
                         if (response.status) {
-                            // Update subtotal for this item
-                            var subtotal = price * quantity;
-                            $cartItem.find('.item-subtotal').text('$' + subtotal.toFixed(2));
-
-                            // Recalculate totals
-                            calculateTotals();
-                            updateCartCount();
-                            //  toastr.success('Cart updated successfully');
-                            setTimeout(() => {
-                                calculateTotals();
-                            }, 1000);
+                            // Reload the page to get updated calculations from server
+                            location.reload();
                         } else {
                             toastr.error(response.message);
                         }
@@ -287,14 +277,18 @@
             function calculateTotals() {
                 var total = 0;
                 $('.item-subtotal').each(function() {
-                    var subtotalText = $(this).text().replace('$', '');
-                    total += parseFloat(subtotalText);
+                    var subtotalText = $(this).text().replace('$', '').replace(',', '');
+                    total += parseFloat(subtotalText) || 0;
                 });
 
-                var finalTotal = total;
-
-                $('#cart-total').text('$' + total.toFixed(2));
-                $('#final-total').text('$' + finalTotal.toFixed(2));
+                $('#cart-total').text('$' + total.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }));
+                $('#final-total').text('$' + total.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }));
             }
 
             // Remove item from cart with SweetAlert2
@@ -324,12 +318,13 @@
                                 if (response.status) {
                                     $cartItem.fadeOut(300, function() {
                                         $(this).remove();
-                                        calculateTotals();
-                                        updateCartCount();
 
                                         // Check if cart is empty
                                         if ($('.cart-item').length === 0) {
                                             location.reload();
+                                        } else {
+                                            calculateTotals();
+                                            updateCartCount();
                                         }
                                     });
 
