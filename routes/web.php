@@ -84,6 +84,7 @@ use App\Http\Controllers\User\PolicyGuidenceController;
 use App\Http\Controllers\User\ColorController;
 use App\Http\Controllers\User\SizeController;
 use App\Http\Controllers\User\EstorePromoCodeController;
+use App\Http\Controllers\User\EstoreSettingController;
 
 
 
@@ -503,6 +504,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     // promo code management routes
     Route::resource('/store-promo-codes', EstorePromoCodeController::class);
     Route::get('/store-promo-codes-delete/{id}', [EstorePromoCodeController::class, 'delete'])->name('store-promo-codes.delete');
+    // estore setting management
+    Route::resource('/store-settings', EstoreSettingController::class);
 
     // e-learning routes
     Route::prefix('elearning')->group(function () {

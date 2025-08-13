@@ -305,7 +305,7 @@
                                         <img src="{{ asset('user_assets/images/ICON/Store/Product_Sizes.svg') }}"
                                             alt="">
                                     </span>
-                                    <span>Product Sizes</span>
+                                    <span>Manage Sizes</span>
                                 </a>
 
                                 <a href="{{ route('colors.index') }}">
@@ -313,7 +313,7 @@
                                         <img src="{{ asset('user_assets/images/ICON/Store/Product_Colors.svg') }}"
                                             alt="">
                                     </span>
-                                    <span>Product Colors</span>
+                                    <span>Manage Colors</span>
                                 </a>
 
                                 <a href="{{ route('store-promo-codes.index') }}">
@@ -321,7 +321,15 @@
                                         <img src="{{ asset('user_assets/images/ICON/Store/Product_Promotions.svg') }}"
                                             alt="">
                                     </span>
-                                    <span>Product Promo Codes</span>
+                                    <span>Promo Codes</span>
+                                </a>
+
+                                <a href="{{ route('store-settings.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Product_Promotions.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>E-store Settings</span>
                                 </a>
 
                                 <a href="{{ route('products.index') }}">
