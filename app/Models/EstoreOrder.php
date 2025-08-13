@@ -11,6 +11,7 @@ class EstoreOrder extends Model
 
     protected $fillable = [
         'order_number',
+        'is_pickup',
         'user_id',
         'first_name',
         'last_name',

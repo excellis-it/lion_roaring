@@ -232,11 +232,11 @@ class ProductController extends Controller
 
             // return $product->sizes->count();
             // check if product have size and color and user not selected those then auto select first color and size either set null
-            $sizeId = null;
+            $sizeId = $request->size_id ?? null;
             if (!$request->size_id && ($product->sizes->count() > 0)) {
                 $sizeId = $product->sizes->first()->size->id;
             }
-            $colorId = null;
+            $colorId = $request->color_id ?? null;
             if (!$request->color_id && ($product->colors->count() > 0)) {
                 $colorId = $product->colors->first()->color->id;
             }
@@ -480,7 +480,7 @@ class ProductController extends Controller
             'country' => 'required|string|max:255',
         ]);
 
-
+        $is_pickup = $request->order_method ?? 0;
 
         $carts = EstoreCart::where('user_id', auth()->id())->with('product')->get();
 
@@ -488,8 +488,22 @@ class ProductController extends Controller
             return response()->json(['status' => false, 'message' => 'Your cart is empty']);
         }
 
+        // cart item product other charges
+        $carts->each(function ($cart) {
+            $cart->other_charges = $cart->product->otherCharges->sum('charge_amount');
+            $cart->price = $cart->product->price;
+        });
+
         $subtotal = $carts->sum(function ($cart) {
-            return $cart->price * $cart->quantity;
+            return ($cart->price * $cart->quantity) + $cart->other_charges;
+        });
+
+        // others charges name amounts in json array
+        $otherCharges = [];
+        $carts->each(function ($cart) use (&$otherCharges) {
+            $cart->product->otherCharges->each(function ($charge) use (&$otherCharges) {
+                $otherCharges[$charge->charge_name] = ($otherCharges[$charge->charge_name] ?? 0) + $charge->charge_amount;
+            });
         });
 
         try {
@@ -497,6 +511,7 @@ class ProductController extends Controller
 
             // Create order
             $order = EstoreOrder::create([
+                'is_pickup' => $is_pickup,
                 'user_id' => auth()->id(),
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
@@ -525,7 +540,15 @@ class ProductController extends Controller
                     'product_image' => $cart->product->main_image,
                     'price' => $cart->price,
                     'quantity' => $cart->quantity,
-                    'total' => $cart->price * $cart->quantity
+                    'size_id' => $cart->size_id,
+                    'color_id' => $cart->color_id,
+                    'other_charges' => json_encode($cart->product->otherCharges->map(function ($charge) {
+                        return [
+                            'charge_name' => $charge->charge_name,
+                            'charge_amount' => $charge->charge_amount
+                        ];
+                    })),
+                    'total' => ($cart->price * $cart->quantity) + $cart->other_charges
                 ]);
             }
 
@@ -541,18 +564,27 @@ class ProductController extends Controller
                             'name' => $cart->product->name,
                             'description' => $cart->product->short_description ?? '',
                         ],
-                        'unit_amount' => $cart->price * 100, // Amount in cents
+                        'unit_amount' => (($cart->price * $cart->quantity) + $cart->other_charges) * 100, // Amount in cents
+                        // 'metadata' => [
+                        //     'size_id' => $cart->size_id,
+                        //     'color_id' => $cart->color_id,
+                        //     'subunit_amount' => $cart->other_charges * 100, // Amount in cents
+                        //     'total_amount' => ($cart->price * $cart->quantity) + $cart->other_charges,
+                        // ],
                     ],
                     'quantity' => $cart->quantity,
                 ];
             }
 
+            $encrypted_order_id = encrypt($order->id);
+
+
             $checkoutSession = StripeSession::create([
                 'payment_method_types' => ['card'],
                 'line_items' => $lineItems,
                 'mode' => 'payment',
-                'success_url' => route('e-store.payment-success') . '?session_id={CHECKOUT_SESSION_ID}&order_id=' . $order->id,
-                'cancel_url' => route('e-store.checkout') . '?cancelled=1',
+                'success_url' => route('e-store.payment-success') . '?session_id={CHECKOUT_SESSION_ID}&order_id=' . $encrypted_order_id,
+                'cancel_url' => route('e-store.payment-cancelled') . '?session_id={CHECKOUT_SESSION_ID}&order_id=' . $encrypted_order_id,
                 'metadata' => [
                     'order_id' => $order->id,
                     'user_id' => auth()->id()
@@ -593,6 +625,8 @@ class ProductController extends Controller
             'order_id' => 'required|integer'
         ]);
 
+        $decrypted_order_id = decrypt($request->order_id);
+
         try {
             Stripe::setApiKey(env('STRIPE_SECRET'));
 
@@ -602,7 +636,7 @@ class ProductController extends Controller
             if ($session->payment_status === 'paid') {
                 DB::beginTransaction();
 
-                $order = EstoreOrder::find($request->order_id);
+                $order = EstoreOrder::find($decrypted_order_id);
 
                 // Check if this order belongs to the current user
                 if (!$order || $order->user_id != auth()->id()) {
@@ -658,8 +692,32 @@ class ProductController extends Controller
     }
 
     // Handle cancelled payments
-    public function paymentCancelled()
+    public function paymentCancelled(Request $request)
     {
+        //update payment status to cancelled
+        if (!auth()->check()) {
+            return redirect()->route('home')->with('error', 'Please login to continue');
+        }
+
+        $decrypted_order_id = decrypt($request->order_id);
+
+        $payment = EstorePayment::where('stripe_payment_intent_id', $request->session_id)
+            ->where('status', 'pending')
+            ->first();
+
+        if ($payment) {
+            $payment->update(['status' => 'failed']);
+        }
+
+        // update order status
+        $order = EstoreOrder::where('id', $decrypted_order_id)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if ($order) {
+            $order->update(['status' => 'cancelled', 'payment_status' => 'failed']);
+        }
+
         return redirect()->route('e-store.checkout')
             ->with('warning', 'Payment was cancelled. You can try again.');
     }

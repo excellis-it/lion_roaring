@@ -16,6 +16,9 @@ class EstoreOrderItem extends Model
         'product_image',
         'price',
         'quantity',
+        'size_id',
+        'color_id',
+        'other_charges',
         'total'
     ];
 
@@ -32,5 +35,15 @@ class EstoreOrderItem extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function size()
+    {
+        return $this->belongsTo(Size::class, 'size_id');
+    }
+
+    public function color()
+    {
+        return $this->belongsTo(Color::class, 'color_id');
     }
 }

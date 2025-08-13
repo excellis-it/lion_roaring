@@ -120,6 +120,30 @@
                     <div class="col-lg-4">
                         <div class="cart_right">
                             <div class="bill_details">
+                                <h4>Order Method</h4>
+                                <div class="bill_text mt-3">
+
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="order_method"
+                                            id="delivery" value="0" checked>
+                                        <label class="form-check-label" for="delivery">
+                                            Delivery
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="order_method"
+                                            id="pickup" value="1">
+                                        <label class="form-check-label" for="pickup">
+                                            Pickup
+                                        </label>
+                                    </div>
+
+
+
+                                </div>
+
+                            </div>
+                            <div class="bill_details">
                                 <h4>Bill Details</h4>
                                 <div class="bill_text">
                                     @foreach ($cartItems as $item)
