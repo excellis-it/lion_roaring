@@ -10,6 +10,7 @@ use App\Models\EstoreCart;
 use App\Models\EstoreOrder;
 use App\Models\EstoreOrderItem;
 use App\Models\EstorePayment;
+use App\Models\EstoreSetting;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
@@ -437,14 +438,17 @@ class ProductController extends Controller
             return redirect()->route('e-store.cart')->with('error', 'Your cart is empty');
         }
 
-        $total = 0;
+        // Get estore settings
+        $estoreSettings = EstoreSetting::first();
+
+        $subtotal = 0;
         $cartItems = [];
 
         foreach ($carts as $cart) {
             // Calculate other charges for this cart item
             $otherCharges = $cart->product->otherCharges->sum('charge_amount');
-            $subtotal = ($cart->product->price * $cart->quantity) + $otherCharges;
-            $total += $subtotal;
+            $itemSubtotal = ($cart->product->price * $cart->quantity) + $otherCharges;
+            $subtotal += $itemSubtotal;
 
             $cartItems[] = [
                 'id' => $cart->id,
@@ -454,11 +458,29 @@ class ProductController extends Controller
                 'price' => $cart->product->price,
                 'quantity' => $cart->quantity,
                 'other_charges' => $otherCharges,
-                'subtotal' => $subtotal
+                'subtotal' => $itemSubtotal
             ];
         }
 
-        return view('ecom.checkout')->with(compact('cartItems', 'total', 'cartCount'));
+        // Calculate additional costs
+        $shippingCost = 0;
+        $deliveryCost = 0;
+        $taxAmount = 0;
+
+        if ($estoreSettings) {
+            $shippingCost = $estoreSettings->shipping_cost ?? 0;
+            $deliveryCost = $estoreSettings->delivery_cost ?? 0;
+            $taxPercentage = $estoreSettings->tax_percentage ?? 0;
+
+            // Calculate tax on subtotal
+            if ($taxPercentage > 0) {
+                $taxAmount = ($subtotal * $taxPercentage) / 100;
+            }
+        }
+
+        $total = $subtotal + $shippingCost + $deliveryCost + $taxAmount;
+
+        return view('ecom.checkout')->with(compact('cartItems', 'subtotal', 'shippingCost', 'deliveryCost', 'taxAmount', 'total', 'cartCount', 'estoreSettings'));
     }
 
     // Process checkout
@@ -488,6 +510,9 @@ class ProductController extends Controller
             return response()->json(['status' => false, 'message' => 'Your cart is empty']);
         }
 
+        // Get estore settings
+        $estoreSettings = EstoreSetting::first();
+
         // cart item product other charges
         $carts->each(function ($cart) {
             $cart->other_charges = $cart->product->otherCharges->sum('charge_amount');
@@ -497,6 +522,28 @@ class ProductController extends Controller
         $subtotal = $carts->sum(function ($cart) {
             return ($cart->price * $cart->quantity) + $cart->other_charges;
         });
+
+        // Calculate additional costs based on order method and settings
+        $shippingCost = 0;
+        $deliveryCost = 0;
+        $taxAmount = 0;
+
+        if ($estoreSettings) {
+            // Only add shipping/delivery costs if not pickup or if pickup is not available
+            if ($is_pickup == 0 || !$estoreSettings->is_pickup_available) {
+                $shippingCost = $estoreSettings->shipping_cost ?? 0;
+                $deliveryCost = $estoreSettings->delivery_cost ?? 0;
+            }
+
+            $taxPercentage = $estoreSettings->tax_percentage ?? 0;
+
+            // Calculate tax on subtotal
+            if ($taxPercentage > 0) {
+                $taxAmount = ($subtotal * $taxPercentage) / 100;
+            }
+        }
+
+        $totalAmount = $subtotal + $shippingCost + $deliveryCost + $taxAmount;
 
         // others charges name amounts in json array
         $otherCharges = [];
@@ -524,9 +571,9 @@ class ProductController extends Controller
                 'pincode' => $request->pincode,
                 'country' => $request->country,
                 'subtotal' => $subtotal,
-                'tax_amount' => 0,
-                'shipping_amount' => 0,
-                'total_amount' => $subtotal,
+                'tax_amount' => $taxAmount,
+                'shipping_amount' => $shippingCost + $deliveryCost,
+                'total_amount' => $totalAmount,
                 'status' => 'pending',
                 'payment_status' => 'pending'
             ]);
@@ -565,19 +612,54 @@ class ProductController extends Controller
                             'description' => $cart->product->short_description ?? '',
                         ],
                         'unit_amount' => (($cart->price * $cart->quantity) + $cart->other_charges) * 100, // Amount in cents
-                        // 'metadata' => [
-                        //     'size_id' => $cart->size_id,
-                        //     'color_id' => $cart->color_id,
-                        //     'subunit_amount' => $cart->other_charges * 100, // Amount in cents
-                        //     'total_amount' => ($cart->price * $cart->quantity) + $cart->other_charges,
-                        // ],
                     ],
-                    'quantity' => $cart->quantity,
+                    'quantity' => 1, // We're using the total amount, so quantity is 1
+                ];
+            }
+
+            // Add shipping cost as a line item if applicable
+            if ($shippingCost > 0) {
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => 'Shipping Cost',
+                        ],
+                        'unit_amount' => $shippingCost * 100,
+                    ],
+                    'quantity' => 1,
+                ];
+            }
+
+            // Add delivery cost as a line item if applicable
+            if ($deliveryCost > 0) {
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => 'Delivery Cost',
+                        ],
+                        'unit_amount' => $deliveryCost * 100,
+                    ],
+                    'quantity' => 1,
+                ];
+            }
+
+            // Add tax as a line item if applicable
+            if ($taxAmount > 0) {
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => 'Tax (' . ($estoreSettings->tax_percentage ?? 0) . '%)',
+                        ],
+                        'unit_amount' => round($taxAmount * 100),
+                    ],
+                    'quantity' => 1,
                 ];
             }
 
             $encrypted_order_id = encrypt($order->id);
-
 
             $checkoutSession = StripeSession::create([
                 'payment_method_types' => ['card'],
@@ -596,7 +678,7 @@ class ProductController extends Controller
                 'order_id' => $order->id,
                 'stripe_payment_intent_id' => $checkoutSession->id,
                 'payment_method' => 'stripe',
-                'amount' => $subtotal,
+                'amount' => $totalAmount,
                 'currency' => 'USD',
                 'status' => 'pending'
             ]);
@@ -622,7 +704,7 @@ class ProductController extends Controller
         }
         $request->validate([
             'session_id' => 'required|string',
-            'order_id' => 'required|integer'
+            'order_id' => 'required'
         ]);
 
         $decrypted_order_id = decrypt($request->order_id);

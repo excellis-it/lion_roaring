@@ -124,21 +124,21 @@
                                 <div class="bill_text mt-3">
 
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="order_method"
-                                            id="delivery" value="0" checked>
+                                        <input class="form-check-input order-method-radio" type="radio"
+                                            name="order_method" id="delivery" value="0" checked>
                                         <label class="form-check-label" for="delivery">
                                             Delivery
                                         </label>
                                     </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="order_method"
-                                            id="pickup" value="1">
-                                        <label class="form-check-label" for="pickup">
-                                            Pickup
-                                        </label>
-                                    </div>
-
-
+                                    @if ($estoreSettings && $estoreSettings->is_pickup_available)
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input order-method-radio" type="radio"
+                                                name="order_method" id="pickup" value="1">
+                                            <label class="form-check-label" for="pickup">
+                                                Pickup
+                                            </label>
+                                        </div>
+                                    @endif
 
                                 </div>
 
@@ -160,9 +160,40 @@
                                     @endforeach
 
                                     <hr />
+
+                                    <ul>
+                                        <li>Subtotal</li>
+                                        <li id="subtotal-amount">${{ number_format($subtotal, 2) }}</li>
+                                    </ul>
+
+                                    @if ($estoreSettings && $estoreSettings->shipping_cost > 0)
+                                        <ul id="shipping-cost-row"
+                                            style="{{ request('order_method') == 1 && $estoreSettings->is_pickup_available ? 'display: none;' : '' }}">
+                                            <li>Shipping Cost</li>
+                                            <li id="shipping-amount">${{ number_format($shippingCost, 2) }}</li>
+                                        </ul>
+                                    @endif
+
+                                    @if ($estoreSettings && $estoreSettings->delivery_cost > 0)
+                                        <ul id="delivery-cost-row"
+                                            style="{{ request('order_method') == 1 && $estoreSettings->is_pickup_available ? 'display: none;' : '' }}">
+                                            <li>Delivery Cost</li>
+                                            <li id="delivery-amount">${{ number_format($deliveryCost, 2) }}</li>
+                                        </ul>
+                                    @endif
+
+                                    @if ($estoreSettings && $estoreSettings->tax_percentage > 0)
+                                        <ul>
+                                            <li>Tax ({{ $estoreSettings->tax_percentage }}%)</li>
+                                            <li id="tax-amount">${{ number_format($taxAmount, 2) }}</li>
+                                        </ul>
+                                    @endif
+
+                                    <hr />
                                     <div class="total_payable">
                                         <div class="total_payable_l">Total Payable</div>
-                                        <div class="total_payable_r">${{ number_format($total, 2) }}</div>
+                                        <div class="total_payable_r" id="total-amount">${{ number_format($total, 2) }}
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="by_con">
@@ -182,6 +213,35 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        // Store the costs for calculation
+        const costs = {
+            subtotal: {{ $subtotal }},
+            shipping: {{ $shippingCost }},
+            delivery: {{ $deliveryCost }},
+            tax: {{ $taxAmount }},
+            isPickupAvailable: {{ $estoreSettings && $estoreSettings->is_pickup_available ? 'true' : 'false' }}
+        };
+
+        // Handle order method change
+        $('.order-method-radio').on('change', function() {
+            const isPickup = $(this).val() == '1';
+            let newTotal = costs.subtotal + costs.tax;
+
+            if (isPickup && costs.isPickupAvailable) {
+                // Hide shipping and delivery costs for pickup
+                $('#shipping-cost-row').hide();
+                $('#delivery-cost-row').hide();
+            } else {
+                // Show shipping and delivery costs for delivery
+                $('#shipping-cost-row').show();
+                $('#delivery-cost-row').show();
+                newTotal += costs.shipping + costs.delivery;
+            }
+
+            // Update total amount
+            $('#total-amount').text('$' + newTotal.toFixed(2));
+        });
+
         $('#checkout-form').on('submit', function(e) {
             e.preventDefault();
 
