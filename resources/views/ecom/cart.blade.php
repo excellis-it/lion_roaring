@@ -37,22 +37,22 @@
     <section class="shopping_cart_sec">
         <div class="container">
             <div class="heading_hp mb-3">
-                <h2>Shopping Cart ({{ count($cartItems) }} items)</h2>
+                <h2>Shopping Cart ({{ count($carts) }} items)</h2>
             </div>
 
-            @if (count($cartItems) > 0)
+            @if (count($carts) > 0)
                 <div class="row">
                     <div class="col-lg-8">
                         <div id="cart-items-container">
-                            @foreach ($cartItems as $item)
-                                <div class="cart_item cart-item" data-cart-id="{{ $item['id'] }}">
+                            @foreach ($carts as $item)
+                                <div class="cart_item cart-item" data-cart-id="{{ $item->id }}">
                                     <div class="cart_product">
                                         <div class="row">
                                             <div class="col-md-3">
                                                 <div class="cart_images">
-                                                    @if ($item['product_image'])
-                                                        <img src="{{ Storage::url($item['product_image']) }}"
-                                                            alt="{{ $item['product_name'] }}" />
+                                                    @if ($item->product->main_image)
+                                                        <img src="{{ Storage::url($item->product->main_image) }}"
+                                                            alt="{{ $item->product->name }}" />
                                                     @else
                                                         <img src="{{ asset('ecom_assets/images/product3.jpg') }}"
                                                             alt="Product Image" />
@@ -61,14 +61,28 @@
                                             </div>
                                             <div class="col-md-9">
                                                 <div class="cart_text">
-                                                    <h4>{{ $item['product_name'] }}</h4>
-                                                    <span
-                                                        class="">{{ \Illuminate\Support\Str::limit($item['product_name'], 50) }}</span>
+                                                    <h4>{{ $item->product->name }}</h4>
+                                                    <h6>{{ $item->size ? 'Size: ' . $item->size?->size ?? '' : '' }}
+                                                        &nbsp;&nbsp;
+                                                        {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
+                                                    </h6>
+                                                    {{-- <span class="">{!! \Illuminate\Support\Str::limit($item->product->description, 50) !!}</span> --}}
 
                                                     <ul class="wl_price">
                                                         <li>Unit Price</li>
-                                                        <li class="ms-auto">${{ number_format($item['price'], 2) }}</li>
+                                                        <li class="ms-auto">${{ number_format($item->product->price, 2) }}
+                                                        </li>
                                                     </ul>
+
+
+                                                    @foreach ($item->product->otherCharges as $otherCharge)
+                                                        <ul class="wl_price">
+                                                            <li>{{ $otherCharge->charge_name }}</li>
+                                                            <li class="ms-auto">
+                                                                ${{ number_format($otherCharge->charge_amount, 2) }}</li>
+                                                        </ul>
+                                                    @endforeach
+
 
                                                     <div class="d-flex justify-content-between final_price">
                                                         <div class="left_p_text">
@@ -76,7 +90,7 @@
                                                         </div>
                                                         <div class="right_p_text">
                                                             <h4 class="item-subtotal">
-                                                                ${{ number_format($item['subtotal'], 2) }}</h4>
+                                                                ${{ number_format($item->subtotal, 2) }}</h4>
                                                         </div>
                                                     </div>
 

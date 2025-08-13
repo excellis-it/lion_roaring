@@ -11,7 +11,8 @@ class EstoreCart extends Model
     protected $fillable = [
         'user_id',
         'product_id',
-        'price',
+        'size_id',
+        'color_id',
         'quantity',
     ];
 
@@ -23,5 +24,15 @@ class EstoreCart extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function size()
+    {
+        return $this->belongsTo(Size::class, 'size_id');
+    }
+
+    public function color()
+    {
+        return $this->belongsTo(Color::class, 'color_id');
     }
 }

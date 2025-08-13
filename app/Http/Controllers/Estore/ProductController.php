@@ -230,10 +230,24 @@ class ProductController extends Controller
                 ]);
             }
 
+            // return $product->sizes->count();
+            // check if product have size and color and user not selected those then auto select first color and size either set null
+            $sizeId = null;
+            if (!$request->size_id && ($product->sizes->count() > 0)) {
+                $sizeId = $product->sizes->first()->size->id;
+            }
+            $colorId = null;
+            if (!$request->color_id && ($product->colors->count() > 0)) {
+                $colorId = $product->colors->first()->color->id;
+            }
+
+            // return $sizeId;
+
             $cart = new EstoreCart();
             $cart->user_id = auth()->id();
             $cart->product_id = $product->id;
-            $cart->price = $product->price;
+            $cart->size_id = $sizeId;
+            $cart->color_id = $colorId;
             $cart->quantity = $request->quantity;
             $cart->session_id = $userSessionId;
             $cart->save();
@@ -395,25 +409,18 @@ class ProductController extends Controller
         $carts = $isAuth ? EstoreCart::where('user_id', auth()->id())->with('product')->get() : EstoreCart::where('session_id', $userSessionId)->with('product')->get();
         $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
 
-        $cartItems = [];
+
         $total = 0;
 
         foreach ($carts as $cart) {
-            $subtotal = $cart->price * $cart->quantity;
-            $total += $subtotal;
 
-            $cartItems[] = [
-                'id' => $cart->id,
-                'product_id' => $cart->product_id,
-                'product_name' => $cart->product->name ?? 'Unknown Product',
-                'product_image' => $cart->product->main_image ?? null,
-                'price' => $cart->price,
-                'quantity' => $cart->quantity,
-                'subtotal' => $subtotal
-            ];
+            // other charges then sub and total amount
+            $otherCharges = $cart->product->otherCharges->sum('charge_amount');
+            $cart->subtotal = ($cart->product->price * $cart->quantity) + $otherCharges;
+            $total += $cart->subtotal;
         }
 
-        return view('ecom.cart')->with(compact('cartItems', 'total', 'cartCount'));
+        return view('ecom.cart')->with(compact('carts', 'total', 'cartCount'));
     }
 
     // checkout page

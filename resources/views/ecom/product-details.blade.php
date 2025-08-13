@@ -11,6 +11,13 @@
         .qty-input {
             border: none;
         }
+
+        .btn-check:checked+.btn {
+            color: #643171;
+            background-color: var(--bs-btn-active-bg);
+            border-color: #643171;
+            border: 4px solid;
+        }
     </style>
 @endpush
 
@@ -77,6 +84,50 @@
                     <div class="brief-description">
                         {!! $product->description !!}
                     </div>
+
+
+                    <div class="mb-3">
+                        {{-- Select Size radio input button $product->sizes --}}
+                        @if ($product->sizes->count() > 0)
+                            <p>Select Size:</p>
+                            @foreach ($product->sizes as $key => $size)
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input product-select-size-input" type="radio" name="size"
+                                        id="size-{{ $size->size?->id }}" value="{{ $size->size?->id }}"
+                                        {{ ($cartItem ? ($cartItem->size_id == $size->size?->id ? 'checked' : '') : $key == 0) ? 'checked' : '' }}
+                                        {{ $cartItem && $cartItem->size_id !== $size->size?->id ? 'disabled' : '' }}>
+                                    <label class="form-check-label" for="size-{{ $size->size?->id }}">
+                                        {{ $size->size?->size }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        @endif
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        {{-- Select Color radio input button $product->colors --}}
+                        @if ($product->colors->count() > 0)
+                            <p>Select Color:</p>
+                            @foreach ($product->colors as $key => $color)
+                                <div class="form-check form-check-inline">
+                                    <input class="btn-check product-select-color-input" type="radio" name="color"
+                                        id="color-{{ $color->color?->id }}" value="{{ $color->color?->id }}"
+                                        {{ ($cartItem ? ($cartItem->color_id == $color->color?->id ? 'checked' : '') : $key == 0) ? 'checked' : '' }}
+                                        {{ $cartItem && $cartItem->color_id !== $color->color?->id ? 'disabled' : '' }}>
+                                    <label style="background-color: {{ $color->color?->color }};" class="btn"
+                                        for="color-{{ $color->color?->id }}">
+                                        {{-- {{ $color->color?->color_name }} --}}
+                                        &nbsp;&nbsp;&nbsp;
+                                    </label>
+                                </div>
+                            @endforeach
+                        @endif
+
+                    </div>
+
                     <div class="d-flex justify-content-start align-items-center">
                         <div class="small_number mb-3">
                             <div class="qty-input">

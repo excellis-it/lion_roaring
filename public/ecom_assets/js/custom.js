@@ -338,6 +338,14 @@ var QtyInput = (function () {
                             <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to Cart</span></a>
                         </div>
                     `);
+
+                    // Reset size and color selections
+                    $(".product-select-size-input")
+                        .prop("checked", false)
+                        .prop("disabled", false);
+                    $(".product-select-color-input")
+                        .prop("checked", false)
+                        .prop("disabled", false);
                 } else {
                     toastr.error(response.message);
                 }
@@ -374,12 +382,19 @@ var QtyInput = (function () {
 
     // Add to cart from details page
     function addToCartFromDetails(productId, quantity, $input) {
+        // get product-select-size-input checked value
+        var sizeId = $(".product-select-size-input:checked").val();
+        // get product-select-color-input checked value
+        var colorId = $(".product-select-color-input:checked").val();
+
         $.ajax({
             url: window.cartRoutes.addToCart,
             type: "POST",
             data: {
                 product_id: productId,
                 quantity: quantity,
+                size_id: sizeId, // Include size ID if applicable
+                color_id: colorId, // Include color ID if applicable
                 _token: window.csrfToken,
             },
             success: function (response) {
@@ -389,6 +404,14 @@ var QtyInput = (function () {
 
                     // Get the cart ID from response or make another call to get it
                     getCartItemId(productId, $input);
+
+                    // disabled product-select-size-input other unchecked
+                    $(".product-select-size-input")
+                        .not(":checked")
+                        .prop("disabled", true);
+                    $(".product-select-color-input")
+                        .not(":checked")
+                        .prop("disabled", true);
                 } else {
                     toastr.error(response.message);
                 }
@@ -460,11 +483,18 @@ $(document).ready(function () {
         $button.find("a").text("Adding...");
         $button.addClass("loading");
 
+        // get product-select-size-input checked value
+        var sizeId = $(".product-select-size-input:checked").val();
+        // get product-select-color-input checked value
+        var colorId = $(".product-select-color-input:checked").val();
+
         $.ajax({
             url: window.cartRoutes.addToCart,
             type: "POST",
             data: {
                 product_id: productId,
+                size_id: sizeId,
+                color_id: colorId,
                 quantity: quantity,
                 _token: window.csrfToken,
             },
@@ -510,6 +540,12 @@ $(document).ready(function () {
                             });
                         }
                     }
+                    $(".product-select-size-input")
+                        .not(":checked")
+                        .prop("disabled", true);
+                    $(".product-select-color-input")
+                        .not(":checked")
+                        .prop("disabled", true);
                 } else {
                     toastr.error(response.message);
                 }
