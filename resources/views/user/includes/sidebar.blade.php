@@ -339,6 +339,15 @@
                                     </span>
                                     <span>Products</span>
                                 </a>
+                                {{-- warehouse management --}}
+                                <a href="{{ route('ware-houses.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Warehouses.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Warehouses</span>
+                                </a>
+
                                 {{-- Orders List --}}
                                 <a href="{{ route('user.store-orders.list') }}">
                                     <span>
