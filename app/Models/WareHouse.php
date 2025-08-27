@@ -18,4 +18,19 @@ class WareHouse extends Model
         'service_range',
         'is_active',
     ];
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function warehouseProducts()
+    {
+        return $this->hasMany(WarehouseProduct::class, 'warehouse_id');
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'warehouse_products', 'warehouse_id', 'product_id');
+    }
 }

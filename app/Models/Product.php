@@ -87,4 +87,14 @@ class Product extends Model
         }
         return false;
     }
+
+    public function warehouseProducts()
+    {
+        return $this->hasMany(WarehouseProduct::class, 'product_id');
+    }
+
+    public function warehouses()
+    {
+        return $this->belongsToMany(WareHouse::class, 'warehouse_products', 'product_id', 'warehouse_id');
+    }
 }

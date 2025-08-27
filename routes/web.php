@@ -512,6 +512,14 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::resource('/ware-houses', WareHouseController::class);
     Route::get('/ware-houses-delete/{id}', [WareHouseController::class, 'delete'])->name('ware-houses.delete');
 
+    // warehouse product management
+    Route::get('/ware-houses/{id}/products', [WareHouseController::class, 'products'])->name('ware-houses.products');
+    Route::get('/ware-houses/{id}/products/add', [WareHouseController::class, 'addProduct'])->name('ware-houses.products.add');
+    Route::post('/ware-houses/{id}/products', [WareHouseController::class, 'storeProduct'])->name('ware-houses.products.store');
+    Route::get('/ware-houses/{warehouseId}/products/{productId}/edit', [WareHouseController::class, 'editProduct'])->name('ware-houses.products.edit');
+    Route::put('/ware-houses/{warehouseId}/products/{productId}', [WareHouseController::class, 'updateProduct'])->name('ware-houses.products.update');
+    Route::get('/ware-houses/{warehouseId}/products/{productId}/delete', [WareHouseController::class, 'deleteProduct'])->name('ware-houses.products.delete');
+
     // e-learning routes
     Route::prefix('elearning')->group(function () {
         Route::get('/elearning-product-delete/{id}', [ElearningController::class, 'delete'])->name('elearning.delete');

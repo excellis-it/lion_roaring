@@ -14,7 +14,8 @@
                 </div>
                 <div class="col-md-2 float-right">
 
-                    <a href="{{ route('ware-houses.create') }}" class="btn btn-primary w-100"><i class="fa-solid fa-upload"></i>
+                    <a href="{{ route('ware-houses.create') }}" class="btn btn-primary w-100"><i
+                            class="fa-solid fa-upload"></i>
                         Create Warehouse</a>
 
                 </div>
@@ -25,6 +26,8 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
+                            <th>Address</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -33,9 +36,16 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $wareHouse->name }}</td>
+                                <td>{{ Str::limit($wareHouse->address, 50) }}</td>
+                                <td>{{ $wareHouse->is_active ? 'Active' : 'Inactive' }}</td>
                                 <td class="d-flex">
-                                    <a href="{{ route('ware-houses.edit', $wareHouse->id) }}" class="edit_icon me-2"><i
-                                            class="fa-solid fa-edit"></i></a>
+                                    <a href="{{ route('ware-houses.products', $wareHouse->id) }}"
+                                        class="btn btn-info btn-sm me-2">
+                                        <i class="fa-solid fa-boxes-stacked"></i> Products
+                                    </a>
+                                    <a href="{{ route('ware-houses.edit', $wareHouse->id) }}" class="edit_icon me-2">
+                                        <i class="fa-solid fa-edit"></i>
+                                    </a>
                                     <a href="javascript:void(0)" id="delete"
                                         data-route="{{ route('ware-houses.delete', $wareHouse->id) }}" class="delete_icon">
                                         <i class="fa-solid fa-trash"></i>
@@ -43,12 +53,9 @@
                                 </td>
                             </tr>
                         @endforeach
-
                     </tbody>
-
                 </table>
             </div>
-
         </div>
     </div>
 @endsection
