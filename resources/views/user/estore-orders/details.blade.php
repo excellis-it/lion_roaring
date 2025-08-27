@@ -45,7 +45,7 @@
                                     <p><strong>Email:</strong> {{ $order->email }}</p>
                                     <p><strong>Phone:</strong> {{ $order->phone }}</p>
                                     @if ($order->user)
-                                        <p><strong>Username:</strong> {{ $order->user->username }}</p>
+                                        <p><strong>Username:</strong> {{ $order->user->user_name }}</p>
                                     @endif
                                 </div>
                                 <div class="col-md-6">
@@ -103,7 +103,16 @@
                                                     <strong>{{ $item->product_name }}</strong>
                                                     @if ($item->product)
                                                         <br><small class="text-muted">SKU:
-                                                            {{ $item->product->sku ?? 'N/A' }}</small>
+                                                            {{ $item->warehouseProduct->sku ?? 'N/A' }}</small>
+                                                    @endif
+
+                                                    {{-- if item have size and color --}}
+                                                    @if ($item->size)
+                                                        <br><small class="text-muted">Size: {{ $item->size->size }}</small>
+                                                    @endif
+                                                    @if ($item->color)
+                                                        <br><small class="text-muted">Color:
+                                                            {{ $item->color->color_name }}</small>
                                                     @endif
                                                 </td>
                                                 <td>

@@ -16,13 +16,24 @@ class HomeController extends Controller
     {
         $session_id = session()->getId();
         $this->updateCartUserId();
+
+        $nearbyWareHouseId = 1; // Default warehouse ID
+
+        $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
+            $q->where('warehouse_id', $nearbyWareHouseId)
+                ->where('quantity', '>', 0);
+        })->pluck('id')->toArray();
+
+
+       // return $wareHouseProducts;
+
         $categories = Category::where('status', 1)->orderBy('id', 'DESC')->get();
-        $feature_products = Product::where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
-        $new_products = Product::where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
-        $books = Product::where('status', 1)->whereHas('category', function ($q) {
+        $feature_products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
+        $new_products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
+        $books = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->whereHas('category', function ($q) {
             $q->where('slug', 'books');
         })->orderBy('id', 'DESC')->limit(10)->get();
-        $lockets = Product::where('status', 1)->whereHas('category', function ($q) {
+        $lockets = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->whereHas('category', function ($q) {
             $q->where('slug', 'lockets');
         })->orderBy('id', 'DESC')->limit(10)->get();
         $content = EcomHomeCms::orderBy('id', 'desc')->first();

@@ -10,6 +10,7 @@ class EstoreOrder extends Model
     use HasFactory;
 
     protected $fillable = [
+        'warehouse_id',
         'order_number',
         'is_pickup',
         'user_id',
@@ -122,5 +123,11 @@ class EstoreOrder extends Model
                 $order->order_number = 'ORD-' . strtoupper(uniqid());
             }
         });
+    }
+
+    // warehouse
+    public function warehouse()
+    {
+        return $this->belongsTo(WareHouse::class, 'warehouse_id');
     }
 }

@@ -12,6 +12,8 @@ class EstoreOrderItem extends Model
     protected $fillable = [
         'order_id',
         'product_id',
+        'warehouse_product_id',
+        'warehouse_id',
         'product_name',
         'product_image',
         'price',
@@ -45,5 +47,16 @@ class EstoreOrderItem extends Model
     public function color()
     {
         return $this->belongsTo(Color::class, 'color_id');
+    }
+
+    public function warehouse()
+    {
+        return $this->belongsTo(WareHouse::class, 'warehouse_id');
+    }
+
+    // warehouse product
+    public function warehouseProduct()
+    {
+        return $this->belongsTo(WarehouseProduct::class, 'warehouse_product_id');
     }
 }

@@ -37,41 +37,41 @@
                                 </div>
                             </div>
 
+
+
                             <div class="col-md-6 mb-3">
                                 <div class="box_label">
-                                    <label for="color_id">Color (Optional)</label>
+                                    <label for="sku">SKU*</label>
+                                    <input type="text" name="sku" id="sku" class="form-control"
+                                        value="{{ old('sku') }}">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="box_label">
+                                    <label for="color_id">Color</label>
                                     <select name="color_id" id="color_id" class="form-control">
                                         <option value="">No Color</option>
-                                        @foreach ($colors as $color)
-                                            <option value="{{ $color->id }}">{{ $color->color_name }}</option>
-                                        @endforeach
+
                                     </select>
                                 </div>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <div class="box_label">
-                                    <label for="size_id">Size (Optional)</label>
+                                    <label for="size_id">Size</label>
                                     <select name="size_id" id="size_id" class="form-control">
                                         <option value="">No Size</option>
-                                        @foreach ($sizes as $size)
-                                            <option value="{{ $size->id }}">{{ $size->size }}</option>
-                                        @endforeach
+
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                <div class="box_label">
-                                    <label for="tax_rate">Tax Rate (%) <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.01" min="0" name="tax_rate" id="tax_rate"
-                                        class="form-control" value="{{ old('tax_rate', 0) }}" required>
-                                </div>
-                            </div>
+
 
                             <div class="col-md-6 mb-3">
                                 <div class="box_label">
-                                    <label for="quantity">Quantity <span class="text-danger">*</span></label>
+                                    <label for="quantity">Stock Quantity <span class="text-danger">*</span></label>
                                     <input type="number" min="1" name="quantity" id="quantity" class="form-control"
                                         value="{{ old('quantity', 1) }}" required>
                                 </div>
@@ -97,6 +97,38 @@
                 $('#loading').addClass('loading');
                 $('#loading-content').addClass('loading-content');
             });
+        });
+
+        // on change product get product's size and colors
+        $("#product_id").on("change", function() {
+            var productId = $(this).val();
+            if (productId) {
+                $.ajax({
+                    url: "{{ route('ware-houses.products.getDetails') }}",
+                    method: "GET",
+                    data: {
+                        id: productId
+                    },
+                    success: function(response) {
+                        if (response.status) {
+                            // Populate size and color dropdowns
+                            var sizeSelect = $("#size_id");
+                            var colorSelect = $("#color_id");
+                            sizeSelect.empty();
+                            colorSelect.empty();
+
+                            $.each(response.data.sizes, function(index, size) {
+                                sizeSelect.append($("<option>").val(size.size.id).text(size.size
+                                    .size));
+                            });
+                            $.each(response.data.colors, function(index, color) {
+                                colorSelect.append($("<option>").val(color.color.id).text(color
+                                    .color.color_name));
+                            });
+                        }
+                    }
+                });
+            }
         });
     </script>
 @endpush

@@ -26,6 +26,9 @@ class ProductController extends Controller
         if (auth()->user()->hasRole('SUPER ADMIN')) {
             $products = Product::orderBy('id', 'desc')->paginate(10);
             return view('user.product.list', compact('products'));
+        } else if (auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
+            $products = Product::where('user_id', auth()->id())->orderBy('id', 'desc')->paginate(10);
+            return view('user.product.list', compact('products'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -70,7 +73,7 @@ class ProductController extends Controller
         $categories = Category::where('status', 1)->get();
         $sizes = Size::where('status', 1)->get();
         $colors = Color::where('status', 1)->get();
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
             return view('user.product.create')
                 ->with(compact('categories', 'sizes', 'colors'));
         } else {
@@ -207,7 +210,7 @@ class ProductController extends Controller
         $categories = Category::where('status', 1)->get();
         $sizes = Size::where('status', 1)->get();
         $colors = Color::where('status', 1)->get();
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
             $product = Product::findOrFail($id);
 
             return view('user.product.edit', compact('product', 'categories', 'sizes', 'colors'));
@@ -225,7 +228,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
             $request->validate([
                 'category_id' => 'required|numeric|exists:categories,id',
                 'name' => 'required|string|max:255',

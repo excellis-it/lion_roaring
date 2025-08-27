@@ -16,13 +16,29 @@ use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
 use Illuminate\Support\Facades\DB;
 use App\Models\EcomWishList;
+use App\Models\WarehouseProduct;
+use App\Models\WareHouse;
 
 class ProductController extends Controller
 {
     public function productDetails($slug)
     {
-        $product = Product::where('slug', $slug)->first();
-        $related_products = Product::where('category_id', $product->category_id)
+        $nearbyWareHouseId = 1; // Default warehouse ID
+        $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
+            $q->where('warehouse_id', $nearbyWareHouseId)
+                ->where('quantity', '>', 0);
+        })->pluck('id')->toArray();
+
+        $getProduct = Product::where('slug', $slug)->first();
+
+        $wareHouseHaveProductVariables = WarehouseProduct::where('product_id', $getProduct->id)
+            ->where('warehouse_id', $nearbyWareHouseId)
+            ->first();
+
+        // select prodcut is first product in warehouse have with the product id
+        $product = Product::where('id', $wareHouseHaveProductVariables->product_id)->where('slug', $slug)->first();
+
+        $related_products = Product::whereIn('id', $wareHouseProducts)->where('category_id', $product->category_id)
             ->where(function ($query) use ($product) {
                 $query->where('id', '!=', $product->id)
                     ->where('status', 1)
@@ -44,7 +60,7 @@ class ProductController extends Controller
             ->first();
 
 
-        return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews', 'cartCount', 'cartItem'));
+        return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews', 'cartCount', 'cartItem', 'wareHouseHaveProductVariables'));
     }
 
     public function products(Request $request, $category_id = null)
@@ -195,6 +211,7 @@ class ProductController extends Controller
             $request->validate([
                 'product_id' => 'required|integer',
                 'quantity' => 'required|integer|min:1',
+                'warehouse_product_id' => 'required|integer',
             ]);
 
             $isAuth = auth()->check();
@@ -206,6 +223,10 @@ class ProductController extends Controller
             if (!$product) {
                 return response()->json(['status' => false, 'message' => 'Product not found']);
             }
+
+            $warehouseProductId = $request->warehouse_product_id;
+            $warehouseProduct = WarehouseProduct::find($warehouseProductId);
+            $wareHouse = Warehouse::find($warehouseProduct->warehouse_id);
 
             // Check if product already exists in cart
             if ($isAuth) {
@@ -247,6 +268,8 @@ class ProductController extends Controller
             $cart = new EstoreCart();
             $cart->user_id = auth()->id();
             $cart->product_id = $product->id;
+            $cart->warehouse_product_id = $warehouseProduct->id;
+            $cart->warehouse_id = $wareHouse->id;
             $cart->size_id = $sizeId;
             $cart->color_id = $colorId;
             $cart->quantity = $request->quantity;
@@ -556,8 +579,12 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
 
+            // get warehouse id from $carts first
+            $warehouseId = $carts->first()->warehouse_id ?? null;
+
             // Create order
             $order = EstoreOrder::create([
+                'warehouse_id' => $warehouseId,
                 'is_pickup' => $is_pickup,
                 'user_id' => auth()->id(),
                 'first_name' => $request->first_name,
@@ -583,6 +610,8 @@ class ProductController extends Controller
                 EstoreOrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $cart->product_id,
+                    'warehouse_product_id' => $cart->warehouse_product_id,
+                    'warehouse_id' => $cart->warehouse_id,
                     'product_name' => $cart->product->name,
                     'product_image' => $cart->product->main_image,
                     'price' => $cart->price,
@@ -931,6 +960,39 @@ class ProductController extends Controller
             $wishlistItem->delete();
 
             return response()->json(['status' => true, 'message' => 'Product removed from wishlist']);
+        }
+    }
+
+    // by ajax get warehouse product details by product id with optional size and color
+    public function getWarehouseProductDetails(Request $request)
+    {
+        // return $request->all();
+        if ($request->ajax()) {
+            $request->validate([
+                'product_id' => 'required|integer',
+                'size_id' => 'nullable|integer',
+                'color_id' => 'nullable|integer',
+            ]);
+
+            $product = Product::find($request->product_id);
+            if (!$product) {
+                return response()->json(['status' => false, 'message' => 'Product not found']);
+            }
+
+            $warehouseProduct = WarehouseProduct::where('product_id', $request->product_id)
+                ->when($request->size_id, function ($query) use ($request) {
+                    return $query->where('size_id', $request->size_id);
+                })
+                ->when($request->color_id, function ($query) use ($request) {
+                    return $query->where('color_id', $request->color_id);
+                })
+                ->first();
+
+            if (!$warehouseProduct) {
+                return response()->json(['status' => false, 'message' => 'Warehouse product not found']);
+            }
+
+            return response()->json(['status' => true, 'data' => $warehouseProduct]);
         }
     }
 }

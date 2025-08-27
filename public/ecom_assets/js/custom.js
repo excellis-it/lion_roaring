@@ -391,6 +391,7 @@ var QtyInput = (function () {
             url: window.cartRoutes.addToCart,
             type: "POST",
             data: {
+                warehouse_product_id: $("#warehouse-product-id").val(),
                 product_id: productId,
                 quantity: quantity,
                 size_id: sizeId, // Include size ID if applicable
@@ -492,6 +493,7 @@ $(document).ready(function () {
             url: window.cartRoutes.addToCart,
             type: "POST",
             data: {
+                warehouse_product_id: $("#warehouse-product-id").val(),
                 product_id: productId,
                 size_id: sizeId,
                 color_id: colorId,

@@ -13,10 +13,11 @@
                     <h3 class="mb-3">Warehouse List</h3>
                 </div>
                 <div class="col-md-2 float-right">
-
-                    <a href="{{ route('ware-houses.create') }}" class="btn btn-primary w-100"><i
-                            class="fa-solid fa-upload"></i>
-                        Create Warehouse</a>
+                    @if (Auth::user()->hasRole('SUPER ADMIN'))
+                        <a href="{{ route('ware-houses.create') }}" class="btn btn-primary w-100"><i
+                                class="fa-solid fa-upload"></i>
+                            Create Warehouse</a>
+                    @endif
 
                 </div>
             </div>
@@ -43,13 +44,16 @@
                                         class="btn btn-info btn-sm me-2">
                                         <i class="fa-solid fa-boxes-stacked"></i> Products
                                     </a>
-                                    <a href="{{ route('ware-houses.edit', $wareHouse->id) }}" class="edit_icon me-2">
-                                        <i class="fa-solid fa-edit"></i>
-                                    </a>
-                                    <a href="javascript:void(0)" id="delete"
-                                        data-route="{{ route('ware-houses.delete', $wareHouse->id) }}" class="delete_icon">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </a>
+                                    @if (Auth::user()->hasRole('SUPER ADMIN'))
+                                        <a href="{{ route('ware-houses.edit', $wareHouse->id) }}" class="edit_icon me-2">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </a>
+                                        <a href="javascript:void(0)" id="delete"
+                                            data-route="{{ route('ware-houses.delete', $wareHouse->id) }}"
+                                            class="delete_icon">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

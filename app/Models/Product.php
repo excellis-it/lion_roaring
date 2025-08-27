@@ -30,6 +30,12 @@ class Product extends Model
         return $this->hasMany(ProductSize::class, 'product_id');
     }
 
+    // sizes with size details
+    public function sizesWithDetails()
+    {
+        return $this->sizes()->with('size')->get();
+    }
+
     // sizeIds
     public function sizeIds()
     {
@@ -39,6 +45,12 @@ class Product extends Model
     public function colors()
     {
         return $this->hasMany(ProductColor::class, 'product_id');
+    }
+
+    // colors with color details
+    public function colorsWithDetails()
+    {
+        return $this->colors()->with('color')->get();
     }
 
     // colorIds

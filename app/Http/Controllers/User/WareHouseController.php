@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\Color;
 use App\Models\Size;
 use App\Models\WarehouseProduct;
+use Illuminate\Support\Facades\Auth;
 
 class WareHouseController extends Controller
 {
@@ -19,8 +20,13 @@ class WareHouseController extends Controller
      */
     public function index()
     {
-        //
-        $wareHouses = WareHouse::all();
+        // Super admin sees all warehouses, warehouse admin sees only assigned warehouses
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
+            $wareHouses = WareHouse::all();
+        } else {
+            $wareHouses = auth()->user()->warehouses;
+        }
+
         return view('user.warehouse.list', compact('wareHouses'));
     }
 
@@ -29,7 +35,11 @@ class WareHouseController extends Controller
      */
     public function create()
     {
-        //
+        // Only super admin can create warehouses
+        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $countries = Country::get();
         return view('user.warehouse.create', compact('countries'));
     }
@@ -39,7 +49,11 @@ class WareHouseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Only super admin can create warehouses
+        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         try {
             $request->validate([
                 'name' => 'required|string|max:255',
@@ -63,7 +77,12 @@ class WareHouseController extends Controller
      */
     public function show(WareHouse $wareHouse)
     {
-        //
+        // Check if user can access this warehouse
+        if (!auth()->user()->canManageWarehouse($wareHouse->id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Implement show logic if needed
     }
 
     /**
@@ -71,7 +90,11 @@ class WareHouseController extends Controller
      */
     public function edit(WareHouse $wareHouse)
     {
-        // return edit form with countries
+        // Only super admin can edit warehouses
+        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $countries = Country::get();
         return view('user.warehouse.edit', compact('wareHouse', 'countries'));
     }
@@ -81,7 +104,11 @@ class WareHouseController extends Controller
      */
     public function update(Request $request, WareHouse $wareHouse)
     {
-        //
+        // Only super admin can update warehouses
+        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'location_lat' => 'required|string|max:255',
@@ -114,7 +141,10 @@ class WareHouseController extends Controller
      */
     public function destroy(WareHouse $wareHouse)
     {
-        //
+        // Only super admin can delete warehouses
+        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     /**
@@ -122,6 +152,11 @@ class WareHouseController extends Controller
      */
     public function delete($id)
     {
+        // Only super admin can delete warehouses
+        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $wareHouse = WareHouse::find($id);
         if ($wareHouse) {
             $wareHouse->delete();
@@ -136,6 +171,12 @@ class WareHouseController extends Controller
     public function products($id)
     {
         $wareHouse = WareHouse::findOrFail($id);
+
+        // Check if user can access this warehouse
+        if (!auth()->user()->canManageWarehouse($wareHouse->id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $warehouseProducts = $wareHouse->warehouseProducts()->with(['product', 'color', 'size'])->get();
         return view('user.warehouse.products', compact('wareHouse', 'warehouseProducts'));
     }
@@ -146,7 +187,20 @@ class WareHouseController extends Controller
     public function addProduct($id)
     {
         $wareHouse = WareHouse::findOrFail($id);
-        $products = Product::where('status', 1)->get();
+
+        // Check if user can access this warehouse
+        if (!auth()->user()->canManageWarehouse($wareHouse->id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        if (Auth::user()->hasRole('SUPER ADMIN')) {
+            $products = Product::where('status', 1)->get();
+        } else {
+            $products = Product::where('status', 1)
+                ->where('user_id', Auth::id())
+                ->get();
+        }
+
         $colors = Color::where('status', 1)->get();
         $sizes = Size::where('status', 1)->get();
         return view('user.warehouse.add_product', compact('wareHouse', 'products', 'colors', 'sizes'));
@@ -157,15 +211,21 @@ class WareHouseController extends Controller
      */
     public function storeProduct(Request $request, $id)
     {
+        $wareHouse = WareHouse::findOrFail($id);
+
+        // Check if user can access this warehouse
+        if (!auth()->user()->canManageWarehouse($wareHouse->id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
+            'sku' => 'required|string|max:255|unique:warehouse_products,sku',
             'product_id' => 'required|exists:products,id',
             'color_id' => 'nullable|exists:colors,id',
             'size_id' => 'nullable|exists:sizes,id',
-            'tax_rate' => 'required|numeric|min:0',
+            // 'tax_rate' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
         ]);
-
-        $wareHouse = WareHouse::findOrFail($id);
 
         // Check if product with same color and size already exists in this warehouse
         $existingProduct = WarehouseProduct::where('warehouse_id', $wareHouse->id)
@@ -182,11 +242,12 @@ class WareHouseController extends Controller
         } else {
             // Create new warehouse product entry
             WarehouseProduct::create([
+                'sku' => $request->sku,
                 'warehouse_id' => $wareHouse->id,
                 'product_id' => $request->product_id,
                 'color_id' => $request->color_id,
                 'size_id' => $request->size_id,
-                'tax_rate' => $request->tax_rate,
+                // 'tax_rate' => $request->tax_rate,
                 'quantity' => $request->quantity,
             ]);
         }
@@ -201,8 +262,20 @@ class WareHouseController extends Controller
     public function editProduct($warehouseId, $productId)
     {
         $wareHouse = WareHouse::findOrFail($warehouseId);
+
+        // Check if user can access this warehouse
+        if (!auth()->user()->canManageWarehouse($wareHouse->id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $warehouseProduct = WarehouseProduct::findOrFail($productId);
-        $products = Product::where('status', 1)->get();
+        if (Auth::user()->hasRole('SUPER ADMIN')) {
+            $products = Product::where('status', 1)->get();
+        } else {
+            $products = Product::where('status', 1)
+                ->where('user_id', Auth::id())
+                ->get();
+        }
         $colors = Color::where('status', 1)->get();
         $sizes = Size::where('status', 1)->get();
 
@@ -214,21 +287,30 @@ class WareHouseController extends Controller
      */
     public function updateProduct(Request $request, $warehouseId, $productId)
     {
+        $wareHouse = WareHouse::findOrFail($warehouseId);
+
+        // Check if user can access this warehouse
+        if (!auth()->user()->canManageWarehouse($wareHouse->id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
+            'sku' => 'required|string|max:255|unique:warehouse_products,sku,' . $productId,
             'product_id' => 'required|exists:products,id',
-            'color_id' => 'nullable|exists:colors,id',
-            'size_id' => 'nullable|exists:sizes,id',
-            'tax_rate' => 'required|numeric|min:0',
+            // 'color_id' => 'nullable|exists:colors,id',
+            // 'size_id' => 'nullable|exists:sizes,id',
+            //  'tax_rate' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
         ]);
 
         $warehouseProduct = WarehouseProduct::findOrFail($productId);
 
         $warehouseProduct->update([
+            'sku' => $request->sku,
             'product_id' => $request->product_id,
-            'color_id' => $request->color_id,
-            'size_id' => $request->size_id,
-            'tax_rate' => $request->tax_rate,
+            // 'color_id' => $request->color_id,
+            //  'size_id' => $request->size_id,
+            // 'tax_rate' => $request->tax_rate,
             'quantity' => $request->quantity,
         ]);
 
@@ -241,10 +323,33 @@ class WareHouseController extends Controller
      */
     public function deleteProduct($warehouseId, $productId)
     {
+        $wareHouse = WareHouse::findOrFail($warehouseId);
+
+        // Check if user can access this warehouse
+        if (!auth()->user()->canManageWarehouse($wareHouse->id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $warehouseProduct = WarehouseProduct::findOrFail($productId);
         $warehouseProduct->delete();
 
         return redirect()->route('ware-houses.products', $warehouseId)
             ->with('message', 'Product removed from warehouse successfully.');
+    }
+
+    // // // on change product get product's size and colors
+    public function getProductDetails(Request $request)
+    {
+        $productId = $request->input('id');
+        $product = Product::find($productId);
+
+        if (!$product) {
+            return response()->json(['status' => false, 'message' => 'Product not found.']);
+        }
+
+        $sizes = $product->sizesWithDetails();
+        $colors = $product->colorsWithDetails();
+
+        return response()->json(['status' => true, 'data' => ['sizes' => $sizes, 'colors' => $colors]]);
     }
 }

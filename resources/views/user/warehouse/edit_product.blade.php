@@ -43,8 +43,16 @@
 
                             <div class="col-md-6 mb-3">
                                 <div class="box_label">
-                                    <label for="color_id">Color (Optional)</label>
-                                    <select name="color_id" id="color_id" class="form-control">
+                                    <label for="sku">SKU*</label>
+                                    <input type="text" name="sku" id="sku" class="form-control"
+                                        value="{{ old('sku', $warehouseProduct->sku) }}">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="box_label">
+                                    <label for="color_id">Color</label>
+                                    <select name="color_id" id="color_id" class="form-control" readonly disabled>
                                         <option value="">No Color</option>
                                         @foreach ($colors as $color)
                                             <option value="{{ $color->id }}"
@@ -58,8 +66,8 @@
 
                             <div class="col-md-6 mb-3">
                                 <div class="box_label">
-                                    <label for="size_id">Size (Optional)</label>
-                                    <select name="size_id" id="size_id" class="form-control">
+                                    <label for="size_id">Size</label>
+                                    <select name="size_id" id="size_id" class="form-control" readonly disabled>
                                         <option value="">No Size</option>
                                         @foreach ($sizes as $size)
                                             <option value="{{ $size->id }}"
@@ -71,18 +79,10 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                <div class="box_label">
-                                    <label for="tax_rate">Tax Rate (%) <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.01" min="0" name="tax_rate" id="tax_rate"
-                                        class="form-control" value="{{ old('tax_rate', $warehouseProduct->tax_rate) }}"
-                                        required>
-                                </div>
-                            </div>
 
                             <div class="col-md-6 mb-3">
                                 <div class="box_label">
-                                    <label for="quantity">Quantity <span class="text-danger">*</span></label>
+                                    <label for="quantity">Stock Quantity <span class="text-danger">*</span></label>
                                     <input type="number" min="0" name="quantity" id="quantity" class="form-control"
                                         value="{{ old('quantity', $warehouseProduct->quantity) }}" required>
                                 </div>

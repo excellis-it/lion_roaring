@@ -33,4 +33,11 @@ class WareHouse extends Model
     {
         return $this->belongsToMany(Product::class, 'warehouse_products', 'warehouse_id', 'product_id');
     }
+
+    // Admins who can manage this warehouse
+    public function admins()
+    {
+        return $this->belongsToMany(User::class, 'user_warehouses', 'warehouse_id', 'user_id')
+            ->withTimestamps();
+    }
 }

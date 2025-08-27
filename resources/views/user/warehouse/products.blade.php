@@ -32,11 +32,12 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>SKU</th>
                             <th>Product</th>
                             <th>Color</th>
                             <th>Size</th>
-                            <th>Tax Rate (%)</th>
-                            <th>Quantity</th>
+
+                            <th>Stock Quantity</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -45,6 +46,7 @@
                             @foreach ($warehouseProducts as $key => $item)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
+                                    <td>{{ $item->sku }}</td>
                                     <td>{{ $item->product->name }}</td>
                                     <td>
                                         @if ($item->color)
@@ -56,7 +58,7 @@
                                         @endif
                                     </td>
                                     <td>{{ $item->size ? $item->size->size : 'N/A' }}</td>
-                                    <td>{{ $item->tax_rate }}%</td>
+
                                     <td>{{ $item->quantity }}</td>
                                     <td class="d-flex">
                                         <a href="{{ route('ware-houses.products.edit', [$wareHouse->id, $item->id]) }}"

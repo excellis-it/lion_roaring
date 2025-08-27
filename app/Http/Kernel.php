@@ -68,9 +68,8 @@ class Kernel extends HttpKernel
         'member.access' => \App\Http\Middleware\MemberAccess::class,
         'api.member.access' => \App\Http\Middleware\ApiMemberAccess::class,
         'preventBackHistory' => \App\Http\Middleware\PreventBackHistory::class,
+        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+        // 'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+        // 'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
     ];
-
-
-    
-
 }

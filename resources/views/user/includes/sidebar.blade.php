@@ -279,7 +279,7 @@
                             <span class="hide-menu">Store</span>
                         </a>
                         {{-- Collapse content --}}
-                        <div class="collapse {{ Request::is('user/products*') || Request::is('user/store-cms*') || Request::is('user/store-cms-page/home*') || Request::is('user/store-cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
+                        <div class="collapse {{ Request::is('user/products*') || Request::is('user/warehouse-admins*') || Request::is('user/store-cms*') || Request::is('user/store-cms-page/home*') || Request::is('user/store-cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
                             id="collapseExample10">
                             <div class="menu_bb">
                                 {{-- bulletins --}}
@@ -302,7 +302,7 @@
                                 {{-- product size/colors management --}}
                                 <a href="{{ route('sizes.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Product_Sizes.svg') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
                                             alt="">
                                     </span>
                                     <span>Manage Sizes</span>
@@ -310,7 +310,7 @@
 
                                 <a href="{{ route('colors.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Product_Colors.svg') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
                                             alt="">
                                     </span>
                                     <span>Manage Colors</span>
@@ -318,7 +318,7 @@
 
                                 <a href="{{ route('store-promo-codes.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Product_Promotions.svg') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
                                             alt="">
                                     </span>
                                     <span>Promo Codes</span>
@@ -326,7 +326,7 @@
 
                                 <a href="{{ route('store-settings.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Product_Promotions.svg') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
                                             alt="">
                                     </span>
                                     <span>E-store Settings</span>
@@ -348,6 +348,15 @@
                                     <span>Warehouses</span>
                                 </a>
 
+                                {{-- warehouse admin management --}}
+                                <a href="{{ route('warehouse-admins.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Warehouse_Admins.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Warehouse Admins</span>
+                                </a>
+
                                 {{-- Orders List --}}
                                 <a href="{{ route('user.store-orders.list') }}">
                                     <span>
@@ -360,6 +369,71 @@
                         </div>
                     </li>
                 @endif
+
+                @if (Auth::user()->hasRole('WAREHOUSE_ADMIN'))
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
+                            data-bs-target="#collapseExample10">
+                            <span>
+                                <img src="{{ asset('user_assets/images/ICON/Store/Store.svg') }}" alt="">
+                            </span>
+                            <span class="hide-menu">Store</span>
+                        </a>
+                        {{-- Collapse content --}}
+                        <div class="collapse {{ Request::is('user/products*') || Request::is('user/warehouse-admins*') || Request::is('user/store-cms*') || Request::is('user/store-cms-page/home*') || Request::is('user/store-cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
+                            id="collapseExample10">
+                            <div class="menu_bb">
+
+
+
+
+                                {{-- product size/colors management --}}
+                                <a href="{{ route('sizes.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Manage Sizes</span>
+                                </a>
+
+                                <a href="{{ route('colors.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Manage Colors</span>
+                                </a>
+
+                                <a href="{{ route('products.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Products</span>
+                                </a>
+                                {{-- warehouse management --}}
+                                <a href="{{ route('ware-houses.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Warehouses</span>
+                                </a>
+
+
+                                {{-- Orders List --}}
+                                <a href="{{ route('user.store-orders.list') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Orders.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Orders</span>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                @endif
+
                 @if (Auth::user()->hasRole('SUPER ADMIN'))
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"

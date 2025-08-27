@@ -12,6 +12,7 @@ use App\Models\EstoreOrder;
 use App\Models\EstoreOrderItem;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EstoreCmsController extends Controller
 {
@@ -263,8 +264,15 @@ class EstoreCmsController extends Controller
     public function fetchOrdersData(Request $request)
     {
         if ($request->ajax()) {
-            $orders = EstoreOrder::with(['user', 'orderItems'])
-                ->orderBy('created_at', 'desc');
+            if (Auth::user()->hasRole('SUPER ADMIN')) {
+                $orders = EstoreOrder::with(['user', 'orderItems'])
+                    ->orderBy('created_at', 'desc');
+            } else {
+                $wareHouseIds = Auth::user()->warehouses->pluck('id')->toArray();
+                $orders = EstoreOrder::with(['user', 'orderItems'])
+                    ->whereIn('warehouse_id', $wareHouseIds)
+                    ->orderBy('created_at', 'desc');
+            }
 
             // Apply filters
             if ($request->has('status') && $request->status != '') {
