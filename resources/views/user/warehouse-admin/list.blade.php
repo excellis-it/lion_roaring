@@ -79,20 +79,23 @@
                                 </td>
                                 <td>
                                     @if ($admin->status)
-                                        <span class="badge bg-success">Active</span>
+                                        Active
                                     @else
-                                        <span class="badge bg-danger">Inactive</span>
+                                        Inactive
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('warehouse-admins.edit', $admin->id) }}" class="edit_icon me-2">
-                                        <i class="fa-solid fa-edit"></i>
-                                    </a>
-                                    <a href="javascript:void(0)" id="delete"
-                                        data-route="{{ route('warehouse-admins.delete', $admin->id) }}"
-                                        class="delete_icon">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </a>
+                                    <div class="d-flex align-items-center">
+
+                                        <a href="{{ route('warehouse-admins.edit', $admin->id) }}" class="edit_icon me-2">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </a>
+                                        <a href="javascript:void(0)" id="delete"
+                                            data-route="{{ route('warehouse-admins.delete', $admin->id) }}"
+                                            class="delete_icon">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

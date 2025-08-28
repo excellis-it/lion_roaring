@@ -100,10 +100,11 @@
                             </div>
 
                             <div class="col-md-12 mb-3">
-                                <div class="box_label">
-                                    <label>Assign Warehouses <span class="text-danger">*</span></label>
-                                    <div class="card p-3">
-                                        <div class="row">
+                                <div class="">
+                                    <label class="mb-3">Assign Warehouses <span class="text-danger">*</span></label>
+                                    <br>
+                                    <div class="mb-3">
+                                        <div class="mb-3">
                                             @foreach ($warehouses as $warehouse)
                                                 <div class="col-md-4 mb-2">
                                                     <div class="form-check">

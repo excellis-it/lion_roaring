@@ -16,7 +16,7 @@
                         <i class="fa-solid fa-arrow-left"></i> Back to Warehouses
                     </a>
                     <a href="{{ route('ware-houses.products.add', $wareHouse->id) }}" class="btn btn-primary">
-                        <i class="fa-solid fa-plus"></i> Add Product
+                        <i class="fa-solid fa-plus"></i> Add Product Stock
                     </a>
                 </div>
             </div>

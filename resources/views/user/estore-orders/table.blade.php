@@ -3,6 +3,7 @@
         <tr>
             <th>#</th>
             <th>Order Number</th>
+            <th>Warehouse</th>
             <th>Customer</th>
             <th>Contact</th>
             <th>Items</th>
@@ -19,6 +20,9 @@
                 <td>{{ $index + 1 }}</td>
                 <td>
                     <strong>{{ $order->order_number }}</strong>
+                </td>
+                <td>
+                    <strong>{{ $order->warehouse?->name ?? '' }}</strong>
                 </td>
                 <td>
                     <div>

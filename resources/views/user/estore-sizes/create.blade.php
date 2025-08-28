@@ -18,6 +18,9 @@
                                 <div class="box_label">
                                     <label for="name">Size Name</label>
                                     <input type="text" name="name" id="name" class="form-control">
+                                    @if ($errors->has('name'))
+                                        <span class="error">{{ $errors->first('name') }}</span>
+                                    @endif
 
                                 </div>
 

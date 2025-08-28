@@ -18,6 +18,9 @@
                                 <div class="box_label">
                                     <label for="name">Color Name</label>
                                     <input type="text" name="color_name" id="name" class="form-control">
+                                    @if ($errors->has('color_name'))
+                                        <span class="error">{{ $errors->first('color_name') }}</span>
+                                    @endif
 
                                 </div>
 
@@ -29,6 +32,9 @@
                                 <div class="box_label">
                                     <label for="color">Color</label>
                                     <input type="color" name="color" id="color" class="form-control" style="min-height: 42px">
+                                    @if ($errors->has('color'))
+                                        <span class="error">{{ $errors->first('color') }}</span>
+                                    @endif
 
                                 </div>
 
@@ -54,7 +60,7 @@
 
                         <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                             <button type="submit" class="print_btn me-2">Save</button>
-                            <a href="{{ route('sizes.index') }}" class="print_btn print_btn_vv">Cancel</a>
+                            <a href="{{ route('colors.index') }}" class="print_btn print_btn_vv">Cancel</a>
                         </div>
                     </form>
                 </div>
