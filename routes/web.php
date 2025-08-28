@@ -714,6 +714,8 @@ Route::prefix('e-store')->group(function () {
     Route::post('/product/remove-from-wishlist', [EstoreProductController::class, 'removeFromWishlist'])->name('e-store.remove-from-wishlist');
     // // by ajax get warehouse product details by product id with optional size and color
     Route::post('/get-warehouse-product-details', [EstoreProductController::class, 'getWarehouseProductDetails'])->name('e-store.get-warehouse-product-details');
+    // user-update.location
+    Route::post('/user-update/location', [HomeController::class, 'updateLocation'])->name('user-update.location');
 
     $categories = Category::where('status', 1)->get();
     foreach ($categories as $category) {

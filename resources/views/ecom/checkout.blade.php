@@ -71,7 +71,8 @@
                                 <div class="col-md-12">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" name="address_line_1" id="address_line_1"
-                                            placeholder="Address Line 1" value="{{ auth()->user()->address ?? '' }}">
+                                            placeholder="Address Line 1"
+                                            value="{{ auth()->user()->location_address ?? '' }}">
                                         <label for="address_line_1">Address Line 1</label>
                                     </div>
                                 </div>
@@ -86,15 +87,15 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" name="pincode" id="pincode"
-                                            placeholder="ZIP" value="{{ auth()->user()->zip ?? '' }}">
+                                        <input type="text" class="form-control bg-light" name="pincode" id="pincode"
+                                            placeholder="ZIP" value="{{ auth()->user()->location_zip ?? '' }}" readonly>
                                         <label for="pincode">ZIP</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" name="city" id="city"
-                                            placeholder="City/District" value="{{ auth()->user()->city ?? '' }}">
+                                        <input type="text" class="form-control " name="city" id="city"
+                                            placeholder="City/District" value="{{ '' }}">
                                         <label for="city">City/District</label>
                                     </div>
                                 </div>
@@ -102,15 +103,17 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" name="state" id="state"
-                                            placeholder="State" value="{{ auth()->user()->state ?? '' }}">
+                                        <input type="text" class="form-control bg-light" name="state" id="state"
+                                            placeholder="State" value="{{ auth()->user()->location_state ?? '' }}"
+                                            readonly>
                                         <label for="state">State</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" name="country" id="country"
-                                            placeholder="Country" value="{{ auth()->user()->countries?->name ?? '' }}">
+                                        <input type="text" class="form-control bg-light" name="country" id="country"
+                                            placeholder="Country" value="{{ auth()->user()->location_country ?? '' }}"
+                                            readonly>
                                         <label for="country">Country</label>
                                     </div>
                                 </div>

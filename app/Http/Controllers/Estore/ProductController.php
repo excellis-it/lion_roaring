@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Estore;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
@@ -23,7 +24,28 @@ class ProductController extends Controller
 {
     public function productDetails($slug)
     {
+        $isAuth = auth()->check();
+        $userSessionId = session()->getId();
+        $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
+
         $nearbyWareHouseId = 1; // Default warehouse ID
+        $originLat = null;
+        $originLng = null;
+        $isUser = auth()->user();
+        if ($isUser) { // Assuming user location is stored in user model
+            $originLat = $isUser->location_lat;
+            $originLng = $isUser->location_lng;
+        } else {
+            $originLat = session('location_lat');
+            $originLng = session('location_lng');
+        }
+        // reuse helper to get nearest warehouse
+        $nearest = Helper::getNearestWarehouse($originLat, $originLng);
+        if (!empty($nearest['warehouse']->id)) {
+            $nearbyWareHouseId = $nearest['warehouse']->id;
+        }
+        // return $getNearbywareHouse;
+
         $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
             $q->where('warehouse_id', $nearbyWareHouseId)
                 ->where('quantity', '>', 0);
@@ -34,6 +56,11 @@ class ProductController extends Controller
         $wareHouseHaveProductVariables = WarehouseProduct::where('product_id', $getProduct->id)
             ->where('warehouse_id', $nearbyWareHouseId)
             ->first();
+
+        if (! $wareHouseHaveProductVariables) {
+            // Handle the case where the product is not found in the warehouse
+            return view('ecom.product-not-available', compact('cartCount'));
+        }
 
         // select prodcut is first product in warehouse have with the product id
         $product = Product::where('id', $wareHouseHaveProductVariables->product_id)->where('slug', $slug)->first();
@@ -48,9 +75,6 @@ class ProductController extends Controller
             ->limit(8)
             ->get();
         $reviews = $product->reviews()->where('status', 1)->orderBy('id', 'DESC')->get();
-        $isAuth = auth()->check();
-        $userSessionId = session()->getId();
-        $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
 
         // Check if product is already in cart
         $cartItem = $isAuth ? EstoreCart::where('user_id', auth()->id())
@@ -66,7 +90,32 @@ class ProductController extends Controller
     public function products(Request $request, $category_id = null)
     {
         $category_id = $category_id ?? ''; // Default value is ' '
-        $products = Product::where('status', 1);
+
+        $nearbyWareHouseId = 1; // Default warehouse ID
+        $originLat = null;
+        $originLng = null;
+        $isUser = auth()->user();
+        if ($isUser) { // Assuming user location is stored in user model
+            $originLat = $isUser->location_lat;
+            $originLng = $isUser->location_lng;
+        } else {
+            $originLat = session('location_lat');
+            $originLng = session('location_lng');
+        }
+        // reuse helper to get nearest warehouse
+        $nearest = Helper::getNearestWarehouse($originLat, $originLng);
+        if (!empty($nearest['warehouse']->id)) {
+            $nearbyWareHouseId = $nearest['warehouse']->id;
+        }
+        // return $getNearbywareHouse;
+
+        $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
+            $q->where('warehouse_id', $nearbyWareHouseId)
+                ->where('quantity', '>', 0);
+        })->pluck('id')->toArray();
+
+
+        $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1);
         if ($category_id) {
             $products = $products->where('category_id', $category_id);
             $category = Category::find($category_id);
@@ -97,7 +146,31 @@ class ProductController extends Controller
             $latest_filter = $request->latestFilter ?? '';
             $search = $request->search ?? '';
 
-            $products = Product::where('status', 1)->with('image');
+
+            $nearbyWareHouseId = 1; // Default warehouse ID
+            $originLat = null;
+            $originLng = null;
+            $isUser = auth()->user();
+            if ($isUser) { // Assuming user location is stored in user model
+                $originLat = $isUser->location_lat;
+                $originLng = $isUser->location_lng;
+            } else {
+                $originLat = session('location_lat');
+                $originLng = session('location_lng');
+            }
+            // reuse helper to get nearest warehouse
+            $nearest = Helper::getNearestWarehouse($originLat, $originLng);
+            if (!empty($nearest['warehouse']->id)) {
+                $nearbyWareHouseId = $nearest['warehouse']->id;
+            }
+            // return $getNearbywareHouse;
+
+            $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
+                $q->where('warehouse_id', $nearbyWareHouseId)
+                    ->where('quantity', '>', 0);
+            })->pluck('id')->toArray();
+
+            $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->with('image');
 
             if (!empty($category_id)) {
                 $products->whereIn('category_id', $category_id);
@@ -765,6 +838,20 @@ class ProductController extends Controller
                     ->first();
 
                 if ($order && $payment) {
+
+                    // order items
+                    $orderItems = EstoreOrderItem::where('order_id', $order->id)->get();
+                    // return $orderItems;
+                    // each order item deduct stock from warehouse product update
+                    foreach ($orderItems as $item) {
+                        $wareHouseproduct = WarehouseProduct::where('warehouse_id', $item->warehouse_id)->where('id', $item->warehouse_product_id)->where('product_id', $item->product_id)->first();
+                        //  return $wareHouseproduct;
+                        if ($wareHouseproduct) {
+
+                            $wareHouseproduct->update(['quantity' => $wareHouseproduct->quantity - $item->quantity, 'updated_at' => now()]);
+                        }
+                    }
+
                     // Update order status
                     $order->update([
                         'payment_status' => 'paid',

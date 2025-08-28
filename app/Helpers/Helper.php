@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\Count;
 use App\Models\User;
 use App\Models\SiteSetting;
+use GuzzleHttp\Client;
+use App\Models\WareHouse;
 
 class Helper
 {
@@ -327,5 +329,117 @@ class Helper
         $totalCount = $mailCount + $chatCount + $teamChatCount;
 
         return $totalCount;
+    }
+
+    function getDistance($originLat, $originLng, $destLat, $destLng)
+    {
+        try {
+            $client = new Client();
+            $apiKey = env('GOOGLE_MAPS_API_KEY'); // store API key in .env
+
+            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$originLat},{$originLng}&destinations={$destLat},{$destLng}&key={$apiKey}";
+
+            $response = $client->get($url);
+            $data = json_decode($response->getBody(), true);
+
+            if (!empty($data['rows'][0]['elements'][0]['distance']['value'])) {
+                // distance in meters, convert to KM
+                $distanceMeters = $data['rows'][0]['elements'][0]['distance']['value'];
+                $distanceKm = $distanceMeters / 1000;
+                return $distanceKm;
+            }
+
+            return null;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Calculate Haversine distance between two points in kilometers.
+     *
+     * @param float $lat1
+     * @param float $lng1
+     * @param float $lat2
+     * @param float $lng2
+     * @return float distance in kilometers
+     */
+    public static function haversineDistance($lat1, $lng1, $lat2, $lng2)
+    {
+        $earthRadius = 6371; // km
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lng2 - $lng1);
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+            sin($dLon / 2) * sin($dLon / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        return $earthRadius * $c;
+    }
+
+    /**
+     * Return nearest warehouse model and distance in km.
+     *
+     * @param float|null $originLat
+     * @param float|null $originLng
+     * @param bool $onlyActive
+     * @param bool $respectServiceRange
+     * @return array|null ['warehouse' => WareHouse, 'distance_km' => float] or null
+     */
+    public static function getNearestWarehouse($originLat, $originLng, $onlyActive = true, $respectServiceRange = true)
+    {
+        if (empty($originLat) || empty($originLng)) {
+            return null;
+        }
+
+        $query = WareHouse::query();
+        if ($onlyActive) {
+            $query->where('is_active', 1);
+        }
+
+        $warehouses = $query->get();
+        $minDistance = null;
+        $nearest = null;
+
+        foreach ($warehouses as $wh) {
+            if ($wh->location_lat === null || $wh->location_lng === null) {
+                continue;
+            }
+
+            $distance = self::haversineDistance($originLat, $originLng, $wh->location_lat, $wh->location_lng);
+
+            if (is_null($minDistance) || $distance < $minDistance) {
+                // if respecting service_range, ensure warehouse is within its service_range (if set)
+                if ($respectServiceRange && !is_null($wh->service_range) && $distance > $wh->service_range) {
+                    // skip — out of range
+                    continue;
+                }
+
+                $minDistance = $distance;
+                $nearest = $wh;
+            }
+        }
+
+        if ($nearest) {
+            return ['warehouse' => $nearest, 'distance_km' => $minDistance];
+        }
+
+        return null;
+    }
+
+    /**
+     * Convenience: return nearest warehouse id or provided default.
+     *
+     * @param float|null $originLat
+     * @param float|null $originLng
+     * @param int|null $defaultId
+     * @return int|null
+     */
+    public static function getNearestWarehouseId($originLat, $originLng, $defaultId = null)
+    {
+        $result = self::getNearestWarehouse($originLat, $originLng);
+        if ($result && isset($result['warehouse']->id)) {
+            return $result['warehouse']->id;
+        }
+        return $defaultId;
     }
 }

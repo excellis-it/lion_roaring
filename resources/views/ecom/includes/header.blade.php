@@ -10,8 +10,34 @@
                     </div>
                 </div>
                 <div class="right_btm">
+                    <div>
+
+
+                    </div>
                     <div id="cssmenu">
                         <ul>
+                            <li>
+                                @if (Auth::check())
+                                    @if (Auth::user()->location_lat || Auth::user()->location_lng)
+                                        <span onclick="changeLocation()" class="location-icon text-white back_main"
+                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            title="{{ Auth::user()->location_address }}">
+                                            <i class="fa fa-map-marker text-danger me-2"
+                                                aria-hidden="true"></i>{{ Str::limit(Auth::user()->location_address ?? '', 20, '...') }}
+                                        </span>
+                                    @endif
+                                @else
+                                    @if (session()->has('location_lat') && session()->has('location_lng'))
+                                        <span onclick="changeLocation()" class="location-icon text-white back_main"
+                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            title="{{ session('location_address') }}">
+                                            <i class="fa fa-map-marker text-danger me-2"
+                                                aria-hidden="true"></i>{{ Str::limit(session('location_address') ?? '', 20, '...') }}
+                                        </span>
+                                    @endif
+                                @endif
+                            </li>
+
                             <li><a href="{{ route('e-store') }}">Home</a></li>
                             <li><a href="{{ route('e-store.all-products') }}">our collections</a></li>
                             <li><a href="{{ route('contact-us') }}">Contact Us</a></li>
@@ -78,3 +104,109 @@
         </div>
     </div>
 </div>
+
+<!-- Location Modal -->
+<div class="modal fade" id="locationModal" tabindex="-1" aria-labelledby="locationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-3 shadow">
+            <div class="modal-header">
+                <h5 class="modal-title" id="locationModalLabel">Allow Location Access</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>We need your location to provide better service near you.</p>
+                <button id="getLocationBtn" class="back_main">Share My Location</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@push('scripts')
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
+        // changeLocation
+        function changeLocation() {
+            // Your logic to change location
+            var locationModal = new bootstrap.Modal(document.getElementById('locationModal'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+            locationModal.show();
+
+        }
+    </script>
+    @if (Auth::check())
+        @if (is_null(Auth::user()->location_lat) || is_null(Auth::user()->location_lng))
+            <script>
+                var locationModal = new bootstrap.Modal(document.getElementById('locationModal'), {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                locationModal.show();
+            </script>
+        @endif
+    @else
+        @if (!session()->has('location_lat') && !session()->has('location_lng'))
+            <script>
+                var locationModal = new bootstrap.Modal(document.getElementById('locationModal'), {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                locationModal.show();
+            </script>
+        @endif
+    @endif
+
+    @if (session()->has('location_lat') && session()->has('location_lng'))
+        <script>
+            var locationLat = {{ session('location_lat') }};
+            var locationLng = {{ session('location_lng') }};
+            //  alert("Location is already set. and data is: " + locationLat + ", " + locationLng);
+        </script>
+    @endif
+
+
+    <script>
+        document.getElementById('getLocationBtn').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    let lat = position.coords.latitude;
+                    let lng = position.coords.longitude;
+
+                    // Send via AJAX to Laravel
+                    $.ajax({
+                        url: "{{ route('user-update.location') }}",
+                        type: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            latitude: lat,
+                            longitude: lng
+                        },
+                        success: function(response) {
+                            console.log("Location updated:", response);
+                            toastr.success("Location saved successfully!");
+                            var locationModal = bootstrap.Modal.getInstance(document
+                                .getElementById('locationModal'));
+                            locationModal.hide();
+                            //  window.location.reload();
+                        },
+                        error: function(xhr) {
+                            console.error("Error:", xhr.responseText);
+                            alert("Failed to save location");
+                        }
+                    });
+
+                }, function(error) {
+                    alert("Location access denied.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        });
+    </script>
+@endpush
