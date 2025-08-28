@@ -13,6 +13,10 @@ use App\Models\EstoreOrderItem;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\OrdersReportExport;
 
 class EstoreCmsController extends Controller
 {
@@ -455,5 +459,287 @@ class EstoreCmsController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    // Reports Dashboard
+    public function reportsIndex()
+    {
+        return view('user.estore-orders.reports');
+    }
+
+    // Fetch Report Data
+    public function fetchReportData(Request $request)
+    {
+        try {
+            $reportType = $request->report_type;
+            $startDate = $request->start_date ? Carbon::parse($request->start_date) : Carbon::now()->startOfMonth();
+            $endDate = $request->end_date ? Carbon::parse($request->end_date)->endOfDay() : Carbon::now()->endOfDay();
+
+            $query = EstoreOrder::query()
+                ->with(['orderItems', 'user'])
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->where('status', '!=', 'cancelled');
+
+            // Apply warehouse filter for non-admin users
+            if (!Auth::user()->hasRole('SUPER ADMIN')) {
+                $wareHouseIds = Auth::user()->warehouses->pluck('id')->toArray();
+                $query->whereIn('warehouse_id', $wareHouseIds);
+            }
+
+            $data = [];
+
+            switch ($reportType) {
+                case 'product':
+                    $data = $this->generateProductReport($query);
+                    break;
+                case 'location':
+                    $data = $this->generateLocationReport($query);
+                    break;
+                case 'monthly':
+                    $data = $this->generateMonthlyReport($startDate, $endDate);
+                    break;
+                case 'yearly':
+                    $data = $this->generateYearlyReport($startDate, $endDate);
+                    break;
+                default:
+                    return response()->json(['error' => 'Invalid report type'], 400);
+            }
+
+            return response()->json([
+                'data' => $data,
+                'success' => true
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'success' => false
+            ], 500);
+        }
+    }
+
+    // Product Report - Group by product with quantities and revenue
+    private function generateProductReport($query)
+    {
+        $orders = $query->get();
+        $productData = [];
+
+        foreach ($orders as $order) {
+            foreach ($order->orderItems as $item) {
+                $productId = $item->product_id;
+                $productName = $item->product_name;
+
+                if (!isset($productData[$productId])) {
+                    $productData[$productId] = [
+                        'id' => $productId,
+                        'name' => $productName,
+                        'quantity' => 0,
+                        'revenue' => 0,
+                        'orders_count' => 0
+                    ];
+                }
+
+                $productData[$productId]['quantity'] += $item->quantity;
+                $productData[$productId]['revenue'] += $item->total;
+                $productData[$productId]['orders_count'] += 1;
+            }
+        }
+
+        // Sort by revenue (highest first)
+        usort($productData, function ($a, $b) {
+            return $b['revenue'] <=> $a['revenue'];
+        });
+
+        return [
+            'items' => array_values($productData),
+            'total_revenue' => array_sum(array_column($productData, 'revenue')),
+            'total_quantity' => array_sum(array_column($productData, 'quantity')),
+            'total_orders' => count($orders)
+        ];
+    }
+
+    // Location Report - Group by state/country with orders and revenue
+    private function generateLocationReport($query)
+    {
+        $orders = $query->get();
+        $locationData = [];
+
+        foreach ($orders as $order) {
+            $state = $order->state;
+            $country = $order->country;
+            $key = "$state, $country";
+
+            if (!isset($locationData[$key])) {
+                $locationData[$key] = [
+                    'location' => $key,
+                    'orders_count' => 0,
+                    'revenue' => 0,
+                    'customers' => 0
+                ];
+            }
+
+            $locationData[$key]['orders_count'] += 1;
+            $locationData[$key]['revenue'] += $order->subtotal;
+
+            // Track unique customers
+            $locationData[$key]['customers'] = isset($locationData[$key]['customer_ids'])
+                ? count(array_unique($locationData[$key]['customer_ids']))
+                : 0;
+
+            if ($order->user_id && !isset($locationData[$key]['customer_ids'][$order->user_id])) {
+                $locationData[$key]['customer_ids'][$order->user_id] = true;
+                $locationData[$key]['customers'] += 1;
+            }
+        }
+
+        // Sort by revenue
+        usort($locationData, function ($a, $b) {
+            return $b['revenue'] <=> $a['revenue'];
+        });
+
+        return [
+            'items' => array_values($locationData),
+            'total_revenue' => array_sum(array_column($locationData, 'revenue')),
+            'total_orders' => count($orders),
+            'total_locations' => count($locationData)
+        ];
+    }
+
+    // Monthly Report - Group by month
+    private function generateMonthlyReport($startDate, $endDate)
+    {
+        $query = EstoreOrder::where('status', '!=', 'cancelled')
+            ->whereBetween('created_at', [$startDate, $endDate]);
+
+        if (!Auth::user()->hasRole('SUPER ADMIN')) {
+            $wareHouseIds = Auth::user()->warehouses->pluck('id')->toArray();
+            $query->whereIn('warehouse_id', $wareHouseIds);
+        }
+
+        $monthlyData = $query->select(
+            DB::raw('YEAR(created_at) as year'),
+            DB::raw('MONTH(created_at) as month'),
+            DB::raw('COUNT(*) as orders_count'),
+            DB::raw('SUM(subtotal) as revenue'),
+            DB::raw('COUNT(DISTINCT user_id) as customers_count')
+        )
+            ->groupBy('year', 'month')
+            ->orderBy('year')
+            ->orderBy('month')
+            ->get();
+
+        $formattedData = [];
+        $totalRevenue = 0;
+        $totalOrders = 0;
+
+        foreach ($monthlyData as $data) {
+            $monthName = Carbon::createFromDate($data->year, $data->month, 1)->format('F Y');
+            $formattedData[] = [
+                'period' => $monthName,
+                'orders_count' => $data->orders_count,
+                'revenue' => $data->revenue,
+                'customers_count' => $data->customers_count
+            ];
+
+            $totalRevenue += $data->revenue;
+            $totalOrders += $data->orders_count;
+        }
+
+        return [
+            'items' => $formattedData,
+            'total_revenue' => $totalRevenue,
+            'total_orders' => $totalOrders,
+            'periods_count' => count($formattedData)
+        ];
+    }
+
+    // Yearly Report - Group by year
+    private function generateYearlyReport($startDate, $endDate)
+    {
+        $query = EstoreOrder::where('status', '!=', 'cancelled')
+            ->whereBetween('created_at', [$startDate, $endDate]);
+
+        if (!Auth::user()->hasRole('SUPER ADMIN')) {
+            $wareHouseIds = Auth::user()->warehouses->pluck('id')->toArray();
+            $query->whereIn('warehouse_id', $wareHouseIds);
+        }
+
+        $yearlyData = $query->select(
+            DB::raw('YEAR(created_at) as year'),
+            DB::raw('COUNT(*) as orders_count'),
+            DB::raw('SUM(subtotal) as revenue'),
+            DB::raw('COUNT(DISTINCT user_id) as customers_count')
+        )
+            ->groupBy('year')
+            ->orderBy('year')
+            ->get();
+
+        $formattedData = [];
+        $totalRevenue = 0;
+        $totalOrders = 0;
+
+        foreach ($yearlyData as $data) {
+            $formattedData[] = [
+                'period' => $data->year,
+                'orders_count' => $data->orders_count,
+                'revenue' => $data->revenue,
+                'customers_count' => $data->customers_count
+            ];
+
+            $totalRevenue += $data->revenue;
+            $totalOrders += $data->orders_count;
+        }
+
+        return [
+            'items' => $formattedData,
+            'total_revenue' => $totalRevenue,
+            'total_orders' => $totalOrders,
+            'periods_count' => count($formattedData)
+        ];
+    }
+
+    // Export Reports to Excel
+    public function exportReport(Request $request)
+    {
+        $reportType = $request->report_type;
+        $startDate = $request->start_date ? Carbon::parse($request->start_date) : Carbon::now()->startOfMonth();
+        $endDate = $request->end_date ? Carbon::parse($request->end_date)->endOfDay() : Carbon::now()->endOfDay();
+
+        $query = EstoreOrder::query()
+            ->with(['orderItems', 'user'])
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', '!=', 'cancelled');
+
+        if (!Auth::user()->hasRole('SUPER ADMIN')) {
+            $wareHouseIds = Auth::user()->warehouses->pluck('id')->toArray();
+            $query->whereIn('warehouse_id', $wareHouseIds);
+        }
+
+        $data = [];
+        $title = 'Orders Report';
+
+        switch ($reportType) {
+            case 'product':
+                $data = $this->generateProductReport($query);
+                $title = 'Product Sales Report';
+                break;
+            case 'location':
+                $data = $this->generateLocationReport($query);
+                $title = 'Geographic Sales Report';
+                break;
+            case 'monthly':
+                $data = $this->generateMonthlyReport($startDate, $endDate);
+                $title = 'Monthly Sales Report';
+                break;
+            case 'yearly':
+                $data = $this->generateYearlyReport($startDate, $endDate);
+                $title = 'Yearly Sales Report';
+                break;
+            default:
+                return redirect()->back()->with('error', 'Invalid report type');
+        }
+
+        $filename = str_replace(' ', '_', strtolower($title)) . '_' . date('Y-m-d') . '.xlsx';
+
+        return Excel::download(new OrdersReportExport($data, $reportType, $title), $filename);
     }
 }

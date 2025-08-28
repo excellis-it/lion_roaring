@@ -19,6 +19,9 @@ use Illuminate\Support\Facades\DB;
 use App\Models\EcomWishList;
 use App\Models\WarehouseProduct;
 use App\Models\WareHouse;
+use App\Services\NotificationService;
+use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 class ProductController extends Controller
 {
@@ -849,6 +852,7 @@ class ProductController extends Controller
                         if ($wareHouseproduct) {
 
                             $wareHouseproduct->update(['quantity' => $wareHouseproduct->quantity - $item->quantity, 'updated_at' => now()]);
+                            $this->notifyAdminIfOutOfStock($wareHouseproduct);
                         }
                     }
 
@@ -1080,6 +1084,30 @@ class ProductController extends Controller
             }
 
             return response()->json(['status' => true, 'data' => $warehouseProduct]);
+        }
+    }
+
+    // notifyAdminIfOutOfStock
+    protected function notifyAdminIfOutOfStock($warehouseProduct)
+    {
+        if ($warehouseProduct->quantity <= 0) {
+            // Notify super admin and the user assigned that warehouse about out of stock product
+            \Log::info('Product is out of stock', ['product_id' => $warehouseProduct->product_id]);
+
+            // product details
+            $productDetails = [
+                'product_id' => $warehouseProduct->product_id,
+                'product_name' => $warehouseProduct->product->name,
+                'warehouse_id' => $warehouseProduct->warehouse_id,
+                'quantity' => $warehouseProduct->quantity,
+            ];
+
+
+            // Get the admin users directly through the relationship
+            $warehouse_admin_users = $warehouseProduct->warehouse->admins ?? collect();
+            foreach ($warehouse_admin_users as $assigned_user) {
+                NotificationService::notifyUser($assigned_user->id, 'Product is out of stock : ' . $productDetails['product_name']);
+            }
         }
     }
 }

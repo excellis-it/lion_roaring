@@ -18,6 +18,9 @@
                                     <h3 class="mb-3">Orders List</h3>
                                 </div>
                                 <div class="col-auto">
+                                    <a href="{{ route('user.store-orders.reports') }}" class="btn btn-primary me-2">
+                                        <i class="fas fa-chart-bar"></i> Reports
+                                    </a>
                                     {{-- <button type="button" class="btn btn-success" onclick="exportOrders()">
                                         <i class="fas fa-download"></i> Export CSV
                                     </button> --}}

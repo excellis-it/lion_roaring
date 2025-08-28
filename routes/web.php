@@ -503,6 +503,11 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::post('/store-orders/update-status', [EstoreCmsController::class, 'updateOrderStatus'])->name('user.store-orders.update-status');
     Route::delete('/store-orders/delete/{id}', [EstoreCmsController::class, 'deleteOrder'])->name('user.store-orders.delete');
     Route::get('/store-orders/export', [EstoreCmsController::class, 'exportOrders'])->name('user.store-orders.export');
+
+    // Reports routes
+    Route::get('/store-orders/reports', [EstoreCmsController::class, 'reportsIndex'])->name('user.store-orders.reports');
+    Route::get('/store-orders/fetch-report', [EstoreCmsController::class, 'fetchReportData'])->name('user.store-orders.fetch-report');
+    Route::get('/store-orders/export-report', [EstoreCmsController::class, 'exportReport'])->name('user.store-orders.export-report');
     // promo code management routes
     Route::resource('/store-promo-codes', EstorePromoCodeController::class);
     Route::get('/store-promo-codes-delete/{id}', [EstorePromoCodeController::class, 'delete'])->name('store-promo-codes.delete');
