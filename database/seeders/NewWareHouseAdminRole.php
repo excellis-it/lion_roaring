@@ -27,31 +27,31 @@ class NewWareHouseAdminRole extends Seeder
             Role::firstOrCreate($value);
         }
 
-        //
-        // $arrPermissions = [
 
-        //     [
-        //         "name" => "Manage Warehouse Admin",
-        //         "guard_name" => "web",
-        //         "type" => 2,
-        //         "created_at" => date('Y-m-d H:i:s'),
-        //         "updated_at" => date('Y-m-d H:i:s'),
-        //     ],
-        //     [
-        //         "name" => "Manage Assigned Warehouses",
-        //         "guard_name" => "web",
-        //         "type" => 2,
-        //         "created_at" => date('Y-m-d H:i:s'),
-        //         "updated_at" => date('Y-m-d H:i:s'),
-        //     ],
-        // ];
+        $arrPermissions = [
 
-        // // Insert all permissions into the database
-        // foreach ($arrPermissions as $permission) {
-        //     Permission::firstOrCreate($permission);
-        // }
+            [
+                "name" => "Manage Warehouse Admin",
+                "guard_name" => "web",
+                "type" => 2,
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+            [
+                "name" => "Manage Assigned Warehouses",
+                "guard_name" => "web",
+                "type" => 2,
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+        ];
 
-        //
+        // Insert all permissions into the database
+        foreach ($arrPermissions as $permission) {
+            Permission::firstOrCreate($permission);
+        }
+
+
 
 
 

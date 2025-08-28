@@ -1087,7 +1087,7 @@ class ProductController extends Controller
                 ->first();
 
             if (!$warehouseProduct) {
-                return response()->json(['status' => false, 'message' => 'Warehouse product not found']);
+                return response()->json(['status' => false, 'message' => 'Item Out Of Stock']);
             }
 
             return response()->json(['status' => true, 'data' => $warehouseProduct]);

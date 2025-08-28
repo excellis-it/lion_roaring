@@ -145,6 +145,12 @@
             });
         });
 
+
+        // every 5 sec fetch orders
+        setInterval(function() {
+            loadOrdersTable();
+        }, 5000);
+
         function loadOrdersTable() {
             $.ajax({
                 url: '{{ route('user.store-orders.fetch-data') }}',

@@ -193,7 +193,7 @@
                             var locationModal = bootstrap.Modal.getInstance(document
                                 .getElementById('locationModal'));
                             locationModal.hide();
-                            //  window.location.reload();
+                            window.location.reload();
                         },
                         error: function(xhr) {
                             console.error("Error:", xhr.responseText);
