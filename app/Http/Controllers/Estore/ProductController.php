@@ -512,6 +512,13 @@ class ProductController extends Controller
         $total = 0;
 
         foreach ($carts as $cart) {
+            // Check if cart quantity exceeds available stock
+            if ($cart->warehouseProduct && $cart->quantity > $cart->warehouseProduct->quantity) {
+                // Update cart quantity to match available stock
+                $cart->quantity = $cart->warehouseProduct->quantity;
+                $cart->save();
+                $quantityUpdated = true;
+            }
             // Calculate other charges for this cart item
             $otherCharges = $cart->product->otherCharges->sum('charge_amount');
             $cart->subtotal = ($cart->product->price * $cart->quantity) + $otherCharges;

@@ -279,7 +279,7 @@
                             <span class="hide-menu">Store</span>
                         </a>
                         {{-- Collapse content --}}
-                        <div class="collapse {{ Request::is('user/products*') || Request::is('user/warehouse-admins*') || Request::is('user/store-cms*') || Request::is('user/store-cms-page/home*') || Request::is('user/store-cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
+                        <div class="collapse {{ Request::is('user/products*') || Request::is('user/store-orders*') || Request::is('user/ware-houses*') || Request::is('user/store-settings*') || Request::is('user/sizes*') || Request::is('user/colors*') || Request::is('user/store-promo-codes*')  || Request::is('user/warehouse-admins*') || Request::is('user/store-cms*') || Request::is('user/store-cms-page/home*') || Request::is('user/store-cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
                             id="collapseExample10">
                             <div class="menu_bb">
                                 {{-- bulletins --}}
@@ -302,7 +302,7 @@
                                 {{-- product size/colors management --}}
                                 <a href="{{ route('sizes.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Store/size.png') }}"
                                             alt="">
                                     </span>
                                     <span>Manage Sizes</span>
@@ -310,7 +310,7 @@
 
                                 <a href="{{ route('colors.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Store/color-wheel.png') }}"
                                             alt="">
                                     </span>
                                     <span>Manage Colors</span>
@@ -318,7 +318,7 @@
 
                                 <a href="{{ route('store-promo-codes.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Store/coupon.png') }}"
                                             alt="">
                                     </span>
                                     <span>Promo Codes</span>
@@ -326,7 +326,7 @@
 
                                 <a href="{{ route('store-settings.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Store/settings.png') }}"
                                             alt="">
                                     </span>
                                     <span>E-store Settings</span>
@@ -342,7 +342,7 @@
                                 {{-- warehouse management --}}
                                 <a href="{{ route('ware-houses.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Warehouses.svg') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Store/wharehouse.png') }}"
                                             alt="">
                                     </span>
                                     <span>Warehouses</span>
@@ -351,7 +351,7 @@
                                 {{-- warehouse admin management --}}
                                 <a href="{{ route('warehouse-admins.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Warehouse_Admins.svg') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Store/warehouse_admin.png') }}"
                                             alt="">
                                     </span>
                                     <span>Warehouse Admins</span>
@@ -380,7 +380,7 @@
                             <span class="hide-menu">Store</span>
                         </a>
                         {{-- Collapse content --}}
-                        <div class="collapse {{ Request::is('user/products*') || Request::is('user/warehouse-admins*') || Request::is('user/store-cms*') || Request::is('user/store-cms-page/home*') || Request::is('user/store-cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
+                        <div class="collapse {{ Request::is('user/products*') || Request::is('user/store-orders*') || Request::is('user/ware-houses*') || Request::is('user/store-settings*') || Request::is('user/sizes*') || Request::is('user/colors*') || Request::is('user/store-promo-codes*')  || Request::is('user/warehouse-admins*') || Request::is('user/store-cms*') || Request::is('user/store-cms-page/home*') || Request::is('user/store-cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
                             id="collapseExample10">
                             <div class="menu_bb">
 
@@ -390,7 +390,7 @@
                                 {{-- product size/colors management --}}
                                 <a href="{{ route('sizes.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Store/size.png') }}"
                                             alt="">
                                     </span>
                                     <span>Manage Sizes</span>
@@ -398,7 +398,7 @@
 
                                 <a href="{{ route('colors.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Store/color-wheel.png') }}"
                                             alt="">
                                     </span>
                                     <span>Manage Colors</span>
@@ -414,7 +414,7 @@
                                 {{-- warehouse management --}}
                                 <a href="{{ route('ware-houses.index') }}">
                                     <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
+                                        <img src="{{ asset('user_assets/images/ICON/Store/wharehouse.png') }}"
                                             alt="">
                                     </span>
                                     <span>Warehouses</span>

@@ -149,7 +149,8 @@
                                 <div class="qty-input">
                                     <button class="qty-count qty-count--minus" data-action="minus" type="button">-</button>
                                     <input class="product-qty" type="number" name="product-qty" min="0"
-                                        max="10" value="{{ $cartItem ? $cartItem->quantity : 0 }}"
+                                        max="{{ $wareHouseHaveProductVariables->quantity ?? 0 }}"
+                                        value="{{ $cartItem ? $cartItem->quantity : 0 }}"
                                         data-cart-id="{{ $cartItem ? $cartItem->id : '' }}"
                                         data-product-id="{{ $product->id }}">
                                     <button class="qty-count qty-count--add" data-action="add" type="button">+</button>
@@ -371,6 +372,11 @@
                         console.log("Warehouse product details:", response.data);
                         $("#product-sku").text(response.data.sku);
                         $("#warehouse-product-id").val(response.data.id);
+                        // Update max quantity
+                        $(".product-qty").attr("max", response.data.quantity);
+
+                        $(".product-qty").trigger("change");
+
                         // if stock quantity is available
                         if (response.data.quantity > 0) {
                             $("#qty-div").show();
@@ -416,6 +422,10 @@
                         $("#product-sku").text(response.data.sku);
                         // update warehouse-product-id input value
                         $("#warehouse-product-id").val(response.data.id);
+                        // Update max quantity
+                        $(".product-qty").attr("max", response.data.quantity);
+                        $(".product-qty").trigger("change");
+
                         // if stock quantity is available
                         if (response.data.quantity > 0) {
                             $("#qty-div").show();

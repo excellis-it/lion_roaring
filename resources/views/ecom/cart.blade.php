@@ -103,7 +103,8 @@
                                                                     <button class="cart-qty-count qty-count--minus"
                                                                         data-action="minus" type="button">-</button>
                                                                     <input class="cart-quantity product-qty" type="number"
-                                                                        min="1" max="10"
+                                                                        min="1"
+                                                                        max="{{ $item->warehouseProduct->quantity ?? 0 }}"
                                                                         value="{{ $item['quantity'] }}"
                                                                         data-id="{{ $item['id'] }}"
                                                                         data-price="{{ $item['price'] }}">
@@ -218,29 +219,76 @@
                 }
             });
 
-            // Update cart quantity with +/- buttons
             $(document).on('click', '.cart-qty-count', function() {
                 var $this = $(this);
                 var $input = $this.siblings('.cart-quantity');
                 var currentVal = parseInt($input.val());
                 var action = $this.data('action');
+                var minVal = parseInt($input.attr('min')) || 1;
+                var maxVal = parseInt($input.attr('max')) || 9999;
                 var newVal = currentVal;
 
+                // Handle add button click
                 if (action === 'add') {
-                    newVal = currentVal + 1;
-                } else if (action === 'minus' && currentVal > 1) {
-                    newVal = currentVal - 1;
+                    // Don't exceed max value
+                    newVal = Math.min(currentVal + 1, maxVal);
+
+                    // Disable add button if at max
+                    if (newVal >= maxVal) {
+                        $this.attr('disabled', true);
+                        toastr.warning('No more stock available on that item');
+                    }
+
+                    // Enable minus button if above min
+                    if (newVal > minVal) {
+                        $this.siblings('.qty-count--minus').attr('disabled', false);
+                    }
+                }
+                // Handle minus button click
+                else if (action === 'minus') {
+                    // Don't go below min value
+                    newVal = Math.max(currentVal - 1, minVal);
+
+                    // Disable minus button if at min
+                    if (newVal <= minVal) {
+                        $this.attr('disabled', true);
+                    }
+
+                    // Enable add button if below max
+                    if (newVal < maxVal) {
+                        $this.siblings('.qty-count--add').attr('disabled', false);
+                    }
                 }
 
+                // Only update if value has changed
                 if (newVal !== currentVal) {
                     $input.val(newVal);
                     updateCartItem($input);
                 }
             });
-
-            // Update cart when quantity input changes
+            // Also update the change handler to respect max values
             $(document).on('change', '.cart-quantity', function() {
-                updateCartItem($(this));
+                var $this = $(this);
+                var currentVal = parseInt($this.val());
+                var minVal = parseInt($this.attr('min')) || 1;
+                var maxVal = parseInt($this.attr('max')) || 9999;
+
+                // Enforce min/max constraints
+                if (isNaN(currentVal) || currentVal < minVal) {
+                    $this.val(minVal);
+                    $this.siblings('.qty-count--minus').attr('disabled', true);
+                    $this.siblings('.qty-count--add').attr('disabled', false);
+                } else if (currentVal > maxVal) {
+                    $this.val(maxVal);
+                    $this.siblings('.qty-count--add').attr('disabled', true);
+                    $this.siblings('.qty-count--minus').attr('disabled', false);
+                    //  toastr.warning('No more stock available');
+                } else {
+                    $this.siblings('.qty-count--minus').attr('disabled', currentVal <= minVal);
+                    $this.siblings('.qty-count--add').attr('disabled', currentVal >= maxVal);
+                }
+
+                updateCartItem($this);
             });
 
             function updateCartItem($input) {

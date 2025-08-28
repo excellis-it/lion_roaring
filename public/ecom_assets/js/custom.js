@@ -229,14 +229,18 @@ var QtyInput = (function () {
 
     var $inputs = $qtyInputs.find(".product-qty");
     var $countBtn = $qtyInputs.find(".qty-count");
-    var qtyMin = parseInt($inputs.attr("min"));
-    var qtyMax = parseInt($inputs.attr("max"));
+   // var qtyMin = parseInt($inputs.attr("min"));
+   // var qtyMax = parseInt($inputs.attr("max"));
 
     $inputs.change(function () {
         var $this = $(this);
         var $minusBtn = $this.siblings(".qty-count--minus");
         var $addBtn = $this.siblings(".qty-count--add");
         var qty = parseInt($this.val());
+
+        // Get current min/max values
+        var qtyMin = parseInt($this.attr("min"));
+        var qtyMax = parseInt($this.attr("max"));
 
         if (isNaN(qty) || qty < qtyMin) {
             $this.val(qtyMin);
@@ -262,6 +266,10 @@ var QtyInput = (function () {
         var $this = $(this);
         var $input = $this.siblings(".product-qty");
         var qty = parseInt($input.val());
+
+        // Get current min/max values
+        var qtyMin = parseInt($input.attr("min"));
+        var qtyMax = parseInt($input.attr("max"));
 
         if (operator == "add") {
             qty += 1;

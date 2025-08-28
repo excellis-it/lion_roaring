@@ -42,7 +42,9 @@
                     </p>
                     <span class="price_text">${{ $product['price'] }}</span>
                 </div>
-                <div class="addtocart" data-id="{{ $product['id'] }}">
+                {{-- <a class="red_btn w-100"
+                    href="{{ route('e-store.product-details', $product['slug']) }}"><span>Details</span></a> --}}
+                {{-- <div class="addtocart" data-id="{{ $product['id'] }}">
                     <a href="javascript:void(0);">
                         @php
                             $cartItem = \App\Models\EstoreCart::where('user_id', auth()->id())
@@ -51,7 +53,7 @@
                         @endphp
                         {{ $cartItem ? 'View Cart' : ($product['button_name'] ? $product['button_name'] : 'ADD TO CART') }}
                     </a>
-                </div>
+                </div> --}}
             </div>
         </div>
     @endforeach

@@ -119,10 +119,10 @@
                                         </p>
                                         <span class="price_text">$ {{ $product->price }}</span>
                                     </div>
-                                    <div class="addtocart" data-id="{{ $product->id }}">
+                                    {{-- <div class="addtocart" data-id="{{ $product->id }}">
                                         <a href="javascript:void(0);">
                                             {{ $product['button_name'] ? $product['button_name'] : 'ADD TO CART' }}</a>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         @endforeach
@@ -185,10 +185,10 @@
                                         </p>
                                         <span class="price_text">${{ $product->price }}</span>
                                     </div>
-                                    <div class="addtocart" data-id="{{ $product->id }}">
+                                    {{-- <div class="addtocart" data-id="{{ $product->id }}">
                                         <a
                                             href="javascript:void(0);">{{ $product['button_name'] ? $product['button_name'] : 'ADD TO CART' }}</a>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         @endforeach
@@ -329,5 +329,5 @@
 
 @push('scripts')
 
-   
+
 @endpush
