@@ -5,6 +5,7 @@
                 @include('ecom.partials.count-product', [
                     'products_count' => $products_count,
                     'category' => $category,
+                    'category_name' => $category_name
                 ])
 
             </div>

@@ -44,8 +44,8 @@
                 </div>
             </div>
             <div class="featured_slider">
-                @if (count($categories) > 0)
-                    @foreach ($categories as $category)
+                @if (count($topParentCategories) > 0)
+                    @foreach ($topParentCategories as $category)
                         <div class="feature_slid_padding">
                             <div class="feature_box">
                                 <div class="feature_img">

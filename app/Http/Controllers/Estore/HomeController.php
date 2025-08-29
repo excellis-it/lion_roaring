@@ -48,8 +48,13 @@ class HomeController extends Controller
         // return $wareHouseProducts;
 
         $categories = Category::where('status', 1)->orderBy('id', 'DESC')->get();
-        $feature_products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
-        $new_products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
+
+        $topParentCategories = Category::where('status', 1)->whereNull('parent_id')->orderBy('id', 'DESC')->get();
+
+        // $feature_products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
+        // $new_products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
+        $feature_products = Product::where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
+        $new_products = Product::where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
         $books = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->whereHas('category', function ($q) {
             $q->where('slug', 'books');
         })->orderBy('id', 'DESC')->limit(10)->get();
@@ -58,7 +63,7 @@ class HomeController extends Controller
         })->orderBy('id', 'DESC')->limit(10)->get();
         $content = EcomHomeCms::orderBy('id', 'desc')->first();
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
-        return view('ecom.home')->with(compact('categories', 'feature_products', 'new_products', 'books', 'lockets', 'content', 'cartCount'));
+        return view('ecom.home')->with(compact('categories', 'topParentCategories', 'feature_products', 'new_products', 'books', 'lockets', 'content', 'cartCount'));
     }
 
     public function newsletter(Request $request)

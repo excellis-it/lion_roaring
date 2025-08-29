@@ -75,7 +75,19 @@
                             ({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
                         </div>
                     </div>
+
                     <div class="title">{{ $product->name }}</div>
+                    <div class="product-category mt-2 mb-2">
+                        @php
+                            $categoryPath = [];
+                            $currentCategory = $product->category;
+                            while ($currentCategory) {
+                                array_unshift($categoryPath, $currentCategory->name);
+                                $currentCategory = $currentCategory->parent;
+                            }
+                        @endphp
+                        Category: {{ implode(' > ', $categoryPath) }}
+                    </div>
                     <div class="brief-description">
                         {{ $product->short_description }}
                     </div>
@@ -88,15 +100,15 @@
 
                     <div class="theme-text subtitle">Warehouse:</div>
                     <div class="brief-description mb-3">
-                        {{ $wareHouseHaveProductVariables->warehouse->name }}
+                        {{ $wareHouseHaveProductVariables?->warehouse?->name ?? '' }}
                     </div>
 
                     <div class="theme-text subtitle">SKU:</div>
                     <div class="brief-description mb-3" id="product-sku">
-                        {{ $wareHouseHaveProductVariables->sku }}
+                        {{ $wareHouseHaveProductVariables?->sku ?? '' }}
                     </div>
 
-                    <input id="warehouse-product-id" type="hidden" value="{{ $wareHouseHaveProductVariables->id }}" />
+                    <input id="warehouse-product-id" type="hidden" value="{{ $wareHouseHaveProductVariables?->id }}" />
 
 
                     <div class="mb-3">
@@ -149,7 +161,7 @@
                                 <div class="qty-input">
                                     <button class="qty-count qty-count--minus" data-action="minus" type="button">-</button>
                                     <input class="product-qty" type="number" name="product-qty" min="0"
-                                        max="{{ $wareHouseHaveProductVariables->quantity ?? 0 }}"
+                                        max="{{ $wareHouseHaveProductVariables?->quantity ?? 0 }}"
                                         value="{{ $cartItem ? $cartItem->quantity : 0 }}"
                                         data-cart-id="{{ $cartItem ? $cartItem->id : '' }}"
                                         data-product-id="{{ $product->id }}">

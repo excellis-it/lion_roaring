@@ -10,17 +10,38 @@
 @endpush
 
 @section('content')
-    <section class="inner_banner_sec"
+    <section class="inner_banner_sec pb-5"
         style="background-image: url({{ asset('ecom_assets/images/banner.jpg') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
                     <div class="inner_banner_ontent">
-                        <h2>Our Collection</h2>
+                        <h2>{{ $category_name ?? 'Our Collection' }}</h2>
                         {{-- <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing volutpat
                             consectetur
                             id purus rhoncus.</p> --}}
                     </div>
+
+                </div>
+
+                <div class="featured_slider">
+                    @if (count($childCategoriesList) > 0)
+                        @foreach ($childCategoriesList as $category)
+                            <div class="feature_slid_padding">
+                                <div class="feature_box">
+                                    <div class="feature_img">
+                                        <a href="{{ route($category->slug . '.e-store.page') }}"><img
+                                                src="{{ Storage::url($category->image) }}" /></a>
+                                    </div>
+                                    <div class="feature_text text-white">
+                                        <a class="text-white text-center"
+                                            href="{{ route($category->slug . '.e-store.page') }}">{{ $category->name }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
+
                 </div>
             </div>
         </div>

@@ -60,13 +60,17 @@ class ProductController extends Controller
             ->where('warehouse_id', $nearbyWareHouseId)
             ->first();
 
-        if (! $wareHouseHaveProductVariables) {
-            // Handle the case where the product is not found in the warehouse
-            return view('ecom.product-not-available', compact('cartCount'));
-        }
+        // if (! $wareHouseHaveProductVariables) {
+        //     // Handle the case where the product is not found in the warehouse
+        //     return view('ecom.product-not-available', compact('cartCount'));
+        // }
 
         // select prodcut is first product in warehouse have with the product id
-        $product = Product::where('id', $wareHouseHaveProductVariables->product_id)->where('slug', $slug)->first();
+        if ($wareHouseHaveProductVariables) {
+            $product = Product::where('id', $wareHouseHaveProductVariables->product_id)->where('slug', $slug)->first();
+        } else {
+            $product = $getProduct;
+        }
 
         $related_products = Product::whereIn('id', $wareHouseProducts)->where('category_id', $product->category_id)
             ->where(function ($query) use ($product) {
@@ -93,6 +97,9 @@ class ProductController extends Controller
     public function products(Request $request, $category_id = null)
     {
         $category_id = $category_id ?? ''; // Default value is ' '
+        $childCategories = [];
+        $childCategoriesList = [];
+        $category_name = null;
 
         $nearbyWareHouseId = Warehouse::first()->id;
         $originLat = null;
@@ -118,10 +125,24 @@ class ProductController extends Controller
         })->pluck('id')->toArray();
 
 
-        $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1);
+        // if ($wareHouseProducts ) {
+        //    $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1);
+        // } else {
+        $products = Product::where('status', 1);
+        //  }
+
+
+        // $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1);
         if ($category_id) {
-            $products = $products->where('category_id', $category_id);
+           // $products = $products->where('category_id', $category_id);
             $category = Category::find($category_id);
+            // products also with children
+            if ($category) {
+                $childCategories = Category::where('parent_id', $category->id)->pluck('id')->toArray();
+                $childCategoriesList = Category::where('parent_id', $category->id)->get();
+                $products = $products->whereIn('category_id', array_merge([$category->id], $childCategories));
+                $category_name = $category->name;
+            }
         } else {
             $category = null;
         }
@@ -135,7 +156,7 @@ class ProductController extends Controller
         $userSessionId = session()->getId();
         $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
 
-        return view('ecom.products')->with(compact('products', 'categories', 'category_id', 'products_count', 'category', 'cartCount'));
+        return view('ecom.products')->with(compact('products', 'category_name', 'categories', 'category_id', 'products_count', 'category', 'cartCount', 'childCategories', 'childCategoriesList'));
     }
 
     public static function productsFilter(Request $request)
@@ -148,7 +169,6 @@ class ProductController extends Controller
             $prices = $request->prices ?? [];
             $latest_filter = $request->latestFilter ?? '';
             $search = $request->search ?? '';
-
 
             $nearbyWareHouseId = Warehouse::first()->id;
             $originLat = null;
@@ -173,7 +193,11 @@ class ProductController extends Controller
                     ->where('quantity', '>', 0);
             })->pluck('id')->toArray();
 
-            $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->with('image');
+          //  if ($wareHouseProducts) {
+           //     $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->with('image');
+          //  } else {
+                $products = Product::where('status', 1)->with('image');
+          //  }
 
             if (!empty($category_id)) {
                 $products->whereIn('category_id', $category_id);
