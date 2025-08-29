@@ -323,7 +323,7 @@
                                         <div>
                                             <div class="mb-2">
                                                 <input type="text" name="other_charges[0][charge_name]"
-                                                    class="form-control" placeholder="Ex. Shipping Charge">
+                                                    class="form-control" placeholder="Ex. Package Charge">
                                             </div>
                                         </div>
                                     </div>

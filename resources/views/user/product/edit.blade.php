@@ -383,7 +383,7 @@
 
                                             <input type="text" name="other_charges[{{ $loop->index }}][charge_name]"
                                                 class="form-control" value="{{ $otherCharge->charge_name }}"
-                                                placeholder="Ex. Shipping Charge">
+                                                placeholder="Ex. Package Charge">
                                         </div>
                                     </div>
                                     <div class="col-md-4 mb-2">
