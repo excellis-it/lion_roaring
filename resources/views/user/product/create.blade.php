@@ -10,6 +10,8 @@
             height: 250px !important;
         }
     </style>
+    <!-- Choices.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 @endpush
 @section('content')
     <div class="container-fluid">
@@ -45,11 +47,29 @@
                                     <label for="category_id"> Category*</label>
                                     <select name="category_id" id="category_id" class="form-control">
                                         <option value="">Select Category</option>
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}"
-                                                {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                                {{ $category->name }}</option>
-                                        @endforeach
+                                        @php
+                                            $renderCategoryOptions = function ($nodes, $prefix = '') use (
+                                                &$renderCategoryOptions,
+                                            ) {
+                                                foreach ($nodes as $node) {
+                                                    echo '<option value="' .
+                                                        $node->id .
+                                                        '"' .
+                                                        (old('parent_id') == $node->id ? ' selected' : '') .
+                                                        '>' .
+                                                        e($prefix . $node->name) .
+                                                        '</option>';
+                                                    if (!empty($node->children) && $node->children->count()) {
+                                                        $renderCategoryOptions(
+                                                            $node->children,
+                                                            $prefix . $node->name . '->',
+                                                        );
+                                                    }
+                                                }
+                                            };
+                                            $topLevelCategories = $categories->whereNull('parent_id');
+                                            $renderCategoryOptions($topLevelCategories);
+                                        @endphp
                                     </select>
                                     @if ($errors->has('category_id'))
                                         <span class="error">{{ $errors->first('category_id') }}</span>
@@ -67,10 +87,11 @@
                                     @endif
                                 </div>
                             </div>
+
                             {{-- quantity --}}
                             {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="quantity"> Product Quantity*</label>
+                                    <label for="quantity"> Stock Quantity*</label>
                                     <input type="number" name="quantity" id="quantity" class="form-control"
                                         value="{{ old('quantity') }}">
                                     @if ($errors->has('quantity'))
@@ -246,6 +267,93 @@
                                 </div>
                             </div> --}}
 
+                            <div class="mt-3 mb-5" style="height: 10px; border-bottom: 2px solid #eee; margin: 20px 0;">
+                            </div>
+
+                            {{-- Multi Sizes --}}
+                            <div class="col-md-4 mb-2">
+                                <div class="box_label">
+                                    <label>Product Sizes</label>
+                                    <div id="sizes-wrapper">
+                                        <div class=" mb-2">
+                                            <select multiple name="sizes[]" class="sizeSelect">
+
+                                                @foreach ($sizes as $size)
+                                                    <option value="{{ $size->id }}">{{ $size->size }}</option>
+                                                @endforeach
+                                            </select>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            {{-- Multi Colors --}}
+                            <div class="col-md-4 mb-2">
+                                <div class="box_label">
+                                    <label>Product Colors</label>
+                                    <div id="colors-wrapper">
+                                        <div class="mb-2">
+                                            <select multiple name="colors[]" class="colorSelect">
+
+                                                @foreach ($colors as $color)
+                                                    <option value="{{ $color->id }}">{{ $color->color_name }}</option>
+                                                @endforeach
+                                            </select>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="mt-3 mb-5" style="height: 10px; border-bottom: 2px solid #eee; margin: 20px 0;">
+                        </div>
+
+                        <div class="row" id="other-charges-wrapper">
+                            {{-- Other Charges with name, charge amount with add more button --}}
+
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <div class="box_label">
+                                        <label>Other Charges</label>
+                                        <div>
+                                            <div class="mb-2">
+                                                <input type="text" name="other_charges[0][charge_name]"
+                                                    class="form-control" placeholder="Ex. Shipping Charge">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 mb-2">
+                                    <div class="box_label">
+                                        <div>
+                                            <div class="mb-2">
+                                                <input step="any" type="number" name="other_charges[0][charge_amount]"
+                                                    class="form-control" placeholder="Charge Amount">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 mb-2">
+                                    <div class="box_label">
+                                        <div class="mb-2 mt-1">
+                                            <button type="button"
+                                                class="btn btn-primary add-more-other-charge">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                                 <button type="submit" class="print_btn me-2">Add</button>
                                 <a href="{{ route('products.index') }}" class="print_btn print_btn_vv">Cancel</a>
@@ -260,6 +368,9 @@
     @push('scripts')
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js"></script>
         <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
+        <!-- Choices.js -->
+        <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
         <script type="text/javascript">
             Dropzone.options.imageUpload = {
                 maxFilesize: 1,
@@ -269,5 +380,73 @@
         <script>
             ClassicEditor.create(document.querySelector("#description"));
             ClassicEditor.create(document.querySelector("#specification"));
+        </script>
+        <script>
+            $(document).ready(function() {
+                // auto set slug from name
+                $('#name').on('keyup', function() {
+                    var name = $(this).val();
+                    var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+                    $('#slug').val(slug);
+                });
+
+
+            });
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                new Choices(".sizeSelect", {
+                    removeItemButton: true,
+                    searchPlaceholderValue: "Type to search...",
+                    closeDropdownOnSelect: 'auto',
+                    //  placeholder: false,
+                    placeholderValue: "Select size",
+                });
+                new Choices(".colorSelect", {
+                    removeItemButton: true,
+                    searchPlaceholderValue: "Type to search...",
+                    closeDropdownOnSelect: 'auto',
+                    //  placeholder: false,
+                    placeholderValue: "Select color",
+                });
+            });
+        </script>
+        <script>
+            $(document).ready(function() {
+
+                // Add more other charges
+                let otherChargeIndex = 1; // Start from 1 since we already have one input
+
+                $('.add-more-other-charge').on('click', function() {
+                    const newChargeHtml = `
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <div class="box_label">
+                                <input type="text" name="other_charges[${otherChargeIndex}][charge_name]" class="form-control" placeholder="Ex. Shipping Charge">
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="box_label">
+                                <input step="any" type="number" name="other_charges[${otherChargeIndex}][charge_amount]" class="form-control" placeholder="Charge Amount">
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="box_label">
+                                <div class="mb-2 mt-1">
+                                    <button type="button" class="btn btn-danger text-danger remove-other-charge"><i class="fas fa-close"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                    $('#other-charges-wrapper').append(newChargeHtml);
+                    otherChargeIndex++;
+                });
+
+                // Remove other charge
+                $(document).on('click', '.remove-other-charge', function() {
+                    $(this).closest('.row').remove();
+                });
+            });
         </script>
     @endpush

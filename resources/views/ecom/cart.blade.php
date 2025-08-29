@@ -7,6 +7,17 @@
 @endsection
 
 @push('styles')
+    <style>
+        .qty-input .qty-count--minus,
+        .qty-input .qty-count--add {
+            border: 1px solid #181818;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 22px;
+            background-color: transparent;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -26,22 +37,22 @@
     <section class="shopping_cart_sec">
         <div class="container">
             <div class="heading_hp mb-3">
-                <h2>Shopping Cart ({{ count($cartItems) }} items)</h2>
+                <h2>Shopping Cart ({{ count($carts) }} items)</h2>
             </div>
 
-            @if (count($cartItems) > 0)
+            @if (count($carts) > 0)
                 <div class="row">
                     <div class="col-lg-8">
                         <div id="cart-items-container">
-                            @foreach ($cartItems as $item)
-                                <div class="cart_item cart-item" data-cart-id="{{ $item['id'] }}">
+                            @foreach ($carts as $item)
+                                <div class="cart_item cart-item" data-cart-id="{{ $item->id }}">
                                     <div class="cart_product">
                                         <div class="row">
                                             <div class="col-md-3">
                                                 <div class="cart_images">
-                                                    @if ($item['product_image'])
-                                                        <img src="{{ Storage::url($item['product_image']) }}"
-                                                            alt="{{ $item['product_name'] }}" />
+                                                    @if ($item->product->main_image)
+                                                        <img src="{{ Storage::url($item->product->main_image) }}"
+                                                            alt="{{ $item->product->name }}" />
                                                     @else
                                                         <img src="{{ asset('ecom_assets/images/product3.jpg') }}"
                                                             alt="Product Image" />
@@ -50,14 +61,29 @@
                                             </div>
                                             <div class="col-md-9">
                                                 <div class="cart_text">
-                                                    <h4>{{ $item['product_name'] }}</h4>
-                                                    <span
-                                                        class="">{{ \Illuminate\Support\Str::limit($item['product_name'], 50) }}</span>
+                                                    <h4>{{ $item->product->name }}</h4>
+                                                    <h6>SKU: {{ $item->warehouseProduct->sku ?? '' }}</h6>
+                                                    <h6>{{ $item->size ? 'Size: ' . $item->size?->size ?? '' : '' }}
+                                                        &nbsp;&nbsp;
+                                                        {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
+                                                    </h6>
+                                                    {{-- <span class="">{!! \Illuminate\Support\Str::limit($item->product->description, 50) !!}</span> --}}
 
                                                     <ul class="wl_price">
                                                         <li>Unit Price</li>
-                                                        <li class="ms-auto">${{ number_format($item['price'], 2) }}</li>
+                                                        <li class="ms-auto">${{ number_format($item->product->price, 2) }}
+                                                        </li>
                                                     </ul>
+
+
+                                                    @foreach ($item->product->otherCharges as $otherCharge)
+                                                        <ul class="wl_price">
+                                                            <li>{{ $otherCharge->charge_name }}</li>
+                                                            <li class="ms-auto">
+                                                                ${{ number_format($otherCharge->charge_amount, 2) }}</li>
+                                                        </ul>
+                                                    @endforeach
+
 
                                                     <div class="d-flex justify-content-between final_price">
                                                         <div class="left_p_text">
@@ -65,7 +91,7 @@
                                                         </div>
                                                         <div class="right_p_text">
                                                             <h4 class="item-subtotal">
-                                                                ${{ number_format($item['subtotal'], 2) }}</h4>
+                                                                ${{ number_format($item->subtotal, 2) }}</h4>
                                                         </div>
                                                     </div>
 
@@ -77,7 +103,8 @@
                                                                     <button class="cart-qty-count qty-count--minus"
                                                                         data-action="minus" type="button">-</button>
                                                                     <input class="cart-quantity product-qty" type="number"
-                                                                        min="1" max="10"
+                                                                        min="1"
+                                                                        max="{{ $item->warehouseProduct->quantity ?? 0 }}"
                                                                         value="{{ $item['quantity'] }}"
                                                                         data-id="{{ $item['id'] }}"
                                                                         data-price="{{ $item['price'] }}">
@@ -192,35 +219,81 @@
                 }
             });
 
-            // Update cart quantity with +/- buttons
             $(document).on('click', '.cart-qty-count', function() {
                 var $this = $(this);
                 var $input = $this.siblings('.cart-quantity');
                 var currentVal = parseInt($input.val());
                 var action = $this.data('action');
+                var minVal = parseInt($input.attr('min')) || 1;
+                var maxVal = parseInt($input.attr('max')) || 9999;
                 var newVal = currentVal;
 
+                // Handle add button click
                 if (action === 'add') {
-                    newVal = currentVal + 1;
-                } else if (action === 'minus' && currentVal > 1) {
-                    newVal = currentVal - 1;
+                    // Don't exceed max value
+                    newVal = Math.min(currentVal + 1, maxVal);
+
+                    // Disable add button if at max
+                    if (newVal >= maxVal) {
+                        $this.attr('disabled', true);
+                        toastr.warning('No more stock available on that item');
+                    }
+
+                    // Enable minus button if above min
+                    if (newVal > minVal) {
+                        $this.siblings('.qty-count--minus').attr('disabled', false);
+                    }
+                }
+                // Handle minus button click
+                else if (action === 'minus') {
+                    // Don't go below min value
+                    newVal = Math.max(currentVal - 1, minVal);
+
+                    // Disable minus button if at min
+                    if (newVal <= minVal) {
+                        $this.attr('disabled', true);
+                    }
+
+                    // Enable add button if below max
+                    if (newVal < maxVal) {
+                        $this.siblings('.qty-count--add').attr('disabled', false);
+                    }
                 }
 
+                // Only update if value has changed
                 if (newVal !== currentVal) {
                     $input.val(newVal);
                     updateCartItem($input);
                 }
             });
-
-            // Update cart when quantity input changes
+            // Also update the change handler to respect max values
             $(document).on('change', '.cart-quantity', function() {
-                updateCartItem($(this));
+                var $this = $(this);
+                var currentVal = parseInt($this.val());
+                var minVal = parseInt($this.attr('min')) || 1;
+                var maxVal = parseInt($this.attr('max')) || 9999;
+
+                // Enforce min/max constraints
+                if (isNaN(currentVal) || currentVal < minVal) {
+                    $this.val(minVal);
+                    $this.siblings('.qty-count--minus').attr('disabled', true);
+                    $this.siblings('.qty-count--add').attr('disabled', false);
+                } else if (currentVal > maxVal) {
+                    $this.val(maxVal);
+                    $this.siblings('.qty-count--add').attr('disabled', true);
+                    $this.siblings('.qty-count--minus').attr('disabled', false);
+                    //  toastr.warning('No more stock available');
+                } else {
+                    $this.siblings('.qty-count--minus').attr('disabled', currentVal <= minVal);
+                    $this.siblings('.qty-count--add').attr('disabled', currentVal >= maxVal);
+                }
+
+                updateCartItem($this);
             });
 
             function updateCartItem($input) {
                 var cartId = $input.data('id');
                 var quantity = parseInt($input.val());
-                var price = parseFloat($input.data('price'));
                 var $cartItem = $input.closest('.cart-item');
 
                 if (quantity < 1) {
@@ -238,14 +311,8 @@
                     },
                     success: function(response) {
                         if (response.status) {
-                            // Update subtotal for this item
-                            var subtotal = price * quantity;
-                            $cartItem.find('.item-subtotal').text('$' + subtotal.toFixed(2));
-
-                            // Recalculate totals
-                            calculateTotals();
-                            updateCartCount();
-                            toastr.success('Cart updated successfully');
+                            // Reload the page to get updated calculations from server
+                            location.reload();
                         } else {
                             toastr.error(response.message);
                         }
@@ -259,14 +326,18 @@
             function calculateTotals() {
                 var total = 0;
                 $('.item-subtotal').each(function() {
-                    var subtotalText = $(this).text().replace('$', '');
-                    total += parseFloat(subtotalText);
+                    var subtotalText = $(this).text().replace('$', '').replace(',', '');
+                    total += parseFloat(subtotalText) || 0;
                 });
 
-                var finalTotal = total;
-
-                $('#cart-total').text('$' + total.toFixed(2));
-                $('#final-total').text('$' + finalTotal.toFixed(2));
+                $('#cart-total').text('$' + total.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }));
+                $('#final-total').text('$' + total.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }));
             }
 
             // Remove item from cart with SweetAlert2
@@ -296,12 +367,13 @@
                                 if (response.status) {
                                     $cartItem.fadeOut(300, function() {
                                         $(this).remove();
-                                        calculateTotals();
-                                        updateCartCount();
 
                                         // Check if cart is empty
                                         if ($('.cart-item').length === 0) {
                                             location.reload();
+                                        } else {
+                                            calculateTotals();
+                                            updateCartCount();
                                         }
                                     });
 

@@ -17,6 +17,7 @@
                                 <li class="breadcrumb-item"><a href="{{ route('user.store-orders.list') }}">Orders</a></li>
                                 <li class="breadcrumb-item active">{{ $order->order_number }}</li>
                             </ol>
+
                         </div>
                     </div>
                 </div>
@@ -29,6 +30,7 @@
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="card-title mb-0">Order #{{ $order->order_number }}</h5>
+
                                 <div>
                                     <span
                                         class="badge {{ $order->status_badge_class }} me-2">{{ ucfirst($order->status) }}</span>
@@ -45,10 +47,13 @@
                                     <p><strong>Email:</strong> {{ $order->email }}</p>
                                     <p><strong>Phone:</strong> {{ $order->phone }}</p>
                                     @if ($order->user)
-                                        <p><strong>Username:</strong> {{ $order->user->username }}</p>
+                                        <p><strong>Username:</strong> {{ $order->user->user_name }}</p>
                                     @endif
                                 </div>
                                 <div class="col-md-6">
+                                    <h6>Warehouse:</h6>
+                                    <p>{{ $order->warehouse?->name ?? 'N/A' }}, {{ $order->warehouse?->address ?? 'N/A' }}
+                                    </p>
                                     <h6>Shipping Address</h6>
                                     <address>
                                         {{ $order->address_line_1 }}<br>
@@ -103,7 +108,16 @@
                                                     <strong>{{ $item->product_name }}</strong>
                                                     @if ($item->product)
                                                         <br><small class="text-muted">SKU:
-                                                            {{ $item->product->sku ?? 'N/A' }}</small>
+                                                            {{ $item->warehouseProduct->sku ?? 'N/A' }}</small>
+                                                    @endif
+
+                                                    {{-- if item have size and color --}}
+                                                    @if ($item->size)
+                                                        <br><small class="text-muted">Size: {{ $item->size->size }}</small>
+                                                    @endif
+                                                    @if ($item->color)
+                                                        <br><small class="text-muted">Color:
+                                                            {{ $item->color->color_name }}</small>
                                                     @endif
                                                 </td>
                                                 <td>

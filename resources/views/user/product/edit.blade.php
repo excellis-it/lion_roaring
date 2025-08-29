@@ -4,6 +4,8 @@
 @endsection
 @push('styles')
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/min/dropzone.min.css" rel="stylesheet">
+    <!-- Choices.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
     <style>
         .ck-placeholder {
             color: #a1a1a1;
@@ -88,12 +90,33 @@
                                 <div class="box_label">
                                     <label for="category_id"> Category*</label>
                                     <select name="category_id" id="category_id" class="form-control">
-                                        <option value="">Select Category</option>
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}"
-                                                {{ $product->category_id == $category->id ? 'selected' : '' }}>
-                                                {{ $category->name }}</option>
-                                        @endforeach
+                                        <option value="">Select Parent Category</option>
+                                        @php
+                                            $renderCategoryOptions = function (
+                                                $nodes,
+                                                $prefix = '',
+                                                $selectedParentId = null,
+                                            ) use (&$renderCategoryOptions) {
+                                                foreach ($nodes as $node) {
+                                                    echo '<option value="' .
+                                                        $node->id .
+                                                        '"' .
+                                                        ($selectedParentId == $node->id ? ' selected' : '') .
+                                                        '>' .
+                                                        e($prefix . $node->name) .
+                                                        '</option>';
+                                                    if (!empty($node->children) && $node->children->count()) {
+                                                        $renderCategoryOptions(
+                                                            $node->children,
+                                                            $prefix . $node->name . '->',
+                                                            $selectedParentId,
+                                                        );
+                                                    }
+                                                }
+                                            };
+                                            $topLevelCategories = $categories->whereNull('parent_id');
+                                            $renderCategoryOptions($topLevelCategories, '', $product->category_id);
+                                        @endphp
                                     </select>
                                     @if ($errors->has('category_id'))
                                         <span class="error">{{ $errors->first('category_id') }}</span>
@@ -305,6 +328,123 @@
                                 </div>
                             </div> --}}
 
+                            {{-- Multi Sizes --}}
+                            <div class="col-md-4 mb-2">
+                                <div class="box_label">
+                                    <label>Product Sizes</label>
+                                    <div id="sizes-wrapper">
+                                        <div class=" mb-2">
+                                            <select multiple name="sizes[]" class="sizeSelect">
+
+                                                @foreach ($sizes as $size)
+                                                    <option value="{{ $size->id }}"
+                                                        {{ $product->sizeIds()->contains($size->id) ? 'selected' : '' }}>
+                                                        {{ $size->size }}</option>
+                                                @endforeach
+                                            </select>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            {{-- Multi Colors --}}
+                            <div class="col-md-4 mb-2">
+                                <div class="box_label">
+                                    <label>Product Colors</label>
+                                    <div id="colors-wrapper">
+                                        <div class="mb-2">
+                                            <select multiple name="colors[]" class="colorSelect">
+
+                                                @foreach ($colors as $color)
+                                                    <option value="{{ $color->id }}"
+                                                        {{ $product->colorIds()->contains($color->id) ? 'selected' : '' }}>
+                                                        {{ $color->color_name }}</option>
+                                                @endforeach
+                                            </select>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 mb-5" style="height: 10px; border-bottom: 2px solid #eee; margin: 20px 0;">
+                        </div>
+
+                        <div class="row" id="other-charges-wrapper">
+                            <p>Other Charges</p>
+                            @foreach ($product->otherCharges as $otherCharge)
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+
+                                            <input type="text" name="other_charges[{{ $loop->index }}][charge_name]"
+                                                class="form-control" value="{{ $otherCharge->charge_name }}"
+                                                placeholder="Ex. Shipping Charge">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+
+                                            <input step="any" type="number"
+                                                name="other_charges[{{ $loop->index }}][charge_amount]"
+                                                class="form-control" value="{{ $otherCharge->charge_amount }}"
+                                                placeholder="Charge Amount">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+                                            <div class="mb-2 mt-1">
+                                                <button type="button"
+                                                    class="btn btn-danger text-danger remove-other-charge"><i
+                                                        class="fas fa-close"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                            <p>Add More Other Charges</p>
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <div class="box_label">
+
+                                        <div>
+                                            <div class="mb-2">
+                                                <input type="text"
+                                                    name="other_charges[{{ $product->otherCharges->count() }}][charge_name]"
+                                                    class="form-control" placeholder="Ex. Shipping Charge">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 mb-2">
+                                    <div class="box_label">
+                                        <div>
+                                            <div class="mb-2">
+                                                <input step="any" type="number"
+                                                    name="other_charges[{{ $product->otherCharges->count() }}][charge_amount]"
+                                                    class="form-control" placeholder="Charge Amount">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 mb-2">
+                                    <div class="box_label">
+                                        <div class="mb-2 mt-1">
+                                            <button type="button"
+                                                class="btn btn-primary add-more-other-charge">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                                 <button type="submit" class="print_btn me-2">Update</button>
                                 <a href="{{ route('products.index') }}" class="print_btn print_btn_vv">Cancel</a>
@@ -318,6 +458,8 @@
     @push('scripts')
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js"></script>
         <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
+        <!-- Choices.js -->
+        <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
         <script type="text/javascript">
             Dropzone.options.imageUpload = {
                 maxFilesize: 1,
@@ -345,6 +487,67 @@
                             $('#' + id).remove();
                         }
                     });
+                });
+
+
+            });
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                new Choices(".sizeSelect", {
+                    removeItemButton: true,
+                    searchPlaceholderValue: "Type to search...",
+                    closeDropdownOnSelect: 'auto',
+                    //  placeholder: false,
+                    placeholderValue: "Select size",
+                });
+                new Choices(".colorSelect", {
+                    removeItemButton: true,
+                    searchPlaceholderValue: "Type to search...",
+                    closeDropdownOnSelect: 'auto',
+                    //  placeholder: false,
+                    placeholderValue: "Select color",
+                });
+            });
+        </script>
+
+        <script>
+            $(document).ready(function() {
+
+                // Add more other charges
+                let otherChargeIndex =
+                    {{ $product->otherCharges->count() + 1 }}; // Start from last index
+
+
+                $('.add-more-other-charge').on('click', function() {
+                    const newChargeHtml = `
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <div class="box_label">
+                                <input type="text" name="other_charges[${otherChargeIndex}][charge_name]" class="form-control" placeholder="Ex. Shipping Charge">
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="box_label">
+                                <input step="any" type="number" name="other_charges[${otherChargeIndex}][charge_amount]" class="form-control" placeholder="Charge Amount">
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="box_label">
+                                <div class="mb-2 mt-1">
+                                    <button type="button" class="btn btn-danger text-danger remove-other-charge"><i class="fas fa-close"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                    $('#other-charges-wrapper').append(newChargeHtml);
+                    otherChargeIndex++;
+                });
+
+                // Remove other charge
+                $(document).on('click', '.remove-other-charge', function() {
+                    $(this).closest('.row').remove();
                 });
             });
         </script>

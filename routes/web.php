@@ -81,6 +81,14 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\User\ChatBotController;
 use App\Http\Controllers\User\EmailVerificationController;
 use App\Http\Controllers\User\PolicyGuidenceController;
+use App\Http\Controllers\User\ColorController;
+use App\Http\Controllers\User\SizeController;
+use App\Http\Controllers\User\EstorePromoCodeController;
+use App\Http\Controllers\User\EstoreSettingController;
+use App\Http\Controllers\User\WareHouseController;
+use App\Http\Controllers\User\WarehouseAdminController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -475,6 +483,10 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::prefix('categories')->group(function () {
         Route::get('/category-delete/{id}', [CategoryController::class, 'delete'])->name('categories.delete');
     });
+    Route::resource('sizes', SizeController::class);
+    Route::get('/sizes-delete/{id}', [SizeController::class, 'delete'])->name('sizes.delete');
+    Route::resource('colors', ColorController::class);
+    Route::get('/colors-delete/{id}', [ColorController::class, 'delete'])->name('colors.delete');
     Route::get('/store-page/{name}/{permission}', [EstoreCmsController::class, 'page'])->name('store-user.page');
     Route::get('/store-cms/dashboard', [EstoreCmsController::class, 'dashboard'])->name('user.store-cms.dashboard');
     Route::get('/store-cms/list', [EstoreCmsController::class, 'list'])->name('user.store-cms.list');
@@ -491,6 +503,59 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::post('/store-orders/update-status', [EstoreCmsController::class, 'updateOrderStatus'])->name('user.store-orders.update-status');
     Route::delete('/store-orders/delete/{id}', [EstoreCmsController::class, 'deleteOrder'])->name('user.store-orders.delete');
     Route::get('/store-orders/export', [EstoreCmsController::class, 'exportOrders'])->name('user.store-orders.export');
+
+    // Reports routes
+    Route::get('/store-orders/reports', [EstoreCmsController::class, 'reportsIndex'])->name('user.store-orders.reports');
+    Route::get('/store-orders/fetch-report', [EstoreCmsController::class, 'fetchReportData'])->name('user.store-orders.fetch-report');
+    Route::get('/store-orders/export-report', [EstoreCmsController::class, 'exportReport'])->name('user.store-orders.export-report');
+    // promo code management routes
+    Route::resource('/store-promo-codes', EstorePromoCodeController::class);
+    Route::get('/store-promo-codes-delete/{id}', [EstorePromoCodeController::class, 'delete'])->name('store-promo-codes.delete');
+    // estore setting management
+    Route::resource('/store-settings', EstoreSettingController::class);
+
+    // ware house management
+    Route::resource('/ware-houses', WareHouseController::class);
+    Route::get('/ware-houses-delete/{id}', [WareHouseController::class, 'delete'])->name('ware-houses.delete');
+
+    // warehouse product management
+    Route::get('/ware-houses/{id}/products', [WareHouseController::class, 'products'])->name('ware-houses.products');
+    Route::get('/ware-houses/{id}/products/add', [WareHouseController::class, 'addProduct'])->name('ware-houses.products.add');
+    Route::post('/ware-houses/{id}/products', [WareHouseController::class, 'storeProduct'])->name('ware-houses.products.store');
+    Route::get('/ware-houses/{warehouseId}/products/{productId}/edit', [WareHouseController::class, 'editProduct'])->name('ware-houses.products.edit');
+    Route::put('/ware-houses/{warehouseId}/products/{productId}', [WareHouseController::class, 'updateProduct'])->name('ware-houses.products.update');
+    Route::get('/ware-houses/{warehouseId}/products/{productId}/delete', [WareHouseController::class, 'deleteProduct'])->name('ware-houses.products.delete');
+    // // // on change product get product's size and colors
+    Route::get('/ware-houses/products/getDetails', [WareHouseController::class, 'getProductDetails'])->name('ware-houses.products.getDetails');
+
+    // warehouse admin management
+    Route::resource('warehouse-admins', WarehouseAdminController::class)->middleware('role:SUPER ADMIN');
+    Route::get('/warehouse-admins-delete/{id}', [WarehouseAdminController::class, 'delete'])->name('warehouse-admins.delete')->middleware('role:SUPER ADMIN');
+
+    // Warehouse Admin Product Management Routes (new)
+    Route::get('/warehouse-products', [WarehouseAdminController::class, 'listProducts'])->name('warehouse-admin.products')->middleware('role:WAREHOUSE_ADMIN');
+    Route::get('/warehouse-products/create', [WarehouseAdminController::class, 'createProduct'])->name('warehouse-admin.products.create')->middleware('role:WAREHOUSE_ADMIN');
+    Route::post('/warehouse-products', [WarehouseAdminController::class, 'storeProduct'])->name('warehouse-admin.products.store')->middleware('role:WAREHOUSE_ADMIN');
+    Route::get('/warehouse-products/{id}/edit', [WarehouseAdminController::class, 'editProduct'])->name('warehouse-admin.products.edit')->middleware('role:WAREHOUSE_ADMIN');
+    Route::put('/warehouse-products/{id}', [WarehouseAdminController::class, 'updateProduct'])->name('warehouse-admin.products.update')->middleware('role:WAREHOUSE_ADMIN');
+    Route::get('/warehouse-products/{id}/delete', [WarehouseAdminController::class, 'deleteProduct'])->name('warehouse-admin.products.delete')->middleware('role:WAREHOUSE_ADMIN');
+
+    // Warehouse Admin Size Management Routes (new)
+    Route::get('/warehouse-sizes', [WarehouseAdminController::class, 'listSizes'])->name('warehouse-admin.sizes')->middleware('role:WAREHOUSE_ADMIN');
+    Route::get('/warehouse-sizes/create', [WarehouseAdminController::class, 'createSize'])->name('warehouse-admin.sizes.create')->middleware('role:WAREHOUSE_ADMIN');
+    Route::post('/warehouse-sizes', [WarehouseAdminController::class, 'storeSize'])->name('warehouse-admin.sizes.store')->middleware('role:WAREHOUSE_ADMIN');
+    Route::get('/warehouse-sizes/{id}/edit', [WarehouseAdminController::class, 'editSize'])->name('warehouse-admin.sizes.edit')->middleware('role:WAREHOUSE_ADMIN');
+    Route::put('/warehouse-sizes/{id}', [WarehouseAdminController::class, 'updateSize'])->name('warehouse-admin.sizes.update')->middleware('role:WAREHOUSE_ADMIN');
+    Route::get('/warehouse-sizes/{id}/delete', [WarehouseAdminController::class, 'deleteSize'])->name('warehouse-admin.sizes.delete')->middleware('role:WAREHOUSE_ADMIN');
+
+    // Warehouse Admin Color Management Routes (new)
+    Route::get('/warehouse-colors', [WarehouseAdminController::class, 'listColors'])->name('warehouse-admin.colors')->middleware('role:WAREHOUSE_ADMIN');
+    Route::get('/warehouse-colors/create', [WarehouseAdminController::class, 'createColor'])->name('warehouse-admin.colors.create')->middleware('role:WAREHOUSE_ADMIN');
+    Route::post('/warehouse-colors', [WarehouseAdminController::class, 'storeColor'])->name('warehouse-admin.colors.store')->middleware('role:WAREHOUSE_ADMIN');
+    Route::get('/warehouse-colors/{id}/edit', [WarehouseAdminController::class, 'editColor'])->name('warehouse-admin.colors.edit')->middleware('role:WAREHOUSE_ADMIN');
+    Route::put('/warehouse-colors/{id}', [WarehouseAdminController::class, 'updateColor'])->name('warehouse-admin.colors.update')->middleware('role:WAREHOUSE_ADMIN');
+    Route::get('/warehouse-colors/{id}/delete', [WarehouseAdminController::class, 'deleteColor'])->name('warehouse-admin.colors.delete')->middleware('role:WAREHOUSE_ADMIN');
+
 
     // e-learning routes
     Route::prefix('elearning')->group(function () {
@@ -624,7 +689,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
 
 /**************************************************----------------------------ECOM--------------------------****************************************************************/
 
-Route::prefix('e-store')->middleware(['user'])->group(function () {
+Route::prefix('e-store')->group(function () {
     Route::get('/', [HomeController::class, 'eStore'])->name('e-store');
     Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-store.newsletter');
     Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails'])->name('e-store.product-details');
@@ -652,6 +717,10 @@ Route::prefix('e-store')->middleware(['user'])->group(function () {
     Route::get('/estore/wishlist', [EstoreProductController::class, 'wishlist'])->name('e-store.wishlist');
     // remove from wishlist
     Route::post('/product/remove-from-wishlist', [EstoreProductController::class, 'removeFromWishlist'])->name('e-store.remove-from-wishlist');
+    // // by ajax get warehouse product details by product id with optional size and color
+    Route::post('/get-warehouse-product-details', [EstoreProductController::class, 'getWarehouseProductDetails'])->name('e-store.get-warehouse-product-details');
+    // user-update.location
+    Route::post('/user-update/location', [HomeController::class, 'updateLocation'])->name('user-update.location');
 
     $categories = Category::where('status', 1)->get();
     foreach ($categories as $category) {

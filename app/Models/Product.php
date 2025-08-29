@@ -25,6 +25,45 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function sizes()
+    {
+        return $this->hasMany(ProductSize::class, 'product_id');
+    }
+
+    // sizes with size details
+    public function sizesWithDetails()
+    {
+        return $this->sizes()->with('size')->get();
+    }
+
+    // sizeIds
+    public function sizeIds()
+    {
+        return $this->sizes->pluck('size_id');
+    }
+
+    public function colors()
+    {
+        return $this->hasMany(ProductColor::class, 'product_id');
+    }
+
+    // colors with color details
+    public function colorsWithDetails()
+    {
+        return $this->colors()->with('color')->get();
+    }
+
+    // colorIds
+    public function colorIds()
+    {
+        return $this->colors->pluck('color_id');
+    }
+
+    public function otherCharges()
+    {
+        return $this->hasMany(ProductOtherCharge::class, 'product_id');
+    }
+
     public function images()
     {
         return $this->hasMany(ProductImage::class);
@@ -59,5 +98,15 @@ class Product extends Model
                 ->exists();
         }
         return false;
+    }
+
+    public function warehouseProducts()
+    {
+        return $this->hasMany(WarehouseProduct::class, 'product_id');
+    }
+
+    public function warehouses()
+    {
+        return $this->belongsToMany(WareHouse::class, 'warehouse_products', 'product_id', 'warehouse_id');
     }
 }

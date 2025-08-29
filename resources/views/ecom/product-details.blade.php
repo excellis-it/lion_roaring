@@ -7,6 +7,18 @@
 @endsection
 
 @push('styles')
+    <style>
+        .qty-input {
+            border: none;
+        }
+
+        .btn-check:checked+.btn {
+            color: #643171;
+            background-color: var(--bs-btn-active-bg);
+            border-color: #643171;
+            border: 4px solid;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -63,7 +75,19 @@
                             ({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
                         </div>
                     </div>
+
                     <div class="title">{{ $product->name }}</div>
+                    <div class="product-category mt-2 mb-2">
+                        @php
+                            $categoryPath = [];
+                            $currentCategory = $product->category;
+                            while ($currentCategory) {
+                                array_unshift($categoryPath, $currentCategory->name);
+                                $currentCategory = $currentCategory->parent;
+                            }
+                        @endphp
+                        Category: {{ implode(' > ', $categoryPath) }}
+                    </div>
                     <div class="brief-description">
                         {{ $product->short_description }}
                     </div>
@@ -72,26 +96,93 @@
                     <div class="brief-description">
                         {!! $product->description !!}
                     </div>
-                    <div class="d-flex justify-content-start align-items-center">
-                        <div class="small_number mb-3">
-                            <div class="qty-input">
-                                <button class="qty-count qty-count--minus" data-action="minus" type="button">-</button>
-                                <input class="product-qty" type="number" name="product-qty" min="0" max="10"
-                                    value="{{ $cartItem ? $cartItem->quantity : 0 }}"
-                                    data-cart-id="{{ $cartItem ? $cartItem->id : '' }}"
-                                    data-product-id="{{ $product->id }}">
-                                <button class="qty-count qty-count--add" data-action="add" type="button">+</button>
+
+
+                    <div class="theme-text subtitle">Warehouse:</div>
+                    <div class="brief-description mb-3">
+                        {{ $wareHouseHaveProductVariables?->warehouse?->name ?? '' }}
+                    </div>
+
+                    <div class="theme-text subtitle">SKU:</div>
+                    <div class="brief-description mb-3" id="product-sku">
+                        {{ $wareHouseHaveProductVariables?->sku ?? '' }}
+                    </div>
+
+                    <input id="warehouse-product-id" type="hidden" value="{{ $wareHouseHaveProductVariables?->id }}" />
+
+
+                    <div class="mb-3">
+                        {{-- Select Size radio input button $product->sizes --}}
+                        @if ($product->sizes->count() > 0)
+                            <p>Select Size:</p>
+                            @foreach ($product->sizes as $key => $size)
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input product-select-size-input" type="radio" name="size"
+                                        id="size-{{ $size->size?->id }}" value="{{ $size->size?->id }}"
+                                        {{ ($cartItem ? ($cartItem->size_id == $size->size?->id ? 'checked' : '') : $key == 0) ? 'checked' : '' }}
+                                        {{ $cartItem && $cartItem->size_id !== $size->size?->id ? 'disabled' : '' }}>
+                                    <label class="form-check-label" for="size-{{ $size->size?->id }}">
+                                        {{ $size->size?->size }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        @endif
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        {{-- Select Color radio input button $product->colors --}}
+                        @if ($product->colors->count() > 0)
+                            <p>Select Color:</p>
+                            @foreach ($product->colors as $key => $color)
+                                <div class="form-check form-check-inline">
+                                    <input class="btn-check product-select-color-input" type="radio" name="color"
+                                        id="color-{{ $color->color?->id }}" value="{{ $color->color?->id }}"
+                                        {{ ($cartItem ? ($cartItem->color_id == $color->color?->id ? 'checked' : '') : $key == 0) ? 'checked' : '' }}
+                                        {{ $cartItem && $cartItem->color_id !== $color->color?->id ? 'disabled' : '' }}>
+                                    <label style="background-color: {{ $color->color?->color }};" class="btn"
+                                        for="color-{{ $color->color?->id }}">
+                                        {{-- {{ $color->color?->color_name }} --}}
+                                        &nbsp;&nbsp;&nbsp;
+                                    </label>
+                                </div>
+                            @endforeach
+                        @endif
+
+                    </div>
+
+                    <div id="qty-div">
+
+
+                        <div class="d-flex justify-content-start align-items-center">
+                            <div class="small_number mb-3">
+                                <div class="qty-input">
+                                    <button class="qty-count qty-count--minus" data-action="minus" type="button">-</button>
+                                    <input class="product-qty" type="number" name="product-qty" min="0"
+                                        max="{{ $wareHouseHaveProductVariables?->quantity ?? 0 }}"
+                                        value="{{ $cartItem ? $cartItem->quantity : 0 }}"
+                                        data-cart-id="{{ $cartItem ? $cartItem->id : '' }}"
+                                        data-product-id="{{ $product->id }}">
+                                    <button class="qty-count qty-count--add" data-action="add" type="button">+</button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
+                    {{-- hidden div for out of stock message badge --}}
+                    <div id="out-of-stock-message" class="text-danger " style="display: none;">
+                        <span class="h5">Out of Stock</span>
+                    </div>
+
                     @if ($cartItem)
-                        <div class="view-cart-btn">
-                            <a href="{{ route('user.profile') }}" class="red_btn w-100 text-center"><span>View
+                        <div class="view-cart-btn cart-btns">
+                            <a href="{{ route('e-store.cart') }}" class="red_btn w-100 text-center"><span>View
                                     Cart</span></a>
                         </div>
                     @else
-                        <div class="addtocart" data-id="{{ $product->id }}">
+                        <div class="addtocart cart-btns" data-id="{{ $product->id }}">
                             <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to Cart</span></a>
                         </div>
                     @endif
@@ -176,7 +267,8 @@
                                 <div class="feature_box">
                                     <div class="feature_img">
                                         <div class="wishlist_icon" data-id="{{ $related_product->id }}">
-                                            <a href="javascript:void(0);"><i class="fa-solid fa-heart {{ $product->isInWishlist() ? 'text-danger' : '' }}"></i></a>
+                                            <a href="javascript:void(0);"><i
+                                                    class="fa-solid fa-heart {{ $product->isInWishlist() ? 'text-danger' : '' }}"></i></a>
                                         </div>
                                         <a href="{{ route('e-store.product-details', $related_product->slug) }}">
                                             @if (isset($related_product->main_image) && $related_product->main_image != null)
@@ -271,6 +363,102 @@
 
                     }
                 });
+            });
+        });
+
+        // on page load get-warehouse-product-details
+        $(document).ready(function() {
+            var selectedSize = $(".product-select-size-input:checked").val();
+            var selectedColor = $(".product-select-color-input:checked").val();
+            $.ajax({
+                url: "{{ route('e-store.get-warehouse-product-details') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    product_id: "{{ $product->id }}",
+                    size_id: selectedSize,
+                    color_id: selectedColor
+                },
+                success: function(response) {
+                    if (response.status == true) {
+                        console.log("Warehouse product details:", response.data);
+                        $("#product-sku").text(response.data.sku);
+                        $("#warehouse-product-id").val(response.data.id);
+                        // Update max quantity
+                        $(".product-qty").attr("max", response.data.quantity);
+
+                        $(".product-qty").trigger("change");
+
+                        // if stock quantity is available
+                        if (response.data.quantity > 0) {
+                            $("#qty-div").show();
+                            $("#out-of-stock-message").hide();
+                            $(".cart-btns").show();
+
+                        } else {
+                            $("#qty-div").hide();
+                            $("#out-of-stock-message").show();
+                            $(".cart-btns").hide();
+                        }
+                    } else {
+                        toastr.error(response.message);
+                        $("#qty-div").hide();
+                        $("#out-of-stock-message").show();
+                        $(".cart-btns").hide();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    toastr.error("An error occurred while fetching product details.");
+                }
+            });
+        });
+
+        // on change product-select-size-input or product-select-color-input // by ajax get warehouse product details by product id with optional size and color
+        $(document).on("change", ".product-select-size-input, .product-select-color-input", function() {
+            var selectedSize = $(".product-select-size-input:checked").val();
+            var selectedColor = $(".product-select-color-input:checked").val();
+            console.log("Selected size:", selectedSize);
+            console.log("Selected color:", selectedColor);
+            $.ajax({
+                url: "{{ route('e-store.get-warehouse-product-details') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    product_id: "{{ $product->id }}",
+                    size_id: selectedSize,
+                    color_id: selectedColor
+                },
+                success: function(response) {
+                    if (response.status == true) {
+                        console.log("Warehouse product details:", response.data);
+                        $("#product-sku").text(response.data.sku);
+                        // update warehouse-product-id input value
+                        $("#warehouse-product-id").val(response.data.id);
+                        // Update max quantity
+                        $(".product-qty").attr("max", response.data.quantity);
+                        $(".product-qty").trigger("change");
+
+                        // if stock quantity is available
+                        if (response.data.quantity > 0) {
+                            $("#qty-div").show();
+                            $("#out-of-stock-message").hide();
+                            $(".cart-btns").show();
+
+                        } else {
+                            $("#qty-div").hide();
+                            $("#out-of-stock-message").show();
+                            $(".cart-btns").hide();
+                        }
+                    } else {
+                        toastr.error(response.message);
+                        $("#qty-div").hide();
+                        $("#out-of-stock-message").show();
+                        $(".cart-btns").hide();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    toastr.error("An error occurred while fetching product details.");
+                }
             });
         });
     </script>

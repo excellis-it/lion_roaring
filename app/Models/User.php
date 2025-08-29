@@ -45,6 +45,12 @@ class User extends Authenticatable
         'zip',
         'time_zone',
         'fcm_token',
+        'location_lat',
+        'location_lng',
+        'location_address',
+        'location_zip',
+        'location_country',
+        'location_state'
     ];
     protected $appends = ['ecclesia_access']; // Add this line
 
@@ -145,5 +151,30 @@ class User extends Authenticatable
         return $this->roles->pluck('is_ecclesia')->first() == 1 ? true : false;
     }
 
-   
+    // Relationship for warehouses this user can manage
+    public function warehouses()
+    {
+        return $this->belongsToMany(WareHouse::class, 'user_warehouses', 'user_id', 'warehouse_id')
+            ->withTimestamps();
+    }
+
+    // Check if user is a warehouse admin
+    public function isWarehouseAdmin()
+    {
+        return $this->hasRole('WAREHOUSE_ADMIN');
+    }
+
+    // Check if user can manage a specific warehouse
+    public function canManageWarehouse($warehouseId)
+    {
+        if ($this->hasRole('SUPER ADMIN')) {
+            return true;
+        }
+
+        if ($this->isWarehouseAdmin()) {
+            return $this->warehouses()->where('ware_houses.id', $warehouseId)->exists();
+        }
+
+        return false;
+    }
 }

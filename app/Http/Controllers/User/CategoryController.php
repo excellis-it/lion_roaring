@@ -58,8 +58,9 @@ class CategoryController extends Controller
      */
     public function create()
     {
+        $categories = Category::where('status', 1)->get();
         if (auth()->user()->hasRole('SUPER ADMIN')) {
-            return view('user.category.create');
+            return view('user.category.create', compact('categories'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -75,6 +76,7 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'parent_id' => 'nullable|exists:categories,id',
             'slug' => 'required|string|max:255|unique:categories',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'meta_title' => 'nullable|string|max:255',
@@ -84,6 +86,7 @@ class CategoryController extends Controller
 
         $category = new Category();
         $category->name = $request->name;
+        $category->parent_id = $request->parent_id ?? null;
         $category->slug = $request->slug;
         $category->meta_title = $request->meta_title;
         $category->meta_description = $request->meta_description;
@@ -117,9 +120,10 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
+        $categories = Category::where('status', 1)->get();
         if (auth()->user()->hasRole('SUPER ADMIN')) {
             $category = Category::findOrFail($id);
-            return view('user.category.edit', compact('category'));
+            return view('user.category.edit', compact('category', 'categories'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -139,6 +143,7 @@ class CategoryController extends Controller
 
             $request->validate([
                 'name' => 'required|string|max:255',
+                'parent_id' => 'nullable|exists:categories,id',
                 'slug' => 'required|string|max:255|unique:categories,slug,' . $category->id,
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
                 'meta_title' => 'nullable|string|max:255',
@@ -147,6 +152,7 @@ class CategoryController extends Controller
             ]);
 
             $category->name = $request->name;
+            $category->parent_id = $request->parent_id ?? null;
             if ($category->main == 0) {
                 $category->slug = $request->slug;
             }

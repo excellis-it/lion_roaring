@@ -10,17 +10,38 @@
 @endpush
 
 @section('content')
-    <section class="inner_banner_sec"
+    <section class="inner_banner_sec pb-5"
         style="background-image: url({{ asset('ecom_assets/images/banner.jpg') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
                     <div class="inner_banner_ontent">
-                        <h2>Our Collection</h2>
+                        <h2>{{ $category_name ?? 'Our Collection' }}</h2>
                         {{-- <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing volutpat
                             consectetur
                             id purus rhoncus.</p> --}}
                     </div>
+
+                </div>
+
+                <div class="featured_slider">
+                    @if (count($childCategoriesList) > 0)
+                        @foreach ($childCategoriesList as $category)
+                            <div class="feature_slid_padding">
+                                <div class="feature_box">
+                                    <div class="feature_img">
+                                        <a href="{{ route($category->slug . '.e-store.page') }}"><img
+                                                src="{{ Storage::url($category->image) }}" /></a>
+                                    </div>
+                                    <div class="feature_text text-white">
+                                        <a class="text-white text-center"
+                                            href="{{ route($category->slug . '.e-store.page') }}">{{ $category->name }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
+
                 </div>
             </div>
         </div>
@@ -36,45 +57,46 @@
                             <h4>Filter</h4>
                         </div>
                         <div class="search_color w-100">
-                            <input type="text" placeholder="Search Collection" class="form-control">
+                            <input type="text" placeholder="Search Collection" class="form-control" id="serach-product">
                             <button type="button">
                                 <img src="{{ asset('ecom_assets/images/search.svg') }}" alt="">
                             </button>
                         </div>
                     </div>
+                    @if ($category_id != '')
+                    @else
+                        <div class="padding_filter">
+                            <div class="accordion" id="agegroup">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingAge">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseAge" aria-expanded="true" aria-controls="collapseAge">
+                                            Categories
+                                        </button>
+                                    </h2>
+                                    <div id="collapseAge" class="accordion-collapse collapse show"
+                                        aria-labelledby="headingAge" data-bs-parent="#agegroup">
+                                        <div class="accordion-body">
+                                            <div class="new">
 
-                    <div class="padding_filter">
-                        <div class="accordion" id="agegroup">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingAge">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseAge" aria-expanded="true" aria-controls="collapseAge">
-                                        Categories
-                                    </button>
-                                </h2>
-                                <div id="collapseAge" class="accordion-collapse collapse show" aria-labelledby="headingAge"
-                                    data-bs-parent="#agegroup">
-                                    <div class="accordion-body">
-                                        <div class="new">
+                                                @if (count($categories) > 0)
+                                                    @foreach ($categories as $category)
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="catagory{{ $category->id }}"
+                                                                name="category_id" value="{{ $category->id }}">
+                                                            <label
+                                                                for="catagory{{ $category->id }}">{{ $category->name }}</label>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
 
-                                            @if (count($categories) > 0)
-                                                @foreach ($categories as $category)
-                                                    <div class="form-group">
-                                                        <input type="checkbox" id="catagory{{ $category->id }}"
-                                                            name="category_id" value="{{ $category->id }}">
-                                                        <label
-                                                            for="catagory{{ $category->id }}">{{ $category->name }}</label>
-                                                    </div>
-                                                @endforeach
-                                            @endif
-
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
+                    @endif
                     {{-- <div class="padding_filter">
                         <div class="accordion" id="price">
                             <div class="accordion-item">
@@ -257,6 +279,34 @@
 
             // Search products
             $(document).on('submit', '#product-search-form', function(e) {
+                e.preventDefault();
+                var search = $('#serach-product').val();
+                var prices = [];
+                var category_id = [];
+
+
+                $('input[name="price"]:checked').each(function() {
+                    prices.push($(this).val());
+                });
+
+                var latestFilter = $('#latest_filter').val();
+
+                @if ($category_id != '')
+                    var cat = '{{ $category_id }}';
+                    category_id.push(cat);
+                @else
+                    $('input[name="category_id"]:checked').each(function() {
+                        category_id.push($(this).val());
+                    });
+                @endif
+
+                page = 1;
+                $('#products').html('');
+
+                loadMoreProducts(page, prices, category_id, latestFilter, search);
+            });
+
+            $(document).on('keyup', '#serach-product', function(e) {
                 e.preventDefault();
                 var search = $('#serach-product').val();
                 var prices = [];

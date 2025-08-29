@@ -3,10 +3,10 @@
         @if (is_array($category))
             {{ implode(', ', array_column($category, 'name')) }}
         @else
-            {{ $category['name'] ?? '' }}
+            {{ $category_name ?? '' }}
         @endif
     @else
         All Products
     @endif
-    ({{ $products_count  ?? '' }} Products Found)
+    ({{ $products_count ?? '' }} Products Found)
 </h4>

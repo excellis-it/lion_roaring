@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Estore;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
@@ -10,18 +11,68 @@ use App\Models\EstoreCart;
 use App\Models\EstoreOrder;
 use App\Models\EstoreOrderItem;
 use App\Models\EstorePayment;
+use App\Models\EstoreSetting;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
 use Illuminate\Support\Facades\DB;
 use App\Models\EcomWishList;
+use App\Models\WarehouseProduct;
+use App\Models\WareHouse;
+use App\Services\NotificationService;
+use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 class ProductController extends Controller
 {
     public function productDetails($slug)
     {
-        $product = Product::where('slug', $slug)->first();
-        $related_products = Product::where('category_id', $product->category_id)
+        $isAuth = auth()->check();
+        $userSessionId = session()->getId();
+        $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
+
+        $nearbyWareHouseId = Warehouse::first()->id;
+        $originLat = null;
+        $originLng = null;
+        $isUser = auth()->user();
+        if ($isUser) { // Assuming user location is stored in user model
+            $originLat = $isUser->location_lat;
+            $originLng = $isUser->location_lng;
+        } else {
+            $originLat = session('location_lat');
+            $originLng = session('location_lng');
+        }
+        // reuse helper to get nearest warehouse
+        $nearest = Helper::getNearestWarehouse($originLat, $originLng);
+        if (!empty($nearest['warehouse']->id)) {
+            $nearbyWareHouseId = $nearest['warehouse']->id;
+        }
+        // return $getNearbywareHouse;
+
+        $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
+            $q->where('warehouse_id', $nearbyWareHouseId)
+                ->where('quantity', '>', 0);
+        })->pluck('id')->toArray();
+
+        $getProduct = Product::where('slug', $slug)->first();
+
+        $wareHouseHaveProductVariables = WarehouseProduct::where('product_id', $getProduct->id)
+            ->where('warehouse_id', $nearbyWareHouseId)
+            ->first();
+
+        // if (! $wareHouseHaveProductVariables) {
+        //     // Handle the case where the product is not found in the warehouse
+        //     return view('ecom.product-not-available', compact('cartCount'));
+        // }
+
+        // select prodcut is first product in warehouse have with the product id
+        if ($wareHouseHaveProductVariables) {
+            $product = Product::where('id', $wareHouseHaveProductVariables->product_id)->where('slug', $slug)->first();
+        } else {
+            $product = $getProduct;
+        }
+
+        $related_products = Product::whereIn('id', $wareHouseProducts)->where('category_id', $product->category_id)
             ->where(function ($query) use ($product) {
                 $query->where('id', '!=', $product->id)
                     ->where('status', 1)
@@ -31,23 +82,67 @@ class ProductController extends Controller
             ->limit(8)
             ->get();
         $reviews = $product->reviews()->where('status', 1)->orderBy('id', 'DESC')->get();
-        $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 
         // Check if product is already in cart
-        $cartItem = EstoreCart::where('user_id', auth()->id())
+        $cartItem = $isAuth ? EstoreCart::where('user_id', auth()->id())
+            ->where('product_id', $product->id)
+            ->first() : EstoreCart::where('session_id', $userSessionId)
             ->where('product_id', $product->id)
             ->first();
 
-        return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews', 'cartCount', 'cartItem'));
+
+        return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews', 'cartCount', 'cartItem', 'wareHouseHaveProductVariables'));
     }
 
     public function products(Request $request, $category_id = null)
     {
         $category_id = $category_id ?? ''; // Default value is ' '
+        $childCategories = [];
+        $childCategoriesList = [];
+        $category_name = null;
+
+        $nearbyWareHouseId = Warehouse::first()->id;
+        $originLat = null;
+        $originLng = null;
+        $isUser = auth()->user();
+        if ($isUser) { // Assuming user location is stored in user model
+            $originLat = $isUser->location_lat;
+            $originLng = $isUser->location_lng;
+        } else {
+            $originLat = session('location_lat');
+            $originLng = session('location_lng');
+        }
+        // reuse helper to get nearest warehouse
+        $nearest = Helper::getNearestWarehouse($originLat, $originLng);
+        if (!empty($nearest['warehouse']->id)) {
+            $nearbyWareHouseId = $nearest['warehouse']->id;
+        }
+        // return $getNearbywareHouse;
+
+        $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
+            $q->where('warehouse_id', $nearbyWareHouseId)
+                ->where('quantity', '>', 0);
+        })->pluck('id')->toArray();
+
+
+        // if ($wareHouseProducts ) {
+        //    $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1);
+        // } else {
         $products = Product::where('status', 1);
+        //  }
+
+
+        // $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1);
         if ($category_id) {
-            $products = $products->where('category_id', $category_id);
+           // $products = $products->where('category_id', $category_id);
             $category = Category::find($category_id);
+            // products also with children
+            if ($category) {
+                $childCategories = Category::where('parent_id', $category->id)->pluck('id')->toArray();
+                $childCategoriesList = Category::where('parent_id', $category->id)->get();
+                $products = $products->whereIn('category_id', array_merge([$category->id], $childCategories));
+                $category_name = $category->name;
+            }
         } else {
             $category = null;
         }
@@ -57,8 +152,11 @@ class ProductController extends Controller
         $products_count  = $products->count();
         $categories = Category::where('status', 1)->orderBy('id', 'DESC')->get();
         //  return $categories;
-        $cartCount = EstoreCart::where('user_id', auth()->id())->count();
-        return view('ecom.products')->with(compact('products', 'categories', 'category_id', 'products_count', 'category', 'cartCount'));
+        $isAuth = auth()->check();
+        $userSessionId = session()->getId();
+        $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
+
+        return view('ecom.products')->with(compact('products', 'category_name', 'categories', 'category_id', 'products_count', 'category', 'cartCount', 'childCategories', 'childCategoriesList'));
     }
 
     public static function productsFilter(Request $request)
@@ -72,7 +170,34 @@ class ProductController extends Controller
             $latest_filter = $request->latestFilter ?? '';
             $search = $request->search ?? '';
 
-            $products = Product::where('status', 1)->with('image');
+            $nearbyWareHouseId = Warehouse::first()->id;
+            $originLat = null;
+            $originLng = null;
+            $isUser = auth()->user();
+            if ($isUser) { // Assuming user location is stored in user model
+                $originLat = $isUser->location_lat;
+                $originLng = $isUser->location_lng;
+            } else {
+                $originLat = session('location_lat');
+                $originLng = session('location_lng');
+            }
+            // reuse helper to get nearest warehouse
+            $nearest = Helper::getNearestWarehouse($originLat, $originLng);
+            if (!empty($nearest['warehouse']->id)) {
+                $nearbyWareHouseId = $nearest['warehouse']->id;
+            }
+            // return $getNearbywareHouse;
+
+            $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
+                $q->where('warehouse_id', $nearbyWareHouseId)
+                    ->where('quantity', '>', 0);
+            })->pluck('id')->toArray();
+
+          //  if ($wareHouseProducts) {
+           //     $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->with('image');
+          //  } else {
+                $products = Product::where('status', 1)->with('image');
+          //  }
 
             if (!empty($category_id)) {
                 $products->whereIn('category_id', $category_id);
@@ -119,8 +244,15 @@ class ProductController extends Controller
 
             //  return $products;
 
+            // is the product in wishlist
+            foreach ($products as &$product) {
+                $product['is_in_wishlist'] = (new Product())->isInWishlist($product['id']);
+            }
+
             $category = !empty($category_id) ? Category::whereIn('id', $category_id)->get()->toArray() : null;
-            $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+            $isAuth = auth()->check();
+            $userSessionId = session()->getId();
+            $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
 
             $view = view('ecom.partials.product-item', compact('products', 'products_count', 'cartCount'))->render();
             $view2 = view('ecom.partials.count-product', compact('products', 'products_count', 'category', 'category_id', 'cartCount'))->render();
@@ -142,6 +274,10 @@ class ProductController extends Controller
             'rate' => 'required|integer',
             'review' => 'required|string',
         ]);
+
+        if (!auth()->check()) {
+            return response()->json(['status' => false, 'message' => 'Please login to add a review']);
+        }
 
         $product = Product::find($request->product_id);
         if (!$product) {
@@ -175,17 +311,33 @@ class ProductController extends Controller
             $request->validate([
                 'product_id' => 'required|integer',
                 'quantity' => 'required|integer|min:1',
+                'warehouse_product_id' => 'required|integer',
             ]);
+
+            $isAuth = auth()->check();
+
+            $userSessionId = session()->getId();
+
 
             $product = Product::find($request->product_id);
             if (!$product) {
                 return response()->json(['status' => false, 'message' => 'Product not found']);
             }
 
+            $warehouseProductId = $request->warehouse_product_id;
+            $warehouseProduct = WarehouseProduct::find($warehouseProductId);
+            $wareHouse = Warehouse::find($warehouseProduct->warehouse_id);
+
             // Check if product already exists in cart
-            $existingCart = EstoreCart::where('user_id', auth()->id())
-                ->where('product_id', $product->id)
-                ->first();
+            if ($isAuth) {
+                $existingCart = EstoreCart::where('user_id', auth()->id())
+                    ->where('product_id', $product->id)
+                    ->first();
+            } else {
+                $existingCart = EstoreCart::where('session_id', $userSessionId)
+                    ->where('product_id', $product->id)
+                    ->first();
+            }
 
             if ($existingCart) {
                 // Update quantity instead of creating new entry
@@ -200,11 +352,28 @@ class ProductController extends Controller
                 ]);
             }
 
+            // return $product->sizes->count();
+            // check if product have size and color and user not selected those then auto select first color and size either set null
+            $sizeId = $request->size_id ?? null;
+            if (!$request->size_id && ($product->sizes->count() > 0)) {
+                $sizeId = $product->sizes->first()->size->id;
+            }
+            $colorId = $request->color_id ?? null;
+            if (!$request->color_id && ($product->colors->count() > 0)) {
+                $colorId = $product->colors->first()->color->id;
+            }
+
+            // return $sizeId;
+
             $cart = new EstoreCart();
             $cart->user_id = auth()->id();
             $cart->product_id = $product->id;
-            $cart->price = $product->price;
+            $cart->warehouse_product_id = $warehouseProduct->id;
+            $cart->warehouse_id = $wareHouse->id;
+            $cart->size_id = $sizeId;
+            $cart->color_id = $colorId;
             $cart->quantity = $request->quantity;
+            $cart->session_id = $userSessionId;
             $cart->save();
 
             return response()->json([
@@ -225,9 +394,11 @@ class ProductController extends Controller
                 'product_id' => 'required|integer',
             ]);
 
-            $cartItem = EstoreCart::where('user_id', auth()->id())
-                ->where('product_id', $request->product_id)
-                ->first();
+            $isAuth = auth()->check();
+            $userSessionId = session()->getId();
+
+            $cartItem = $isAuth ? EstoreCart::where('user_id', auth()->id()) : EstoreCart::where('session_id', $userSessionId);
+            $cartItem = $cartItem->where('product_id', $request->product_id)->first();
 
             return response()->json([
                 'status' => true,
@@ -248,8 +419,11 @@ class ProductController extends Controller
                 'id' => 'required|integer',
             ]);
 
+            $isAuth = auth()->check();
+            $userSessionId = session()->getId();
+
             $cart = EstoreCart::find($request->id);
-            if (!$cart || $cart->user_id != auth()->id()) {
+            if (!$cart || ($isAuth && $cart->user_id != auth()->id()) || (!$isAuth && $cart->session_id != $userSessionId)) {
                 return response()->json(['status' => false, 'message' => 'Cart item not found']);
             }
 
@@ -267,8 +441,11 @@ class ProductController extends Controller
                 'quantity' => 'required|integer|min:0',
             ]);
 
+            $isAuth = auth()->check();
+            $userSessionId = session()->getId();
+
             $cart = EstoreCart::find($request->id);
-            if (!$cart || $cart->user_id != auth()->id()) {
+            if (!$cart || ($isAuth && $cart->user_id != auth()->id()) || (!$isAuth && $cart->session_id != $userSessionId)) {
                 return response()->json(['status' => false, 'message' => 'Cart item not found']);
             }
 
@@ -289,7 +466,11 @@ class ProductController extends Controller
     public function clearCart(Request $request)
     {
         if ($request->ajax()) {
-            $carts = EstoreCart::where('user_id', auth()->id())->get();
+            $isAuth = auth()->check();
+            $userSessionId = session()->getId();
+
+            $carts = $isAuth ? EstoreCart::where('user_id', auth()->id())->get() : EstoreCart::where('session_id', $userSessionId)->get();
+
             foreach ($carts as $cart) {
                 $cart->delete();
             }
@@ -301,7 +482,9 @@ class ProductController extends Controller
     public function cartCount(Request $request)
     {
         if ($request->ajax()) {
-            $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+            $isAuth = auth()->check();
+            $userSessionId = session()->getId();
+            $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
             return response()->json(['status' => true, 'cartCount' => $cartCount]);
         }
     }
@@ -310,9 +493,9 @@ class ProductController extends Controller
     public function cartList(Request $request)
     {
         if ($request->ajax()) {
-            $carts = EstoreCart::where('user_id', auth()->id())
-                ->with('product')
-                ->get();
+            $isAuth = auth()->check();
+            $userSessionId = session()->getId();
+            $carts = $isAuth ? EstoreCart::where('user_id', auth()->id())->with('product')->get() : EstoreCart::where('session_id', $userSessionId)->with('product')->get();
 
             $cartItems = [];
             $total = 0;
@@ -344,37 +527,40 @@ class ProductController extends Controller
     // cart page
     public function cart()
     {
-        $carts = EstoreCart::where('user_id', auth()->id())
-            ->with('product')
-            ->get();
-        $cartCount = EstoreCart::where('user_id', auth()->id())->count();
+        $isAuth = auth()->check();
+        $userSessionId = session()->getId();
 
-        $cartItems = [];
+        $carts = $isAuth ? EstoreCart::where('user_id', auth()->id())->with('product.otherCharges')->get() : EstoreCart::where('session_id', $userSessionId)->with('product.otherCharges')->get();
+        $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
+
         $total = 0;
 
         foreach ($carts as $cart) {
-            $subtotal = $cart->price * $cart->quantity;
-            $total += $subtotal;
-
-            $cartItems[] = [
-                'id' => $cart->id,
-                'product_id' => $cart->product_id,
-                'product_name' => $cart->product->name ?? 'Unknown Product',
-                'product_image' => $cart->product->main_image ?? null,
-                'price' => $cart->price,
-                'quantity' => $cart->quantity,
-                'subtotal' => $subtotal
-            ];
+            // Check if cart quantity exceeds available stock
+            if ($cart->warehouseProduct && $cart->quantity > $cart->warehouseProduct->quantity) {
+                // Update cart quantity to match available stock
+                $cart->quantity = $cart->warehouseProduct->quantity;
+                $cart->save();
+                $quantityUpdated = true;
+            }
+            // Calculate other charges for this cart item
+            $otherCharges = $cart->product->otherCharges->sum('charge_amount');
+            $cart->subtotal = ($cart->product->price * $cart->quantity) + $otherCharges;
+            $total += $cart->subtotal;
         }
 
-        return view('ecom.cart')->with(compact('cartItems', 'total', 'cartCount'));
+        return view('ecom.cart')->with(compact('carts', 'total', 'cartCount'));
     }
 
     // checkout page
     public function checkout()
     {
+        if (!auth()->check()) {
+            return redirect()->route('home')->with('error', 'Please login to continue');
+        }
+
         $carts = EstoreCart::where('user_id', auth()->id())
-            ->with('product')
+            ->with('product.otherCharges')
             ->get();
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 
@@ -382,30 +568,57 @@ class ProductController extends Controller
             return redirect()->route('e-store.cart')->with('error', 'Your cart is empty');
         }
 
+        // Get estore settings
+        $estoreSettings = EstoreSetting::first();
+
+        $subtotal = 0;
         $cartItems = [];
-        $total = 0;
 
         foreach ($carts as $cart) {
-            $subtotal = $cart->price * $cart->quantity;
-            $total += $subtotal;
+            // Calculate other charges for this cart item
+            $otherCharges = $cart->product->otherCharges->sum('charge_amount');
+            $itemSubtotal = ($cart->product->price * $cart->quantity) + $otherCharges;
+            $subtotal += $itemSubtotal;
 
             $cartItems[] = [
                 'id' => $cart->id,
                 'product_id' => $cart->product_id,
-                'product_name' => $cart->product->name ?? 'Unknown Product',
-                'product_image' => $cart->product->main_image ?? null,
-                'price' => $cart->price,
+                'product_name' => $cart->product->name,
+                'product_image' => $cart->product->main_image,
+                'price' => $cart->product->price,
                 'quantity' => $cart->quantity,
-                'subtotal' => $subtotal
+                'other_charges' => $otherCharges,
+                'subtotal' => $itemSubtotal
             ];
         }
 
-        return view('ecom.checkout')->with(compact('cartItems', 'total', 'cartCount'));
+        // Calculate additional costs
+        $shippingCost = 0;
+        $deliveryCost = 0;
+        $taxAmount = 0;
+
+        if ($estoreSettings) {
+            $shippingCost = $estoreSettings->shipping_cost ?? 0;
+            $deliveryCost = $estoreSettings->delivery_cost ?? 0;
+            $taxPercentage = $estoreSettings->tax_percentage ?? 0;
+
+            // Calculate tax on subtotal
+            if ($taxPercentage > 0) {
+                $taxAmount = ($subtotal * $taxPercentage) / 100;
+            }
+        }
+
+        $total = $subtotal + $shippingCost + $deliveryCost + $taxAmount;
+
+        return view('ecom.checkout')->with(compact('cartItems', 'subtotal', 'shippingCost', 'deliveryCost', 'taxAmount', 'total', 'cartCount', 'estoreSettings'));
     }
 
     // Process checkout
     public function processCheckout(Request $request)
     {
+        if (!auth()->check()) {
+            return response()->json(['status' => false, 'message' => 'Please login to continue']);
+        }
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -419,21 +632,67 @@ class ProductController extends Controller
             'country' => 'required|string|max:255',
         ]);
 
+        $is_pickup = $request->order_method ?? 0;
+
         $carts = EstoreCart::where('user_id', auth()->id())->with('product')->get();
 
         if ($carts->isEmpty()) {
             return response()->json(['status' => false, 'message' => 'Your cart is empty']);
         }
 
+        // Get estore settings
+        $estoreSettings = EstoreSetting::first();
+
+        // cart item product other charges
+        $carts->each(function ($cart) {
+            $cart->other_charges = $cart->product->otherCharges->sum('charge_amount');
+            $cart->price = $cart->product->price;
+        });
+
         $subtotal = $carts->sum(function ($cart) {
-            return $cart->price * $cart->quantity;
+            return ($cart->price * $cart->quantity) + $cart->other_charges;
+        });
+
+        // Calculate additional costs based on order method and settings
+        $shippingCost = 0;
+        $deliveryCost = 0;
+        $taxAmount = 0;
+
+        if ($estoreSettings) {
+            // Only add shipping/delivery costs if not pickup or if pickup is not available
+            if ($is_pickup == 0 || !$estoreSettings->is_pickup_available) {
+                $shippingCost = $estoreSettings->shipping_cost ?? 0;
+                $deliveryCost = $estoreSettings->delivery_cost ?? 0;
+            }
+
+            $taxPercentage = $estoreSettings->tax_percentage ?? 0;
+
+            // Calculate tax on subtotal
+            if ($taxPercentage > 0) {
+                $taxAmount = ($subtotal * $taxPercentage) / 100;
+            }
+        }
+
+        $totalAmount = $subtotal + $shippingCost + $deliveryCost + $taxAmount;
+
+        // others charges name amounts in json array
+        $otherCharges = [];
+        $carts->each(function ($cart) use (&$otherCharges) {
+            $cart->product->otherCharges->each(function ($charge) use (&$otherCharges) {
+                $otherCharges[$charge->charge_name] = ($otherCharges[$charge->charge_name] ?? 0) + $charge->charge_amount;
+            });
         });
 
         try {
             DB::beginTransaction();
 
+            // get warehouse id from $carts first
+            $warehouseId = $carts->first()->warehouse_id ?? null;
+
             // Create order
             $order = EstoreOrder::create([
+                'warehouse_id' => $warehouseId,
+                'is_pickup' => $is_pickup,
                 'user_id' => auth()->id(),
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
@@ -446,9 +705,9 @@ class ProductController extends Controller
                 'pincode' => $request->pincode,
                 'country' => $request->country,
                 'subtotal' => $subtotal,
-                'tax_amount' => 0,
-                'shipping_amount' => 0,
-                'total_amount' => $subtotal,
+                'tax_amount' => $taxAmount,
+                'shipping_amount' => $shippingCost + $deliveryCost,
+                'total_amount' => $totalAmount,
                 'status' => 'pending',
                 'payment_status' => 'pending'
             ]);
@@ -458,11 +717,21 @@ class ProductController extends Controller
                 EstoreOrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $cart->product_id,
+                    'warehouse_product_id' => $cart->warehouse_product_id,
+                    'warehouse_id' => $cart->warehouse_id,
                     'product_name' => $cart->product->name,
                     'product_image' => $cart->product->main_image,
                     'price' => $cart->price,
                     'quantity' => $cart->quantity,
-                    'total' => $cart->price * $cart->quantity
+                    'size_id' => $cart->size_id,
+                    'color_id' => $cart->color_id,
+                    'other_charges' => json_encode($cart->product->otherCharges->map(function ($charge) {
+                        return [
+                            'charge_name' => $charge->charge_name,
+                            'charge_amount' => $charge->charge_amount
+                        ];
+                    })),
+                    'total' => ($cart->price * $cart->quantity) + $cart->other_charges
                 ]);
             }
 
@@ -478,18 +747,62 @@ class ProductController extends Controller
                             'name' => $cart->product->name,
                             'description' => $cart->product->short_description ?? '',
                         ],
-                        'unit_amount' => $cart->price * 100, // Amount in cents
+                        'unit_amount' => (($cart->price * $cart->quantity) + $cart->other_charges) * 100, // Amount in cents
                     ],
-                    'quantity' => $cart->quantity,
+                    'quantity' => 1, // We're using the total amount, so quantity is 1
                 ];
             }
+
+            // Add shipping cost as a line item if applicable
+            if ($shippingCost > 0) {
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => 'Shipping Cost',
+                        ],
+                        'unit_amount' => $shippingCost * 100,
+                    ],
+                    'quantity' => 1,
+                ];
+            }
+
+            // Add delivery cost as a line item if applicable
+            if ($deliveryCost > 0) {
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => 'Delivery Cost',
+                        ],
+                        'unit_amount' => $deliveryCost * 100,
+                    ],
+                    'quantity' => 1,
+                ];
+            }
+
+            // Add tax as a line item if applicable
+            if ($taxAmount > 0) {
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => 'Tax (' . ($estoreSettings->tax_percentage ?? 0) . '%)',
+                        ],
+                        'unit_amount' => round($taxAmount * 100),
+                    ],
+                    'quantity' => 1,
+                ];
+            }
+
+            $encrypted_order_id = encrypt($order->id);
 
             $checkoutSession = StripeSession::create([
                 'payment_method_types' => ['card'],
                 'line_items' => $lineItems,
                 'mode' => 'payment',
-                'success_url' => route('e-store.payment-success') . '?session_id={CHECKOUT_SESSION_ID}&order_id=' . $order->id,
-                'cancel_url' => route('e-store.checkout') . '?cancelled=1',
+                'success_url' => route('e-store.payment-success') . '?session_id={CHECKOUT_SESSION_ID}&order_id=' . $encrypted_order_id,
+                'cancel_url' => route('e-store.payment-cancelled') . '?session_id={CHECKOUT_SESSION_ID}&order_id=' . $encrypted_order_id,
                 'metadata' => [
                     'order_id' => $order->id,
                     'user_id' => auth()->id()
@@ -501,7 +814,7 @@ class ProductController extends Controller
                 'order_id' => $order->id,
                 'stripe_payment_intent_id' => $checkoutSession->id,
                 'payment_method' => 'stripe',
-                'amount' => $subtotal,
+                'amount' => $totalAmount,
                 'currency' => 'USD',
                 'status' => 'pending'
             ]);
@@ -522,10 +835,15 @@ class ProductController extends Controller
     // Payment success
     public function paymentSuccess(Request $request)
     {
+        if (!auth()->check()) {
+            return redirect()->route('home')->with('error', 'Please login to continue');
+        }
         $request->validate([
             'session_id' => 'required|string',
-            'order_id' => 'required|integer'
+            'order_id' => 'required'
         ]);
+
+        $decrypted_order_id = decrypt($request->order_id);
 
         try {
             Stripe::setApiKey(env('STRIPE_SECRET'));
@@ -536,7 +854,7 @@ class ProductController extends Controller
             if ($session->payment_status === 'paid') {
                 DB::beginTransaction();
 
-                $order = EstoreOrder::find($request->order_id);
+                $order = EstoreOrder::find($decrypted_order_id);
 
                 // Check if this order belongs to the current user
                 if (!$order || $order->user_id != auth()->id()) {
@@ -554,6 +872,21 @@ class ProductController extends Controller
                     ->first();
 
                 if ($order && $payment) {
+
+                    // order items
+                    $orderItems = EstoreOrderItem::where('order_id', $order->id)->get();
+                    // return $orderItems;
+                    // each order item deduct stock from warehouse product update
+                    foreach ($orderItems as $item) {
+                        $wareHouseproduct = WarehouseProduct::where('warehouse_id', $item->warehouse_id)->where('id', $item->warehouse_product_id)->where('product_id', $item->product_id)->first();
+                        //  return $wareHouseproduct;
+                        if ($wareHouseproduct) {
+
+                            $wareHouseproduct->update(['quantity' => $wareHouseproduct->quantity - $item->quantity, 'updated_at' => now()]);
+                            $this->notifyAdminIfOutOfStock($wareHouseproduct);
+                        }
+                    }
+
                     // Update order status
                     $order->update([
                         'payment_status' => 'paid',
@@ -592,8 +925,32 @@ class ProductController extends Controller
     }
 
     // Handle cancelled payments
-    public function paymentCancelled()
+    public function paymentCancelled(Request $request)
     {
+        //update payment status to cancelled
+        if (!auth()->check()) {
+            return redirect()->route('home')->with('error', 'Please login to continue');
+        }
+
+        $decrypted_order_id = decrypt($request->order_id);
+
+        $payment = EstorePayment::where('stripe_payment_intent_id', $request->session_id)
+            ->where('status', 'pending')
+            ->first();
+
+        if ($payment) {
+            $payment->update(['status' => 'failed']);
+        }
+
+        // update order status
+        $order = EstoreOrder::where('id', $decrypted_order_id)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if ($order) {
+            $order->update(['status' => 'cancelled', 'payment_status' => 'failed']);
+        }
+
         return redirect()->route('e-store.checkout')
             ->with('warning', 'Payment was cancelled. You can try again.');
     }
@@ -601,10 +958,14 @@ class ProductController extends Controller
     // My Orders page
     public function myOrders()
     {
+        if (!auth()->check()) {
+            return redirect()->route('home')->with('error', 'Please login to view your orders');
+        }
         $orders = EstoreOrder::with('orderItems')
             ->where('user_id', auth()->id())
             ->orderBy('created_at', 'desc')
             ->paginate(10);
+
 
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 
@@ -614,6 +975,9 @@ class ProductController extends Controller
     // Order details
     public function orderDetails($orderId)
     {
+        if (!auth()->check()) {
+            return redirect()->route('home')->with('error', 'Please login to view your orders');
+        }
         $order = EstoreOrder::with(['orderItems', 'payments'])
             ->where('id', $orderId)
             ->where('user_id', auth()->id())
@@ -645,13 +1009,17 @@ class ProductController extends Controller
         return view('ecom.order-success', compact('order', 'cartCount'));
     }
 
-    // Add to wishlist with toggle if have then remove either insert
+    // Add to wishlist with toggle if have then remove either set null
     public function addToWishlist(Request $request)
     {
         if ($request->ajax()) {
             $request->validate([
                 'product_id' => 'required|integer',
             ]);
+
+            if (!auth()->check()) {
+                return response()->json(['status' => false, 'message' => 'Please login to add products to your wishlist']);
+            }
 
             $product = Product::find($request->product_id);
             if (!$product) {
@@ -680,6 +1048,12 @@ class ProductController extends Controller
     // list wishlist for user
     public function wishlist()
     {
+
+        // if not auth then redirect to login
+        if (!auth()->check()) {
+            return redirect()->route('home')->with('error', 'Please login to view your wishlist');
+        }
+
         $wishlistItems = EcomWishList::where('user_id', auth()->id())
             ->with('product')
             ->get();
@@ -690,7 +1064,8 @@ class ProductController extends Controller
     }
 
     // Remove from wishlist
-    public function removeFromWishlist(Request $request){
+    public function removeFromWishlist(Request $request)
+    {
         if ($request->ajax()) {
             $request->validate([
                 'product_id' => 'required|integer',
@@ -707,6 +1082,88 @@ class ProductController extends Controller
             $wishlistItem->delete();
 
             return response()->json(['status' => true, 'message' => 'Product removed from wishlist']);
+        }
+    }
+
+    // by ajax get warehouse product details by product id with optional size and color
+    public function getWarehouseProductDetails(Request $request)
+    {
+        // return $request->all();
+        if ($request->ajax()) {
+            $request->validate([
+                'product_id' => 'required|integer',
+                'size_id' => 'nullable|integer',
+                'color_id' => 'nullable|integer',
+            ]);
+
+
+
+            $product = Product::find($request->product_id);
+            if (!$product) {
+                return response()->json(['status' => false, 'message' => 'Product not found']);
+            }
+
+            $nearbyWareHouseId = Warehouse::first()->id; // first id from warehouses
+            $originLat = null;
+            $originLng = null;
+            $isUser = auth()->user();
+            if ($isUser) { // Assuming user location is stored in user model
+                $originLat = $isUser->location_lat;
+                $originLng = $isUser->location_lng;
+            } else {
+                $originLat = session('location_lat');
+                $originLng = session('location_lng');
+            }
+            // reuse helper to get nearest warehouse
+            $nearest = Helper::getNearestWarehouse($originLat, $originLng);
+            if (!empty($nearest['warehouse']->id)) {
+                $nearbyWareHouseId = $nearest['warehouse']->id;
+            }
+            // return $getNearbywareHouse;
+
+            $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
+                $q->where('warehouse_id', $nearbyWareHouseId)
+                    ->where('quantity', '>', 0);
+            })->pluck('id')->toArray();
+
+            $warehouseProduct = WarehouseProduct::where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)
+                ->when($request->size_id, function ($query) use ($request) {
+                    return $query->where('size_id', $request->size_id);
+                })
+                ->when($request->color_id, function ($query) use ($request) {
+                    return $query->where('color_id', $request->color_id);
+                })
+                ->first();
+
+            if (!$warehouseProduct) {
+                return response()->json(['status' => false, 'message' => 'Item Out Of Stock']);
+            }
+
+            return response()->json(['status' => true, 'data' => $warehouseProduct]);
+        }
+    }
+
+    // notifyAdminIfOutOfStock
+    protected function notifyAdminIfOutOfStock($warehouseProduct)
+    {
+        if ($warehouseProduct->quantity <= 0) {
+            // Notify super admin and the user assigned that warehouse about out of stock product
+            \Log::info('Product is out of stock', ['product_id' => $warehouseProduct->product_id]);
+
+            // product details
+            $productDetails = [
+                'product_id' => $warehouseProduct->product_id,
+                'product_name' => $warehouseProduct->product->name,
+                'warehouse_id' => $warehouseProduct->warehouse_id,
+                'quantity' => $warehouseProduct->quantity,
+            ];
+
+
+            // Get the admin users directly through the relationship
+            $warehouse_admin_users = $warehouseProduct->warehouse->admins ?? collect();
+            foreach ($warehouse_admin_users as $assigned_user) {
+                NotificationService::notifyUser($assigned_user->id, 'Product is out of stock : ' . $productDetails['product_name']);
+            }
         }
     }
 }

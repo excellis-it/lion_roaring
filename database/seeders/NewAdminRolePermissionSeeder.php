@@ -202,6 +202,21 @@ class NewAdminRolePermissionSeeder extends Seeder
                 "created_at" => date('Y-m-d H:i:s'),
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
+
+            [
+                "name" => "Manage Warehouse Admin",
+                "guard_name" => "web",
+                "type" => 2,
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+            [
+                "name" => "Manage Assigned Warehouses",
+                "guard_name" => "web",
+                "type" => 2,
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
         ];
 
 
@@ -218,6 +233,17 @@ class NewAdminRolePermissionSeeder extends Seeder
         // // Assign "Manage My Profile" and "Manage My Password" permissions to LEADER and MEMBER_NON_SOVEREIGN
         if ($eccRole) {
             $eccRole->givePermissionTo([$permission1]);
+        }
+
+        // Assign permissions to WAREHOUSE_ADMIN role
+        $warehouseAdminRole = Role::where('name', 'WAREHOUSE_ADMIN')->first();
+        if ($warehouseAdminRole) {
+            $warehouseAdminPermissions = [
+                'Manage My Profile',
+                'Manage My Password',
+                'Manage Assigned Warehouses'
+            ];
+            $warehouseAdminRole->givePermissionTo($warehouseAdminPermissions);
         }
 
         // Add all permissions to the SUPER ADMIN role without removing existing ones

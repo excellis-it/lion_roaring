@@ -229,14 +229,18 @@ var QtyInput = (function () {
 
     var $inputs = $qtyInputs.find(".product-qty");
     var $countBtn = $qtyInputs.find(".qty-count");
-    var qtyMin = parseInt($inputs.attr("min"));
-    var qtyMax = parseInt($inputs.attr("max"));
+   // var qtyMin = parseInt($inputs.attr("min"));
+   // var qtyMax = parseInt($inputs.attr("max"));
 
     $inputs.change(function () {
         var $this = $(this);
         var $minusBtn = $this.siblings(".qty-count--minus");
         var $addBtn = $this.siblings(".qty-count--add");
         var qty = parseInt($this.val());
+
+        // Get current min/max values
+        var qtyMin = parseInt($this.attr("min"));
+        var qtyMax = parseInt($this.attr("max"));
 
         if (isNaN(qty) || qty < qtyMin) {
             $this.val(qtyMin);
@@ -262,6 +266,10 @@ var QtyInput = (function () {
         var $this = $(this);
         var $input = $this.siblings(".product-qty");
         var qty = parseInt($input.val());
+
+        // Get current min/max values
+        var qtyMin = parseInt($input.attr("min"));
+        var qtyMax = parseInt($input.attr("max"));
 
         if (operator == "add") {
             qty += 1;
@@ -330,7 +338,7 @@ var QtyInput = (function () {
 
                     // Reset UI to "Add to Cart" state
                     $input.data("cart-id", "");
-                    $input.val(1);
+                    $input.val(0);
                     $(".view-cart-btn").replaceWith(`
                         <div class="addtocart" data-id="${$input.data(
                             "product-id"
@@ -338,6 +346,14 @@ var QtyInput = (function () {
                             <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to Cart</span></a>
                         </div>
                     `);
+
+                    // Reset size and color selections
+                    $(".product-select-size-input")
+                        .prop("checked", false)
+                        .prop("disabled", false);
+                    $(".product-select-color-input")
+                        .prop("checked", false)
+                        .prop("disabled", false);
                 } else {
                     toastr.error(response.message);
                 }
@@ -360,7 +376,7 @@ var QtyInput = (function () {
             },
             success: function (response) {
                 if (response.status) {
-                    toastr.success("Cart updated");
+                    // toastr.success("Cart updated");
                     updateCartCount();
                 } else {
                     toastr.error(response.message);
@@ -374,12 +390,20 @@ var QtyInput = (function () {
 
     // Add to cart from details page
     function addToCartFromDetails(productId, quantity, $input) {
+        // get product-select-size-input checked value
+        var sizeId = $(".product-select-size-input:checked").val();
+        // get product-select-color-input checked value
+        var colorId = $(".product-select-color-input:checked").val();
+
         $.ajax({
             url: window.cartRoutes.addToCart,
             type: "POST",
             data: {
+                warehouse_product_id: $("#warehouse-product-id").val(),
                 product_id: productId,
                 quantity: quantity,
+                size_id: sizeId, // Include size ID if applicable
+                color_id: colorId, // Include color ID if applicable
                 _token: window.csrfToken,
             },
             success: function (response) {
@@ -389,6 +413,14 @@ var QtyInput = (function () {
 
                     // Get the cart ID from response or make another call to get it
                     getCartItemId(productId, $input);
+
+                    // disabled product-select-size-input other unchecked
+                    $(".product-select-size-input")
+                        .not(":checked")
+                        .prop("disabled", true);
+                    $(".product-select-color-input")
+                        .not(":checked")
+                        .prop("disabled", true);
                 } else {
                     toastr.error(response.message);
                 }
@@ -414,7 +446,7 @@ var QtyInput = (function () {
                     // Update UI to "View Cart" state
                     $(".addtocart").replaceWith(`
                         <div class="view-cart-btn">
-                            <a href="{{route('e-store.cart')}}" class="red_btn w-100 text-center"><span>View Cart</span></a>
+                            <a href="${window.cartRoutes.viewCart}" class="red_btn w-100 text-center"><span>View Cart</span></a>
                         </div>
                     `);
                 }
@@ -460,11 +492,19 @@ $(document).ready(function () {
         $button.find("a").text("Adding...");
         $button.addClass("loading");
 
+        // get product-select-size-input checked value
+        var sizeId = $(".product-select-size-input:checked").val();
+        // get product-select-color-input checked value
+        var colorId = $(".product-select-color-input:checked").val();
+
         $.ajax({
             url: window.cartRoutes.addToCart,
             type: "POST",
             data: {
+                warehouse_product_id: $("#warehouse-product-id").val(),
                 product_id: productId,
+                size_id: sizeId,
+                color_id: colorId,
                 quantity: quantity,
                 _token: window.csrfToken,
             },
@@ -510,6 +550,12 @@ $(document).ready(function () {
                             });
                         }
                     }
+                    $(".product-select-size-input")
+                        .not(":checked")
+                        .prop("disabled", true);
+                    $(".product-select-color-input")
+                        .not(":checked")
+                        .prop("disabled", true);
                 } else {
                     toastr.error(response.message);
                 }
@@ -641,7 +687,7 @@ $(document).ready(function () {
             },
             success: function (response) {
                 if (response.status) {
-                    toastr.success(response.message);
+                    //   toastr.success(response.message);
                     updateCartCount();
                 } else {
                     toastr.error(response.message);

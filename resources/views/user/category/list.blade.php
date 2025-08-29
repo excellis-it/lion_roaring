@@ -18,8 +18,8 @@
                                         <h3 class="mb-3">Category List</h3>
                                     </div>
                                     <div class="col-md-2 float-right">
-                                            <a href="{{ route('categories.create') }}" class="btn btn-primary w-100"><i
-                                                    class="fa-solid fa-plus"></i> Create Category</a>
+                                        <a href="{{ route('categories.create') }}" class="btn btn-primary w-100"><i
+                                                class="fa-solid fa-plus"></i> Create Category</a>
                                     </div>
                                 </div>
                                 <div class="row justify-content-end">
@@ -41,14 +41,14 @@
                                                     Image
                                                 </th>
                                                 <th class="sorting" data-tippy-content="Sort by Category Name"
-                                                data-sorting_type="desc" data-column_name="name"
-                                                style="cursor: pointer">Category Name <span id="name_icon"><i
-                                                    class="fa fa-arrow-down"></i></span></th>
-                                                    {{-- Description --}}
-                                                    <th class="sorting" data-tippy-content="Sort by Category Slug"
+                                                    data-sorting_type="desc" data-column_name="name"
+                                                    style="cursor: pointer">Category Name <span id="name_icon"><i
+                                                            class="fa fa-arrow-down"></i></span></th>
+                                                {{-- Description --}}
+                                                <th class="sorting" data-tippy-content="Sort by Category Slug"
                                                     data-sorting_type="desc" data-column_name="slug"
                                                     style="cursor: pointer">Category Slug <span id="slug_icon"><i
-                                                        class="fa fa-arrow-down"></i></span></th>
+                                                            class="fa fa-arrow-down"></i></span></th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -60,8 +60,7 @@
                                     <input type="hidden" name="hidden_page" id="hidden_page" value="1" />
                                     <input type="hidden" name="hidden_column_name" id="hidden_column_name"
                                         value="id" />
-                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type"
-                                        value="desc" />
+                                    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="desc" />
                                 </div>
                             </div>
                         </div>
@@ -165,6 +164,9 @@
                 $(this).parent().addClass('active');
                 fetch_data(page, sort_type, column_name, query);
             });
+
+
+           
 
         });
     </script>

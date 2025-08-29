@@ -10,6 +10,8 @@ use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\NotificationService;
+use App\Models\Size;
+use App\Models\Color;
 
 class ProductController extends Controller
 {
@@ -23,6 +25,9 @@ class ProductController extends Controller
     {
         if (auth()->user()->hasRole('SUPER ADMIN')) {
             $products = Product::orderBy('id', 'desc')->paginate(10);
+            return view('user.product.list', compact('products'));
+        } else if (auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
+            $products = Product::where('user_id', auth()->id())->orderBy('id', 'desc')->paginate(10);
             return view('user.product.list', compact('products'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -65,9 +70,12 @@ class ProductController extends Controller
      */
     public function create()
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
-            $categories = Category::orderBy('id', 'desc')->get();
-            return view('user.product.create')->with('categories', $categories);
+        $categories = Category::where('status', 1)->get();
+        $sizes = Size::where('status', 1)->get();
+        $colors = Color::where('status', 1)->get();
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
+            return view('user.product.create')
+                ->with(compact('categories', 'sizes', 'colors'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -81,7 +89,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request->all();
+        //  return $request->all();
         try {
             $request->validate([
                 'category_id' => 'required|numeric|exists:categories,id',
@@ -140,6 +148,35 @@ class ProductController extends Controller
                 }
             }
 
+            // Save sizes
+            if ($request->filled('sizes')) {
+                foreach ($request->sizes as $size) {
+                    if ($size) {
+                        $product->sizes()->create(['size_id' => $size]);
+                    }
+                }
+                // return $request->sizes;
+            }
+
+            // Save colors
+            if ($request->filled('colors')) {
+                foreach ($request->colors as $color) {
+                    if ($color) {
+                        $product->colors()->create(['color_id' => $color]);
+                    }
+                }
+                //    return $request->colors;
+            }
+
+            // save other charges if available other_charges[0][charge_name] and other_charges[0][charge_amount]
+            if ($request->filled('other_charges')) {
+                foreach ($request->other_charges as $charge) {
+                    if ($charge['charge_name'] && $charge['charge_amount']) {
+                        $product->otherCharges()->create($charge);
+                    }
+                }
+            }
+
             // notify users
             $userName = Auth::user()->getFullNameAttribute();
 
@@ -170,10 +207,13 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        $categories = Category::where('status', 1)->get();
+        $sizes = Size::where('status', 1)->get();
+        $colors = Color::where('status', 1)->get();
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
             $product = Product::findOrFail($id);
-            $categories = Category::orderBy('id', 'desc')->get();
-            return view('user.product.edit', compact('product', 'categories'));
+
+            return view('user.product.edit', compact('product', 'categories', 'sizes', 'colors'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -188,7 +228,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
             $request->validate([
                 'category_id' => 'required|numeric|exists:categories,id',
                 'name' => 'required|string|max:255',
@@ -247,6 +287,36 @@ class ProductController extends Controller
                     $image->image = $this->imageUpload($file, 'product');
                     $image->featured_image = 0;
                     $image->save();
+                }
+            }
+
+            // Update sizes
+            $product->sizes()->delete();
+            if ($request->filled('sizes')) {
+                foreach ($request->sizes as $size) {
+                    if ($size) {
+                        $product->sizes()->create(['size_id' => $size]);
+                    }
+                }
+            }
+
+            // Update colors
+            $product->colors()->delete();
+            if ($request->filled('colors')) {
+                foreach ($request->colors as $color) {
+                    if ($color) {
+                        $product->colors()->create(['color_id' => $color]);
+                    }
+                }
+            }
+
+            // save other charges
+            $product->otherCharges()->delete();
+            if ($request->filled('other_charges')) {
+                foreach ($request->other_charges as $charge) {
+                    if ($charge['charge_name'] && $charge['charge_amount']) {
+                        $product->otherCharges()->create($charge);
+                    }
                 }
             }
 

@@ -44,8 +44,8 @@
                 </div>
             </div>
             <div class="featured_slider">
-                @if (count($categories) > 0)
-                    @foreach ($categories as $category)
+                @if (count($topParentCategories) > 0)
+                    @foreach ($topParentCategories as $category)
                         <div class="feature_slid_padding">
                             <div class="feature_box">
                                 <div class="feature_img">
@@ -119,10 +119,10 @@
                                         </p>
                                         <span class="price_text">$ {{ $product->price }}</span>
                                     </div>
-                                    <div class="addtocart" data-id="{{ $product->id }}">
+                                    {{-- <div class="addtocart" data-id="{{ $product->id }}">
                                         <a href="javascript:void(0);">
                                             {{ $product['button_name'] ? $product['button_name'] : 'ADD TO CART' }}</a>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         @endforeach
@@ -150,7 +150,8 @@
                                 <div class="feature_box">
                                     <div class="feature_img">
                                         <div class="wishlist_icon" data-id="{{ $product->id }}">
-                                            <a href="javascript:void(0);"><i class="fa-solid fa-heart {{ $product->isInWishlist() ? 'text-danger' : '' }}"></i></a>
+                                            <a href="javascript:void(0);"><i
+                                                    class="fa-solid fa-heart {{ $product->isInWishlist() ? 'text-danger' : '' }}"></i></a>
                                         </div>
                                         <a href="{{ route('e-store.product-details', $product->slug) }}">
                                             @if (isset($product->main_image) && $product->main_image != null)
@@ -184,10 +185,10 @@
                                         </p>
                                         <span class="price_text">${{ $product->price }}</span>
                                     </div>
-                                    <div class="addtocart" data-id="{{ $product->id }}">
+                                    {{-- <div class="addtocart" data-id="{{ $product->id }}">
                                         <a
                                             href="javascript:void(0);">{{ $product['button_name'] ? $product['button_name'] : 'ADD TO CART' }}</a>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         @endforeach
@@ -321,7 +322,12 @@
             </div>
         </div>
     </section> --}}
+
+
+
 @endsection
 
 @push('scripts')
+
+
 @endpush
