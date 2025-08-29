@@ -21,7 +21,7 @@ class HomeController extends Controller
         $session_id = session()->getId();
         $this->updateCartUserId();
 
-        $nearbyWareHouseId = 1; // Default warehouse ID
+        $nearbyWareHouseId = Warehouse::first()->id; // first id from warehouses
         $originLat = null;
         $originLng = null;
         $isUser = auth()->user();

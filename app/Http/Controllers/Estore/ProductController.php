@@ -31,7 +31,7 @@ class ProductController extends Controller
         $userSessionId = session()->getId();
         $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
 
-        $nearbyWareHouseId = 1; // Default warehouse ID
+        $nearbyWareHouseId = Warehouse::first()->id;
         $originLat = null;
         $originLng = null;
         $isUser = auth()->user();
@@ -94,7 +94,7 @@ class ProductController extends Controller
     {
         $category_id = $category_id ?? ''; // Default value is ' '
 
-        $nearbyWareHouseId = 1; // Default warehouse ID
+        $nearbyWareHouseId = Warehouse::first()->id;
         $originLat = null;
         $originLng = null;
         $isUser = auth()->user();
@@ -150,7 +150,7 @@ class ProductController extends Controller
             $search = $request->search ?? '';
 
 
-            $nearbyWareHouseId = 1; // Default warehouse ID
+            $nearbyWareHouseId = Warehouse::first()->id;
             $originLat = null;
             $originLng = null;
             $isUser = auth()->user();
@@ -1072,12 +1072,37 @@ class ProductController extends Controller
                 'color_id' => 'nullable|integer',
             ]);
 
+
+
             $product = Product::find($request->product_id);
             if (!$product) {
                 return response()->json(['status' => false, 'message' => 'Product not found']);
             }
 
-            $warehouseProduct = WarehouseProduct::where('product_id', $request->product_id)
+            $nearbyWareHouseId = Warehouse::first()->id; // first id from warehouses
+            $originLat = null;
+            $originLng = null;
+            $isUser = auth()->user();
+            if ($isUser) { // Assuming user location is stored in user model
+                $originLat = $isUser->location_lat;
+                $originLng = $isUser->location_lng;
+            } else {
+                $originLat = session('location_lat');
+                $originLng = session('location_lng');
+            }
+            // reuse helper to get nearest warehouse
+            $nearest = Helper::getNearestWarehouse($originLat, $originLng);
+            if (!empty($nearest['warehouse']->id)) {
+                $nearbyWareHouseId = $nearest['warehouse']->id;
+            }
+            // return $getNearbywareHouse;
+
+            $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
+                $q->where('warehouse_id', $nearbyWareHouseId)
+                    ->where('quantity', '>', 0);
+            })->pluck('id')->toArray();
+
+            $warehouseProduct = WarehouseProduct::where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)
                 ->when($request->size_id, function ($query) use ($request) {
                     return $query->where('size_id', $request->size_id);
                 })
