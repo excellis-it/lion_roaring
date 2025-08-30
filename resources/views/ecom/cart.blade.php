@@ -71,7 +71,7 @@
 
                                                     <ul class="wl_price">
                                                         <li>Unit Price</li>
-                                                        <li class="ms-auto">${{ number_format($item->product->price, 2) }}
+                                                        <li class="ms-auto">${{ number_format($item->warehouseProduct->price, 2) }}
                                                         </li>
                                                     </ul>
 

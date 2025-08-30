@@ -91,7 +91,8 @@
                     <div class="brief-description">
                         {{ $product->short_description }}
                     </div>
-                    <div class="price my-2">${{ $product->price }}</div>
+                    <div class="price my-2 warehouse-product-price-div">
+                        $<span id="warehouse-product-price">{{ $wareHouseHaveProductVariables?->price ?? '' }}</span></div>
                     <div class="theme-text subtitle">Description:</div>
                     <div class="brief-description">
                         {!! $product->description !!}
@@ -384,27 +385,32 @@
                         console.log("Warehouse product details:", response.data);
                         $("#product-sku").text(response.data.sku);
                         $("#warehouse-product-id").val(response.data.id);
+                        $("#warehouse-product-price").text(response.data.price);
                         // Update max quantity
                         $(".product-qty").attr("max", response.data.quantity);
 
                         $(".product-qty").trigger("change");
 
                         // if stock quantity is available
-                        if (response.data.quantity > 0) {
+                        if (response.data.quantity > 0 && response.data.price > 0) {
                             $("#qty-div").show();
                             $("#out-of-stock-message").hide();
                             $(".cart-btns").show();
+                            $(".warehouse-product-price-div").show();
 
                         } else {
                             $("#qty-div").hide();
                             $("#out-of-stock-message").show();
                             $(".cart-btns").hide();
+
+                            $(".warehouse-product-price-div").hide();
                         }
                     } else {
                         toastr.error(response.message);
                         $("#qty-div").hide();
                         $("#out-of-stock-message").show();
                         $(".cart-btns").hide();
+                        $(".warehouse-product-price-div").hide();
                     }
                 },
                 error: function(xhr, status, error) {
@@ -434,26 +440,30 @@
                         $("#product-sku").text(response.data.sku);
                         // update warehouse-product-id input value
                         $("#warehouse-product-id").val(response.data.id);
+                        $("#warehouse-product-price").text(response.data.price);
                         // Update max quantity
                         $(".product-qty").attr("max", response.data.quantity);
                         $(".product-qty").trigger("change");
 
                         // if stock quantity is available
-                        if (response.data.quantity > 0) {
+                        if (response.data.quantity > 0 && response.data.price > 0) {
                             $("#qty-div").show();
                             $("#out-of-stock-message").hide();
                             $(".cart-btns").show();
+                            $(".warehouse-product-price-div").show();
 
                         } else {
                             $("#qty-div").hide();
                             $("#out-of-stock-message").show();
                             $(".cart-btns").hide();
+                            $(".warehouse-product-price-div").hide();
                         }
                     } else {
                         toastr.error(response.message);
                         $("#qty-div").hide();
                         $("#out-of-stock-message").show();
                         $(".cart-btns").hide();
+                        $(".warehouse-product-price-div").hide();
                     }
                 },
                 error: function(xhr, status, error) {

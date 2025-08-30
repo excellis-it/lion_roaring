@@ -225,6 +225,7 @@ class WareHouseController extends Controller
             'size_id' => 'nullable|exists:sizes,id',
             // 'tax_rate' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0.01',
         ]);
 
         // Check if product with same color and size already exists in this warehouse
@@ -249,6 +250,7 @@ class WareHouseController extends Controller
                 'size_id' => $request->size_id,
                 // 'tax_rate' => $request->tax_rate,
                 'quantity' => $request->quantity,
+                'price' => $request->price,
             ]);
         }
 
@@ -301,6 +303,7 @@ class WareHouseController extends Controller
             // 'size_id' => 'nullable|exists:sizes,id',
             //  'tax_rate' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0.01',
         ]);
 
         $warehouseProduct = WarehouseProduct::findOrFail($productId);
@@ -312,6 +315,7 @@ class WareHouseController extends Controller
             //  'size_id' => $request->size_id,
             // 'tax_rate' => $request->tax_rate,
             'quantity' => $request->quantity,
+            'price' => $request->price,
         ]);
 
         return redirect()->route('ware-houses.products', $warehouseId)
