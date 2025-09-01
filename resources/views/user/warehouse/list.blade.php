@@ -29,7 +29,9 @@
                             <th>Name</th>
                             <th>Address</th>
                             <th>Status</th>
-                            <th>Actions</th>
+                            @if (Auth::user()->hasRole('SUPER ADMIN'))
+                                <th>Actions</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -37,14 +39,11 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $wareHouse->name }}</td>
-                                <td>{{ Str::limit($wareHouse->address, 50) }}</td>
+                                <td>{{ Str::limit($wareHouse->address, 80) }}</td>
                                 <td>{{ $wareHouse->is_active ? 'Active' : 'Inactive' }}</td>
-                                <td class="d-flex">
-                                    <a href="{{ route('ware-houses.products', $wareHouse->id) }}"
-                                        class="btn btn-info btn-sm me-2">
-                                        <i class="fa-solid fa-boxes-stacked"></i> Products
-                                    </a>
-                                    @if (Auth::user()->hasRole('SUPER ADMIN'))
+                                @if (Auth::user()->hasRole('SUPER ADMIN'))
+                                    <td class="d-flex">
+
                                         <a href="{{ route('ware-houses.edit', $wareHouse->id) }}" class="edit_icon me-2">
                                             <i class="fa-solid fa-edit"></i>
                                         </a>
@@ -53,8 +52,10 @@
                                             class="delete_icon">
                                             <i class="fa-solid fa-trash"></i>
                                         </a>
-                                    @endif
-                                </td>
+
+
+                                    </td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>

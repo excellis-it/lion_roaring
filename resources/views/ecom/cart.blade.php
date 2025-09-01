@@ -71,7 +71,8 @@
 
                                                     <ul class="wl_price">
                                                         <li>Unit Price</li>
-                                                        <li class="ms-auto">${{ number_format($item->warehouseProduct->price, 2) }}
+                                                        <li class="ms-auto">
+                                                            ${{ number_format($item->warehouseProduct->price, 2) }}
                                                         </li>
                                                     </ul>
 
@@ -170,13 +171,24 @@
                                                 href="{{ route('terms-and-conditions') }}">Terms of use</a>
                                             & <a href="{{ route('privacy-policy') }}">Privacy Policy</a></label>
                                     </div>
-                                    <a class="red_btn w-100 checkout-btn" href="{{ route('e-store.checkout') }}"
-                                        style="pointer-events: none; opacity: 0.5;">
-                                        <span>Proceed to Checkout</span>
-                                    </a>
-                                    <a class="red_btn w-100 mt-2" href="{{ route('e-store.all-products') }}">
+
+                                    {{-- // if not auth then login button  --}}
+                                    @if (Auth::check())
+                                        <a class="red_btn w-100 checkout-btn" href="{{ route('e-store.checkout') }}"
+                                            style="pointer-events: none; opacity: 0.5;">
+                                            <span>Proceed to Checkout</span>
+                                        </a>
+                                    @else
+                                        <a class="red_btn w-100 mt-2" href="javascript:void(0);" data-bs-toggle="modal"
+                                            data-bs-target="#loginModalEstore">
+                                            <span>Login to Checkout</span>
+                                        </a>
+                                    @endif
+
+
+                                    {{-- <a class="red_btn w-100 mt-2" href="{{ route('e-store.all-products') }}">
                                         <span>Continue Shopping</span>
-                                    </a>
+                                    </a> --}}
                                 </div>
                             </div>
                         </div>
