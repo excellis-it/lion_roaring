@@ -68,12 +68,25 @@
                             </div>
 
 
+                            <div class="col-md-6 mb-3">
+                                <div class="box_label">
+                                    <label for="price">Price <span class="text-danger">*</span></label>
+                                    <input type="number" name="price" id="price" class="form-control"
+                                        value="{{ old('price') }}" required>
+                                    @if ($errors->has('price'))
+                                        <span class="error">{{ $errors->first('price') }}</span>
+                                    @endif
+                                </div>
+                            </div>
 
                             <div class="col-md-6 mb-3">
                                 <div class="box_label">
                                     <label for="quantity">Stock Quantity <span class="text-danger">*</span></label>
                                     <input type="number" min="1" name="quantity" id="quantity" class="form-control"
                                         value="{{ old('quantity', 1) }}" required>
+                                    @if ($errors->has('quantity'))
+                                        <span class="error">{{ $errors->first('quantity') }}</span>
+                                    @endif
                                 </div>
                             </div>
                         </div>

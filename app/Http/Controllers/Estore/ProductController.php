@@ -545,7 +545,7 @@ class ProductController extends Controller
             }
             // Calculate other charges for this cart item
             $otherCharges = $cart->product->otherCharges->sum('charge_amount');
-            $cart->subtotal = ($cart->product->price * $cart->quantity) + $otherCharges;
+            $cart->subtotal = ($cart->warehouseProduct->price * $cart->quantity) + $otherCharges;
             $total += $cart->subtotal;
         }
 
@@ -577,7 +577,7 @@ class ProductController extends Controller
         foreach ($carts as $cart) {
             // Calculate other charges for this cart item
             $otherCharges = $cart->product->otherCharges->sum('charge_amount');
-            $itemSubtotal = ($cart->product->price * $cart->quantity) + $otherCharges;
+            $itemSubtotal = ($cart->warehouseProduct->price * $cart->quantity) + $otherCharges;
             $subtotal += $itemSubtotal;
 
             $cartItems[] = [
@@ -585,7 +585,7 @@ class ProductController extends Controller
                 'product_id' => $cart->product_id,
                 'product_name' => $cart->product->name,
                 'product_image' => $cart->product->main_image,
-                'price' => $cart->product->price,
+                'price' => $cart->warehouseProduct->price,
                 'quantity' => $cart->quantity,
                 'other_charges' => $otherCharges,
                 'subtotal' => $itemSubtotal
@@ -646,11 +646,11 @@ class ProductController extends Controller
         // cart item product other charges
         $carts->each(function ($cart) {
             $cart->other_charges = $cart->product->otherCharges->sum('charge_amount');
-            $cart->price = $cart->product->price;
+            $cart->price = $cart->warehouseProduct->price;
         });
 
         $subtotal = $carts->sum(function ($cart) {
-            return ($cart->price * $cart->quantity) + $cart->other_charges;
+            return ($cart->warehouseProduct->price * $cart->quantity) + $cart->other_charges;
         });
 
         // Calculate additional costs based on order method and settings
@@ -721,7 +721,7 @@ class ProductController extends Controller
                     'warehouse_id' => $cart->warehouse_id,
                     'product_name' => $cart->product->name,
                     'product_image' => $cart->product->main_image,
-                    'price' => $cart->price,
+                    'price' => $cart->warehouseProduct->price,
                     'quantity' => $cart->quantity,
                     'size_id' => $cart->size_id,
                     'color_id' => $cart->color_id,
@@ -731,7 +731,7 @@ class ProductController extends Controller
                             'charge_amount' => $charge->charge_amount
                         ];
                     })),
-                    'total' => ($cart->price * $cart->quantity) + $cart->other_charges
+                    'total' => ($cart->warehouseProduct->price * $cart->quantity) + $cart->other_charges
                 ]);
             }
 
@@ -747,7 +747,7 @@ class ProductController extends Controller
                             'name' => $cart->product->name,
                             'description' => $cart->product->short_description ?? '',
                         ],
-                        'unit_amount' => (($cart->price * $cart->quantity) + $cart->other_charges) * 100, // Amount in cents
+                        'unit_amount' => (($cart->warehouseProduct->price * $cart->quantity) + $cart->other_charges) * 100, // Amount in cents
                     ],
                     'quantity' => 1, // We're using the total amount, so quantity is 1
                 ];

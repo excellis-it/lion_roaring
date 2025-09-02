@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\NotificationService;
 use App\Models\Size;
 use App\Models\Color;
+use App\Models\WareHouse;
+use App\Models\WarehouseProduct;
 
 class ProductController extends Controller
 {
@@ -73,9 +75,17 @@ class ProductController extends Controller
         $categories = Category::where('status', 1)->get();
         $sizes = Size::where('status', 1)->get();
         $colors = Color::where('status', 1)->get();
+
+        // Get warehouses for assignment
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
+            $warehouses = WareHouse::where('is_active', 1)->get();
+        } else {
+            $warehouses = auth()->user()->warehouses;
+        }
+
         if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
             return view('user.product.create')
-                ->with(compact('categories', 'sizes', 'colors'));
+                ->with(compact('categories', 'sizes', 'colors', 'warehouses'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -89,26 +99,28 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //  return $request->all();
         try {
             $request->validate([
                 'category_id' => 'required|numeric|exists:categories,id',
                 'name' => 'required|string|max:255',
                 'description' => 'required|string',
                 'short_description' => 'required|string',
-                // 'sku' => 'required|string|unique:products',
                 'specification' => 'required|string',
                 'price' => 'required|numeric',
-                // 'quantity' => 'required|numeric',
                 'feature_product' => 'required',
                 'slug' => 'required|string|unique:products',
-                // 'affiliate_link' => 'required|string',
-                // 'meta_title' => 'nullable|string|max:255',
-                // 'meta_description' => 'nullable|string|max:255',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
                 'images' => 'nullable|array',
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
-                // 'button_name' => 'required|string',
+
+                // Warehouse product validation
+                'warehouse_products' => 'nullable|array',
+                'warehouse_products.*.warehouse_id' => 'required|exists:ware_houses,id',
+                'warehouse_products.*.sku' => 'required|string|distinct|unique:warehouse_products,sku',
+                'warehouse_products.*.price' => 'required|numeric|min:0',
+                'warehouse_products.*.color_id' => 'nullable|exists:colors,id',
+                'warehouse_products.*.size_id' => 'nullable|exists:sizes,id',
+                'warehouse_products.*.quantity' => 'required|integer|min:0',
             ]);
 
             $product = new Product();
@@ -117,17 +129,10 @@ class ProductController extends Controller
             $product->name = $request->name;
             $product->description = $request->description;
             $product->short_description = $request->short_description;
-            // $product->sku = $request->sku;
             $product->specification = $request->specification;
             $product->price = $request->price;
-            // $product->quantity = $request->quantity;
-            // $product->button_name = 'ADD TO CART';
             $product->slug = $request->slug;
-            // $product->affiliate_link = $request->affiliate_link;
             $product->feature_product = $request->feature_product;
-            // $product->meta_title = $request->meta_title;
-            // $product->meta_description = $request->meta_description;
-            // return $product;
             $product->save();
 
             if ($request->hasFile('image')) {
@@ -155,7 +160,6 @@ class ProductController extends Controller
                         $product->sizes()->create(['size_id' => $size]);
                     }
                 }
-                // return $request->sizes;
             }
 
             // Save colors
@@ -165,10 +169,9 @@ class ProductController extends Controller
                         $product->colors()->create(['color_id' => $color]);
                     }
                 }
-                //    return $request->colors;
             }
 
-            // save other charges if available other_charges[0][charge_name] and other_charges[0][charge_amount]
+            // save other charges if available
             if ($request->filled('other_charges')) {
                 foreach ($request->other_charges as $charge) {
                     if ($charge['charge_name'] && $charge['charge_amount']) {
@@ -177,9 +180,25 @@ class ProductController extends Controller
                 }
             }
 
+            // Save warehouse products
+            if ($request->filled('warehouse_products')) {
+                foreach ($request->warehouse_products as $warehouseProduct) {
+                    if (!empty($warehouseProduct['warehouse_id'])) {
+                        WarehouseProduct::create([
+                            'product_id' => $product->id,
+                            'warehouse_id' => $warehouseProduct['warehouse_id'],
+                            'sku' => $warehouseProduct['sku'],
+                            'price' => $warehouseProduct['price'],
+                            'color_id' => $warehouseProduct['color_id'] ?? null,
+                            'size_id' => $warehouseProduct['size_id'] ?? null,
+                            'quantity' => $warehouseProduct['quantity'],
+                        ]);
+                    }
+                }
+            }
+
             // notify users
             $userName = Auth::user()->getFullNameAttribute();
-
             $noti = NotificationService::notifyAllUsers('New Product created by ' . $userName, 'product');
 
             return redirect()->route('products.index')->with('message', 'Product created successfully!');
@@ -210,10 +229,21 @@ class ProductController extends Controller
         $categories = Category::where('status', 1)->get();
         $sizes = Size::where('status', 1)->get();
         $colors = Color::where('status', 1)->get();
+
+        // Get warehouses for assignment
+        if (auth()->user()->hasRole('SUPER ADMIN')) {
+            $warehouses = WareHouse::where('is_active', 1)->get();
+        } else {
+            $warehouses = auth()->user()->warehouses;
+        }
+
         if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
             $product = Product::findOrFail($id);
 
-            return view('user.product.edit', compact('product', 'categories', 'sizes', 'colors'));
+            // Get existing warehouse products
+            $warehouseProducts = WarehouseProduct::where('product_id', $product->id)->get();
+
+            return view('user.product.edit', compact('product', 'categories', 'sizes', 'colors', 'warehouses', 'warehouseProducts'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -234,20 +264,24 @@ class ProductController extends Controller
                 'name' => 'required|string|max:255',
                 'description' => 'required|string',
                 'short_description' => 'required|string',
-                // 'sku' => 'required|string|unique:products,sku,' . $id,
                 'specification' => 'required|string',
                 'price' => 'required|numeric',
-                // 'quantity' => 'required|numeric',
                 'slug' => 'required|string|unique:products,slug,' . $id,
-                // 'affiliate_link' => 'required|string',
-                // 'meta_title' => 'nullable|string|max:255',
-                // 'meta_description' => 'nullable|string|max:255',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
                 'images' => 'nullable|array',
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
                 'feature_product' => 'required',
                 'status' => 'required',
-                // 'button_name' => 'required|string',
+
+                // Warehouse product validation
+                'warehouse_products' => 'nullable|array',
+                'warehouse_products.*.id' => 'nullable|exists:warehouse_products,id',
+                'warehouse_products.*.warehouse_id' => 'required|exists:ware_houses,id',
+                'warehouse_products.*.sku' => 'required|string|distinct',
+                'warehouse_products.*.price' => 'required|numeric|min:0',
+                'warehouse_products.*.color_id' => 'nullable|exists:colors,id',
+                'warehouse_products.*.size_id' => 'nullable|exists:sizes,id',
+                'warehouse_products.*.quantity' => 'required|integer|min:0',
             ]);
 
             $product = Product::findOrFail($id);
@@ -255,16 +289,10 @@ class ProductController extends Controller
             $product->name = $request->name;
             $product->description = $request->description;
             $product->short_description = $request->short_description;
-            // $product->sku = $request->sku;
             $product->specification = $request->specification;
             $product->price = $request->price;
-            // $product->quantity = $request->quantity;
             $product->slug = $request->slug;
-            // $product->affiliate_link = $request->affiliate_link;
             $product->feature_product = $request->feature_product;
-            // $product->button_name = $request->button_name;
-            // $product->meta_title = $request->meta_title;
-            // $product->meta_description = $request->meta_description;
             $product->status = $request->status;
             $product->save();
 
@@ -318,6 +346,52 @@ class ProductController extends Controller
                         $product->otherCharges()->create($charge);
                     }
                 }
+            }
+
+            // Update warehouse products
+            if ($request->filled('warehouse_products')) {
+                // Get existing warehouse product IDs
+                $existingIds = [];
+
+                foreach ($request->warehouse_products as $wp) {
+                    if (!empty($wp['warehouse_id'])) {
+                        if (!empty($wp['id'])) {
+                            // Update existing warehouse product
+                            $warehouseProduct = WarehouseProduct::find($wp['id']);
+                            if ($warehouseProduct) {
+                                $warehouseProduct->update([
+                                    'warehouse_id' => $wp['warehouse_id'],
+                                    'sku' => $wp['sku'],
+                                    'price' => $wp['price'],
+                                    'color_id' => $wp['color_id'] ?? null,
+                                    'size_id' => $wp['size_id'] ?? null,
+                                    'quantity' => $wp['quantity'],
+                                ]);
+                                $existingIds[] = $warehouseProduct->id;
+                            }
+                        } else {
+                            // Create new warehouse product
+                            $warehouseProduct = WarehouseProduct::create([
+                                'product_id' => $product->id,
+                                'warehouse_id' => $wp['warehouse_id'],
+                                'sku' => $wp['sku'],
+                                'price' => $wp['price'],
+                                'color_id' => $wp['color_id'] ?? null,
+                                'size_id' => $wp['size_id'] ?? null,
+                                'quantity' => $wp['quantity'],
+                            ]);
+                            $existingIds[] = $warehouseProduct->id;
+                        }
+                    }
+                }
+
+                // Delete warehouse products that were removed
+                WarehouseProduct::where('product_id', $product->id)
+                    ->whereNotIn('id', $existingIds)
+                    ->delete();
+            } else {
+                // Delete all warehouse products if none were submitted
+                WarehouseProduct::where('product_id', $product->id)->delete();
             }
 
             return redirect()->route('products.index')->with('message', 'Product updated successfully!');

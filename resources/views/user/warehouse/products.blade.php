@@ -36,7 +36,7 @@
                             <th>Product</th>
                             <th>Color</th>
                             <th>Size</th>
-
+                            <th>Price</th>
                             <th>Stock Quantity</th>
                             <th>Actions</th>
                         </tr>
@@ -58,7 +58,7 @@
                                         @endif
                                     </td>
                                     <td>{{ $item->size ? $item->size->size : 'N/A' }}</td>
-
+                                    <td>{{ $item->price }}</td>
                                     <td>{{ $item->quantity }}</td>
                                     <td class="d-flex">
                                         <a href="{{ route('ware-houses.products.edit', [$wareHouse->id, $item->id]) }}"

@@ -5,9 +5,9 @@
   --text-color: #1E1E1E;
   --white-color:#fff;
   --black-color:#000;
-  --main-font: "Roboto", sans-serif;
-  --heading-font: "Playfair Display", serif;
-  --button-font: "Roboto", sans-serif;
+    --main-font: "Nunito", sans-serif;
+    --heading-font: "Nunito", sans-serif;
+    --button-font: "Nunito", sans-serif;
 }
 .main_manu{
   background:#000;
@@ -70,7 +70,7 @@
   font-size: 15px;
   letter-spacing: 1px;
   text-decoration: none;
-  color: var(--white-color);
+  color: var(--text-color);
   font-weight: 400;
   text-transform: uppercase;
   font-family: var(--main-font);
