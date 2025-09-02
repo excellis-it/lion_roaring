@@ -47,7 +47,7 @@
                 <div class="right_top">
                     <div class="right_login">
                         <div class="d-flex align-items-center justify-content-end">
-                            <a href="{{ route('user.profile') }}" class="back_main">back to main page</a>
+                            {{-- <a href="{{ route('user.profile') }}" class="back_main">back to main page</a> --}}
 
                             <a href="{{ route('e-store.cart') }}" class="shoping_cart"><i class="fa fa-shopping-cart"
                                     aria-hidden="true"></i><span class="cart_count">{{ $cartCount }}</span></a>
@@ -84,7 +84,9 @@
                                             <li><a class="dropdown-item" href="javascript:void(0);"
                                                     data-bs-toggle="modal" data-bs-target="#loginModalEstore"
                                                     href="{{ route('login') }}">Login</a></li>
-                                            <li><a class="dropdown-item" href="{{ route('home') }}">Register</a>
+                                            <li><a class="dropdown-item" href="javascrip:void(0);"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#registerModalEstore">Register</a>
                                             </li>
                                         </ul>
                                     @endif
@@ -144,11 +146,11 @@
                             }
                             return null;
                         }
-                        
+
                         // Get user's timezone based on IP address
                         $ip = $_SERVER['REMOTE_ADDR'];
                         $timezone = getTimezoneFromIp($ip);
-                        
+
                         if ($timezone) {
                             // Set the default timezone
                             date_default_timezone_set($timezone);
@@ -156,10 +158,10 @@
                             // Fallback timezone
                             date_default_timezone_set('UTC');
                         }
-                        
+
                         // Get the current hour in 24-hour format
                         $time = date('H');
-                        
+
                         // Determine greeting based on time
                         if ($time < '12') {
                             echo 'Perfect morning';
@@ -172,7 +174,7 @@
                         }
                         ?>
                     </h2>
-                    <h4 class="text-center">Sign on to enter Lion Roaring PMA Private Member area.</h4>
+                    <h4 class="text-center">Sign on to Lion Roaring E-store</h4>
                     <form name="login-form" id="sign-in-form" action="{{ route('login.check') }}" method="post">
                         @csrf
                         <div class="mb-3">
@@ -203,11 +205,16 @@
                             </div>
                         </div>
                         <div class="d-grid">
-                            <input type="submit" name="wp-submit" id="login-submit"
-                                class="btn btn-primary button button-primary" value="Log In">
+                            <input type="submit" name="wp-submit" id="login-submit" class="back_main"
+                                value="Log In">
                             <input type="hidden" name="redirect_to" value="">
                         </div>
                     </form>
+                    <p class="text-center join_member mt-3">
+
+                        <a href="javascrip:void(0);" data-bs-toggle="modal" data-bs-target="#registerModalEstore">Not
+                            a member? Register now</a>
+                    </p>
                     <p class="text-center join_member">
 
                         <a href="{{ route('member-privacy-policy') }}" class="login_privacy text-dark">Privacy,
@@ -262,6 +269,56 @@
 </div>
 <!-- Email OTP Modal End -->
 
+{{-- Register Modal Start --}}
+<div class="modal fade" id="registerModalEstore" tabindex="-1" aria-labelledby="registerModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">Register</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="register-form-estore" action="{{ route('estore.register') }}" method="post">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="register-first-name" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="register-first-name" name="first_name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="register-middle-name" class="form-label">Middle Name</label>
+                        <input type="text" class="form-control" id="register-middle-name" name="middle_name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="register-last-name" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="register-last-name" name="last_name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="register-email" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="register-email" name="email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="register-phone" class="form-label">Phone</label>
+                        <input type="tel" class="form-control" id="register-phone" name="phone">
+                    </div>
+                    <div class="mb-3">
+                        <label for="register-password" class="form-label">Password</label>
+                        <input autocomplete="new-password" type="password" class="form-control"
+                            id="register-password" name="password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="register-confirm-password" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="register-confirm-password"
+                            name="password_confirmation">
+                    </div>
+                    <button type="submit" class="back_main w-100">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- Register Modal End --}}
+
 
 @push('scripts')
     <script>
@@ -269,6 +326,14 @@
             const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             document.getElementById("time_zone").value = timezone;
             console.log("User's Timezone:", timezone);
+        });
+
+        // togglePassword
+        const togglePassword = document.querySelector('#togglePassword');
+        togglePassword.addEventListener('click', function() {
+            const passwordField = document.querySelector('#user_password');
+            const passwordFieldType = passwordField.getAttribute('type');
+            passwordField.setAttribute('type', passwordFieldType === 'password' ? 'text' : 'password');
         });
     </script>
     <script>
@@ -415,6 +480,45 @@
                     },
                     error: function(xhr) {
                         $('#otp-error').text('Invalid Code');
+                    }
+                });
+            });
+        });
+    </script>
+
+    {{-- // register user --}}
+    <script>
+        $(document).ready(function() {
+            $('#register-form-estore').submit(function(e) {
+                e.preventDefault();
+
+                var formData = $(this).serialize();
+                var url = $(this).attr('action');
+                $.ajax({
+                    url: url,
+                    type: $(this).attr('method'),
+                    data: formData,
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            // Optionally redirect or perform other actions
+                            // setTimeout(() => {
+                            // //    window.location.reload();
+                            // }, 1000);
+                            // open login modal with set the email
+                            $('#registerModalEstore').modal('hide');
+                            $('#user_password').val('');
+                            $('#user_login').val(response.email);
+                            $('#loginModalEstore').modal('show');
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                            toastr.error(value[0]);
+                        });
                     }
                 });
             });

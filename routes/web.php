@@ -556,6 +556,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::put('/warehouse-colors/{id}', [WarehouseAdminController::class, 'updateColor'])->name('warehouse-admin.colors.update')->middleware('role:WAREHOUSE_ADMIN');
     Route::get('/warehouse-colors/{id}/delete', [WarehouseAdminController::class, 'deleteColor'])->name('warehouse-admin.colors.delete')->middleware('role:WAREHOUSE_ADMIN');
 
+    Route::get('/estore-users-list', [PartnerController::class, 'estoreUsers'])->name('estore-users.list');
+    // estore-users.fetch-data
+    Route::get('/estore-users-fetch-data', [PartnerController::class, 'estoreFetchData'])->name('estore-users.fetch-data');
 
     // e-learning routes
     Route::prefix('elearning')->group(function () {
@@ -721,6 +724,8 @@ Route::prefix('e-store')->group(function () {
     Route::post('/get-warehouse-product-details', [EstoreProductController::class, 'getWarehouseProductDetails'])->name('e-store.get-warehouse-product-details');
     // user-update.location
     Route::post('/user-update/location', [HomeController::class, 'updateLocation'])->name('user-update.location');
+    // estore.register
+    Route::post('/register', [HomeController::class, 'register'])->name('estore.register');
 
     $categories = Category::where('status', 1)->get();
     foreach ($categories as $category) {
