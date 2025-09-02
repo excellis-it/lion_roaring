@@ -10,8 +10,8 @@
 @endpush
 
 @section('content')
-    <section class="inner_banner_sec pb-5"
-        style="background-image: url({{ asset('ecom_assets/images/banner.jpg') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+    <section class="inner_banner_sec"
+        style="background-image: url({{ asset('ecom_assets/images/slider-bg.png') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
@@ -21,7 +21,6 @@
                             consectetur
                             id purus rhoncus.</p> --}}
                     </div>
-
                 </div>
 
                 {{-- <div class="featured_slider">
@@ -50,6 +49,7 @@
     </section>
 
     <section class="filter_and_productlist">
+    <div class="container-fluid">
         <div class="row m-0">
             <div class="col-xl-3 col-lg-4 p-0">
                 <div class="filter">
@@ -225,6 +225,7 @@
                 @include('ecom.partials.product-filter')
 
             </div>
+    </div>
     </section>
 @endsection
 

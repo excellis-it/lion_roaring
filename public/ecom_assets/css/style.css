@@ -315,7 +315,7 @@ p {
 
 .slide .slide__content--headings .top-title {
     font-family: var(--main-font);
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 400;
     letter-spacing: 1px;
     animation: fadeInLeft 1s both 1.5s;
@@ -820,11 +820,11 @@ p {
 
 /*-------- button Effect-------*/
 .heading_hp h2 {
-    font-size: 48px;
+    font-size: 55px;
     font-weight: 600;
     color: var(--yellow-color);
     position: relative;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
 }
 
 .heading_hp h6 {
@@ -835,11 +835,11 @@ p {
 }
 
 .heading_hp p {
-    font-size: 15px;
+    font-size: 16px;
     color: rgb(0 0 0 / 100%);
-    line-height: 28px;
-    font-weight: 300;
-    margin-bottom: 25px;
+    line-height: 24px;
+    font-weight: 400;
+    margin-bottom: 15px;
 }
 
 .heading_hp.text_white h2,
@@ -849,10 +849,12 @@ p {
 
 .catagory_img {
     width: 100%;
-    height: 150px;
+    height: 100px;
     display: block;
     position: relative;
     margin-bottom: 6px;
+    border-radius: 100px;
+    overflow: hidden;
     /*border: 1px solid rgb(0 0 0 / 14%);*/
     /* -webkit-clip-path: polygon(0 17%, 100% 0, 100% 100%, 0% 100%);
   clip-path: polygon(0 17%, 100% 0, 100% 100%, 0% 100%); */
@@ -879,7 +881,6 @@ p {
     font-size: 14px;
     margin-bottom: 5px;
     min-height: 45px;
-    color: ;
 }
 
 .catagory_slid_padding {
@@ -894,13 +895,17 @@ p {
     transition: all ease-in 0.3s;
 }
 .bg_right_img:before{
-    contact:'';
+    content: '';
     position: absolute;
-    
+    background: url(../images/bg-pattern.png);
+    top: 0;
+    right: 0;
+    width: 68%;
+    height: 100%;    
 }
 
 .product_catagory{
-    padding: 100px 0;
+    padding: 50px 0;
 }
 .product_catagory .heading_hp p {
     color: var(--white-color);
@@ -909,7 +914,7 @@ p {
 .feature_sec {
     position: relative;
     width: 100%;
-    padding: 50px 0;
+    padding: 100px 0;
 }
 
 .feature_slid_padding {
@@ -922,7 +927,7 @@ p {
     display: block;
     position: relative;
     margin-bottom: 6px;
-    border: 1px solid rgb(0 0 0 / 14%);
+    /* border: 1px solid rgb(0 0 0 / 14%); */
     /* -webkit-clip-path: polygon(0 17%, 100% 0, 100% 100%, 0% 100%);
   clip-path: polygon(0 17%, 100% 0, 100% 100%, 0% 100%); */
 }
@@ -931,6 +936,7 @@ p {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 20px;
 }
 
 .wishlist_icon {
@@ -1005,9 +1011,9 @@ p {
 
 .price_text {
     display: block;
-    color: #F6BC41;
-    font-size: 20px;
-    font-weight: 600;
+    color: #643271;
+    font-size: 18px;
+    font-weight: 800;
 }
 
 /* .price_text span{
@@ -1032,9 +1038,9 @@ p {
 .pos_zi .feature_box{
     width: 100%;
     position: relative;
-    border-radius: 0px;
+    border-radius: 20px;
     transition: all ease-in 0.3s;
-    padding: 10px;
+    padding: 15px;
     background: url(../images/slider-bg.png);
     
 }
@@ -1100,6 +1106,35 @@ p {
 .lockets.feature_sec {
     background: #929292;
 }
+.new_arr{
+    padding: 0px 0;
+}
+.new_arr_bg{
+    width: 100%;
+}
+
+.new_arr_bg img{
+    width: 100%;
+}
+.new_arr_box{
+    position: relative;
+}
+
+.new_arr_text{
+    position: absolute;
+    left: 8%;
+    width: 40%;
+    top: 57%;
+    transform: translate(-8%, -50%);
+}
+
+
+
+
+
+
+
+
 
 .footer_sec {
     width: 100%;
@@ -1316,7 +1351,7 @@ p {
 
 
 .inner_banner_sec {
-    padding: 200px 0 160px 0;
+    padding: 170px 0 120px 0;
     position: relative
 }
 
@@ -1339,9 +1374,9 @@ p {
     font-family: var(--heading-font);
     color: var(--yellow-color);
     margin-bottom: 0;
-    text-transform: uppercase;
-    font-size: 60px;
-    font-weight: 400;
+    /* text-transform: uppercase; */
+    font-size: 50px;
+    font-weight: 600;
 }
 
 .inner_banner_ontent h4 {
@@ -1388,10 +1423,11 @@ p {
 .filter {
     border-right: 1px solid #BDBDBD;
     background: var(--main-color);
+    border-radius: 15px;
 }
 
 .padding_filter {
-    padding: 20px 40px 20px 80px;
+    padding: 20px 40px 20px 40px;
     border-bottom: 1px solid #BDBDBD;
 }
 
@@ -1545,7 +1581,7 @@ p {
 }
 
 .filter_and_productlist {
-    padding-bottom: 0px;
+    padding: 50px 0;
 }
 
 .fa-star {

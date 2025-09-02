@@ -99,7 +99,7 @@ $(".slider").slick({
 });
 
 $(".catagory_slider").slick({
-    autoplay: false,
+    autoplay: true,
     speed: 2000,
     slidesToShow: 8,
     slidesToScroll: 1,
