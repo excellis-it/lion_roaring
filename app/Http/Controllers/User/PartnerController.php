@@ -39,7 +39,7 @@ class PartnerController extends Controller
 
             $partners = User::with(['ecclesia', 'roles'])
                 ->whereHas('roles', function ($q) {
-                    $q->where('name', '!=', 'SUPER ADMIN');
+                    $q->where('name', '!=', 'SUPER ADMIN')->where('name', '!=', 'ESTORE_USER');
                 });
 
             if ($is_user_ecclesia_admin == 1) {
@@ -361,7 +361,7 @@ class PartnerController extends Controller
 
     public function fetchData(Request $request)
     {
-       // return $request->all();
+        // return $request->all();
         if ($request->ajax()) {
             $sort_by = $request->get('sortby', 'id'); // Default sorting by 'id'
             $sort_type = $request->get('sorttype', 'asc'); // Default sorting type
@@ -383,11 +383,11 @@ class PartnerController extends Controller
                             ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) LIKE ?', ["%{$query}%"])
                             ->orWhere('email', 'like', "%{$query}%")
                             ->orWhere('phone', 'like', "%{$query}%")
-                          //  ->orWhere('address', 'like', "%{$query}%")
+                            //  ->orWhere('address', 'like', "%{$query}%")
                             ->orWhere('user_name', 'like', "%{$query}%");
-                         //   ->orWhere('city', 'like', "%{$query}%")
-                         //   ->orWhere('state', 'like', "%{$query}%")
-                         //   ->orWhere('country', 'like', "%{$query}%");
+                        //   ->orWhere('city', 'like', "%{$query}%")
+                        //   ->orWhere('state', 'like', "%{$query}%")
+                        //   ->orWhere('country', 'like', "%{$query}%");
                     });
                 });
 
@@ -474,6 +474,59 @@ class PartnerController extends Controller
             return redirect()->route('partners.index')->with('error', 'Member has been deleted successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    // estore users list
+    public function estoreUsers()
+    {
+        // return 'hello';
+        if (Auth::user()->can('Manage Partners')) {
+
+
+            $user = Auth::user();
+
+
+            $partners = User::with(['ecclesia', 'roles'])
+                ->whereHas('roles', function ($q) {
+                    $q->where('name', 'ESTORE_USER');
+                });
+
+            $partners = $partners->orderBy('id', 'desc')->paginate(15);
+
+            // return $partners;
+
+            return view('user.partner.estore-users-list', compact('partners'));
+        }
+    }
+
+    //estoreFetchData
+    public function estoreFetchData(Request $request)
+    {
+        $sort_by = $request->get('sortby', 'id'); // Default sorting by 'id'
+        $sort_type = $request->get('sorttype', 'asc'); // Default sorting type
+        $query = $request->get('query');
+        $query = str_replace(" ", "%", $query);
+
+        if (Auth::user()->can('Manage Partners')) {
+            $partners = User::with(['ecclesia', 'roles'])
+                ->whereHas('roles', function ($q) {
+                    $q->where('name', 'ESTORE_USER');
+                });
+
+            if ($query) {
+                $partners->where(function ($q) use ($query) {
+                    $q->where('email', 'LIKE', "%{$query}%")
+                        ->orWhere('name', 'LIKE', "%{$query}%")
+                        ->orWhere('phone', 'LIKE', "%{$query}%");
+                });
+            }
+
+            $partners = $partners->orderBy('id', 'desc')->paginate(15);
+
+            return response()->json(['data' => view('user.partner.estore-users-table', compact('partners'))->render()]);
+        } else {
+            return response()->json(['error' => 'Unauthorized'], 403);
         }
     }
 }

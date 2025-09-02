@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Helpers\Helper;
 use App\Models\WareHouse;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
@@ -158,5 +160,40 @@ class HomeController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'phone' => 'required|string|max:255',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        // Check if user already exists
+        $existingUser = User::where('email', $request->email)->first();
+        if ($existingUser) {
+            return response()->json(['success' => false, 'message' => 'User already exists']);
+        }
+
+        // generated user_name with names
+        $userName = strtolower($request->first_name . '.' . $request->last_name) . uniqid();
+        $user = new User();
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->password = bcrypt($request->password);
+        $user->user_name = $userName;
+        $user->email_verified_at = now();
+        $user->status = 1;
+        $user->is_accept = 1;
+        $user->save();
+
+        $user->assignRole('ESTORE_USER');
+
+        return response()->json(['success' => true, 'message' => 'Registration successful', 'email' => $user->email]);
     }
 }
