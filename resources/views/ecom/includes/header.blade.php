@@ -5,7 +5,7 @@
                 <div class="left_top me-auto">
                     <div class="logo">
                         <a href="{{ route('e-store') }}" class="">
-                            <img src="{{ asset('ecom_assets/images/logo.png') }}" alt="" />
+                            <img src="{{ asset('ecom_assets/images/logo_black.png') }}" alt="" />
                         </a>
                     </div>
                 </div>
@@ -49,8 +49,8 @@
                         <div class="d-flex align-items-center justify-content-end">
                             <a href="{{ route('user.profile') }}" class="back_main">back to main page</a>
 
-                            <a href="{{ route('e-store.cart') }}" class="back_main"><i class="fa fa-shopping-cart"
-                                    aria-hidden="true"></i><span class="cart_count ms-1">{{ $cartCount }}</span></a>
+                            <a href="{{ route('e-store.cart') }}" class="shoping_cart"><i class="fa fa-shopping-cart"
+                                    aria-hidden="true"></i><span class="cart_count">{{ $cartCount }}</span></a>
                             <div class="profile_dropdown">
                                 <div class="dropdown">
                                     <button class="profile_img_round dropdown-toggle" type="button"
@@ -144,11 +144,11 @@
                             }
                             return null;
                         }
-
+                        
                         // Get user's timezone based on IP address
                         $ip = $_SERVER['REMOTE_ADDR'];
                         $timezone = getTimezoneFromIp($ip);
-
+                        
                         if ($timezone) {
                             // Set the default timezone
                             date_default_timezone_set($timezone);
@@ -156,10 +156,10 @@
                             // Fallback timezone
                             date_default_timezone_set('UTC');
                         }
-
+                        
                         // Get the current hour in 24-hour format
                         $time = date('H');
-
+                        
                         // Determine greeting based on time
                         if ($time < '12') {
                             echo 'Perfect morning';
