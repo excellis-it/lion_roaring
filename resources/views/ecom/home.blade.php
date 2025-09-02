@@ -28,7 +28,8 @@
                         <p class="top-title">
                             {{ isset($content['banner_subtitle']) ? $content['banner_subtitle'] : '' }}
                         </p>
-                         <a class="red_btn slidebottomleft" href="javascript:void(0);"><span>Shop now</span></a>
+                        <a class="red_btn slidebottomleft" href="{{ route('e-store.all-products') }}"><span>Shop
+                                now</span></a>
                     </div>
                 </div>
             </div>
@@ -147,12 +148,12 @@
             <div class="new_arr_box">
                 <div class="new_arr_bg"><img src="{{ asset('ecom_assets/images/new_arr_bg.png') }}" alt="banner" /></div>
                 <div class="new_arr_text">
-                     <div class="heading_hp">
+                    <div class="heading_hp">
                         <h2>New Arrival</h2>
                         <p>
                             {!! isset($content['featured_product_subtitle']) ? $content['featured_product_subtitle'] : '' !!}
                         </p>
-                        <a href="" class="red_btn"><span>Shop Now</span></a>
+                        <a href="{{ route('e-store.all-products') }}" class="red_btn"><span>Shop Now</span></a>
                     </div>
                 </div>
             </div>
