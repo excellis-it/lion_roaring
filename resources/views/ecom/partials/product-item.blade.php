@@ -19,6 +19,11 @@
                     </a>
                 </div>
                 <div class="feature_text">
+                    <a href="{{ route('e-store.product-details', $product['slug']) }}">{{ $product['name'] }}</a>
+                    <p>{{ strlen($product['short_description']) > 50 ? substr($product['short_description'], 0, 50) . '...' : $product['short_description'] }}
+                    </p>
+                    <div class="d-flex justify-content-between">
+                    <span class="price_text">${{ $product['price'] }}</span>
                     <ul class="star_ul">
                         @if (Helper::getTotalProductRating($product['id']))
                             @for ($i = 1; $i <= 5; $i++)
@@ -37,10 +42,7 @@
                         <li>({{ Helper::getRatingCount($product['id']) ? Helper::getRatingCount($product['id']) : 0 }})
                         </li>
                     </ul>
-                    <a href="{{ route('e-store.product-details', $product['slug']) }}">{{ $product['name'] }}</a>
-                    <p>{{ strlen($product['short_description']) > 50 ? substr($product['short_description'], 0, 50) . '...' : $product['short_description'] }}
-                    </p>
-                    <span class="price_text">${{ $product['price'] }}</span>
+                    </div>
                 </div>
                 {{-- <a class="red_btn w-100"
                     href="{{ route('e-store.product-details', $product['slug']) }}"><span>Details</span></a> --}}
