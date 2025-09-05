@@ -11,7 +11,7 @@
 
 @section('content')
     <section class="inner_banner_sec"
-        style="background-image: url({{ asset('ecom_assets/images/banner.jpg') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+        style="background-image: url({{ asset('ecom_assets/images/slider-bg.png') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
@@ -192,7 +192,6 @@
                                         </ul>
                                     @endif
 
-                                    <hr />
                                     <div class="total_payable">
                                         <div class="total_payable_l">Total Payable</div>
                                         <div class="total_payable_r" id="total-amount">${{ number_format($total, 2) }}

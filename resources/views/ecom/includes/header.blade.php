@@ -2,24 +2,17 @@
     <div class="container-fluid">
         <div class="main_menu">
             <div class="navigation navbar">
-                <div class="left_top me-auto">
+                <div class="left_top">
                     <div class="logo">
                         <a href="{{ route('e-store') }}" class="">
                             <img src="{{ asset('ecom_assets/images/logo_black.png') }}" alt="" />
                         </a>
                     </div>
                 </div>
-                <div class="right_btm">
-                    <div>
-
-
-                    </div>
-                    <div id="cssmenu">
-                        <ul>
-                            <li>
-                                @if (Auth::check())
+                <div class="me-auto">
+                         @if (Auth::check())
                                     @if (Auth::user()->location_lat || Auth::user()->location_lng)
-                                        <span onclick="changeLocation()" class="location-icon text-white back_main"
+                                        <span onclick="changeLocation()" class="location-icon location_btn"
                                             data-bs-toggle="tooltip" data-bs-placement="bottom"
                                             title="{{ Auth::user()->location_address }}">
                                             <i class="fa fa-map-marker text-danger me-2"
@@ -28,7 +21,7 @@
                                     @endif
                                 @else
                                     @if (session()->has('location_lat') && session()->has('location_lng'))
-                                        <span onclick="changeLocation()" class="location-icon text-white back_main"
+                                        <span onclick="changeLocation()" class="location-icon text-white location_btn"
                                             data-bs-toggle="tooltip" data-bs-placement="bottom"
                                             title="{{ session('location_address') }}">
                                             <i class="fa fa-map-marker text-danger me-2"
@@ -36,8 +29,11 @@
                                         </span>
                                     @endif
                                 @endif
-                            </li>
-
+                    </div>
+                <div class="right_btm">
+                    
+                    <div id="cssmenu">
+                        <ul>
                             <li><a href="{{ route('e-store') }}">Home</a></li>
                             <li><a href="{{ route('e-store.all-products') }}">our collections</a></li>
                             <li><a href="{{ route('contact-us') }}">Contact Us</a></li>

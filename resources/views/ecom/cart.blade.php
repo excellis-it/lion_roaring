@@ -22,7 +22,7 @@
 
 @section('content')
     <section class="inner_banner_sec"
-        style="background-image: url({{ asset('ecom_assets/images/banner.jpg') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+        style="background-image: url({{ asset('ecom_assets/images/slider-bg.png') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
@@ -155,8 +155,6 @@
                                     </ul>
 
 
-
-                                    <hr />
                                     <div class="total_payable">
                                         <div class="total_payable_l">Total Payable</div>
                                         <div class="total_payable_r" id="final-total">
@@ -174,19 +172,19 @@
 
                                     {{-- // if not auth then login button  --}}
                                     @if (Auth::check())
-                                        <a class="red_btn w-100 checkout-btn" href="{{ route('e-store.checkout') }}"
+                                        <a class="red_btn w-100 checkout-btn text-center" href="{{ route('e-store.checkout') }}"
                                             style="pointer-events: none; opacity: 0.5;">
                                             <span>Proceed to Checkout</span>
                                         </a>
                                     @else
-                                        <a class="red_btn w-100 mt-2" href="javascript:void(0);" data-bs-toggle="modal"
+                                        <a class="red_btn w-100 mt-2 text-center" href="javascript:void(0);" data-bs-toggle="modal"
                                             data-bs-target="#loginModalEstore">
                                             <span>Login to Checkout</span>
                                         </a>
                                     @endif
 
 
-                                    {{-- <a class="red_btn w-100 mt-2" href="{{ route('e-store.all-products') }}">
+                                    {{-- <a class="red_btn w-100 mt-2 text-center" href="{{ route('e-store.all-products') }}">
                                         <span>Continue Shopping</span>
                                     </a> --}}
                                 </div>

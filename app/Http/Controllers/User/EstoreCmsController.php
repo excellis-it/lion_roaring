@@ -83,12 +83,19 @@ class EstoreCmsController extends Controller
         if (auth()->user()->hasRole('SUPER ADMIN')) {
             $request->validate([
                 'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'banner_image_small' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'product_category_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'featured_product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'new_product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'new_arrival_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'banner_title' => 'required|string',
                 'banner_subtitle' => 'required|string',
                 'product_category_title' => 'required|string',
                 'product_category_subtitle' => 'required|string',
                 'featured_product_title' => 'required|string',
                 'featured_product_subtitle' => 'required|string',
+                'new_arrival_title' => 'required|string',
+                'new_arrival_subtitle' => 'required|string',
                 'new_product_title' => 'required|string',
                 'new_product_subtitle' => 'required|string',
             ]);
@@ -109,8 +116,25 @@ class EstoreCmsController extends Controller
             $cms->featured_product_subtitle = $request->featured_product_subtitle;
             $cms->new_product_title = $request->new_product_title;
             $cms->new_product_subtitle = $request->new_product_subtitle;
+            $cms->new_arrival_title = $request->new_arrival_title;
+            $cms->new_arrival_subtitle = $request->new_arrival_subtitle;
             if ($request->hasFile('banner_image')) {
                 $cms->banner_image = $this->imageUpload($request->file('banner_image'), 'ecom_cms');
+            }
+            if ($request->hasFile('banner_image_small')) {
+                $cms->banner_image_small = $this->imageUpload($request->file('banner_image_small'), 'ecom_cms');
+            }
+            if ($request->hasFile('product_category_image')) {
+                $cms->product_category_image = $this->imageUpload($request->file('product_category_image'), 'ecom_cms');
+            }
+            if ($request->hasFile('featured_product_image')) {
+                $cms->featured_product_image = $this->imageUpload($request->file('featured_product_image'), 'ecom_cms');
+            }
+            if ($request->hasFile('new_product_image')) {
+                $cms->new_product_image = $this->imageUpload($request->file('new_product_image'), 'ecom_cms');
+            }
+            if ($request->hasFile('new_arrival_image')) {
+                $cms->new_arrival_image = $this->imageUpload($request->file('new_arrival_image'), 'ecom_cms');
             }
 
             $cms->save();

@@ -20,7 +20,8 @@
                         alt="banner" />
                 </div>
                 <div class="slide_small_img">
-                    <img src="{{ asset('ecom_assets/images/small.jpg') }}" alt="banner" />
+                    <img src="{{ isset($content['banner_image_small']) ? Storage::url($content['banner_image_small']) : asset('ecom_assets/images/small.jpg') }}"
+                        alt="banner" />
                 </div>
                 <div class="slide__content slide__content__left">
                     <div class="slide__content--headings">
@@ -28,7 +29,8 @@
                         <p class="top-title">
                             {{ isset($content['banner_subtitle']) ? $content['banner_subtitle'] : '' }}
                         </p>
-                         <a class="red_btn slidebottomleft" href="javascript:void(0);"><span>Shop now</span></a>
+                        <a class="red_btn slidebottomleft" href="{{ route('e-store.all-products') }}"><span>Shop
+                                now</span></a>
                     </div>
                 </div>
             </div>
@@ -145,14 +147,16 @@
     <section class="new_arr">
         <div class="container-fluid">
             <div class="new_arr_box">
-                <div class="new_arr_bg"><img src="{{ asset('ecom_assets/images/new_arr_bg.png') }}" alt="banner" /></div>
+                <div class="new_arr_bg"><img
+                        src="{{ isset($content['new_arrival_image']) ? Storage::url($content['new_arrival_image']) : asset('ecom_assets/images/new_arr_bg.png') }}"
+                        alt="banner" /></div>
                 <div class="new_arr_text">
-                     <div class="heading_hp">
-                        <h2>New Arrival</h2>
+                    <div class="heading_hp">
+                        <h2>{{ isset($content['new_arrival_title']) ? $content['new_arrival_title'] : '' }}</h2>
                         <p>
-                            {!! isset($content['featured_product_subtitle']) ? $content['featured_product_subtitle'] : '' !!}
+                            {!! isset($content['new_arrival_subtitle']) ? $content['new_arrival_subtitle'] : '' !!}
                         </p>
-                        <a href="" class="red_btn"><span>Shop Now</span></a>
+                        <a href="{{ route('e-store.all-products') }}" class="red_btn"><span>Shop Now</span></a>
                     </div>
                 </div>
             </div>

@@ -26,7 +26,7 @@
         use App\Helpers\Helper;
     @endphp
     <section class="inner_banner_sec"
-        style="background-image: url({{ asset('ecom_assets/images/banner.jpg') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+        style="background-image: url({{ asset('ecom_assets/images/slider-bg.png') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
@@ -40,9 +40,9 @@
     </section>
 
 
-    <section class="catagory_sec">
-        <div class="container my-5">
-            <div class="row details-snippet1">
+    <section class="catagory_sec product_details">
+        <div class="container py-5">
+            <div class="row details-snippet1 justify-content-between">
                 <div class="col-md-5">
                     <div class="slider_left">
                         <div class="slider-for">
@@ -67,7 +67,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-7">
+                <div class="col-md-7 col-xl-6">
                     <div class="ratings my-2">
                         <div class="stars d-flex">
                             {{ Helper::getTotalProductRating($product->id) ? Helper::getTotalProductRating($product->id) : 0 }}
@@ -93,24 +93,27 @@
                     </div>
                     <div class="price my-2 warehouse-product-price-div">
                         $<span id="warehouse-product-price">{{ $wareHouseHaveProductVariables?->price ?? '' }}</span></div>
-                    <div class="theme-text subtitle">Description:</div>
-                    <div class="brief-description">
-                        {!! $product->description !!}
+                    <div class="d-flex">
+                        <div class="theme-text subtitle">Description:</div>
+                        <div class="brief-description ms-2">
+                            {!! $product->description !!}
+                        </div>
                     </div>
-
-
-                    <div class="theme-text subtitle">Warehouse:</div>
-                    <div class="brief-description mb-3">
-                        {{ $wareHouseHaveProductVariables?->warehouse?->name ?? '' }}
-                    </div>
-
+                    <div class="d-flex">
+                        <div class="theme-text subtitle">Warehouse:</div>
+                        <div class="brief-description ms-2">
+                            {{ $wareHouseHaveProductVariables?->warehouse?->name ?? '' }}
+                        </div>
+                    </div>   
+                    <div class="d-flex">
                     <div class="theme-text subtitle">SKU:</div>
-                    <div class="brief-description mb-3" id="product-sku">
+                    <div class="brief-description ms-2" id="product-sku">
                         {{ $wareHouseHaveProductVariables?->sku ?? '' }}
                     </div>
-
+                    </div>
+                    
                     <input id="warehouse-product-id" type="hidden" value="{{ $wareHouseHaveProductVariables?->id }}" />
-
+                
 
                     <div class="mb-3">
                         {{-- Select Size radio input button $product->sizes --}}
@@ -130,8 +133,7 @@
                         @endif
 
                     </div>
-
-
+                    
                     <div class="mb-3">
 
                         {{-- Select Color radio input button $product->colors --}}
@@ -153,10 +155,8 @@
                         @endif
 
                     </div>
-
-                    <div id="qty-div">
-
-
+                    <div class="d-flex">
+                    <div id="qty-div" class="me-3">
                         <div class="d-flex justify-content-start align-items-center">
                             <div class="small_number mb-3">
                                 <div class="qty-input">
@@ -187,11 +187,11 @@
                             <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to Cart</span></a>
                         </div>
                     @endif
-
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="container my-5">
+        <div class="container py-5">
             <div class="additional-details my-5 text-left">
                 <!-- Nav pills -->
                 <ul class="nav nav-tabs justify-content-start">
