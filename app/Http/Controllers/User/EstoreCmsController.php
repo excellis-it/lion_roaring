@@ -98,6 +98,9 @@ class EstoreCmsController extends Controller
                 'new_arrival_subtitle' => 'required|string',
                 'new_product_title' => 'required|string',
                 'new_product_subtitle' => 'required|string',
+                'slider_titles.*' => 'nullable|string|max:255',
+                'slider_subtitles.*' => 'nullable|string|max:500',
+                'slider_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
             if ($request->id) {
@@ -118,6 +121,40 @@ class EstoreCmsController extends Controller
             $cms->new_product_subtitle = $request->new_product_subtitle;
             $cms->new_arrival_title = $request->new_arrival_title;
             $cms->new_arrival_subtitle = $request->new_arrival_subtitle;
+
+            // Handle slider data
+            if ($request->has('slider_titles') && $request->has('slider_subtitles')) {
+                $sliderData = [];
+                $titles = $request->slider_titles;
+                $subtitles = $request->slider_subtitles;
+                $images = $request->file('slider_images') ?? [];
+
+                // Get existing slider data if updating
+                $existingSliders = $cms->slider_data ? json_decode($cms->slider_data, true) : [];
+
+                foreach ($titles as $index => $title) {
+                    if (!empty($title)) {
+                        $slideData = [
+                            'title' => $title,
+                            'subtitle' => $subtitles[$index] ?? '',
+                            'image' => null
+                        ];
+
+                        // Handle image upload
+                        if (isset($images[$index])) {
+                            $slideData['image'] = $this->imageUpload($images[$index], 'slider_images');
+                        } elseif (isset($existingSliders[$index]['image'])) {
+                            // Keep existing image if no new image uploaded
+                            $slideData['image'] = $existingSliders[$index]['image'];
+                        }
+
+                        $sliderData[] = $slideData;
+                    }
+                }
+
+                $cms->slider_data = json_encode($sliderData);
+            }
+
             if ($request->hasFile('banner_image')) {
                 $cms->banner_image = $this->imageUpload($request->file('banner_image'), 'ecom_cms');
             }

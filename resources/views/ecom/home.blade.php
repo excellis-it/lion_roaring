@@ -12,73 +12,48 @@
     @endphp
     <section class="banner__slider banner_sec middle_arrow">
         <div class="slider stick-dots">
-            <!--<div class="slide">-->
-            <!--    <div class="slide__img">-->
-            <!--        {{-- <img src="{{ asset('ecom_assets/images/banner_big_img.jpg') }}"-->
-            <!--            alt="banner" /> --}}-->
-            <!--        <img src="{{ isset($content['banner_image']) ? Storage::url($content['banner_image']) : asset('ecom_assets/images/lion_estore_banner.jpg') }}"-->
-            <!--            alt="banner" />-->
-            <!--    </div>-->
-            <!--    <div class="slide_small_img">-->
-            <!--        <img src="{{ isset($content['banner_image_small']) ? Storage::url($content['banner_image_small']) : asset('ecom_assets/images/small.jpg') }}"-->
-            <!--            alt="banner" />-->
-            <!--    </div>-->
-            <!--    <div class="slide__content slide__content__left">-->
-            <!--        <div class="slide__content--headings">-->
-            <!--            <h2 class="title"> {{ isset($content['banner_title']) ? $content['banner_title'] : '' }}</h2>-->
-            <!--            <p class="top-title">-->
-            <!--                {{ isset($content['banner_subtitle']) ? $content['banner_subtitle'] : '' }}-->
-            <!--            </p>-->
-            <!--            <a class="red_btn slidebottomleft" href="{{ route('e-store.all-products') }}"><span>Shop-->
-            <!--                    now</span></a>-->
-            <!--        </div>-->
-            <!--    </div>-->
-            <!--</div>-->
-             <div class="slide">
-                <div class="slide__img">
-                    <img src="{{ asset('ecom_assets/images/banner_big.jpg') }}" alt="banner" />
-                </div>
-                <div class="slide__content slide__content__left">
-                    <div class="slide__content--headings">
-                        <h2 class="title"> Experience Luxury. Shop with Excellence.</h2>
-                        <p class="top-title">
-                            {{ isset($content['banner_subtitle']) ? $content['banner_subtitle'] : '' }}
-                        </p>
-                        <a class="red_btn slidebottomleft" href="{{ route('e-store.all-products') }}"><span>Shop
-                                now <i class="fa-solid fa-arrow-right"></i></span></a>
+            @if (isset($sliderData) && count($sliderData) > 0)
+                @foreach ($sliderData as $slide)
+                    <div class="slide">
+                        <div class="slide__img">
+                            @if (isset($slide['image']) && $slide['image'])
+                                <img src="{{ Storage::url($slide['image']) }}" alt="{{ $slide['title'] ?? 'Banner' }}" />
+                            @else
+                                <img src="{{ asset('ecom_assets/images/banner_big.jpg') }}" alt="banner" />
+                            @endif
+                        </div>
+                        <div class="slide__content slide__content__left">
+                            <div class="slide__content--headings">
+                                <h2 class="title">{{ $slide['title'] ?? 'Experience Luxury. Shop with Excellence.' }}</h2>
+                                <p class="top-title">
+                                    {{ $slide['subtitle'] ?? (isset($content['banner_subtitle']) ? $content['banner_subtitle'] : '') }}
+                                </p>
+                                <a class="red_btn slidebottomleft" href="{{ route('e-store.all-products') }}">
+                                    <span>Shop now <i class="fa-solid fa-arrow-right"></i></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <!-- Default slides if no dynamic slider data -->
+                <div class="slide">
+                    <div class="slide__img">
+                        <img src="{{ asset('ecom_assets/images/banner_big.jpg') }}" alt="banner" />
+                    </div>
+                    <div class="slide__content slide__content__left">
+                        <div class="slide__content--headings">
+                            <h2 class="title">Experience Luxury. Shop with Excellence.</h2>
+                            <p class="top-title">
+                                {{ isset($content['banner_subtitle']) ? $content['banner_subtitle'] : '' }}
+                            </p>
+                            <a class="red_btn slidebottomleft" href="{{ route('e-store.all-products') }}">
+                                <span>Shop now <i class="fa-solid fa-arrow-right"></i></span>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="slide">
-                <div class="slide__img">
-                    <img src="{{ asset('ecom_assets/images/banner_big1.jpg') }}" alt="banner" />
-                </div>
-                <div class="slide__content slide__content__left">
-                    <div class="slide__content--headings">
-                        <h2 class="title"> Crafted for Those Who Choose the Finest.</h2>
-                        <p class="top-title">
-                            {{ isset($content['banner_subtitle']) ? $content['banner_subtitle'] : '' }}
-                        </p>
-                        <a class="red_btn slidebottomleft" href="{{ route('e-store.all-products') }}"><span>Shop
-                                now <i class="fa-solid fa-arrow-right"></i></span></a>
-                    </div>
-                </div>
-            </div>
-            <div class="slide">
-                <div class="slide__img">
-                    <img src="{{ asset('ecom_assets/images/banner_big2.jpg') }}" alt="banner" />
-                </div>
-                <div class="slide__content slide__content__left">
-                    <div class="slide__content--headings">
-                        <h2 class="title"> Roar in Style – Discover Premium Selections.</h2>
-                        <p class="top-title">
-                            {{ isset($content['banner_subtitle']) ? $content['banner_subtitle'] : '' }}
-                        </p>
-                        <a class="red_btn slidebottomleft" href="{{ route('e-store.all-products') }}"><span>Shop
-                                now <i class="fa-solid fa-arrow-right"></i></span></a>
-                    </div>
-                </div>
-            </div>
+            @endif
         </div>
     </section>
 

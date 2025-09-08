@@ -77,11 +77,12 @@
 /*----- slier --------*/
 
 $(".slider").slick({
-    autoplay: false,
+    autoplay: true,
     speed: 2000,
     lazyLoad: "progressive",
     arrows: false,
     dots: false,
+    fade: true,
     prevArrow:
         '<div class="slick-nav prev-arrow"><i></i><svg><use xlink:href="#circle"></svg></div>',
     nextArrow:
