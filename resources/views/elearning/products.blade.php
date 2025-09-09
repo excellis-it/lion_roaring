@@ -163,7 +163,7 @@
                 </div>
             </div>
             <div class="col-xl-9 col-lg-8 p-0" id="product-filter">
-                @include('ecom.partials.product-filter')
+                @include('elearning.partials.product-filter')
 
             </div>
     </section>
