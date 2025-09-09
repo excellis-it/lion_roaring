@@ -17,3 +17,5 @@ code.zip
 codes.zip
 .env copy
 .env copy
+.DS_Store
+/.DS_Store

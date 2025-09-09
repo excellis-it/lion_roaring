@@ -65,7 +65,35 @@ class HomeController extends Controller
         })->orderBy('id', 'DESC')->limit(10)->get();
         $content = EcomHomeCms::orderBy('id', 'desc')->first();
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
-        return view('ecom.home')->with(compact('categories', 'topParentCategories', 'feature_products', 'new_products', 'books', 'lockets', 'content', 'cartCount'));
+
+        $homeCms = EcomHomeCms::orderBy('id', 'desc')->first();
+        $content = [];
+        $sliderData = [];
+
+        if ($homeCms) {
+            $content = [
+                'banner_title' => $homeCms->banner_title,
+                'banner_subtitle' => $homeCms->banner_subtitle,
+                'banner_image' => $homeCms->banner_image,
+                'banner_image_small' => $homeCms->banner_image_small,
+                'product_category_title' => $homeCms->product_category_title,
+                'product_category_subtitle' => $homeCms->product_category_subtitle,
+                'featured_product_title' => $homeCms->featured_product_title,
+                'featured_product_subtitle' => $homeCms->featured_product_subtitle,
+                'new_arrival_title' => $homeCms->new_arrival_title,
+                'new_arrival_subtitle' => $homeCms->new_arrival_subtitle,
+                'new_arrival_image' => $homeCms->new_arrival_image,
+                'new_product_title' => $homeCms->new_product_title,
+                'new_product_subtitle' => $homeCms->new_product_subtitle,
+            ];
+
+            // Decode slider data
+            if ($homeCms->slider_data) {
+                $sliderData = json_decode($homeCms->slider_data, true);
+            }
+        }
+
+        return view('ecom.home')->with(compact('categories', 'topParentCategories', 'feature_products', 'new_products', 'books', 'lockets', 'content', 'cartCount', 'sliderData'));
     }
 
     public function newsletter(Request $request)

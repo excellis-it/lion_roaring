@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\TeamChatController;
 use App\Http\Controllers\Api\EmailController;
 use App\Http\Controllers\Api\EstoreProductController;
+use App\Http\Controllers\Api\ElearningController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\LeadershipDevelopmentController;
@@ -52,10 +53,10 @@ Route::prefix('v3')->group(function () {
 
     Route::prefix('e-store')->group(function () {
         // Route::get('/all-products', [EstoreProductController::class, 'products']);
-        Route::get('/store-home', [EstoreProductController::class, 'storeHome']);
-        Route::get('/category-products/{slug}', [EstoreProductController::class, 'productsByCategorySlug']);
-        Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails']);
-        Route::get('/products-filter', [EstoreProductController::class, 'productsFilter']);
+        Route::get('/store-home', [ElearningController::class, 'storeHome']);
+        Route::get('/category-products/{slug}', [ElearningController::class, 'productsByCategorySlug']);
+        Route::get('/product/{slug}', [ElearningController::class, 'productDetails']);
+        Route::get('/products-filter', [ElearningController::class, 'productsFilter']);
     });
 
 

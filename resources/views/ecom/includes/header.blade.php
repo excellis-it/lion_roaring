@@ -1,3 +1,6 @@
+@php
+    use App\Helpers\Helper;
+@endphp
 <div class="main_menu_hdr">
     <div class="container-fluid">
         <div class="main_menu">
@@ -5,33 +8,31 @@
                 <div class="left_top">
                     <div class="logo">
                         <a href="{{ route('e-store') }}" class="">
-                            <img src="{{ asset('ecom_assets/images/logo_black.png') }}" alt="" />
+                            <img src="{{ asset('ecom_assets/images/estore_logo.png') }}" alt="" />
                         </a>
                     </div>
                 </div>
                 <div class="me-auto">
-                         @if (Auth::check())
-                                    @if (Auth::user()->location_lat || Auth::user()->location_lng)
-                                        <span onclick="changeLocation()" class="location-icon location_btn"
-                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                            title="{{ Auth::user()->location_address }}">
-                                            <i class="fa fa-map-marker text-danger me-2"
-                                                aria-hidden="true"></i>{{ Str::limit(Auth::user()->location_address ?? '', 20, '...') }}
-                                        </span>
-                                    @endif
-                                @else
-                                    @if (session()->has('location_lat') && session()->has('location_lng'))
-                                        <span onclick="changeLocation()" class="location-icon text-white location_btn"
-                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                            title="{{ session('location_address') }}">
-                                            <i class="fa fa-map-marker text-danger me-2"
-                                                aria-hidden="true"></i>{{ Str::limit(session('location_address') ?? '', 20, '...') }}
-                                        </span>
-                                    @endif
-                                @endif
-                    </div>
+                    @if (Auth::check())
+                        @if (Auth::user()->location_lat || Auth::user()->location_lng)
+                            <span onclick="changeLocation()" class="location-icon location_btn" data-bs-toggle="tooltip"
+                                data-bs-placement="bottom" title="{{ Auth::user()->location_address }}">
+                                <i class="fa fa-map-marker text-danger me-2"
+                                    aria-hidden="true"></i>{{ Str::limit(Auth::user()->location_address ?? '', 20, '...') }}
+                            </span>
+                        @endif
+                    @else
+                        @if (session()->has('location_lat') && session()->has('location_lng'))
+                            <span onclick="changeLocation()" class="location-icon location_btn" data-bs-toggle="tooltip"
+                                data-bs-placement="bottom" title="{{ session('location_address') }}">
+                                <i class="fa fa-map-marker text-danger me-2"
+                                    aria-hidden="true"></i>{{ Str::limit(session('location_address') ?? '', 20, '...') }}
+                            </span>
+                        @endif
+                    @endif
+                </div>
                 <div class="right_btm">
-                    
+
                     <div id="cssmenu">
                         <ul>
                             <li><a href="{{ route('e-store') }}">Home</a></li>
@@ -46,7 +47,8 @@
                             {{-- <a href="{{ route('user.profile') }}" class="back_main">back to main page</a> --}}
 
                             <a href="{{ route('e-store.cart') }}" class="shoping_cart"><i class="fa fa-shopping-cart"
-                                    aria-hidden="true"></i><span class="cart_count">{{ $cartCount }}</span></a>
+                                    aria-hidden="true"></i><span
+                                    class="cart_count">{{ Helper::cartCount() }}</span></a>
                             <div class="profile_dropdown">
                                 <div class="dropdown">
                                     <button class="profile_img_round dropdown-toggle" type="button"
@@ -142,11 +144,11 @@
                             }
                             return null;
                         }
-
+                        
                         // Get user's timezone based on IP address
                         $ip = $_SERVER['REMOTE_ADDR'];
                         $timezone = getTimezoneFromIp($ip);
-
+                        
                         if ($timezone) {
                             // Set the default timezone
                             date_default_timezone_set($timezone);
@@ -154,10 +156,10 @@
                             // Fallback timezone
                             date_default_timezone_set('UTC');
                         }
-
+                        
                         // Get the current hour in 24-hour format
                         $time = date('H');
-
+                        
                         // Determine greeting based on time
                         if ($time < '12') {
                             echo 'Perfect morning';

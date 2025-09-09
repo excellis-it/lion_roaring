@@ -25,6 +25,7 @@ use App\Models\User;
 use App\Models\SiteSetting;
 use GuzzleHttp\Client;
 use App\Models\WareHouse;
+use App\Models\EstoreCart;
 
 class Helper
 {
@@ -441,5 +442,16 @@ class Helper
             return $result['warehouse']->id;
         }
         return $defaultId;
+    }
+
+    // cartCount
+    public static function cartCount()
+    {
+        if (auth()->check()) {
+            $cartCount = EstoreCart::where('user_id', auth()->user()->id)->count();
+            return $cartCount;
+        } else {
+            return 0;
+        }
     }
 }

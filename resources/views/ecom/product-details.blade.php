@@ -104,16 +104,16 @@
                         <div class="brief-description ms-2">
                             {{ $wareHouseHaveProductVariables?->warehouse?->name ?? '' }}
                         </div>
-                    </div>   
+                    </div>
                     <div class="d-flex">
-                    <div class="theme-text subtitle">SKU:</div>
-                    <div class="brief-description ms-2" id="product-sku">
-                        {{ $wareHouseHaveProductVariables?->sku ?? '' }}
+                        <div class="theme-text subtitle">SKU:</div>
+                        <div class="brief-description ms-2" id="product-sku">
+                            {{ $wareHouseHaveProductVariables?->sku ?? '' }}
+                        </div>
                     </div>
-                    </div>
-                    
+
                     <input id="warehouse-product-id" type="hidden" value="{{ $wareHouseHaveProductVariables?->id }}" />
-                
+
 
                     <div class="mb-3">
                         {{-- Select Size radio input button $product->sizes --}}
@@ -133,22 +133,22 @@
                         @endif
 
                     </div>
-                    
+
                     <div class="mb-3">
 
                         {{-- Select Color radio input button $product->colors --}}
                         @if ($product->colors->count() > 0)
                             <p>Select Color:</p>
                             @foreach ($product->colors as $key => $color)
-                                <div class="form-check form-check-inline">
-                                    <input class="btn-check product-select-color-input" type="radio" name="color"
+                                <div class="form-check form-check-inline border rounded">
+                                    {{-- add class product-select-color-input --}}
+                                    <input class="btn-check product-select-color-input " type="radio" name="color"
                                         id="color-{{ $color->color?->id }}" value="{{ $color->color?->id }}"
                                         {{ ($cartItem ? ($cartItem->color_id == $color->color?->id ? 'checked' : '') : $key == 0) ? 'checked' : '' }}
                                         {{ $cartItem && $cartItem->color_id !== $color->color?->id ? 'disabled' : '' }}>
-                                    <label style="background-color: {{ $color->color?->color }};" class="btn"
-                                        for="color-{{ $color->color?->id }}">
-                                        {{-- {{ $color->color?->color_name }} --}}
-                                        &nbsp;&nbsp;&nbsp;
+                                    <label class="btn" for="color-{{ $color->color?->id }}">
+                                        {{ $color->color?->color_name }}
+
                                     </label>
                                 </div>
                             @endforeach
@@ -156,37 +156,38 @@
 
                     </div>
                     <div class="d-flex">
-                    <div id="qty-div" class="me-3">
-                        <div class="d-flex justify-content-start align-items-center">
-                            <div class="small_number mb-3">
-                                <div class="qty-input">
-                                    <button class="qty-count qty-count--minus" data-action="minus" type="button">-</button>
-                                    <input class="product-qty" type="number" name="product-qty" min="0"
-                                        max="{{ $wareHouseHaveProductVariables?->quantity ?? 0 }}"
-                                        value="{{ $cartItem ? $cartItem->quantity : 0 }}"
-                                        data-cart-id="{{ $cartItem ? $cartItem->id : '' }}"
-                                        data-product-id="{{ $product->id }}">
-                                    <button class="qty-count qty-count--add" data-action="add" type="button">+</button>
+                        <div id="qty-div" class="me-3">
+                            <div class="d-flex justify-content-start align-items-center">
+                                <div class="small_number mb-3">
+                                    <div class="qty-input">
+                                        <button class="qty-count qty-count--minus" data-action="minus"
+                                            type="button">-</button>
+                                        <input class="product-qty" type="number" name="product-qty" min="0"
+                                            max="{{ $wareHouseHaveProductVariables?->quantity ?? 0 }}"
+                                            value="{{ $cartItem ? $cartItem->quantity : 0 }}"
+                                            data-cart-id="{{ $cartItem ? $cartItem->id : '' }}"
+                                            data-product-id="{{ $product->id }}">
+                                        <button class="qty-count qty-count--add" data-action="add" type="button">+</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    {{-- hidden div for out of stock message badge --}}
-                    <div id="out-of-stock-message" class="text-danger " style="display: none;">
-                        <span class="h5">Out of Stock</span>
-                    </div>
+                        {{-- hidden div for out of stock message badge --}}
+                        <div id="out-of-stock-message" class="text-danger " style="display: none;">
+                            <span class="h5">Out of Stock</span>
+                        </div>
 
-                    @if ($cartItem)
-                        <div class="view-cart-btn cart-btns">
-                            <a href="{{ route('e-store.cart') }}" class="red_btn w-100 text-center"><span>View
-                                    Cart</span></a>
-                        </div>
-                    @else
-                        <div class="addtocart cart-btns" data-id="{{ $product->id }}">
-                            <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to Cart</span></a>
-                        </div>
-                    @endif
+                        @if ($cartItem)
+                            <div class="view-cart-btn cart-btns">
+                                <a href="{{ route('e-store.cart') }}" class="red_btn w-100 text-center"><span>View
+                                        Cart</span></a>
+                            </div>
+                        @else
+                            <div class="addtocart cart-btns" data-id="{{ $product->id }}">
+                                <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to Cart</span></a>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

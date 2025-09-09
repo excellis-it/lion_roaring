@@ -1,0 +1,237 @@
+:root {
+    --yellow-color: #D98B1C;
+    --main-color: #643271;
+    --heading-color:#303030;
+    --text-color: #1E1E1E;
+    --white-color:#fff;
+    --black-color:#000;
+    --main-font: "Roboto", sans-serif;
+    --heading-font: "Playfair Display", serif;
+    --button-font: "Roboto", sans-serif;
+}
+
+@media (max-width:1600px){
+    .slide .slide__content--headings .title{
+        font-size: 50px;
+    }
+    .container-fluid {
+        padding: 0 6%;
+    }
+}
+
+
+@media (max-width:1440px){
+    .container-fluid {
+        padding: 0 3%;
+    }
+    .slide .slide__content {
+        width: 45%;
+    }
+}
+@media (max-width:1366px){
+    .logo{
+        width: 200px;
+        display: flex;
+        align-items: center;
+    }
+    .heading_hp h2 {
+        font-size: 40px;
+    }
+    .heading_hp p {
+        font-size: 15px;
+        line-height: 24px;
+    }
+    .middle_arrow .slick-nav.next-arrow{
+        right: 45%;
+    }
+    .middle_arrow .slick-nav.prev-arrow {
+        left: 45%;
+    }
+    .left_ali p, .left_ali a {
+        font-size: 14px;
+    }
+    .img_servic {
+        width: 270px;
+        height: 270px;
+    }
+    .feature_img {
+        height: 215px;
+    }
+    .left_ali h4{
+        font-size: 18px;
+    }
+}
+
+@media (max-width:1280px){
+    .left_ali p, .left_ali a {
+        font-size: 13px;
+    }
+}
+
+@media (max-width:1024px){
+    .logo {
+        width: auto;
+    }
+    .main-menu .logo a{
+        position: relative;
+        padding: 0;
+    }
+    .main-menu .navbar{
+        flex-wrap: inherit;
+    }
+
+    .logo a img {
+        width: 147px;
+    }
+    .right_login{
+        padding: 6px 0px 3px;
+    }
+    .search_top{
+        display: none;
+    }
+    .slide .slide__content--headings .title {
+        font-size: 40px;
+    }
+    .blog_slider{
+        margin-top: 30px;
+    }
+}
+@media (max-width:991px){
+    .login a {
+        font-size: 12px;
+    }
+    .ftr_line_link ul li{
+        padding: 0 10px;
+    }
+    .ftr_line_link ul li a {
+        font-size: 13px;
+        letter-spacing: 0px;
+    }
+}
+
+@media (max-width:768px){
+    .right_login {
+        padding: 0px 5px 0px;
+        border-radius: 0 0px;
+    }
+    .right_top {
+        display: flex;
+        align-items: center;
+    }
+    .icon_c a {
+        padding: 4px;
+        width: 25px;
+        height: 25px;
+        font-size: 10px;
+    }
+    .main_menu {
+        padding: 10px 0;
+    }
+    .slide .slide__content.slide__content__left{
+        width: 60%;
+    }
+    .slider, .slide {
+        height: 100vh;
+    }
+    .middle_arrow .slick-nav.next-arrow {
+        right: 43%;
+    }
+    .middle_arrow .slick-nav.prev-arrow {
+        left: 43%;
+    }
+    .tow_box_j{
+        margin-bottom: 25px;
+    }
+    .quick_links_ul ul li {
+        padding: 0 10px;
+    }
+    .slide .slide__content--headings .title {
+        font-size: 40px;
+    }
+    .slide .slide__content--headings .top-title{
+        font-size: 16px;
+    }
+    .back_main{
+        display: none;
+    }
+    .profile_img_round{
+        margin-right: 10px
+    }
+}
+
+@media (max-width:767px){
+    .red_btn {
+        padding: 12px 22px;
+        letter-spacing: 1px;
+        font-size: 13px;
+    }
+    .heading_hp h2 {
+        font-size: 25px;
+    }
+    .logo a img {
+        width: 125px;
+    }
+    .banner_text h1 {
+        font-size: 40px;
+    }
+    .slide .slide__content {
+        width: 80%;
+    }
+    .slide .slide__content.slide__content__left {
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+    }
+    .middle_arrow .slick-nav.next-arrow {
+        right: 38%;
+    }
+    .middle_arrow .slick-nav.prev-arrow {
+        left: 38%;
+    }
+    .hdr_manu_nav {
+        width: 37px;
+        height: 32px;
+    }
+    .main_menu_hdr label .burger {
+        width: 24px;
+        height: 16px;
+    }
+    .img_servic {
+        width: 170px;
+        height: 170px;
+    }
+    .before_ftr p {
+        margin-bottom: 20px;
+    }
+    .quick_links_ul ul {
+        display: block;
+    }
+    .slide .slide__content--headings .title {
+        font-size: 30px;
+    }
+    .logo a{
+        width: auto;
+    }
+    .ftr_line_link ul{
+        display: block;
+        columns: 2;
+        text-align: left;
+    }
+}
+@media (max-width:425.98px){
+    .img_servic {
+        width: 155px;
+        height: 155px;
+    }
+    .ser_line h4 {
+        font-size: 14px;
+    }
+}
+@media (max-width:375.98px){
+    .img_servic {
+        width: 130px;
+        height: 130px;
+    }
+}
+
+

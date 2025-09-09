@@ -20,9 +20,9 @@
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.2.3/animate.min.css" />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="{{asset('ecom_assets/css/menu.css')}}" rel="stylesheet" />
-    <link href="{{asset('ecom_assets/css/style.css')}}" rel="stylesheet">
-    <link href="{{asset('ecom_assets/css/responsive.css')}}" rel="stylesheet">
+    <link href="{{asset('ecom_assets/css/elearning_menu.css')}}" rel="stylesheet" />
+    <link href="{{asset('ecom_assets/css/elearning_style.css')}}" rel="stylesheet">
+    <link href="{{asset('ecom_assets/css/elearning_responsive.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
