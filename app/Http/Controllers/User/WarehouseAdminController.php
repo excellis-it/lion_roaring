@@ -27,6 +27,9 @@ class WarehouseAdminController extends Controller
      */
     public function index()
     {
+        // access blocked for now
+        abort(403, 'Unauthorized action.');
+
         if (!auth()->user()->hasRole('SUPER ADMIN')) {
             abort(403, 'Unauthorized action.');
         }
@@ -40,6 +43,9 @@ class WarehouseAdminController extends Controller
      */
     public function create()
     {
+         // access blocked for now
+        abort(403, 'Unauthorized action.');
+
         if (!auth()->user()->hasRole('SUPER ADMIN')) {
             abort(403, 'Unauthorized action.');
         }
@@ -53,6 +59,9 @@ class WarehouseAdminController extends Controller
      */
     public function store(Request $request)
     {
+         // access blocked for now
+        abort(403, 'Unauthorized action.');
+
         if (!auth()->user()->hasRole('SUPER ADMIN')) {
             abort(403, 'Unauthorized action.');
         }
@@ -100,6 +109,9 @@ class WarehouseAdminController extends Controller
      */
     public function show($id)
     {
+         // access blocked for now
+        abort(403, 'Unauthorized action.');
+
         if (!auth()->user()->hasRole('SUPER ADMIN')) {
             abort(403, 'Unauthorized action.');
         }
@@ -113,6 +125,9 @@ class WarehouseAdminController extends Controller
      */
     public function edit($id)
     {
+         // access blocked for now
+        abort(403, 'Unauthorized action.');
+
         if (!auth()->user()->hasRole('SUPER ADMIN')) {
             abort(403, 'Unauthorized action.');
         }
@@ -129,6 +144,9 @@ class WarehouseAdminController extends Controller
      */
     public function update(Request $request, $id)
     {
+         // access blocked for now
+        abort(403, 'Unauthorized action.');
+
         if (!auth()->user()->hasRole('SUPER ADMIN')) {
             abort(403, 'Unauthorized action.');
         }
@@ -173,6 +191,9 @@ class WarehouseAdminController extends Controller
      */
     public function destroy($id)
     {
+         // access blocked for now
+        abort(403, 'Unauthorized action.');
+
         if (!auth()->user()->hasRole('SUPER ADMIN')) {
             abort(403, 'Unauthorized action.');
         }
@@ -197,6 +218,9 @@ class WarehouseAdminController extends Controller
      */
     public function delete($id)
     {
+         // access blocked for now
+        abort(403, 'Unauthorized action.');
+        
         if (!auth()->user()->hasRole('SUPER ADMIN')) {
             abort(403, 'Unauthorized action.');
         }
