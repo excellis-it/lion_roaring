@@ -28,6 +28,7 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Address</th>
+                            <th>Warehouse Admins</th>
                             <th>Status</th>
                             @if (Auth::user()->hasRole('SUPER ADMIN'))
                                 <th>Actions</th>
@@ -40,6 +41,14 @@
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $wareHouse->name }}</td>
                                 <td>{{ Str::limit($wareHouse->address, 80) }}</td>
+                                <td>
+                                    @foreach ($wareHouse->admins as $user)
+                                        <span class="">{{ $user->full_name }} ({{ $user->email }})</span>
+                                        @if (!$loop->last)
+                                            ,<br>
+                                        @endif
+                                    @endforeach
+                                </td>
                                 <td>{{ $wareHouse->is_active ? 'Active' : 'Inactive' }}</td>
                                 @if (Auth::user()->hasRole('SUPER ADMIN'))
                                     <td class="d-flex">

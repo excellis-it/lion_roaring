@@ -8,6 +8,11 @@
     <!-- Leaflet + Geocoder CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <!-- bootstrap-select (modern) -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/css/bootstrap-select.min.css" />
+
+
     <style>
         /* small map sizing */
         #map {
@@ -15,6 +20,19 @@
             width: 100%;
             margin-bottom: 1rem;
             border: 1px solid #ddd;
+        }
+
+        .dropdown-menu.show {
+            z-index: 999999;
+        }
+
+        .bootstrap-select>.dropdown-toggle.bs-placeholder {
+            border: 1px solid #ced4da;
+            color: rgb(55, 54, 54);
+        }
+
+        .bootstrap-select .dropdown-menu li {
+            padding: 5px;
         }
     </style>
 @endpush
@@ -110,6 +128,22 @@
 
                             </div>
 
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="assign_user">Assign User</label>
+                                    <select name="assign_user[]" id="assign_user" class="selectpicker"
+                                        data-live-search="true" data-width="100%" data-size="10" multiple>
+                                        <option value="">Select User</option>
+                                        @foreach ($all_users as $user)
+                                            <option value="{{ $user->id }}">
+                                                {{ $user->full_name }} ({{ $user->email }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                </div>
+
+                            </div>
 
 
                             <div class="col-md-6 mb-2">
@@ -150,9 +184,16 @@
     <!-- Leaflet + Geocoder JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <!-- bootstrap-select (modern) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>
+
 
     <script>
         $(document).ready(function() {
+
+            if ($.fn.selectpicker) {
+                $('.selectpicker').selectpicker(); // activate plugin on selects with .selectpicker
+            }
             // existing loader behaviour
             $("#create-warehouse-form").on("submit", function(e) {
                 // e.preventDefault();

@@ -12,6 +12,8 @@ use App\Models\Color;
 use App\Models\Size;
 use App\Models\WarehouseProduct;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class WareHouseController extends Controller
 {
@@ -40,8 +42,10 @@ class WareHouseController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        $all_users = User::where('status', 1)->where('is_accept', 1)->get(); // Fetch all users with any role and status active
+
         $countries = Country::get();
-        return view('user.warehouse.create', compact('countries'));
+        return view('user.warehouse.create', compact('countries', 'all_users'));
     }
 
     /**
@@ -63,8 +67,33 @@ class WareHouseController extends Controller
                 'country_id' => 'required|exists:countries,id',
                 'service_range' => 'required|numeric',
                 'is_active' => 'required',
+                'assign_user' => 'nullable|array',
+                'assign_user.*' => 'exists:users,id',
             ]);
-            WareHouse::create($request->all());
+
+            // Create warehouse and capture model
+            $wareHouse = WareHouse::create($request->only([
+                'name',
+                'location_lat',
+                'location_lng',
+                'address',
+                'country_id',
+                'service_range',
+                'is_active'
+            ]));
+
+            // assign warehouse to users and change user role to WAREHOUSE_ADMIN
+            if ($request->has('assign_user') && is_array($request->assign_user)) {
+                foreach ($request->assign_user as $userId) {
+                    $user = User::find($userId);
+                    if ($user) {
+                        $user->warehouses()->syncWithoutDetaching([$wareHouse->id]); // avoid duplicate attach
+                        if (!$user->hasRole('WAREHOUSE_ADMIN')) {
+                            $user->syncRoles(['WAREHOUSE_ADMIN']);
+                        }
+                    }
+                }
+            }
 
             return redirect()->route('ware-houses.index')->with('message', 'Warehouse created successfully.');
         } catch (\Exception $e) {
@@ -96,7 +125,9 @@ class WareHouseController extends Controller
         }
 
         $countries = Country::get();
-        return view('user.warehouse.edit', compact('wareHouse', 'countries'));
+        $all_users = User::where('status', 1)->where('is_accept', 1)->get();
+        $assignedUserIds = DB::table('user_warehouses')->where('warehouse_id', $wareHouse->id)->pluck('user_id')->toArray();
+        return view('user.warehouse.edit', compact('wareHouse', 'countries', 'all_users', 'assignedUserIds'));
     }
 
     /**
@@ -117,6 +148,8 @@ class WareHouseController extends Controller
             'country_id' => 'required|exists:countries,id',
             'service_range' => 'required|numeric',
             'is_active' => 'required|in:0,1',
+            'assign_user' => 'nullable|array',
+            'assign_user.*' => 'exists:users,id',
         ]);
 
         try {
@@ -129,6 +162,38 @@ class WareHouseController extends Controller
                 'service_range' => $request->service_range,
                 'is_active' => $request->is_active,
             ]);
+
+            // Sync assigned users: attach new ones, detach removed ones
+            $assignedUserIds = $request->has('assign_user') ? $request->assign_user : [];
+            $existingUserIds = DB::table('user_warehouses')->where('warehouse_id', $wareHouse->id)->pluck('user_id')->toArray();
+
+            $toAttach = array_diff($assignedUserIds, $existingUserIds);
+            $toDetach = array_diff($existingUserIds, $assignedUserIds);
+
+            foreach ($toAttach as $userId) {
+                $user = User::find($userId);
+                if ($user) {
+                    $user->warehouses()->syncWithoutDetaching([$wareHouse->id]);
+                    if (!$user->hasRole('WAREHOUSE_ADMIN')) {
+                        $user->syncRoles(['WAREHOUSE_ADMIN']);
+                    }
+                }
+            }
+
+            foreach ($toDetach as $userId) {
+                $user = User::find($userId);
+                if ($user) {
+                    $user->warehouses()->detach($wareHouse->id);
+                    // if user has no more warehouses, remove warehouse admin role
+                    if ($user->warehouses()->count() == 0) {
+                        if ($user->hasRole('WAREHOUSE_ADMIN')) {
+                            $user->removeRole('WAREHOUSE_ADMIN');
+                            // assign default role
+                            $user->syncRoles(['MEMBER_NON_SOVEREIGN']);
+                        }
+                    }
+                }
+            }
 
             return redirect()->route('ware-houses.index')->with('message', 'Warehouse updated successfully.');
         } catch (\Exception $e) {

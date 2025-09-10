@@ -357,13 +357,13 @@
                                 </a>
 
                                 {{-- warehouse admin management --}}
-                                <a href="{{ route('warehouse-admins.index') }}">
+                                {{-- <a href="{{ route('warehouse-admins.index') }}">
                                     <span>
                                         <img src="{{ asset('user_assets/images/ICON/Store/warehouse_admin.png') }}"
                                             alt="">
                                     </span>
                                     <span>Warehouse Admins</span>
-                                </a>
+                                </a> --}}
 
                                 {{-- Orders List --}}
                                 <a href="{{ route('user.store-orders.list') }}">
