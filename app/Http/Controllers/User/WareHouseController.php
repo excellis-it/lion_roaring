@@ -23,7 +23,7 @@ class WareHouseController extends Controller
     public function index()
     {
         // Super admin sees all warehouses, warehouse admin sees only assigned warehouses
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             $wareHouses = WareHouse::all();
         } else {
             $wareHouses = auth()->user()->warehouses;
@@ -38,7 +38,7 @@ class WareHouseController extends Controller
     public function create()
     {
         // Only super admin can create warehouses
-        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -54,7 +54,7 @@ class WareHouseController extends Controller
     public function store(Request $request)
     {
         // Only super admin can create warehouses
-        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -120,7 +120,7 @@ class WareHouseController extends Controller
     public function edit(WareHouse $wareHouse)
     {
         // Only super admin can edit warehouses
-        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -136,7 +136,7 @@ class WareHouseController extends Controller
     public function update(Request $request, WareHouse $wareHouse)
     {
         // Only super admin can update warehouses
-        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -207,7 +207,7 @@ class WareHouseController extends Controller
     public function destroy(WareHouse $wareHouse)
     {
         // Only super admin can delete warehouses
-        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -218,7 +218,7 @@ class WareHouseController extends Controller
     public function delete($id)
     {
         // Only super admin can delete warehouses
-        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             abort(403, 'Unauthorized action.');
         }
 

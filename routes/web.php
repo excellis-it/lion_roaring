@@ -529,8 +529,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/ware-houses/products/getDetails', [WareHouseController::class, 'getProductDetails'])->name('ware-houses.products.getDetails');
 
     // warehouse admin management
-    Route::resource('warehouse-admins', WarehouseAdminController::class)->middleware('role:SUPER ADMIN');
-    Route::get('/warehouse-admins-delete/{id}', [WarehouseAdminController::class, 'delete'])->name('warehouse-admins.delete')->middleware('role:SUPER ADMIN');
+    Route::resource('warehouse-admins', WarehouseAdminController::class);
+    Route::get('/warehouse-admins-delete/{id}', [WarehouseAdminController::class, 'delete'])->name('warehouse-admins.delete');
 
     // Warehouse Admin Product Management Routes (new)
     Route::get('/warehouse-products', [WarehouseAdminController::class, 'listProducts'])->name('warehouse-admin.products')->middleware('role:WAREHOUSE_ADMIN');

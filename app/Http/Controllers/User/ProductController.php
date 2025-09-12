@@ -14,6 +14,7 @@ use App\Models\Size;
 use App\Models\Color;
 use App\Models\WareHouse;
 use App\Models\WarehouseProduct;
+use App\Models\User;
 
 class ProductController extends Controller
 {
@@ -25,7 +26,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+       // return User::with('roles')->where('id', auth()->id())->first();
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             $products = Product::orderBy('id', 'desc')->paginate(10);
             return view('user.product.list', compact('products'));
         } else if (auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
@@ -77,13 +79,13 @@ class ProductController extends Controller
         $colors = Color::where('status', 1)->get();
 
         // Get warehouses for assignment
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             $warehouses = WareHouse::where('is_active', 1)->get();
         } else {
             $warehouses = auth()->user()->warehouses;
         }
 
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
             return view('user.product.create')
                 ->with(compact('categories', 'sizes', 'colors', 'warehouses'));
         } else {
@@ -231,13 +233,13 @@ class ProductController extends Controller
         $colors = Color::where('status', 1)->get();
 
         // Get warehouses for assignment
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             $warehouses = WareHouse::where('is_active', 1)->get();
         } else {
             $warehouses = auth()->user()->warehouses;
         }
 
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
             $product = Product::findOrFail($id);
 
             // Get existing warehouse products
@@ -258,7 +260,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
             $request->validate([
                 'category_id' => 'required|numeric|exists:categories,id',
                 'name' => 'required|string|max:255',
@@ -413,7 +415,7 @@ class ProductController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             $product = Product::findOrFail($id);
             $product->delete();
             return redirect()->route('products.index')->with('message', 'Product deleted successfully!');
