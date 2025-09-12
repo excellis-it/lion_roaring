@@ -269,7 +269,7 @@
                         </a>
                     </li> --}}
                 @endif
-                @if (Auth::user()->hasRole('SUPER ADMIN'))
+                @if (Auth::user()->hasRole('SUPER ADMIN') || Auth::user()->hasRole('ADMINISTRATOR'))
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExample10">

@@ -30,7 +30,7 @@ class WarehouseAdminController extends Controller
         // access blocked for now
         abort(403, 'Unauthorized action.');
 
-        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -46,7 +46,7 @@ class WarehouseAdminController extends Controller
          // access blocked for now
         abort(403, 'Unauthorized action.');
 
-        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -62,7 +62,7 @@ class WarehouseAdminController extends Controller
          // access blocked for now
         abort(403, 'Unauthorized action.');
 
-        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -112,7 +112,7 @@ class WarehouseAdminController extends Controller
          // access blocked for now
         abort(403, 'Unauthorized action.');
 
-        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -128,7 +128,7 @@ class WarehouseAdminController extends Controller
          // access blocked for now
         abort(403, 'Unauthorized action.');
 
-        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -147,7 +147,7 @@ class WarehouseAdminController extends Controller
          // access blocked for now
         abort(403, 'Unauthorized action.');
 
-        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -194,7 +194,7 @@ class WarehouseAdminController extends Controller
          // access blocked for now
         abort(403, 'Unauthorized action.');
 
-        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -220,8 +220,8 @@ class WarehouseAdminController extends Controller
     {
          // access blocked for now
         abort(403, 'Unauthorized action.');
-        
-        if (!auth()->user()->hasRole('SUPER ADMIN')) {
+
+        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             abort(403, 'Unauthorized action.');
         }
 

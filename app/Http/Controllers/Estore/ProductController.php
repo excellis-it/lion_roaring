@@ -134,7 +134,7 @@ class ProductController extends Controller
 
         // $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1);
         if ($category_id) {
-           // $products = $products->where('category_id', $category_id);
+            // $products = $products->where('category_id', $category_id);
             $category = Category::find($category_id);
             // products also with children
             if ($category) {
@@ -193,11 +193,11 @@ class ProductController extends Controller
                     ->where('quantity', '>', 0);
             })->pluck('id')->toArray();
 
-          //  if ($wareHouseProducts) {
-           //     $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->with('image');
-          //  } else {
-                $products = Product::where('status', 1)->with('image');
-          //  }
+            //  if ($wareHouseProducts) {
+            //     $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->with('image');
+            //  } else {
+            $products = Product::where('status', 1)->with('image');
+            //  }
 
             if (!empty($category_id)) {
                 $products->whereIn('category_id', $category_id);
@@ -963,6 +963,7 @@ class ProductController extends Controller
         }
         $orders = EstoreOrder::with('orderItems')
             ->where('user_id', auth()->id())
+            ->where('payment_status', 'paid')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
