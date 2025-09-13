@@ -108,10 +108,10 @@ Route::get('clear', function () {
 });
 
 // make migration
-// Route::get('dbmigrate', function () {
-//     Artisan::call('migrate');
-//     return "Migration has been successfully";
-// });
+Route::get('dbmigrate', function () {
+    Artisan::call('migrate');
+    return "Migration has been successfully";
+});
 
 
 

@@ -22,74 +22,95 @@
                 <div class="col-lg-12">
                     <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="heading_box mb-5">
-                                    <h3>Product Details</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
 
-                            <div class="col-md-6 mb-2">
-                                <div class="box_label">
-                                    <label for="name"> Product Name*</label>
-                                    <input type="text" name="name" id="name" class="form-control"
-                                        value="{{ old('name') }}">
-                                    @if ($errors->has('name'))
-                                        <span class="error">{{ $errors->first('name') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                            {{-- category_id --}}
-                            <div class="col-md-6 mb-2">
-                                <div class="box_label">
-                                    <label for="category_id"> Category*</label>
-                                    <select name="category_id" id="category_id" class="form-control">
-                                        <option value="">Select Category</option>
-                                        @php
-                                            $renderCategoryOptions = function ($nodes, $prefix = '') use (
-                                                &$renderCategoryOptions,
-                                            ) {
-                                                foreach ($nodes as $node) {
-                                                    echo '<option value="' .
-                                                        $node->id .
-                                                        '"' .
-                                                        (old('parent_id') == $node->id ? ' selected' : '') .
-                                                        '>' .
-                                                        e($prefix . $node->name) .
-                                                        '</option>';
-                                                    if (!empty($node->children) && $node->children->count()) {
-                                                        $renderCategoryOptions(
-                                                            $node->children,
-                                                            $prefix . $node->name . '->',
-                                                        );
-                                                    }
-                                                }
-                                            };
-                                            $topLevelCategories = $categories->whereNull('parent_id');
-                                            $renderCategoryOptions($topLevelCategories);
-                                        @endphp
-                                    </select>
-                                    @if ($errors->has('category_id'))
-                                        <span class="error">{{ $errors->first('category_id') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                            {{-- price --}}
-                            <div class="col-md-6 mb-2" hidden>
-                                <div class="box_label">
-                                    <label for="price"> Product Price*</label>
-                                    <input type="text" name="price" id="price" class="form-control"
-                                        value="{{ old('price') }}">
-                                    @if ($errors->has('price'))
-                                        <span class="error">{{ $errors->first('price') }}</span>
-                                    @endif
-                                </div>
-                            </div>
 
-                            {{-- quantity --}}
-                            {{-- <div class="col-md-6 mb-2">
+
+
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="product-details-tab" data-bs-toggle="tab"
+                                    data-bs-target="#product-details" type="button" role="tab"
+                                    aria-controls="product-details" aria-selected="true">Product
+                                    Details</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="variation-tab" data-bs-toggle="tab" data-bs-target="#variation"
+                                    type="button" role="tab" aria-controls="variation"
+                                    aria-selected="false">Variation</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="product-details" role="tabpanel"
+                                aria-labelledby="product-details-tab">
+
+                                <div class="row mt-3">
+                                    <div class="col-md-12">
+                                        <div class="heading_box mb-5">
+                                            <h3>Product Details</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label for="name"> Product Name*</label>
+                                            <input type="text" name="name" id="name" class="form-control"
+                                                value="{{ old('name') }}">
+                                            @if ($errors->has('name'))
+                                                <span class="error">{{ $errors->first('name') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- category_id --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label for="category_id"> Category*</label>
+                                            <select name="category_id" id="category_id" class="form-control">
+                                                <option value="">Select Category</option>
+                                                @php
+                                                    $renderCategoryOptions = function ($nodes, $prefix = '') use (
+                                                        &$renderCategoryOptions,
+                                                    ) {
+                                                        foreach ($nodes as $node) {
+                                                            echo '<option value="' .
+                                                                $node->id .
+                                                                '"' .
+                                                                (old('parent_id') == $node->id ? ' selected' : '') .
+                                                                '>' .
+                                                                e($prefix . $node->name) .
+                                                                '</option>';
+                                                            if (!empty($node->children) && $node->children->count()) {
+                                                                $renderCategoryOptions(
+                                                                    $node->children,
+                                                                    $prefix . $node->name . '->',
+                                                                );
+                                                            }
+                                                        }
+                                                    };
+                                                    $topLevelCategories = $categories->whereNull('parent_id');
+                                                    $renderCategoryOptions($topLevelCategories);
+                                                @endphp
+                                            </select>
+                                            @if ($errors->has('category_id'))
+                                                <span class="error">{{ $errors->first('category_id') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- price --}}
+                                    <div class="col-md-6 mb-2" hidden>
+                                        <div class="box_label">
+                                            <label for="price"> Product Price*</label>
+                                            <input type="text" name="price" id="price" class="form-control"
+                                                value="{{ old('price') }}">
+                                            @if ($errors->has('price'))
+                                                <span class="error">{{ $errors->first('price') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    {{-- quantity --}}
+                                    {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="quantity"> Stock Quantity*</label>
                                     <input type="number" name="quantity" id="quantity" class="form-control"
@@ -100,64 +121,64 @@
                                 </div>
                             </div> --}}
 
-                            {{-- slug --}}
-                            <div class="col-md-6 mb-2">
-                                <div class="box_label">
-                                    <label for="slug"> Product Slug*</label>
-                                    <input type="text" name="slug" id="slug" class="form-control"
-                                        value="{{ old('slug') }}">
-                                    @if ($errors->has('slug'))
-                                        <span class="error">{{ $errors->first('slug') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                            {{-- image --}}
-                            <div class="col-md-6 mb-2">
-                                <div class="box_label">
-                                    <label for="image"> Product Featured Image*</label>
-                                    <input type="file" name="image" id="image" class="form-control"
-                                        value="{{ old('image') }}">
-                                    @if ($errors->has('image'))
-                                        <span class="error">{{ $errors->first('image') }}</span>
-                                    @endif
-                                </div>
-                            </div>
+                                    {{-- slug --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label for="slug"> Product Slug*</label>
+                                            <input type="text" name="slug" id="slug" class="form-control"
+                                                value="{{ old('slug') }}">
+                                            @if ($errors->has('slug'))
+                                                <span class="error">{{ $errors->first('slug') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- image --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label for="image"> Product Featured Image*</label>
+                                            <input type="file" name="image" id="image" class="form-control"
+                                                value="{{ old('image') }}">
+                                            @if ($errors->has('image'))
+                                                <span class="error">{{ $errors->first('image') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
 
-                            {{-- short_description --}}
-                            <div class="col-md-12 mb-2">
-                                <div class="box_label">
-                                    <label for="short_description"> Product Short Description*</label>
-                                    <input type="text" name="short_description" id="short_description"
-                                        class="form-control" value="{{ old('short_description') }}">
-                                    @if ($errors->has('short_description'))
-                                        <span class="error">{{ $errors->first('short_description') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                            {{-- description --}}
-                            <div class="col-md-6 mb-2">
-                                <div class="box_label">
-                                    <label for="description"> Product Description*</label>
-                                    <textarea name="description" id="description" class="form-control" rows="5" cols="30"
-                                        placeholder="Enter Product Description">{{ old('description') }}</textarea>
-                                    @if ($errors->has('description'))
-                                        <span class="error">{{ $errors->first('description') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                            {{-- specification --}}
-                            <div class="col-md-6 mb-2">
-                                <div class="box_label">
-                                    <label for="specification"> Product Specification*</label>
-                                    <textarea name="specification" id="specification" class="form-control" rows="5" cols="30"
-                                        placeholder="Enter Product Specification">{{ old('specification') }}</textarea>
-                                    @if ($errors->has('specification'))
-                                        <span class="error">{{ $errors->first('specification') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                            {{-- button_name --}}
-                            {{-- <div class="col-md-6 mb-2">
+                                    {{-- short_description --}}
+                                    <div class="col-md-12 mb-2">
+                                        <div class="box_label">
+                                            <label for="short_description"> Product Short Description*</label>
+                                            <input type="text" name="short_description" id="short_description"
+                                                class="form-control" value="{{ old('short_description') }}">
+                                            @if ($errors->has('short_description'))
+                                                <span class="error">{{ $errors->first('short_description') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- description --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label for="description"> Product Description*</label>
+                                            <textarea name="description" id="description" class="form-control" rows="5" cols="30"
+                                                placeholder="Enter Product Description">{{ old('description') }}</textarea>
+                                            @if ($errors->has('description'))
+                                                <span class="error">{{ $errors->first('description') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- specification --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label for="specification"> Product Specification*</label>
+                                            <textarea name="specification" id="specification" class="form-control" rows="5" cols="30"
+                                                placeholder="Enter Product Specification">{{ old('specification') }}</textarea>
+                                            @if ($errors->has('specification'))
+                                                <span class="error">{{ $errors->first('specification') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- button_name --}}
+                                    {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="button_name"> Button Name*</label>
                                     <input type="text" name="button_name" id="button_name" class="form-control"
@@ -167,8 +188,8 @@
                                     @endif
                                 </div>
                             </div> --}}
-                            {{-- affiliate_link --}}
-                            {{-- <div class="col-md-6 mb-2">
+                                    {{-- affiliate_link --}}
+                                    {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="affiliate_link"> Affiliate Link*</label>
                                     <input type="text" name="affiliate_link" id="affiliate_link" class="form-control"
@@ -178,8 +199,8 @@
                                     @endif
                                 </div>
                             </div> --}}
-                            {{-- sku --}}
-                            {{-- <div class="col-md-6 mb-2">
+                                    {{-- sku --}}
+                                    {{-- <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="sku"> Product SKU*</label>
                                     <input type="text" name="sku" id="sku" class="form-control"
@@ -189,39 +210,42 @@
                                     @endif
                                 </div>
                             </div> --}}
-                            {{-- feature_product --}}
-                            <div class="col-md-6 mb-2">
-                                <div class="box_label">
-                                    <label for="feature_product"> Feature Product*</label>
-                                    <select name="feature_product" id="feature_product" class="form-control">
-                                        <option value="">Select Feature Product</option>
-                                        <option value="1" {{ old('feature_product') == 1 ? 'selected' : '' }}>Yes
-                                        </option>
-                                        <option value="0" {{ old('feature_product') == 0 ? 'selected' : '' }}>No
-                                        </option>
-                                    </select>
-                                    @if ($errors->has('feature_product'))
-                                        <span class="error">{{ $errors->first('feature_product') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                            {{-- status --}}
-                            <div class="col-md-6 mb-2">
-                                <div class="box_label">
-                                    <label for="status"> Status*</label>
-                                    <select name="status" id="status" class="form-control">
-                                        <option value="">Select Status</option>
-                                        <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Active</option>
-                                        <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Inactive
-                                        </option>
-                                    </select>
-                                    @if ($errors->has('status'))
-                                        <span class="error">{{ $errors->first('status') }}</span>
-                                    @endif
-                                </div>
-                            </div>
+                                    {{-- feature_product --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label for="feature_product"> Feature Product*</label>
+                                            <select name="feature_product" id="feature_product" class="form-control">
+                                                <option value="">Select Feature Product</option>
+                                                <option value="1"
+                                                    {{ old('feature_product') == 1 ? 'selected' : '' }}>Yes
+                                                </option>
+                                                <option value="0"
+                                                    {{ old('feature_product') == 0 ? 'selected' : '' }}>No
+                                                </option>
+                                            </select>
+                                            @if ($errors->has('feature_product'))
+                                                <span class="error">{{ $errors->first('feature_product') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    {{-- status --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label for="status"> Status*</label>
+                                            <select name="status" id="status" class="form-control">
+                                                <option value="">Select Status</option>
+                                                <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Active
+                                                </option>
+                                                <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Inactive
+                                                </option>
+                                            </select>
+                                            @if ($errors->has('status'))
+                                                <span class="error">{{ $errors->first('status') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
 
-                            {{-- <div class="col-md-12">
+                                    {{-- <div class="col-md-12">
                                 <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image(Drag and drop
                                     atleast 1
                                     images)<span style="color:red">*<span></label>
@@ -236,16 +260,16 @@
                                         {{ $errors->first('images') }}</div>
                                 @endif
                             </div> --}}
-                        </div>
-                        {{-- <div class="row">
+                                </div>
+                                {{-- <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
                                     <h3>Seo Section</h3>
                                 </div>
                             </div>
                         </div> --}}
-                        <div class="row">
-                            {{-- <div class="col-md-12 mb-2">
+                                <div class="row">
+                                    {{-- <div class="col-md-12 mb-2">
                                 <div class="box_label">
                                     <label for="meta_title">Meta Title</label>
 
@@ -267,151 +291,49 @@
                                 </div>
                             </div> --}}
 
-                            {{-- <div class="mt-3 mb-5" style="height: 10px; border-bottom: 2px solid #eee; margin: 20px 0;">
+                                    {{-- <div class="mt-3 mb-5" style="height: 10px; border-bottom: 2px solid #eee; margin: 20px 0;">
                             </div> --}}
 
-                            {{-- Multi Sizes --}}
-                            <div class="col-md-4 mb-2" hidden>
-                                <div class="box_label">
-                                    <label>Product Sizes <small>(Auto-selected from warehouse products)</small></label>
-                                    <div id="sizes-wrapper">
-                                        <div class=" mb-2">
-                                            <select multiple name="sizes[]" class="sizeSelect" id="global-size-select">
-                                                @foreach ($sizes as $size)
-                                                    <option value="{{ $size->id }}">{{ $size->size }}</option>
-                                                @endforeach
-                                            </select>
+                                    {{-- Multi Sizes --}}
+                                    <div class="col-md-4 mb-2" hidden>
+                                        <div class="box_label">
+                                            <label>Product Sizes <small>(Auto-selected from warehouse
+                                                    products)</small></label>
+                                            <div id="sizes-wrapper">
+                                                <div class=" mb-2">
+                                                    <select multiple name="sizes[]" class="sizeSelect"
+                                                        id="global-size-select">
+                                                        @foreach ($sizes as $size)
+                                                            <option value="{{ $size->id }}">{{ $size->size }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+
+                                    {{-- Multi Colors --}}
+                                    <div class="col-md-4 mb-2" hidden>
+                                        <div class="box_label">
+                                            <label>Product Colors <small>(Auto-selected from warehouse
+                                                    products)</small></label>
+                                            <div id="colors-wrapper">
+                                                <div class="mb-2">
+                                                    <select multiple name="colors[]" class="colorSelect"
+                                                        id="global-color-select">
+                                                        @foreach ($colors as $color)
+                                                            <option value="{{ $color->id }}">{{ $color->color_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
-                            </div>
-
-                            {{-- Multi Colors --}}
-                            <div class="col-md-4 mb-2" hidden>
-                                <div class="box_label">
-                                    <label>Product Colors <small>(Auto-selected from warehouse products)</small></label>
-                                    <div id="colors-wrapper">
-                                        <div class="mb-2">
-                                            <select multiple name="colors[]" class="colorSelect"
-                                                id="global-color-select">
-                                                @foreach ($colors as $color)
-                                                    <option value="{{ $color->id }}">{{ $color->color_name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="mt-3 mb-5" style="height: 10px; border-bottom: 2px solid #eee; margin: 20px 0;">
-                        </div>
-
-                        <!-- Warehouse Products Section -->
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="heading_box mb-3">
-                                    <h3>Warehouse Assignment</h3>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="warehouse-products-container">
-                            <div class="warehouse-product-entry">
-                                <div class="row">
-                                    <div class="col-md-4 mb-2">
-                                        <div class="box_label">
-                                            <label>Warehouse <span class="text-danger">*</span></label>
-                                            <select name="warehouse_products[0][warehouse_id]"
-                                                class="form-control warehouse-id" required>
-                                                <option value="">Select Warehouse</option>
-                                                @foreach ($warehouses as $warehouse)
-                                                    <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4 mb-2">
-                                        <div class="box_label">
-                                            <label>SKU <span class="text-danger">*</span></label>
-                                            <input type="text" name="warehouse_products[0][sku]" class="form-control"
-                                                required>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4 mb-2">
-                                        <div class="box_label">
-                                            <label>Price <span class="text-danger">*</span></label>
-                                            <input type="number" step="0.01" name="warehouse_products[0][price]"
-                                                class="form-control" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3 mb-2">
-                                        <div class="box_label">
-                                            <label>Size</label>
-                                            <select name="warehouse_products[0][size_id]" class="form-control">
-                                                <option value="">No Size</option>
-                                                @foreach ($sizes as $size)
-                                                    <option value="{{ $size->id }}">{{ $size->size }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3 mb-2">
-                                        <div class="box_label">
-                                            <label>Color</label>
-                                            <select name="warehouse_products[0][color_id]" class="form-control">
-                                                <option value="">No Color</option>
-                                                @foreach ($colors as $color)
-                                                    <option value="{{ $color->id }}">{{ $color->color_name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3 mb-2">
-                                        <div class="box_label">
-                                            <label>Images <span class="text-danger">*</span></label>
-                                            <input type="file" name="warehouse_products[0][images][]"
-                                                class="form-control" multiple required>
-                                        </div>
-                                    </div>
-
-
-
-                                    <div class="col-md-2 mb-2">
-                                        <div class="box_label">
-                                            <label>Quantity <span class="text-danger">*</span></label>
-                                            <input type="number" min="0" name="warehouse_products[0][quantity]"
-                                                class="form-control" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-1 mb-2 d-flex ">
-                                        <button type="button" class="btn btn-danger remove-warehouse-product"><i
-                                                class="fa fa-trash"></i></button>
-                                    </div>
-                                </div>
-                                <hr>
-                            </div>
-                        </div>
-
-                        <div class="row mb-4">
-                            <div class="col-md-12">
-                                <button type="button" class="btn btn-primary" id="add-warehouse-product">
-                                    <i class="fa fa-plus"></i> Add Warehouse Product
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="mt-3 mb-5" style="height: 10px; border-bottom: 2px solid #eee; margin: 20px 0;">
-                        </div>
-
-                        <div class="row" id="other-charges-wrapper">
+                                <div class="row" id="other-charges-wrapper">
                             {{-- Other Charges with name, charge amount with add more button --}}
 
                             <div class="row">
@@ -450,6 +372,121 @@
                             </div>
 
                         </div>
+
+                            </div>
+                            <div class="tab-pane fade" id="variation" role="tabpanel" aria-labelledby="variation-tab">
+
+                                <!-- Warehouse Products Section -->
+                                <div class="row mt-3">
+                                    <div class="col-md-12">
+                                        <div class="heading_box mb-3">
+                                            <h3>Warehouse Assignment</h3>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="warehouse-products-container">
+                                    <div class="warehouse-product-entry">
+                                        <div class="row">
+                                            <div class="col-md-4 mb-2">
+                                                <div class="box_label">
+                                                    <label>Warehouse <span class="text-danger">*</span></label>
+                                                    <select name="warehouse_products[0][warehouse_id]"
+                                                        class="form-control warehouse-id" required>
+                                                        <option value="">Select Warehouse</option>
+                                                        @foreach ($warehouses as $warehouse)
+                                                            <option value="{{ $warehouse->id }}">{{ $warehouse->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4 mb-2">
+                                                <div class="box_label">
+                                                    <label>SKU <span class="text-danger">*</span></label>
+                                                    <input type="text" name="warehouse_products[0][sku]"
+                                                        class="form-control" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4 mb-2">
+                                                <div class="box_label">
+                                                    <label>Price <span class="text-danger">*</span></label>
+                                                    <input type="number" step="0.01"
+                                                        name="warehouse_products[0][price]" class="form-control" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 mb-2">
+                                                <div class="box_label">
+                                                    <label>Size</label>
+                                                    <select name="warehouse_products[0][size_id]" class="form-control">
+                                                        <option value="">No Size</option>
+                                                        @foreach ($sizes as $size)
+                                                            <option value="{{ $size->id }}">{{ $size->size }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 mb-2">
+                                                <div class="box_label">
+                                                    <label>Color</label>
+                                                    <select name="warehouse_products[0][color_id]" class="form-control">
+                                                        <option value="">No Color</option>
+                                                        @foreach ($colors as $color)
+                                                            <option value="{{ $color->id }}">{{ $color->color_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 mb-2">
+                                                <div class="box_label">
+                                                    <label>Images <span class="text-danger">*</span></label>
+                                                    <input type="file" name="warehouse_products[0][images][]"
+                                                        class="form-control" multiple required>
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="col-md-2 mb-2">
+                                                <div class="box_label">
+                                                    <label>Quantity <span class="text-danger">*</span></label>
+                                                    <input type="number" min="0"
+                                                        name="warehouse_products[0][quantity]" class="form-control"
+                                                        required>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-1 mb-2 d-flex ">
+                                                <button type="button" class="btn btn-danger remove-warehouse-product"><i
+                                                        class="fa fa-trash"></i></button>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-primary" id="add-warehouse-product">
+                                            <i class="fa fa-plus"></i> Add Warehouse Product
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3 mb-5"
+                                    style="height: 10px; border-bottom: 2px solid #eee; margin: 20px 0;">
+                                </div>
+                            </div>
+
+                        </div>
+
 
 
                         <div class="row">
