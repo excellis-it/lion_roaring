@@ -52,7 +52,12 @@
                                             @foreach ($order->orderItems->take(2) as $item)
                                                 <div class="d-flex align-items-center mb-2">
                                                     <div class="item-image me-3">
-                                                        @if ($item->product_image)
+                                                        @if ($item->warehouseProduct?->images->first())
+                                                            <img src="{{ Storage::url($item->warehouseProduct?->images->first()->image_path) }}"
+                                                                alt="{{ $item->product_name }}"
+                                                                style="width: 60px; height: 60px; object-fit: cover;"
+                                                                class="rounded">
+                                                        @elseif ($item->product_image)
                                                             <img src="{{ Storage::url($item->product_image) }}"
                                                                 alt="{{ $item->product_name }}"
                                                                 style="width: 60px; height: 60px; object-fit: cover;"

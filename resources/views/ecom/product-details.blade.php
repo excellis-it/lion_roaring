@@ -43,9 +43,9 @@
     <section class="catagory_sec product_details">
         <div class="container py-5">
             <div class="row details-snippet1 justify-content-between">
-                <div class="col-md-5">
+                <div class="col-md-5" id="product-images-section">
                     <div class="slider_left">
-                        <div class="slider-for">
+                        <div class="slider-for" id="prodcut-first-image">
                             @if ($product->images->count() > 0)
                                 @foreach ($product->images as $image)
                                     <div class="slid_big_img">
@@ -54,7 +54,7 @@
                                 @endforeach
                             @endif
                         </div>
-                        <div class="slider-nav">
+                        <div class="slider-nav" id="product-other-images">
                             @if ($product->images->count() > 0)
                                 @foreach ($product->images as $image)
                                     <div class="small_box_img">
@@ -197,7 +197,8 @@
                 <!-- Nav pills -->
                 <ul class="nav nav-tabs justify-content-start">
                     <li class="nav-tabs">
-                        <a class="nav-link active" data-toggle="tab" data-bs-toggle="tab" href="#home">Specifications</a>
+                        <a class="nav-link active" data-toggle="tab" data-bs-toggle="tab"
+                            href="#home">Specifications</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" data-bs-toggle="tab" href="#menu1">Reviews</a>
@@ -392,6 +393,75 @@
 
                         $(".product-qty").trigger("change");
 
+                        // products images section update by response.data.images on product-images-section
+                        var productImagesSection = $("#product-images-section");
+
+                        // build same HTML structure as original
+                        var sliderLeft = $('<div class="slider_left"></div>');
+                        var sliderFor = $('<div class="slider-for" id="prodcut-first-image"></div>');
+                        var sliderNav = $('<div class="slider-nav" id="product-other-images"></div>');
+
+                        // base storage url from server side
+                        var storageBase = "{{ rtrim(Storage::url(''), '/') }}/";
+
+                        if (Array.isArray(response.data.images) && response.data.images.length) {
+                            response.data.images.forEach(function(image) {
+                                var src = (typeof image.image_path === 'string' && image
+                                        .image_path.indexOf('http') === 0) ?
+                                    image.image_path :
+                                    storageBase + image.image_path;
+
+                                sliderFor.append(
+                                    $('<div class="slid_big_img"></div>').append(
+                                        $('<img>').attr('src', src)
+                                    )
+                                );
+
+                                sliderNav.append(
+                                    $('<div class="small_box_img"></div>').append(
+                                        $('<div class="slid_small_img"></div>').append(
+                                            $('<img>').attr('src', src)
+                                        )
+                                    )
+                                );
+                            });
+                        } else {
+                            // fallback: empty content or a placeholder
+                            sliderFor.append(
+                                '<div class="slid_big_img"><img src="{{ asset('ecom_assets/images/no-image.png') }}" /></div>'
+                                );
+                        }
+
+                        productImagesSection.empty().append(sliderLeft.append(sliderFor).append(
+                            sliderNav));
+
+                        // re-init sliders if slick is available
+                        if ($.fn.slick) {
+                            // destroy existing instances if any
+                            if ($('.slider-for').hasClass('slick-initialized')) {
+                                $('.slider-for').slick('unslick');
+                            }
+                            if ($('.slider-nav').hasClass('slick-initialized')) {
+                                $('.slider-nav').slick('unslick');
+                            }
+
+                            $('.slider-for').slick({
+                                slidesToShow: 1,
+                                slidesToScroll: 1,
+                                arrows: false,
+                                fade: true,
+                                asNavFor: '.slider-nav'
+                            });
+                            $('.slider-nav').slick({
+                                slidesToShow: 4,
+                                slidesToScroll: 1,
+                                asNavFor: '.slider-for',
+                                dots: false,
+                                centerMode: false,
+                                focusOnSelect: true
+                            });
+                        }
+
                         // if stock quantity is available
                         if (response.data.quantity > 0 && response.data.price > 0) {
                             $("#qty-div").show();
@@ -438,6 +508,40 @@
                 success: function(response) {
                     if (response.status == true) {
                         console.log("Warehouse product details:", response.data);
+
+                        // response example is :
+                        // {
+                        //     "status": true,
+                        //     "data": {
+                        //         "id": 16,
+                        //         "sku": "Consequatur tenetur",
+                        //         "warehouse_id": 1,
+                        //         "product_id": 174,
+                        //         "color_id": 2,
+                        //         "size_id": 1,
+                        //         "tax_rate": "0.00",
+                        //         "quantity": 502,
+                        //         "price": "929.00",
+                        //         "created_at": "2025-09-13T11:38:00.000000Z",
+                        //         "updated_at": "2025-09-13T11:38:00.000000Z",
+                        //         "images": [{
+                        //                 "id": 4,
+                        //                 "warehouse_product_id": 16,
+                        //                 "image_path": "warehouse_product\/briTSojeCBkS745PmiUNgH2BYPrtlwP8tnmuBiUE.webp",
+                        //                 "created_at": "2025-09-13T11:38:00.000000Z",
+                        //                 "updated_at": "2025-09-13T11:38:00.000000Z"
+                        //             },
+                        //             {
+                        //                 "id": 5,
+                        //                 "warehouse_product_id": 16,
+                        //                 "image_path": "warehouse_product\/lbrCSzHIsrVmHln5tGQK3oAQL88yYi5oRMFOl03q.webp",
+                        //                 "created_at": "2025-09-13T12:39:04.000000Z",
+                        //                 "updated_at": "2025-09-13T12:39:04.000000Z"
+                        //             }
+                        //         ]
+                        //     }
+                        // }
+
                         $("#product-sku").text(response.data.sku);
                         // update warehouse-product-id input value
                         $("#warehouse-product-id").val(response.data.id);
@@ -445,6 +549,75 @@
                         // Update max quantity
                         $(".product-qty").attr("max", response.data.quantity);
                         $(".product-qty").trigger("change");
+
+                        // products images section update by response.data.images on product-images-section
+                        var productImagesSection = $("#product-images-section");
+
+                        // build same HTML structure as original
+                        var sliderLeft = $('<div class="slider_left"></div>');
+                        var sliderFor = $('<div class="slider-for" id="prodcut-first-image"></div>');
+                        var sliderNav = $('<div class="slider-nav" id="product-other-images"></div>');
+
+                        // base storage url from server side
+                        var storageBase = "{{ rtrim(Storage::url(''), '/') }}/";
+
+                        if (Array.isArray(response.data.images) && response.data.images.length) {
+                            response.data.images.forEach(function(image) {
+                                var src = (typeof image.image_path === 'string' && image
+                                        .image_path.indexOf('http') === 0) ?
+                                    image.image_path :
+                                    storageBase + image.image_path;
+
+                                sliderFor.append(
+                                    $('<div class="slid_big_img"></div>').append(
+                                        $('<img>').attr('src', src)
+                                    )
+                                );
+
+                                sliderNav.append(
+                                    $('<div class="small_box_img"></div>').append(
+                                        $('<div class="slid_small_img"></div>').append(
+                                            $('<img>').attr('src', src)
+                                        )
+                                    )
+                                );
+                            });
+                        } else {
+                            // fallback: empty content or a placeholder
+                            sliderFor.append(
+                                '<div class="slid_big_img"><img src="{{ asset('ecom_assets/images/no-image.png') }}" /></div>'
+                                );
+                        }
+
+                        productImagesSection.empty().append(sliderLeft.append(sliderFor).append(
+                            sliderNav));
+
+                        // re-init sliders if slick is available
+                        if ($.fn.slick) {
+                            // destroy existing instances if any
+                            if ($('.slider-for').hasClass('slick-initialized')) {
+                                $('.slider-for').slick('unslick');
+                            }
+                            if ($('.slider-nav').hasClass('slick-initialized')) {
+                                $('.slider-nav').slick('unslick');
+                            }
+
+                            $('.slider-for').slick({
+                                slidesToShow: 1,
+                                slidesToScroll: 1,
+                                arrows: false,
+                                fade: true,
+                                asNavFor: '.slider-nav'
+                            });
+                            $('.slider-nav').slick({
+                                slidesToShow: 4,
+                                slidesToScroll: 1,
+                                asNavFor: '.slider-for',
+                                dots: false,
+                                centerMode: false,
+                                focusOnSelect: true
+                            });
+                        }
 
                         // if stock quantity is available
                         if (response.data.quantity > 0 && response.data.price > 0) {

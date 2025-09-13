@@ -50,7 +50,10 @@
                                         <div class="row">
                                             <div class="col-md-3">
                                                 <div class="cart_images">
-                                                    @if ($item->product->main_image)
+                                                    @if ($item->warehouseProduct?->images->first())
+                                                        <img src="{{ Storage::url($item->warehouseProduct?->images->first()->image_path) }}"
+                                                            alt="{{ $item->product->name }}" />
+                                                    @elseif ($item->product->warehouseProduct)
                                                         <img src="{{ Storage::url($item->product->main_image) }}"
                                                             alt="{{ $item->product->name }}" />
                                                     @else
@@ -172,13 +175,14 @@
 
                                     {{-- // if not auth then login button  --}}
                                     @if (Auth::check())
-                                        <a class="red_btn w-100 checkout-btn text-center" href="{{ route('e-store.checkout') }}"
+                                        <a class="red_btn w-100 checkout-btn text-center"
+                                            href="{{ route('e-store.checkout') }}"
                                             style="pointer-events: none; opacity: 0.5;">
                                             <span>Proceed to Checkout</span>
                                         </a>
                                     @else
-                                        <a class="red_btn w-100 mt-2 text-center" href="javascript:void(0);" data-bs-toggle="modal"
-                                            data-bs-target="#loginModalEstore">
+                                        <a class="red_btn w-100 mt-2 text-center" href="javascript:void(0);"
+                                            data-bs-toggle="modal" data-bs-target="#loginModalEstore">
                                             <span>Login to Checkout</span>
                                         </a>
                                     @endif

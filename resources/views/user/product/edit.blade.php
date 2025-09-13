@@ -54,6 +54,10 @@
             top: -10px;
             right: -11px;
         }
+
+        .remove-warehouse-product {
+            max-height: 60px;
+        }
     </style>
 @endpush
 @section('content')
@@ -473,7 +477,11 @@
                                                             @foreach ($warehouseProduct->images as $image)
                                                                 <li id="warehouse-image-{{ $image->id }}"
                                                                     class="d-flex align-items-center mb-1 p-2 border rounded">
-                                                                    <a href="{{ Storage::url($image->image_path) }}"
+                                                                    <img src="{{ Storage::url($image->image_path) }}"
+                                                                        style="max-width: 80px; max-height: 80px;"
+                                                                        alt="">
+                                                                    <a hidden
+                                                                        href="{{ Storage::url($image->image_path) }}"
                                                                         target="_blank" class="me-2 text-truncate"
                                                                         style="max-width: 150px;">
                                                                         {{ basename($image->image_path) }}

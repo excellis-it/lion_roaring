@@ -2412,6 +2412,12 @@ input[type="range"]::-moz-range-thumb {
     position: relative;
     cursor: pointer;
 }
+.control-label::before{
+content: none !important;
+}
+
+
+
 .coupon_text p{
   margin-bottom: 0px;
 }

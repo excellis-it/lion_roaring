@@ -57,7 +57,10 @@
                                 <div class="item-card border rounded p-3 mb-3">
                                     <div class="row align-items-center">
                                         <div class="col-md-2">
-                                            @if ($item->product_image)
+                                            @if ($item->warehouseProduct?->images->first())
+                                                <img src="{{ Storage::url($item->warehouseProduct?->images->first()->image_path) }}"
+                                                    alt="{{ $item->product->name }}" />
+                                            @elseif ($item->product_image)
                                                 <img src="{{ Storage::url($item->product_image) }}"
                                                     alt="{{ $item->product_name }}" class="img-fluid rounded">
                                             @else
