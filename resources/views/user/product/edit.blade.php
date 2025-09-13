@@ -163,10 +163,14 @@
                                     <label for="image"> Product Featured Image</label>
                                     <input type="file" name="image" id="image" class="form-control"
                                         value="{{ old('image') }}">
+
                                     @if ($errors->has('image'))
                                         <span class="error">{{ $errors->first('image') }}</span>
                                     @endif
                                 </div>
+                                <label for="" class="ms-3 "><a class="text-link text-primary"
+                                        href="{{ Storage::url($product->image?->image ?? '') }}"
+                                        target="_blank">View</a></label>
                             </div>
 
                             {{-- short_description --}}
@@ -247,6 +251,7 @@
                                         <option value="0" {{ $product->feature_product == 0 ? 'selected' : '' }}>No
                                         </option>
                                     </select>
+
                                     @if ($errors->has('feature_product'))
                                         <span class="error">{{ $errors->first('feature_product') }}</span>
                                     @endif
@@ -269,7 +274,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12">
+                            {{-- <div class="col-md-12">
                                 <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image(Drag and drop
                                     atleast 1
                                     images)</label>
@@ -283,10 +288,10 @@
                                     <div class="error" style="color:red;">
                                         {{ $errors->first('images') }}</div>
                                 @endif
-                            </div>
+                            </div> --}}
                         </div>
                         @if ($product->withOutMainImage)
-                            <div class="row mb-6">
+                            {{-- <div class="row mb-6">
                                 <label for="inputConfirmPassword2" class="col-form-label">Image Preview</label>
 
                                 @foreach ($product->withOutMainImage as $image)
@@ -296,7 +301,7 @@
                                             style="display: inline;">&#215;</a>
                                     </div>
                                 @endforeach
-                            </div>
+                            </div> --}}
                         @endif
                         {{-- <div class="row">
                             <div class="col-md-12">
@@ -422,23 +427,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4 mb-2">
-                                                <div class="box_label">
-                                                    <label>Color</label>
-                                                    <select name="warehouse_products[{{ $index }}][color_id]"
-                                                        class="form-control">
-                                                        <option value="">No Color</option>
-                                                        @foreach ($colors as $color)
-                                                            <option value="{{ $color->id }}"
-                                                                {{ $warehouseProduct->color_id == $color->id ? 'selected' : '' }}>
-                                                                {{ $color->color_name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4 mb-2">
+                                            <div class="col-md-3 mb-2">
                                                 <div class="box_label">
                                                     <label>Size</label>
                                                     <select name="warehouse_products[{{ $index }}][size_id]"
@@ -456,6 +445,43 @@
 
                                             <div class="col-md-3 mb-2">
                                                 <div class="box_label">
+                                                    <label>Color</label>
+                                                    <select name="warehouse_products[{{ $index }}][color_id]"
+                                                        class="form-control">
+                                                        <option value="">No Color</option>
+                                                        @foreach ($colors as $color)
+                                                            <option value="{{ $color->id }}"
+                                                                {{ $warehouseProduct->color_id == $color->id ? 'selected' : '' }}>
+                                                                {{ $color->color_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 mb-2">
+                                                <div class="box_label">
+                                                    <label>Images <span class="text-danger">*</span></label>
+                                                    <input type="file"
+                                                        name="warehouse_products[{{ $index }}][images][]"
+                                                        class="form-control" multiple required>
+                                                </div>
+                                                <ul class="list ">
+                                                    @foreach ($warehouseProduct->images as $image)
+                                                        <li id="{{ $image->id }}"
+                                                            class="d-flex align-items-center mb-1">
+
+                                                            <a href="{{ Storage::url($image->image_path) }}"
+                                                                target="_blank">{{ $image->image_path }}</a>
+                                                            <button type="button" class="btn btn-danger"
+                                                                style="color: #E54E4E">X</button>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+
+                                            <div class="col-md-2 mb-2">
+                                                <div class="box_label">
                                                     <label>Quantity <span class="text-danger">*</span></label>
                                                     <input type="number" min="0"
                                                         name="warehouse_products[{{ $index }}][quantity]"
@@ -464,7 +490,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-1 mb-2 d-flex align-items-end">
+                                            <div class="col-md-1 mb-2 d-flex">
                                                 <button type="button" class="btn btn-danger remove-warehouse-product"><i
                                                         class="fa fa-trash"></i></button>
                                             </div>
@@ -505,20 +531,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4 mb-2">
-                                            <div class="box_label">
-                                                <label>Color</label>
-                                                <select name="warehouse_products[0][color_id]" class="form-control">
-                                                    <option value="">No Color</option>
-                                                    @foreach ($colors as $color)
-                                                        <option value="{{ $color->id }}">{{ $color->color_name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-4 mb-2">
+                                        <div class="col-md-3 mb-2">
                                             <div class="box_label">
                                                 <label>Size</label>
                                                 <select name="warehouse_products[0][size_id]" class="form-control">
@@ -532,13 +545,37 @@
 
                                         <div class="col-md-3 mb-2">
                                             <div class="box_label">
+                                                <label>Color</label>
+                                                <select name="warehouse_products[0][color_id]" class="form-control">
+                                                    <option value="">No Color</option>
+                                                    @foreach ($colors as $color)
+                                                        <option value="{{ $color->id }}">{{ $color->color_name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="col-md-3 mb-2">
+                                            <div class="box_label">
+                                                <label>Images <span class="text-danger">*</span></label>
+                                                <input type="file"
+                                                    name="warehouse_products[{{ $index }}][images][]"
+                                                    class="form-control" multiple required>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 mb-2">
+                                            <div class="box_label">
                                                 <label>Quantity <span class="text-danger">*</span></label>
                                                 <input type="number" min="0"
                                                     name="warehouse_products[0][quantity]" class="form-control" required>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-1 mb-2 d-flex align-items-end">
+                                        <div class="col-md-1 mb-2 d-flex ">
                                             <button type="button" class="btn btn-danger remove-warehouse-product"><i
                                                     class="fa fa-trash"></i></button>
                                         </div>
@@ -780,19 +817,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4 mb-2">
-                                <div class="box_label">
-                                    <label>Color</label>
-                                    <select name="warehouse_products[${warehouseProductIndex}][color_id]" class="form-control">
-                                        <option value="">No Color</option>
-                                        @foreach ($colors as $color)
-                                            <option value="{{ $color->id }}">{{ $color->color_name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4 mb-2">
+                            <div class="col-md-3 mb-2">
                                 <div class="box_label">
                                     <label>Size</label>
                                     <select name="warehouse_products[${warehouseProductIndex}][size_id]" class="form-control">
@@ -806,12 +831,35 @@
 
                             <div class="col-md-3 mb-2">
                                 <div class="box_label">
+                                    <label>Color</label>
+                                    <select name="warehouse_products[${warehouseProductIndex}][color_id]" class="form-control">
+                                        <option value="">No Color</option>
+                                        @foreach ($colors as $color)
+                                            <option value="{{ $color->id }}">{{ $color->color_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                             <div class="col-md-3 mb-2">
+                                                <div class="box_label">
+                                                    <label>Images <span class="text-danger">*</span></label>
+                                                    <input type="file"
+                                                        name="warehouse_products[${warehouseProductIndex}][images][]"
+                                                        class="form-control" multiple required>
+                                                </div>
+                                            </div>
+
+
+
+                            <div class="col-md-2 mb-2">
+                                <div class="box_label">
                                     <label>Quantity <span class="text-danger">*</span></label>
                                     <input type="number" min="0" name="warehouse_products[${warehouseProductIndex}][quantity]" class="form-control" required>
                                 </div>
                             </div>
 
-                            <div class="col-md-1 mb-2 d-flex align-items-end">
+                            <div class="col-md-1 mb-2 d-flex ">
                                 <button type="button" class="btn btn-danger remove-warehouse-product"><i class="fa fa-trash"></i></button>
                             </div>
                         </div>
