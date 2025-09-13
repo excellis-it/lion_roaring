@@ -16,7 +16,12 @@
             <div class="row justify-content-center">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
                     <div class="inner_banner_ontent">
-                        <h2>{{ $category_name ?? 'Our Collection' }}</h2>
+                        @if (request('type') === 'new-arrivals')
+                            <h2>New Arrivals</h2>
+                        @else
+                            <h2>{{ $category_name ?? 'Our Collection' }}</h2>
+                        @endif
+
                         {{-- <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing volutpat
                             consectetur
                             id purus rhoncus.</p> --}}
@@ -49,93 +54,96 @@
     </section>
 
     <section class="filter_and_productlist">
-    <div class="container-fluid">
-        <div class="row m-0">
-            <div class="col-xl-3 col-lg-4 p-0">
-                <div class="filter">
-                    <div class="padding_filter">
-                        <div class="filter_heading">
-                            <img src="{{ asset('ecom_assets/images/filter_icon.svg') }}" alt="" />
-                            <h4>Filter</h4>
-                        </div>
-                        <div class="search_color w-100">
-                            <input type="text" placeholder="Search Collection" class="form-control" id="serach-product">
-                            <button type="button">
-                                <img src="{{ asset('ecom_assets/images/search.svg') }}" alt="">
-                            </button>
-                        </div>
-                    </div>
-                    @if ($category_id != '')
+        <div class="container-fluid">
+            <div class="row m-0">
+                <div class="col-xl-3 col-lg-4 p-0">
+                    <div class="filter">
                         <div class="padding_filter">
-                            <div class="accordion" id="agegroup">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingAgeChG">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseAge" aria-expanded="true" aria-controls="collapseAge">
-                                            Category - {{ $category_name }}
-                                        </button>
-                                    </h2>
-                                    <div id="collapseAgeChg" class="accordion-collapse collapse show"
-                                        aria-labelledby="headingAgeChg" data-bs-parent="#agegroup">
-                                        <div class="accordion-body">
-                                            <div class="new">
-
-                                                @if (count($childCategoriesList) > 0)
-                                                    @foreach ($childCategoriesList as $category)
-                                                        <div class="form-group">
-                                                            <input type="checkbox" id="catagory{{ $category->id }}"
-                                                                name="category_id" value="{{ $category->id }}">
-                                                            <label
-                                                                for="catagory{{ $category->id }}">{{ $category->name }}</label>
-                                                        </div>
-                                                    @endforeach
-                                                @endif
-
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
+                            <div class="filter_heading">
+                                <img src="{{ asset('ecom_assets/images/filter_icon.svg') }}" alt="" />
+                                <h4>Filter</h4>
+                            </div>
+                            <div class="search_color w-100">
+                                <input type="text" placeholder="Search Collection" class="form-control"
+                                    id="serach-product">
+                                <button type="button">
+                                    <img src="{{ asset('ecom_assets/images/search.svg') }}" alt="">
+                                </button>
                             </div>
                         </div>
-                    @else
-                        <div class="padding_filter">
-                            <div class="accordion" id="agegroup">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingAge">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseAge" aria-expanded="true" aria-controls="collapseAge">
-                                            Categories
-                                        </button>
-                                    </h2>
-                                    <div id="collapseAge" class="accordion-collapse collapse show"
-                                        aria-labelledby="headingAge" data-bs-parent="#agegroup">
-                                        <div class="accordion-body">
-                                            <div class="new">
+                        @if ($category_id != '')
+                            <div class="padding_filter">
+                                <div class="accordion" id="agegroup">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingAgeChG">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapseAge" aria-expanded="true"
+                                                aria-controls="collapseAge">
+                                                Category - {{ $category_name }}
+                                            </button>
+                                        </h2>
+                                        <div id="collapseAgeChg" class="accordion-collapse collapse show"
+                                            aria-labelledby="headingAgeChg" data-bs-parent="#agegroup">
+                                            <div class="accordion-body">
+                                                <div class="new">
 
-                                                @if (count($categories) > 0)
-                                                    @foreach ($categories as $category)
-                                                        <div class="form-group">
-                                                            <input type="checkbox" id="catagory{{ $category->id }}"
-                                                                name="category_id" value="{{ $category->id }}">
-                                                            <label
-                                                                for="catagory{{ $category->id }}">{{ $category->name }}</label>
-                                                        </div>
-                                                    @endforeach
-                                                @endif
+                                                    @if (count($childCategoriesList) > 0)
+                                                        @foreach ($childCategoriesList as $category)
+                                                            <div class="form-group">
+                                                                <input type="checkbox" id="catagory{{ $category->id }}"
+                                                                    name="category_id" value="{{ $category->id }}">
+                                                                <label
+                                                                    for="catagory{{ $category->id }}">{{ $category->name }}</label>
+                                                            </div>
+                                                        @endforeach
+                                                    @endif
 
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    @endif
+                        @else
+                            <div class="padding_filter">
+                                <div class="accordion" id="agegroup">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingAge">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapseAge" aria-expanded="true"
+                                                aria-controls="collapseAge">
+                                                Categories
+                                            </button>
+                                        </h2>
+                                        <div id="collapseAge" class="accordion-collapse collapse show"
+                                            aria-labelledby="headingAge" data-bs-parent="#agegroup">
+                                            <div class="accordion-body">
+                                                <div class="new">
+
+                                                    @if (count($categories) > 0)
+                                                        @foreach ($categories as $category)
+                                                            <div class="form-group">
+                                                                <input type="checkbox" id="catagory{{ $category->id }}"
+                                                                    name="category_id" value="{{ $category->id }}">
+                                                                <label
+                                                                    for="catagory{{ $category->id }}">{{ $category->name }}</label>
+                                                            </div>
+                                                        @endforeach
+                                                    @endif
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
 
 
 
-                    {{-- <div class="padding_filter">
+                        {{-- <div class="padding_filter">
                         <div class="accordion" id="price">
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingPrice">
@@ -179,7 +187,7 @@
                             </div>
                         </div>
                     </div> --}}
-                    {{-- <div class="padding_filter">
+                        {{-- <div class="padding_filter">
                         <div class="accordion" id="starrating">
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingStarrating">
@@ -219,13 +227,13 @@
                             </div>
                         </div>
                     </div> --}}
+                    </div>
+                </div>
+                <div class="col-xl-9 col-lg-8 p-0" id="product-filter">
+                    @include('ecom.partials.product-filter')
+
                 </div>
             </div>
-            <div class="col-xl-9 col-lg-8 p-0" id="product-filter">
-                @include('ecom.partials.product-filter')
-
-            </div>
-    </div>
     </section>
 @endsection
 

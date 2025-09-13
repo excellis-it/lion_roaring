@@ -5,14 +5,16 @@
     <div class="container-fluid">
         <div class="main_menu">
             <div class="navigation navbar">
-                <div class="left_top">
+                <div class="left_top order-1 order-lg-1">
                     <div class="logo">
                         <a href="{{ route('e-store') }}" class="">
                             <img src="{{ asset('ecom_assets/images/estore_logo.png') }}" alt="" />
                         </a>
                     </div>
                 </div>
-                <div class="me-auto">
+                <div class="me-auto order-2 order-lg-2">
+                    <span class="d-block font-bold ms-3" onclick="changeLocation()" style="cursor: pointer;">My
+                        Location</span>
                     @if (Auth::check())
                         @if (Auth::user()->location_lat || Auth::user()->location_lng)
                             <span onclick="changeLocation()" class="location-icon location_btn" data-bs-toggle="tooltip"
@@ -31,7 +33,7 @@
                         @endif
                     @endif
                 </div>
-                <div class="right_btm">
+                <div class="right_btm order-4 order-lg-3">
 
                     <div id="cssmenu">
                         <ul>
@@ -41,7 +43,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="right_top">
+                <div class="right_top order-3 order-lg-4">
                     <div class="right_login">
                         <div class="d-flex align-items-center justify-content-end">
                             {{-- <a href="{{ route('user.profile') }}" class="back_main">back to main page</a> --}}

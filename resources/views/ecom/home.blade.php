@@ -58,33 +58,37 @@
     </section>
 
 
-    <section class="product_catagory">
-        <!--<div class="row justify-content-center">-->
-        <!--    <div class="col-xl-7">-->
-        <!--        <div class="heading_hp text-center">-->
-        <!--            <h2>{!! isset($content['product_category_title']) ? $content['product_category_title'] : '' !!}</h2>-->
-        <!--            <p>-->
-        <!--                {!! isset($content['product_category_subtitle']) ? $content['product_category_subtitle'] : '' !!}-->
-        <!--            </p>-->
-        <!--        </div>-->
-        <!--    </div>-->
-        <!--</div>-->
-        <div class="catagory_slider">
-            @if (count($topParentCategories) > 0)
-                @foreach ($topParentCategories as $category)
-                    <div class="catagory_slid_padding">
-                        <div class="catagory_box">
-                            <div class="catagory_img">
-                                <a href="{{ route($category->slug . '.e-store.page') }}"><img
-                                        src="{{ Storage::url($category->image) }}" /></a>
-                            </div>
-                            <div class="catagory_text">
-                                <a href="{{ route($category->slug . '.e-store.page') }}">{{ $category->name }}</a>
+    <section class="product_catagory arrw-color">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-7">
+                    <div class="heading_hp text-center">
+                        <h2>{!! isset($content['product_category_title']) ? $content['product_category_title'] : '' !!}</h2>
+                        <p>
+                            {!! isset($content['product_category_subtitle']) ? $content['product_category_subtitle'] : '' !!}
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="catagory_slider">
+                @if (count($topParentCategories) > 0)
+                    @foreach ($topParentCategories as $category)
+                        <div class="catagory_slid_padding">
+                            <div class="catagory_box">
+                                <div class="catagory_img">
+                                    <a href="{{ route($category->slug . '.e-store.page') }}"><img
+                                            src="{{ Storage::url($category->image) }}" /></a>
+                                </div>
+                                <div class="catagory_text">
+                                    <a href="{{ route($category->slug . '.e-store.page') }}">{{ $category->name }}</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-            @endif
+                    @endforeach
+                @endif
+
+            </div>
 
         </div>
     </section>
@@ -161,7 +165,7 @@
                 </div>
 
             </div>
-        </div>
+
     </section>
 
     <section class="new_arr">
@@ -176,10 +180,12 @@
                         <p>
                             {!! isset($content['new_arrival_subtitle']) ? $content['new_arrival_subtitle'] : '' !!}
                         </p>
-                        <a href="{{ route('e-store.all-products') }}" class="red_btn"><span>Shop Now</span></a>
+                        <a href="{{ route('e-store.all-products') . '?type=new-arrivals' }}" class="red_btn"><span>Shop
+                                Now</span></a>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </section>
 
