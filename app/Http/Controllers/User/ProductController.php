@@ -299,6 +299,13 @@ class ProductController extends Controller
                 'warehouse_products.*.color_id' => 'nullable|exists:colors,id',
                 'warehouse_products.*.size_id' => 'nullable|exists:sizes,id',
                 'warehouse_products.*.quantity' => 'required|integer|min:0',
+                'warehouse_products.*.images' => 'nullable|array',
+                'warehouse_products.*.images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
+
+                // Other charges validation
+                'other_charges' => 'nullable|array',
+                'other_charges.*.charge_name' => 'nullable|string|max:255',
+                'other_charges.*.charge_amount' => 'nullable|numeric|min:0',
             ]);
 
             $product = Product::findOrFail($id);
@@ -384,6 +391,17 @@ class ProductController extends Controller
                                     'size_id' => $wp['size_id'] ?? null,
                                     'quantity' => $wp['quantity'],
                                 ]);
+
+                                // Handle new images for existing warehouse product
+                                if (!empty($wp['images'])) {
+                                    foreach ($wp['images'] as $file) {
+                                        $wpImage = new WarehouseProductImage();
+                                        $wpImage->warehouse_product_id = $warehouseProduct->id;
+                                        $wpImage->image_path = $this->imageUpload($file, 'warehouse_product');
+                                        $wpImage->save();
+                                    }
+                                }
+
                                 $existingIds[] = $warehouseProduct->id;
                             }
                         } else {
@@ -397,6 +415,17 @@ class ProductController extends Controller
                                 'size_id' => $wp['size_id'] ?? null,
                                 'quantity' => $wp['quantity'],
                             ]);
+
+                            // Save warehouse product images
+                            if (!empty($wp['images'])) {
+                                foreach ($wp['images'] as $file) {
+                                    $wpImage = new WarehouseProductImage();
+                                    $wpImage->warehouse_product_id = $warehouseProduct->id;
+                                    $wpImage->image_path = $this->imageUpload($file, 'warehouse_product');
+                                    $wpImage->save();
+                                }
+                            }
+
                             $existingIds[] = $warehouseProduct->id;
                         }
                     }
@@ -444,5 +473,16 @@ class ProductController extends Controller
         $image = ProductImage::findOrFail($request->id);
         $image->delete();
         return response()->json(['message' => 'Image deleted successfully!']);
+    }
+
+    public function warehouseImageDelete(Request $request)
+    {
+        $image = WarehouseProductImage::findOrFail($request->id);
+        // Delete the file from storage if needed
+        if (file_exists(storage_path('app/public/' . $image->image_path))) {
+            unlink(storage_path('app/public/' . $image->image_path));
+        }
+        $image->delete();
+        return response()->json(['message' => 'Warehouse product image deleted successfully!']);
     }
 }

@@ -24,7 +24,7 @@
                         <div class="row">
 
                             {{-- banner_title --}}
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-6 mb-2" hidden>
                                 <div class="box_label">
                                     <label for="banner_title"> Banner Title*</label>
                                     <input type="text" name="banner_title" id="banner_title" class="form-control"
@@ -35,7 +35,7 @@
                                 </div>
                             </div>
                             {{-- banner_subtitle --}}
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-6 mb-2" hidden>
                                 <div class="box_label">
                                     <label for="banner_subtitle"> Banner Subtitle*</label>
                                     <input type="text" name="banner_subtitle" id="banner_subtitle" class="form-control"

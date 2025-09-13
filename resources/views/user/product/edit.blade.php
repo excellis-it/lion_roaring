@@ -461,23 +461,34 @@
 
                                             <div class="col-md-3 mb-2">
                                                 <div class="box_label">
-                                                    <label>Images <span class="text-danger">*</span></label>
+                                                    <label>Images</label>
                                                     <input type="file"
                                                         name="warehouse_products[{{ $index }}][images][]"
-                                                        class="form-control" multiple required>
+                                                        class="form-control" multiple>
                                                 </div>
-                                                <ul class="list ">
-                                                    @foreach ($warehouseProduct->images as $image)
-                                                        <li id="{{ $image->id }}"
-                                                            class="d-flex align-items-center mb-1">
-
-                                                            <a href="{{ Storage::url($image->image_path) }}"
-                                                                target="_blank">{{ $image->image_path }}</a>
-                                                            <button type="button" class="btn btn-danger"
-                                                                style="color: #E54E4E">X</button>
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
+                                                @if ($warehouseProduct->images->count() > 0)
+                                                    <div class="existing-images mt-2">
+                                                        <label class="small text-muted">Existing Images:</label>
+                                                        <ul class="list-unstyled">
+                                                            @foreach ($warehouseProduct->images as $image)
+                                                                <li id="warehouse-image-{{ $image->id }}"
+                                                                    class="d-flex align-items-center mb-1 p-2 border rounded">
+                                                                    <a href="{{ Storage::url($image->image_path) }}"
+                                                                        target="_blank" class="me-2 text-truncate"
+                                                                        style="max-width: 150px;">
+                                                                        {{ basename($image->image_path) }}
+                                                                    </a>
+                                                                    <button type="button"
+                                                                        class="btn btn-sm btn-danger remove-warehouse-image"
+                                                                        data-id="{{ $image->id }}"
+                                                                        title="Remove Image">
+                                                                        <i class="fa fa-times"></i>
+                                                                    </button>
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                @endif
                                             </div>
 
                                             <div class="col-md-2 mb-2">
@@ -560,10 +571,9 @@
 
                                         <div class="col-md-3 mb-2">
                                             <div class="box_label">
-                                                <label>Images <span class="text-danger">*</span></label>
-                                                <input type="file"
-                                                    name="warehouse_products[{{ $index }}][images][]"
-                                                    class="form-control" multiple required>
+                                                <label>Images</label>
+                                                <input type="file" name="warehouse_products[0][images][]"
+                                                    class="form-control" multiple>
                                             </div>
                                         </div>
 
@@ -596,7 +606,88 @@
                         <div class="mt-3 mb-5" style="height: 10px; border-bottom: 2px solid #eee; margin: 20px 0;">
                         </div>
 
-                        <!-- ... existing code for other sections ... -->
+                        <!-- Other Charges Section -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="heading_box mb-3">
+                                    <h3>Other Charges</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" id="other-charges-wrapper">
+                            @if ($product->otherCharges->count() > 0)
+                                @foreach ($product->otherCharges as $index => $charge)
+                                    <div class="row">
+                                        <div class="col-md-4 mb-2">
+                                            <div class="box_label">
+                                                @if ($index == 0)
+                                                    <label>Other Charges</label>
+                                                @endif
+                                                <input type="text"
+                                                    name="other_charges[{{ $index }}][charge_name]"
+                                                    class="form-control" placeholder="Ex. Package Charge"
+                                                    value="{{ $charge->charge_name }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 mb-2">
+                                            <div class="box_label">
+                                                <input step="any" type="number"
+                                                    name="other_charges[{{ $index }}][charge_amount]"
+                                                    class="form-control" placeholder="Charge Amount"
+                                                    value="{{ $charge->charge_amount }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 mb-2">
+                                            <div class="box_label">
+                                                <div class="mb-2 mt-1">
+                                                    @if ($index == 0)
+                                                        <button type="button"
+                                                            class="btn btn-primary add-more-other-charge">+</button>
+                                                    @else
+                                                        <button type="button"
+                                                            class="btn btn-danger text-danger remove-other-charge">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+                                            <label>Other Charges</label>
+                                            <input type="text" name="other_charges[0][charge_name]"
+                                                class="form-control" placeholder="Ex. Package Charge">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+                                            <input step="any" type="number" name="other_charges[0][charge_amount]"
+                                                class="form-control" placeholder="Charge Amount">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+                                            <div class="mb-2 mt-1">
+                                                <button type="button"
+                                                    class="btn btn-primary add-more-other-charge">+</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="mt-3 mb-5" style="height: 10px; border-bottom: 2px solid #eee; margin: 20px 0;">
+                        </div>
 
                         <div class="row">
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
@@ -644,7 +735,31 @@
                     });
                 });
 
+                // Remove warehouse product images
+                $(document).on('click', '.remove-warehouse-image', function() {
+                    var id = $(this).data('id');
+                    var token = $("meta[name='csrf-token']").attr("content");
+                    var $this = $(this);
 
+                    if (confirm('Are you sure you want to delete this image?')) {
+                        $.ajax({
+                            url: "{{ route('warehouse-product.image.delete') }}",
+                            type: 'GET',
+                            data: {
+                                "id": id,
+                                "_token": token,
+                            },
+                            success: function(response) {
+                                $('#warehouse-image-' + id).remove();
+                                console.log(response.message);
+                            },
+                            error: function(xhr) {
+                                console.log('Error deleting image');
+                                alert('Error deleting image');
+                            }
+                        });
+                    }
+                });
             });
         </script>
         <script>
@@ -842,13 +957,12 @@
                             </div>
 
                              <div class="col-md-3 mb-2">
-                                                <div class="box_label">
-                                                    <label>Images <span class="text-danger">*</span></label>
-                                                    <input type="file"
-                                                        name="warehouse_products[${warehouseProductIndex}][images][]"
-                                                        class="form-control" multiple required>
-                                                </div>
-                                            </div>
+                                <div class="box_label">
+                                    <label>Images</label>
+                                    <input type="file" name="warehouse_products[${warehouseProductIndex}][images][]"
+                                        class="form-control" multiple>
+                                </div>
+                            </div>
 
 
 
