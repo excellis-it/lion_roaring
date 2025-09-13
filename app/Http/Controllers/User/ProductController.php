@@ -15,6 +15,7 @@ use App\Models\Color;
 use App\Models\WareHouse;
 use App\Models\WarehouseProduct;
 use App\Models\User;
+use App\Models\WarehouseProductImage;
 
 class ProductController extends Controller
 {
@@ -26,7 +27,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-       // return User::with('roles')->where('id', auth()->id())->first();
+        // return User::with('roles')->where('id', auth()->id())->first();
         if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             $products = Product::orderBy('id', 'desc')->paginate(10);
             return view('user.product.list', compact('products'));
@@ -111,9 +112,9 @@ class ProductController extends Controller
                 'price' => 'required|numeric',
                 'feature_product' => 'required',
                 'slug' => 'required|string|unique:products',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
-                'images' => 'nullable|array',
-                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
+                // 'images' => 'nullable|array',
+                // 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
 
                 // Warehouse product validation
                 'warehouse_products' => 'nullable|array',
@@ -123,6 +124,8 @@ class ProductController extends Controller
                 'warehouse_products.*.color_id' => 'nullable|exists:colors,id',
                 'warehouse_products.*.size_id' => 'nullable|exists:sizes,id',
                 'warehouse_products.*.quantity' => 'required|integer|min:0',
+                'warehouse_products.*.images' => 'nullable|array',
+                'warehouse_products.*.images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
             ]);
 
             $product = new Product();
@@ -145,15 +148,15 @@ class ProductController extends Controller
                 $image->save();
             }
 
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $file) {
-                    $image = new ProductImage();
-                    $image->product_id = $product->id;
-                    $image->image = $this->imageUpload($file, 'product');
-                    $image->featured_image = 0;
-                    $image->save();
-                }
-            }
+            // if ($request->hasFile('images')) {
+            //     foreach ($request->file('images') as $file) {
+            //         $image = new ProductImage();
+            //         $image->product_id = $product->id;
+            //         $image->image = $this->imageUpload($file, 'product');
+            //         $image->featured_image = 0;
+            //         $image->save();
+            //     }
+            // }
 
             // Save sizes
             if ($request->filled('sizes')) {
@@ -186,7 +189,7 @@ class ProductController extends Controller
             if ($request->filled('warehouse_products')) {
                 foreach ($request->warehouse_products as $warehouseProduct) {
                     if (!empty($warehouseProduct['warehouse_id'])) {
-                        WarehouseProduct::create([
+                        $theWarehouseProduct = WarehouseProduct::create([
                             'product_id' => $product->id,
                             'warehouse_id' => $warehouseProduct['warehouse_id'],
                             'sku' => $warehouseProduct['sku'],
@@ -195,9 +198,21 @@ class ProductController extends Controller
                             'size_id' => $warehouseProduct['size_id'] ?? null,
                             'quantity' => $warehouseProduct['quantity'],
                         ]);
+
+                        // Save warehouse product images
+                        if (!empty($warehouseProduct['images'])) {
+                            foreach ($warehouseProduct['images'] as $file) {
+                                $wpImage = new WarehouseProductImage();
+                                $wpImage->warehouse_product_id = $theWarehouseProduct->id;
+                                $wpImage->image_path = $this->imageUpload($file, 'warehouse_product');
+                                $wpImage->save();
+                            }
+                        }
                     }
                 }
             }
+
+
 
             // notify users
             $userName = Auth::user()->getFullNameAttribute();
