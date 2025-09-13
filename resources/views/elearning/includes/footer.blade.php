@@ -7,18 +7,18 @@
             <div class="col-lg-4 col-md-6">
                 <div class="left_logo me-0 me-xl-5">
                     {{-- <div class="ftr_logo mb-3">
-                        <img src="{{ Helper::getFooterCms() ? Storage::url(Helper::getFooterCms()->footer_logo) : asset('ecom_assets/images/logo.png') }}"
+                        <img src="{{ Helper::getElearningFooterCms() ? Storage::url(Helper::getElearningFooterCms()->footer_logo) : asset('ecom_assets/images/logo.png') }}"
                             alt="logo" />
                     </div> --}}
                     <div class="ftr_logo_sec">
                         <div class="d-flex align-items-center">
                             <div>
                                 <a class="ftr_logo">
-                                    <img src="{{ Helper::getFooterCms() ? Storage::url(Helper::getFooterCms()->footer_logo) : asset('ecom_assets/images/logo.png') }}"
+                                    <img src="{{ Helper::getElearningFooterCms() ? Storage::url(Helper::getElearningFooterCms()->footer_logo) : asset('ecom_assets/images/logo.png') }}"
                                         alt="logo" />
                                 </a>
                             </div>
-                            <div>
+                            {{-- <div>
                                 <a class="ftr_logo_right">
                                     @if (isset(Helper::getFooter()['footer_flag']))
                                         <img src="{{ Storage::url(Helper::getFooter()['footer_flag']) }}"
@@ -28,20 +28,20 @@
                                             alt="">
                                     @endif
                                 </a>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
 
 
                     <p>
-                        {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_title : '' !!}
+                        {!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_title : '' !!}
                     </p>
                     <span>Follow us</span>
                     <ul>
-                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_facebook_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-facebook"></i></a></li>
-                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_instagram_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-instagram"></i></a></li>
-                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_twitter_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-twitter"></i></a></li>
-                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_youtube_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-youtube"></i></a></li>
+                        <li><a href="{!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_facebook_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-facebook"></i></a></li>
+                        <li><a href="{!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_instagram_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-instagram"></i></a></li>
+                        <li><a href="{!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_twitter_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-twitter"></i></a></li>
+                        <li><a href="{!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_youtube_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-youtube"></i></a></li>
                     </ul>
                 </div>
             </div>
@@ -53,10 +53,10 @@
                             <span><i class="fa-solid fa-location-dot"></i></span>
                         </div>
                         <div class="ftr_text_h">
-                            <p><b>{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_address_title : '' !!}
+                            <p><b>{!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_address_title : '' !!}
 
                                 </b><br>
-                                {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_address : '' !!}
+                                {!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_address : '' !!}
                             </p>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                             <span><i class="fa-solid fa-phone"></i></span>
                         </div>
                         <div class="ftr_text_h">
-                            <a href="javascript:void(0);">{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_phone_number : '' !!}</a>
+                            <a href="javascript:void(0);">{!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_phone_number : '' !!}</a>
                         </div>
                     </div>
                     <div class="d-flex align-items-center mb-3">
@@ -73,7 +73,7 @@
                             <span><i class="fa-solid fa-envelope"></i></span>
                         </div>
                         <div class="ftr_text_h">
-                            <a href="javascript:void(0);">{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_email : '' !!}</a>
+                            <a href="javascript:void(0);">{!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_email : '' !!}</a>
                         </div>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
             <div class="col-lg-4">
                 <div class="find-us left_ali">
                     <h4>
-                        {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_newsletter_title : '' !!}
+                        {!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_newsletter_title : '' !!}
                     </h4>
                     <div class="ftr-frm">
                         <form action="{{ route('e-learning.newsletter') }}" method="post" id="submit-newsletter">
@@ -137,14 +137,14 @@
                     <li><a href="{{ route('e-learning') }}">Home</a></li>
                     <li><a href="{{ route('e-learning.all-products') }}">Our Collections</a></li>
                     <li><a href="{{ route('contact-us') }}">Contact us</a></li>
-                    @if (Helper::getCmsPages() && count(Helper::getCmsPages()) > 0)
-                        @foreach (Helper::getCmsPages() as $page)
+                    @if (Helper::getElearningCmsPages() && count(Helper::getElearningCmsPages()) > 0)
+                        @foreach (Helper::getElearningCmsPages() as $page)
                             <li><a href="{{ route($page->slug . '.e-learning.cms-page') }}">{{ $page->page_name }}</a></li>
                         @endforeach
                     @endif
                 </ul>
             </div>
-            <p> {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_copywrite_text : '' !!}</p>
+            <p> {!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_copywrite_text : '' !!}</p>
         </div>
 
     </div>

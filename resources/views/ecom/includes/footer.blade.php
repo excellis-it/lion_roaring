@@ -14,9 +14,9 @@
                         <div class="d-flex align-items-center">
                             <div>
                                 <a class="ftr_logo">
-                                    {{-- <img src="{{ Helper::getFooterCms() ? Storage::url(Helper::getFooterCms()->footer_logo) : asset('ecom_assets/images/logo.png') }}"
-                                        alt="logo" /> --}}
-                                    <img src="{{ asset('ecom_assets/images/estore_logo.png') }}" alt="logo" />
+                                    <img src="{{ Helper::getFooterCms() ? Storage::url(Helper::getFooterCms()->footer_logo) : asset('ecom_assets/images/estore_logo.png') }}"
+                                        alt="logo" />
+                                    {{-- <img src="{{ asset('ecom_assets/images/estore_logo.png') }}" alt="logo" /> --}}
                                 </a>
                             </div>
                             {{-- <div>

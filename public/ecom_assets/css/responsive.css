@@ -29,11 +29,7 @@
     }
 }
 @media (max-width:1366px){
-    .logo{
-        width: 200px;
-        display: flex;
-        align-items: center;
-    }
+
     .heading_hp h2 {
         font-size: 40px;
     }
@@ -46,7 +42,7 @@
     }
     .middle_arrow .slick-nav.prev-arrow {
         left: 45%;
-    } 
+    }
     .left_ali p, .left_ali a {
         font-size: 14px;
     }
@@ -79,10 +75,8 @@
     .main-menu .navbar{
         flex-wrap: inherit;
     }
-    
-    .logo a img {
-        width: 147px;
-    }
+
+
     .right_login{
         padding: 6px 0px 3px;
     }
@@ -159,7 +153,7 @@
     }
 }
 
-@media (max-width:767px){ 
+@media (max-width:767px){
     .red_btn {
         padding: 12px 22px;
         letter-spacing: 1px;
@@ -167,10 +161,10 @@
     }
     .heading_hp h2 {
         font-size: 25px;
-    }   
+    }
     .logo a img {
-        width: 125px;
-    }     
+        width: 60px;
+    }
     .banner_text h1 {
         font-size: 40px;
     }
@@ -211,12 +205,19 @@
     }
     .logo a{
         width: auto;
+        margin-right: 5px;
     }
     .ftr_line_link ul{
         display: block;
         columns: 2;
         text-align: left;
     }
+    .location_btn{
+    width: 100px;
+}
+.banner_sec{
+    padding-top: 80px;
+}
 }
 @media (max-width:425.98px){
     .img_servic {

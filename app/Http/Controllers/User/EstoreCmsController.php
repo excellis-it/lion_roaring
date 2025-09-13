@@ -88,8 +88,8 @@ class EstoreCmsController extends Controller
                 'featured_product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'new_product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'new_arrival_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'banner_title' => 'required|string',
-                'banner_subtitle' => 'required|string',
+                'banner_title' => 'nullable|string',
+                'banner_subtitle' => 'nullable|string',
                 'product_category_title' => 'required|string',
                 'product_category_subtitle' => 'required|string',
                 'featured_product_title' => 'required|string',
@@ -111,8 +111,8 @@ class EstoreCmsController extends Controller
                 $message = 'Home CMS added successfully';
             }
 
-            $cms->banner_title = $request->banner_title;
-            $cms->banner_subtitle = $request->banner_subtitle;
+            $cms->banner_title = $request->banner_title ?? '';
+            $cms->banner_subtitle = $request->banner_subtitle ?? '';
             $cms->product_category_title = $request->product_category_title;
             $cms->product_category_subtitle = $request->product_category_subtitle;
             $cms->featured_product_title = $request->featured_product_title;

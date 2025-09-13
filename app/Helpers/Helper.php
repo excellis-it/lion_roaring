@@ -8,6 +8,8 @@ use App\Models\ChatMember;
 use App\Models\Country;
 use App\Models\EcomCmsPage;
 use App\Models\EcomFooterCms;
+use App\Models\ElearningEcomCmsPage;
+use App\Models\ElearningEcomFooterCms;
 use App\Models\Footer;
 use App\Models\MailUser;
 use App\Models\Notification;
@@ -122,6 +124,18 @@ class Helper
     public static function getFooterCms()
     {
         $cms = EcomFooterCms::orderBy('id', 'desc')->first();
+        return $cms;
+    }
+
+    public static function getElearningCmsPages()
+    {
+        $pages = ElearningEcomCmsPage::get();
+        return $pages;
+    }
+
+    public static function getElearningFooterCms()
+    {
+        $cms = ElearningEcomFooterCms::orderBy('id', 'desc')->first();
         return $cms;
     }
 

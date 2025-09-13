@@ -1127,7 +1127,7 @@ class ProductController extends Controller
                     ->where('quantity', '>', 0);
             })->pluck('id')->toArray();
 
-            $warehouseProduct = WarehouseProduct::where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)
+            $warehouseProduct = WarehouseProduct::with('images')->where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)
                 ->when($request->size_id, function ($query) use ($request) {
                     return $query->where('size_id', $request->size_id);
                 })

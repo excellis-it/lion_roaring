@@ -71,6 +71,9 @@
                     <div class="login_prf">
                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal1">Donate</a>
                     </div>
+                    <div class="login_prf">
+                        <a href="{{ route('e-store') }}" >E-Store</a>
+                    </div>
                 </div>
             </div>
         </div>
