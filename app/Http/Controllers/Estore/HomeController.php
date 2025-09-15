@@ -133,13 +133,23 @@ class HomeController extends Controller
             $lat = $request->latitude;
             $lng = $request->longitude;
 
-            // Call Google Geocoding API
-            $apiKey = env('GOOGLE_MAPS_API_KEY');
-            $client = new Client();
-            $url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={$lat},{$lng}&key={$apiKey}";
+            try {
+                // Call Google Geocoding API
+                $apiKey = env('GOOGLE_MAPS_API_KEY');
+                $client = new Client();
+                $url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={$lat},{$lng}&key={$apiKey}";
 
-            $response = $client->get($url);
-            $data = json_decode($response->getBody(), true);
+                $response = $client->get($url);
+                //  return $response;
+                $data = json_decode($response->getBody(), true);
+
+                // if got any error from api then return
+                // if ($data['status'] !== 'OK') {
+                //     return response()->json(['success' => false, 'message' => 'Failed to retrieve address from coordinates'], 500);
+                // }
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => 'Error calling Geocoding API: ' . $e->getMessage()], 500);
+            }
 
             $address = null;
             $zip = null;
@@ -184,7 +194,14 @@ class HomeController extends Controller
                 session()->put('location_state', $state);
             }
 
-            return response()->json(['success' => true, 'message' => 'Location updated']);
+            return response()->json(['success' => true, 'message' => 'Location updated', 'location' => [
+                'latitude' => $lat,
+                'longitude' => $lng,
+                'address' => $address,
+                'zip' => $zip,
+                'country' => $country,
+                'state' => $state,
+            ]]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }

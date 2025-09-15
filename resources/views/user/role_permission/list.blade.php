@@ -11,14 +11,14 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-lg-12">
 
                                 <div class="row justify-content-between">
-                                    <div class="col-md-2">
+                                    <div class="col-lg-8">
                                         <h3 class="mb-3">Role Permission List</h3>
                                     </div>
 
-                                    <div class="col-md-4 text-end">
+                                    <div class="col-lg-4 text-end">
                                         <a href="{{ route('ecclesias.index') }}" class="btn btn-primary me-3">+
                                             House Of Ecclesia</a>
 

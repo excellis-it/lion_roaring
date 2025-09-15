@@ -22,17 +22,19 @@ class WarehouseAdminController extends Controller
 {
     use ImageTrait;
 
+    public function __construct()
+    {
+        // Example: only admins can access this controller
+        if (!auth()->user()->hasRole('SUPER ADMIN') || !auth()->user()->hasRole('ADMINISTRATOR') || !auth()->user()->isWarehouseAdmin()) {
+            abort(403, 'Access denied.');
+        }
+    }
+
     /**
      * Display a listing of the warehouse admins.
      */
     public function index()
     {
-        // access blocked for now
-        abort(403, 'Unauthorized action.');
-
-        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
-            abort(403, 'Unauthorized action.');
-        }
 
         $warehouseAdmins = User::role('WAREHOUSE_ADMIN')->get();
         return view('user.warehouse-admin.list', compact('warehouseAdmins'));
@@ -43,12 +45,7 @@ class WarehouseAdminController extends Controller
      */
     public function create()
     {
-         // access blocked for now
-        abort(403, 'Unauthorized action.');
 
-        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
-            abort(403, 'Unauthorized action.');
-        }
 
         $warehouses = WareHouse::where('is_active', 1)->get();
         return view('user.warehouse-admin.create', compact('warehouses'));
@@ -59,12 +56,7 @@ class WarehouseAdminController extends Controller
      */
     public function store(Request $request)
     {
-         // access blocked for now
-        abort(403, 'Unauthorized action.');
 
-        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
-            abort(403, 'Unauthorized action.');
-        }
 
         $request->validate([
             'user_name' => 'required|string|max:255|unique:users',
@@ -109,12 +101,7 @@ class WarehouseAdminController extends Controller
      */
     public function show($id)
     {
-         // access blocked for now
-        abort(403, 'Unauthorized action.');
 
-        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
-            abort(403, 'Unauthorized action.');
-        }
 
         $warehouseAdmin = User::role('WAREHOUSE_ADMIN')->findOrFail($id);
         return view('user.warehouse-admin.show', compact('warehouseAdmin'));
@@ -125,12 +112,7 @@ class WarehouseAdminController extends Controller
      */
     public function edit($id)
     {
-         // access blocked for now
-        abort(403, 'Unauthorized action.');
 
-        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
-            abort(403, 'Unauthorized action.');
-        }
 
         $warehouseAdmin = User::role('WAREHOUSE_ADMIN')->findOrFail($id);
         $warehouses = WareHouse::where('is_active', 1)->get();
@@ -144,12 +126,7 @@ class WarehouseAdminController extends Controller
      */
     public function update(Request $request, $id)
     {
-         // access blocked for now
-        abort(403, 'Unauthorized action.');
 
-        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
-            abort(403, 'Unauthorized action.');
-        }
 
         $warehouseAdmin = User::role('WAREHOUSE_ADMIN')->findOrFail($id);
 
@@ -191,12 +168,7 @@ class WarehouseAdminController extends Controller
      */
     public function destroy($id)
     {
-         // access blocked for now
-        abort(403, 'Unauthorized action.');
 
-        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
-            abort(403, 'Unauthorized action.');
-        }
 
         $warehouseAdmin = User::role('WAREHOUSE_ADMIN')->findOrFail($id);
 
@@ -218,12 +190,7 @@ class WarehouseAdminController extends Controller
      */
     public function delete($id)
     {
-         // access blocked for now
-        abort(403, 'Unauthorized action.');
 
-        if (!auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
-            abort(403, 'Unauthorized action.');
-        }
 
         $warehouseAdmin = User::role('WAREHOUSE_ADMIN')->findOrFail($id);
 
@@ -246,9 +213,7 @@ class WarehouseAdminController extends Controller
      */
     public function listProducts()
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         // Get warehouse IDs that this admin can manage
         $warehouseIds = auth()->user()->warehouses->pluck('id')->toArray();
@@ -266,9 +231,7 @@ class WarehouseAdminController extends Controller
      */
     public function createProduct()
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         $categories = Category::where('status', 1)->get();
         $sizes = Size::where('status', 1)->get();
@@ -283,9 +246,7 @@ class WarehouseAdminController extends Controller
      */
     public function storeProduct(Request $request)
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         $request->validate([
             'category_id' => 'required|exists:categories,id',
@@ -377,9 +338,7 @@ class WarehouseAdminController extends Controller
      */
     public function editProduct($id)
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         $product = Product::findOrFail($id);
 
@@ -409,9 +368,7 @@ class WarehouseAdminController extends Controller
      */
     public function updateProduct(Request $request, $id)
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         $product = Product::findOrFail($id);
 
@@ -536,9 +493,7 @@ class WarehouseAdminController extends Controller
      */
     public function deleteProduct($id)
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         $product = Product::findOrFail($id);
 
@@ -568,9 +523,7 @@ class WarehouseAdminController extends Controller
      */
     public function listSizes()
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         $sizes = Size::paginate(10);
         return view('user.warehouse-admin.sizes.list', compact('sizes'));
@@ -581,9 +534,7 @@ class WarehouseAdminController extends Controller
      */
     public function createSize()
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         return view('user.warehouse-admin.sizes.create');
     }
@@ -593,9 +544,7 @@ class WarehouseAdminController extends Controller
      */
     public function storeSize(Request $request)
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         $request->validate([
             'name' => 'required|string|max:255|unique:sizes,size',
@@ -615,9 +564,7 @@ class WarehouseAdminController extends Controller
      */
     public function editSize($id)
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         $size = Size::findOrFail($id);
         return view('user.warehouse-admin.sizes.edit', compact('size'));
@@ -628,9 +575,7 @@ class WarehouseAdminController extends Controller
      */
     public function updateSize(Request $request, $id)
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         $size = Size::findOrFail($id);
 
@@ -652,9 +597,7 @@ class WarehouseAdminController extends Controller
      */
     public function deleteSize($id)
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         $size = Size::findOrFail($id);
 
@@ -680,9 +623,7 @@ class WarehouseAdminController extends Controller
      */
     public function listColors()
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         $colors = Color::paginate(10);
         return view('user.warehouse-admin.colors.list', compact('colors'));
@@ -693,9 +634,7 @@ class WarehouseAdminController extends Controller
      */
     public function createColor()
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         return view('user.warehouse-admin.colors.create');
     }
@@ -705,9 +644,7 @@ class WarehouseAdminController extends Controller
      */
     public function storeColor(Request $request)
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         $request->validate([
             'color_name' => 'required|string|max:255|unique:colors,color_name',
@@ -729,9 +666,7 @@ class WarehouseAdminController extends Controller
      */
     public function editColor($id)
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         $color = Color::findOrFail($id);
         return view('user.warehouse-admin.colors.edit', compact('color'));
@@ -742,9 +677,7 @@ class WarehouseAdminController extends Controller
      */
     public function updateColor(Request $request, $id)
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         $color = Color::findOrFail($id);
 
@@ -768,9 +701,7 @@ class WarehouseAdminController extends Controller
      */
     public function deleteColor($id)
     {
-        if (!auth()->user()->isWarehouseAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+
 
         $color = Color::findOrFail($id);
 

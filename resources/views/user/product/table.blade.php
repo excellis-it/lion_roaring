@@ -14,7 +14,7 @@
 
             <td> {{ $product->category ? $product->category->name : '' }}</td>
             <td> {{ $product->slug }}</td>
-            <td> {{ $product->price ? '$' . $product->price : '' }}</td>
+            {{-- <td> {{ $product->price ? '$' . $product->price : '' }}</td> --}}
             {{-- <td> {{ $product->sku }}</td>  --}}
             {{-- <td> {{ $product->affiliate_link }}</td> --}}
             {{-- status --}}
@@ -38,6 +38,9 @@
                 <div class="d-flex">
                     <a href="{{ route('products.edit', $product->id) }}" class="delete_icon">
                         <i class="fa-solid fa-edit"></i>
+                    </a> &nbsp; &nbsp;
+                    <a href="{{ route('products.edit', $product->id) . '?tab=variations' }}" class="delete_icon">
+                        <i class="fa-solid fa-th"></i>
                     </a> &nbsp; &nbsp;
                     <a href="javascript:void(0)" id="delete"
                         data-route="{{ route('products.delete', $product->id) }}" class="delete_icon">

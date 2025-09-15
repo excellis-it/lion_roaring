@@ -534,28 +534,28 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/warehouse-admins-delete/{id}', [WarehouseAdminController::class, 'delete'])->name('warehouse-admins.delete');
 
     // Warehouse Admin Product Management Routes (new)
-    Route::get('/warehouse-products', [WarehouseAdminController::class, 'listProducts'])->name('warehouse-admin.products')->middleware('role:WAREHOUSE_ADMIN');
-    Route::get('/warehouse-products/create', [WarehouseAdminController::class, 'createProduct'])->name('warehouse-admin.products.create')->middleware('role:WAREHOUSE_ADMIN');
-    Route::post('/warehouse-products', [WarehouseAdminController::class, 'storeProduct'])->name('warehouse-admin.products.store')->middleware('role:WAREHOUSE_ADMIN');
-    Route::get('/warehouse-products/{id}/edit', [WarehouseAdminController::class, 'editProduct'])->name('warehouse-admin.products.edit')->middleware('role:WAREHOUSE_ADMIN');
-    Route::put('/warehouse-products/{id}', [WarehouseAdminController::class, 'updateProduct'])->name('warehouse-admin.products.update')->middleware('role:WAREHOUSE_ADMIN');
-    Route::get('/warehouse-products/{id}/delete', [WarehouseAdminController::class, 'deleteProduct'])->name('warehouse-admin.products.delete')->middleware('role:WAREHOUSE_ADMIN');
+    Route::get('/warehouse-products', [WarehouseAdminController::class, 'listProducts'])->name('warehouse-admin.products');
+    Route::get('/warehouse-products/create', [WarehouseAdminController::class, 'createProduct'])->name('warehouse-admin.products.create');
+    Route::post('/warehouse-products', [WarehouseAdminController::class, 'storeProduct'])->name('warehouse-admin.products.store');
+    Route::get('/warehouse-products/{id}/edit', [WarehouseAdminController::class, 'editProduct'])->name('warehouse-admin.products.edit');
+    Route::put('/warehouse-products/{id}', [WarehouseAdminController::class, 'updateProduct'])->name('warehouse-admin.products.update');
+    Route::get('/warehouse-products/{id}/delete', [WarehouseAdminController::class, 'deleteProduct'])->name('warehouse-admin.products.delete');
 
     // Warehouse Admin Size Management Routes (new)
-    Route::get('/warehouse-sizes', [WarehouseAdminController::class, 'listSizes'])->name('warehouse-admin.sizes')->middleware('role:WAREHOUSE_ADMIN');
-    Route::get('/warehouse-sizes/create', [WarehouseAdminController::class, 'createSize'])->name('warehouse-admin.sizes.create')->middleware('role:WAREHOUSE_ADMIN');
-    Route::post('/warehouse-sizes', [WarehouseAdminController::class, 'storeSize'])->name('warehouse-admin.sizes.store')->middleware('role:WAREHOUSE_ADMIN');
-    Route::get('/warehouse-sizes/{id}/edit', [WarehouseAdminController::class, 'editSize'])->name('warehouse-admin.sizes.edit')->middleware('role:WAREHOUSE_ADMIN');
-    Route::put('/warehouse-sizes/{id}', [WarehouseAdminController::class, 'updateSize'])->name('warehouse-admin.sizes.update')->middleware('role:WAREHOUSE_ADMIN');
-    Route::get('/warehouse-sizes/{id}/delete', [WarehouseAdminController::class, 'deleteSize'])->name('warehouse-admin.sizes.delete')->middleware('role:WAREHOUSE_ADMIN');
+    Route::get('/warehouse-sizes', [WarehouseAdminController::class, 'listSizes'])->name('warehouse-admin.sizes');
+    Route::get('/warehouse-sizes/create', [WarehouseAdminController::class, 'createSize'])->name('warehouse-admin.sizes.create');
+    Route::post('/warehouse-sizes', [WarehouseAdminController::class, 'storeSize'])->name('warehouse-admin.sizes.store');
+    Route::get('/warehouse-sizes/{id}/edit', [WarehouseAdminController::class, 'editSize'])->name('warehouse-admin.sizes.edit');
+    Route::put('/warehouse-sizes/{id}', [WarehouseAdminController::class, 'updateSize'])->name('warehouse-admin.sizes.update');
+    Route::get('/warehouse-sizes/{id}/delete', [WarehouseAdminController::class, 'deleteSize'])->name('warehouse-admin.sizes.delete');
 
     // Warehouse Admin Color Management Routes (new)
-    Route::get('/warehouse-colors', [WarehouseAdminController::class, 'listColors'])->name('warehouse-admin.colors')->middleware('role:WAREHOUSE_ADMIN');
-    Route::get('/warehouse-colors/create', [WarehouseAdminController::class, 'createColor'])->name('warehouse-admin.colors.create')->middleware('role:WAREHOUSE_ADMIN');
-    Route::post('/warehouse-colors', [WarehouseAdminController::class, 'storeColor'])->name('warehouse-admin.colors.store')->middleware('role:WAREHOUSE_ADMIN');
-    Route::get('/warehouse-colors/{id}/edit', [WarehouseAdminController::class, 'editColor'])->name('warehouse-admin.colors.edit')->middleware('role:WAREHOUSE_ADMIN');
-    Route::put('/warehouse-colors/{id}', [WarehouseAdminController::class, 'updateColor'])->name('warehouse-admin.colors.update')->middleware('role:WAREHOUSE_ADMIN');
-    Route::get('/warehouse-colors/{id}/delete', [WarehouseAdminController::class, 'deleteColor'])->name('warehouse-admin.colors.delete')->middleware('role:WAREHOUSE_ADMIN');
+    Route::get('/warehouse-colors', [WarehouseAdminController::class, 'listColors'])->name('warehouse-admin.colors');
+    Route::get('/warehouse-colors/create', [WarehouseAdminController::class, 'createColor'])->name('warehouse-admin.colors.create');
+    Route::post('/warehouse-colors', [WarehouseAdminController::class, 'storeColor'])->name('warehouse-admin.colors.store');
+    Route::get('/warehouse-colors/{id}/edit', [WarehouseAdminController::class, 'editColor'])->name('warehouse-admin.colors.edit');
+    Route::put('/warehouse-colors/{id}', [WarehouseAdminController::class, 'updateColor'])->name('warehouse-admin.colors.update');
+    Route::get('/warehouse-colors/{id}/delete', [WarehouseAdminController::class, 'deleteColor'])->name('warehouse-admin.colors.delete');
 
     Route::get('/estore-users-list', [PartnerController::class, 'estoreUsers'])->name('estore-users.list');
     // estore-users.fetch-data

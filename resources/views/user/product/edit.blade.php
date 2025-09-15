@@ -485,7 +485,7 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="variation" role="tabpanel" aria-labelledby="variation-tab">
+                            <div class="tab-pane fade" id="variation" role="tabpanel" aria-labelledby="variation">
                                 <!-- Warehouse Products Section -->
                                 <div class="row mt-3">
                                     <div class="col-md-12">
@@ -505,7 +505,7 @@
                                                             <label>Warehouse <span class="text-danger">*</span></label>
                                                             <select
                                                                 name="warehouse_products[{{ $index }}][warehouse_id]"
-                                                                class="form-control warehouse-id" required>
+                                                                class="form-control warehouse-id">
                                                                 <option value="">Select Warehouse</option>
                                                                 @foreach ($warehouses as $warehouse)
                                                                     <option value="{{ $warehouse->id }}"
@@ -525,8 +525,8 @@
                                                             <label>SKU <span class="text-danger">*</span></label>
                                                             <input type="text"
                                                                 name="warehouse_products[{{ $index }}][sku]"
-                                                                class="form-control" value="{{ $warehouseProduct->sku }}"
-                                                                required>
+                                                                class="form-control"
+                                                                value="{{ $warehouseProduct->sku }}">
                                                         </div>
                                                     </div>
 
@@ -536,7 +536,7 @@
                                                             <input type="number" step="0.01"
                                                                 name="warehouse_products[{{ $index }}][price]"
                                                                 class="form-control"
-                                                                value="{{ $warehouseProduct->price }}" required>
+                                                                value="{{ $warehouseProduct->price }}">
                                                         </div>
                                                     </div>
 
@@ -616,7 +616,7 @@
                                                             <input type="number" min="0"
                                                                 name="warehouse_products[{{ $index }}][quantity]"
                                                                 class="form-control"
-                                                                value="{{ $warehouseProduct->quantity }}" required>
+                                                                value="{{ $warehouseProduct->quantity }}">
                                                         </div>
                                                     </div>
 
@@ -636,7 +636,7 @@
                                                     <div class="box_label">
                                                         <label>Warehouse <span class="text-danger">*</span></label>
                                                         <select name="warehouse_products[0][warehouse_id]"
-                                                            class="form-control warehouse-id" required>
+                                                            class="form-control warehouse-id">
                                                             <option value="">Select Warehouse</option>
                                                             @foreach ($warehouses as $warehouse)
                                                                 <option value="{{ $warehouse->id }}">
@@ -651,7 +651,7 @@
                                                     <div class="box_label">
                                                         <label>SKU <span class="text-danger">*</span></label>
                                                         <input type="text" name="warehouse_products[0][sku]"
-                                                            class="form-control" required>
+                                                            class="form-control">
                                                     </div>
                                                 </div>
 
@@ -659,8 +659,7 @@
                                                     <div class="box_label">
                                                         <label>Price <span class="text-danger">*</span></label>
                                                         <input type="number" step="0.01"
-                                                            name="warehouse_products[0][price]" class="form-control"
-                                                            required>
+                                                            name="warehouse_products[0][price]" class="form-control">
                                                     </div>
                                                 </div>
 
@@ -707,8 +706,7 @@
                                                     <div class="box_label">
                                                         <label>Quantity <span class="text-danger">*</span></label>
                                                         <input type="number" min="0"
-                                                            name="warehouse_products[0][quantity]" class="form-control"
-                                                            required>
+                                                            name="warehouse_products[0][quantity]" class="form-control">
                                                     </div>
                                                 </div>
 
@@ -974,7 +972,7 @@
                             <div class="col-md-4 mb-2">
                                 <div class="box_label">
                                     <label>Warehouse <span class="text-danger">*</span></label>
-                                    <select name="warehouse_products[${warehouseProductIndex}][warehouse_id]" class="form-control warehouse-id" required>
+                                    <select name="warehouse_products[${warehouseProductIndex}][warehouse_id]" class="form-control warehouse-id" >
                                         <option value="">Select Warehouse</option>
                                         @foreach ($warehouses as $warehouse)
                                             <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
@@ -986,14 +984,14 @@
                             <div class="col-md-4 mb-2">
                                 <div class="box_label">
                                     <label>SKU <span class="text-danger">*</span></label>
-                                    <input type="text" name="warehouse_products[${warehouseProductIndex}][sku]" class="form-control" required>
+                                    <input type="text" name="warehouse_products[${warehouseProductIndex}][sku]" class="form-control" >
                                 </div>
                             </div>
 
                             <div class="col-md-4 mb-2">
                                 <div class="box_label">
                                     <label>Price <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.01" name="warehouse_products[${warehouseProductIndex}][price]" class="form-control" required>
+                                    <input type="number" step="0.01" name="warehouse_products[${warehouseProductIndex}][price]" class="form-control" >
                                 </div>
                             </div>
 
@@ -1034,7 +1032,7 @@
                             <div class="col-md-2 mb-2">
                                 <div class="box_label">
                                     <label>Quantity <span class="text-danger">*</span></label>
-                                    <input type="number" min="0" name="warehouse_products[${warehouseProductIndex}][quantity]" class="form-control" required>
+                                    <input type="number" min="0" name="warehouse_products[${warehouseProductIndex}][quantity]" class="form-control" >
                                 </div>
                             </div>
 
@@ -1053,6 +1051,23 @@
                 $(document).on('click', '.remove-warehouse-product', function() {
                     $(this).closest('.warehouse-product-entry').remove();
                 });
+            });
+        </script>
+
+        <script>
+            $(document).ready(function() {
+                // if url has ?tab=variations, open that tab (Bootstrap 5)
+                const urlParams = new URLSearchParams(window.location.search);
+                const tab = urlParams.get('tab');
+                if (tab === 'variations') {
+                    // Use Bootstrap 5 Tab API to show the variation tab
+                    const variationTrigger = document.querySelector('#variation-tab');
+                    if (variationTrigger && typeof bootstrap !== 'undefined' && bootstrap.Tab) {
+                        const tabInstance = bootstrap.Tab.getInstance(variationTrigger) || new bootstrap.Tab(
+                            variationTrigger);
+                        tabInstance.show();
+                    }
+                }
             });
         </script>
     @endpush

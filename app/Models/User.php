@@ -161,7 +161,9 @@ class User extends Authenticatable
     // Check if user is a warehouse admin
     public function isWarehouseAdmin()
     {
-        return $this->hasRole('WAREHOUSE_ADMIN');
+       // return $this->hasRole('WAREHOUSE_ADMIN');
+       // check if user has any warehouses assigned
+       return $this->warehouses()->exists();
     }
 
     // Check if user can manage a specific warehouse

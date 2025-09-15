@@ -31,13 +31,22 @@ class ProductController extends Controller
         if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             $products = Product::orderBy('id', 'desc')->paginate(10);
             return view('user.product.list', compact('products'));
-        } else if (auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
-            $products = Product::where('user_id', auth()->id())->orderBy('id', 'desc')->paginate(10);
+        } else if (auth()->user()->isWarehouseAdmin()) {
+            // $products = Product::where('user_id', auth()->id())->orderBy('id', 'desc')->paginate(10);
+            // products where warehouse those products which warehouse use inn
+            // Get warehouse IDs that this admin can manage
+            $warehouseIds = auth()->user()->warehouses->pluck('id')->toArray();
+
+            // Get products that exist in any of these warehouses
+            $products = Product::whereHas('warehouseProducts', function ($query) use ($warehouseIds) {
+                $query->whereIn('warehouse_id', $warehouseIds);
+            })->orderBy('id', 'desc')->paginate(10);
             return view('user.product.list', compact('products'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
     }
+
 
     public function fetchData(Request $request)
     {
@@ -47,19 +56,35 @@ class ProductController extends Controller
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
 
-            $products = Product::query()
-                ->where(function ($q) use ($query) {
+            $products = Product::query();
+
+            // Apply role-based filtering first
+            if (auth()->user()->isWarehouseAdmin()) {
+                $warehouseIds = auth()->user()->warehouses->pluck('id')->toArray();
+                $products = $products->whereHas('warehouseProducts', function ($q) use ($warehouseIds) {
+                    $q->whereIn('warehouse_id', $warehouseIds);
+                });
+            } elseif (!auth()->user()->hasRole('SUPER ADMIN') && !auth()->user()->hasRole('ADMINISTRATOR')) {
+                abort(403, 'You do not have permission to access this page.');
+            }
+
+            // Apply search filters
+            if (!empty($query)) {
+                $products = $products->where(function ($q) use ($query) {
                     $q->where('id', 'like', '%' . $query . '%')
                         ->orWhere('name', 'like', '%' . $query . '%')
-                        // ->orWhere('sku', 'like', '%' . $query . '%')
-                        // ->orWhere('price', 'like', '%' . $query . '%')
-                        // ->orWhere('quantity', 'like', '%' . $query . '%');
-                        ->orWhere('slug', 'like', '%' . $query . '%');
-                })->orWhereHas('category', function ($q) use ($query) {
-                    $q->where('name', 'like', '%' . $query . '%');
+                        ->orWhere('slug', 'like', '%' . $query . '%')
+                        ->orWhereHas('category', function ($subQ) use ($query) {
+                            $subQ->where('name', 'like', '%' . $query . '%');
+                        });
                 });
+            }
+
+            // Apply sorting
             if ($sort_by && $sort_type) {
                 $products = $products->orderBy($sort_by, $sort_type);
+            } else {
+                $products = $products->orderBy('id', 'desc');
             }
 
             $products = $products->paginate(10);
@@ -86,7 +111,7 @@ class ProductController extends Controller
             $warehouses = auth()->user()->warehouses;
         }
 
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
             return view('user.product.create')
                 ->with(compact('categories', 'sizes', 'colors', 'warehouses'));
         } else {
@@ -104,28 +129,28 @@ class ProductController extends Controller
     {
         try {
             $request->validate([
-                'category_id' => 'required|numeric|exists:categories,id',
-                'name' => 'required|string|max:255',
-                'description' => 'required|string',
-                'short_description' => 'required|string',
-                'specification' => 'required|string',
-                'price' => 'required|numeric',
-                'feature_product' => 'required',
-                'slug' => 'required|string|unique:products',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
-                // 'images' => 'nullable|array',
-                // 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
+                // 'category_id' => 'required|numeric|exists:categories,id',
+                // 'name' => 'required|string|max:255',
+                // 'description' => 'required|string',
+                // 'short_description' => 'required|string',
+                // 'specification' => 'required|string',
+                // 'price' => 'required|numeric',
+                // 'feature_product' => 'required',
+                // 'slug' => 'required|string|unique:products',
+                // 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
+                // // 'images' => 'nullable|array',
+                // // 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
 
-                // Warehouse product validation
-                'warehouse_products' => 'nullable|array',
-                'warehouse_products.*.warehouse_id' => 'required|exists:ware_houses,id',
-                'warehouse_products.*.sku' => 'required|string|distinct|unique:warehouse_products,sku',
-                'warehouse_products.*.price' => 'required|numeric|min:0',
-                'warehouse_products.*.color_id' => 'nullable|exists:colors,id',
-                'warehouse_products.*.size_id' => 'nullable|exists:sizes,id',
-                'warehouse_products.*.quantity' => 'required|integer|min:0',
-                'warehouse_products.*.images' => 'nullable|array',
-                'warehouse_products.*.images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
+                // // Warehouse product validation
+                // 'warehouse_products' => 'nullable|array',
+                // 'warehouse_products.*.warehouse_id' => 'required|exists:ware_houses,id',
+                // 'warehouse_products.*.sku' => 'required|string|distinct|unique:warehouse_products,sku',
+                // 'warehouse_products.*.price' => 'required|numeric|min:0',
+                // 'warehouse_products.*.color_id' => 'nullable|exists:colors,id',
+                // 'warehouse_products.*.size_id' => 'nullable|exists:sizes,id',
+                // 'warehouse_products.*.quantity' => 'required|integer|min:0',
+                // 'warehouse_products.*.images' => 'nullable|array',
+                // 'warehouse_products.*.images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
             ]);
 
             $product = new Product();
@@ -254,7 +279,7 @@ class ProductController extends Controller
             $warehouses = auth()->user()->warehouses;
         }
 
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
             $product = Product::findOrFail($id);
 
             // Get existing warehouse products
@@ -275,37 +300,37 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->hasRole('WAREHOUSE_ADMIN')) {
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
             $request->validate([
-                'category_id' => 'required|numeric|exists:categories,id',
-                'name' => 'required|string|max:255',
-                'description' => 'required|string',
-                'short_description' => 'required|string',
-                'specification' => 'required|string',
-                'price' => 'required|numeric',
-                'slug' => 'required|string|unique:products,slug,' . $id,
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
-                'images' => 'nullable|array',
-                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
-                'feature_product' => 'required',
-                'status' => 'required',
+                // 'category_id' => 'required|numeric|exists:categories,id',
+                // 'name' => 'required|string|max:255',
+                // 'description' => 'required|string',
+                // 'short_description' => 'required|string',
+                // 'specification' => 'required|string',
+                // 'price' => 'required|numeric',
+                // 'slug' => 'required|string|unique:products,slug,' . $id,
+                // 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+                // 'images' => 'nullable|array',
+                // 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
+                // 'feature_product' => 'required',
+                // 'status' => 'required',
 
-                // Warehouse product validation
-                'warehouse_products' => 'nullable|array',
-                'warehouse_products.*.id' => 'nullable|exists:warehouse_products,id',
-                'warehouse_products.*.warehouse_id' => 'required|exists:ware_houses,id',
-                'warehouse_products.*.sku' => 'required|string|distinct',
-                'warehouse_products.*.price' => 'required|numeric|min:0',
-                'warehouse_products.*.color_id' => 'nullable|exists:colors,id',
-                'warehouse_products.*.size_id' => 'nullable|exists:sizes,id',
-                'warehouse_products.*.quantity' => 'required|integer|min:0',
-                'warehouse_products.*.images' => 'nullable|array',
-                'warehouse_products.*.images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
+                // // Warehouse product validation
+                // 'warehouse_products' => 'nullable|array',
+                // 'warehouse_products.*.id' => 'nullable|exists:warehouse_products,id',
+                // 'warehouse_products.*.warehouse_id' => 'required|exists:ware_houses,id',
+                // 'warehouse_products.*.sku' => 'required|string|distinct',
+                // 'warehouse_products.*.price' => 'required|numeric|min:0',
+                // 'warehouse_products.*.color_id' => 'nullable|exists:colors,id',
+                // 'warehouse_products.*.size_id' => 'nullable|exists:sizes,id',
+                // 'warehouse_products.*.quantity' => 'required|integer|min:0',
+                // 'warehouse_products.*.images' => 'nullable|array',
+                // 'warehouse_products.*.images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
 
-                // Other charges validation
-                'other_charges' => 'nullable|array',
-                'other_charges.*.charge_name' => 'nullable|string|max:255',
-                'other_charges.*.charge_amount' => 'nullable|numeric|min:0',
+                // // Other charges validation
+                // 'other_charges' => 'nullable|array',
+                // 'other_charges.*.charge_name' => 'nullable|string|max:255',
+                // 'other_charges.*.charge_amount' => 'nullable|numeric|min:0',
             ]);
 
             $product = Product::findOrFail($id);
