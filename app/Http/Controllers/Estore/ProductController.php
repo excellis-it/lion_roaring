@@ -552,8 +552,9 @@ class ProductController extends Controller
                 $quantityUpdated = true;
             }
             // Calculate other charges for this cart item
-            $otherCharges = $cart->product->otherCharges->sum('charge_amount');
-            $cart->subtotal = ($cart->warehouseProduct->price * $cart->quantity) + $otherCharges;
+            $otherCharges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
+
+            $cart->subtotal = ($cart->warehouseProduct->price ?? 0) * $cart->quantity + ($otherCharges ?? 0);
             $total += $cart->subtotal;
         }
 
@@ -584,16 +585,17 @@ class ProductController extends Controller
 
         foreach ($carts as $cart) {
             // Calculate other charges for this cart item
-            $otherCharges = $cart->product->otherCharges->sum('charge_amount');
-            $itemSubtotal = ($cart->warehouseProduct->price * $cart->quantity) + $otherCharges;
+            $otherCharges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
+            $itemSubtotal = (($cart->warehouseProduct->price ?? 0) * $cart->quantity) + $otherCharges;
+
             $subtotal += $itemSubtotal;
 
             $cartItems[] = [
                 'id' => $cart->id,
                 'product_id' => $cart->product_id,
-                'product_name' => $cart->product->name,
-                'product_image' => $cart->product->main_image,
-                'price' => $cart->warehouseProduct->price,
+                'product_name' => $cart->product->name ?? '',
+                'product_image' => $cart->product->main_image ?? '',
+                'price' => $cart->warehouseProduct->price ?? 0,
                 'quantity' => $cart->quantity,
                 'other_charges' => $otherCharges,
                 'subtotal' => $itemSubtotal
@@ -654,9 +656,16 @@ class ProductController extends Controller
 
         $estoreSettings = EstoreSetting::first();
 
-        $carts->each(fn($cart) => $cart->other_charges = $cart->product->otherCharges->sum('charge_amount'));
+        // Attach other charges safely
+        $carts->each(function ($cart) {
+            $cart->other_charges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
+        });
 
-        $subtotal = $carts->sum(fn($cart) => ($cart->warehouseProduct->price * $cart->quantity) + $cart->other_charges);
+        // Calculate subtotal safely
+        $subtotal = $carts->sum(function ($cart) {
+            $price = $cart->warehouseProduct->price ?? 0;
+            return ($price * $cart->quantity) + ($cart->other_charges ?? 0);
+        });
 
         $shippingCost = $deliveryCost = $taxAmount = 0;
 
@@ -669,19 +678,23 @@ class ProductController extends Controller
         }
 
         $withAmount = $subtotal + $shippingCost + $deliveryCost + $taxAmount;
-        $creditCardFee = ($request->payment_type == 'credit')
+        $creditCardFee = ($request->payment_type === 'credit')
             ? ($withAmount * ($estoreSettings->credit_card_percentage ?? 0)) / 100
             : 0;
 
         $totalAmount = $withAmount + $creditCardFee;
 
-        // Aggregate other charges
+        // Aggregate other charges safely
         $otherCharges = [];
         foreach ($carts as $cart) {
-            foreach ($cart->product->otherCharges as $charge) {
-                $otherCharges[$charge->charge_name] = ($otherCharges[$charge->charge_name] ?? 0) + $charge->charge_amount;
+            if (!empty($cart->product?->otherCharges)) {
+                foreach ($cart->product->otherCharges as $charge) {
+                    $otherCharges[$charge->charge_name] =
+                        ($otherCharges[$charge->charge_name] ?? 0) + ($charge->charge_amount ?? 0);
+                }
             }
         }
+
 
         DB::beginTransaction();
 
@@ -736,19 +749,23 @@ class ProductController extends Controller
                 EstoreOrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $cart->product_id,
-                    'warehouse_product_id' => $cart->warehouse_product_id,
+                    'warehouse_product_id' => $cart->warehouse_product_id ?? null,
                     'warehouse_id' => $cart->warehouse_id,
-                    'product_name' => $cart->product->name,
-                    'product_image' => $cart->product->main_image,
-                    'price' => $cart->warehouseProduct->price,
+                    'product_name' => $cart->product->name ?? 'Unknown Product',
+                    'product_image' => $cart->product->main_image ?? null,
+                    'price' => $cart->warehouseProduct->price ?? 0,
                     'quantity' => $cart->quantity,
                     'size_id' => $cart->size_id,
                     'color_id' => $cart->color_id,
-                    'other_charges' => json_encode($cart->product->otherCharges->map(fn($charge) => [
-                        'charge_name' => $charge->charge_name,
-                        'charge_amount' => $charge->charge_amount
-                    ])),
-                    'total' => ($cart->warehouseProduct->price * $cart->quantity) + $cart->other_charges
+                    'other_charges' => json_encode(
+                        $cart->product?->otherCharges?->map(fn($charge) => [
+                            'charge_name' => $charge->charge_name ?? '',
+                            'charge_amount' => $charge->charge_amount ?? 0,
+                        ]) ?? []
+                    ),
+
+                    'total' => (($cart->warehouseProduct?->price ?? 0) * $cart->quantity) + ($cart->other_charges ?? 0),
+
                 ]);
 
                 $warehouseProduct = WarehouseProduct::where('warehouse_id', $cart->warehouse_id)

@@ -59,7 +59,7 @@
                                         <div class="col-md-2">
                                             @if ($item->warehouseProduct?->images->first())
                                                 <img src="{{ Storage::url($item->warehouseProduct?->images->first()->image_path) }}"
-                                                    alt="{{ $item->product->name }}" />
+                                                    alt="{{ $item->product->name }}" class="img-fluid rounded"/>
                                             @elseif ($item->product_image)
                                                 <img src="{{ Storage::url($item->product_image) }}"
                                                     alt="{{ $item->product_name }}" class="img-fluid rounded">
