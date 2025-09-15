@@ -74,10 +74,27 @@ class EstoreSettingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $estoreSetting = EstoreSetting::findOrFail($id);
-        $estoreSetting->update($request->all());
+        // ✅ Validate request
+        $validated = $request->validate([
+            'shipping_cost' => 'nullable|numeric|min:0',
+            'delivery_cost' => 'nullable|numeric|min:0',
+            'tax_percentage' => 'nullable|numeric|min:0|max:100',
+            'credit_card_percentage' => 'nullable|numeric|min:0|max:100',
+            'is_pickup_available' => 'required|boolean',
+        ]);
 
-        return redirect()->route('store-settings.index')->with('message', 'Settings updated successfully.');
+        try {
+            $estoreSetting = EstoreSetting::findOrFail($id);
+            $estoreSetting->update($validated);
+
+            return redirect()
+                ->route('store-settings.index')
+                ->with('message', 'Settings updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->withErrors(['error' => 'Something went wrong: ' . $e->getMessage()]);
+        }
     }
 
     /**

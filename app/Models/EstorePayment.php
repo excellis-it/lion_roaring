@@ -18,7 +18,8 @@ class EstorePayment extends Model
         'currency',
         'status',
         'payment_details',
-        'paid_at'
+        'paid_at',
+        'payment_type'
     ];
 
     protected $casts = [

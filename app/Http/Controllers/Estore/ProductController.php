@@ -22,6 +22,14 @@ use App\Models\WareHouse;
 use App\Services\NotificationService;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use Stripe\Charge;
+use Stripe\Exception\CardException;
+use Stripe\Exception\RateLimitException;
+use Stripe\Exception\InvalidRequestException;
+use Stripe\Exception\AuthenticationException;
+use Stripe\Exception\ApiConnectionException;
+use Stripe\Exception\ApiErrorException;
+use Stripe\PaymentIntent;
 
 class ProductController extends Controller
 {
@@ -610,6 +618,7 @@ class ProductController extends Controller
 
         $total = $subtotal + $shippingCost + $deliveryCost + $taxAmount;
 
+
         return view('ecom.checkout')->with(compact('cartItems', 'subtotal', 'shippingCost', 'deliveryCost', 'taxAmount', 'total', 'cartCount', 'estoreSettings'));
     }
 
@@ -619,6 +628,7 @@ class ProductController extends Controller
         if (!auth()->check()) {
             return response()->json(['status' => false, 'message' => 'Please login to continue']);
         }
+
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -630,63 +640,71 @@ class ProductController extends Controller
             'state' => 'required|string|max:255',
             'pincode' => 'required|string|max:20',
             'country' => 'required|string|max:255',
+            'payment_method_id' => 'required',
+            'payment_type' => 'required',
         ]);
 
         $is_pickup = $request->order_method ?? 0;
 
-        $carts = EstoreCart::where('user_id', auth()->id())->with('product')->get();
+        $carts = EstoreCart::where('user_id', auth()->id())->with('product', 'warehouseProduct')->get();
 
         if ($carts->isEmpty()) {
             return response()->json(['status' => false, 'message' => 'Your cart is empty']);
         }
 
-        // Get estore settings
         $estoreSettings = EstoreSetting::first();
 
-        // cart item product other charges
-        $carts->each(function ($cart) {
-            $cart->other_charges = $cart->product->otherCharges->sum('charge_amount');
-            $cart->price = $cart->warehouseProduct->price;
-        });
+        $carts->each(fn($cart) => $cart->other_charges = $cart->product->otherCharges->sum('charge_amount'));
 
-        $subtotal = $carts->sum(function ($cart) {
-            return ($cart->warehouseProduct->price * $cart->quantity) + $cart->other_charges;
-        });
+        $subtotal = $carts->sum(fn($cart) => ($cart->warehouseProduct->price * $cart->quantity) + $cart->other_charges);
 
-        // Calculate additional costs based on order method and settings
-        $shippingCost = 0;
-        $deliveryCost = 0;
-        $taxAmount = 0;
+        $shippingCost = $deliveryCost = $taxAmount = 0;
 
         if ($estoreSettings) {
-            // Only add shipping/delivery costs if not pickup or if pickup is not available
             if ($is_pickup == 0 || !$estoreSettings->is_pickup_available) {
                 $shippingCost = $estoreSettings->shipping_cost ?? 0;
                 $deliveryCost = $estoreSettings->delivery_cost ?? 0;
             }
+            $taxAmount = ($subtotal * ($estoreSettings->tax_percentage ?? 0)) / 100;
+        }
 
-            $taxPercentage = $estoreSettings->tax_percentage ?? 0;
+        $withAmount = $subtotal + $shippingCost + $deliveryCost + $taxAmount;
+        $creditCardFee = ($request->payment_type == 'credit')
+            ? ($withAmount * ($estoreSettings->credit_card_percentage ?? 0)) / 100
+            : 0;
 
-            // Calculate tax on subtotal
-            if ($taxPercentage > 0) {
-                $taxAmount = ($subtotal * $taxPercentage) / 100;
+        $totalAmount = $withAmount + $creditCardFee;
+
+        // Aggregate other charges
+        $otherCharges = [];
+        foreach ($carts as $cart) {
+            foreach ($cart->product->otherCharges as $charge) {
+                $otherCharges[$charge->charge_name] = ($otherCharges[$charge->charge_name] ?? 0) + $charge->charge_amount;
             }
         }
 
-        $totalAmount = $subtotal + $shippingCost + $deliveryCost + $taxAmount;
-
-        // others charges name amounts in json array
-        $otherCharges = [];
-        $carts->each(function ($cart) use (&$otherCharges) {
-            $cart->product->otherCharges->each(function ($charge) use (&$otherCharges) {
-                $otherCharges[$charge->charge_name] = ($otherCharges[$charge->charge_name] ?? 0) + $charge->charge_amount;
-            });
-        });
+        DB::beginTransaction();
 
         try {
-            DB::beginTransaction();
+            Stripe::setApiKey(env('STRIPE_SECRET'));
 
-            // get warehouse id from $carts first
+            $paymentIntent = PaymentIntent::create([
+                'amount' => round($totalAmount * 100), // cents
+                'currency' => 'usd',
+                'payment_method' => $request->payment_method_id,
+                'payment_method_types' => ['card'],
+                'confirmation_method' => 'manual',
+                'confirm' => true,
+                'receipt_email' => $request->email,
+            ]);
+
+
+
+            if ($paymentIntent->status !== 'succeeded') {
+                DB::rollback();
+                return response()->json(['status' => false, 'message' => 'Payment failed']);
+            }
+
             $warehouseId = $carts->first()->warehouse_id ?? null;
 
             // Create order
@@ -708,11 +726,12 @@ class ProductController extends Controller
                 'tax_amount' => $taxAmount,
                 'shipping_amount' => $shippingCost + $deliveryCost,
                 'total_amount' => $totalAmount,
-                'status' => 'pending',
-                'payment_status' => 'pending'
+                'credit_card_fee' => $creditCardFee,
+                'payment_type' => $request->payment_type,
+                'payment_status' => 'paid',
+                'status' => 'processing',
             ]);
 
-            // Create order items
             foreach ($carts as $cart) {
                 EstoreOrderItem::create([
                     'order_id' => $order->id,
@@ -725,112 +744,65 @@ class ProductController extends Controller
                     'quantity' => $cart->quantity,
                     'size_id' => $cart->size_id,
                     'color_id' => $cart->color_id,
-                    'other_charges' => json_encode($cart->product->otherCharges->map(function ($charge) {
-                        return [
-                            'charge_name' => $charge->charge_name,
-                            'charge_amount' => $charge->charge_amount
-                        ];
-                    })),
+                    'other_charges' => json_encode($cart->product->otherCharges->map(fn($charge) => [
+                        'charge_name' => $charge->charge_name,
+                        'charge_amount' => $charge->charge_amount
+                    ])),
                     'total' => ($cart->warehouseProduct->price * $cart->quantity) + $cart->other_charges
                 ]);
+
+                $warehouseProduct = WarehouseProduct::where('warehouse_id', $cart->warehouse_id)
+                    ->where('id', $cart->warehouse_product_id)
+                    ->where('product_id', $cart->product_id)
+                    ->first();
+
+                if ($warehouseProduct) {
+                    $warehouseProduct->decrement('quantity', $cart->quantity);
+                    $this->notifyAdminIfOutOfStock($warehouseProduct);
+                }
             }
 
-            // Create Stripe Checkout Session
-            Stripe::setApiKey(env('STRIPE_SECRET'));
-
-            $lineItems = [];
-            foreach ($carts as $cart) {
-                $lineItems[] = [
-                    'price_data' => [
-                        'currency' => 'usd',
-                        'product_data' => [
-                            'name' => $cart->product->name,
-                            'description' => $cart->product->short_description ?? '',
-                        ],
-                        'unit_amount' => (($cart->warehouseProduct->price * $cart->quantity) + $cart->other_charges) * 100, // Amount in cents
-                    ],
-                    'quantity' => 1, // We're using the total amount, so quantity is 1
-                ];
-            }
-
-            // Add shipping cost as a line item if applicable
-            if ($shippingCost > 0) {
-                $lineItems[] = [
-                    'price_data' => [
-                        'currency' => 'usd',
-                        'product_data' => [
-                            'name' => 'Shipping Cost',
-                        ],
-                        'unit_amount' => $shippingCost * 100,
-                    ],
-                    'quantity' => 1,
-                ];
-            }
-
-            // Add delivery cost as a line item if applicable
-            if ($deliveryCost > 0) {
-                $lineItems[] = [
-                    'price_data' => [
-                        'currency' => 'usd',
-                        'product_data' => [
-                            'name' => 'Delivery Cost',
-                        ],
-                        'unit_amount' => $deliveryCost * 100,
-                    ],
-                    'quantity' => 1,
-                ];
-            }
-
-            // Add tax as a line item if applicable
-            if ($taxAmount > 0) {
-                $lineItems[] = [
-                    'price_data' => [
-                        'currency' => 'usd',
-                        'product_data' => [
-                            'name' => 'Tax (' . ($estoreSettings->tax_percentage ?? 0) . '%)',
-                        ],
-                        'unit_amount' => round($taxAmount * 100),
-                    ],
-                    'quantity' => 1,
-                ];
-            }
-
-            $encrypted_order_id = encrypt($order->id);
-
-            $checkoutSession = StripeSession::create([
-                'payment_method_types' => ['card'],
-                'line_items' => $lineItems,
-                'mode' => 'payment',
-                'success_url' => route('e-store.payment-success') . '?session_id={CHECKOUT_SESSION_ID}&order_id=' . $encrypted_order_id,
-                'cancel_url' => route('e-store.payment-cancelled') . '?session_id={CHECKOUT_SESSION_ID}&order_id=' . $encrypted_order_id,
-                'metadata' => [
-                    'order_id' => $order->id,
-                    'user_id' => auth()->id()
-                ]
-            ]);
-
-            // Create payment record with session ID
             EstorePayment::create([
                 'order_id' => $order->id,
-                'stripe_payment_intent_id' => $checkoutSession->id,
+                'stripe_payment_intent_id' => $paymentIntent->id,
                 'payment_method' => 'stripe',
+                'payment_type' => $request->payment_type,
                 'amount' => $totalAmount,
                 'currency' => 'USD',
-                'status' => 'pending'
+                'status' => 'succeeded',
+                'payment_details' => [
+                    'payment_intent_id' => $paymentIntent->id,
+                    'amount_received' => $paymentIntent->amount_received,
+                    'currency' => $paymentIntent->currency,
+                ],
+                'paid_at' => now()
             ]);
+
+            $checkoutUrl = route('e-store.order-success', $order->id);
+            EstoreCart::where('user_id', auth()->id())->delete();
 
             DB::commit();
 
             return response()->json([
                 'status' => true,
-                'checkout_url' => $checkoutSession->url,
+                'checkout_url' => $checkoutUrl,
                 'order_id' => $order->id
             ]);
+        } catch (CardException $e) {
+            DB::rollback();
+            return response()->json(['status' => false, 'message' => 'Card error: ' . $e->getMessage()]);
+        } catch (RateLimitException $e) {
+            DB::rollback();
+            return response()->json(['status' => false, 'message' => 'Too many requests: ' . $e->getMessage()]);
+        } catch (InvalidRequestException | AuthenticationException | ApiConnectionException | ApiErrorException $e) {
+            DB::rollback();
+            return response()->json(['status' => false, 'message' => 'Stripe error: ' . $e->getMessage()]);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['status' => false, 'message' => 'Something went wrong: ' . $e->getMessage()]);
         }
     }
+
 
     // Payment success
     public function paymentSuccess(Request $request)
@@ -842,6 +814,8 @@ class ProductController extends Controller
             'session_id' => 'required|string',
             'order_id' => 'required'
         ]);
+
+
 
         $decrypted_order_id = decrypt($request->order_id);
 

@@ -2509,6 +2509,7 @@ content: none !important;
     box-shadow: 0 0 15px #ccc;
     padding: 20px;
     border-radius: 10px;
+    height: 100%;
 }
 
 /* Cart Page Enhancements */

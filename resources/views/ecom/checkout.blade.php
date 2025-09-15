@@ -31,6 +31,10 @@
             </div>
             <form id="checkout-form">
                 @csrf
+                <input type="hidden" name="credit_card_percentage"
+                    value="{{ $estoreSettings ? $estoreSettings->credit_card_percentage : 0 }}" id="credit_card_percentage">
+
+                {{-- Existing Order Details --}}
                 <div class="row">
                     <div class="col-lg-8">
                         <div class="checkout_item">
@@ -111,9 +115,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control bg-light" name="country" id="country"
-                                            placeholder="Country" value="{{ auth()->user()->location_country ?? '' }}"
-                                            readonly>
+                                        <input type="text" class="form-control bg-light" name="country"
+                                            id="country" placeholder="Country"
+                                            value="{{ auth()->user()->location_country ?? '' }}" readonly>
                                         <label for="country">Country</label>
                                     </div>
                                 </div>
@@ -125,30 +129,25 @@
                             <div class="bill_details">
                                 <h4>Order Method</h4>
                                 <div class="bill_text mt-3">
-
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input order-method-radio" type="radio"
                                             name="order_method" id="delivery" value="0" checked>
-                                        <label class="form-check-label" for="delivery">
-                                            Delivery
-                                        </label>
+                                        <label class="form-check-label" for="delivery">Delivery</label>
                                     </div>
                                     @if ($estoreSettings && $estoreSettings->is_pickup_available)
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input order-method-radio" type="radio"
                                                 name="order_method" id="pickup" value="1">
-                                            <label class="form-check-label" for="pickup">
-                                                Pickup
-                                            </label>
+                                            <label class="form-check-label" for="pickup">Pickup</label>
                                         </div>
                                     @endif
-
                                 </div>
-
                             </div>
+
                             <div class="bill_details">
                                 <h4>Bill Details</h4>
                                 <div class="bill_text">
+                                    {{-- Cart items --}}
                                     @foreach ($cartItems as $item)
                                         <ul>
                                             <li>{{ $item['product_name'] }} ({{ $item['quantity'] }}x)</li>
@@ -166,14 +165,18 @@
 
                                     <ul>
                                         <li>Subtotal</li>
-                                        <li id="subtotal-amount">${{ number_format($subtotal, 2) }}</li>
+                                        <li id="subtotal-amount" data-value="{{ $subtotal }}">
+                                            ${{ number_format($subtotal, 2) }}
+                                        </li>
                                     </ul>
 
                                     @if ($estoreSettings && $estoreSettings->shipping_cost > 0)
                                         <ul id="shipping-cost-row"
                                             style="{{ request('order_method') == 1 && $estoreSettings->is_pickup_available ? 'display: none;' : '' }}">
                                             <li>Shipping Cost</li>
-                                            <li id="shipping-amount">${{ number_format($shippingCost, 2) }}</li>
+                                            <li id="shipping-amount" data-value="{{ $shippingCost }}">
+                                                ${{ number_format($shippingCost, 2) }}
+                                            </li>
                                         </ul>
                                     @endif
 
@@ -181,28 +184,71 @@
                                         <ul id="delivery-cost-row"
                                             style="{{ request('order_method') == 1 && $estoreSettings->is_pickup_available ? 'display: none;' : '' }}">
                                             <li>Delivery Cost</li>
-                                            <li id="delivery-amount">${{ number_format($deliveryCost, 2) }}</li>
+                                            <li id="delivery-amount" data-value="{{ $deliveryCost }}">
+                                                ${{ number_format($deliveryCost, 2) }}
+                                            </li>
                                         </ul>
                                     @endif
 
                                     @if ($estoreSettings && $estoreSettings->tax_percentage > 0)
                                         <ul>
                                             <li>Tax ({{ $estoreSettings->tax_percentage }}%)</li>
-                                            <li id="tax-amount">${{ number_format($taxAmount, 2) }}</li>
+                                            <li id="tax-amount" data-value="{{ $taxAmount }}">
+                                                ${{ number_format($taxAmount, 2) }}
+                                            </li>
                                         </ul>
                                     @endif
 
+                                    <!-- Credit Card Fee Row (hidden initially) -->
+                                    <ul id="credit-card-fee-row" style="display: none;">
+                                        <li>Credit Card Fee (<span
+                                                id="cc-percent">{{ $estoreSettings->credit_card_percentage ?? 0 }}</span>%)
+                                        </li>
+                                        <li id="credit-card-fee">$0.00</li>
+                                    </ul>
+
                                     <div class="total_payable">
                                         <div class="total_payable_l">Total Payable</div>
-                                        <div class="total_payable_r" id="total-amount">${{ number_format($total, 2) }}
+                                        <div class="total_payable_r" id="total-amount" data-base="{{ $total }}">
+                                            ${{ number_format($total, 2) }}
                                         </div>
                                     </div>
                                 </div>
-                                <div class="by_con">
-                                    <button type="submit" class="red_btn w-100 text-center" id="submit-payment">
-                                        <span>PLACE ORDER</span>
-                                    </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Payment Method (credit/debit + card fields) --}}
+                <div class="row mt-4">
+                    <div class="col-lg-12">
+                        <div class="cart_right p-4 border rounded shadow-sm bg-white">
+                            <h5 class="mb-3 fw-bold">Payment Method</h5>
+
+                            <!-- Payment Type -->
+                            <div class="mb-3">
+                                <label class="form-label d-block">Choose Payment Type</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input payment-type-radio" type="radio" name="payment_type"
+                                        id="credit_card" value="credit" checked>
+                                    <label class="form-check-label" for="credit_card">Credit Card</label>
                                 </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input payment-type-radio" type="radio" name="payment_type"
+                                        id="debit_card" value="debit">
+                                    <label class="form-check-label" for="debit_card">Debit Card</label>
+                                </div>
+                            </div>
+
+                            <!-- Stripe Card Element -->
+                            <div id="card-element" class="form-control p-3"></div>
+                            <div id="card-errors" class="text-danger mt-2"></div>
+
+                            <!-- Submit -->
+                            <div class="col-md-12 mt-3 text-end">
+                                <button type="submit" class="red_btn w-25 text-center border-0" id="submit-payment">
+                                    <span>PLACE ORDER</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -214,37 +260,84 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <script>
-        // Store the costs for calculation
-        const costs = {
-            subtotal: {{ $subtotal }},
-            shipping: {{ $shippingCost }},
-            delivery: {{ $deliveryCost }},
-            tax: {{ $taxAmount }},
-            isPickupAvailable: {{ $estoreSettings && $estoreSettings->is_pickup_available ? 'true' : 'false' }}
-        };
+        document.addEventListener("DOMContentLoaded", function() {
+            const paymentRadios = document.querySelectorAll("input[name='payment_type']");
+            const orderMethodRadios = document.querySelectorAll(".order-method-radio");
 
-        // Handle order method change
-        $('.order-method-radio').on('change', function() {
-            const isPickup = $(this).val() == '1';
-            let newTotal = costs.subtotal + costs.tax;
+            const creditCardFeeRow = document.getElementById("credit-card-fee-row");
+            const ccFeeElement = document.getElementById("credit-card-fee");
+            const totalAmountElement = document.getElementById("total-amount");
 
-            if (isPickup && costs.isPickupAvailable) {
-                // Hide shipping and delivery costs for pickup
-                $('#shipping-cost-row').hide();
-                $('#delivery-cost-row').hide();
-            } else {
-                // Show shipping and delivery costs for delivery
-                $('#shipping-cost-row').show();
-                $('#delivery-cost-row').show();
-                newTotal += costs.shipping + costs.delivery;
+            const creditCardPercentage = parseFloat(document.getElementById("credit_card_percentage").value) || 0;
+
+            // Store base costs
+            const costs = {
+                subtotal: {{ $subtotal }},
+                shipping: {{ $shippingCost }},
+                delivery: {{ $deliveryCost }},
+                tax: {{ $taxAmount }},
+                isPickupAvailable: {{ $estoreSettings && $estoreSettings->is_pickup_available ? 'true' : 'false' }}
+            };
+
+            function calculateTotal() {
+                const isPickup = document.querySelector(".order-method-radio:checked").value == "1";
+                let baseTotal = costs.subtotal + costs.tax;
+
+                if (!isPickup) {
+                    baseTotal += costs.shipping + costs.delivery;
+                    document.getElementById("shipping-cost-row")?.style.setProperty("display", "flex");
+                    document.getElementById("delivery-cost-row")?.style.setProperty("display", "flex");
+                } else {
+                    document.getElementById("shipping-cost-row")?.style.setProperty("display", "none");
+                    document.getElementById("delivery-cost-row")?.style.setProperty("display", "none");
+                }
+
+                let finalTotal = baseTotal;
+
+                if (document.getElementById("credit_card").checked && creditCardPercentage > 0) {
+                    const fee = (baseTotal * creditCardPercentage) / 100;
+                    ccFeeElement.textContent = `$${fee.toFixed(2)}`;
+                    creditCardFeeRow.style.display = "flex";
+                    finalTotal += fee;
+                } else {
+                    creditCardFeeRow.style.display = "none";
+                }
+
+                totalAmountElement.textContent = `$${finalTotal.toFixed(2)}`;
             }
 
-            // Update total amount
-            $('#total-amount').text('$' + newTotal.toFixed(2));
+            // Attach listeners
+            paymentRadios.forEach(radio => radio.addEventListener("change", calculateTotal));
+            orderMethodRadios.forEach(radio => radio.addEventListener("change", calculateTotal));
+
+            // Initial run
+            calculateTotal();
+        });
+    </script>
+
+    <script>
+        const stripe = Stripe("{{ env('STRIPE_KEY') }}"); // Your Stripe Publishable Key
+        const elements = stripe.elements();
+
+        // Stripe Card Element
+        const card = elements.create('card', {
+            hidePostalCode: true
+        });
+        card.mount('#card-element');
+
+        // Handle card errors
+        card.on('change', function(event) {
+            const displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
         });
 
-        $('#checkout-form').on('submit', function(e) {
+        $('#checkout-form').on('submit', async function(e) {
             e.preventDefault();
 
             // Validate required fields
@@ -264,11 +357,51 @@
                 return;
             }
 
-            // Show loading
             $('#submit-payment').prop('disabled', true).find('span').text('Processing...');
 
-            // Submit form data to create order and get Stripe checkout session
+            // Create payment method in Stripe
+            const {
+                paymentMethod,
+                error
+            } = await stripe.createPaymentMethod({
+                type: 'card',
+                card: card,
+                billing_details: {
+                    name: $('#first_name').val() + ' ' + $('#last_name').val(),
+                    email: $('#email').val(),
+                    phone: $('#phone').val(),
+                    address: {
+                        line1: $('#address_line_1').val(),
+                        line2: $('#address_line_2').val(),
+                        city: $('#city').val(),
+                        state: $('#state').val(),
+                        postal_code: $('#pincode').val(),
+                        // country: $('#country').val().toUpperCase(), // must be ISO code (e.g. "FR")
+                    }
+                }
+            });
+
+            if (error) {
+                $('#card-errors').text(error.message);
+                $('#submit-payment').prop('disabled', false).find('span').text('PLACE ORDER');
+                return;
+            }
+
+            // ✅ Correct way to detect debit/credit card
+            const selectedType = $('input[name="payment_type"]:checked').val(); // "credit" or "debit"
+            const detectedType = paymentMethod.card.funding; // will be "credit", "debit", or "prepaid"
+
+            if (detectedType && selectedType !== detectedType) {
+                toastr.error(
+                    `This card is a ${detectedType} card, but you selected ${selectedType}. Please choose the correct type.`
+                );
+                $('#submit-payment').prop('disabled', false).find('span').text('PLACE ORDER');
+                return;
+            }
+
+            // Send to backend for payment processing
             const formData = new FormData(this);
+            formData.append('payment_method_id', paymentMethod.id);
 
             $.ajax({
                 url: '{{ route('e-store.process-checkout') }}',
@@ -278,7 +411,6 @@
                 contentType: false,
                 success: function(response) {
                     if (response.status) {
-                        // Redirect to Stripe checkout
                         window.location.href = response.checkout_url;
                     } else {
                         Swal.fire({
@@ -286,16 +418,15 @@
                             title: 'Error',
                             text: response.message
                         });
-                        $('#submit-payment').prop('disabled', false).find('span').text('PLACE ORDER');
                     }
+                    $('#submit-payment').prop('disabled', false).find('span').text('PLACE ORDER');
                 },
                 error: function(xhr) {
                     let errorMessage = 'Something went wrong!';
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                    if (xhr.responseJSON?.message) {
                         errorMessage = xhr.responseJSON.message;
-                    } else if (xhr.responseJSON && xhr.responseJSON.errors) {
-                        const errors = xhr.responseJSON.errors;
-                        errorMessage = Object.values(errors)[0][0];
+                    } else if (xhr.responseJSON?.errors) {
+                        errorMessage = Object.values(xhr.responseJSON.errors)[0][0];
                     }
                     Swal.fire({
                         icon: 'error',
@@ -305,10 +436,6 @@
                     $('#submit-payment').prop('disabled', false).find('span').text('PLACE ORDER');
                 }
             });
-
-            setTimeout(() => {
-                $('#submit-payment').prop('disabled', false).find('span').text('PLACE ORDER');
-            }, 6000);
         });
     </script>
 @endpush

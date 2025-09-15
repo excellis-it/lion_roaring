@@ -155,6 +155,13 @@
                                                 <th>${{ number_format($order->shipping_amount, 2) }}</th>
                                             </tr>
                                         @endif
+                                        @if ($order->credit_card_fee > 0)
+                                            <tr>
+                                                <th colspan="4" class="text-end">Credit Card Fee:</th>
+                                                <th>${{ number_format($order->credit_card_fee, 2) }}</th>
+                                            </tr>
+
+                                        @endif
                                         <tr class="table-primary">
                                             <th colspan="4" class="text-end">Total Amount:</th>
                                             <th>${{ number_format($order->total_amount, 2) }}</th>
