@@ -378,7 +378,7 @@
                     </li>
                 @endif
 
-                @if (Auth::user()->hasRole('WAREHOUSE_ADMIN'))
+                @if (Auth::user()->warehouses->count() > 0)
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExample10">

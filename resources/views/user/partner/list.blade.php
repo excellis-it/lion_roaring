@@ -58,6 +58,7 @@
                                                 </th>
                                                 <th class="p-3">Role</th>
                                                 <th class="p-3">House Of Ecclesia</th>
+                                                <th class="p-3">Manage Warehouses</th>
 
                                                 {{-- <th>
                                                     Ecclesia

@@ -10,8 +10,7 @@
                 <span>{{ $partner->getRoleNames()->first() }}</span>
 
                 @if ($partner->is_ecclesia_admin == 1)
-
-                {{-- @dd($partner) --}}
+                    {{-- @dd($partner) --}}
                     <br>
 
                     <button title="Ecclesia Access" type="button" class="btn btn-primary btn-sm ecclesia-see-button"
@@ -47,13 +46,11 @@
                                 </div>
                                 <div class="modal-footer">
                                     @if (auth()->user()->can('Edit Partners'))
-                                        {{-- @if (auth()->user()->hasRole('SUPER ADMIN') ||
-                                                $partner->created_id == auth()->user()->id ||
-                                                (auth()->user()->roles()->first()->is_ecclesia == 1 && auth()->id() != $partner->id)) --}}
-                                            <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}"
-                                                type="button" class="btn btn-primary me-3">
-                                                Edit Member
-                                            </a>
+                                        {{-- @if (auth()->user()->hasRole('SUPER ADMIN') || $partner->created_id == auth()->user()->id || (auth()->user()->roles()->first()->is_ecclesia == 1 && auth()->id() != $partner->id)) --}}
+                                        <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}"
+                                            type="button" class="btn btn-primary me-3">
+                                            Edit Member
+                                        </a>
                                         {{-- @endif --}}
                                     @endif
                                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
@@ -69,6 +66,23 @@
 
             <td>
                 {{ isset($partner->ecclesia) ? $partner->ecclesia->name . ' (' . $partner->ecclesia->countryName->name . ')' : 'NO NAME' }}
+            </td>
+            <td>
+
+                @if ($partner->warehouses->count() > 0)
+                    <br>
+                    <ul>
+                        @foreach ($partner->warehouses as $warehouse)
+                            <li>
+                                {{ $warehouse->name }}
+                                @if (!$loop->last)
+                                    ,
+                                @endif
+
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
             </td>
             {{-- <td>{{ $partner->user_name }}</td>
 
@@ -102,13 +116,11 @@
                 <td>
                     <div class="d-flex">
                         @if (Auth::user()->can('Edit Partners'))
-                            {{-- @if (auth()->user()->hasRole('SUPER ADMIN') ||
-                                    $partner->created_id == auth()->user()->id ||
-                                    (auth()->user()->roles()->first()->is_ecclesia == 1 && auth()->id() != $partner->id)) --}}
-                                <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}"
-                                    class="edit_icon me-2">
-                                    <i class="ti ti-edit"></i>
-                                </a>
+                            {{-- @if (auth()->user()->hasRole('SUPER ADMIN') || $partner->created_id == auth()->user()->id || (auth()->user()->roles()->first()->is_ecclesia == 1 && auth()->id() != $partner->id)) --}}
+                            <a href="{{ route('partners.edit', Crypt::encrypt($partner->id)) }}"
+                                class="edit_icon me-2">
+                                <i class="ti ti-edit"></i>
+                            </a>
                             {{-- @endif --}}
                         @endif
 
@@ -119,14 +131,12 @@
                             </a>
                         @endif
                         @if (Auth::user()->can('Delete Partners'))
-                            {{-- @if (auth()->user()->hasRole('SUPER ADMIN') ||
-                                    $partner->created_id == auth()->user()->id ||
-                                    (auth()->user()->roles()->first()->is_ecclesia == 1 && auth()->id() != $partner->id)) --}}
-                                <a href="javascript:void(0);"
-                                    data-route="{{ route('partners.delete', Crypt::encrypt($partner->id)) }}"
-                                    class="delete_icon" id="delete">
-                                    <i class="ti ti-trash"></i>
-                                </a>
+                            {{-- @if (auth()->user()->hasRole('SUPER ADMIN') || $partner->created_id == auth()->user()->id || (auth()->user()->roles()->first()->is_ecclesia == 1 && auth()->id() != $partner->id)) --}}
+                            <a href="javascript:void(0);"
+                                data-route="{{ route('partners.delete', Crypt::encrypt($partner->id)) }}"
+                                class="delete_icon" id="delete">
+                                <i class="ti ti-trash"></i>
+                            </a>
                             {{-- @endif --}}
                         @endif
 

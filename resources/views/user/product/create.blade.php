@@ -392,7 +392,7 @@
                                                 <div class="box_label">
                                                     <label>Warehouse <span class="text-danger">*</span></label>
                                                     <select name="warehouse_products[0][warehouse_id]"
-                                                        class="form-control warehouse-id" required>
+                                                        class="form-control warehouse-id" >
                                                         <option value="">Select Warehouse</option>
                                                         @foreach ($warehouses as $warehouse)
                                                             <option value="{{ $warehouse->id }}">{{ $warehouse->name }}
@@ -406,7 +406,7 @@
                                                 <div class="box_label">
                                                     <label>SKU <span class="text-danger">*</span></label>
                                                     <input type="text" name="warehouse_products[0][sku]"
-                                                        class="form-control" required>
+                                                        class="form-control" >
                                                 </div>
                                             </div>
 
@@ -414,7 +414,7 @@
                                                 <div class="box_label">
                                                     <label>Price <span class="text-danger">*</span></label>
                                                     <input type="number" step="0.01"
-                                                        name="warehouse_products[0][price]" class="form-control" required>
+                                                        name="warehouse_products[0][price]" class="form-control" >
                                                 </div>
                                             </div>
 
@@ -448,7 +448,7 @@
                                                 <div class="box_label">
                                                     <label>Images <span class="text-danger">*</span></label>
                                                     <input type="file" name="warehouse_products[0][images][]"
-                                                        class="form-control" multiple required>
+                                                        class="form-control" multiple >
                                                 </div>
                                             </div>
 
@@ -459,7 +459,7 @@
                                                     <label>Quantity <span class="text-danger">*</span></label>
                                                     <input type="number" min="0"
                                                         name="warehouse_products[0][quantity]" class="form-control"
-                                                        required>
+                                                        >
                                                 </div>
                                             </div>
 
@@ -672,7 +672,7 @@
                             <div class="col-md-4 mb-2">
                                 <div class="box_label">
                                     <label>Warehouse <span class="text-danger">*</span></label>
-                                    <select name="warehouse_products[${warehouseProductIndex}][warehouse_id]" class="form-control warehouse-id" required>
+                                    <select name="warehouse_products[${warehouseProductIndex}][warehouse_id]" class="form-control warehouse-id" >
                                         <option value="">Select Warehouse</option>
                                         @foreach ($warehouses as $warehouse)
                                             <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
@@ -684,14 +684,14 @@
                             <div class="col-md-4 mb-2">
                                 <div class="box_label">
                                     <label>SKU <span class="text-danger">*</span></label>
-                                    <input type="text" name="warehouse_products[${warehouseProductIndex}][sku]" class="form-control" required>
+                                    <input type="text" name="warehouse_products[${warehouseProductIndex}][sku]" class="form-control" >
                                 </div>
                             </div>
 
                             <div class="col-md-4 mb-2">
                                 <div class="box_label">
                                     <label>Price <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.01" name="warehouse_products[${warehouseProductIndex}][price]" class="form-control" required>
+                                    <input type="number" step="0.01" name="warehouse_products[${warehouseProductIndex}][price]" class="form-control" >
                                 </div>
                             </div>
 
@@ -723,7 +723,7 @@
                                         <div class="box_label">
                                             <label>Images <span class="text-danger">*</span></label>
                                             <input type="file" name="warehouse_products[${warehouseProductIndex}][images][]"
-                                                class="form-control" multiple required>
+                                                class="form-control" multiple >
                                         </div>
                                     </div>
 
@@ -732,7 +732,7 @@
                             <div class="col-md-2 mb-2">
                                 <div class="box_label">
                                     <label>Quantity <span class="text-danger">*</span></label>
-                                    <input type="number" min="0" name="warehouse_products[${warehouseProductIndex}][quantity]" class="form-control" required>
+                                    <input type="number" min="0" name="warehouse_products[${warehouseProductIndex}][quantity]" class="form-control" >
                                 </div>
                             </div>
 
