@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OrdersReportExport;
+use PDF;
 
 class EstoreCmsController extends Controller
 {
@@ -802,5 +803,20 @@ class EstoreCmsController extends Controller
         $filename = str_replace(' ', '_', strtolower($title)) . '_' . date('Y-m-d') . '.xlsx';
 
         return Excel::download(new OrdersReportExport($data, $reportType, $title), $filename);
+    }
+
+
+    public function downloadInvoice(EstoreOrder $order)
+    {
+        // Ensure only delivered & paid orders can generate invoice
+        if ($order->status !== 'delivered' || $order->payment_status !== 'paid') {
+            abort(403, 'Invoice not available.');
+        }
+
+        // return response()->view('user.estore-orders.invoice', compact('order'));
+
+        $pdf = PDF::loadView('user.estore-orders.invoice', compact('order'));
+
+        return $pdf->download('invoice-' . $order->id . '.pdf');
     }
 }

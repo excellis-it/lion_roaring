@@ -21,7 +21,11 @@ class EstoreOrderItem extends Model
         'size_id',
         'color_id',
         'other_charges',
-        'total'
+        'total',
+        'size',
+        'color',
+        'warehouse_name',
+        'warehouse_address',
     ];
 
     protected $casts = [

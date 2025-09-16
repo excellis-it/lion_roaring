@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Estore;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Color;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\EstoreCart;
@@ -17,6 +18,7 @@ use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
 use Illuminate\Support\Facades\DB;
 use App\Models\EcomWishList;
+use App\Models\Size;
 use App\Models\WarehouseProduct;
 use App\Models\WareHouse;
 use App\Services\NotificationService;
@@ -719,7 +721,7 @@ class ProductController extends Controller
             }
 
             $warehouseId = $carts->first()->warehouse_id ?? null;
-
+            $wareHouse = WareHouse::find($warehouseId);
             // Create order
             $order = EstoreOrder::create([
                 'warehouse_id' => $warehouseId,
@@ -743,9 +745,16 @@ class ProductController extends Controller
                 'payment_type' => $request->payment_type,
                 'payment_status' => 'paid',
                 'status' => 'processing',
+                'warehouse_name' => $wareHouse->name ?? null,
+                'warehouse_address' => $wareHouse->address ?? null,
             ]);
 
+
+
             foreach ($carts as $cart) {
+                $size = Size::find($cart->size_id);
+                $color = Color::find($cart->color_id);
+                $wareHouseProduct = WareHouse::find($cart->warehouse_id);
                 EstoreOrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $cart->product_id,
@@ -757,6 +766,10 @@ class ProductController extends Controller
                     'quantity' => $cart->quantity,
                     'size_id' => $cart->size_id,
                     'color_id' => $cart->color_id,
+                    'size' => $size->size ?? null,
+                    'color' => $color->color_name ?? null,
+                    'warehouse_name' => $wareHouseProduct->name ?? null,
+                    'warehouse_address' => $wareHouseProduct->address ?? null,
                     'other_charges' => json_encode(
                         $cart->product?->otherCharges?->map(fn($charge) => [
                             'charge_name' => $charge->charge_name ?? '',

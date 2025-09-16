@@ -504,6 +504,10 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::post('/store-orders/update-status', [EstoreCmsController::class, 'updateOrderStatus'])->name('user.store-orders.update-status');
     Route::delete('/store-orders/delete/{id}', [EstoreCmsController::class, 'deleteOrder'])->name('user.store-orders.delete');
     Route::get('/store-orders/export', [EstoreCmsController::class, 'exportOrders'])->name('user.store-orders.export');
+    // routes/web.php
+    Route::get('/orders/{order}/invoice', [EstoreCmsController::class, 'downloadInvoice'])
+        ->name('user.store-orders.invoice');
+
 
     // Reports routes
     Route::get('/store-orders/reports', [EstoreCmsController::class, 'reportsIndex'])->name('user.store-orders.reports');
@@ -713,7 +717,7 @@ Route::prefix('e-store')->group(function () {
     Route::post('/process-checkout', [EstoreProductController::class, 'processCheckout'])->name('e-store.process-checkout');
     Route::get('/payment-success', [EstoreProductController::class, 'paymentSuccess'])->name('e-store.payment-success');
     Route::get('/payment-cancelled', [EstoreProductController::class, 'paymentCancelled'])->name('e-store.payment-cancelled');
-    
+
     Route::get('/order-success/{orderId}', [EstoreProductController::class, 'orderSuccess'])->name('e-store.order-success');
     Route::get('/my-orders', [EstoreProductController::class, 'myOrders'])->name('e-store.my-orders');
     Route::get('/order-details/{orderId}', [EstoreProductController::class, 'orderDetails'])->name('e-store.order-details');

@@ -32,10 +32,18 @@
                                 <h5 class="card-title mb-0">Order #{{ $order->order_number }}</h5>
 
                                 <div>
-                                    <span
+                                    {{-- <span
                                         class="badge {{ $order->status_badge_class }} me-2">{{ ucfirst($order->status) }}</span>
                                     <span
-                                        class="badge {{ $order->payment_status_badge_class }}">{{ ucfirst($order->payment_status) }}</span>
+                                        class="badge {{ $order->payment_status_badge_class }}">{{ ucfirst($order->payment_status) }}</span> --}}
+                                    {{-- add invoice button --}}
+
+                                    @if ($order->status == 'delivered' && $order->payment_status == 'paid')
+                                        <a href="{{route('user.store-orders.invoice', $order->id)}}" target="_blank" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-download"></i> Download Invoice
+                                        </a>
+                                    @endif
+
                                 </div>
                             </div>
                         </div>
@@ -52,7 +60,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <h6>Warehouse:</h6>
-                                    <p>{{ $order->warehouse?->name ?? 'N/A' }}, {{ $order->warehouse?->address ?? 'N/A' }}
+                                    <p>{{ $order->warehouse_name ?? 'N/A' }}, {{ $order->warehouse_address ?? 'N/A' }}
                                     </p>
                                     <h6>Shipping Address</h6>
                                     <address>
@@ -106,18 +114,18 @@
                                             <tr>
                                                 <td>
                                                     <strong>{{ $item->product_name }}</strong>
-                                                    @if ($item->product)
+                                                    @if (isset($item->warehouseProduct) && $item->warehouseProduct->sku)
                                                         <br><small class="text-muted">SKU:
                                                             {{ $item->warehouseProduct->sku ?? 'N/A' }}</small>
                                                     @endif
 
                                                     {{-- if item have size and color --}}
                                                     @if ($item->size)
-                                                        <br><small class="text-muted">Size: {{ $item->size->size }}</small>
+                                                        <br><small class="text-muted">Size: {{ $item->size }}</small>
                                                     @endif
                                                     @if ($item->color)
                                                         <br><small class="text-muted">Color:
-                                                            {{ $item->color->color_name }}</small>
+                                                            {{ $item->color }}</small>
                                                     @endif
                                                 </td>
                                                 <td>
@@ -160,7 +168,6 @@
                                                 <th colspan="4" class="text-end">Credit Card Fee:</th>
                                                 <th>${{ number_format($order->credit_card_fee, 2) }}</th>
                                             </tr>
-
                                         @endif
                                         <tr class="table-primary">
                                             <th colspan="4" class="text-end">Total Amount:</th>
