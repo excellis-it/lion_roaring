@@ -88,6 +88,19 @@
                                 </div>
                             </div>
 
+                            {{-- Max Refundable Days --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="refund_max_days">Refund Period (in days)</label>
+                                    <input type="number" step="1" name="refund_max_days" id="refund_max_days"
+                                        class="form-control @error('refund_max_days') is-invalid @enderror"
+                                        value="{{ old('refund_max_days', $storeSetting->refund_max_days) }}">
+                                    @error('refund_max_days')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
                             <!-- Buttons -->
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                                 <button type="submit" class="print_btn me-2">Save</button>

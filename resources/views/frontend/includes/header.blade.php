@@ -67,14 +67,14 @@
                                 @endif
                             @else
                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                    href="{{ route('login') }}">Login</a>
+                                    href="{{ route('login') }}"><span><i class="fa-solid fa-user"></i></span> Login</a>
                             @endif
                         </div>
                         <div class="login_prf">
-                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal1">Donate</a>
+                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal1"><span><i class="fa-solid fa-hand-holding-medical"></i></span> Donate</a>
                         </div>
-                        <div class="login_prf">
-                            <a href="{{ route('e-store') }}" >E-Store</a>
+                        <div class="login_prf e-store-btn">
+                            <a href="{{ route('e-store') }}" ><span><i class="fa-solid fa-store"></i></span> E-Store</a>
                         </div>
                     </div>
                 </div>
