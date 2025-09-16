@@ -15,5 +15,6 @@ class EstoreSetting extends Model
         'tax_percentage',
         'is_pickup_available',
         'credit_card_percentage',
+        'refund_max_days',
     ];
 }

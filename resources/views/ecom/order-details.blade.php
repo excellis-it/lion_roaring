@@ -59,7 +59,7 @@
                                         <div class="col-md-2">
                                             @if ($item->warehouseProduct?->images->first())
                                                 <img src="{{ Storage::url($item->warehouseProduct?->images->first()->image_path) }}"
-                                                    alt="{{ $item->product->name }}" class="img-fluid rounded"/>
+                                                    alt="{{ $item->product->name }}" class="img-fluid rounded" />
                                             @elseif ($item->product_image)
                                                 <img src="{{ Storage::url($item->product_image) }}"
                                                     alt="{{ $item->product_name }}" class="img-fluid rounded">
@@ -133,6 +133,69 @@
                                         @endif
                                     </div>
                                 @endforeach
+                            </div>
+                        @endif
+
+                        <!-- Actions Order Cancellation button with modal confirm with note area and cancel button -->
+                        <div class="order-cancellation mt-4">
+                            @if (
+                                $order->status != 'cancelled' &&
+                                    $order->status != 'delivered' &&
+                                    $order->created_at->diffInDays(now()) <= optional($estoreSettings)->refund_max_days)
+                                <button type="button" class="btn btn-outline-danger w-100" data-bs-toggle="modal"
+                                    data-bs-target="#cancelOrderModal">
+                                    Cancel Order
+                                </button>
+
+                                <!-- Cancel Order Modal -->
+                                <div class="modal fade" id="cancelOrderModal" tabindex="-1"
+                                    aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order
+                                                    #{{ $order->order_number }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{ route('e-store.cancel-order') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="order_id" value="{{ $order->id }}">
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label for="cancellation_reason" class="form-label">Reason for
+                                                            Cancellation (optional):</label>
+                                                        <textarea class="form-control" id="cancellation_reason" name="cancellation_reason" rows="3"></textarea>
+                                                    </div>
+                                                    <p>Are you sure you want to cancel this order?</p>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            id="confirmCancellation" required>
+                                                        <label class="form-check-label" for="confirmCancellation">
+                                                            I confirm the cancellation of this order.
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-danger">Cancel Order</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        @if ($order->status == 'cancelled')
+                            <div class="alert alert-danger mt-3">
+
+                                @if ($order->refund_status === true)
+                                    Your order has been cancelled and refunded.
+                                @else
+                                    Your order has been cancelled. Refund is being processed.
+                                @endif
                             </div>
                         @endif
 

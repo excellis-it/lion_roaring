@@ -48,6 +48,7 @@ p {
     width: 100%;
     left: 0;
     top: 0;
+    padding: 10px 0px;
 }
 
 .left_top {
@@ -89,9 +90,20 @@ p {
 }
 
 .login_prf {
-    padding: 0 10px;
+    padding: 0 4px;
 }
-
+.login_prf.e-store-btn a{
+    background-color: var(--main-color);
+}
+.login_prf.e-store-btn a span{
+    background-color: var(--sec-color);
+}
+.login_prf.e-store-btn a:hover span{
+    background-color: var(--main-color);
+}
+.login_prf.e-store-btn a:hover{
+    background-color: var(--sec-color);
+}
 .login_prf a {
     color: #fff;
     background: var(--sec-color);
@@ -100,7 +112,24 @@ p {
     font-size: 17px;
     font-weight: 500;
 }
-
+.login_prf a span{
+    /*margin-right: 5px;*/
+    background-color: var(--main-color);
+    border-radius: 40px;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    left: -4%;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+}
+.login_prf a span i{
+    font-size: 16px;
+}
+.login_prf a:hover span{
+    background-color: var(--sec-color);
+}
 .login_prf a:hover {
     background: var(--main-color);
 }
@@ -2743,12 +2772,12 @@ li.slick-active button {
     position: relative !important;
 }
 .main_menu_hdr{
-    /*position: absolute;*/
+    position: absolute;
 }
 /*.banner_sec{*/
 /*    margin-top: -3rem;*/
 /*}*/
-.inner_banner_sec
-{
-    margin-top: -3rem;
-}
+/*.inner_banner_sec*/
+/*{*/
+/*    margin-top: -3rem;*/
+/*}*/

@@ -81,6 +81,7 @@ class EstoreSettingController extends Controller
             'tax_percentage' => 'nullable|numeric|min:0|max:100',
             'credit_card_percentage' => 'nullable|numeric|min:0|max:100',
             'is_pickup_available' => 'required|boolean',
+            'refund_max_days' => 'nullable|integer|min:0',
         ]);
 
         try {
