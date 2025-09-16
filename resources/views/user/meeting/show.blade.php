@@ -13,7 +13,7 @@
                         <div class="col-md-10">
                             <h3 class="mb-3 float-left">Meeting Details</h3>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-lg-2">
                             <a href="{{ route('meetings.index') }}" class="btn btn-primary w-100">
                                 < Back</a>
                         </div>

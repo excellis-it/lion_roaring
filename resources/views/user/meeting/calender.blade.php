@@ -21,7 +21,7 @@
                         <div class="col-md-12">
 
                             <div class="row mb-3 justify-content-end">
-                                <div class="col-md-2">
+                                <div class="col-lg-2">
                                     <a href="{{ route('meetings.index') }}" class="btn btn-primary w-100"><i
                                             class="fa fa-table" aria-hidden="true"></i> Table List</a>
                                 </div>

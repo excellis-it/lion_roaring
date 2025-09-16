@@ -17,12 +17,12 @@
                                     <div class="col-md-8">
                                         <h3 class="mb-3">Meeting List</h3>
                                     </div>
-                                    <div class="col-lg-2 float-right">
+                                    <div class="col-lg-2 float-right cl-view">
                                         <a href="{{ route('meetings.view-calender') }}" class="btn btn-primary w-100"><i
                                                 class="fa fa-calendar"></i> Calender View</a>
                                     </div>
                                     @if (auth()->user()->can('Create Meeting Schedule'))
-                                        <div class="col-md-2 float-right">
+                                        <div class="col-lg-2 float-right">
                                             <a href="{{ route('meetings.create') }}" class="btn btn-primary w-100"><i
                                                     class="fa-solid fa-plus"></i> Create Meeting</a>
                                         </div>

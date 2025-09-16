@@ -5,11 +5,11 @@
                 <div class="left_top">
                     <div class="logo">
                         <a href="{{ route('home') }}" class="">
-
                         </a>
                     </div>
                 </div>
                 <div class="right_top d-flex align-items-center">
+                    <div class="menu-wrepper d-flex">
                     <div class="right_btm">
                         <div class="button_container" id="toggle">
                             <span class="top"></span>
@@ -47,32 +47,35 @@
                     <div class="right_tran ms-2">
                         <div id="google_translate_element"></div>
                     </div>
-                    <div class="login_prf">
-                        @if (auth()->check())
-                            @php
+                    </div>
+                    <div class="right-site-btns d-flex">
+                        <div class="login_prf">
+                            @if (auth()->check())
+                                @php
 
-                                $user = auth()
-                                    ->user()
-                                    ->roles()
-                                    ->whereIn('type', [1, 2, 3])
-                                    ->first();
-                            @endphp
-                            @if ($user)
-                                <a href="{{ route('user.profile') }}">Profile</a>
+                                    $user = auth()
+                                        ->user()
+                                        ->roles()
+                                        ->whereIn('type', [1, 2, 3])
+                                        ->first();
+                                @endphp
+                                @if ($user)
+                                    <a href="{{ route('user.profile') }}">Profile</a>
+                                @else
+                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#loginModal"
+                                        href="{{ route('login') }}">Login</a>
+                                @endif
                             @else
                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#loginModal"
                                     href="{{ route('login') }}">Login</a>
                             @endif
-                        @else
-                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                href="{{ route('login') }}">Login</a>
-                        @endif
-                    </div>
-                    <div class="login_prf">
-                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal1">Donate</a>
-                    </div>
-                    <div class="login_prf">
-                        <a href="{{ route('e-store') }}" >E-Store</a>
+                        </div>
+                        <div class="login_prf">
+                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal1">Donate</a>
+                        </div>
+                        <div class="login_prf">
+                            <a href="{{ route('e-store') }}" >E-Store</a>
+                        </div>
                     </div>
                 </div>
             </div>

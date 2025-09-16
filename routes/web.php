@@ -709,9 +709,11 @@ Route::prefix('e-store')->group(function () {
     Route::get('/check-product-in-cart', [EstoreProductController::class, 'checkProductInCart'])->name('e-store.check-product-in-cart');
     Route::get('/estore-cart', [EstoreProductController::class, 'cart'])->name('e-store.cart');
     Route::get('/estore-checkout', [EstoreProductController::class, 'checkout'])->name('e-store.checkout');
+
     Route::post('/process-checkout', [EstoreProductController::class, 'processCheckout'])->name('e-store.process-checkout');
     Route::get('/payment-success', [EstoreProductController::class, 'paymentSuccess'])->name('e-store.payment-success');
     Route::get('/payment-cancelled', [EstoreProductController::class, 'paymentCancelled'])->name('e-store.payment-cancelled');
+    
     Route::get('/order-success/{orderId}', [EstoreProductController::class, 'orderSuccess'])->name('e-store.order-success');
     Route::get('/my-orders', [EstoreProductController::class, 'myOrders'])->name('e-store.my-orders');
     Route::get('/order-details/{orderId}', [EstoreProductController::class, 'orderDetails'])->name('e-store.order-details');

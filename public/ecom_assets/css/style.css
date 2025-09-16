@@ -2065,11 +2065,13 @@ input[type="range"]::-moz-range-thumb {
 .qty-input .qty-count--minus {
     border: 1px solid #181818;
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .qty-input .qty-count--add {
     border: 1px solid #181818;
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .qty-input .qty-count--add:after {

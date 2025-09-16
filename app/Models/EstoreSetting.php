@@ -14,5 +14,6 @@ class EstoreSetting extends Model
         'delivery_cost',
         'tax_percentage',
         'is_pickup_available',
+        'credit_card_percentage',
     ];
 }
