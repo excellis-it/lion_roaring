@@ -219,6 +219,33 @@
     padding-top: 80px;
 }
 }
+@media (max-width:576px){
+    .slick-nav.next-arrow {
+        left: auto;
+        right: 0%;
+    }
+    .slick-nav.prev-arrow {
+    left: 0%;
+    }
+    .new_arr_text {
+    position: absolute;
+    left: 8%;
+    width: 58%;
+    }
+    .new_arr_bg img{
+        height: 275px;
+        object-fit: cover;
+    }
+    .slider, .slide {
+        height: 60vh;
+    }
+    .inner_banner_ontent h2{
+        font-size: 30px;
+    }
+    .inner_banner_sec {
+        padding: 140px 0 100px 0;
+    }
+}
 @media (max-width:425.98px){
     .img_servic {
         width: 155px;
