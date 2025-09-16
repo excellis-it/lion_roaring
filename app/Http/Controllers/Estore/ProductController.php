@@ -32,6 +32,7 @@ use Stripe\Exception\AuthenticationException;
 use Stripe\Exception\ApiConnectionException;
 use Stripe\Exception\ApiErrorException;
 use Stripe\PaymentIntent;
+use App\Models\EstoreRefund;
 
 class ProductController extends Controller
 {
@@ -138,7 +139,7 @@ class ProductController extends Controller
         // if ($wareHouseProducts ) {
         //    $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1);
         // } else {
-        $products = Product::where('status', 1);
+        $products = Product::where('is_deleted', false)->where('status', 1);
         //  }
 
 
@@ -206,7 +207,7 @@ class ProductController extends Controller
             //  if ($wareHouseProducts) {
             //     $products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->with('image');
             //  } else {
-            $products = Product::where('status', 1)->with('image');
+            $products = Product::where('is_deleted', false)->where('status', 1)->with('image');
             //  }
 
             if (!empty($category_id)) {
@@ -994,7 +995,18 @@ class ProductController extends Controller
 
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 
-        return view('ecom.order-details', compact('order', 'cartCount'));
+        $order_refund = EstoreRefund::where('order_id', $order->id)->first();
+        if ($order_refund) {
+            $order->refund_status = $order_refund->is_approved;
+        } else {
+            $order->refund_status = null;
+        }
+
+        // get max refundable days from EstoreSetting
+        $estoreSettings = EstoreSetting::first();
+        $max_refundable_days = $estoreSettings->max_refundable_days ?? 10;
+
+        return view('ecom.order-details', compact('order', 'cartCount', 'max_refundable_days', 'estoreSettings'));
     }
 
     // orderSuccess
@@ -1169,6 +1181,90 @@ class ProductController extends Controller
             foreach ($warehouse_admin_users as $assigned_user) {
                 NotificationService::notifyUser($assigned_user->id, 'Product is out of stock : ' . $productDetails['product_name']);
             }
+        }
+    }
+
+    // cancelOrder
+    public function cancelOrder(Request $request)
+    {
+        // return $request->all();
+        if (!auth()->check()) {
+            // return response()->json(['status' => false, 'message' => 'Please login to continue']);
+            return redirect()->route('home')->with('error', 'Please login to continue');
+        }
+
+        $request->validate([
+            'order_id' => 'required|integer',
+        ]);
+
+        $order = EstoreOrder::where('id', $request->order_id)
+            ->where('user_id', auth()->id())
+            ->where('payment_status', 'paid')
+            ->whereIn('status', ['processing', 'pending'])
+            ->first();
+
+        if (!$order) {
+            // return response()->json(['status' => false, 'message' => 'Order not found or cannot be cancelled']);
+            return redirect()->back()->with('warning', 'Order not found or cannot be cancelled');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // Update order status
+            $order->update(['status' => 'cancelled', 'notes' => $request->cancellation_reason ?? null]);
+
+            // Refund payment if applicable
+            $payment = EstorePayment::where('order_id', $order->id)
+                ->where('status', 'succeeded')
+                ->first();
+
+            if ($payment) {
+                Stripe::setApiKey(env('STRIPE_SECRET'));
+
+                $refund = EstoreRefund::create([
+                    'payment_intent' => $payment->stripe_payment_intent_id,
+                    'amount' => $payment->amount, // in cents
+                    // order id and user id
+                    'order_id' => $order->id,
+                    'user_id' => auth()->id(),
+                ]);
+
+                // // Update payment status
+                // $payment->update([
+                //     'status' => 'refunded',
+                //     'payment_details' => array_merge(
+                //         is_array($payment->payment_details) ? $payment->payment_details : [],
+                //         [
+                //             'refund_id' => $refund->id,
+                //             'refund_status' => $refund->status,
+                //             'amount_refunded' => $refund->amount / 100,
+                //         ]
+                //     ),
+                // ]);
+            }
+
+            // Restock products
+            $orderItems = EstoreOrderItem::where('order_id', $order->id)->get();
+            foreach ($orderItems as $item) {
+                $warehouseProduct = WarehouseProduct::where('warehouse_id', $item->warehouse_id)
+                    ->where('id', $item->warehouse_product_id)
+                    ->where('product_id', $item->product_id)
+                    ->first();
+
+                if ($warehouseProduct) {
+                    $warehouseProduct->increment('quantity', $item->quantity);
+                }
+            }
+
+            DB::commit();
+
+            // return response()->json(['status' => true, 'message' => 'Order cancelled and payment refunded successfully']);
+            return redirect()->back()->with('message', 'Order cancelled successfully (if applicable, payment will be refunded)');
+        } catch (\Exception $e) {
+            DB::rollback();
+            // return response()->json(['status' => false, 'message' => 'Failed to cancel order: ' . $e->getMessage()]);
+            return redirect()->back()->with('error', 'Failed to cancel order: ' . $e->getMessage());
         }
     }
 }

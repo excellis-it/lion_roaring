@@ -721,6 +721,10 @@ Route::prefix('e-store')->group(function () {
     Route::get('/order-success/{orderId}', [EstoreProductController::class, 'orderSuccess'])->name('e-store.order-success');
     Route::get('/my-orders', [EstoreProductController::class, 'myOrders'])->name('e-store.my-orders');
     Route::get('/order-details/{orderId}', [EstoreProductController::class, 'orderDetails'])->name('e-store.order-details');
+
+    // e-store.cancel-order
+    Route::post('/cancel-order', [EstoreProductController::class, 'cancelOrder'])->name('e-store.cancel-order');
+
     // add to wishlist
     Route::post('/product/add-to-wishlist', [EstoreProductController::class, 'addToWishlist'])->name('e-store.add-to-wishlist');
     // wishlist list

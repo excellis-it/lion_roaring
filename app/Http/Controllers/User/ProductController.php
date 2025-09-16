@@ -89,7 +89,7 @@ class ProductController extends Controller
                 $products = $products->orderBy('id', 'desc');
             }
 
-            $products = $products->paginate(10);
+            $products = $products->where('is_deleted', false)->paginate(10);
 
             return response()->json(['data' => view('user.product.table', compact('products'))->render()]);
         }
@@ -490,7 +490,6 @@ class ProductController extends Controller
             $product = Product::findOrFail($id);
             $product->is_deleted = true;
             $product->save();
-
 
             EcomWishList::where('product_id', $product->id)->delete();
             EstoreCart::where('product_id', $product->id)->delete();

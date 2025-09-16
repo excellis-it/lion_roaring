@@ -401,10 +401,10 @@
         gap: 3px;
     }
     .main_menu{
-        padding: 15px 0px;
+        padding: 4px 0px;
     }
     .login_prf a{
-        padding: 2px 10px;
+        padding: 5px 10px;
     }
     .menu-wrepper{
         flex-direction: row-reverse;
@@ -416,7 +416,14 @@
     .login-sec {
     padding: 50px 0;
 }
-
+.login_prf a span{
+    width: 20px;
+    height: 20px;
+    top: -2px;
+}
+.login_prf a span i {
+    font-size: 12px;
+}
 }
 
 
@@ -427,5 +434,8 @@
     }
     .count {
         font-size: 32px;
+    }
+    .slide__img img.overlay-image{
+        height: 50%;
     }
 }
