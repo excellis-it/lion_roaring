@@ -16,6 +16,8 @@ use App\Models\WareHouse;
 use App\Models\WarehouseProduct;
 use App\Models\User;
 use App\Models\WarehouseProductImage;
+use App\Models\EcomWishList;
+use App\Models\EstoreCart;
 
 class ProductController extends Controller
 {
@@ -29,7 +31,7 @@ class ProductController extends Controller
     {
         // return User::with('roles')->where('id', auth()->id())->first();
         if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
-            $products = Product::orderBy('id', 'desc')->paginate(10);
+            $products = Product::where('is_deleted', false)->orderBy('id', 'desc')->paginate(10);
             return view('user.product.list', compact('products'));
         } else if (auth()->user()->isWarehouseAdmin()) {
             // $products = Product::where('user_id', auth()->id())->orderBy('id', 'desc')->paginate(10);
@@ -38,7 +40,7 @@ class ProductController extends Controller
             $warehouseIds = auth()->user()->warehouses->pluck('id')->toArray();
 
             // Get products that exist in any of these warehouses
-            $products = Product::whereHas('warehouseProducts', function ($query) use ($warehouseIds) {
+            $products = Product::where('is_deleted', false)->whereHas('warehouseProducts', function ($query) use ($warehouseIds) {
                 $query->whereIn('warehouse_id', $warehouseIds);
             })->orderBy('id', 'desc')->paginate(10);
             return view('user.product.list', compact('products'));
@@ -486,7 +488,13 @@ class ProductController extends Controller
     {
         if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
             $product = Product::findOrFail($id);
-            $product->delete();
+            $product->is_deleted = true;
+            $product->save();
+
+
+            EcomWishList::where('product_id', $product->id)->delete();
+            EstoreCart::where('product_id', $product->id)->delete();
+
             return redirect()->route('products.index')->with('message', 'Product deleted successfully!');
         } else {
             abort(403, 'You do not have permission to access this page.');

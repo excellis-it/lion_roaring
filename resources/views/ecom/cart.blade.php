@@ -52,19 +52,19 @@
                                                 <div class="cart_images">
                                                     @if (isset($item->warehouseProduct) && $item->warehouseProduct?->images->first())
                                                         <img src="{{ Storage::url($item->warehouseProduct?->images->first()->image_path) }}"
-                                                            alt="{{ $item->product->name ?? ''}}" />
+                                                            alt="{{ $item->product->name ?? '' }}" />
                                                     @elseif (isset($item->product->warehouseProduct) && $item->product->warehouseProduct)
                                                         <img src="{{ Storage::url($item->product->main_image) }}"
-                                                            alt="{{ $item->product->name ?? ''}}" />
+                                                            alt="{{ $item->product->name ?? '' }}" />
                                                     @else
-                                                        <img src="{{ asset('ecom_assets/images/product3.jpg') }}"
+                                                        <img src="{{ asset('ecom_assets/images/main-bg-pattern.png') }}"
                                                             alt="Product Image" />
                                                     @endif
                                                 </div>
                                             </div>
                                             <div class="col-md-9">
                                                 <div class="cart_text">
-                                                    <h4>{{ $item->product->name ?? ''}}</h4>
+                                                    <h4>{{ $item->product->name ?? '' }}</h4>
                                                     <h6>SKU: {{ $item->warehouseProduct->sku ?? '' }}</h6>
                                                     <h6>{{ $item->size ? 'Size: ' . $item->size?->size ?? '' : '' }}
                                                         &nbsp;&nbsp;
@@ -75,7 +75,7 @@
                                                     <ul class="wl_price">
                                                         <li>Unit Price</li>
                                                         <li class="ms-auto">
-                                                         {{ number_format($item->warehouseProduct->price ?? 0, 2) }}
+                                                            {{ number_format($item->warehouseProduct->price ?? 0, 2) }}
 
                                                         </li>
                                                     </ul>
