@@ -31,7 +31,7 @@
 
 
 
-                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        {{-- <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="product-details-tab" data-bs-toggle="tab"
                                     data-bs-target="#product-details" type="button" role="tab"
@@ -39,7 +39,7 @@
                                     Details</button>
                             </li>
 
-                        </ul>
+                        </ul> --}}
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade show active" id="product-details" role="tabpanel"
                                 aria-labelledby="product-details-tab">
@@ -196,7 +196,7 @@
 
 
 
-                                    <div class="row mb-4">
+                                    <div class="row mb-5 mt-5">
                                         <div class="col-md-12">
                                             <div class="heading_box mb-3">
                                                 <h3>Product Type</h3>
@@ -227,7 +227,7 @@
 
                                     <div id="simple-product-section"
                                         style="{{ old('product_type', 'simple') == 'simple' ? '' : 'display:none;' }}">
-                                        <div class="row mb-4">
+                                        <div class="row mb-5">
                                             <div class="col-md-12">
                                                 <div class="heading_box mb-3">
                                                     <h3>Simple Product Details</h3>
@@ -236,34 +236,33 @@
 
                                             <div class="col-md-4 mb-2">
                                                 <div class="box_label">
-                                                    <label for="simple_sku"> Product SKU*</label>
-                                                    <input type="text" name="simple_sku" id="simple_sku"
-                                                        class="form-control" value="{{ old('simple_sku') }}">
-                                                    @if ($errors->has('simple_sku'))
-                                                        <span class="error">{{ $errors->first('simple_sku') }}</span>
+                                                    <label for="sku"> Product SKU*</label>
+                                                    <input type="text" name="sku" id="sku"
+                                                        class="form-control" value="{{ old('sku') }}">
+                                                    @if ($errors->has('sku'))
+                                                        <span class="error">{{ $errors->first('sku') }}</span>
                                                     @endif
                                                 </div>
                                             </div>
 
                                             <div class="col-md-4 mb-2">
                                                 <div class="box_label">
-                                                    <label for="simple_price"> Product Price*</label>
-                                                    <input type="text" name="simple_price" id="simple_price"
-                                                        class="form-control" value="{{ old('simple_price') }}">
-                                                    @if ($errors->has('simple_price'))
-                                                        <span class="error">{{ $errors->first('simple_price') }}</span>
+                                                    <label for="price"> Product Price*</label>
+                                                    <input type="text" name="price" id="price"
+                                                        class="form-control" value="{{ old('price') }}">
+                                                    @if ($errors->has('price'))
+                                                        <span class="error">{{ $errors->first('price') }}</span>
                                                     @endif
                                                 </div>
                                             </div>
 
                                             <div class="col-md-4 mb-2">
                                                 <div class="box_label">
-                                                    <label for="simple_quantity"> Stock Quantity*</label>
-                                                    <input type="number" name="simple_quantity" id="simple_quantity"
-                                                        class="form-control" value="{{ old('simple_quantity') }}">
-                                                    @if ($errors->has('simple_quantity'))
-                                                        <span
-                                                            class="error">{{ $errors->first('simple_quantity') }}</span>
+                                                    <label for="quantity"> Stock Quantity*</label>
+                                                    <input type="number" name="quantity" id="quantity"
+                                                        class="form-control" value="{{ old('quantity') }}">
+                                                    @if ($errors->has('quantity'))
+                                                        <span class="error">{{ $errors->first('quantity') }}</span>
                                                     @endif
                                                 </div>
                                             </div>
@@ -273,7 +272,7 @@
 
                                     <div id="variable-product-section"
                                         style="{{ old('product_type', 'simple') == 'variable' ? '' : 'display:none;' }}">
-                                        <div class="row mb-4">
+                                        <div class="row mb-5">
                                             <div class="col-md-12">
                                                 <div class="heading_box mb-3">
                                                     <h3>Variable Product Details</h3>
@@ -300,7 +299,7 @@
                                             </div>
 
                                             {{-- Multi Colors --}}
-                                            <div class="col-md-4 mb-2">
+                                            <div class="col-md-4 mb-2" hidden>
                                                 <div class="box_label">
                                                     <label>Product Colors</label>
                                                     <div id="colors-wrapper">

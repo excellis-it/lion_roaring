@@ -50,6 +50,7 @@
 #cssmenu > ul > li {
   float: none;
   display: inline-block;
+    position: relative;
 }
 #cssmenu.align-center > ul {
   font-size: 0;
@@ -75,6 +76,22 @@
   text-transform: uppercase;
   font-family: var(--main-font);
 }
+#cssmenu > ul > li:before{
+    position: absolute;
+    content: '';
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 2px;
+    background-color: #222;
+    transition: .3s;
+}
+#cssmenu > ul > li:hover:before{
+    width: 100%;
+    transition: .3s;
+    background-color: var(--yellow-color);
+}
+
 #cssmenu > ul > li > a:hover {
   color: var(--yellow-color);
 }
@@ -146,12 +163,14 @@
 #cssmenu ul ul li a {
   border-bottom: 1px solid rgba(150, 150, 150, 0.15);
   padding: 11px 15px;
-  width: 170px;
-  font-size: 14px;
+  min-width: 250px;
+  font-size: 15px;
   text-decoration: none;
   color: #333;
   font-weight: 400;
   background: #fff;
+  line-height: 18px;
+  text-align: left;
 }
 #cssmenu ul ul li:last-child > a,
 #cssmenu ul ul li.last-item > a {

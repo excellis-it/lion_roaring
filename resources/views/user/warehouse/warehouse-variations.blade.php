@@ -58,10 +58,6 @@
         .remove-warehouse-product {
             max-height: 60px;
         }
-
-        .choices__list--dropdown.is-active {
-            z-index: 999999;
-        }
     </style>
 @endpush
 @section('content')
@@ -69,74 +65,42 @@
         <div class="bg_white_border">
 
             <div class="row">
-                <div class="col-lg-12">
-                    <form action="{{ route('products.generate.variations') }}" method="POST" enctype="multipart/form-data">
-                        @method('POST')
-                        @csrf
-
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <div class="heading_box mb-3">
-                                    <h3>Generate Product Variations</h3>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row multi-generate-variation">
-                            <div class="col-md-3 mb-2">
-                                <div class="box_label">
-                                    <label>Select Color</label>
-                                    <div id="colors-wrapper">
-                                        <div class="mb-2">
-                                            <select name="colors[]" class="form-control" id="generate-color-select">
-                                                <option value="">-- Select Color --</option>
-                                                @foreach ($colors as $color)
-                                                    <option value="{{ $color->id }}">
-                                                        {{ $color->color_name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4 mb-2">
-                                <div class="box_label">
-                                    <label>Select Sizes </label>
-                                    <div id="sizes-wrapper">
-                                        <div class=" mb-2">
-                                            <select multiple name="sizes[]" class="sizeSelect" id="generate-size-select">
-                                                @foreach ($productSizes as $itemSize)
-                                                    <option value="{{ $itemSize->size->id }}">
-                                                        {{ $itemSize->size->size }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4 mb-4">
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-primary" id="generate-variations-btn">
-                                        <i class="fa fa-plus"></i> Generate Variations
-                                    </button>
-                                </div>
-                            </div>
-
-                        </div>
-
-
-                    </form>
+                <div class="col-md-12">
+                    <a href="{{ route('products.index') }}" class="print_btn print_btn_vv float-end mb-3">Back to
+                        Products</a>
                 </div>
+                <h5>Product Name : <strong>{{ $product->name }}</strong></h5>
+                <h5> Product Variations for Warehouse : <strong>{{ $wareHouse->name }}</strong></h5>
+
             </div>
 
-            <!--  Row 1 -->
             <div class="row">
+                {{-- search product variations by color to select --}}
+                <div class="col-md-4 mt-3 mb-3">
+                    <form
+                        action="{{ route('products.variations.warehouse', ['warehouseId' => $wareHouse->id, 'productId' => $product->id]) }}"
+                        method="GET">
+                        <label for="">Select Colors To Get Variations</label>
+                        <div class="input-group mb-3">
+
+                            <select name="color_id" class="form-control" multiple>
+                                <option value="">-- Select Colors --</option>
+                                @foreach ($product_have_colors as $color)
+                                    <option value="{{ $color->id }}"
+                                        {{ in_array($color->id, (array) request('color_id')) ? 'selected' : '' }}>
+                                        {{ $color->color_name }}</option>
+                                @endforeach
+                            </select>
+                            <button class="btn btn-primary" type="submit">Select</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+
+            <!--  Row 1 -->
+            <div class="row" hidden>
                 <div class="col-lg-12">
                     <form action="{{ route('products.variations.update') }}" method="POST" enctype="multipart/form-data">
                         @method('POST')
@@ -166,7 +130,7 @@
                                                     <label>SKU <span class="text-danger">*</span></label>
                                                     <input type="text"
                                                         name="variation_products[{{ $index }}][sku]"
-                                                        class="form-control" value="{{ $variation->sku }}">
+                                                        class="form-control" value="{{ $variation->sku }}" readonly>
                                                 </div>
                                             </div>
 
@@ -175,7 +139,7 @@
                                                     <label>Price <span class="text-danger">*</span></label>
                                                     <input type="number" step="0.01"
                                                         name="variation_products[{{ $index }}][price]"
-                                                        class="form-control" value="{{ $variation->price }}">
+                                                        class="form-control" value="{{ $variation->price }}" readonly>
                                                 </div>
                                             </div>
 
@@ -210,26 +174,22 @@
 
 
 
-                                            <div class="col-md-1 mb-2">
+                                            <div class="col-md-2 mb-2">
                                                 <div class="box_label">
-                                                    <label>Stock Quantity <span class="text-danger">*</span></label>
+                                                    <label>Available Quantity <span class="text-danger">*</span></label>
                                                     <input type="number" min="0"
-                                                        name="variation_products[{{ $index }}][stock_quantity]"
-                                                        class="form-control" value="{{ $variation->stock_quantity }}">
+                                                        name="variation_products[{{ $index }}][available_quantity]"
+                                                        class="form-control" value="{{ $variation->allocated_qty }}"
+                                                        readonly>
                                                 </div>
                                             </div>
+
+
 
                                             {{-- Images --}}
 
-                                            <div class="col-md-2 mb-2">
-                                                <div class="box_label">
-                                                    <label>Images</label>
-                                                    <input type="file"
-                                                        name="variation_products[{{ $index }}][images][]"
-                                                        class="form-control" multiple>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-2 mb-2 d-flex flex-wrap align-items-start">
+
+                                            <div class="col-md-3 mb-2 d-flex flex-wrap align-items-start">
                                                 <div class="d-flex flex-wrap">
                                                     @if ($variation->images && $variation->images->count() > 0)
                                                         @foreach ($variation->images as $image)
@@ -239,13 +199,7 @@
                                                                 <img src="{{ Storage::url($image->image_path) }}"
                                                                     alt="Variation Image"
                                                                     style="width:100%; height:100%; object-fit:cover; display:block;">
-                                                                <button type="button" class="remove-image btn btn-sm"
-                                                                    data-id="{{ $image->id }}" title="Remove image"
-                                                                    style="position:absolute; top:4px; right:4px; display:flex; align-items:center; justify-content:center; width:26px; height:26px; padding:0; border-radius:50%;">
-                                                                    <i class="fa fa-times" aria-hidden="true"
-                                                                        style="font-size:12px;"></i>
-                                                                    <span class="visually-hidden">Remove image</span>
-                                                                </button>
+
                                                             </div>
                                                         @endforeach
                                                     @else
@@ -256,11 +210,16 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            <div class="col-md-1 mb-2 ">
-                                                <button type="button"
-                                                    class="btn btn-danger remove-variation-product float-end"><i
-                                                        class="fa fa-trash"></i></button>
+
+                                            <div class="col-md-1 mb-2">
+                                                <div class="box_label">
+                                                    <label>Set Quantity <span class="text-danger">*</span></label>
+                                                    <input type="number" min="0"
+                                                        name="variation_products[{{ $index }}][quantity]"
+                                                        class="form-control" value="{{ $variation->quantity }}">
+                                                </div>
                                             </div>
+
                                         </div>
                                         <hr>
                                     </div>
@@ -308,71 +267,5 @@
         <script>
             ClassicEditor.create(document.querySelector("#description"));
             ClassicEditor.create(document.querySelector("#specification"));
-        </script>
-        <script>
-            $(document).ready(function() {
-                $('.remove-image').click(function() {
-                    var id = $(this).data('id');
-                    var token = $("meta[name='csrf-token']").attr("content");
-                    $.ajax({
-                        url: "{{ route('products.variation.image.delete') }}",
-                        type: 'POST',
-                        data: {
-                            "id": id,
-                            "_token": token,
-                        },
-                        success: function() {
-                            console.log("it Works");
-                            $('#' + id).remove();
-                        }
-                    });
-                });
-
-
-            });
-        </script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                // Initialize Choices.js for global selects
-                const globalSizeSelect = new Choices("#generate-size-select", {
-                    removeItemButton: true,
-                    searchPlaceholderValue: "Type to search...",
-                    closeDropdownOnSelect: 'auto',
-                    placeholderValue: "Select size",
-                });
-
-
-
-
-            });
-        </script>
-        <script>
-            // remove-variation-product
-            $(document).on('click', '.remove-variation-product', function() {
-                var entry = $(this).closest('.variation-product-entry');
-                var variationId = entry.data('id');
-
-                if (variationId) {
-                    // Send AJAX request to delete the variation from the database
-                    $.ajax({
-                        url: "{{ route('products.variation.delete') }}",
-                        data: {
-                            id: variationId
-                        },
-                        type: 'POST',
-                        success: function(response) {
-                            // On success, remove the entry from the DOM
-                            entry.remove();
-                            toastr.success('Variation deleted successfully.');
-                        },
-                        error: function(xhr) {
-                            alert('An error occurred while deleting the variation.');
-                        }
-                    });
-                } else {
-                    // If no ID, just remove the entry from the DOM
-                    entry.remove();
-                }
-            });
         </script>
     @endpush
