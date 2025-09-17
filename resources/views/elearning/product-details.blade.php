@@ -203,7 +203,7 @@
                                         </p>
                                         <span class="price_text">$ {{ $related_product->price }}</span>
                                     </div>
-                                    <div class="addtocart">
+                                    <div class="addelarn">
                                         <a href="{{ route('e-learning.product-details', $related_product->slug) }}"> view details</a>
                                     </div>
                                 </div>

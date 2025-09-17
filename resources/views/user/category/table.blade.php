@@ -8,6 +8,10 @@
                         style="width: 50px; height: 50px; object-fit: cover;">
                 </div>
             </td>
+            <td>
+                 {{ $category->parent_tree ?: '—' }}
+            </td>
+
             <td> {{ $category->name }}</td>
             <td> {{ $category->slug }}</td>
             <td>

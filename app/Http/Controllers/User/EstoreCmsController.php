@@ -17,6 +17,11 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OrdersReportExport;
+use App\Models\EstorePayment;
+use App\Models\EstoreRefund;
+use PDF;
+use Stripe\Refund;
+use Stripe\Stripe;
 
 class EstoreCmsController extends Controller
 {
@@ -802,5 +807,52 @@ class EstoreCmsController extends Controller
         $filename = str_replace(' ', '_', strtolower($title)) . '_' . date('Y-m-d') . '.xlsx';
 
         return Excel::download(new OrdersReportExport($data, $reportType, $title), $filename);
+    }
+
+
+    public function downloadInvoice(EstoreOrder $order)
+    {
+        // Ensure only delivered & paid orders can generate invoice
+        if ($order->status !== 'delivered' || $order->payment_status !== 'paid') {
+            abort(403, 'Invoice not available.');
+        }
+
+        // return response()->view('user.estore-orders.invoice', compact('order'));
+
+        $pdf = PDF::loadView('user.estore-orders.invoice', compact('order'));
+
+        return $pdf->download('invoice-' . $order->id . '.pdf');
+    }
+
+    public function refund(EstoreOrder $order)
+    {
+        try {
+            // Set Stripe secret key
+            Stripe::setApiKey(env('STRIPE_SECRET'));
+            $estoreRefund =  EstoreRefund::where('order_id', $order->id)->first();
+            $payment = EstorePayment::where('order_id', $order->id)->first();
+            // Refund by payment intent
+            Refund::create([
+                'payment_intent' => $estoreRefund->payment_intent, // store this in your orders table
+            ]);
+
+            // Update order status
+            $order->update([
+                'payment_status' => 'refunded',
+            ]);
+
+            // Update refund record
+            $payment->update([
+                'status' => 'refunded',
+            ]);
+
+            $estoreRefund->update([
+                'is_approved' => 1,
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Refund processed successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 }

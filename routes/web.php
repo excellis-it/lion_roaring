@@ -519,6 +519,12 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::post('/store-orders/update-status', [EstoreCmsController::class, 'updateOrderStatus'])->name('user.store-orders.update-status');
     Route::delete('/store-orders/delete/{id}', [EstoreCmsController::class, 'deleteOrder'])->name('user.store-orders.delete');
     Route::get('/store-orders/export', [EstoreCmsController::class, 'exportOrders'])->name('user.store-orders.export');
+    // routes/web.php
+    Route::get('/orders/{order}/invoice', [EstoreCmsController::class, 'downloadInvoice'])
+        ->name('user.store-orders.invoice');
+    Route::post('/orders/{order}/refund', [EstoreCmsController::class, 'refund'])->name('user.store-orders.refund');
+
+
 
     // Reports routes
     Route::get('/store-orders/reports', [EstoreCmsController::class, 'reportsIndex'])->name('user.store-orders.reports');
@@ -553,7 +559,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::resource('warehouse-admins', WarehouseAdminController::class);
     Route::get('/warehouse-admins-delete/{id}', [WarehouseAdminController::class, 'delete'])->name('warehouse-admins.delete');
 
-    // Warehouse Admin Product Management Routes (new)
+    // Warehouse Manager Product Management Routes (new)
     Route::get('/warehouse-products', [WarehouseAdminController::class, 'listProducts'])->name('warehouse-admin.products');
     Route::get('/warehouse-products/create', [WarehouseAdminController::class, 'createProduct'])->name('warehouse-admin.products.create');
     Route::post('/warehouse-products', [WarehouseAdminController::class, 'storeProduct'])->name('warehouse-admin.products.store');
@@ -561,7 +567,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::put('/warehouse-products/{id}', [WarehouseAdminController::class, 'updateProduct'])->name('warehouse-admin.products.update');
     Route::get('/warehouse-products/{id}/delete', [WarehouseAdminController::class, 'deleteProduct'])->name('warehouse-admin.products.delete');
 
-    // Warehouse Admin Size Management Routes (new)
+    // Warehouse Manager Size Management Routes (new)
     Route::get('/warehouse-sizes', [WarehouseAdminController::class, 'listSizes'])->name('warehouse-admin.sizes');
     Route::get('/warehouse-sizes/create', [WarehouseAdminController::class, 'createSize'])->name('warehouse-admin.sizes.create');
     Route::post('/warehouse-sizes', [WarehouseAdminController::class, 'storeSize'])->name('warehouse-admin.sizes.store');
@@ -569,7 +575,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::put('/warehouse-sizes/{id}', [WarehouseAdminController::class, 'updateSize'])->name('warehouse-admin.sizes.update');
     Route::get('/warehouse-sizes/{id}/delete', [WarehouseAdminController::class, 'deleteSize'])->name('warehouse-admin.sizes.delete');
 
-    // Warehouse Admin Color Management Routes (new)
+    // Warehouse Manager Color Management Routes (new)
     Route::get('/warehouse-colors', [WarehouseAdminController::class, 'listColors'])->name('warehouse-admin.colors');
     Route::get('/warehouse-colors/create', [WarehouseAdminController::class, 'createColor'])->name('warehouse-admin.colors.create');
     Route::post('/warehouse-colors', [WarehouseAdminController::class, 'storeColor'])->name('warehouse-admin.colors.store');
@@ -772,6 +778,28 @@ Route::prefix('e-store')->group(function () {
         }
     }
 });
+
+// Dynamic routes for categories
+$categories = Category::whereNull('parent_id')->get();
+foreach ($categories as $category) {
+    if ($category->slug) {
+        Route::get($category->slug, [EstoreProductController::class, 'products'])
+            ->name($category->slug . '.page')
+            ->defaults('category_id', $category->id);
+    }
+}
+
+// Dynamic routes for subcategories
+$subcategories = Category::whereNotNull('parent_id')->get();
+foreach ($subcategories as $subcategory) {
+    if ($subcategory->slug) {
+        Route::get($subcategory->slug, [EstoreProductController::class, 'products'])
+            ->name($subcategory->slug . '.page')
+            ->defaults('category_id', $subcategory->category_id)
+            ->defaults('id', $subcategory->id);
+    }
+}
+
 
 /**************************************************----------------------------ELEARNING--------------------------****************************************************************/
 

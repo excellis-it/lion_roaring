@@ -77,11 +77,11 @@
                         <div class="catagory_slid_padding">
                             <div class="catagory_box">
                                 <div class="catagory_img">
-                                    <a href="{{ route($category->slug . '.e-store.page') }}"><img
+                                    <a href="{{ route($category->slug . '.page') }}"><img
                                             src="{{ Storage::url($category->image) }}" /></a>
                                 </div>
                                 <div class="catagory_text">
-                                    <a href="{{ route($category->slug . '.e-store.page') }}">{{ $category->name }}</a>
+                                    <a href="{{ route($category->slug . '.page') }}">{{ $category->name }}</a>
                                 </div>
                             </div>
                         </div>

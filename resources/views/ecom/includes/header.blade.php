@@ -38,7 +38,12 @@
                         <ul>
 
                             <li><a href="{{ route('e-store') }}">Home</a></li>
-                            <li><a href="{{ route('e-store.all-products') }}">Shop</a></li>
+
+                            <li>
+                                <a href="{{ route('e-store.all-products') }}">Shop</a>
+                                {!! Helper::renderCategoryTree() !!}
+                            </li>
+
                             <li><a href="{{ route('contact-us') }}">Contact Us</a></li>
                         </ul>
                     </div>

@@ -32,7 +32,9 @@ class EstoreOrder extends Model
         'payment_status',
         'notes',
         'credit_card_fee',
-        'payment_type'
+        'payment_type',
+        'warehouse_name',
+        'warehouse_address',
     ];
 
     protected $casts = [

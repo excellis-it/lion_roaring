@@ -2650,6 +2650,53 @@ content: none !important;
     }
 }
 
+
+
+.cd-breadcrumb {
+    width: 100%;
+    padding-left: 5px;
+    margin: 0;
+}
+
+.cd-breadcrumb::after::after {
+    clear: both;
+    content: "";
+    display: table;
+}
+
+.cd-breadcrumb li {
+    display: inline-block;
+    float: left;
+    margin: 0.5em 0;
+    color: #000;
+}
+
+.cd-breadcrumb li a {
+    color: #000;
+}
+
+.cd-breadcrumb li::after {
+    /* this is the separator between items */
+    display: inline-block;
+    content: '\00bb';
+    margin: 0 .6em;
+    color: #000;
+}
+
+.cd-breadcrumb li:last-of-type::after {
+    /* hide separator after the last item */
+    display: none;
+}
+
+.cd-breadcrumb.custom-separator li::after,
+.cd-multi-steps.custom-separator li::after {
+    content: "\f105"; /* Font Awesome right arrow */
+    font-family: "Font Awesome 5 Free"; /* or Font Awesome 6 depending on version */
+    font-weight: 900; /* required for solid icons */
+    margin: 0 8px;
+    color: #333; /* change color as needed */
+}
+
 .ftr_line_link{
     color: #fff;
 }

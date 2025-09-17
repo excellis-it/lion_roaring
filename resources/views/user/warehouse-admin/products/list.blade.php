@@ -1,7 +1,7 @@
 @extends('user.layouts.master')
 
 @section('title')
-    Warehouse Admin - Product Management
+    Warehouse Manager - Product Management
 @endsection
 
 @section('content')

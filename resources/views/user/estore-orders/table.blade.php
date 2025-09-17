@@ -69,10 +69,10 @@
                             title="Update Status">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button type="button" class="btn btn-sm btn-danger" onclick="deleteOrder({{ $order->id }})"
+                        {{-- <button type="button" class="btn btn-sm btn-danger" onclick="deleteOrder({{ $order->id }})"
                             title="Delete Order">
                             <i class="fas fa-trash"></i>
-                        </button>
+                        </button> --}}
                     </div>
                 </td>
             </tr>

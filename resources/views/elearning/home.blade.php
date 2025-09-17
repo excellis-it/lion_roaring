@@ -100,7 +100,7 @@
                                         </p>
 
                                     </div>
-                                    <div class="addtocart">
+                                    <div class="addelarn">
                                         <a href="{{ $product['affiliate_link'] }}">
                                             {{ $product['button_name'] ? $product['button_name'] : 'go to shop' }}</a>
                                     </div>
@@ -147,7 +147,7 @@
                                         </p>
 
                                     </div>
-                                    <div class="addtocart">
+                                    <div class="addelarn">
                                         <a
                                             href="{{ $product['affiliate_link'] }}">{{ $product['button_name'] ? $product['button_name'] : 'go to shop' }}</a>
                                     </div>

@@ -204,7 +204,7 @@ class NewAdminRolePermissionSeeder extends Seeder
             ],
 
             [
-                "name" => "Manage Warehouse Admin",
+                "name" => "Manage Warehouse Manager",
                 "guard_name" => "web",
                 "type" => 2,
                 "created_at" => date('Y-m-d H:i:s'),

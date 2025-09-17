@@ -40,6 +40,9 @@
                                                 <th>
                                                     Image
                                                 </th>
+                                                <th>
+                                                    Parent Category
+                                                </th>
                                                 <th class="sorting" data-tippy-content="Sort by Category Name"
                                                     data-sorting_type="desc" data-column_name="name"
                                                     style="cursor: pointer">Category Name <span id="name_icon"><i
@@ -166,7 +169,7 @@
             });
 
 
-           
+
 
         });
     </script>
