@@ -879,6 +879,30 @@ p {
     height: 100%
 }
 
+
+.addelarn a {
+    background: #F6BC41;
+    padding: 10px;
+    border-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--white-color);
+    transition: all ease-in 0.3s;
+    position: relative;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+.addelarn a img {
+    color: var(--main-color);
+    transition: all ease-in 0.3s;
+    width: 100%;
+    height: 100%
+}
+
 .feature_text a {
     font-size: 20px;
     font-weight: 700;
@@ -954,6 +978,10 @@ p {
 .product_catagory .feature_box .feature_text a {
     text-align: center;
     color: var(--white-color);
+}
+
+.addelarn a:hover {
+    background: var(--main-color);
 }
 
 .addtocart a:hover {

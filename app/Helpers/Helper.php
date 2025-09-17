@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Article;
+use App\Models\Category;
 use App\Models\Chat;
 use App\Models\ChatMember;
 use App\Models\Country;
@@ -28,9 +29,91 @@ use App\Models\SiteSetting;
 use GuzzleHttp\Client;
 use App\Models\WareHouse;
 use App\Models\EstoreCart;
+use Illuminate\Support\Facades\Route;
 
 class Helper
 {
+    public static function renderCategoryTree($categories = null)
+    {
+        // Root categories if not passed
+        if ($categories === null) {
+            $categories = Category::whereNull('parent_id')
+                ->with('children')
+                ->get();
+        }
+
+        if ($categories->isEmpty()) {
+            return '';
+        }
+
+        $html = '<ul class="dropdown-menu">'; // dropdown UL
+
+        foreach ($categories as $category) {
+            $routeName = $category->slug . '.page';
+
+            $html .= '<li class="dropdown-item">';
+            if (Route::has($routeName)) {
+                $html .= '<a href="' . route($routeName) . '">' . e($category->name) . '</a>';
+            } else {
+                $html .= e($category->name);
+            }
+
+            // If has children → recursive dropdown
+            if ($category->children && $category->children->count() > 0) {
+                $html .= self::renderCategoryTree($category->children);
+            }
+
+            $html .= '</li>';
+        }
+
+        $html .= '</ul>';
+
+        return $html;
+    }
+
+    // app/Helpers/Helper.php
+    public static function renderBreadcrumbs($category = null)
+    {
+        $breadcrumbs = [];
+
+        // Home is always first
+        $breadcrumbs[] = ['name' => 'Home', 'url' => route('home')];
+
+        if ($category) {
+            // Traverse up the category tree to root
+            $current = $category;
+            $stack = [];
+            while ($current) {
+                $stack[] = [
+                    'name' => $current->name,
+                    'url'  => route($current->slug . '.page') // assuming dynamic route
+                ];
+                $current = $current->parent; // Make sure Category model has parent() relationship
+            }
+
+            // Reverse to get root -> child order
+            $breadcrumbs = array_merge($breadcrumbs, array_reverse($stack));
+        }
+
+        // Generate HTML
+        $html = '<ol class="cd-breadcrumb custom-separator">';
+        $lastIndex = count($breadcrumbs) - 1;
+
+        foreach ($breadcrumbs as $index => $crumb) {
+            $class = $index === $lastIndex ? 'current' : '';
+            $html .= '<li class="' . $class . '">';
+            $html .= '<a href="' . $crumb['url'] . '">' . e($crumb['name']) . '</a>';
+            $html .= '</li>';
+        }
+
+        $html .= '</ol>';
+
+        return $html;
+    }
+
+
+
+
     public static function getPDFAttribute()
     {
         $article = Article::orderBy('id', 'desc')->first();

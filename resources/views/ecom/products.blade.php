@@ -22,9 +22,12 @@
                             <h2>{{ $category_name ?? 'Our Collection' }}</h2>
                         @endif
 
-                        {{-- <p>Lorem ipsum dolor sit amet consectetur. Habitant ultricies sapien nunc adipiscing volutpat
-                            consectetur
-                            id purus rhoncus.</p> --}}
+                        <nav>
+                            <ol class="cd-breadcrumb custom-separator">
+                               {!! \App\Helpers\Helper::renderBreadcrumbs($category ?? null) !!}
+
+                            </ol>
+                        </nav>
                     </div>
                 </div>
 

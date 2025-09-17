@@ -36,30 +36,14 @@
                 <div class="right_btm order-4 order-lg-3">
                     <div id="cssmenu">
                         <ul>
-                            <li><a href="{{ route('e-store') }}">Category</a>
-                                <ul>
-                                    <li><a href="{{ route('e-store') }}">Category</a></li>
-                                    <li><a href="{{ route('e-store') }}">Category</a></li>
-                                    <li><a href="{{ route('e-store') }}">Category</a>
-                                    <ul>
-                                        <li><a href="{{ route('e-store') }}">Category</a></li>
-                                        <li><a href="{{ route('e-store') }}">Category</a></li>
-                                        <li><a href="{{ route('e-store') }}">Category</a>
-                                            <ul>
-                                                <li>
-                                                    <li><a href="{{ route('e-store') }}">Category</a></li>
-                                                    <li><a href="{{ route('e-store') }}">Category</a></li>
-                                                    <li><a href="{{ route('e-store') }}">Category</a></li>
-                                                    <li><a href="{{ route('e-store') }}">Category</a></li>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                    </li>
-                                </ul>
-                            </li>
+
                             <li><a href="{{ route('e-store') }}">Home</a></li>
-                            <li><a href="{{ route('e-store.all-products') }}">Shop</a></li>
+
+                            <li>
+                                <a href="{{ route('e-store.all-products') }}">Shop</a>
+                                {!! Helper::renderCategoryTree() !!}
+                            </li>
+
                             <li><a href="{{ route('contact-us') }}">Contact Us</a></li>
                         </ul>
                     </div>

@@ -507,7 +507,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     // routes/web.php
     Route::get('/orders/{order}/invoice', [EstoreCmsController::class, 'downloadInvoice'])
         ->name('user.store-orders.invoice');
-        Route::post('/orders/{order}/refund', [EstoreCmsController::class, 'refund'])->name('user.store-orders.refund');
+    Route::post('/orders/{order}/refund', [EstoreCmsController::class, 'refund'])->name('user.store-orders.refund');
 
 
 
@@ -758,6 +758,28 @@ Route::prefix('e-store')->group(function () {
         }
     }
 });
+
+// Dynamic routes for categories
+$categories = Category::whereNull('parent_id')->get();
+foreach ($categories as $category) {
+    if ($category->slug) {
+        Route::get($category->slug, [EstoreProductController::class, 'products'])
+            ->name($category->slug . '.page')
+            ->defaults('category_id', $category->id);
+    }
+}
+
+// Dynamic routes for subcategories
+$subcategories = Category::whereNotNull('parent_id')->get();
+foreach ($subcategories as $subcategory) {
+    if ($subcategory->slug) {
+        Route::get($subcategory->slug, [EstoreProductController::class, 'products'])
+            ->name($subcategory->slug . '.page')
+            ->defaults('category_id', $subcategory->category_id)
+            ->defaults('id', $subcategory->id);
+    }
+}
+
 
 /**************************************************----------------------------ELEARNING--------------------------****************************************************************/
 
