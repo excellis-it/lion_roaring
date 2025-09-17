@@ -83,7 +83,7 @@
 }
 #cssmenu > ul > li.has-sub > a:after {
   position: absolute;
-  top: 22px;
+  top: 17px;
   right: 11px;
   width: 8px;
   height: 2px;
@@ -93,7 +93,7 @@
 }
 #cssmenu > ul > li.has-sub > a:before {
   position: absolute;
-  top: 19px;
+  top: 14px;
   right: 14px;
   display: block;
   width: 2px;
@@ -147,11 +147,11 @@
   border-bottom: 1px solid rgba(150, 150, 150, 0.15);
   padding: 11px 15px;
   width: 170px;
-  font-size: 12px;
+  font-size: 14px;
   text-decoration: none;
-  color: #dddddd;
+  color: #333;
   font-weight: 400;
-  background: #333333;
+  background: #fff;
 }
 #cssmenu ul ul li:last-child > a,
 #cssmenu ul ul li.last-item > a {
@@ -159,7 +159,7 @@
 }
 #cssmenu ul ul li:hover > a,
 #cssmenu ul ul li a:hover {
-  color: #ffffff;
+  color:var(--yellow-color);
 }
 #cssmenu ul ul li.has-sub > a:after {
   position: absolute;
@@ -168,7 +168,7 @@
   width: 8px;
   height: 2px;
   display: block;
-  background: #dddddd;
+  background: #333;
   content: '';
 }
 #cssmenu.align-right ul ul li.has-sub > a:after {
@@ -182,7 +182,7 @@
   display: block;
   width: 2px;
   height: 8px;
-  background: #dddddd;
+  background: #333;
   content: '';
   -webkit-transition: all .25s ease;
   -moz-transition: all .25s ease;
@@ -235,7 +235,7 @@
     padding-left: 35px;
   }
   #cssmenu ul ul li a {
-    color: #dddddd;
+    color: #333;
     background: none;
   }
   #cssmenu ul ul li:hover > a,
@@ -318,7 +318,7 @@
     top: 0;
     display: block;
     border-left: 1px solid rgba(120, 120, 120, 0.2);
-    height: 46px;
+    height: 39px;
     width: 46px;
     cursor: pointer;
   }
@@ -331,12 +331,12 @@
   }
   #cssmenu .submenu-button:after {
     position: absolute;
-    top: 22px;
+    top: 20px;
     right: 19px;
     width: 8px;
     height: 2px;
     display: block;
-    background: #dddddd;
+    background: #333;
     content: '';
   }
   #cssmenu ul ul .submenu-button:after {
@@ -348,12 +348,12 @@
   }
   #cssmenu .submenu-button:before {
     position: absolute;
-    top: 19px;
+    top: 17px;
     right: 22px;
     display: block;
     width: 2px;
     height: 8px;
-    background: #dddddd;
+    background: #333;
     content: '';
   }
   #cssmenu ul ul .submenu-button:before {
