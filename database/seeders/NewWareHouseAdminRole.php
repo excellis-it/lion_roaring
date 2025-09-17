@@ -31,7 +31,7 @@ class NewWareHouseAdminRole extends Seeder
         $arrPermissions = [
 
             [
-                "name" => "Manage Warehouse Admin",
+                "name" => "Manage Warehouse Manager",
                 "guard_name" => "web",
                 "type" => 2,
                 "created_at" => date('Y-m-d H:i:s'),
@@ -81,7 +81,7 @@ class NewWareHouseAdminRole extends Seeder
                 'Create Bulletin',
                 'Edit Bulletin',
                 'Delete Bulletin',
-                'Manage Warehouse Admin',
+                'Manage Warehouse Manager',
                 'Manage Assigned Warehouses',
             ]);
         }

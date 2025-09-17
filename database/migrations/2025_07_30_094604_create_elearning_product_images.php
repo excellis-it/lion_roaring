@@ -15,7 +15,7 @@ class CreateElearningProductImages extends Migration
     {
         Schema::create('elearning_product_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreignId('product_id')->references('id')->on('elearning_products')->onDelete('cascade');
             $table->string('image')->nullable();
             $table->string('featured_image')->default(0);
             $table->timestamps();

@@ -39,7 +39,8 @@
                                     {{-- add invoice button --}}
 
                                     @if ($order->status == 'delivered' && $order->payment_status == 'paid')
-                                        <a href="{{route('user.store-orders.invoice', $order->id)}}" target="_blank" class="btn btn-sm btn-primary">
+                                        <a href="{{ route('user.store-orders.invoice', $order->id) }}" target="_blank"
+                                            class="btn btn-sm btn-primary">
                                             <i class="fas fa-download"></i> Download Invoice
                                         </a>
                                     @endif
@@ -187,10 +188,24 @@
                             <h5 class="card-title mb-0">Quick Actions</h5>
                         </div>
                         <div class="card-body">
-                            <button type="button" class="btn btn-warning w-100 mb-2"
-                                onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}')">
-                                <i class="fas fa-edit"></i> Update Status
-                            </button>
+                            @if ($order->payment_status === 'paid' && $order->status === 'cancelled')
+                                <button type="button" class="btn btn-danger w-100 mb-2"
+                                    onclick="processRefund({{ $order->id }})">
+                                    <i class="fas fa-undo"></i> Refund
+                                </button>
+
+                                @if ($order->notes)
+                                    <div class="alert alert-warning mt-2">
+                                        <strong>Cancelled Reason:</strong> {{ $order->notes }}
+                                    </div>
+                                @endif
+                            @else
+                                <button type="button" class="btn btn-warning w-100 mb-2"
+                                    onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}')">
+                                    <i class="fas fa-edit"></i> Update Status
+                                </button>
+                            @endif
+
 
                             <a href="{{ route('user.store-orders.list') }}" class="btn btn-secondary w-100 mb-2">
                                 <i class="fas fa-arrow-left"></i> Back to Orders
@@ -309,21 +324,30 @@
                                 </option>
                             </select>
                         </div>
-
-                        <div class="mb-3">
+                        {{-- @dd($order->payment_status) --}}
+                        {{-- <div class="mb-3">
                             <label for="payment-status" class="form-label">Payment Status</label>
                             <select class="form-control" id="payment-status" name="payment_status">
                                 <option value="">Don't Change</option>
-                                <option value="pending" {{ $order->payment_status == 'pending' ? 'selected' : '' }}>
-                                    Pending</option>
-                                <option value="paid" {{ $order->payment_status == 'paid' ? 'selected' : '' }}>Paid
+                                <option value="pending"
+                                    {{ trim(strtolower($order->payment_status)) == 'pending' ? 'selected' : '' }}>
+                                    Pending
                                 </option>
-                                <option value="failed" {{ $order->payment_status == 'failed' ? 'selected' : '' }}>Failed
+                                <option value="paid"
+                                    {{ trim(strtolower($order->payment_status)) == 'paid' ? 'selected' : '' }}>
+                                    Paid
                                 </option>
-                                <option value="refunded" {{ $order->payment_status == 'refunded' ? 'selected' : '' }}>
-                                    Refunded</option>
+                                <option value="failed"
+                                    {{ trim(strtolower($order->payment_status)) == 'failed' ? 'selected' : '' }}>
+                                    Failed
+                                </option>
+                                <option value="refunded"
+                                    {{ trim(strtolower($order->payment_status)) == 'refunded' ? 'selected' : '' }}>
+                                    Refunded
+                                </option>
                             </select>
-                        </div>
+                        </div> --}}
+
 
                         <div class="mb-3">
                             <label for="order-notes" class="form-label">Notes (Optional)</label>
@@ -392,11 +416,53 @@
 @endpush
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function processRefund(orderId) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you really want to refund this order?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, refund it!",
+                cancelButtonText: "No, cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('user.store-orders.refund', ':id') }}".replace(':id', orderId),
+                        type: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            Swal.fire({
+                                title: "Refunded!",
+                                text: response.message,
+                                icon: "success",
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                            setTimeout(() => location.reload(), 2000);
+                        },
+                        error: function(xhr) {
+                            Swal.fire({
+                                title: "Error!",
+                                text: xhr.responseJSON?.message || "Failed to process refund.",
+                                icon: "error"
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    </script>
     <script>
         function openUpdateStatusModal(orderId, currentStatus, currentPaymentStatus, notes) {
             $('#order-id').val(orderId);
             $('#order-status').val(currentStatus);
-            $('#payment-status').val('');
+            //$('#payment-status').val('');
             $('#order-notes').val(notes || '');
             $('#updateStatusModal').modal('show');
         }

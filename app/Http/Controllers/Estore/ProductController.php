@@ -742,7 +742,7 @@ class ProductController extends Controller
                 'tax_amount' => $taxAmount,
                 'shipping_amount' => $shippingCost + $deliveryCost,
                 'total_amount' => $totalAmount,
-                'credit_card_fee' => $creditCardFee,
+                'credit_card_fee' => $creditCardFee, 
                 'payment_type' => $request->payment_type,
                 'payment_status' => 'paid',
                 'status' => 'processing',

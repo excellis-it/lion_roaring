@@ -38,7 +38,7 @@
                     <div id="cssmenu">
                         <ul>
                             <li><a href="{{ route('e-store') }}">Home</a></li>
-                            <li><a href="{{ route('e-store.all-products') }}">our collections</a></li>
+                            <li><a href="{{ route('e-store.all-products') }}">Shop</a></li>
                             <li><a href="{{ route('contact-us') }}">Contact Us</a></li>
                         </ul>
                     </div>
@@ -146,11 +146,11 @@
                             }
                             return null;
                         }
-                        
+
                         // Get user's timezone based on IP address
                         $ip = $_SERVER['REMOTE_ADDR'];
                         $timezone = getTimezoneFromIp($ip);
-                        
+
                         if ($timezone) {
                             // Set the default timezone
                             date_default_timezone_set($timezone);
@@ -158,10 +158,10 @@
                             // Fallback timezone
                             date_default_timezone_set('UTC');
                         }
-                        
+
                         // Get the current hour in 24-hour format
                         $time = date('H');
-                        
+
                         // Determine greeting based on time
                         if ($time < '12') {
                             echo 'Perfect morning';
