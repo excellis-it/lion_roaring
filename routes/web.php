@@ -475,7 +475,22 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
 
     // e-store routes
     Route::prefix('products')->group(function () {
+        // product variations manage route
+
+        Route::get('/{id}/variations', [ProductController::class, 'variations'])->name('products.variations');
+
+
+
         Route::get('/product-delete/{id}', [ProductController::class, 'delete'])->name('products.delete');
+
+        // generate product variations
+        Route::post('/generate-variations', [ProductController::class, 'generateVariations'])->name('products.generate.variations');
+        // delete a product variation
+        Route::post('/variation-delete', [ProductController::class, 'deleteVariation'])->name('products.variation.delete');
+        // update product variations
+        Route::post('/variations-update', [ProductController::class, 'updateVariations'])->name('products.variations.update');
+        // delete a product variation image
+        Route::post('/variation-image-delete', [ProductController::class, 'deleteVariationImage'])->name('products.variation.image.delete');
     });
     Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
     Route::get('/warehouse-product-image-delete', [ProductController::class, 'warehouseImageDelete'])->name('warehouse-product.image.delete');
@@ -525,6 +540,11 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::resource('/ware-houses', WareHouseController::class);
     Route::get('/ware-houses-delete/{id}', [WareHouseController::class, 'delete'])->name('ware-houses.delete');
 
+
+    // select warehouse before warehouse product management from a product
+    Route::get('/select-warehouse/{productId}', [WareHouseController::class, 'selectWarehouse'])->name('ware-houses.select-warehouse');
+    // variations for warehouse admin
+    Route::get('/warehouse-variations/{warehouseId}/{productId}', [WareHouseController::class, 'variationsWarehouse'])->name('products.variations.warehouse');
     // warehouse product management
     Route::get('/ware-houses/{id}/products', [WareHouseController::class, 'products'])->name('ware-houses.products');
     Route::get('/ware-houses/{id}/products/add', [WareHouseController::class, 'addProduct'])->name('ware-houses.products.add');

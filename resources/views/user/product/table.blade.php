@@ -35,18 +35,33 @@
             </td>
             <td> {{ $product->created_at->format('d M Y') }}</td>
             <td>
-                <div class="d-flex">
-                    <a href="{{ route('products.edit', $product->id) }}" class="delete_icon">
-                        <i class="fa-solid fa-edit"></i>
-                    </a> &nbsp; &nbsp;
-                    <a href="{{ route('products.edit', $product->id) . '?tab=variations' }}" class="delete_icon">
-                        <i class="fa-solid fa-th"></i>
-                    </a> &nbsp; &nbsp;
-                    <a href="javascript:void(0)" id="delete"
-                        data-route="{{ route('products.delete', $product->id) }}" class="delete_icon">
-                        <i class="fa-solid fa-trash"></i>
-                    </a>
-                </div>
+
+                @if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR'))
+                    <div class="d-flex">
+                        <a href="{{ route('products.edit', $product->id) }}" class="delete_icon">
+                            <i class="fa-solid fa-edit"></i>
+                        </a> &nbsp; &nbsp;
+                        <a href="{{ route('products.variations', $product->id) }}" class="delete_icon">
+                            <i class="fa-solid fa-th"></i>
+                        </a> &nbsp; &nbsp;
+                        <a href="javascript:void(0)" id="delete"
+                            data-route="{{ route('products.delete', $product->id) }}" class="delete_icon">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </div>
+                @endif
+
+                @if (auth()->user()->isWarehouseAdmin())
+                    <div class="d-flex">
+
+                        <a href="{{ route('ware-houses.select-warehouse', $product->id) }}" class="delete_icon" title="Product Variations">
+                            <i class="fa-solid fa-th-list"></i>
+                        </a> &nbsp; &nbsp;
+
+                    </div>
+                @endif
+
+
             </td>
         </tr>
     @endforeach

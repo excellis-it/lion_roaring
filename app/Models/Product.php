@@ -109,4 +109,9 @@ class Product extends Model
     {
         return $this->belongsToMany(WareHouse::class, 'warehouse_products', 'product_id', 'warehouse_id');
     }
+
+    public function variations()
+    {
+        return $this->hasMany(ProductVariation::class, 'product_id');
+    }
 }

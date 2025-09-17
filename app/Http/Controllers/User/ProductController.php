@@ -18,6 +18,8 @@ use App\Models\User;
 use App\Models\WarehouseProductImage;
 use App\Models\EcomWishList;
 use App\Models\EstoreCart;
+use App\Models\ProductVariation;
+use App\Models\ProductVariationImage;
 
 class ProductController extends Controller
 {
@@ -29,20 +31,27 @@ class ProductController extends Controller
      */
     public function index()
     {
-        // return User::with('roles')->where('id', auth()->id())->first();
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
-            $products = Product::where('is_deleted', false)->orderBy('id', 'desc')->paginate(10);
-            return view('user.product.list', compact('products'));
-        } else if (auth()->user()->isWarehouseAdmin()) {
-            // $products = Product::where('user_id', auth()->id())->orderBy('id', 'desc')->paginate(10);
-            // products where warehouse those products which warehouse use inn
-            // Get warehouse IDs that this admin can manage
-            $warehouseIds = auth()->user()->warehouses->pluck('id')->toArray();
+        // // return User::with('roles')->where('id', auth()->id())->first();
+        // if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        //     $products = Product::where('is_deleted', false)->orderBy('id', 'desc')->paginate(10);
+        //     return view('user.product.list', compact('products'));
+        // } else if (auth()->user()->isWarehouseAdmin()) {
+        //     // $products = Product::where('user_id', auth()->id())->orderBy('id', 'desc')->paginate(10);
+        //     // products where warehouse those products which warehouse use inn
+        //     // Get warehouse IDs that this admin can manage
+        //     $warehouseIds = auth()->user()->warehouses->pluck('id')->toArray();
 
-            // Get products that exist in any of these warehouses
-            $products = Product::where('is_deleted', false)->whereHas('warehouseProducts', function ($query) use ($warehouseIds) {
-                $query->whereIn('warehouse_id', $warehouseIds);
-            })->orderBy('id', 'desc')->paginate(10);
+        //     // Get products that exist in any of these warehouses
+        //     $products = Product::where('is_deleted', false)->whereHas('warehouseProducts', function ($query) use ($warehouseIds) {
+        //         $query->whereIn('warehouse_id', $warehouseIds);
+        //     })->orderBy('id', 'desc')->paginate(10);
+        //     return view('user.product.list', compact('products'));
+        // } else {
+        //     abort(403, 'You do not have permission to access this page.');
+        // }
+        // return User::with('roles')->where('id', auth()->id())->first();
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
+            $products = Product::where('is_deleted', false)->orderBy('id', 'desc')->paginate(10);
             return view('user.product.list', compact('products'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -61,12 +70,16 @@ class ProductController extends Controller
             $products = Product::query();
 
             // Apply role-based filtering first
-            if (auth()->user()->isWarehouseAdmin()) {
-                $warehouseIds = auth()->user()->warehouses->pluck('id')->toArray();
-                $products = $products->whereHas('warehouseProducts', function ($q) use ($warehouseIds) {
-                    $q->whereIn('warehouse_id', $warehouseIds);
-                });
-            } elseif (!auth()->user()->hasRole('SUPER ADMIN') && !auth()->user()->hasRole('ADMINISTRATOR')) {
+            // if (auth()->user()->isWarehouseAdmin()) {
+            //     $warehouseIds = auth()->user()->warehouses->pluck('id')->toArray();
+            //     $products = $products->whereHas('warehouseProducts', function ($q) use ($warehouseIds) {
+            //         $q->whereIn('warehouse_id', $warehouseIds);
+            //     });
+            // } elseif (!auth()->user()->hasRole('SUPER ADMIN') && !auth()->user()->hasRole('ADMINISTRATOR')) {
+            //     abort(403, 'You do not have permission to access this page.');
+            // }
+
+            if (!auth()->user()->hasRole('SUPER ADMIN') && !auth()->user()->hasRole('ADMINISTRATOR') && !auth()->user()->isWarehouseAdmin()) {
                 abort(403, 'You do not have permission to access this page.');
             }
 
@@ -162,6 +175,7 @@ class ProductController extends Controller
             $product->description = $request->description;
             $product->short_description = $request->short_description;
             $product->specification = $request->specification;
+            $product->product_type = $request->product_type; // 'simple' or 'variable'
             $product->price = $request->price;
             $product->slug = $request->slug;
             $product->feature_product = $request->feature_product;
@@ -174,16 +188,6 @@ class ProductController extends Controller
                 $image->featured_image = 1;
                 $image->save();
             }
-
-            // if ($request->hasFile('images')) {
-            //     foreach ($request->file('images') as $file) {
-            //         $image = new ProductImage();
-            //         $image->product_id = $product->id;
-            //         $image->image = $this->imageUpload($file, 'product');
-            //         $image->featured_image = 0;
-            //         $image->save();
-            //     }
-            // }
 
             // Save sizes
             if ($request->filled('sizes')) {
@@ -213,31 +217,31 @@ class ProductController extends Controller
             }
 
             // Save warehouse products
-            if ($request->filled('warehouse_products')) {
-                foreach ($request->warehouse_products as $warehouseProduct) {
-                    if (!empty($warehouseProduct['warehouse_id'])) {
-                        $theWarehouseProduct = WarehouseProduct::create([
-                            'product_id' => $product->id,
-                            'warehouse_id' => $warehouseProduct['warehouse_id'],
-                            'sku' => $warehouseProduct['sku'],
-                            'price' => $warehouseProduct['price'],
-                            'color_id' => $warehouseProduct['color_id'] ?? null,
-                            'size_id' => $warehouseProduct['size_id'] ?? null,
-                            'quantity' => $warehouseProduct['quantity'],
-                        ]);
+            // if ($request->filled('warehouse_products')) {
+            //     foreach ($request->warehouse_products as $warehouseProduct) {
+            //         if (!empty($warehouseProduct['warehouse_id'])) {
+            //             $theWarehouseProduct = WarehouseProduct::create([
+            //                 'product_id' => $product->id,
+            //                 'warehouse_id' => $warehouseProduct['warehouse_id'],
+            //                 'sku' => $warehouseProduct['sku'],
+            //                 'price' => $warehouseProduct['price'],
+            //                 'color_id' => $warehouseProduct['color_id'] ?? null,
+            //                 'size_id' => $warehouseProduct['size_id'] ?? null,
+            //                 'quantity' => $warehouseProduct['quantity'],
+            //             ]);
 
-                        // Save warehouse product images
-                        if (!empty($warehouseProduct['images'])) {
-                            foreach ($warehouseProduct['images'] as $file) {
-                                $wpImage = new WarehouseProductImage();
-                                $wpImage->warehouse_product_id = $theWarehouseProduct->id;
-                                $wpImage->image_path = $this->imageUpload($file, 'warehouse_product');
-                                $wpImage->save();
-                            }
-                        }
-                    }
-                }
-            }
+            //             // Save warehouse product images
+            //             if (!empty($warehouseProduct['images'])) {
+            //                 foreach ($warehouseProduct['images'] as $file) {
+            //                     $wpImage = new WarehouseProductImage();
+            //                     $wpImage->warehouse_product_id = $theWarehouseProduct->id;
+            //                     $wpImage->image_path = $this->imageUpload($file, 'warehouse_product');
+            //                     $wpImage->save();
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
 
 
 
@@ -302,6 +306,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // return $request->all();
         if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
             $request->validate([
                 // 'category_id' => 'required|numeric|exists:categories,id',
@@ -341,6 +346,7 @@ class ProductController extends Controller
             $product->description = $request->description;
             $product->short_description = $request->short_description;
             $product->specification = $request->specification;
+            $product->product_type = $request->product_type;
             $product->price = $request->price;
             $product->slug = $request->slug;
             $product->feature_product = $request->feature_product;
@@ -516,5 +522,160 @@ class ProductController extends Controller
         }
         $image->delete();
         return response()->json(['message' => 'Warehouse product image deleted successfully!']);
+    }
+
+    // variations
+    public function variations($id)
+    {
+        $product = Product::findOrFail($id);
+        $product_variations = ProductVariation::where('product_id', $product->id)->get();
+        $colors = Color::where('status', 1)->get();
+        $productSizes = $product->sizesWithDetails();
+
+        // return $productSizes;
+
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
+
+
+
+
+            return view('user.product.variations', compact('product', 'product_variations', 'colors', 'productSizes'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    // generateVariations
+    public function generateVariations(Request $request)
+    {
+        // return $request->all();
+        $request->validate([
+            'colors' => 'nullable|array',
+            'colors.*' => 'exists:colors,id',
+            'sizes' => 'nullable|array',
+            'sizes.*' => 'exists:sizes,id',
+        ]);
+
+        $product = Product::findOrFail($request->product_id);
+
+        // Get selected colors and sizes
+        $selectedColors = $request->input('colors', []);
+        $selectedSizes = $request->input('sizes', []);
+
+        // Generate all combinations of selected colors and sizes
+        $combinations = [];
+        if (!empty($selectedColors) && !empty($selectedSizes)) {
+            foreach ($selectedColors as $color) {
+                foreach ($selectedSizes as $size) {
+                    $combinations[] = ['color_id' => $color, 'size_id' => $size];
+                }
+            }
+        } elseif (!empty($selectedColors)) {
+            foreach ($selectedColors as $color) {
+                $combinations[] = ['color_id' => $color, 'size_id' => null];
+            }
+        } elseif (!empty($selectedSizes)) {
+            foreach ($selectedSizes as $size) {
+                $combinations[] = ['color_id' => null, 'size_id' => $size];
+            }
+        }
+
+        // Create or update product variations based on combinations
+        foreach ($combinations as $combination) {
+            // Check if variation already exists
+            $existingVariation = ProductVariation::where('product_id', $product->id)
+                ->where('color_id', $combination['color_id'])
+                ->where('size_id', $combination['size_id'])
+                ->first();
+
+            if (!$existingVariation) {
+                // Create new variation
+                ProductVariation::create([
+                    'product_id' => $product->id,
+                    'sku' => strtoupper(uniqid('SKU-' . $combination['color_id'] . '-' . $combination['size_id'] . '-')),
+                    'price' => 0.00,
+                    'stock_quantity' => 0,
+                    'color_id' => $combination['color_id'],
+                    'size_id' => $combination['size_id'],
+                    'additional_info' => null,
+                ]);
+            }
+        }
+
+        return redirect()->route('products.variations', $product->id)->with('message', 'Product variations generated successfully!');
+    }
+
+    // deleteVariation
+    public function deleteVariation(Request $request)
+    {
+        $id = $request->id;
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
+            $variation = ProductVariation::findOrFail($id);
+            $productId = $variation->product_id;
+            $variation->delete();
+
+            // return redirect()->route('products.variations', $productId)->with('message', 'Product variation deleted successfully!');
+            return response()->json(['message' => 'Product variation deleted successfully!']);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    // update products.variations.update with save images
+    public function updateVariations(Request $request)
+    {
+        // return $request->all();
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'variation_products' => 'required|array',
+            'variation_products.*.id' => 'required|exists:product_variations,id',
+            'variation_products.*.sku' => 'required|string|max:255',
+            'variation_products.*.price' => 'required|numeric|min:0',
+            'variation_products.*.stock_quantity' => 'required|integer|min:0',
+            'variation_products.*.color_id' => 'nullable|exists:colors,id',
+            'variation_products.*.size_id' => 'nullable|exists:sizes,id',
+            'variation_products.*.additional_info' => 'nullable|string|max:1000',
+            'variation_products.*.images' => 'nullable|array',
+            'variation_products.*.images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
+        ]);
+
+        $product = Product::findOrFail($request->product_id);
+
+        foreach ($request->variation_products as $variationData) {
+
+            $variation = ProductVariation::findOrFail($variationData['id']);
+            $variation->sku = $variationData['sku'];
+            $variation->price = $variationData['price'];
+            $variation->stock_quantity = $variationData['stock_quantity'];
+            $variation->color_id = $variationData['color_id'];
+            $variation->size_id = $variationData['size_id'];
+            $variation->additional_info = '';
+
+            // update images if available to ProductVariationImage
+            if (!empty($variationData['images'])) {
+                foreach ($variationData['images'] as $file) {
+                    $pvImage = new ProductVariationImage();
+                    $pvImage->product_variation_id = $variation->id;
+                    $pvImage->image_path = $this->imageUpload($file, 'product_variation');
+                    $pvImage->save();
+                }
+            }
+
+            $variation->save();
+        }
+
+        return redirect()->route('products.variations', $product->id)->with('message', 'Product variations updated successfully!');
+    }
+
+    //deleteVariationImage
+    public function deleteVariationImage(Request $request)
+    {
+        $image = ProductVariationImage::findOrFail($request->id);
+        // Delete the file from storage if needed
+        if (file_exists(storage_path('app/public/' . $image->image_path))) {
+            unlink(storage_path('app/public/' . $image->image_path));
+        }
+        $image->delete();
+        return response()->json(['message' => 'Product variation image deleted successfully!']);
     }
 }
