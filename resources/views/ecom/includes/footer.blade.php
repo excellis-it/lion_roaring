@@ -2,9 +2,9 @@
     use App\Helpers\Helper;
 @endphp
 <footer class="footer_sec">
-    <div class="container-fluid">
+    <div class="container-fluid position-relative z-1">
         <div class="row">
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-3 col-md-6">
                 <div class="left_logo me-0 me-xl-5">
                     {{-- <div class="ftr_logo mb-3">
                         <img src="{{ Helper::getFooterCms() ? Storage::url(Helper::getFooterCms()->footer_logo) : asset('ecom_assets/images/logo.png') }}"
@@ -33,22 +33,33 @@
                         </div>
                     </div>
 
-
                     <p>
                         {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_title : '' !!}
                     </p>
-                    <span>Follow us</span>
+
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <div class="ftr_line_link">
+                    <h4>Quick Link</h4>
                     <ul>
-                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_facebook_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-facebook"></i></a></li>
-                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_instagram_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-instagram"></i></a></li>
-                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_twitter_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-twitter"></i></a></li>
-                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_youtube_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-youtube"></i></a></li>
+                        <li><a href="{{ route('e-store') }}">Home</a></li>
+                        <li><a href="{{ route('e-store.all-products') }}">Our Collections</a></li>
+                        <li><a href="{{ route('contact-us') }}">Contact us</a></li>
+                        @if (Helper::getCmsPages() && count(Helper::getCmsPages()) > 0)
+                            @foreach (Helper::getCmsPages() as $page)
+                                <li><a href="{{ route($page->slug . '.e-store.cms-page') }}">{{ $page->page_name }}</a>
+                                </li>
+                            @endforeach
+                        @endif
                     </ul>
                 </div>
             </div>
+
             <div class="col-lg-4 col-md-6">
-                <div class="left_ali">
-                    <h4>Find Us</h4>
+                <div class="left_ali left_logo">
+                    <h4>Contact Us</h4>
                     <div class="d-flex align-items-center mb-3">
                         <div class="icon_map">
                             <span><i class="fa-solid fa-location-dot"></i></span>
@@ -77,9 +88,19 @@
                             <a href="javascript:void(0);">{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_email : '' !!}</a>
                         </div>
                     </div>
+
+
+                    <span>Follow us</span>
+                    <ul>
+                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_facebook_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-facebook"></i></a></li>
+                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_instagram_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-instagram"></i></a></li>
+                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_twitter_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-twitter"></i></a></li>
+                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_youtube_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-youtube"></i></a></li>
+                    </ul>
                 </div>
             </div>
-            <div class="col-lg-4">
+
+            <div class="col-lg-3">
                 <div class="find-us left_ali">
                     <h4>
                         {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_newsletter_title : '' !!}
@@ -105,7 +126,7 @@
                                 </div>
                             </div>
                             <div class="main-btn">
-                                <input class="red_btn_submit" type="submit" value="Submit" />
+                                <input class="red_btn_submit ecom-submit" type="submit" value="Submit" />
                             </div>
                         </form>
                         {{-- <form action="">
@@ -133,18 +154,7 @@
     </div>
     <div class="copy_right">
         <div class="container">
-            <div class="ftr_line_link">
-                <ul>
-                    <li><a href="{{ route('e-store') }}">Home</a></li>
-                    <li><a href="{{ route('e-store.all-products') }}">Our Collections</a></li>
-                    <li><a href="{{ route('contact-us') }}">Contact us</a></li>
-                    @if (Helper::getCmsPages() && count(Helper::getCmsPages()) > 0)
-                        @foreach (Helper::getCmsPages() as $page)
-                            <li><a href="{{ route($page->slug . '.e-store.cms-page') }}">{{ $page->page_name }}</a></li>
-                        @endforeach
-                    @endif
-                </ul>
-            </div>
+
             <p> {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_copywrite_text : '' !!}</p>
         </div>
 

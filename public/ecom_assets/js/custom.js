@@ -76,17 +76,41 @@
 
 /*----- slier --------*/
 
+// $(".slider").slick({
+//     autoplay: true,
+//     speed: 2000,
+//     lazyLoad: "progressive",
+//     arrows: false,
+//     dots: false,
+//     fade: false,
+//     prevArrow:
+//         '<div class="slick-nav prev-arrow"><i></i><svg><use xlink:href="#circle"></svg></div>',
+//     nextArrow:
+//         '<div class="slick-nav next-arrow"><i></i><svg><use xlink:href="#circle"></svg></div>',
+//     responsive: [
+//         {
+//             breakpoint: 768,
+//             settings: {
+//                 slidesToShow: 1,
+//                 slidesToScroll: 1,
+//                 dots: false,
+//             },
+//         },
+//     ],
+// });
 $(".slider").slick({
     autoplay: true,
     speed: 2000,
     lazyLoad: "progressive",
     arrows: false,
     dots: false,
-    fade: true,
+    fade: false,
+    vertical: true,
+    verticalSwiping: true,
     prevArrow:
-        '<div class="slick-nav prev-arrow"><i></i><svg><use xlink:href="#circle"></svg></div>',
+        '<div class="slick-nav prev-arrow"><i></i><svg><use xlink:href="#circle"></use></svg></div>',
     nextArrow:
-        '<div class="slick-nav next-arrow"><i></i><svg><use xlink:href="#circle"></svg></div>',
+        '<div class="slick-nav next-arrow"><i></i><svg><use xlink:href="#circle"></use></svg></div>',
     responsive: [
         {
             breakpoint: 768,
@@ -94,6 +118,8 @@ $(".slider").slick({
                 slidesToShow: 1,
                 slidesToScroll: 1,
                 dots: false,
+                vertical: true,
+                verticalSwiping: true,
             },
         },
     ],

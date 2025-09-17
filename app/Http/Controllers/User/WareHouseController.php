@@ -14,6 +14,7 @@ use App\Models\WarehouseProduct;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use App\Models\ProductVariation;
 
 class WareHouseController extends Controller
 {
@@ -421,4 +422,42 @@ class WareHouseController extends Controller
 
         return response()->json(['status' => true, 'data' => ['sizes' => $sizes, 'colors' => $colors]]);
     }
+
+    // select warehouse before warehouse product management
+    public function selectWarehouse($productId)
+    {
+        $product = Product::findOrFail($productId);
+        $user_warehouses = auth()->user()->warehouses->pluck('id')->toArray();
+        $warehouses = WareHouse::whereIn('id', $user_warehouses)->where('is_active', 1)->get();
+
+        return view('user.warehouse.select_warehouse', compact('product', 'warehouses'));
+    }
+
+    // variationsWarehouse
+    public function variationsWarehouse($warehouseId, $productId)
+    {
+        $product = Product::findOrFail($productId);
+        $wareHouse = WareHouse::findOrFail($warehouseId);
+
+        $product_variations_colors = ProductVariation::where('product_id', $productId)->distinct()->pluck('color_id')->toArray();
+        $product_have_colors = Color::whereIn('id', $product_variations_colors)->get();
+        // return $product_have_colors;
+
+
+        // Check if user can access this warehouse
+        if (!auth()->user()->canManageWarehouse($wareHouse->id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Check if user can access this product
+        if (auth()->user()->isWarehouseAdmin()) {
+            $product_variations = $product->variations()->with(['colorDetail', 'sizeDetail', 'images'])->withSum('warehouseProductVariations as allocated_quantity', 'warehouse_quantity')->get();
+            // $user_warehouses = auth()->user()->warehouses->pluck('id')->toArray();
+            return view('user.warehouse.warehouse-variations', compact('product', 'product_variations', 'wareHouse', 'product_have_colors'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    //
 }

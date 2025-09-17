@@ -75,7 +75,7 @@
                         @method('PUT')
                         @csrf
 
-                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        {{-- <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="product-details-tab" data-bs-toggle="tab"
                                     data-bs-target="#product-details" type="button" role="tab"
@@ -83,7 +83,7 @@
                                     Details</button>
                             </li>
 
-                        </ul>
+                        </ul> --}}
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade show active" id="product-details" role="tabpanel"
                                 aria-labelledby="product-details-tab">
@@ -95,7 +95,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-5">
 
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
@@ -255,7 +255,7 @@
 
 
 
-                                <div class="row mb-4">
+                                <div class="row mb-5">
                                     <div class="col-md-12">
                                         <div class="heading_box mb-3">
                                             <h3>Product Type</h3>
@@ -265,14 +265,14 @@
                                     <div class="col-md-12">
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="product_type"
-                                                id="simple_product" value="{{ $product->product_type }}"
+                                                id="simple_product" value="simple"
                                                 {{ $product->product_type == 'simple' ? 'checked' : '' }}>
                                             <label class="form-check-label" for="simple_product">Simple
                                                 Product</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="product_type"
-                                                id="variable_product" value="{{ $product->product_type }}"
+                                                id="variable_product" value="variable"
                                                 {{ $product->product_type == 'variable' ? 'checked' : '' }}>
                                             <label class="form-check-label" for="variable_product">Variable
                                                 Product</label>
@@ -285,8 +285,8 @@
                                 </div>
 
                                 <div id="simple-product-section"
-                                    style="{{ old('product_type', 'simple') == 'simple' ? '' : 'display:none;' }}">
-                                    <div class="row mb-4">
+                                    style="{{ $product->product_type == 'simple' ? '' : 'display:none;' }}">
+                                    <div class="row mb-5">
                                         <div class="col-md-12">
                                             <div class="heading_box mb-3">
                                                 <h3>Simple Product Details</h3>
@@ -296,7 +296,7 @@
                                         <div class="col-md-4 mb-2">
                                             <div class="box_label">
                                                 <label for="simple_sku"> Product SKU*</label>
-                                                <input type="text" name="simple_sku" id="simple_sku"
+                                                <input type="text" name="sku" id="simple_sku"
                                                     class="form-control" value="{{ $product->sku }}">
                                                 @if ($errors->has('sku'))
                                                     <span class="error">{{ $errors->first('sku') }}</span>
@@ -307,7 +307,7 @@
                                         <div class="col-md-4 mb-2">
                                             <div class="box_label">
                                                 <label for="simple_price"> Product Price*</label>
-                                                <input type="text" name="simple_price" id="simple_price"
+                                                <input type="text" name="price" id="simple_price"
                                                     class="form-control" value="{{ $product->price }}">
                                                 @if ($errors->has('price'))
                                                     <span class="error">{{ $errors->first('price') }}</span>
@@ -318,7 +318,7 @@
                                         <div class="col-md-4 mb-2">
                                             <div class="box_label">
                                                 <label for="simple_quantity"> Stock Quantity*</label>
-                                                <input type="number" name="simple_quantity" id="simple_quantity"
+                                                <input type="number" name="quantity" id="simple_quantity"
                                                     class="form-control" value="{{ $product->quantity }}">
                                                 @if ($errors->has('quantity'))
                                                     <span class="error">{{ $errors->first('quantity') }}</span>
@@ -330,8 +330,8 @@
                                 </div>
 
                                 <div id="variable-product-section"
-                                    style="{{ old('product_type', 'simple') == 'variable' ? '' : 'display:none;' }}">
-                                    <div class="row mb-4">
+                                    style="{{ $product->product_type == 'variable' ? '' : 'display:none;' }}">
+                                    <div class="row mb-5">
                                         <div class="col-md-12">
                                             <div class="heading_box mb-3">
                                                 <h3>Variable Product Details</h3>
@@ -359,7 +359,7 @@
                                         </div>
 
                                         {{-- Multi Colors --}}
-                                        <div class="col-md-4 mb-2">
+                                        <div class="col-md-4 mb-2" hidden>
                                             <div class="box_label">
                                                 <label>Product Colors</label>
                                                 <div id="colors-wrapper">
