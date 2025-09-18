@@ -1,8 +1,10 @@
 @if ($available_product_variations->count() > 0)
     @foreach ($available_product_variations as $index => $variation)
         <div class="warehouse-variation-product-entry" data-id="{{ $variation->id }}">
-            <input type="hidden" name="variation_products[{{ $index }}][variation_id]" value="{{ $variation->id }}">
-            <input type="hidden" name="variation_products[{{ $index }}][warehouse_variation_id]" value="{{ $variation->id }}">
+            <input type="hidden" name="variation_products[{{ $index }}][variation_id]"
+                value="{{ $variation->id }}">
+            <input type="hidden" name="variation_products[{{ $index }}][warehouse_variation_id]"
+                value="{{ $variation->id }}">
             <div class="row">
 
 
@@ -27,8 +29,8 @@
                         <label>Color</label>
                         <input type="hidden" name="variation_products[{{ $index }}][color_id]"
                             class="form-control" value="{{ $variation->color_id }}">
-                        <input type="text" name="variation_products[{{ $index }}][color]" class="form-control"
-                            value="{{ $variation->colorDetail->color_name ?? '' }}" readonly>
+                        <input type="text" name="variation_products[{{ $index }}][color]"
+                            class="form-control" value="{{ $variation->colorDetail->color_name ?? '' }}" readonly>
                     </div>
                 </div>
 
@@ -47,14 +49,7 @@
 
 
 
-                <div class="col-md-2 mb-2">
-                    <div class="box_label">
-                        <label>Available Quantity <span class="text-danger">*</span></label>
-                        <input type="number" min="0"
-                            name="variation_products[{{ $index }}][available_quantity]" class="form-control available-qty-input"
-                            value="{{ $variation->admin_available_quantity }}" readonly>
-                    </div>
-                </div>
+
 
 
 
@@ -78,6 +73,16 @@
                                 <small>No images</small>
                             </div>
                         @endif
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <div class="box_label">
+                        <label>Available Stock Quantity <span class="text-danger">*</span></label>
+                        <input type="number" min="0"
+                            name="variation_products[{{ $index }}][available_quantity]"
+                            class="form-control available-qty-input" value="{{ $variation->admin_available_quantity }}"
+                            readonly>
                     </div>
                 </div>
 

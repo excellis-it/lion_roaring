@@ -238,6 +238,14 @@
                                 $row.find('input[name$="[available_quantity]"]').val(resp.data
                                     .admin_available_quantity);
                                 // toastr.success('Quantity updated');
+                                // short time change the background color of the input to light green of available_quantity input
+                                $row.find('input[name$="[available_quantity]"]').css('background-color',
+                                    '#d4edda');
+                                setTimeout(() => {
+                                    $row.find('input[name$="[available_quantity]"]').css(
+                                        'background-color', '');
+                                }, 1000);
+
                             } else {
                                 toastr.error(resp.message || 'Update failed');
                                 $input.val($input.data('prev'));
