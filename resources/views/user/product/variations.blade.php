@@ -62,6 +62,21 @@
         .choices__list--dropdown.is-active {
             z-index: 999999;
         }
+
+        .color-variation-group {
+            border: 2px solid #d9d9d9;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+
+        /* Inner variation rows */
+        .color-variation-group .variation-product-entry {
+            border-bottom: 1px dashed #e3e3e3;
+        }
+
+        .color-variation-group .variation-product-entry:last-of-type {
+            border-bottom: 0;
+        }
     </style>
 @endpush
 @section('content')
@@ -154,147 +169,115 @@
 
                         <div id="variation-products-container">
                             @if ($product_variations->count() > 0)
-                                @foreach ($product_variations as $index => $variation)
-                                    <div class="variation-product-entry" data-id="{{ $variation->id }}">
-                                        <input type="hidden" name="variation_products[{{ $index }}][id]"
-                                            value="{{ $variation->id }}">
-                                        <div class="row">
+                                @php
+                                    $groupedVariations = $product_variations->groupBy('color_id');
+                                    $index = 0;
+                                @endphp
 
+                                @foreach ($groupedVariations as $colorId => $colorGroup)
+                                    @php
+                                        $first = $colorGroup->first();
+                                    @endphp
+                                    <div class="color-variation-group mb-4 p-3">
+                                        <h3 class="h3 mb-3">Color : {{ $first->colorDetail->color_name }}</h3>
+                                        <div class="d-flex justify-content-between align-items-start mb-3">
 
-                                            <div class="col-md-2 mb-2">
-                                                <div class="box_label">
-                                                    <label>SKU <span class="text-danger">*</span></label>
-                                                    <input type="text"
-                                                        name="variation_products[{{ $index }}][sku]"
-                                                        class="form-control" value="{{ $variation->sku }}">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-2 mb-2">
-                                                <div class="box_label">
-                                                    <label>Price <span class="text-danger">*</span></label>
-                                                    <input type="number" step="0.01"
-                                                        name="variation_products[{{ $index }}][price]"
-                                                        class="form-control" value="{{ $variation->price }}">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-1 mb-2">
-                                                <div class="box_label">
-                                                    <label>Color</label>
-                                                    <input type="hidden"
-                                                        name="variation_products[{{ $index }}][color_id]"
-                                                        class="form-control" value="{{ $variation->color_id }}">
-                                                    <input type="text"
-                                                        name="variation_products[{{ $index }}][color]"
-                                                        class="form-control"
-                                                        value="{{ $variation->colorDetail->color_name ?? '' }}" readonly>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-1 mb-2">
-                                                <div class="box_label">
-                                                    <label>Size</label>
-                                                    <input type="hidden"
-                                                        name="variation_products[{{ $index }}][size_id]"
-                                                        class="form-control" value="{{ $variation->size_id }}">
-                                                    <input type="text"
-                                                        name="variation_products[{{ $index }}][size]"
-                                                        class="form-control"
-                                                        value="{{ $variation->sizeDetail->size ?? '' }}" readonly>
-
-                                                </div>
-                                            </div>
-
-
-
-
-
-                                            <div class="col-md-1 mb-2">
-                                                <div class="box_label">
-                                                    <label>Stock Quantity <span class="text-danger">*</span></label>
-                                                    <input type="number" min="0"
-                                                        name="variation_products[{{ $index }}][stock_quantity]"
-                                                        class="form-control" value="{{ $variation->stock_quantity }}">
-                                                </div>
-                                            </div>
-
-                                            {{-- Images --}}
-
-                                            <div class="col-md-2 mb-2">
-                                                @php
-                                                    if (!isset($shownColorImagesInput)) {
-                                                        $shownColorImagesInput = [];
-                                                    }
-                                                    $showImagesForThisColorInput = !in_array(
-                                                        $variation->color_id,
-                                                        $shownColorImagesInput,
-                                                    );
-                                                @endphp
-
-                                                @if ($showImagesForThisColorInput)
-                                                    <div class="box_label">
-                                                        <label>Images</label>
-                                                        <input type="file"
-                                                            name="variation_products[{{ $index }}][images][]"
-                                                            class="form-control" multiple>
-                                                    </div>
-                                                    @php $shownColorImagesInput[] = $variation->color_id; @endphp
-                                                @endif
-                                            </div>
-                                            <div class="col-md-2 mb-2 d-flex flex-wrap align-items-start">
-                                                @php
-                                                    if (!isset($shownColorImages)) {
-                                                        $shownColorImages = [];
-                                                    }
-                                                    $showImagesForThisColor = !in_array(
-                                                        $variation->color_id,
-                                                        $shownColorImages,
-                                                    );
-                                                @endphp
-
-                                                @if ($showImagesForThisColor)
-                                                    <div class="d-flex flex-wrap">
-                                                        @if ($variation->images && $variation->images->count() > 0)
-                                                            @foreach ($variation->images as $image)
-                                                                <div class="image-area m-1 position-relative"
-                                                                    id="{{ $image->id }}"
-                                                                    style="width:80px; height:80px; overflow:hidden; border-radius:4px; background:#fff;">
-                                                                    <img src="{{ Storage::url($image->image_path) }}"
-                                                                        alt="Variation Image"
-                                                                        style="width:100%; height:100%; object-fit:cover; display:block;">
-                                                                    <button type="button" class="remove-image btn btn-sm"
-                                                                        data-id="{{ $image->id }}"
-                                                                        title="Remove image"
-                                                                        style="position:absolute; top:4px; right:4px; display:flex; align-items:center; justify-content:center; width:26px; height:26px; padding:0; border-radius:50%;">
-                                                                        <i class="fa fa-times" aria-hidden="true"
-                                                                            style="font-size:12px;"></i>
-                                                                        <span class="visually-hidden">Remove image</span>
-                                                                    </button>
-                                                                </div>
-                                                            @endforeach
-                                                        @else
-                                                            <div class="image-area m-1 d-flex align-items-center justify-content-center"
-                                                                style="width:80px; height:80px; background:#f8f9fa; border:1px dashed #e9ecef; color:#6c757d; border-radius:4px;">
-                                                                <small>No images</small>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                    @php $shownColorImages[] = $variation->color_id; @endphp
-                                                @else
-                                                    {{-- <div class="image-area m-1 d-flex align-items-center justify-content-center"
-                                                        style="width:80px; height:80px; background:transparent; border:0; color:#6c757d; border-radius:4px;">
-                                                        <small>Images shown for this color above</small>
-                                                    </div> --}}
-                                                @endif
-                                            </div>
-                                            <div class="col-md-1 mb-2 ">
-                                                <button type="button"
-                                                    class="btn btn-danger remove-variation-product float-end"><i
-                                                        class="fa fa-trash"></i></button>
+                                            <div class="w-25">
+                                                <label class="small fw-semibold mb-1">Images
+                                                    ({{ $first->colorDetail->color_name }})
+                                                </label>
+                                                <input type="file"
+                                                    name="variation_products[{{ $index }}][images][]"
+                                                    class="form-control" multiple>
+                                                <small class="text-muted d-block mt-1">Upload images once per color.</small>
                                             </div>
                                         </div>
-                                        <hr>
+
+                                        <div class="d-flex flex-wrap mb-3">
+                                            @if ($first->images && $first->images->count())
+                                                @foreach ($first->images as $image)
+                                                    <div class="image-area m-1 position-relative" id="{{ $image->id }}"
+                                                        style="width:80px; height:80px; overflow:hidden; border-radius:4px; background:#fff;">
+                                                        <img src="{{ Storage::url($image->image_path) }}"
+                                                            alt="Variation Image"
+                                                            style="width:100%; height:100%; object-fit:cover;">
+                                                        <button type="button" class="remove-image btn btn-sm"
+                                                            data-id="{{ $image->id }}" title="Remove image"
+                                                            style="position:absolute; top:4px; right:4px; display:flex; align-items:center; justify-content:center; width:26px; height:26px; padding:0; border-radius:50%;">
+                                                            <i class="fa fa-times" style="font-size:12px;"></i>
+                                                        </button>
+                                                    </div>
+                                                @endforeach
+                                            @else
+                                                <div class="image-area m-1 d-flex align-items-center justify-content-center"
+                                                    style="width:80px; height:80px; background:#f8f9fa; border:1px dashed #e9ecef; color:#6c757d; border-radius:4px;">
+                                                    <small>No images</small>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        @foreach ($colorGroup as $variation)
+                                            <div class="variation-product-entry py-2" data-id="{{ $variation->id }}">
+                                                <input type="hidden" name="variation_products[{{ $index }}][id]"
+                                                    value="{{ $variation->id }}">
+                                                <input type="hidden"
+                                                    name="variation_products[{{ $index }}][color_id]"
+                                                    value="{{ $variation->color_id }}">
+
+                                                <div class="row align-items-end g-2">
+                                                    <div class="col-md-2">
+                                                        <label class="small fw-semibold">SKU <span
+                                                                class="text-danger">*</span></label>
+                                                        <input type="text"
+                                                            name="variation_products[{{ $index }}][sku]"
+                                                            class="form-control" value="{{ $variation->sku }}">
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <label class="small fw-semibold">Price <span
+                                                                class="text-danger">*</span></label>
+                                                        <input type="number" step="0.01"
+                                                            name="variation_products[{{ $index }}][price]"
+                                                            class="form-control" value="{{ $variation->price }}">
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <label class="small fw-semibold">Color</label>
+                                                        <input type="text" class="form-control"
+                                                            value="{{ $variation->colorDetail->color_name ?? '' }}"
+                                                            readonly>
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <label class="small fw-semibold">Size</label>
+                                                        <input type="hidden"
+                                                            name="variation_products[{{ $index }}][size_id]"
+                                                            value="{{ $variation->size_id }}">
+                                                        <input type="text" class="form-control"
+                                                            value="{{ $variation->sizeDetail->size ?? '' }}" readonly>
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <label class="small fw-semibold">Stock Qty <span
+                                                                class="text-danger">*</span></label>
+                                                        <input type="number" min="0"
+                                                            name="variation_products[{{ $index }}][stock_quantity]"
+                                                            class="form-control"
+                                                            value="{{ $variation->stock_quantity }}">
+                                                    </div>
+
+
+
+                                                    <div class="col-md-2 text-end">
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-danger remove-variation-product">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @php $index++; @endphp
+                                        @endforeach
                                     </div>
                                 @endforeach
                             @else
@@ -406,5 +389,10 @@
                     entry.remove();
                 }
             });
+
+            // After existing success callback where entry.remove();
+            if (!group.find('.variation-product-entry').length) {
+                group.remove();
+            }
         </script>
     @endpush

@@ -56,7 +56,7 @@
                 {{-- Images --}}
 
 
-                <div class="col-md-3 mb-2 d-flex flex-wrap align-items-start">
+                {{-- <div class="col-md-3 mb-2 d-flex flex-wrap align-items-start">
                     @php
                         if (!isset($shownColorImages)) {
                             $shownColorImages = [];
@@ -84,7 +84,7 @@
                         </div>
                         @php $shownColorImages[] = $variation->color_id; @endphp
                     @endif
-                </div>
+                </div> --}}
 
                 <div class="col-md-2 mb-2">
                     <div class="box_label">
@@ -96,7 +96,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-1 mb-2">
+                <div class="col-md-2 mb-2">
                     <div class="box_label">
                         <label>Set Quantity <span class="text-danger">*</span></label>
                         <input type="number" min="0" name="variation_products[{{ $index }}][quantity]"
