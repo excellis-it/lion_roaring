@@ -1,6 +1,31 @@
 @php
     use App\Helpers\Helper;
 @endphp
+<div class="top-bar-header">
+    <div class="container-fluid">
+        <div class="top-bar-text">
+            <span class="d-block font-bold ms-3" onclick="changeLocation()" style="cursor: pointer;">My
+                Location </span>
+            @if (Auth::check())
+                @if (Auth::user()->location_lat || Auth::user()->location_lng)
+                    <span onclick="changeLocation()" class="location-icon location_btn" data-bs-toggle="tooltip"
+                        data-bs-placement="bottom" title="{{ Auth::user()->location_address }}">
+                        <i class="fa fa-map-marker text-danger me-2"
+                            aria-hidden="true"></i>{{ Str::limit(Auth::user()->location_address ?? '', 20, '...') }}
+                    </span>
+                @endif
+            @else
+                @if (session()->has('location_lat') && session()->has('location_lng'))
+                    <span onclick="changeLocation()" class="location-icon location_btn" data-bs-toggle="tooltip"
+                        data-bs-placement="bottom" title="{{ session('location_address') }}">
+                        <i class="fa fa-map-marker text-danger me-2"
+                            aria-hidden="true"></i>{{ Str::limit(session('location_address') ?? '', 20, '...') }}
+                    </span>
+                @endif
+            @endif
+        </div>
+    </div>
+</div>
 <div class="main_menu_hdr">
     <div class="container-fluid">
         <div class="main_menu">
@@ -12,38 +37,16 @@
                         </a>
                     </div>
                 </div>
-                <div class="me-auto order-2 order-lg-2">
-                    <span class="d-block font-bold ms-3" onclick="changeLocation()" style="cursor: pointer;">My
-                        Location</span>
-                    @if (Auth::check())
-                        @if (Auth::user()->location_lat || Auth::user()->location_lng)
-                            <span onclick="changeLocation()" class="location-icon location_btn" data-bs-toggle="tooltip"
-                                data-bs-placement="bottom" title="{{ Auth::user()->location_address }}">
-                                <i class="fa fa-map-marker text-danger me-2"
-                                    aria-hidden="true"></i>{{ Str::limit(Auth::user()->location_address ?? '', 20, '...') }}
-                            </span>
-                        @endif
-                    @else
-                        @if (session()->has('location_lat') && session()->has('location_lng'))
-                            <span onclick="changeLocation()" class="location-icon location_btn" data-bs-toggle="tooltip"
-                                data-bs-placement="bottom" title="{{ session('location_address') }}">
-                                <i class="fa fa-map-marker text-danger me-2"
-                                    aria-hidden="true"></i>{{ Str::limit(session('location_address') ?? '', 20, '...') }}
-                            </span>
-                        @endif
-                    @endif
-                </div>
+
                 <div class="right_btm order-4 order-lg-3">
                     <div id="cssmenu">
                         <ul>
 
                             <li><a href="{{ route('e-store') }}">Home</a></li>
-
-                            <li>
-                                <a href="{{ route('e-store.all-products') }}">Shop</a>
+                            <li><a href="{{ route('e-store') }}">Category</a>
                                 {!! Helper::renderCategoryTree() !!}
                             </li>
-
+                            <li><a href="{{ route('e-store.all-products') }}">Shop</a></li>
                             <li><a href="{{ route('contact-us') }}">Contact Us</a></li>
                         </ul>
                     </div>

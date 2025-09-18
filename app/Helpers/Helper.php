@@ -505,15 +505,21 @@ class Helper
 
             $distance = self::haversineDistance($originLat, $originLng, $wh->location_lat, $wh->location_lng);
 
-            if (is_null($minDistance) || $distance < $minDistance) {
-                // if respecting service_range, ensure warehouse is within its service_range (if set)
-                if ($respectServiceRange && !is_null($wh->service_range) && $distance > $wh->service_range) {
-                    // skip — out of range
-                    continue;
-                }
+            $user_location_country_name = auth()->check() && auth()->user()->location_country ? auth()->user()->location_country : null;
+            $warehouses_location_country_name = $wh->country ? $wh->country->name : null;
 
-                $minDistance = $distance;
-                $nearest = $wh;
+            if ($user_location_country_name && $warehouses_location_country_name && $user_location_country_name == $warehouses_location_country_name) {
+
+                if (is_null($minDistance) || $distance < $minDistance) {
+                    // if respecting service_range, ensure warehouse is within its service_range (if set)
+                    if ($respectServiceRange && !is_null($wh->service_range) && $distance > $wh->service_range) {
+                        // skip — out of range
+                        continue;
+                    }
+
+                    $minDistance = $distance;
+                    $nearest = $wh;
+                }
             }
         }
 

@@ -161,14 +161,14 @@
                                     {{-- feature_product --}}
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
-                                            <label for="feature_product"> Feature Product*</label>
+                                            <label for="feature_product"> Feature Product</label>
                                             <select name="feature_product" id="feature_product" class="form-control">
                                                 <option value="">Select Feature Product</option>
-                                                <option value="1"
-                                                    {{ old('feature_product') == 1 ? 'selected' : '' }}>Yes
+                                                <option value="1" {{ old('feature_product') == 1 ? 'selected' : '' }}>
+                                                    Yes
                                                 </option>
-                                                <option value="0"
-                                                    {{ old('feature_product') == 0 ? 'selected' : '' }}>No
+                                                <option value="0" {{ old('feature_product') == 0 ? 'selected' : '' }}>
+                                                    No
                                                 </option>
                                             </select>
                                             @if ($errors->has('feature_product'))
@@ -179,7 +179,7 @@
                                     {{-- status --}}
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
-                                            <label for="status"> Status*</label>
+                                            <label for="status"> Status</label>
                                             <select name="status" id="status" class="form-control">
                                                 <option value="">Select Status</option>
                                                 <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Active
@@ -191,6 +191,23 @@
                                                 <span class="error">{{ $errors->first('status') }}</span>
                                             @endif
                                         </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image(Drag and
+                                            drop
+                                            atleast 1
+                                            images)<span style="color:red">*<span></label>
+                                        <input type="file" class="form-control dropzone" id="image-upload"
+                                            name="images[]" multiple>
+                                        @if ($errors->has('images.*'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('images.*') }}</div>
+                                        @endif
+                                        @if ($errors->has('images'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('images') }}</div>
+                                        @endif
                                     </div>
 
 
@@ -236,7 +253,7 @@
 
                                             <div class="col-md-4 mb-2">
                                                 <div class="box_label">
-                                                    <label for="sku"> Product SKU*</label>
+                                                    <label for="sku"> Product SKU</label>
                                                     <input type="text" name="sku" id="sku"
                                                         class="form-control" value="{{ old('sku') }}">
                                                     @if ($errors->has('sku'))
@@ -247,7 +264,7 @@
 
                                             <div class="col-md-4 mb-2">
                                                 <div class="box_label">
-                                                    <label for="price"> Product Price*</label>
+                                                    <label for="price"> Product Price</label>
                                                     <input type="text" name="price" id="price"
                                                         class="form-control" value="{{ old('price') }}">
                                                     @if ($errors->has('price'))
@@ -258,7 +275,7 @@
 
                                             <div class="col-md-4 mb-2">
                                                 <div class="box_label">
-                                                    <label for="quantity"> Stock Quantity*</label>
+                                                    <label for="quantity"> Stock Quantity</label>
                                                     <input type="number" name="quantity" id="quantity"
                                                         class="form-control" value="{{ old('quantity') }}">
                                                     @if ($errors->has('quantity'))

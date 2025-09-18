@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProductVariation;
+use App\Models\WarehouseProductVariation;
 
 class WareHouseController extends Controller
 {
@@ -457,6 +458,138 @@ class WareHouseController extends Controller
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
+    }
+
+    // selectWarehouseVariationStock
+    public function selectWarehouseVariationStock(Request $request)
+    {
+        // return $request->all();
+        $warehouseId = $request->input('warehouseId');
+        $productId = $request->input('productId');
+        $colorIds = $request->input('color_id', []); // array of selected color IDs
+
+        $product = Product::findOrFail($productId);
+        $wareHouse = WareHouse::findOrFail($warehouseId);
+        $available_product_variations = [];
+
+        // Check if user can access this warehouse
+        if (!auth()->user()->canManageWarehouse($wareHouse->id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Check if user can access this product
+        if (auth()->user()->isWarehouseAdmin()) {
+
+
+            $admin_product_variations = ProductVariation::where('product_id', $productId)
+                ->when(!empty($colorIds), function ($query) use ($colorIds) {
+                    $query->whereIn('color_id', $colorIds);
+                })
+                ->with(['colorDetail', 'sizeDetail', 'images'])
+                ->get();
+
+            if ($colorIds && count($colorIds) > 0) {
+                foreach ($admin_product_variations as $variation) {
+                    // insert if not exists warehouse product variation WarehouseProductVariation
+                    WarehouseProductVariation::firstOrCreate([
+                        'warehouse_id' => $warehouseId,
+                        'product_variation_id' => $variation->id,
+                        'product_id' => $productId,
+                        'warehouse_quantity' => 0,
+                    ]);
+                }
+            }
+
+            $warehouse_product_variations_ids = WarehouseProductVariation::where('warehouse_id', $warehouseId)
+                ->where('product_id', $productId)
+                ->orderBy('id', 'desc')
+                ->pluck('product_variation_id');
+
+
+            $available_product_variations = ProductVariation::whereIn('id', $warehouse_product_variations_ids)
+                ->with(['colorDetail', 'sizeDetail', 'images'])
+                //->orderBy('id', 'desc')
+                // order by the same order as in $warehouse_product_variations_ids
+                ->orderByRaw("FIELD(id, " . implode(',', $warehouse_product_variations_ids->toArray()) . ")")
+                ->get();
+
+            foreach ($available_product_variations as $variation) {
+                $warehouseProductVariation = WarehouseProductVariation::where('warehouse_id', $warehouseId)
+                    ->where('product_variation_id', $variation->id)
+                    ->first();
+                $variation->warehouse_quantity = $warehouseProductVariation ? $warehouseProductVariation->warehouse_quantity : 0;
+                // get admin_available_quantity
+                $variation->admin_available_quantity = $variation->available_quantity;
+            }
+
+
+            return view('user.warehouse.include.warehouse-variations-data', compact('product', 'available_product_variations'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    public function updateWarehouseVariationQuantity(Request $request)
+    {
+        $request->validate([
+            'warehouse_id' => 'required|integer|exists:ware_houses,id',
+            'variation_id' => 'required|integer|exists:product_variations,id',
+            'quantity' => 'required|integer|min:0',
+        ]);
+
+        $warehouseId = (int)$request->warehouse_id;
+        $variationId = (int)$request->variation_id;
+        $newQty = (int)$request->quantity;
+
+        $warehouse = WareHouse::findOrFail($warehouseId);
+
+        if (!auth()->user()->canManageWarehouse($warehouseId) || !auth()->user()->isWarehouseAdmin()) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $variation = ProductVariation::with('warehouseProductVariations')->findOrFail($variationId);
+
+        $warehouseVariation = WarehouseProductVariation::where('warehouse_id', $warehouseId)
+            ->where('product_variation_id', $variationId)
+            ->first();
+
+        if (!$warehouseVariation) {
+            return response()->json(['status' => false, 'message' => 'Warehouse variation not initialized'], 404);
+        }
+
+        // Sum allocations in other warehouses
+        $otherAllocated = $variation->warehouseProductVariations
+            ->where('warehouse_id', '!=', $warehouseId)
+            ->sum('warehouse_quantity');
+
+        $maxAllowedForThisWarehouse = $variation->stock_quantity - $otherAllocated;
+        if ($newQty > $maxAllowedForThisWarehouse) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Quantity exceeds remaining stock. Max allowed: ' . $maxAllowedForThisWarehouse,
+                'max_allowed' => $maxAllowedForThisWarehouse
+            ], 422);
+        }
+
+        $warehouseVariation->warehouse_quantity = $newQty;
+        $warehouseVariation->save();
+
+        // Recalculate availability after update
+        $totalAllocated = $variation->warehouseProductVariations()->sum('warehouse_quantity');
+        $available = $variation->stock_quantity - $totalAllocated;
+        if ($available < 0) {
+            $available = 0;
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => [
+                'variation_id' => $variationId,
+                'warehouse_quantity' => $newQty,
+                'admin_available_quantity' => $available,
+                'max_allowed' => $maxAllowedForThisWarehouse
+            ]
+        ]);
     }
 
     //

@@ -36,10 +36,10 @@
                                 <td class="d-flex">
                                     <a href="{{ route('sizes.edit', $size->id) }}" class="edit_icon me-2"><i
                                             class="fa-solid fa-edit"></i></a>
-                                    <a href="javascript:void(0)" id="delete"
+                                    {{-- <a href="javascript:void(0)" id="delete"
                                         data-route="{{ route('sizes.delete', $size->id) }}" class="delete_icon">
                                         <i class="fa-solid fa-trash"></i>
-                                    </a>
+                                    </a> --}}
                                 </td>
                             </tr>
                         @endforeach

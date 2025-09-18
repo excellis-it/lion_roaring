@@ -74,180 +74,72 @@
 
             </div>
 
-            <div class="row">
-                {{-- search product variations by color to select --}}
-                <div class="col-md-4 mt-3 mb-3">
-                    <form
-                        action="{{ route('products.variations.warehouse', ['warehouseId' => $wareHouse->id, 'productId' => $product->id]) }}"
-                        method="GET">
-                        <label for="">Select Colors To Get Variations</label>
-                        <div class="input-group mb-3">
-
-                            <select name="color_id" class="form-control" multiple>
-                                <option value="">-- Select Colors --</option>
-                                @foreach ($product_have_colors as $color)
-                                    <option value="{{ $color->id }}"
-                                        {{ in_array($color->id, (array) request('color_id')) ? 'selected' : '' }}>
-                                        {{ $color->color_name }}</option>
-                                @endforeach
-                            </select>
-                            <button class="btn btn-primary" type="submit">Select</button>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            {{-- <strong>Filter Product Variations</strong> --}}
                         </div>
-                    </form>
-                </div>
+                        <div class="card-body">
+                            <form id="select-colors-form"
+                                action="{{ route('products.select.warehouse.variation.stock', ['warehouseId' => $wareHouse->id, 'productId' => $product->id]) }}"
+                                method="POST" class="row g-2 align-items-end">
+                                @csrf
 
+                                <div class="col-12">
+                                    <label class="form-label" for="color-select">Select colors to load available
+                                        variations</label>
+                                </div>
+
+                                <div class="col-9">
+                                    <select id="color-select" name="color_id[]" class="form-control" multiple
+                                        aria-label="Select colors">
+                                        @foreach ($product_have_colors as $color)
+                                            <option value="{{ $color->id }}"
+                                                {{ in_array($color->id, (array) request('color_id')) ? 'selected' : '' }}>
+                                                {{ $color->color_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-3 d-grid">
+                                    <button class="btn btn-primary" type="submit">Load Variations</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
             <!--  Row 1 -->
-            <div class="row" hidden>
+            <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('products.variations.update') }}" method="POST" enctype="multipart/form-data">
-                        @method('POST')
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
 
 
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <div class="heading_box mb-3">
-                                    <h3>Product Variations</h3>
-                                </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <div class="heading_box mb-3">
+                                <h3>Product Variations</h3>
                             </div>
                         </div>
+                    </div>
 
-                        <div id="variation-products-container">
-                            @if ($product_variations->count() > 0)
-                                @foreach ($product_variations as $index => $variation)
-                                    <div class="variation-product-entry" data-id="{{ $variation->id }}">
-                                        <input type="hidden" name="variation_products[{{ $index }}][id]"
-                                            value="{{ $variation->id }}">
-                                        <div class="row">
+                    <div id="variation-products-container-data">
 
-
-                                            <div class="col-md-2 mb-2">
-                                                <div class="box_label">
-                                                    <label>SKU <span class="text-danger">*</span></label>
-                                                    <input type="text"
-                                                        name="variation_products[{{ $index }}][sku]"
-                                                        class="form-control" value="{{ $variation->sku }}" readonly>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-2 mb-2">
-                                                <div class="box_label">
-                                                    <label>Price <span class="text-danger">*</span></label>
-                                                    <input type="number" step="0.01"
-                                                        name="variation_products[{{ $index }}][price]"
-                                                        class="form-control" value="{{ $variation->price }}" readonly>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-1 mb-2">
-                                                <div class="box_label">
-                                                    <label>Color</label>
-                                                    <input type="hidden"
-                                                        name="variation_products[{{ $index }}][color_id]"
-                                                        class="form-control" value="{{ $variation->color_id }}">
-                                                    <input type="text"
-                                                        name="variation_products[{{ $index }}][color]"
-                                                        class="form-control"
-                                                        value="{{ $variation->colorDetail->color_name ?? '' }}" readonly>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-1 mb-2">
-                                                <div class="box_label">
-                                                    <label>Size</label>
-                                                    <input type="hidden"
-                                                        name="variation_products[{{ $index }}][size_id]"
-                                                        class="form-control" value="{{ $variation->size_id }}">
-                                                    <input type="text"
-                                                        name="variation_products[{{ $index }}][size]"
-                                                        class="form-control"
-                                                        value="{{ $variation->sizeDetail->size ?? '' }}" readonly>
-
-                                                </div>
-                                            </div>
+                    </div>
 
 
 
 
-
-                                            <div class="col-md-2 mb-2">
-                                                <div class="box_label">
-                                                    <label>Available Quantity <span class="text-danger">*</span></label>
-                                                    <input type="number" min="0"
-                                                        name="variation_products[{{ $index }}][available_quantity]"
-                                                        class="form-control" value="{{ $variation->allocated_qty }}"
-                                                        readonly>
-                                                </div>
-                                            </div>
+                    <div class="mt-3 mb-5" style="height: 10px; border-bottom: 2px solid #eee; margin: 20px 0;">
+                    </div>
 
 
 
-                                            {{-- Images --}}
-
-
-                                            <div class="col-md-3 mb-2 d-flex flex-wrap align-items-start">
-                                                <div class="d-flex flex-wrap">
-                                                    @if ($variation->images && $variation->images->count() > 0)
-                                                        @foreach ($variation->images as $image)
-                                                            <div class="image-area m-1 position-relative"
-                                                                id="{{ $image->id }}"
-                                                                style="width:80px; height:80px; overflow:hidden; border-radius:4px; background:#fff;">
-                                                                <img src="{{ Storage::url($image->image_path) }}"
-                                                                    alt="Variation Image"
-                                                                    style="width:100%; height:100%; object-fit:cover; display:block;">
-
-                                                            </div>
-                                                        @endforeach
-                                                    @else
-                                                        <div class="image-area m-1 d-flex align-items-center justify-content-center"
-                                                            style="width:80px; height:80px; background:#f8f9fa; border:1px dashed #e9ecef; color:#6c757d; border-radius:4px;">
-                                                            <small>No images</small>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-1 mb-2">
-                                                <div class="box_label">
-                                                    <label>Set Quantity <span class="text-danger">*</span></label>
-                                                    <input type="number" min="0"
-                                                        name="variation_products[{{ $index }}][quantity]"
-                                                        class="form-control" value="{{ $variation->quantity }}">
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                        <hr>
-                                    </div>
-                                @endforeach
-                            @else
-                                <h4 class="text-center">No variations available</h4>
-                            @endif
-                        </div>
-
-                        {{-- <div class="row mb-4">
-                            <div class="col-md-12">
-                                <button type="button" class="btn btn-primary" id="add-warehouse-product">
-                                    <i class="fa fa-plus"></i> Add Warehouse Product
-                                </button>
-                            </div>
-                        </div> --}}
-
-
-                        <div class="mt-3 mb-5" style="height: 10px; border-bottom: 2px solid #eee; margin: 20px 0;">
-                        </div>
-
-                        <div class="row">
-                            <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
-                                <button type="submit" class="print_btn me-2">Update</button>
-                                <a href="{{ route('products.index') }}" class="print_btn print_btn_vv">Cancel</a>
-                            </div>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -265,7 +157,117 @@
             };
         </script>
         <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var colorSelect = document.querySelector('select[name="color_id[]"]');
+                var choices = new Choices(colorSelect, {
+                    removeItemButton: true,
+                    searchResultLimit: 5,
+                    renderChoiceLimit: 5,
+                    placeholder: true,
+                    placeholderValue: 'Select colors'
+                });
+            });
+        </script>
+        <script>
             ClassicEditor.create(document.querySelector("#description"));
             ClassicEditor.create(document.querySelector("#specification"));
+        </script>
+
+        <script>
+            // ajax submit and get laravel view select-colors-form
+            $('#select-colors-form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                var method = form.attr('method');
+                var data = form.serialize();
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: data,
+                    success: function(response) {
+                        // console.log(response);
+                        $('#variation-products-container-data').html(response);
+                        toastr.success('Product variations loaded successfully');
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+
+            $(document).ready(function() {
+                $('#select-colors-form').submit();
+            });
+        </script>
+        <script>
+            const WAREHOUSE_ID = {{ $wareHouse->id }};
+            const UPDATE_VARIATION_QTY_URL = "{{ route('warehouse.variation.update-quantity') }}";
+
+            // Delegate events to container (content is loaded via AJAX)
+            $(document)
+                .on('focus', '#variation-products-container-data input[name$="[quantity]"]', function() {
+                    $(this).data('prev', this.value);
+                })
+                .on('change keyup', '#variation-products-container-data input[name$="[quantity]"]', function() {
+                    const $input = $(this);
+                    const newVal = $input.val().trim() === '' ? 0 : parseInt($input.val(), 10);
+                    if (isNaN(newVal) || newVal < 0) {
+                        toastr.error('Invalid quantity');
+                        $input.val($input.data('prev'));
+                        return;
+                    }
+
+                    const $row = $input.closest('.warehouse-variation-product-entry');
+                    const variationId = $row.data('id');
+
+                    //   $input.prop('disabled', true);
+
+                    $.ajax({
+                        url: UPDATE_VARIATION_QTY_URL,
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            warehouse_id: WAREHOUSE_ID,
+                            variation_id: variationId,
+                            quantity: newVal
+                        },
+                        success: function(resp) {
+                            if (resp.status) {
+                                // Update available quantity in this row
+                                $row.find('input[name$="[available_quantity]"]').val(resp.data
+                                    .admin_available_quantity);
+                                // toastr.success('Quantity updated');
+                                // short time change the background color of the input to light green of available_quantity input
+                                $row.find('input[name$="[available_quantity]"]').css('background-color',
+                                    '#d4edda');
+                                setTimeout(() => {
+                                    $row.find('input[name$="[available_quantity]"]').css(
+                                        'background-color', '');
+                                }, 1000);
+
+                            } else {
+                                toastr.error(resp.message || 'Update failed');
+                                $input.val($input.data('prev'));
+                            }
+                        },
+                        error: function(xhr) {
+                            if (xhr.status === 422 && xhr.responseJSON) {
+                                toastr.error(xhr.responseJSON.message || 'Validation error');
+                                if (xhr.responseJSON.max_allowed !== undefined) {
+                                    $input.val(xhr.responseJSON.max_allowed).trigger('change');
+                                } else {
+                                    $input.val($input.data('prev'));
+                                }
+                            } else {
+                                toastr.error('Server error');
+                                $input.val($input.data('prev'));
+                            }
+                        },
+                        complete: function() {
+                            $input.prop('disabled', false);
+                        }
+                    });
+                });
         </script>
     @endpush

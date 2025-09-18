@@ -58,7 +58,7 @@
     </section>
 
 
-    <section class="product_catagory arrw-color">
+    <section class="product_catagory arrw-color" hidden>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xl-7">

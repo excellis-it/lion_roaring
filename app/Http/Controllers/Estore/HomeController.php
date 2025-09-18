@@ -144,9 +144,9 @@ class HomeController extends Controller
                 $data = json_decode($response->getBody(), true);
 
                 // if got any error from api then return
-                // if ($data['status'] !== 'OK') {
-                //     return response()->json(['success' => false, 'message' => 'Failed to retrieve address from coordinates'], 500);
-                // }
+                if ($data['status'] !== 'OK') {
+                    return response()->json(['success' => false, 'message' => 'Failed to retrieve address from coordinates'], 500);
+                }
             } catch (\Exception $e) {
                 return response()->json(['success' => false, 'message' => 'Error calling Geocoding API: ' . $e->getMessage()], 500);
             }

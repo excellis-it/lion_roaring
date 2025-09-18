@@ -33,6 +33,8 @@ use Stripe\Exception\ApiConnectionException;
 use Stripe\Exception\ApiErrorException;
 use Stripe\PaymentIntent;
 use App\Models\EstoreRefund;
+use App\Models\ProductVariation;
+use App\Models\WarehouseProductVariation;
 
 class ProductController extends Controller
 {
@@ -55,6 +57,7 @@ class ProductController extends Controller
         }
         // reuse helper to get nearest warehouse
         $nearest = Helper::getNearestWarehouse($originLat, $originLng);
+       // return $nearest;
         if (!empty($nearest['warehouse']->id)) {
             $nearbyWareHouseId = $nearest['warehouse']->id;
         }
@@ -70,6 +73,13 @@ class ProductController extends Controller
         $wareHouseHaveProductVariables = WarehouseProduct::where('product_id', $getProduct->id)
             ->where('warehouse_id', $nearbyWareHouseId)
             ->first();
+        // $wareHouseHaveProductVariables = WarehouseProductVariation::where('product_id', $getProduct->id)
+        //     ->where('warehouse_id', $nearbyWareHouseId)
+        //     ->where('warehouse_quantity', '>', 0)
+        //     ->with('productVariation.colorDetail', 'productVariation.sizeDetail', 'productVariation.images')
+        //     ->get();
+
+       // return $wareHouseHaveProductVariables;
 
         // if (! $wareHouseHaveProductVariables) {
         //     // Handle the case where the product is not found in the warehouse
@@ -742,7 +752,7 @@ class ProductController extends Controller
                 'tax_amount' => $taxAmount,
                 'shipping_amount' => $shippingCost + $deliveryCost,
                 'total_amount' => $totalAmount,
-                'credit_card_fee' => $creditCardFee, 
+                'credit_card_fee' => $creditCardFee,
                 'payment_type' => $request->payment_type,
                 'payment_status' => 'paid',
                 'status' => 'processing',
