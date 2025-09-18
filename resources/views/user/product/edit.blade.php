@@ -250,8 +250,39 @@
                                         </div>
                                     </div>
 
+                                    <div class="col-md-12">
+                                        <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image(Drag and
+                                            drop
+                                            atleast 1
+                                            images)</label>
+                                        <input type="file" class="form-control dropzone" id="image-upload"
+                                            name="images[]" multiple>
+                                        @if ($errors->has('images.*'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('images.*') }}</div>
+                                        @endif
+                                        @if ($errors->has('images'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('images') }}</div>
+                                        @endif
+                                    </div>
+
 
                                 </div>
+
+                                @if ($product->withOutMainImage)
+                                    <div class="row mb-6">
+                                        <label for="inputConfirmPassword2" class="col-form-label">Image Preview</label>
+
+                                        @foreach ($product->withOutMainImage as $image)
+                                            <div class="image-area m-4" id="{{ $image->id }}">
+                                                <img src="{{ Storage::url($image->image) }}" alt="Preview">
+                                                <a class="remove-image" href="javascript:void(0);"
+                                                    data-id="{{ $image->id }}" style="display: inline;">&#215;</a>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
 
 
 
@@ -295,7 +326,7 @@
 
                                         <div class="col-md-4 mb-2">
                                             <div class="box_label">
-                                                <label for="simple_sku"> Product SKU*</label>
+                                                <label for="simple_sku"> Product SKU</label>
                                                 <input type="text" name="sku" id="simple_sku"
                                                     class="form-control" value="{{ $product->sku }}">
                                                 @if ($errors->has('sku'))
@@ -306,7 +337,7 @@
 
                                         <div class="col-md-4 mb-2">
                                             <div class="box_label">
-                                                <label for="simple_price"> Product Price*</label>
+                                                <label for="simple_price"> Product Price</label>
                                                 <input type="text" name="price" id="simple_price"
                                                     class="form-control" value="{{ $product->price }}">
                                                 @if ($errors->has('price'))
@@ -317,7 +348,7 @@
 
                                         <div class="col-md-4 mb-2">
                                             <div class="box_label">
-                                                <label for="simple_quantity"> Stock Quantity*</label>
+                                                <label for="simple_quantity"> Stock Quantity</label>
                                                 <input type="number" name="quantity" id="simple_quantity"
                                                     class="form-control" value="{{ $product->quantity }}">
                                                 @if ($errors->has('quantity'))

@@ -222,39 +222,71 @@
                                             {{-- Images --}}
 
                                             <div class="col-md-2 mb-2">
-                                                <div class="box_label">
-                                                    <label>Images</label>
-                                                    <input type="file"
-                                                        name="variation_products[{{ $index }}][images][]"
-                                                        class="form-control" multiple>
-                                                </div>
+                                                @php
+                                                    if (!isset($shownColorImagesInput)) {
+                                                        $shownColorImagesInput = [];
+                                                    }
+                                                    $showImagesForThisColorInput = !in_array(
+                                                        $variation->color_id,
+                                                        $shownColorImagesInput,
+                                                    );
+                                                @endphp
+
+                                                @if ($showImagesForThisColorInput)
+                                                    <div class="box_label">
+                                                        <label>Images</label>
+                                                        <input type="file"
+                                                            name="variation_products[{{ $index }}][images][]"
+                                                            class="form-control" multiple>
+                                                    </div>
+                                                    @php $shownColorImagesInput[] = $variation->color_id; @endphp
+                                                @endif
                                             </div>
                                             <div class="col-md-2 mb-2 d-flex flex-wrap align-items-start">
-                                                <div class="d-flex flex-wrap">
-                                                    @if ($variation->images && $variation->images->count() > 0)
-                                                        @foreach ($variation->images as $image)
-                                                            <div class="image-area m-1 position-relative"
-                                                                id="{{ $image->id }}"
-                                                                style="width:80px; height:80px; overflow:hidden; border-radius:4px; background:#fff;">
-                                                                <img src="{{ Storage::url($image->image_path) }}"
-                                                                    alt="Variation Image"
-                                                                    style="width:100%; height:100%; object-fit:cover; display:block;">
-                                                                <button type="button" class="remove-image btn btn-sm"
-                                                                    data-id="{{ $image->id }}" title="Remove image"
-                                                                    style="position:absolute; top:4px; right:4px; display:flex; align-items:center; justify-content:center; width:26px; height:26px; padding:0; border-radius:50%;">
-                                                                    <i class="fa fa-times" aria-hidden="true"
-                                                                        style="font-size:12px;"></i>
-                                                                    <span class="visually-hidden">Remove image</span>
-                                                                </button>
+                                                @php
+                                                    if (!isset($shownColorImages)) {
+                                                        $shownColorImages = [];
+                                                    }
+                                                    $showImagesForThisColor = !in_array(
+                                                        $variation->color_id,
+                                                        $shownColorImages,
+                                                    );
+                                                @endphp
+
+                                                @if ($showImagesForThisColor)
+                                                    <div class="d-flex flex-wrap">
+                                                        @if ($variation->images && $variation->images->count() > 0)
+                                                            @foreach ($variation->images as $image)
+                                                                <div class="image-area m-1 position-relative"
+                                                                    id="{{ $image->id }}"
+                                                                    style="width:80px; height:80px; overflow:hidden; border-radius:4px; background:#fff;">
+                                                                    <img src="{{ Storage::url($image->image_path) }}"
+                                                                        alt="Variation Image"
+                                                                        style="width:100%; height:100%; object-fit:cover; display:block;">
+                                                                    <button type="button" class="remove-image btn btn-sm"
+                                                                        data-id="{{ $image->id }}"
+                                                                        title="Remove image"
+                                                                        style="position:absolute; top:4px; right:4px; display:flex; align-items:center; justify-content:center; width:26px; height:26px; padding:0; border-radius:50%;">
+                                                                        <i class="fa fa-times" aria-hidden="true"
+                                                                            style="font-size:12px;"></i>
+                                                                        <span class="visually-hidden">Remove image</span>
+                                                                    </button>
+                                                                </div>
+                                                            @endforeach
+                                                        @else
+                                                            <div class="image-area m-1 d-flex align-items-center justify-content-center"
+                                                                style="width:80px; height:80px; background:#f8f9fa; border:1px dashed #e9ecef; color:#6c757d; border-radius:4px;">
+                                                                <small>No images</small>
                                                             </div>
-                                                        @endforeach
-                                                    @else
-                                                        <div class="image-area m-1 d-flex align-items-center justify-content-center"
-                                                            style="width:80px; height:80px; background:#f8f9fa; border:1px dashed #e9ecef; color:#6c757d; border-radius:4px;">
-                                                            <small>No images</small>
-                                                        </div>
-                                                    @endif
-                                                </div>
+                                                        @endif
+                                                    </div>
+                                                    @php $shownColorImages[] = $variation->color_id; @endphp
+                                                @else
+                                                    {{-- <div class="image-area m-1 d-flex align-items-center justify-content-center"
+                                                        style="width:80px; height:80px; background:transparent; border:0; color:#6c757d; border-radius:4px;">
+                                                        <small>Images shown for this color above</small>
+                                                    </div> --}}
+                                                @endif
                                             </div>
                                             <div class="col-md-1 mb-2 ">
                                                 <button type="button"

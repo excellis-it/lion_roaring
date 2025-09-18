@@ -142,117 +142,140 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $request->validate([
-                // 'category_id' => 'required|numeric|exists:categories,id',
-                // 'name' => 'required|string|max:255',
-                // 'description' => 'required|string',
-                // 'short_description' => 'required|string',
-                // 'specification' => 'required|string',
-                // 'price' => 'required|numeric',
-                // 'feature_product' => 'required',
-                // 'slug' => 'required|string|unique:products',
-                // 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
-                // // 'images' => 'nullable|array',
-                // // 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
+        // try {
+        $validatedData = $request->validate([
+            'category_id' => 'required|numeric|exists:categories,id',
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'short_description' => 'required|string',
+            'specification' => 'required|string',
+            // 'price' => 'required|numeric',
+            'feature_product' => 'required',
+            'slug' => 'required|string|unique:products',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
 
-                // // Warehouse product validation
-                // 'warehouse_products' => 'nullable|array',
-                // 'warehouse_products.*.warehouse_id' => 'required|exists:ware_houses,id',
-                // 'warehouse_products.*.sku' => 'required|string|distinct|unique:warehouse_products,sku',
-                // 'warehouse_products.*.price' => 'required|numeric|min:0',
-                // 'warehouse_products.*.color_id' => 'nullable|exists:colors,id',
-                // 'warehouse_products.*.size_id' => 'nullable|exists:sizes,id',
-                // 'warehouse_products.*.quantity' => 'required|integer|min:0',
-                // 'warehouse_products.*.images' => 'nullable|array',
-                // 'warehouse_products.*.images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
-            ]);
+            // // Warehouse product validation
+            // 'warehouse_products' => 'nullable|array',
+            // 'warehouse_products.*.warehouse_id' => 'required|exists:ware_houses,id',
+            // 'warehouse_products.*.sku' => 'required|string|distinct|unique:warehouse_products,sku',
+            // 'warehouse_products.*.price' => 'required|numeric|min:0',
+            // 'warehouse_products.*.color_id' => 'nullable|exists:colors,id',
+            // 'warehouse_products.*.size_id' => 'nullable|exists:sizes,id',
+            // 'warehouse_products.*.quantity' => 'required|integer|min:0',
+            // 'warehouse_products.*.images' => 'nullable|array',
+            // 'warehouse_products.*.images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
+        ], [
+            'category_id.required' => 'The category field is required.',
+            'category_id.exists' => 'The selected category is invalid.',
+            'name.required' => 'The product name field is required.',
+            'description.required' => 'The description field is required.',
+            'short_description.required' => 'The short description field is required.',
+            'specification.required' => 'The specification field is required.',
+            'feature_product.required' => 'The feature product field is required.',
+            'slug.required' => 'The slug field is required.',
+            'slug.unique' => 'The slug has already been taken.',
+            'image.required' => 'The featured image field is required.',
+        ]);
 
-            $product = new Product();
-            $product->category_id = $request->category_id;
-            $product->user_id = auth()->user()->id;
-            $product->name = $request->name;
-            $product->description = $request->description;
-            $product->short_description = $request->short_description;
-            $product->specification = $request->specification;
-            $product->product_type = $request->product_type; // 'simple' or 'variable'
-            $product->price = $request->price;
-            $product->slug = $request->slug;
-            $product->feature_product = $request->feature_product;
-            $product->save();
+        $product = new Product();
+        $product->category_id = $request->category_id;
+        $product->user_id = auth()->user()->id;
+        $product->name = $request->name;
+        $product->description = $request->description;
+        $product->short_description = $request->short_description;
+        $product->specification = $request->specification;
+        $product->product_type = $request->product_type; // 'simple' or 'variable'
+        $product->sku = $request->sku ?? '';
+        $product->quantity = $request->quantity ?? 0;
+        $product->price = $request->price;
+        $product->slug = $request->slug;
+        $product->feature_product = $request->feature_product;
+        $product->save();
 
-            if ($request->hasFile('image')) {
+        if ($request->hasFile('image')) {
+            $image = new ProductImage();
+            $image->product_id = $product->id;
+            $image->image = $this->imageUpload($request->file('image'), 'product');
+            $image->featured_image = 1;
+            $image->save();
+        }
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
                 $image = new ProductImage();
                 $image->product_id = $product->id;
-                $image->image = $this->imageUpload($request->file('image'), 'product');
-                $image->featured_image = 1;
+                $image->image = $this->imageUpload($file, 'product');
+                $image->featured_image = 0;
                 $image->save();
             }
-
-            // Save sizes
-            if ($request->filled('sizes')) {
-                foreach ($request->sizes as $size) {
-                    if ($size) {
-                        $product->sizes()->create(['size_id' => $size]);
-                    }
-                }
-            }
-
-            // Save colors
-            if ($request->filled('colors')) {
-                foreach ($request->colors as $color) {
-                    if ($color) {
-                        $product->colors()->create(['color_id' => $color]);
-                    }
-                }
-            }
-
-            // save other charges if available
-            if ($request->filled('other_charges')) {
-                foreach ($request->other_charges as $charge) {
-                    if ($charge['charge_name'] && $charge['charge_amount']) {
-                        $product->otherCharges()->create($charge);
-                    }
-                }
-            }
-
-            // Save warehouse products
-            // if ($request->filled('warehouse_products')) {
-            //     foreach ($request->warehouse_products as $warehouseProduct) {
-            //         if (!empty($warehouseProduct['warehouse_id'])) {
-            //             $theWarehouseProduct = WarehouseProduct::create([
-            //                 'product_id' => $product->id,
-            //                 'warehouse_id' => $warehouseProduct['warehouse_id'],
-            //                 'sku' => $warehouseProduct['sku'],
-            //                 'price' => $warehouseProduct['price'],
-            //                 'color_id' => $warehouseProduct['color_id'] ?? null,
-            //                 'size_id' => $warehouseProduct['size_id'] ?? null,
-            //                 'quantity' => $warehouseProduct['quantity'],
-            //             ]);
-
-            //             // Save warehouse product images
-            //             if (!empty($warehouseProduct['images'])) {
-            //                 foreach ($warehouseProduct['images'] as $file) {
-            //                     $wpImage = new WarehouseProductImage();
-            //                     $wpImage->warehouse_product_id = $theWarehouseProduct->id;
-            //                     $wpImage->image_path = $this->imageUpload($file, 'warehouse_product');
-            //                     $wpImage->save();
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
-
-
-
-            // notify users
-            $userName = Auth::user()->getFullNameAttribute();
-            $noti = NotificationService::notifyAllUsers('New Product created by ' . $userName, 'product');
-
-            return redirect()->route('products.index')->with('message', 'Product created successfully!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to create product: ' . $e->getMessage())->withInput();
         }
+
+        // Save sizes
+        if ($request->filled('sizes')) {
+            foreach ($request->sizes as $size) {
+                if ($size) {
+                    $product->sizes()->create(['size_id' => $size]);
+                }
+            }
+        }
+
+        // Save colors
+        if ($request->filled('colors')) {
+            foreach ($request->colors as $color) {
+                if ($color) {
+                    $product->colors()->create(['color_id' => $color]);
+                }
+            }
+        }
+
+        // save other charges if available
+        if ($request->filled('other_charges')) {
+            foreach ($request->other_charges as $charge) {
+                if ($charge['charge_name'] && $charge['charge_amount']) {
+                    $product->otherCharges()->create($charge);
+                }
+            }
+        }
+
+        // Save warehouse products
+        // if ($request->filled('warehouse_products')) {
+        //     foreach ($request->warehouse_products as $warehouseProduct) {
+        //         if (!empty($warehouseProduct['warehouse_id'])) {
+        //             $theWarehouseProduct = WarehouseProduct::create([
+        //                 'product_id' => $product->id,
+        //                 'warehouse_id' => $warehouseProduct['warehouse_id'],
+        //                 'sku' => $warehouseProduct['sku'],
+        //                 'price' => $warehouseProduct['price'],
+        //                 'color_id' => $warehouseProduct['color_id'] ?? null,
+        //                 'size_id' => $warehouseProduct['size_id'] ?? null,
+        //                 'quantity' => $warehouseProduct['quantity'],
+        //             ]);
+
+        //             // Save warehouse product images
+        //             if (!empty($warehouseProduct['images'])) {
+        //                 foreach ($warehouseProduct['images'] as $file) {
+        //                     $wpImage = new WarehouseProductImage();
+        //                     $wpImage->warehouse_product_id = $theWarehouseProduct->id;
+        //                     $wpImage->image_path = $this->imageUpload($file, 'warehouse_product');
+        //                     $wpImage->save();
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+
+
+
+        // notify users
+        $userName = Auth::user()->getFullNameAttribute();
+        $noti = NotificationService::notifyAllUsers('New Product created by ' . $userName, 'product');
+
+        return redirect()->route('products.index')->with('message', 'Product created successfully!');
+        // } catch (\Exception $e) {
+        //     return redirect()->back()->with('error', 'Failed to create product: ' . $e->getMessage())->withInput();
+        // }
     }
 
     /**
@@ -347,6 +370,8 @@ class ProductController extends Controller
             $product->short_description = $request->short_description;
             $product->specification = $request->specification;
             $product->product_type = $request->product_type;
+            $product->sku = $request->sku ?? '';
+            $product->quantity = $request->quantity ?? 0;
             $product->price = $request->price;
             $product->slug = $request->slug;
             $product->feature_product = $request->feature_product;
@@ -650,18 +675,30 @@ class ProductController extends Controller
             $variation->color_id = $variationData['color_id'];
             $variation->size_id = $variationData['size_id'];
             $variation->additional_info = '';
+            $variation->save();
 
             // update images if available to ProductVariationImage
             if (!empty($variationData['images'])) {
-                foreach ($variationData['images'] as $file) {
-                    $pvImage = new ProductVariationImage();
-                    $pvImage->product_variation_id = $variation->id;
-                    $pvImage->image_path = $this->imageUpload($file, 'product_variation');
-                    $pvImage->save();
+                $targetColorId = $variationData['color_id'] ?? $variation->color_id;
+
+                $query = ProductVariation::where('product_id', $product->id);
+                if (is_null($targetColorId)) {
+                    $query->whereNull('color_id');
+                } else {
+                    $query->where('color_id', $targetColorId);
+                }
+
+                $variationsWithSameColor = $query->get();
+
+                foreach ($variationsWithSameColor as $var) {
+                    foreach ($variationData['images'] as $file) {
+                        $pvImage = new ProductVariationImage();
+                        $pvImage->product_variation_id = $var->id;
+                        $pvImage->image_path = $this->imageUpload($file, 'product_variation');
+                        $pvImage->save();
+                    }
                 }
             }
-
-            $variation->save();
         }
 
         return redirect()->route('products.variations', $product->id)->with('message', 'Product variations updated successfully!');
@@ -671,11 +708,33 @@ class ProductController extends Controller
     public function deleteVariationImage(Request $request)
     {
         $image = ProductVariationImage::findOrFail($request->id);
-        // Delete the file from storage if needed
-        if (file_exists(storage_path('app/public/' . $image->image_path))) {
-            unlink(storage_path('app/public/' . $image->image_path));
+        $targetImagePath = $image->image_path;
+
+        // Get the variation to know product_id and color_id
+        $variation = ProductVariation::findOrFail($image->product_variation_id);
+        $productId = $variation->product_id;
+        $colorId = $variation->color_id;
+
+        // Get all variation IDs for the same product and same color (null handled)
+        $query = ProductVariation::where('product_id', $productId);
+        if (is_null($colorId)) {
+            $query->whereNull('color_id');
+        } else {
+            $query->where('color_id', $colorId);
         }
-        $image->delete();
+        $variationIds = $query->pluck('id')->toArray();
+
+        // Find and delete all images for those variations that match the same image path
+        $images = ProductVariationImage::whereIn('product_variation_id', $variationIds)
+            ->where('image_path', $targetImagePath)
+            ->get();
+
+        foreach ($images as $img) {
+            if (file_exists(storage_path('app/public/' . $img->image_path))) {
+                @unlink(storage_path('app/public/' . $img->image_path));
+            }
+            $img->delete();
+        }
         return response()->json(['message' => 'Product variation image deleted successfully!']);
     }
 }

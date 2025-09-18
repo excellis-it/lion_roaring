@@ -76,41 +76,17 @@
 
 /*----- slier --------*/
 
-// $(".slider").slick({
-//     autoplay: true,
-//     speed: 2000,
-//     lazyLoad: "progressive",
-//     arrows: false,
-//     dots: false,
-//     fade: false,
-//     prevArrow:
-//         '<div class="slick-nav prev-arrow"><i></i><svg><use xlink:href="#circle"></svg></div>',
-//     nextArrow:
-//         '<div class="slick-nav next-arrow"><i></i><svg><use xlink:href="#circle"></svg></div>',
-//     responsive: [
-//         {
-//             breakpoint: 768,
-//             settings: {
-//                 slidesToShow: 1,
-//                 slidesToScroll: 1,
-//                 dots: false,
-//             },
-//         },
-//     ],
-// });
 $(".slider").slick({
     autoplay: true,
     speed: 2000,
     lazyLoad: "progressive",
     arrows: false,
     dots: false,
-    fade: false,
-    vertical: true,
-    verticalSwiping: true,
+    fade: true,
     prevArrow:
-        '<div class="slick-nav prev-arrow"><i></i><svg><use xlink:href="#circle"></use></svg></div>',
+        '<div class="slick-nav prev-arrow"><i></i><svg><use xlink:href="#circle"></svg></div>',
     nextArrow:
-        '<div class="slick-nav next-arrow"><i></i><svg><use xlink:href="#circle"></use></svg></div>',
+        '<div class="slick-nav next-arrow"><i></i><svg><use xlink:href="#circle"></svg></div>',
     responsive: [
         {
             breakpoint: 768,
@@ -118,8 +94,6 @@ $(".slider").slick({
                 slidesToShow: 1,
                 slidesToScroll: 1,
                 dots: false,
-                vertical: true,
-                verticalSwiping: true,
             },
         },
     ],
@@ -221,8 +195,6 @@ $(".featured_slider").slick({
     ],
 });
 
-
-
 $(".slider-for").slick({
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -306,8 +278,8 @@ var QtyInput = (function () {
 
     var $inputs = $qtyInputs.find(".product-qty");
     var $countBtn = $qtyInputs.find(".qty-count");
-   // var qtyMin = parseInt($inputs.attr("min"));
-   // var qtyMax = parseInt($inputs.attr("max"));
+    // var qtyMin = parseInt($inputs.attr("min"));
+    // var qtyMax = parseInt($inputs.attr("max"));
 
     $inputs.change(function () {
         var $this = $(this);
