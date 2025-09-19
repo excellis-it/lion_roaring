@@ -60,7 +60,7 @@ class WareHouseController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        try {
+
             $request->validate([
                 'name' => 'required|string|max:255',
                 'location_lat' => 'required|string|max:255',
@@ -71,6 +71,17 @@ class WareHouseController extends Controller
                 'is_active' => 'required',
                 'assign_user' => 'nullable|array',
                 'assign_user.*' => 'exists:users,id',
+            ],
+            [
+                'location_lat.required' => 'Latitude is required.',
+                'location_lng.required' => 'Longitude is required.',
+                'address.required' => 'Address is required.',
+                'country_id.required' => 'Country is required.',
+                'service_range.required' => 'Service range is required.',
+                'is_active.required' => 'Status is required.',
+                'assign_user.array' => 'Assigned users must be an array.',
+                'assign_user.*.exists' => 'One or more selected users do not exist.'
+
             ]);
 
             // Create warehouse and capture model
@@ -98,9 +109,7 @@ class WareHouseController extends Controller
             }
 
             return redirect()->route('ware-houses.index')->with('message', 'Warehouse created successfully.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to create warehouse. ' . $e->getMessage());
-        }
+
     }
 
     /**
