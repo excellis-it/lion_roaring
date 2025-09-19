@@ -11,13 +11,21 @@ class Product extends Model
 
     protected $fillable = [
         'category_id',
+        'user_id',
+        'product_type',
         'name',
         'description',
         'short_description',
+        'slug',
+        'feature_product',
+        'status',
+        'is_deleted',
+
+        // only for simple product type
         'sku',
         'specification',
         'price',
-        'status',
+        'quantity',
     ];
 
     public function category()
