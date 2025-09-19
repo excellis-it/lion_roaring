@@ -192,9 +192,11 @@
                                             @endif
                                         </div>
                                     </div>
+                                    {{-- multiple images --}}
 
                                     <div class="col-md-12">
-                                        <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image(Drag and
+                                        <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image Gallery
+                                            (Drag and
                                             drop
                                             atleast 1
                                             images)<span style="color:red">*<span></label>

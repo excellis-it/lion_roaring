@@ -293,7 +293,7 @@
                                         </div>
                                     </div>
 
-                                    {{-- <div class="col-md-12">
+                                    <div class="col-md-12" hidden>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="product_type"
                                                 id="simple_product" value="simple"
@@ -308,7 +308,7 @@
                                             <label class="form-check-label" for="variable_product">Variable
                                                 Product</label>
                                         </div>
-                                    </div> --}}
+                                    </div>
 
 
 

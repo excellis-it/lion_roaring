@@ -20,6 +20,10 @@ class HomeController extends Controller
 {
     public function eStore()
     {
+
+        // temporary denied access
+         return redirect()->route('home')->with('error', 'E-Store is temporarily unavailable. Please try again later.');
+
         $session_id = session()->getId();
         $this->updateCartUserId();
 
@@ -135,7 +139,7 @@ class HomeController extends Controller
 
             try {
                 // Call Google Geocoding API
-                $apiKey = env('GOOGLE_MAPS_API_KEY');
+                $apiKey = env('GOOGLE_MAPS_API_KEY') ?? 'AIzaSyAL6T_r8Jr6opHuz__8c8iUvmTU30Kdomo';
                 $client = new Client();
                 $url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={$lat},{$lng}&key={$apiKey}";
 
@@ -145,7 +149,7 @@ class HomeController extends Controller
 
                 // if got any error from api then return
                 if ($data['status'] !== 'OK') {
-                    return response()->json(['success' => false, 'message' => 'Failed to retrieve address from coordinates'], 500);
+                    return response()->json(['success' => false, 'message' => $response], 500);
                 }
             } catch (\Exception $e) {
                 return response()->json(['success' => false, 'message' => 'Error calling Geocoding API: ' . $e->getMessage()], 500);

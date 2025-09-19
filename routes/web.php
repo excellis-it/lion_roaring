@@ -723,6 +723,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
 /**************************************************----------------------------ECOM--------------------------****************************************************************/
 
 Route::prefix('e-store')->group(function () {
+
     Route::get('/', [HomeController::class, 'eStore'])->name('e-store');
     Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-store.newsletter');
     Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails'])->name('e-store.product-details');

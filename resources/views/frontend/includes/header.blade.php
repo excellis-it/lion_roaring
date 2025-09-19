@@ -68,9 +68,9 @@
                         <div class="login_prf">
                             <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal1"><span><i class="fa-solid fa-hand-holding-medical"></i></span> Donate</a>
                         </div>
-                        <div class="login_prf e-store-btn">
+                        {{-- <div class="login_prf e-store-btn">
                             <a href="{{ route('e-store') }}" ><span><i class="fa-solid fa-store"></i></span> E-Store</a>
-                        </div>
+                        </div> --}}
 
                         <div class="button_container" id="toggle">
                             <span class="top"></span>
