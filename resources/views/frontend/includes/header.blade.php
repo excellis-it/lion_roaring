@@ -11,11 +11,6 @@
                 <div class="right_top d-flex align-items-center">
                     <div class="menu-wrepper d-flex">
                     <div class="right_btm">
-                        <div class="button_container" id="toggle">
-                            <span class="top"></span>
-                            <span class="middle"></span>
-                            <span class="bottom"></span>
-                        </div>
                         <div class="overlay" id="overlay">
                             <nav class="overlay-menu">
                                 <ul id="menu-header-menu" class="menu">
@@ -75,6 +70,12 @@
                         </div>
                         <div class="login_prf e-store-btn">
                             <a href="{{ route('e-store') }}" ><span><i class="fa-solid fa-store"></i></span> E-Store</a>
+                        </div>
+
+                        <div class="button_container" id="toggle">
+                            <span class="top"></span>
+                            <span class="middle"></span>
+                            <span class="bottom"></span>
                         </div>
                     </div>
                 </div>

@@ -403,6 +403,9 @@ var QtyInput = (function () {
                     $(".product-select-color-input")
                         .prop("checked", false)
                         .prop("disabled", false);
+                    $(".product-select-color-input-image")
+                        .css("opacity", "1")
+                        .css("pointer-events", "auto");
                 } else {
                     toastr.error(response.message);
                 }
@@ -470,6 +473,18 @@ var QtyInput = (function () {
                     $(".product-select-color-input")
                         .not(":checked")
                         .prop("disabled", true);
+
+                        // fade other color images and not clickable product-select-color-input-image img
+                    // <img class="product-select-color-input-image" data-color-id="{{ $color->id }}"
+                    //                 data-color-name="{{ $color->color_name ?? ($color->name ?? '') }}"
+                    //                 style="max-width: 80px; max-height: 80px; cursor: pointer; border: 2px solid #ddd; border-radius: 5px; margin-right: 10px;"
+                    //                 src="{{ Storage::url($image->image_path ?? '') }}"
+                    //                 alt="{{ $color->color_name ?? ($color->name ?? '') }}"></img>
+                    $(".product-select-color-input-image")
+                        .not('[data-color-id="' + colorId + '"]')
+                        .css("opacity", "0.5")
+                        .css("pointer-events", "none");
+
                 } else {
                     toastr.error(response.message);
                 }

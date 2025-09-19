@@ -557,4 +557,10 @@ class Helper
             return 0;
         }
     }
+
+    // getCurrencyFormat
+    public static function getCurrencyFormat($amount, $currencySymbol = '$')
+    {
+        return $currencySymbol . number_format($amount, 2);
+    }
 }

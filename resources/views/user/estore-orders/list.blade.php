@@ -97,7 +97,7 @@
                             </select>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-3" hidden>
                             <label for="payment-status" class="form-label">Payment Status</label>
                             <select class="form-control" id="payment-status" name="payment_status">
                                 <option value="">Don't Change</option>

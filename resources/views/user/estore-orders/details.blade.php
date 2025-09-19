@@ -104,7 +104,7 @@
                                     <thead>
                                         <tr>
                                             <th>Product</th>
-                                            <th>Image</th>
+                                            {{-- <th>Image</th> --}}
                                             <th>Price</th>
                                             <th>Quantity</th>
                                             <th>Total</th>
@@ -129,7 +129,7 @@
                                                             {{ $item->color }}</small>
                                                     @endif
                                                 </td>
-                                                <td>
+                                                {{-- <td>
                                                     @if ($item->product_image)
                                                         <img src="{{ Storage::url($item->product_image) }}"
                                                             alt="{{ $item->product_name }}" class="img-thumbnail"
@@ -140,7 +140,7 @@
                                                             <i class="fas fa-image text-muted"></i>
                                                         </div>
                                                     @endif
-                                                </td>
+                                                </td> --}}
                                                 <td>${{ number_format($item->price, 2) }}</td>
                                                 <td>{{ $item->quantity }}</td>
                                                 <td><strong>${{ number_format($item->total, 2) }}</strong></td>
@@ -149,29 +149,29 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="4" class="text-end">Subtotal:</th>
+                                            <th colspan="3" class="text-end">Subtotal:</th>
                                             <th>${{ number_format($order->subtotal, 2) }}</th>
                                         </tr>
                                         @if ($order->tax_amount > 0)
                                             <tr>
-                                                <th colspan="4" class="text-end">Tax:</th>
+                                                <th colspan="3" class="text-end">Tax:</th>
                                                 <th>${{ number_format($order->tax_amount, 2) }}</th>
                                             </tr>
                                         @endif
                                         @if ($order->shipping_amount > 0)
                                             <tr>
-                                                <th colspan="4" class="text-end">Shipping:</th>
+                                                <th colspan="3" class="text-end">Shipping:</th>
                                                 <th>${{ number_format($order->shipping_amount, 2) }}</th>
                                             </tr>
                                         @endif
                                         @if ($order->credit_card_fee > 0)
                                             <tr>
-                                                <th colspan="4" class="text-end">Credit Card Fee:</th>
+                                                <th colspan="3" class="text-end">Credit Card Fee:</th>
                                                 <th>${{ number_format($order->credit_card_fee, 2) }}</th>
                                             </tr>
                                         @endif
                                         <tr class="table-primary">
-                                            <th colspan="4" class="text-end">Total Amount:</th>
+                                            <th colspan="3" class="text-end">Total Amount:</th>
                                             <th>${{ number_format($order->total_amount, 2) }}</th>
                                         </tr>
                                     </tfoot>
@@ -416,7 +416,7 @@
 @endpush
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function processRefund(orderId) {
             Swal.fire({

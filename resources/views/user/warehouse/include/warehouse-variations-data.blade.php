@@ -10,7 +10,7 @@
 
                 <div class="col-md-2 mb-2">
                     <div class="box_label">
-                        <label>SKU <span class="text-danger">*</span></label>
+                        <label>SKU <span class="text-danger"></span></label>
                         <input type="text" name="variation_products[{{ $index }}][sku]" class="form-control"
                             value="{{ $variation->sku }}" readonly>
                     </div>
@@ -18,7 +18,7 @@
 
                 <div class="col-md-2 mb-2">
                     <div class="box_label">
-                        <label>Price <span class="text-danger">*</span></label>
+                        <label>Price <span class="text-danger"></span></label>
                         <input type="number" step="0.01" name="variation_products[{{ $index }}][price]"
                             class="form-control" value="{{ $variation->price }}" readonly>
                     </div>
@@ -88,7 +88,7 @@
 
                 <div class="col-md-2 mb-2">
                     <div class="box_label">
-                        <label>Available Stock Quantity <span class="text-danger">*</span></label>
+                        <label>Available Stock Quantity <span class="text-danger"></span></label>
                         <input type="number" min="0"
                             name="variation_products[{{ $index }}][available_quantity]"
                             class="form-control available-qty-input" value="{{ $variation->admin_available_quantity }}"
@@ -98,9 +98,18 @@
 
                 <div class="col-md-2 mb-2">
                     <div class="box_label">
-                        <label>Set Quantity <span class="text-danger">*</span></label>
+                        <label>Assign Quantity <span class="text-danger">*</span></label>
                         <input type="number" min="0" name="variation_products[{{ $index }}][quantity]"
-                            class="form-control" value="{{ $variation->warehouse_quantity }}">
+                            class="form-control" value="">
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-2">
+                    <div class="box_label">
+                        <label>Warehouse Available Quantity <span class="text-danger"></span></label>
+                        <input type="number" min="0"
+                            name="variation_products[{{ $index }}][warehouse_quantity]" class="form-control"
+                            value="{{ $variation->warehouse_quantity }}" readonly>
                     </div>
                 </div>
 

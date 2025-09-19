@@ -43,10 +43,9 @@ class ProductVariation extends Model
         return $this->hasMany(WarehouseProductVariation::class, 'product_variation_id');
     }
 
-    // optional accessor so you can use $variation->available_quantity
+    // get only stock_quantity column value
     public function getAvailableQuantityAttribute()
     {
-        $allocated = $this->warehouseProductVariations()->sum('warehouse_quantity');
-        return $this->stock_quantity - $allocated;
+        return $this->stock_quantity;
     }
 }

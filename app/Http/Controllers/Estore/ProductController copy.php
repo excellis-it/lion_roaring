@@ -44,65 +44,133 @@ class ProductController extends Controller
         $userSessionId = session()->getId();
         $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
 
-        $nearbyWareHouseId = Warehouse::first()->id;
+        // Get user location
         $originLat = null;
         $originLng = null;
         $isUser = auth()->user();
-        if ($isUser) { // Assuming user location is stored in user model
+        if ($isUser) {
             $originLat = $isUser->location_lat;
             $originLng = $isUser->location_lng;
         } else {
             $originLat = session('location_lat');
             $originLng = session('location_lng');
         }
-        // reuse helper to get nearest warehouse
+
+        // Get the nearest warehouse
         $nearest = Helper::getNearestWarehouse($originLat, $originLng);
-        // return $nearest;
-        if (!empty($nearest['warehouse']->id)) {
-            $nearbyWareHouseId = $nearest['warehouse']->id;
+        $nearbyWareHouse = null;
+        $nearbyWareHouseId = null;
+        $sameCountry = false;
+
+        if (!empty($nearest['warehouse'])) {
+            $nearbyWareHouse = $nearest['warehouse'];
+            $nearbyWareHouseId = $nearbyWareHouse->id;
+
+            // Check if user and warehouse are in the same country
+            if ($isUser && $isUser->location_country && $nearbyWareHouse->country) {
+                $sameCountry = ($isUser->location_country == $nearbyWareHouse->country->name);
+            }
         }
-        // return $getNearbywareHouse;
 
-        $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
-            $q->where('warehouse_id', $nearbyWareHouseId)
-                ->where('quantity', '>', 0);
-        })->pluck('id')->toArray();
+        // Get the product
+        $product = Product::with(['category', 'reviews' => function ($query) {
+            $query->where('status', 1)->orderBy('id', 'DESC');
+        }, 'images', 'withOutMainImage'])->where('slug', $slug)->first();
 
-        $getProduct = Product::where('slug', $slug)->first();
+        if (!$product) {
+            return abort(404);
+        }
 
-        $wareHouseHaveProductVariables = WarehouseProduct::where('product_id', $getProduct->id)
-            ->where('warehouse_id', $nearbyWareHouseId)
-            ->first();
-        // $wareHouseHaveProductVariables = WarehouseProductVariation::where('product_id', $getProduct->id)
-        //     ->where('warehouse_id', $nearbyWareHouseId)
-        //     ->where('warehouse_quantity', '>', 0)
-        //     ->with('productVariation.colorDetail', 'productVariation.sizeDetail', 'productVariation.images')
-        //     ->get();
+        $variations = [];
+        $availableColors = [];
+        $availableSizes = [];
+        $availableInWarehouse = false;
+        $productVariations = [];
 
-        // return $wareHouseHaveProductVariables;
+        // Handle product based on type
+        if ($product->product_type == 'variable') {
+            // For variable product, check if there are variations in the warehouse
+            if ($nearbyWareHouseId && $sameCountry) {
+                $warehouseProductVariations = WarehouseProductVariation::where('product_id', $product->id)
+                    ->where('warehouse_id', $nearbyWareHouseId)
+                    ->where('warehouse_quantity', '>', 0)
+                    ->with('productVariation.colorDetail', 'productVariation.sizeDetail', 'productVariation.images')
+                    ->get();
 
-        // if (! $wareHouseHaveProductVariables) {
-        //     // Handle the case where the product is not found in the warehouse
-        //     return view('ecom.product-not-available', compact('cartCount'));
-        // }
+                if ($warehouseProductVariations->count() > 0) {
+                    $availableInWarehouse = true;
 
-        // select prodcut is first product in warehouse have with the product id
-        if ($wareHouseHaveProductVariables) {
-            $product = Product::where('id', $wareHouseHaveProductVariables->product_id)->where('slug', $slug)->first();
+                    // Process variations
+                    foreach ($warehouseProductVariations as $warehouseVariation) {
+                        $variation = $warehouseVariation->productVariation;
+                        if ($variation) {
+                            // Create structure for variations by color
+                            $colorId = $variation->color_id;
+                            if ($colorId && !isset($variations[$colorId])) {
+                                $variations[$colorId] = [
+                                    'color' => $variation->colorDetail,
+                                    'sizes' => [],
+                                    'firstVariation' => $variation,
+                                    'images' => $variation->images->pluck('image_path')->toArray()
+                                ];
+                                $availableColors[] = $variation->colorDetail;
+                            }
+
+                            if ($colorId && $variation->size_id) {
+                                $variations[$colorId]['sizes'][$variation->size_id] = [
+                                    'size' => $variation->sizeDetail,
+                                    'variation' => $variation,
+                                    'warehouse_quantity' => $warehouseVariation->warehouse_quantity,
+                                    'price' => $variation->price
+                                ];
+                                $availableSizes[$variation->size_id] = $variation->sizeDetail;
+                            }
+
+                            $productVariations[] = [
+                                'id' => $variation->id,
+                                'color_id' => $variation->color_id,
+                                'size_id' => $variation->size_id,
+                                'price' => $variation->price,
+                                'sku' => $variation->sku,
+                                'warehouse_quantity' => $warehouseVariation->warehouse_quantity
+                            ];
+                        }
+                    }
+                }
+            }
         } else {
-            $product = $getProduct;
+            // For simple products, check if we're in the product's country
+            $availableInWarehouse = ($nearbyWareHouse && $sameCountry);
         }
 
-        $related_products = Product::whereIn('id', $wareHouseProducts)->where('category_id', $product->category_id)
-            ->where(function ($query) use ($product) {
-                $query->where('id', '!=', $product->id)
+        // Get related products from same warehouse if possible
+        $related_products = [];
+        if ($nearbyWareHouseId) {
+            if ($product->product_type == 'variable') {
+                $related_product_ids = WarehouseProductVariation::where('warehouse_id', $nearbyWareHouseId)
+                    ->where('warehouse_quantity', '>', 0)
+                    ->where('product_id', '!=', $product->id)
+                    ->pluck('product_id')
+                    ->unique()
+                    ->toArray();
+
+                $related_products = Product::whereIn('id', $related_product_ids)
+                    ->where('category_id', $product->category_id)
                     ->where('status', 1)
-                    ->where('quantity', '>', 0);
-            })
-            ->orderBy('id', 'DESC')
-            ->limit(8)
-            ->get();
-        $reviews = $product->reviews()->where('status', 1)->orderBy('id', 'DESC')->get();
+                    ->orderBy('id', 'DESC')
+                    ->limit(8)
+                    ->get();
+            } else {
+                $related_products = Product::where('product_type', 'simple')
+                    ->where('category_id', $product->category_id)
+                    ->where('id', '!=', $product->id)
+                    ->where('status', 1)
+                    ->where('quantity', '>', 0)
+                    ->orderBy('id', 'DESC')
+                    ->limit(8)
+                    ->get();
+            }
+        }
 
         // Check if product is already in cart
         $cartItem = $isAuth ? EstoreCart::where('user_id', auth()->id())
@@ -111,8 +179,24 @@ class ProductController extends Controller
             ->where('product_id', $product->id)
             ->first();
 
+        // product reviews
+        $reviews = $product->reviews()->with('user')->latest()->get();
 
-        return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews', 'cartCount', 'cartItem', 'wareHouseHaveProductVariables'));
+        return view('ecom.product-details')->with(compact(
+            'isAuth',
+            'product',
+            'related_products',
+            'cartCount',
+            'cartItem',
+            'variations',
+            'availableColors',
+            'availableSizes',
+            'availableInWarehouse',
+            'productVariations',
+            'nearbyWareHouse',
+            'sameCountry',
+            'reviews'
+        ));
     }
 
     public function products(Request $request, $category_id = null)
@@ -329,41 +413,119 @@ class ProductController extends Controller
     public function addToCart(Request $request)
     {
         if ($request->ajax()) {
-            $request->validate([
-                'product_id' => 'required|integer',
-                'quantity' => 'required|integer|min:1',
-                'warehouse_product_id' => 'required|integer',
-            ]);
+            if ($request->product_variation_id) {
+                // For variable products
+                $request->validate([
+                    'product_id' => 'required|integer',
+                    'quantity' => 'required|integer|min:1',
+                    'product_variation_id' => 'required|integer',
+                    'size_id' => 'nullable|integer',
+                    'color_id' => 'nullable|integer',
+                    'warehouse_id' => 'required|integer',
+                ]);
+            } else {
+                // For simple products
+                $request->validate([
+                    'product_id' => 'required|integer',
+                    'quantity' => 'required|integer|min:1',
+                    'warehouse_id' => 'required|integer',
+                ]);
+            }
 
             $isAuth = auth()->check();
-
             $userSessionId = session()->getId();
 
-
+            // Find product
             $product = Product::find($request->product_id);
             if (!$product) {
                 return response()->json(['status' => false, 'message' => 'Product not found']);
             }
 
-            $warehouseProductId = $request->warehouse_product_id;
-            $warehouseProduct = WarehouseProduct::find($warehouseProductId);
-            $wareHouse = Warehouse::find($warehouseProduct->warehouse_id);
-
-            // Check if product already exists in cart
-            if ($isAuth) {
-                $existingCart = EstoreCart::where('user_id', auth()->id())
-                    ->where('product_id', $product->id)
-                    ->first();
-            } else {
-                $existingCart = EstoreCart::where('session_id', $userSessionId)
-                    ->where('product_id', $product->id)
-                    ->first();
+            // Get warehouse
+            $warehouse = Warehouse::find($request->warehouse_id);
+            if (!$warehouse) {
+                return response()->json(['status' => false, 'message' => 'Warehouse not found']);
             }
 
+            // Variables for cart data
+            $productVariationId = null;
+            $sizeId = null;
+            $colorId = null;
+            $quantity = $request->quantity;
+            $availableQuantity = 0;
+
+            // Check product type and handle accordingly
+            if ($product->product_type == 'variable') {
+                // For variable products
+                $productVariationId = $request->product_variation_id;
+                $productVariation = ProductVariation::find($productVariationId);
+
+                if (!$productVariation) {
+                    return response()->json(['status' => false, 'message' => 'Product variation not found']);
+                }
+
+                // Check if the variation exists in the warehouse with sufficient quantity
+                $warehouseVariation = WarehouseProductVariation::where('product_variation_id', $productVariationId)
+                    ->where('warehouse_id', $warehouse->id)
+                    ->first();
+
+                if (!$warehouseVariation || $warehouseVariation->warehouse_quantity < $quantity) {
+                    return response()->json(['status' => false, 'message' => 'Selected product is out of stock or not available in this location']);
+                }
+
+                $availableQuantity = $warehouseVariation->warehouse_quantity;
+                $sizeId = $productVariation->size_id;
+                $colorId = $productVariation->color_id;
+            } else {
+                // For simple products
+                if ($product->quantity < $quantity) {
+                    return response()->json(['status' => false, 'message' => 'Product is out of stock or not available in the requested quantity']);
+                }
+
+                $availableQuantity = $product->quantity;
+            }
+
+            // Check if item already exists in cart
+            if ($isAuth) {
+                if ($product->product_type == 'variable') {
+                    $existingCart = EstoreCart::where('user_id', auth()->id())
+                        ->where('product_id', $product->id)
+                        ->where('product_variation_id', $productVariationId)
+                        ->first();
+                } else {
+                    $existingCart = EstoreCart::where('user_id', auth()->id())
+                        ->where('product_id', $product->id)
+                        ->first();
+                }
+            } else {
+                if ($product->product_type == 'variable') {
+                    $existingCart = EstoreCart::where('session_id', $userSessionId)
+                        ->where('product_id', $product->id)
+                        ->where('product_variation_id', $productVariationId)
+                        ->first();
+                } else {
+                    $existingCart = EstoreCart::where('session_id', $userSessionId)
+                        ->where('product_id', $product->id)
+                        ->first();
+                }
+            }
+
+            // Update existing cart or create new
             if ($existingCart) {
-                // Update quantity instead of creating new entry
-                $existingCart->quantity += $request->quantity;
+                $newQuantity = $existingCart->quantity + $quantity;
+
+                // Check if we have enough stock
+                if ($newQuantity > $availableQuantity) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Cannot add more of this product. Maximum available is ' . $availableQuantity
+                    ]);
+                }
+
+                // Update quantity
+                $existingCart->quantity = $newQuantity;
                 $existingCart->save();
+
                 return response()->json([
                     'status' => true,
                     'message' => 'Cart updated successfully',
@@ -373,36 +535,29 @@ class ProductController extends Controller
                 ]);
             }
 
-            // return $product->sizes->count();
-            // check if product have size and color and user not selected those then auto select first color and size either set null
-            $sizeId = $request->size_id ?? null;
-            if (!$request->size_id && ($product->sizes->count() > 0)) {
-                $sizeId = $product->sizes->first()->size->id;
-            }
-            $colorId = $request->color_id ?? null;
-            if (!$request->color_id && ($product->colors->count() > 0)) {
-                $colorId = $product->colors->first()->color->id;
-            }
-
-            // return $sizeId;
-
+            // Create new cart item
             $cart = new EstoreCart();
-            $cart->user_id = auth()->id();
+            $cart->user_id = $isAuth ? auth()->id() : null;
             $cart->product_id = $product->id;
-            $cart->warehouse_product_id = $warehouseProduct->id;
-            $cart->warehouse_id = $wareHouse->id;
+            $cart->warehouse_id = $warehouse->id;
+            $cart->product_variation_id = $productVariationId;
             $cart->size_id = $sizeId;
             $cart->color_id = $colorId;
-            $cart->quantity = $request->quantity;
+            $cart->quantity = $quantity;
             $cart->session_id = $userSessionId;
             $cart->save();
+
+            // Get total cart items for the user
+            $cartCount = $isAuth ?
+                EstoreCart::where('user_id', auth()->id())->sum('quantity') :
+                EstoreCart::where('session_id', $userSessionId)->sum('quantity');
 
             return response()->json([
                 'status' => true,
                 'message' => 'Product added to cart successfully',
                 'action' => 'added',
                 'cart_item_id' => $cart->id,
-                'quantity' => $cart->quantity
+                'quantity' => $cartCount
             ]);
         }
     }
@@ -898,49 +1053,6 @@ class ProductController extends Controller
                         if ($wareHouseproduct) {
 
                             $wareHouseproduct->update(['quantity' => $wareHouseproduct->quantity - $item->quantity, 'updated_at' => now()]);
-
-                            // laravel log notify
-                            \Log::info('Warehouse product stock updated', ['product_id' => $wareHouseproduct->id, 'new_quantity' => $wareHouseproduct->quantity]);
-
-                            $wareHouseProductVariation = WarehouseProductVariation::where('warehouse_id', $item->warehouse_id)
-                                ->where('product_variation_id', $wareHouseproduct->product_variation_id)
-                                ->where('product_id', $item->product_id)
-                                ->first();
-
-                            if ($wareHouseProductVariation) {
-                                $newWarehouseQty = max(0, ($wareHouseProductVariation->warehouse_quantity ?? 0) - $item->quantity);
-                                $wareHouseProductVariation->warehouse_quantity = $newWarehouseQty;
-                                $wareHouseProductVariation->updated_at = now();
-                                $wareHouseProductVariation->save();
-                                \Log::info('Warehouse product variation stock updated', [
-                                    'warehouse_product_variation_id' => $wareHouseProductVariation->id,
-                                    'new_quantity' => $newWarehouseQty
-                                ]);
-
-                                // decrement quantity from ProductVariation (global) - guarded
-                                $productVariationId = $wareHouseProductVariation->product_variation_id;
-                                if ($productVariationId) {
-                                    $productVariation = ProductVariation::find($productVariationId);
-                                    if ($productVariation) {
-                                        $newStockQty = max(0, ($productVariation->stock_quantity ?? 0) - $item->quantity);
-                                        $productVariation->stock_quantity = $newStockQty;
-                                        $productVariation->updated_at = now();
-                                        $productVariation->save();
-                                        \Log::info('Product variation stock updated', [
-                                            'product_variation_id' => $productVariation->id,
-                                            'new_quantity' => $newStockQty
-                                        ]);
-                                    }
-                                }
-                            } else {
-                                \Log::warning('WarehouseProductVariation not found for order item', [
-                                    'warehouse_id' => $item->warehouse_id,
-                                    'warehouse_product_id' => $item->warehouse_product_id,
-                                    'product_id' => $item->product_id,
-                                    'order_item_id' => $item->id ?? null
-                                ]);
-                            }
-
                             $this->notifyAdminIfOutOfStock($wareHouseproduct);
                         }
                     }
@@ -1158,7 +1270,6 @@ class ProductController extends Controller
     // by ajax get warehouse product details by product id with optional size and color
     public function getWarehouseProductDetails(Request $request)
     {
-        // return $request->all();
         if ($request->ajax()) {
             $request->validate([
                 'product_id' => 'required|integer',
@@ -1166,50 +1277,104 @@ class ProductController extends Controller
                 'color_id' => 'nullable|integer',
             ]);
 
-
-
             $product = Product::find($request->product_id);
             if (!$product) {
                 return response()->json(['status' => false, 'message' => 'Product not found']);
             }
 
-            $nearbyWareHouseId = Warehouse::first()->id; // first id from warehouses
+            // Get user location and find nearest warehouse
             $originLat = null;
             $originLng = null;
             $isUser = auth()->user();
-            if ($isUser) { // Assuming user location is stored in user model
+            if ($isUser) {
                 $originLat = $isUser->location_lat;
                 $originLng = $isUser->location_lng;
             } else {
                 $originLat = session('location_lat');
                 $originLng = session('location_lng');
             }
-            // reuse helper to get nearest warehouse
+
+            // Get the nearest warehouse
             $nearest = Helper::getNearestWarehouse($originLat, $originLng);
-            if (!empty($nearest['warehouse']->id)) {
-                $nearbyWareHouseId = $nearest['warehouse']->id;
-            }
-            // return $getNearbywareHouse;
+            $nearbyWareHouse = null;
+            $nearbyWareHouseId = null;
+            $sameCountry = false;
 
-            $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
-                $q->where('warehouse_id', $nearbyWareHouseId)
-                    ->where('quantity', '>', 0);
-            })->pluck('id')->toArray();
+            if (!empty($nearest['warehouse'])) {
+                $nearbyWareHouse = $nearest['warehouse'];
+                $nearbyWareHouseId = $nearbyWareHouse->id;
 
-            $warehouseProduct = WarehouseProduct::with('images')->where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)
-                ->when($request->size_id, function ($query) use ($request) {
-                    return $query->where('size_id', $request->size_id);
-                })
-                ->when($request->color_id, function ($query) use ($request) {
-                    return $query->where('color_id', $request->color_id);
-                })
-                ->first();
-
-            if (!$warehouseProduct) {
-                return response()->json(['status' => false, 'message' => 'Item Out Of Stock']);
+                // Check if user and warehouse are in the same country
+                if ($isUser && $isUser->location_country && $nearbyWareHouse->country) {
+                    $sameCountry = ($isUser->location_country == $nearbyWareHouse->country->name);
+                }
+            } else {
+                return response()->json(['status' => false, 'message' => 'No warehouse found in your area']);
             }
 
-            return response()->json(['status' => true, 'data' => $warehouseProduct]);
+            // Handle based on product type
+            if ($product->product_type == 'variable') {
+                // For variable products, get variation by color and size
+                $productVariation = ProductVariation::where('product_id', $product->id)
+                    ->when($request->color_id, function ($query) use ($request) {
+                        return $query->where('color_id', $request->color_id);
+                    })
+                    ->when($request->size_id, function ($query) use ($request) {
+                        return $query->where('size_id', $request->size_id);
+                    })
+                    ->first();
+
+                if (!$productVariation) {
+                    return response()->json(['status' => false, 'message' => 'Product variation not found']);
+                }
+
+                // Check if the variation exists in the warehouse
+                $warehouseVariation = WarehouseProductVariation::where('product_variation_id', $productVariation->id)
+                    ->where('warehouse_id', $nearbyWareHouseId)
+                    ->where('warehouse_quantity', '>', 0)
+                    ->first();
+
+                if (!$warehouseVariation && !$sameCountry) {
+                    return response()->json(['status' => false, 'message' => 'Product not available in your area']);
+                } elseif (!$warehouseVariation) {
+                    return response()->json(['status' => false, 'message' => 'Item Out Of Stock']);
+                }
+
+                // Prepare response data
+                $variationData = [
+                    'id' => $productVariation->id,
+                    'sku' => $productVariation->sku,
+                    'price' => $productVariation->price,
+                    'quantity' => $warehouseVariation->warehouse_quantity,
+                    'color_id' => $productVariation->color_id,
+                    'size_id' => $productVariation->size_id,
+                    'warehouse_id' => $nearbyWareHouseId,
+                    'images' => $productVariation->images->pluck('image_path')->toArray()
+                ];
+
+                return response()->json(['status' => true, 'data' => $variationData, 'product_type' => 'variable']);
+            } else {
+                // For simple products
+                if (!$sameCountry) {
+                    return response()->json(['status' => false, 'message' => 'Product not available in your area']);
+                }
+
+                if ($product->quantity <= 0) {
+                    return response()->json(['status' => false, 'message' => 'Item Out Of Stock']);
+                }
+
+                // Prepare response data for simple product
+                $simpleData = [
+                    'id' => $product->id,
+                    'sku' => $product->sku,
+                    'price' => $product->price,
+                    'quantity' => $product->quantity,
+                    'warehouse_id' => $nearbyWareHouseId,
+                    'images' => $product->images->pluck('image')->toArray()
+                ];
+
+                return response()->json(['status' => true, 'data' => $simpleData, 'product_type' => 'simple']);
+            }
         }
     }
 

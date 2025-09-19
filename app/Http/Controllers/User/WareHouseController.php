@@ -16,6 +16,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProductVariation;
 use App\Models\WarehouseProductVariation;
+use App\Models\WarehouseProductImage;
 
 class WareHouseController extends Controller
 {
@@ -61,7 +62,8 @@ class WareHouseController extends Controller
         }
 
 
-            $request->validate([
+        $request->validate(
+            [
                 'name' => 'required|string|max:255',
                 'location_lat' => 'required|string|max:255',
                 'location_lng' => 'required|string|max:255',
@@ -82,34 +84,34 @@ class WareHouseController extends Controller
                 'assign_user.array' => 'Assigned users must be an array.',
                 'assign_user.*.exists' => 'One or more selected users do not exist.'
 
-            ]);
+            ]
+        );
 
-            // Create warehouse and capture model
-            $wareHouse = WareHouse::create($request->only([
-                'name',
-                'location_lat',
-                'location_lng',
-                'address',
-                'country_id',
-                'service_range',
-                'is_active'
-            ]));
+        // Create warehouse and capture model
+        $wareHouse = WareHouse::create($request->only([
+            'name',
+            'location_lat',
+            'location_lng',
+            'address',
+            'country_id',
+            'service_range',
+            'is_active'
+        ]));
 
-            // assign warehouse to users and change user role to WAREHOUSE_ADMIN
-            if ($request->has('assign_user') && is_array($request->assign_user)) {
-                foreach ($request->assign_user as $userId) {
-                    $user = User::find($userId);
-                    if ($user) {
-                        $user->warehouses()->syncWithoutDetaching([$wareHouse->id]); // avoid duplicate attach
-                        // if (!$user->hasRole('WAREHOUSE_ADMIN')) {
-                        //     $user->syncRoles(['WAREHOUSE_ADMIN']);
-                        // }
-                    }
+        // assign warehouse to users and change user role to WAREHOUSE_ADMIN
+        if ($request->has('assign_user') && is_array($request->assign_user)) {
+            foreach ($request->assign_user as $userId) {
+                $user = User::find($userId);
+                if ($user) {
+                    $user->warehouses()->syncWithoutDetaching([$wareHouse->id]); // avoid duplicate attach
+                    // if (!$user->hasRole('WAREHOUSE_ADMIN')) {
+                    //     $user->syncRoles(['WAREHOUSE_ADMIN']);
+                    // }
                 }
             }
+        }
 
-            return redirect()->route('ware-houses.index')->with('message', 'Warehouse created successfully.');
-
+        return redirect()->route('ware-houses.index')->with('message', 'Warehouse created successfully.');
     }
 
     /**
@@ -506,6 +508,34 @@ class WareHouseController extends Controller
                         'product_id' => $productId,
                         'warehouse_quantity' => 0,
                     ]);
+
+                    // save product to WarehouseProduct
+                    $warehouseProduct = WarehouseProduct::where('product_variation_id', $variation->id)
+                        ->where('warehouse_id', $warehouseId)
+                        ->where('product_id', $variation->product_id)
+                        ->first();
+                    if (!$warehouseProduct) {
+                        // create new warehouse product entry
+                        $warehouseProduct = WarehouseProduct::create([
+                            'product_variation_id' => $variation->id,
+                            'sku' => $variation->sku,
+                            'warehouse_id' => $warehouseId,
+                            'product_id' => $variation->product_id,
+                            'color_id' => $variation->color_id,
+                            'size_id' => $variation->size_id,
+                            'quantity' => 0,
+                            'price' => $variation->price,
+                            'tax_rate' => 0,
+                        ]);
+
+                        // create WarehouseProductImage entries
+                        foreach ($variation->images as $image) {
+                            WarehouseProductImage::create([
+                                'warehouse_product_id' => $warehouseProduct->id,
+                                'image_path' => $image->image_path,
+                            ]);
+                        }
+                    }
                 }
             }
 
@@ -529,6 +559,8 @@ class WareHouseController extends Controller
                 $variation->warehouse_quantity = $warehouseProductVariation ? $warehouseProductVariation->warehouse_quantity : 0;
                 // get admin_available_quantity
                 $variation->admin_available_quantity = $variation->available_quantity;
+
+                // $variation->warehouse_available_quantity = $variation->warehouse_quantity ?? 0;
             }
 
 
@@ -540,66 +572,91 @@ class WareHouseController extends Controller
 
     public function updateWarehouseVariationQuantity(Request $request)
     {
-        $request->validate([
-            'warehouse_id' => 'required|integer|exists:ware_houses,id',
-            'variation_id' => 'required|integer|exists:product_variations,id',
-            'quantity' => 'required|integer|min:0',
-        ]);
 
-        $warehouseId = (int)$request->warehouse_id;
-        $variationId = (int)$request->variation_id;
-        $newQty = (int)$request->quantity;
+        if ($request->has('variations')) {
+            $request->validate([
+                'warehouse_id' => 'required|integer|exists:ware_houses,id',
+                'variations' => 'required|array|min:1',
+                'variations.*.variation_id' => 'required|integer|exists:product_variations,id',
+                'variations.*.quantity' => 'nullable|integer|min:0',
+            ]);
 
-        $warehouse = WareHouse::findOrFail($warehouseId);
+            $warehouseId = (int)$request->warehouse_id;
 
-        if (!auth()->user()->canManageWarehouse($warehouseId) || !auth()->user()->isWarehouseAdmin()) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
-        }
+            if (!auth()->user()->canManageWarehouse($warehouseId) || !auth()->user()->isWarehouseAdmin()) {
+                return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
+            }
 
-        $variation = ProductVariation::with('warehouseProductVariations')->findOrFail($variationId);
+            $results = [];
 
-        $warehouseVariation = WarehouseProductVariation::where('warehouse_id', $warehouseId)
-            ->where('product_variation_id', $variationId)
-            ->first();
+            foreach ($request->input('variations') as $item) {
+                $variationId = (int)$item['variation_id'];
+                $newQty = (int)$item['quantity'];
 
-        if (!$warehouseVariation) {
-            return response()->json(['status' => false, 'message' => 'Warehouse variation not initialized'], 404);
-        }
+                // if warehouse_quantity is null or not provided, skip this variation
+                if (!isset($item['quantity'])) {
+                    continue;
+                }
 
-        // Sum allocations in other warehouses
-        $otherAllocated = $variation->warehouseProductVariations
-            ->where('warehouse_id', '!=', $warehouseId)
-            ->sum('warehouse_quantity');
+                $variation = ProductVariation::with('warehouseProductVariations')->find($variationId);
+                if (!$variation) {
+                    return response()->json(['status' => false, 'message' => "Variation {$variationId} not found"], 404);
+                }
 
-        $maxAllowedForThisWarehouse = $variation->stock_quantity - $otherAllocated;
-        if ($newQty > $maxAllowedForThisWarehouse) {
+                $warehouseVariation = WarehouseProductVariation::where('warehouse_id', $warehouseId)
+                    ->where('product_variation_id', $variationId)
+                    ->first();
+                if (!$warehouseVariation) {
+                    return response()->json(['status' => false, 'message' => "Warehouse variation {$variation->sku} not initialized"], 404);
+                }
+
+                $maxAllowedForThisWarehouse = $variation->stock_quantity;
+                if ($newQty > $maxAllowedForThisWarehouse) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => "Quantity for variation {$variation->sku} exceeds remaining stock. Max allowed: {$maxAllowedForThisWarehouse}",
+                        'max_allowed' => $maxAllowedForThisWarehouse,
+                        'variation_id' => $variationId
+                    ], 422);
+                }
+
+                $warehouseVariation->warehouse_quantity += $newQty;
+                $warehouseVariation->save();
+
+                // update corresponding WarehouseProduct quantity
+                $warehouseProduct = WarehouseProduct::where('warehouse_id', $warehouseId)
+                    ->where('product_variation_id', $variationId)
+                    ->first();
+                if ($warehouseProduct) {
+                    $warehouseProduct->quantity += $newQty;
+                    $warehouseProduct->save();
+                }
+
+                // adjust product variation stock (same behavior as single update)
+                $variationStock = ProductVariation::find($variationId);
+                $variationStock->stock_quantity -= $newQty;
+                $variationStock->save();
+
+                $available = $variationStock->stock_quantity;
+
+                $warehouse_available_quantity = $warehouseVariation->warehouse_quantity ?? 0;
+
+                $results[] = [
+                    'variation_id' => $variationId,
+                    'warehouse_quantity' => $newQty,
+                    'admin_available_quantity' => $available,
+                    'warehouse_available_quantity' => $warehouse_available_quantity,
+                ];
+            }
+
+            // return array of updated variations
             return response()->json([
-                'status' => false,
-                'message' => 'Quantity exceeds remaining stock. Max allowed: ' . $maxAllowedForThisWarehouse,
-                'max_allowed' => $maxAllowedForThisWarehouse
-            ], 422);
+                'status' => true,
+                'data' => $results,
+                'message' => 'Quantity update completed'
+            ]);
         }
-
-        $warehouseVariation->warehouse_quantity = $newQty;
-        $warehouseVariation->save();
-
-        // Recalculate availability after update
-        $totalAllocated = $variation->warehouseProductVariations()->sum('warehouse_quantity');
-        $available = $variation->stock_quantity - $totalAllocated;
-        if ($available < 0) {
-            $available = 0;
-        }
-
-        return response()->json([
-            'status' => true,
-            'data' => [
-                'variation_id' => $variationId,
-                'warehouse_quantity' => $newQty,
-                'admin_available_quantity' => $available,
-                'max_allowed' => $maxAllowedForThisWarehouse
-            ]
-        ]);
     }
 
-    //
+    
 }

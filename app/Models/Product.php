@@ -122,4 +122,40 @@ class Product extends Model
     {
         return $this->hasMany(ProductVariation::class, 'product_id');
     }
+
+    // variation colors
+    public function variationColors()
+    {
+        return $this->hasManyThrough(Color::class, ProductVariation::class, 'product_id', 'id', 'id', 'color_id');
+    }
+
+    // variation unique colors
+    public function variationUniqueColors()
+    {
+        return $this->variationColors()->distinct();
+    }
+
+    // variation images
+    public function variationImages()
+    {
+        return $this->hasManyThrough(ProductVariationImage::class, ProductVariation::class, 'product_id', 'product_variation_id', 'id', 'id');
+    }
+
+    // unique color first image with color detail by product variation (only one image for each color)
+    public function getVariationUniqueColorFirstImagesAttribute()
+    {
+        return $this->variations()
+            ->with(['colorDetail', 'images' => function ($query) {
+                $query->orderBy('id', 'asc');
+            }])
+            ->get()
+            ->groupBy('color_id')
+            ->map(function ($group) {
+                $firstVariation = $group->first();
+                return (object) [
+                    'color' => $firstVariation->colorDetail,
+                    'image' => $firstVariation->images->first(),
+                ];
+            })->values();
+    }
 }

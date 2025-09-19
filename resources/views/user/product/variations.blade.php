@@ -83,72 +83,76 @@
     <div class="container-fluid">
         <div class="bg_white_border">
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <form action="{{ route('products.generate.variations') }}" method="POST" enctype="multipart/form-data">
-                        @method('POST')
-                        @csrf
+            @if ($product->product_type != 'simple')
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form action="{{ route('products.generate.variations') }}" method="POST"
+                            enctype="multipart/form-data">
+                            @method('POST')
+                            @csrf
 
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
 
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <div class="heading_box mb-3">
-                                    <h3>Generate Product Variations</h3>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row multi-generate-variation">
-                            <div class="col-md-3 mb-2">
-                                <div class="box_label">
-                                    <label>Select Color</label>
-                                    <div id="colors-wrapper">
-                                        <div class="mb-2">
-                                            <select name="colors[]" class="form-control" id="generate-color-select">
-                                                <option value="">-- Select Color --</option>
-                                                @foreach ($colors as $color)
-                                                    <option value="{{ $color->id }}">
-                                                        {{ $color->color_name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4 mb-2">
-                                <div class="box_label">
-                                    <label>Select Sizes </label>
-                                    <div id="sizes-wrapper">
-                                        <div class=" mb-2">
-                                            <select multiple name="sizes[]" class="sizeSelect" id="generate-size-select">
-                                                @foreach ($productSizes as $itemSize)
-                                                    <option value="{{ $itemSize->size->id }}">
-                                                        {{ $itemSize->size->size }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4 mb-4">
+                            <div class="row mt-3">
                                 <div class="col-md-12">
-                                    <button type="submit" class="btn btn-primary" id="generate-variations-btn">
-                                        <i class="fa fa-plus"></i> Generate Variations
-                                    </button>
+                                    <div class="heading_box mb-3">
+                                        <h3>Generate Product Variations</h3>
+                                    </div>
                                 </div>
                             </div>
 
-                        </div>
+                            <div class="row multi-generate-variation">
+                                <div class="col-md-3 mb-2">
+                                    <div class="box_label">
+                                        <label>Select Color</label>
+                                        <div id="colors-wrapper">
+                                            <div class="mb-2">
+                                                <select name="colors[]" class="form-control" id="generate-color-select">
+                                                    <option value="">-- Select Color --</option>
+                                                    @foreach ($colors as $color)
+                                                        <option value="{{ $color->id }}">
+                                                            {{ $color->color_name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 mb-2">
+                                    <div class="box_label">
+                                        <label>Select Sizes </label>
+                                        <div id="sizes-wrapper">
+                                            <div class=" mb-2">
+                                                <select multiple name="sizes[]" class="sizeSelect"
+                                                    id="generate-size-select">
+                                                    @foreach ($productSizes as $itemSize)
+                                                        <option value="{{ $itemSize->size->id }}">
+                                                            {{ $itemSize->size->size }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 mb-4">
+                                    <div class="col-md-12">
+                                        <button type="submit" class="btn btn-primary" id="generate-variations-btn">
+                                            <i class="fa fa-plus"></i> Generate Variations
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
 
 
-                    </form>
+                        </form>
+                    </div>
                 </div>
-            </div>
+            @endif
 
             <!--  Row 1 -->
             <div class="row">
@@ -162,7 +166,8 @@
                         <div class="row mt-3">
                             <div class="col-md-12">
                                 <div class="heading_box mb-3">
-                                    <h3>Product Variations</h3>
+                                    <h3>Product {{ $product->product_type != 'simple' ? 'Variations' : 'Stock' }}</h3>
+                                    <h3>Product Name : {{ $product->name }}</h3>
                                 </div>
                             </div>
                         </div>
@@ -179,19 +184,22 @@
                                         $first = $colorGroup->first();
                                     @endphp
                                     <div class="color-variation-group mb-4 p-3">
-                                        <h3 class="h3 mb-3">Color : {{ $first->colorDetail->color_name }}</h3>
-                                        <div class="d-flex justify-content-between align-items-start mb-3">
+                                        @if ($product->product_type != 'simple')
+                                            <h3 class="h3 mb-3">Color : {{ $first->colorDetail->color_name ?? '' }}</h3>
+                                            <div class="d-flex justify-content-between align-items-start mb-3">
 
-                                            <div class="w-25">
-                                                <label class="small fw-semibold mb-1">Images
-                                                    ({{ $first->colorDetail->color_name }})
-                                                </label>
-                                                <input type="file"
-                                                    name="variation_products[{{ $index }}][images][]"
-                                                    class="form-control" multiple>
-                                                <small class="text-muted d-block mt-1">Upload images once per color.</small>
+                                                <div class="w-25">
+                                                    <label class="small fw-semibold mb-1">Images
+                                                        ({{ $first->colorDetail->color_name ?? '' }})
+                                                    </label>
+                                                    <input type="file"
+                                                        name="variation_products[{{ $index }}][images][]"
+                                                        class="form-control" multiple>
+                                                    <small class="text-muted d-block mt-1">Upload images once per
+                                                        color.</small>
+                                                </div>
                                             </div>
-                                        </div>
+                                        @endif
 
                                         <div class="d-flex flex-wrap mb-3">
                                             @if ($first->images && $first->images->count())
@@ -258,12 +266,12 @@
                                                     </div>
 
                                                     <div class="col-md-2">
-                                                        <label class="small fw-semibold">Stock Qty <span
+                                                        <label class="small fw-semibold">Available Stock Qty <span
                                                                 class="text-danger">*</span></label>
                                                         <input type="number" min="0"
                                                             name="variation_products[{{ $index }}][stock_quantity]"
                                                             class="form-control"
-                                                            value="{{ $variation->stock_quantity }}">
+                                                            value="{{ $variation->available_quantity }}">
                                                     </div>
 
 

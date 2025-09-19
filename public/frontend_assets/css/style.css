@@ -2781,3 +2781,21 @@ li.slick-active button {
 /*{*/
 /*    margin-top: -3rem;*/
 /*}*/
+
+
+.right-site-btns{
+    align-items: center;
+}
+.goog-te-gadget img{
+    display: none;
+}
+.goog-te-gadget{
+    font-size: 0px !important;
+}
+.VIpgJd-ZVi9od-l4eHX-hSRGPd, .VIpgJd-ZVi9od-l4eHX-hSRGPd:link, .VIpgJd-ZVi9od-l4eHX-hSRGPd:visited, .VIpgJd-ZVi9od-l4eHX-hSRGPd:hover, .VIpgJd-ZVi9od-l4eHX-hSRGPd:active{
+    font-size: 0px !important;
+}
+.goog-te-gadget .goog-te-combo{
+    padding: 10px 4px;
+    border-radius: 20px;
+}

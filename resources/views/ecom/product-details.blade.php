@@ -41,145 +41,175 @@
 
 
     <section class="catagory_sec product_details">
-
         <div class="container py-5">
-            <div class="row g-4">
-                <!-- Left Section -->
-                <div class="col-md-4">
-                    <div class="zoom-wrepper">
-                        <div class="img-container">
-                            <img id="mainImage" src="img/71Htl4lgh1L._SX569_.jpg" class="main-img">
-                            <div id="lens" class="lens"></div>
+            <div class="row details-snippet1 justify-content-between">
+                <div class="col-md-5" id="product-images-section">
+                    <div class="slider_left">
+                        <div class="slider-for" id="prodcut-first-image">
+                            @if ($product->images->count() > 0)
+                                @foreach ($product->images as $image)
+                                    <div class="slid_big_img">
+                                        <img src="{{ Storage::url($image->image) }}" />
+                                    </div>
+                                @endforeach
+                            @endif
                         </div>
-                        <div id="result" class="result"></div>
-                    </div>
-
-                    <div class="thumbnails-box thumbnails d-flex gap-2 mt-2">
-                        <img src="img/81BiMrw55sL._SX569_.jpg" onclick="changeImage(this)">
-                        <img src="img/91GDMWuVbGL._SX569_.jpg" onclick="changeImage(this)">
-                        <img src="img/91phOwQpCEL._SX569_.jpg" onclick="changeImage(this)">
-                    </div>
-                </div>
-
-                <!-- Middle Section -->
-                <div class="col-md-5 bg-white p-3 rounded">
-                    <div class="all-product-details">
-                        <h2>Allen Solly Men's Cotton Regular Fit Polo T-Shirt</h2>
-                        <div class="rate-box">
-                            <ul class="rate-star">
-                                <li><i class="fa-solid fa-star"></i></li>
-                                <li><i class="fa-solid fa-star"></i></li>
-                                <li><i class="fa-solid fa-star"></i></li>
-                                <li><i class="fa-solid fa-star"></i></li>
-                                <li><span><i class="fa-regular fa-star"></i></span></li>
-                            </ul>
-                            <p>(77,173 ratings)</p>
-                        </div>
-
-                        <div class="price">₹1,048 </div>
-
-                        <div class="sku mt-2 mb-2">SKU: ASHIRT1234</div>
-
-                        <!-- Size Dropdown -->
-                        <h4>Size:</h4>
-                        <select class="form-select w-50 mb-3">
-                            <option value="">Select Size</option>
-                            <option value="S">Small (S)</option>
-                            <option value="M">Medium (M)</option>
-                            <option value="L">Large (L)</option>
-                            <option value="XL">Extra Large (XL)</option>
-                        </select>
-
-                        <!-- Colour Options -->
-                        <h4>Colour: Bright Blue</h4>
-                        <div class="colors d-flex flex-wrap gap-2">
-                            <img src="img/71Htl4lgh1L._SX569_.jpg" onclick="changeImage(this)">
-                            <img src="img/81BiMrw55sL._SX569_.jpg" onclick="changeImage(this)">
-                            <img src="img/91GDMWuVbGL._SX569_.jpg" onclick="changeImage(this)">
-                            <img src="img/91phOwQpCEL._SX569_.jpg" onclick="changeImage(this)">
-                        </div>
-
-
-                        <div class="product-details-box">
-                            <h4 class="list-heading">Product details</h4>
-                            <div class="product-details">
-                                <div class="p-name">Material composition</div>
-                                <div class="p-details">60% Cotton, 40% Polyester</div>
-                            </div>
-                            <div class="product-details">
-                                <div class="p-name">Pattern</div>
-                                <div class="p-details">Solid</div>
-                            </div>
-                            <div class="product-details">
-                                <div class="p-name">Fit type</div>
-                                <div class="p-details">Regular Fit</div>
-                            </div>
-                            <div class="product-details">
-                                <div class="p-name">Sleeve type</div>
-                                <div class="p-details">Half Sleeve</div>
-                            </div>
-                            <div class="product-details">
-                                <div class="p-name">Collar style</div>
-                                <div class="p-details">Band Collar</div>
-                            </div>
-                            <div class="product-details">
-                                <div class="p-name">Length</div>
-                                <div class="p-details">Standard Length</div>
-                            </div>
-                            <div class="product-details">
-                                <div class="p-name">Country of Origin</div>
-                                <div class="p-details">India</div>
-                            </div>
-                        </div>
-
-                        <div class="about-item">
-                            <h4 class="list-heading">About This Item</h4>
-                            <ul>
-                                <li>Occasion:<span>Casual</span></li>
-                                <li>Fit:<span>Regular Fit</span></li>
-                                <li>Material:<span>60% Cotton and 40% Polyester</span></li>
-                                <li>Neck:<span>Polo Neck; Pattern : Solid</span></li>
-                                <li>Collar Style:<span>Band Collar; Material Composition: 60% Cotton, 40%</span></li>
-                            </ul>
+                        <div class="slider-nav" id="product-other-images">
+                            @if ($product->images->count() > 0)
+                                @foreach ($product->images as $image)
+                                    <div class="small_box_img">
+                                        <div class="slid_small_img">
+                                            <img src="{{ Storage::url($image->image) }}" />
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
                         </div>
                     </div>
                 </div>
+                <div class="col-md-7 col-xl-6">
+                    <div class="ratings my-2">
+                        <div class="stars d-flex">
+                            {{ Helper::getTotalProductRating($product->id) ? Helper::getTotalProductRating($product->id) : 0 }}
+                            <div class="mx-2"> <i class="fa-solid fa-star"></i> </div>
+                            ({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
+                        </div>
+                    </div>
 
-                <!-- Right Section -->
-                <div class="col-md-3 bg-white p-3 rounded border">
-                    <div class="right-delevery-box">
-                        <div class="price m-3">₹1,048</div>
-                        <p>Sold By: ABC Store</p>
-                        <div class="stock">In stock</div>
+                    <div class="title">{{ $product->name }}</div>
+                    <div class="product-category mt-2 mb-2">
+                        @php
+                            $categoryPath = [];
+                            $currentCategory = $product->category;
+                            while ($currentCategory) {
+                                array_unshift($categoryPath, $currentCategory->name);
+                                $currentCategory = $currentCategory->parent;
+                            }
+                        @endphp
+                        Category: {{ implode(' > ', $categoryPath) }}
+                    </div>
+                    <div class="brief-description">
+                        {{ $product->short_description }}
+                    </div>
+                    <div class="price my-2 warehouse-product-price-div">
+                        $<span id="warehouse-product-price">{{ $wareHouseHaveProductVariables?->price ?? '' }}</span></div>
+                    <div class="d-flex mb-2">
+                        <div class="theme-text subtitle">Description:</div>
+                        <div class="subtitle ms-2">
+                            {!! $product->description !!}
+                        </div>
+                    </div>
 
-                        <label for="quantity">Quantity: </label>
-                        <select id="quantity" class="form-select w-100 mb-3">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                        </select>
+                    <div class="d-flex mb-2">
+                        <div class="theme-text subtitle">Warehouse:</div>
+                        <div class="subtitle ms-2">
+                            {{ $wareHouseHaveProductVariables?->warehouse?->name ?? '' }}
+                        </div>
+                    </div>
+                    <div class="d-flex mb-2">
+                        <div class="theme-text subtitle">SKU:</div>
+                        <div class="subtitle ms-2" id="product-sku">
+                            {{ $wareHouseHaveProductVariables?->sku ?? '' }}
+                        </div>
+                    </div>
 
-                        <!-- Gift Option -->
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="giftOption">
-                            <label class="form-check-label" for="giftOption">
-                                Send as a Gift
-                            </label>
+                    <input id="warehouse-product-id" type="hidden" value="{{ $wareHouseHaveProductVariables?->id }}" />
+
+
+                    <div class="mb-3">
+                        {{-- Select Size radio input button $product->sizes --}}
+                        @if ($product->sizes->count() > 0)
+                            <p>Select Size:</p>
+                            @foreach ($product->sizes as $key => $size)
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input product-select-size-input" type="radio" name="size"
+                                        id="size-{{ $size->size?->id }}" value="{{ $size->size?->id }}"
+                                        {{ ($cartItem ? ($cartItem->size_id == $size->size?->id ? 'checked' : '') : $key == 0) ? 'checked' : '' }}
+                                        {{ $cartItem && $cartItem->size_id !== $size->size?->id ? 'disabled' : '' }}>
+                                    <label class="form-check-label" for="size-{{ $size->size?->id }}">
+                                        {{ $size->size?->size }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        @endif
+
+                    </div>
+
+                    <div class="mb-3">
+                        @if ($product->product_type != 'simple')
+                            @if ($product->variation_unique_color_first_images->count() > 0)
+                                <p class="theme-text subtitle">Selected Color: <span id="selected-color"
+                                        class="text-dark ms-2"></span></p>
+                                @foreach ($product->variation_unique_color_first_images as $key => $item)
+                                    @php
+                                        $color = $item->color;
+                                        $image = $item->image;
+                                    @endphp
+                                    @if ($color)
+                                        <div class="form-check form-check-inline border rounded" hidden>
+                                            {{-- add class product-select-color-input --}}
+                                            <input class="btn-check product-select-color-input " type="radio"
+                                                name="color" id="color-{{ $color->id }}" value="{{ $color->id }}"
+                                                {{ ($cartItem ? ($cartItem->color_id == $color->id ? 'checked' : '') : $key == 0) ? 'checked' : '' }}
+                                                {{ $cartItem && $cartItem->color_id !== $color->id ? 'disabled' : '' }}>
+                                            <label class="btn" for="color-{{ $color->id }}">
+                                                {{ $color->color_name }}
+
+                                            </label>
+                                        </div>
+                                        <img class="product-select-color-input-image" data-color-id="{{ $color->id }}"
+                                            data-color-name="{{ $color->color_name ?? ($color->name ?? '') }}"
+                                            style="max-width: 80px;
+                                    max-height: 80px;
+                                    cursor: {{ $cartItem ? ($cartItem->color_id == $color->id ? 'pointer' : 'not-allowed') : 'pointer' }};
+                                    border: 2px solid #ddd; border-radius: 5px; margin-right: 10px;
+                                    opacity: {{ $cartItem ? ($cartItem->color_id == $color->id ? '1' : '0.5') : '1' }};
+                                    pointer-events: {{ $cartItem ? ($cartItem->color_id == $color->id ? 'auto' : 'none') : 'auto' }};"
+                                            src="{{ Storage::url($image->image_path ?? '') }}"
+                                            alt="{{ $color->color_name ?? ($color->name ?? '') }}">
+                                    @endif
+                                @endforeach
+                            @endif
+                        @endif
+                    </div>
+                    <div class="d-flex">
+                        <div id="qty-div" class="me-3">
+                            <div class="d-flex justify-content-start align-items-center">
+                                <div class="small_number mb-3">
+                                    <div class="qty-input">
+                                        <button class="qty-count qty-count--minus" data-action="minus"
+                                            type="button">-</button>
+                                        <input class="product-qty" type="number" name="product-qty" min="0"
+                                            max="{{ $wareHouseHaveProductVariables?->quantity ?? 0 }}"
+                                            value="{{ $cartItem ? $cartItem->quantity : 0 }}"
+                                            data-cart-id="{{ $cartItem ? $cartItem->id : '' }}"
+                                            data-product-id="{{ $product->id }}">
+                                        <button class="qty-count qty-count--add" data-action="add" type="button">+</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Buttons -->
-                        <button class="btn w-100 mb-2 btn-warning">Add to Cart</button>
-                        <button class="btn w-100 mb-2 btn-orange" style="background:#FFA41C; color:#fff;">Buy Now</button>
-                        <button class="btn w-100 btn-outline-danger"><span><i class="fa-solid fa-heart"></i></span> Add to
-                            Wishlist</button>
+                        {{-- hidden div for out of stock message badge --}}
+                        <div id="out-of-stock-message" class="text-danger " style="display: none;">
+                            <span class="h5">Out of Stock</span>
+                        </div>
+
+                        @if ($cartItem)
+                            <div class="view-cart-btn cart-btns">
+                                <a href="{{ route('e-store.cart') }}" class="red_btn w-100 text-center"><span>View
+                                        Cart</span></a>
+                            </div>
+                        @else
+                            <div class="addtocart cart-btns" data-id="{{ $product->id }}">
+                                <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to
+                                        Cart</span></a>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
-
-
-
-
         <div class="container py-5">
             <div class="additional-details my-5 text-left">
                 <!-- Nav pills -->
@@ -314,11 +344,6 @@
             </div>
         </div>
     </section>
-
-
-
-
-
 @endsection
 
 @push('scripts')
@@ -637,6 +662,53 @@
                     toastr.error("An error occurred while fetching product details.");
                 }
             });
+        });
+    </script>
+
+    <script>
+        // initialize selected-color on load
+        $(function() {
+            var $checked = $(".product-select-color-input:checked").first();
+            if ($checked.length) {
+                var id = $checked.val();
+                var name = $('label[for="color-' + id + '"]').text().trim();
+                $("#selected-color").text(name);
+                $('.product-select-color-input-image').css('border', '4px solid #ddd');
+                $('.product-select-color-input-image[data-color-id="' + id + '"]').css('border',
+                    '4px solid #643171');
+            }
+        });
+
+        // click on color image -> check radio + update selected color
+        $(document).on('click', '.product-select-color-input-image', function() {
+            var $img = $(this);
+            var colorId = $img.data('color-id');
+            var colorName = $img.data('color-name') || $img.attr('alt') || '';
+
+            var $input = $('#color-' + colorId);
+            if (!$input.length) {
+                // fallback: try to match by label text
+                $input = $(".product-select-color-input").filter(function() {
+                    return $('label[for="' + $(this).attr('id') + '"]').text().trim() === colorName;
+                }).first();
+            }
+
+            if ($input.length) {
+                $input.prop('checked', true).trigger('change');
+                $("#selected-color").text(colorName);
+                // visual highlight
+                $('.product-select-color-input-image').css('border', '4px solid #ddd');
+                $img.css('border', '4px solid #643171');
+            }
+        });
+
+        // when radio changes (e.g. keyboard) update selected-color and highlight image
+        $(document).on('change', '.product-select-color-input', function() {
+            var id = $(this).val();
+            var name = $('label[for="color-' + id + '"]').text().trim();
+            $("#selected-color").text(name);
+            $('.product-select-color-input-image').css('border', '4px solid #ddd');
+            $('.product-select-color-input-image[data-color-id="' + id + '"]').css('border', '4px solid #643171');
         });
     </script>
 @endpush
