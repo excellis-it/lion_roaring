@@ -412,6 +412,7 @@
                 success: function(response) {
                     if (response.status) {
                         window.location.href = response.checkout_url;
+
                     } else {
                         Swal.fire({
                             icon: 'error',

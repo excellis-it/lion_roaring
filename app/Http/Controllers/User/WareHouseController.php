@@ -658,5 +658,35 @@ class WareHouseController extends Controller
         }
     }
 
-    
+
+    // warehouseProductsList
+    public function warehouseProductsList($id)
+    {
+        $wareHouse = WareHouse::findOrFail($id);
+
+        // Check if user can access this warehouse
+        if (!auth()->user()->canManageWarehouse($wareHouse->id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // get only ProductVariation records associated with this warehouse
+        $productVariationIds = WarehouseProductVariation::where('warehouse_id', $wareHouse->id)
+            ->pluck('product_variation_id')
+            ->toArray();
+
+        $warehouseProducts = ProductVariation::whereIn('id', $productVariationIds)
+            ->with(['product', 'colorDetail', 'sizeDetail', 'images'])
+            ->get();
+       // return $warehouseProducts;
+
+        // get warehouse_quantity from WarehouseProductVariation model
+        foreach ($warehouseProducts as $variation) {
+            $warehouseProductVariation = WarehouseProductVariation::where('warehouse_id', $wareHouse->id)
+                ->where('product_variation_id', $variation->id)
+                ->first();
+            $variation->warehouse_quantity = $warehouseProductVariation ? $warehouseProductVariation->warehouse_quantity : 0;
+        }
+
+        return view('user.warehouse.warehouse_products_list', compact('wareHouse', 'warehouseProducts'));
+    }
 }

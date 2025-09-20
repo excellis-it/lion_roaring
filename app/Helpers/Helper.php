@@ -505,7 +505,15 @@ class Helper
 
             $distance = self::haversineDistance($originLat, $originLng, $wh->location_lat, $wh->location_lng);
 
-            $user_location_country_name = auth()->check() && auth()->user()->location_country ? auth()->user()->location_country : null;
+            $isAuth = auth()->check();
+            $isUser = auth()->user();
+            if ($isUser) {
+                $user_location_country_name = $isUser->location_country ?? null;
+            } else {
+                $user_location_country_name = session('location_country') ?? null;
+            }
+
+           // $user_location_country_name = auth()->check() && auth()->user()->location_country ? auth()->user()->location_country : null;
             $warehouses_location_country_name = $wh->country ? $wh->country->name : null;
 
             if ($user_location_country_name && $warehouses_location_country_name && $user_location_country_name == $warehouses_location_country_name) {

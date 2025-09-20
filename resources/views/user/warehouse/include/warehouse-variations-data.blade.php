@@ -88,7 +88,7 @@
 
                 <div class="col-md-2 mb-2">
                     <div class="box_label">
-                        <label>Available Stock Quantity <span class="text-danger"></span></label>
+                        <label>Global Stock Quantity <span class="text-danger"></span></label>
                         <input type="number" min="0"
                             name="variation_products[{{ $index }}][available_quantity]"
                             class="form-control available-qty-input" value="{{ $variation->admin_available_quantity }}"
@@ -106,7 +106,7 @@
 
                 <div class="col-md-2 mb-2">
                     <div class="box_label">
-                        <label>Warehouse Available Quantity <span class="text-danger"></span></label>
+                        <label>Warehouse Stock Quantity <span class="text-danger"></span></label>
                         <input type="number" min="0"
                             name="variation_products[{{ $index }}][warehouse_quantity]" class="form-control"
                             value="{{ $variation->warehouse_quantity }}" readonly>

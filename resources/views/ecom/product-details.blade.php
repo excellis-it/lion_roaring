@@ -1,3 +1,5 @@
+{{-- {{dd(session()->all())}} --}}
+{{-- {{dd(auth()->user())}} --}}
 @extends('ecom.layouts.master')
 @section('meta')
     <meta name="description" content="{{ isset($product->meta_description) ? $product->meta_description : '' }}">

@@ -58,6 +58,7 @@ class ProductController extends Controller
         // reuse helper to get nearest warehouse
         $nearest = Helper::getNearestWarehouse($originLat, $originLng);
         // return $nearest;
+        // return $nearest;
         if (!empty($nearest['warehouse']->id)) {
             $nearbyWareHouseId = $nearest['warehouse']->id;
         }
@@ -799,6 +800,50 @@ class ProductController extends Controller
 
                 if ($warehouseProduct) {
                     $warehouseProduct->decrement('quantity', $cart->quantity);
+
+
+                    // laravel log notify
+                    \Log::info('Warehouse product stock updated', ['product_id' => $warehouseProduct->id, 'new_quantity' => $warehouseProduct->quantity]);
+
+                    $wareHouseProductVariation = WarehouseProductVariation::where('warehouse_id', $cart->warehouse_id)
+                        ->where('product_variation_id', $warehouseProduct->product_variation_id)
+                        ->where('product_id', $cart->product_id)
+                        ->first();
+                    //  dd($wareHouseProductVariation);
+
+                    if ($wareHouseProductVariation) {
+                        $newWarehouseQty = max(0, ($wareHouseProductVariation->warehouse_quantity ?? 0) - $cart->quantity);
+                        $wareHouseProductVariation->warehouse_quantity = $newWarehouseQty;
+                        $wareHouseProductVariation->updated_at = now();
+                        $wareHouseProductVariation->save();
+                        \Log::info('Warehouse product variation stock updated', [
+                            'warehouse_product_variation_id' => $wareHouseProductVariation->id,
+                            'new_quantity' => $newWarehouseQty
+                        ]);
+
+                        // decrement quantity from ProductVariation (global) - guarded
+                        // $productVariationId = $wareHouseProductVariation->product_variation_id;
+                        // if ($productVariationId) {
+                        //     $productVariation = ProductVariation::find($productVariationId);
+                        //     if ($productVariation) {
+                        //         $newStockQty = max(0, ($productVariation->stock_quantity ?? 0) - $cart->quantity);
+                        //         $productVariation->stock_quantity = $newStockQty;
+                        //         $productVariation->updated_at = now();
+                        //         $productVariation->save();
+                        //         \Log::info('Product variation stock updated', [
+                        //             'product_variation_id' => $productVariation->id,
+                        //             'new_quantity' => $newStockQty
+                        //         ]);
+                        //     }
+                        // }
+                    } else {
+                        \Log::warning('WarehouseProductVariation not found for order item', [
+                            'warehouse_id' => $cart->warehouse_id,
+                            'warehouse_product_id' => $cart->warehouse_product_id,
+                            'product_id' => $cart->product_id,
+                            'order_item_id' => $cart->id ?? null
+                        ]);
+                    }
                     $this->notifyAdminIfOutOfStock($warehouseProduct);
                 }
             }
@@ -846,141 +891,143 @@ class ProductController extends Controller
 
 
     // Payment success
-    public function paymentSuccess(Request $request)
-    {
-        if (!auth()->check()) {
-            return redirect()->route('home')->with('error', 'Please login to continue');
-        }
-        $request->validate([
-            'session_id' => 'required|string',
-            'order_id' => 'required'
-        ]);
+    // public function paymentSuccess(Request $request)
+    // {
+    //     return $request->all();
+    //     if (!auth()->check()) {
+    //         return redirect()->route('home')->with('error', 'Please login to continue');
+    //     }
+    //     $request->validate([
+    //         'session_id' => 'required|string',
+    //         'order_id' => 'required'
+    //     ]);
 
 
 
-        $decrypted_order_id = decrypt($request->order_id);
+    //     $decrypted_order_id = decrypt($request->order_id);
 
-        try {
-            Stripe::setApiKey(env('STRIPE_SECRET'));
+    //     // try {
+    //     Stripe::setApiKey(env('STRIPE_SECRET'));
 
-            // Retrieve the session from Stripe
-            $session = StripeSession::retrieve($request->session_id);
+    //     // Retrieve the session from Stripe
+    //     $session = StripeSession::retrieve($request->session_id);
 
-            if ($session->payment_status === 'paid') {
-                DB::beginTransaction();
+    //     if ($session->payment_status === 'paid') {
+    //         //    DB::beginTransaction();
 
-                $order = EstoreOrder::find($decrypted_order_id);
+    //         $order = EstoreOrder::find($decrypted_order_id);
 
-                // Check if this order belongs to the current user
-                if (!$order || $order->user_id != auth()->id()) {
-                    return redirect()->route('e-store.cart')->with('error', 'Order not found');
-                }
+    //         // Check if this order belongs to the current user
+    //         if (!$order || $order->user_id != auth()->id()) {
+    //             return redirect()->route('e-store.cart')->with('error', 'Order not found');
+    //         }
 
-                // Check if payment is already processed to avoid duplicate updates
-                if ($order->payment_status === 'paid') {
-                    return redirect()->route('e-store.order-success', $order->id)
-                        ->with('info', 'Order already processed');
-                }
+    //         // Check if payment is already processed to avoid duplicate updates
+    //         if ($order->payment_status === 'paid') {
+    //             return redirect()->route('e-store.order-success', $order->id)
+    //                 ->with('info', 'Order already processed');
+    //         }
 
-                $payment = EstorePayment::where('order_id', $order->id)
-                    ->where('stripe_payment_intent_id', $request->session_id)
-                    ->first();
+    //         $payment = EstorePayment::where('order_id', $order->id)
+    //             ->where('stripe_payment_intent_id', $request->session_id)
+    //             ->first();
 
-                if ($order && $payment) {
+    //         if ($order && $payment) {
 
-                    // order items
-                    $orderItems = EstoreOrderItem::where('order_id', $order->id)->get();
-                    // return $orderItems;
-                    // each order item deduct stock from warehouse product update
-                    foreach ($orderItems as $item) {
-                        $wareHouseproduct = WarehouseProduct::where('warehouse_id', $item->warehouse_id)->where('id', $item->warehouse_product_id)->where('product_id', $item->product_id)->first();
-                        //  return $wareHouseproduct;
-                        if ($wareHouseproduct) {
+    //             // order items
+    //             $orderItems = EstoreOrderItem::where('order_id', $order->id)->get();
+    //             // return $orderItems;
+    //             // each order item deduct stock from warehouse product update
+    //             foreach ($orderItems as $item) {
+    //                 $wareHouseproduct = WarehouseProduct::where('warehouse_id', $item->warehouse_id)->where('id', $item->warehouse_product_id)->where('product_id', $item->product_id)->first();
+    //                 //  return $wareHouseproduct;
+    //                 if ($wareHouseproduct) {
 
-                            $wareHouseproduct->update(['quantity' => $wareHouseproduct->quantity - $item->quantity, 'updated_at' => now()]);
+    //                     $wareHouseproduct->update(['quantity' => $wareHouseproduct->quantity - $item->quantity, 'updated_at' => now()]);
 
-                            // laravel log notify
-                            \Log::info('Warehouse product stock updated', ['product_id' => $wareHouseproduct->id, 'new_quantity' => $wareHouseproduct->quantity]);
+    //                     // laravel log notify
+    //                     \Log::info('Warehouse product stock updated', ['product_id' => $wareHouseproduct->id, 'new_quantity' => $wareHouseproduct->quantity]);
 
-                            $wareHouseProductVariation = WarehouseProductVariation::where('warehouse_id', $item->warehouse_id)
-                                ->where('product_variation_id', $wareHouseproduct->product_variation_id)
-                                ->where('product_id', $item->product_id)
-                                ->first();
+    //                     $wareHouseProductVariation = WarehouseProductVariation::where('warehouse_id', $item->warehouse_id)
+    //                         ->where('product_variation_id', $wareHouseproduct->product_variation_id)
+    //                         ->where('product_id', $item->product_id)
+    //                         ->first();
+    //                     //  dd($wareHouseProductVariation);
 
-                            if ($wareHouseProductVariation) {
-                                $newWarehouseQty = max(0, ($wareHouseProductVariation->warehouse_quantity ?? 0) - $item->quantity);
-                                $wareHouseProductVariation->warehouse_quantity = $newWarehouseQty;
-                                $wareHouseProductVariation->updated_at = now();
-                                $wareHouseProductVariation->save();
-                                \Log::info('Warehouse product variation stock updated', [
-                                    'warehouse_product_variation_id' => $wareHouseProductVariation->id,
-                                    'new_quantity' => $newWarehouseQty
-                                ]);
+    //                     if ($wareHouseProductVariation) {
+    //                         $newWarehouseQty = max(0, ($wareHouseProductVariation->warehouse_quantity ?? 0) - $item->quantity);
+    //                         $wareHouseProductVariation->warehouse_quantity = $newWarehouseQty;
+    //                         $wareHouseProductVariation->updated_at = now();
+    //                         $wareHouseProductVariation->save();
+    //                         \Log::info('Warehouse product variation stock updated', [
+    //                             'warehouse_product_variation_id' => $wareHouseProductVariation->id,
+    //                             'new_quantity' => $newWarehouseQty
+    //                         ]);
 
-                                // decrement quantity from ProductVariation (global) - guarded
-                                $productVariationId = $wareHouseProductVariation->product_variation_id;
-                                if ($productVariationId) {
-                                    $productVariation = ProductVariation::find($productVariationId);
-                                    if ($productVariation) {
-                                        $newStockQty = max(0, ($productVariation->stock_quantity ?? 0) - $item->quantity);
-                                        $productVariation->stock_quantity = $newStockQty;
-                                        $productVariation->updated_at = now();
-                                        $productVariation->save();
-                                        \Log::info('Product variation stock updated', [
-                                            'product_variation_id' => $productVariation->id,
-                                            'new_quantity' => $newStockQty
-                                        ]);
-                                    }
-                                }
-                            } else {
-                                \Log::warning('WarehouseProductVariation not found for order item', [
-                                    'warehouse_id' => $item->warehouse_id,
-                                    'warehouse_product_id' => $item->warehouse_product_id,
-                                    'product_id' => $item->product_id,
-                                    'order_item_id' => $item->id ?? null
-                                ]);
-                            }
+    //                         // decrement quantity from ProductVariation (global) - guarded
+    //                         $productVariationId = $wareHouseProductVariation->product_variation_id;
+    //                         if ($productVariationId) {
+    //                             $productVariation = ProductVariation::find($productVariationId);
+    //                             if ($productVariation) {
+    //                                 $newStockQty = max(0, ($productVariation->stock_quantity ?? 0) - $item->quantity);
+    //                                 $productVariation->stock_quantity = $newStockQty;
+    //                                 $productVariation->updated_at = now();
+    //                                 $productVariation->save();
+    //                                 \Log::info('Product variation stock updated', [
+    //                                     'product_variation_id' => $productVariation->id,
+    //                                     'new_quantity' => $newStockQty
+    //                                 ]);
+    //                             }
+    //                         }
+    //                     } else {
+    //                         \Log::warning('WarehouseProductVariation not found for order item', [
+    //                             'warehouse_id' => $item->warehouse_id,
+    //                             'warehouse_product_id' => $item->warehouse_product_id,
+    //                             'product_id' => $item->product_id,
+    //                             'order_item_id' => $item->id ?? null
+    //                         ]);
+    //                     }
 
-                            $this->notifyAdminIfOutOfStock($wareHouseproduct);
-                        }
-                    }
+    //                     $this->notifyAdminIfOutOfStock($wareHouseproduct);
+    //                 }
+    //             }
 
-                    // Update order status
-                    $order->update([
-                        'payment_status' => 'paid',
-                        'status' => 'processing'
-                    ]);
+    //             // Update order status
+    //             $order->update([
+    //                 'payment_status' => 'paid',
+    //                 'status' => 'processing'
+    //             ]);
 
-                    // Update payment status
-                    $payment->update([
-                        'status' => 'succeeded',
-                        'payment_details' => [
-                            'session_id' => $session->id,
-                            'payment_intent' => $session->payment_intent,
-                            'payment_status' => $session->payment_status,
-                            'amount_total' => $session->amount_total
-                        ],
-                        'paid_at' => now()
-                    ]);
+    //             // Update payment status
+    //             $payment->update([
+    //                 'status' => 'succeeded',
+    //                 'payment_details' => [
+    //                     'session_id' => $session->id,
+    //                     'payment_intent' => $session->payment_intent,
+    //                     'payment_status' => $session->payment_status,
+    //                     'amount_total' => $session->amount_total
+    //                 ],
+    //                 'paid_at' => now()
+    //             ]);
 
-                    // Clear cart
-                    EstoreCart::where('user_id', auth()->id())->delete();
+    //             // Clear cart
+    //             EstoreCart::where('user_id', auth()->id())->delete();
 
-                    DB::commit();
+    //             //  DB::commit();
 
-                    return redirect()->route('e-store.order-success', $order->id)
-                        ->with('success', 'Payment successful! Your order has been placed.');
-                }
-            }
+    //             // return redirect()->route('e-store.order-success', $order->id)
+    //             //     ->with('success', 'Payment successful! Your order has been placed.');
+    //         }
+    //     }
 
-            return redirect()->route('e-store.checkout')
-                ->with('error', 'Payment verification failed');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->route('e-store.checkout')
-                ->with('error', 'Payment processing failed: ' . $e->getMessage());
-        }
-    }
+    //     return redirect()->route('e-store.checkout')
+    //         ->with('error', 'Payment verification failed');
+    //     // } catch (\Exception $e) {
+    //     //     DB::rollback();
+    //     //     return redirect()->route('e-store.checkout')
+    //     //         ->with('error', 'Payment processing failed: ' . $e->getMessage());
+    //     // }
+    // }
 
     // Handle cancelled payments
     public function paymentCancelled(Request $request)

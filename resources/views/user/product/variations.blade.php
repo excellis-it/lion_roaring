@@ -266,7 +266,7 @@
                                                     </div>
 
                                                     <div class="col-md-2">
-                                                        <label class="small fw-semibold">Available Stock Qty <span
+                                                        <label class="small fw-semibold">Global Stock Qty <span
                                                                 class="text-danger">*</span></label>
                                                         <input type="number" min="0"
                                                             name="variation_products[{{ $index }}][stock_quantity]"

@@ -22,7 +22,7 @@ class HomeController extends Controller
     {
 
         // temporary denied access
-         return redirect()->route('home')->with('error', 'E-Store is temporarily unavailable. Please try again later.');
+        // return redirect()->route('home')->with('error', 'E-Store is temporarily unavailable. Please try again later.');
 
         $session_id = session()->getId();
         $this->updateCartUserId();

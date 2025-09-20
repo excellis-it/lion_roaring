@@ -449,7 +449,7 @@
 
             switch (reportType) {
                 case 'product':
-                    headers = ['#', 'Product', 'Quantity', 'Revenue', 'Orders', 'Avg. Price'];
+                    headers = ['#', 'Product', 'Quantity', 'Revenue', 'Orders'];
 
                     // Table header
                     tableHead.html(`
@@ -459,7 +459,7 @@
                             <th class="text-end">Quantity</th>
                             <th class="text-end">Revenue</th>
                             <th class="text-end">Orders</th>
-                            <th class="text-end">Avg. Price</th>
+
                         </tr>
                     `);
 
@@ -473,7 +473,7 @@
                                 <td class="text-end">${numberFormat(item.quantity)}</td>
                                 <td class="text-end">$${numberFormat(item.revenue)}</td>
                                 <td class="text-end">${numberFormat(item.orders_count)}</td>
-                                <td class="text-end">$${numberFormat(avgPrice)}</td>
+
                             </tr>
                         `);
                     });
@@ -485,7 +485,7 @@
                             <th class="text-end">${numberFormat(data.total_quantity)}</th>
                             <th class="text-end">$${numberFormat(data.total_revenue)}</th>
                             <th class="text-end">${numberFormat(data.total_orders)}</th>
-                            <th></th>
+
                         </tr>
                     `);
                     break;
@@ -499,7 +499,7 @@
                             <th class="text-end">Orders</th>
                             <th class="text-end">Revenue</th>
                             <th class="text-end">Customers</th>
-                            <th class="text-end">Avg. Order Value</th>
+
                         </tr>
                     `);
 
@@ -513,7 +513,7 @@
                                 <td class="text-end">${numberFormat(item.orders_count)}</td>
                                 <td class="text-end">$${numberFormat(item.revenue)}</td>
                                 <td class="text-end">${numberFormat(item.customers)}</td>
-                                <td class="text-end">$${numberFormat(avgOrderValue)}</td>
+
                             </tr>
                         `);
                     });
@@ -527,8 +527,8 @@
                             <th colspan="2">Total</th>
                             <th class="text-end">${numberFormat(totalOrders)}</th>
                             <th class="text-end">$${numberFormat(data.total_revenue)}</th>
-                            <th></th>
-                            <th class="text-end">$${numberFormat(totalAvgOrderValue)}</th>
+
+
                         </tr>
                     `);
                     break;
@@ -545,7 +545,7 @@
                             <th class="text-end">Orders</th>
                             <th class="text-end">Revenue</th>
                             <th class="text-end">Customers</th>
-                            <th class="text-end">Avg. Order Value</th>
+
                         </tr>
                     `);
 
@@ -559,7 +559,7 @@
                                 <td class="text-end">${numberFormat(item.orders_count)}</td>
                                 <td class="text-end">$${numberFormat(item.revenue)}</td>
                                 <td class="text-end">${numberFormat(item.customers_count)}</td>
-                                <td class="text-end">$${numberFormat(avgOrderValue)}</td>
+
                             </tr>
                         `);
                     });
@@ -573,8 +573,8 @@
                             <th colspan="2">Total</th>
                             <th class="text-end">${numberFormat(totalOrdersCount)}</th>
                             <th class="text-end">$${numberFormat(data.total_revenue)}</th>
-                            <th></th>
-                            <th class="text-end">$${numberFormat(totalAvgOrder)}</th>
+
+
                         </tr>
                     `);
                     break;
