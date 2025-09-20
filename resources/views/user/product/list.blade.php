@@ -17,10 +17,12 @@
                                     <div class="col-md-10">
                                         <h3 class="mb-3">Product List</h3>
                                     </div>
-                                    <div class="col-md-2 float-right">
-                                        <a href="{{ route('products.create') }}" class="btn btn-primary w-100"><i
-                                                class="fa-solid fa-plus"></i> Create Product</a>
-                                    </div>
+                                    @if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR'))
+                                        <div class="col-md-2 float-right">
+                                            <a href="{{ route('products.create') }}" class="btn btn-primary w-100"><i
+                                                    class="fa-solid fa-plus"></i> Create Product</a>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="row justify-content-end">
                                     <div class="col-lg-4">

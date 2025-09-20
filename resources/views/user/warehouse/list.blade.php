@@ -29,6 +29,7 @@
                             <th>Name</th>
                             <th>Address</th>
                             <th>Warehouse Admins</th>
+                            <th>Products Count</th>
                             <th>Status</th>
                             @if (Auth::user()->hasRole('SUPER ADMIN'))
                                 <th>Actions</th>
@@ -40,7 +41,7 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $wareHouse->name }}</td>
-                                <td>{{ Str::limit($wareHouse->address, 80) }}</td>
+                                <td>{{ Str::limit($wareHouse->address, 60) }}</td>
                                 <td>
                                     @foreach ($wareHouse->admins as $user)
                                         <span class="">{{ $user->full_name }} ({{ $user->email }})</span>
@@ -48,6 +49,17 @@
                                             ,<br>
                                         @endif
                                     @endforeach
+                                </td>
+
+                                <td class="text-center">
+                                    <a href="{{ route('ware-houses.products.list', $wareHouse->id) }}"
+                                        class="btn btn-sm btn-primary" style="max-height: 30px; line-height:15px;">
+                                        <span
+                                            class="badge bg-secondary rounded-pill">{{ $wareHouse->products->count() ?? 0 }}</span>
+                                    </a>
+
+
+
                                 </td>
                                 <td>{{ $wareHouse->is_active ? 'Active' : 'Inactive' }}</td>
                                 @if (Auth::user()->hasRole('SUPER ADMIN'))

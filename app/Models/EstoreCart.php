@@ -12,10 +12,12 @@ class EstoreCart extends Model
         'user_id',
         'product_id',
         'warehouse_product_id',
+        'product_variation_id',
         'warehouse_id',
         'size_id',
         'color_id',
         'quantity',
+        'session_id',
     ];
 
     public function product()
@@ -46,5 +48,10 @@ class EstoreCart extends Model
     public function warehouse()
     {
         return $this->belongsTo(Warehouse::class);
+    }
+
+    public function productVariation()
+    {
+        return $this->belongsTo(ProductVariation::class);
     }
 }

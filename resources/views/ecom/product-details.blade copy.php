@@ -1,5 +1,3 @@
-{{-- {{dd(session()->all())}} --}}
-{{-- {{dd(auth()->user())}} --}}
 @extends('ecom.layouts.master')
 @section('meta')
     <meta name="description" content="{{ isset($product->meta_description) ? $product->meta_description : '' }}">
@@ -95,22 +93,21 @@
                     </div>
                     <div class="price my-2 warehouse-product-price-div">
                         $<span id="warehouse-product-price">{{ $wareHouseHaveProductVariables?->price ?? '' }}</span></div>
-                    <div class="d-flex mb-2">
+                    <div class="d-flex">
                         <div class="theme-text subtitle">Description:</div>
-                        <div class="subtitle ms-2">
+                        <div class="brief-description ms-2">
                             {!! $product->description !!}
                         </div>
                     </div>
-
-                    <div class="d-flex mb-2">
+                    <div class="d-flex">
                         <div class="theme-text subtitle">Warehouse:</div>
-                        <div class="subtitle ms-2">
+                        <div class="brief-description ms-2">
                             {{ $wareHouseHaveProductVariables?->warehouse?->name ?? '' }}
                         </div>
                     </div>
-                    <div class="d-flex mb-2">
+                    <div class="d-flex">
                         <div class="theme-text subtitle">SKU:</div>
-                        <div class="subtitle ms-2" id="product-sku">
+                        <div class="brief-description ms-2" id="product-sku">
                             {{ $wareHouseHaveProductVariables?->sku ?? '' }}
                         </div>
                     </div>
@@ -138,41 +135,25 @@
                     </div>
 
                     <div class="mb-3">
-                        @if ($product->product_type != 'simple')
-                            @if ($product->variation_unique_color_first_images->count() > 0)
-                                <p class="theme-text subtitle">Selected Color: <span id="selected-color"
-                                        class="text-dark ms-2"></span></p>
-                                @foreach ($product->variation_unique_color_first_images as $key => $item)
-                                    @php
-                                        $color = $item->color;
-                                        $image = $item->image;
-                                    @endphp
-                                    @if ($color)
-                                        <div class="form-check form-check-inline border rounded" hidden>
-                                            {{-- add class product-select-color-input --}}
-                                            <input class="btn-check product-select-color-input " type="radio"
-                                                name="color" id="color-{{ $color->id }}" value="{{ $color->id }}"
-                                                {{ ($cartItem ? ($cartItem->color_id == $color->id ? 'checked' : '') : $key == 0) ? 'checked' : '' }}
-                                                {{ $cartItem && $cartItem->color_id !== $color->id ? 'disabled' : '' }}>
-                                            <label class="btn" for="color-{{ $color->id }}">
-                                                {{ $color->color_name }}
 
-                                            </label>
-                                        </div>
-                                        <img class="product-select-color-input-image" data-color-id="{{ $color->id }}"
-                                            data-color-name="{{ $color->color_name ?? ($color->name ?? '') }}"
-                                            style="max-width: 80px;
-                                    max-height: 80px;
-                                    cursor: {{ $cartItem ? ($cartItem->color_id == $color->id ? 'pointer' : 'not-allowed') : 'pointer' }};
-                                    border: 2px solid #ddd; border-radius: 5px; margin-right: 10px;
-                                    opacity: {{ $cartItem ? ($cartItem->color_id == $color->id ? '1' : '0.5') : '1' }};
-                                    pointer-events: {{ $cartItem ? ($cartItem->color_id == $color->id ? 'auto' : 'none') : 'auto' }};"
-                                            src="{{ Storage::url($image->image_path ?? '') }}"
-                                            alt="{{ $color->color_name ?? ($color->name ?? '') }}">
-                                    @endif
-                                @endforeach
-                            @endif
+                        {{-- Select Color radio input button $product->colors --}}
+                        @if ($product->colors->count() > 0)
+                            <p>Select Color:</p>
+                            @foreach ($product->colors as $key => $color)
+                                <div class="form-check form-check-inline border rounded">
+                                    {{-- add class product-select-color-input --}}
+                                    <input class="btn-check product-select-color-input " type="radio" name="color"
+                                        id="color-{{ $color->color?->id }}" value="{{ $color->color?->id }}"
+                                        {{ ($cartItem ? ($cartItem->color_id == $color->color?->id ? 'checked' : '') : $key == 0) ? 'checked' : '' }}
+                                        {{ $cartItem && $cartItem->color_id !== $color->color?->id ? 'disabled' : '' }}>
+                                    <label class="btn" for="color-{{ $color->color?->id }}">
+                                        {{ $color->color?->color_name }}
+
+                                    </label>
+                                </div>
+                            @endforeach
                         @endif
+
                     </div>
                     <div class="d-flex">
                         <div id="qty-div" class="me-3">
@@ -204,8 +185,7 @@
                             </div>
                         @else
                             <div class="addtocart cart-btns" data-id="{{ $product->id }}">
-                                <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to
-                                        Cart</span></a>
+                                <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to Cart</span></a>
                             </div>
                         @endif
                     </div>
@@ -449,7 +429,7 @@
                             // fallback: empty content or a placeholder
                             sliderFor.append(
                                 '<div class="slid_big_img"><img src="{{ asset('ecom_assets/images/no-image.png') }}" /></div>'
-                            );
+                                );
                         }
 
                         productImagesSection.empty().append(sliderLeft.append(sliderFor).append(
@@ -606,7 +586,7 @@
                             // fallback: empty content or a placeholder
                             sliderFor.append(
                                 '<div class="slid_big_img"><img src="{{ asset('ecom_assets/images/no-image.png') }}" /></div>'
-                            );
+                                );
                         }
 
                         productImagesSection.empty().append(sliderLeft.append(sliderFor).append(
@@ -664,53 +644,6 @@
                     toastr.error("An error occurred while fetching product details.");
                 }
             });
-        });
-    </script>
-
-    <script>
-        // initialize selected-color on load
-        $(function() {
-            var $checked = $(".product-select-color-input:checked").first();
-            if ($checked.length) {
-                var id = $checked.val();
-                var name = $('label[for="color-' + id + '"]').text().trim();
-                $("#selected-color").text(name);
-                $('.product-select-color-input-image').css('border', '4px solid #ddd');
-                $('.product-select-color-input-image[data-color-id="' + id + '"]').css('border',
-                    '4px solid #643171');
-            }
-        });
-
-        // click on color image -> check radio + update selected color
-        $(document).on('click', '.product-select-color-input-image', function() {
-            var $img = $(this);
-            var colorId = $img.data('color-id');
-            var colorName = $img.data('color-name') || $img.attr('alt') || '';
-
-            var $input = $('#color-' + colorId);
-            if (!$input.length) {
-                // fallback: try to match by label text
-                $input = $(".product-select-color-input").filter(function() {
-                    return $('label[for="' + $(this).attr('id') + '"]').text().trim() === colorName;
-                }).first();
-            }
-
-            if ($input.length) {
-                $input.prop('checked', true).trigger('change');
-                $("#selected-color").text(colorName);
-                // visual highlight
-                $('.product-select-color-input-image').css('border', '4px solid #ddd');
-                $img.css('border', '4px solid #643171');
-            }
-        });
-
-        // when radio changes (e.g. keyboard) update selected-color and highlight image
-        $(document).on('change', '.product-select-color-input', function() {
-            var id = $(this).val();
-            var name = $('label[for="color-' + id + '"]').text().trim();
-            $("#selected-color").text(name);
-            $('.product-select-color-input-image').css('border', '4px solid #ddd');
-            $('.product-select-color-input-image[data-color-id="' + id + '"]').css('border', '4px solid #643171');
         });
     </script>
 @endpush

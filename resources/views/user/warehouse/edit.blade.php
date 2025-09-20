@@ -5,14 +5,11 @@
 @endsection
 
 @push('styles')
-    <!-- Leaflet + Geocoder CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <!-- bootstrap-select (modern) -->
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/css/bootstrap-select.min.css" />
     <style>
-        /* small map sizing */
+        /* map sizing */
         #map {
             height: 320px;
             width: 100%;
@@ -38,12 +35,10 @@
 @section('content')
     <div class="container-fluid">
         <div class="bg_white_border">
-
             <div class="row">
                 <div class="col-md-12">
                     <h4 class="title mb-5">Edit Warehouse</h4>
-                    <form action="{{ route('ware-houses.update', $wareHouse->id) }}" method="POST"
-                        id="create-warehouse-form">
+                    <form action="{{ route('ware-houses.update', $wareHouse->id) }}" method="POST" id="create-warehouse-form">
                         @csrf
                         @method('PUT')
                         <div class="row">
@@ -81,7 +76,8 @@
                                 <div class="box_label">
                                     <label for="address">Warehouse Address</label>
                                     <input type="text" name="address" id="address" class="form-control"
-                                        value="{{ old('address', $wareHouse->address) }}">
+                                        value="{{ old('address', $wareHouse->address) }}"
+                                        placeholder="Enter address to search location">
                                 </div>
                             </div>
 
@@ -127,11 +123,8 @@
                                             </option>
                                         @endforeach
                                     </select>
-
                                 </div>
-
                             </div>
-
 
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -144,11 +137,8 @@
                                             {{ old('is_active', $wareHouse->is_active) == 0 ? 'selected' : '' }}>Inactive
                                         </option>
                                     </select>
-
                                 </div>
-
                             </div>
-
                         </div>
 
                         <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
@@ -157,155 +147,235 @@
                         </div>
                     </form>
                 </div>
-
             </div>
-
         </div>
     </div>
 @endsection
 
-
 @push('scripts')
-    <!-- Leaflet + Geocoder JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places"></script>
     <!-- bootstrap-select (modern) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>
-
 
     <script>
         $(document).ready(function() {
             if ($.fn.selectpicker) {
-                $('.selectpicker').selectpicker(); // activate plugin on selects with .selectpicker
+                $('.selectpicker').selectpicker();
             }
 
-            // existing loader behaviour
             $("#create-warehouse-form").on("submit", function(e) {
-                // e.preventDefault();
                 $('#loading').addClass('loading');
                 $('#loading-content').addClass('loading-content');
             });
 
-            // Map + geocoding logic (same as create page)
-            var $lat = $('#latitude'),
-                $lng = $('#longitude'),
-                $address = $('#address'),
-                $country = $('#country');
+            // Google Maps initialization with existing warehouse data
+            let map, marker, geocoder, autocomplete;
+            const $lat = $('#latitude');
+            const $lng = $('#longitude');
+            const $address = $('#address');
+            const $country = $('#country');
 
-            // build quick lookup from option text -> value
-            var countryMap = {};
+            // Build country lookup
+            const countryMap = {};
             $country.find('option').each(function() {
-                var txt = $(this).text().trim().toLowerCase();
+                const txt = $(this).text().trim().toLowerCase();
                 if (txt) countryMap[txt] = $(this).val();
             });
 
             function selectCountryByName(name) {
                 if (!name) return;
-                var n = name.trim().toLowerCase();
+                const n = name.trim().toLowerCase();
+
                 if (countryMap[n]) {
                     $country.val(countryMap[n]).trigger('change');
                     return;
                 }
-                for (var key in countryMap) {
+
+                for (let key in countryMap) {
                     if (key.indexOf(n) !== -1 || n.indexOf(key) !== -1) {
                         $country.val(countryMap[key]).trigger('change');
                         return;
                     }
                 }
-                var parts = name.split(',');
-                if (parts.length) {
-                    var last = parts[parts.length - 1].trim().toLowerCase();
-                    if (countryMap[last]) {
-                        $country.val(countryMap[last]).trigger('change');
-                        return;
-                    }
-                }
             }
 
-            // default center (New York) — override if inputs already have values
-            var defaultLat = 40.712776,
-                defaultLng = -74.005974;
-            var initLat = parseFloat('{{ old('location_lat', $wareHouse->location_lat) ?? '' }}') || defaultLat;
-            var initLng = parseFloat('{{ old('location_lng', $wareHouse->location_lng) ?? '' }}') || defaultLng;
+            function initMap() {
+                // Use existing warehouse coordinates or default
+                const defaultLat = parseFloat(
+                    '{{ old('location_lat', $wareHouse->location_lat) ?? '40.712776' }}');
+                const defaultLng = parseFloat(
+                    '{{ old('location_lng', $wareHouse->location_lng) ?? '-74.005974' }}');
 
-            var map = L.map('map').setView([initLat, initLng], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; OpenStreetMap contributors',
-                className: 'leaflet-dark'
-            }).addTo(map);
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 13,
+                    center: {
+                        lat: defaultLat,
+                        lng: defaultLng
+                    }
+                });
 
-            var marker = L.marker([initLat, initLng], {
-                draggable: true
-            }).addTo(map);
+                geocoder = new google.maps.Geocoder();
 
-            function setInputs(lat, lng) {
+                marker = new google.maps.Marker({
+                    position: {
+                        lat: defaultLat,
+                        lng: defaultLng
+                    },
+                    map: map,
+                    draggable: true
+                });
+
+                marker.addListener('dragend', function() {
+                    const position = marker.getPosition();
+                    updateInputs(position.lat(), position.lng());
+                    reverseGeocode(position.lat(), position.lng());
+                });
+
+                map.addListener('click', function(event) {
+                    const lat = event.latLng.lat();
+                    const lng = event.latLng.lng();
+                    marker.setPosition(event.latLng);
+                    updateInputs(lat, lng);
+                    reverseGeocode(lat, lng);
+                });
+
+                // Initialize Places Autocomplete
+                autocomplete = new google.maps.places.Autocomplete($address[0], {
+                    fields: ['place_id', 'geometry', 'name', 'formatted_address', 'address_components']
+                });
+                autocomplete.bindTo('bounds', map);
+
+                // Handle place selection from autocomplete
+                autocomplete.addListener('place_changed', function() {
+                    const place = autocomplete.getPlace();
+
+                    if (!place.geometry || !place.geometry.location) {
+                        console.log("No details available for input: '" + place.name + "'");
+                        return;
+                    }
+
+                    // Update map and marker
+                    const location = place.geometry.location;
+                    const lat = location.lat();
+                    const lng = location.lng();
+
+                    map.setCenter(location);
+                    map.setZoom(15);
+                    marker.setPosition(location);
+
+                    // Update inputs
+                    updateInputs(lat, lng);
+
+                    // Update address if formatted_address is available
+                    if (place.formatted_address) {
+                        $address.val(place.formatted_address);
+                    }
+
+                    // Extract and set country
+                    if (place.address_components) {
+                        const countryComponent = place.address_components.find(component =>
+                            component.types.includes('country')
+                        );
+
+                        if (countryComponent) {
+                            selectCountryByName(countryComponent.long_name);
+                        }
+                    }
+                });
+            }
+
+            function updateInputs(lat, lng) {
                 $lat.val(lat.toFixed(6));
                 $lng.val(lng.toFixed(6));
             }
 
             function reverseGeocode(lat, lng) {
-                fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat + '&lon=' + lng, {
-                    headers: {
-                        'Accept': 'application/json'
+                const latlng = {
+                    lat: lat,
+                    lng: lng
+                };
+
+                geocoder.geocode({
+                    location: latlng
+                }, (results, status) => {
+                    if (status === 'OK' && results[0]) {
+                        $address.val(results[0].formatted_address);
+
+                        const addressComponents = results[0].address_components;
+                        const countryComponent = addressComponents.find(component =>
+                            component.types.includes('country')
+                        );
+
+                        if (countryComponent) {
+                            selectCountryByName(countryComponent.long_name);
+                        }
                     }
-                }).then(function(res) {
-                    return res.json();
-                }).then(function(data) {
-                    if (data && data.display_name) {
-                        $address.val(data.display_name);
-                    }
-                    if (data && data.address && data.address.country) {
-                        selectCountryByName(data.address.country);
-                    }
-                }).catch(function() {
-                    // ignore errors
                 });
             }
 
-            marker.on('dragend', function(e) {
-                var p = e.target.getLatLng();
-                setInputs(p.lat, p.lng);
-                reverseGeocode(p.lat, p.lng);
-            });
+            function geocodeAddress(address) {
+                if (!address.trim()) return;
 
-            map.on('click', function(e) {
-                marker.setLatLng(e.latlng);
-                setInputs(e.latlng.lat, e.latlng.lng);
-                reverseGeocode(e.latlng.lat, e.latlng.lng);
+                geocoder.geocode({
+                    address: address
+                }, (results, status) => {
+                    if (status === 'OK' && results[0]) {
+                        const location = results[0].geometry.location;
+                        const lat = location.lat();
+                        const lng = location.lng();
+
+                        map.setCenter(location);
+                        map.setZoom(15);
+                        marker.setPosition(location);
+                        updateInputs(lat, lng);
+
+                        const addressComponents = results[0].address_components;
+                        const countryComponent = addressComponents.find(component =>
+                            component.types.includes('country')
+                        );
+
+                        if (countryComponent) {
+                            selectCountryByName(countryComponent.long_name);
+                        }
+                    }
+                });
+            }
+
+            // Address input keyup event with debounce (for manual typing)
+            let addressTimeout;
+            $address.on('keyup', function(e) {
+                // Don't trigger geocoding if user is selecting from autocomplete
+                if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter') {
+                    return;
+                }
+
+                clearTimeout(addressTimeout);
+                const address = $(this).val();
+
+                addressTimeout = setTimeout(function() {
+                    if (address.length > 3) {
+                        geocodeAddress(address);
+                    }
+                }, 1000);
             });
 
             $lat.add($lng).on('change', function() {
-                var la = parseFloat($lat.val()),
-                    lo = parseFloat($lng.val());
-                if (!isNaN(la) && !isNaN(lo)) {
-                    marker.setLatLng([la, lo]);
-                    map.setView([la, lo], 15);
-                    reverseGeocode(la, lo);
+                const lat = parseFloat($lat.val());
+                const lng = parseFloat($lng.val());
+
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    const position = {
+                        lat: lat,
+                        lng: lng
+                    };
+                    marker.setPosition(position);
+                    map.setCenter(position);
+                    reverseGeocode(lat, lng);
                 }
             });
 
-            if (L.Control && L.Control.Geocoder) {
-                var geocoder = L.Control.geocoder({
-                    defaultMarkGeocode: false
-                }).on('markgeocode', function(e) {
-                    var center = e.geocode.center;
-                    map.setView(center, 15);
-                    marker.setLatLng(center);
-                    setInputs(center.lat, center.lng);
-                    if (e.geocode && e.geocode.name) {
-                        $address.val(e.geocode.name);
-                        selectCountryByName(e.geocode.name);
-                    } else {
-                        reverseGeocode(center.lat, center.lng);
-                    }
-                }).addTo(map);
-            }
-
-            // initial reverse geocode if address empty
-            if (!$address.val()) {
-                reverseGeocode(initLat, initLng);
-            }
+            initMap();
         });
     </script>
 @endpush

@@ -289,11 +289,11 @@
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <div class="heading_box mb-3">
-                                            <h3>Product Type</h3>
+                                            <h3>Product Type : {{ $product->product_type }}</h3>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-12">
+                                    <div class="col-md-12" hidden>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="product_type"
                                                 id="simple_product" value="simple"

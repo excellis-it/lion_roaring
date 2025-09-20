@@ -108,10 +108,10 @@ Route::get('clear', function () {
 });
 
 // make migration
-// Route::get('dbmigrate', function () {
-//     Artisan::call('migrate');
-//     return "Migration has been successfully";
-// });
+Route::get('dbmigrate', function () {
+    Artisan::call('migrate');
+    return "Migration has been successfully";
+});
 
 
 
@@ -557,6 +557,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/ware-houses/{warehouseId}/products/{productId}/delete', [WareHouseController::class, 'deleteProduct'])->name('ware-houses.products.delete');
     // // // on change product get product's size and colors
     Route::get('/ware-houses/products/getDetails', [WareHouseController::class, 'getProductDetails'])->name('ware-houses.products.getDetails');
+    // warehouse-products-list
+    Route::get('/warehouse-products-list/{id}/products', [WareHouseController::class, 'warehouseProductsList'])->name('ware-houses.products.list');
 
     // warehouse admin management
     Route::resource('warehouse-admins', WarehouseAdminController::class);
@@ -723,6 +725,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
 /**************************************************----------------------------ECOM--------------------------****************************************************************/
 
 Route::prefix('e-store')->group(function () {
+
     Route::get('/', [HomeController::class, 'eStore'])->name('e-store');
     Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-store.newsletter');
     Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails'])->name('e-store.product-details');

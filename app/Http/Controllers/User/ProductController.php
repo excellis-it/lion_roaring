@@ -20,6 +20,7 @@ use App\Models\EcomWishList;
 use App\Models\EstoreCart;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationImage;
+use App\Models\WarehouseProductVariation;
 
 class ProductController extends Controller
 {
@@ -265,6 +266,63 @@ class ProductController extends Controller
         //         }
         //     }
         // }
+
+        // if product_type is simple then direct create product variation without color and sizes
+        if ($product->product_type == 'simple') {
+            $variation = new ProductVariation();
+            $variation->product_id = $product->id;
+            $variation->sku = $product->sku;
+            $variation->price = $product->price;
+            $variation->stock_quantity = $product->quantity;
+            $variation->additional_info = $product->product_type;
+            $variation->save();
+
+            // Copy product images to variation images
+            $productImages = $product->images;
+            foreach ($productImages as $pImage) {
+                $variationImage = new ProductVariationImage();
+                $variationImage->product_variation_id = $variation->id;
+                $variationImage->image_path = $pImage->image;
+                $variationImage->save();
+            }
+
+            // create WarehouseProductVariation and warehouse products and warehouse product images for this variation in all warehouses
+            $warehouses = [];
+            if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+                $warehouses = WareHouse::where('is_active', 1)->get();
+            } else {
+                $warehouses = auth()->user()->warehouses;
+            }
+            foreach ($warehouses as $warehouse) {
+                $wpv = new WarehouseProductVariation();
+                $wpv->product_variation_id = $variation->id;
+                $wpv->warehouse_id = $warehouse->id;
+                $wpv->product_id = $variation->product_id;
+                $wpv->warehouse_quantity = 0;
+                $wpv->save();
+
+                // create warehouse product
+                $theWarehouseProduct = WarehouseProduct::create([
+                    'product_variation_id' => $variation->id,
+                    'product_id' => $product->id,
+                    'warehouse_id' => $warehouse->id,
+                    'sku' => $variation->sku,
+                    'price' => $variation->price,
+                    'color_id' => null,
+                    'size_id' => null,
+                    'quantity' => 0,
+                ]);
+
+                // Copy variation images to warehouse product images
+                $variationImages = $variation->images;
+                foreach ($variationImages as $vImage) {
+                    $wpImage = new WarehouseProductImage();
+                    $wpImage->warehouse_product_id = $theWarehouseProduct->id;
+                    $wpImage->image_path = $vImage->image_path;
+                    $wpImage->save();
+                }
+            }
+        }
 
 
 
@@ -639,6 +697,24 @@ class ProductController extends Controller
             $productId = $variation->product_id;
             $variation->delete();
 
+            // delete also the variation images and WarehouseProduct and WarehouseProductImage
+            $images = ProductVariationImage::where('product_variation_id', $id)->get();
+            foreach ($images as $img) {
+                if (file_exists(storage_path('app/public/' . $img->image_path))) {
+                    @unlink(storage_path('app/public/' . $img->image_path));
+                }
+                $img->delete();
+            }
+            $wpIds = WarehouseProduct::where('product_variation_id', $id)->pluck('id')->toArray();
+            $wpImages = WarehouseProductImage::whereIn('warehouse_product_id', $wpIds)->get();
+            foreach ($wpImages as $img) {
+                if (file_exists(storage_path('app/public/' . $img->image_path))) {
+                    @unlink(storage_path('app/public/' . $img->image_path));
+                }
+                $img->delete();
+            }
+            WarehouseProduct::where('product_variation_id', $id)->delete();
+
             // return redirect()->route('products.variations', $productId)->with('message', 'Product variation deleted successfully!');
             return response()->json(['message' => 'Product variation deleted successfully!']);
         } else {
@@ -665,6 +741,7 @@ class ProductController extends Controller
         ]);
 
         $product = Product::findOrFail($request->product_id);
+        $first_price = 0;
 
         foreach ($request->variation_products as $variationData) {
 
@@ -698,6 +775,14 @@ class ProductController extends Controller
                         $pvImage->save();
                     }
                 }
+            }
+
+            // Set first price for product price update for from first variation only
+            if ($first_price == 0) {
+                $first_price = $variationData['price'];
+                // save price to product price
+                $product->price = $first_price;
+                $product->save();
             }
         }
 
@@ -735,6 +820,21 @@ class ProductController extends Controller
             }
             $img->delete();
         }
+
+
+        // remove images from WarehouseProductImage by WarehouseProduct have product_variation_id
+        $wpIds = WarehouseProduct::where('product_variation_id', $variation->id)->pluck('id')->toArray();
+        $wpImages = WarehouseProductImage::whereIn('warehouse_product_id', $wpIds)
+            ->where('image_path', $targetImagePath)
+            ->get();
+
+        foreach ($wpImages as $img) {
+            if (file_exists(storage_path('app/public/' . $img->image_path))) {
+                @unlink(storage_path('app/public/' . $img->image_path));
+            }
+            $img->delete();
+        }
+
         return response()->json(['message' => 'Product variation image deleted successfully!']);
     }
 }
