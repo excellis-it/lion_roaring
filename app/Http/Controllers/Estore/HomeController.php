@@ -262,4 +262,10 @@ class HomeController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Registration successful', 'email' => $user->email]);
     }
+
+    // contact us page
+    public function contactUs()
+    {
+        return view('ecom.contact');
+    }
 }
