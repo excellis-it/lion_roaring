@@ -150,7 +150,7 @@ $(".catagory_slider").slick({
 $(".featured_slider").slick({
     autoplay: false,
     speed: 2000,
-    slidesToShow: 3,
+    slidesToShow: 6,
     slidesToScroll: 1,
     lazyLoad: "progressive",
     arrows: true,
@@ -163,7 +163,54 @@ $(".featured_slider").slick({
         {
             breakpoint: 1367,
             settings: {
-                slidesToShow: 3,
+                slidesToShow: 6,
+                slidesToScroll: 1,
+                dots: false,
+            },
+        },
+        {
+            breakpoint: 1025,
+            settings: {
+                slidesToShow: 2,
+                slidesToScroll: 1,
+                dots: false,
+            },
+        },
+        {
+            breakpoint: 769,
+            settings: {
+                slidesToShow: 2,
+                slidesToScroll: 1,
+                dots: false,
+            },
+        },
+        {
+            breakpoint: 768,
+            settings: {
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                dots: false,
+            },
+        },
+    ],
+});
+$(".featured_slider_two").slick({
+    autoplay: false,
+    speed: 2000,
+    slidesToShow: 6,
+    slidesToScroll: 1,
+    lazyLoad: "progressive",
+    arrows: true,
+    dots: false,
+    prevArrow:
+        '<div class="slick-nav prev-arrow"><i class="fa-solid fa-arrow-right-long"></i><svg><use xlink:href="#circle"></svg></div>',
+    nextArrow:
+        '<div class="slick-nav next-arrow"><i class="fa-solid fa-arrow-right-long"></i><svg><use xlink:href="#circle"></svg></div>',
+    responsive: [
+        {
+            breakpoint: 1367,
+            settings: {
+                slidesToShow: 6,
                 slidesToScroll: 1,
                 dots: false,
             },

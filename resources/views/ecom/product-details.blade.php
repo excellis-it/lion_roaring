@@ -234,32 +234,34 @@
                     <div class="tab-pane fade" id="menu1">
                         <div class="review">
                             <div class="pure_tab">
-                                <form id="review-form" action="javascript:void(0);" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product['id'] }}">
-                                    <h2>Write Your Review</h2>
-                                    <div class="rate">
-                                        <input type="radio" id="star5" name="rate" value="5" />
-                                        <label for="star5" title="text">5 stars</label>
-                                        <input type="radio" id="star4" name="rate" value="4" />
-                                        <label for="star4" title="text">4 stars</label>
-                                        <input type="radio" id="star3" name="rate" value="3" />
-                                        <label for="star3" title="text">3 stars</label>
-                                        <input type="radio" id="star2" name="rate" value="2" />
-                                        <label for="star2" title="text">2 stars</label>
-                                        <input type="radio" id="star1" name="rate" value="1" />
-                                        <label for="star1" title="text">1 star</label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label" for="review">Your Review:</label>
-                                        <textarea class="form-control" rows="5" placeholder="Your Reivew" name="review" id="review"></textarea>
-                                        <span id="reviewInfo" class="help-block pull-right ">
+                                @if (auth()->check())
+                                    <form id="review-form" action="javascript:void(0);" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product['id'] }}">
+                                        <h2>Write Your Review</h2>
+                                        <div class="rate">
+                                            <input type="radio" id="star5" name="rate" value="5" />
+                                            <label for="star5" title="text">5 stars</label>
+                                            <input type="radio" id="star4" name="rate" value="4" />
+                                            <label for="star4" title="text">4 stars</label>
+                                            <input type="radio" id="star3" name="rate" value="3" />
+                                            <label for="star3" title="text">3 stars</label>
+                                            <input type="radio" id="star2" name="rate" value="2" />
+                                            <label for="star2" title="text">2 stars</label>
+                                            <input type="radio" id="star1" name="rate" value="1" />
+                                            <label for="star1" title="text">1 star</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label" for="review">Your Review:</label>
+                                            <textarea class="form-control" rows="5" placeholder="Your Reivew" name="review" id="review"></textarea>
+                                            <span id="reviewInfo" class="help-block pull-right ">
 
-                                        </span>
-                                    </div>
-                                    <button type="submit" class="red_btn mb-5 mt-3"
-                                        style="border: none"><span>Submit</span></button>
-                                </form>
+                                            </span>
+                                        </div>
+                                        <button type="submit" class="red_btn mb-5 mt-3"
+                                            style="border: none"><span>Submit</span></button>
+                                    </form>
+                                @endif
 
                                 <div id="show-review">
                                     @include('ecom.partials.product-review', ['reviews' => $reviews])
@@ -272,19 +274,20 @@
             </div>
         </div>
     </section>
-    <section class="feature_sec">
-        <div class="pos_zi">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-xl-7">
-                        <div class="heading_hp text-center">
-                            <h2>Related products</h2>
-                            <p> </p>
+    @if (count($related_products) > 0)
+        <section class="feature_sec">
+            <div class="pos_zi">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-7">
+                            <div class="heading_hp text-center">
+                                <h2>Related products</h2>
+                                <p> </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="featured_slider">
-                    @if (count($related_products) > 0)
+                    <div class="featured_slider">
+
                         @foreach ($related_products as $related_product)
                             <div class="feature_slid_padding">
                                 <div class="feature_box">
@@ -341,11 +344,12 @@
                                 </div>
                             </div>
                         @endforeach
-                    @endif
+
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 @endsection
 
 @push('scripts')

@@ -39,16 +39,31 @@
                             </div>
                         </div>
 
-                        <!-- Shipping Address -->
-                        <div class="shipping-address mb-4">
-                            <h5>Shipping Address</h5>
-                            <div class="bg-light p-3 rounded">
-                                <p class="mb-1"><strong>{{ $order->full_name }}</strong></p>
-                                <p class="mb-1">{{ $order->email }}</p>
-                                <p class="mb-1">{{ $order->phone }}</p>
-                                <p class="mb-0">{{ $order->full_address }}</p>
+                        @if ($order->is_pickup == 1)
+                            <div class="alert alert-info">
+                                This order is marked for <strong>Pickup</strong>.
                             </div>
-                        </div>
+                            <!-- Pickup Address -->
+                            <div class="shipping-address mb-4">
+                                <h5>Pickup Address</h5>
+                                <div class="bg-light p-3 rounded">
+                                    <p class="mb-1"><strong>{{ $order->warehouse_name }}</strong></p>
+                                    <p class="mb-1">{{ $order->warehouse_address }}</p>
+
+                                </div>
+                            </div>
+                        @else
+                            <!-- Shipping Address -->
+                            <div class="shipping-address mb-4">
+                                <h5>Shipping Address</h5>
+                                <div class="bg-light p-3 rounded">
+                                    <p class="mb-1"><strong>{{ $order->full_name }}</strong></p>
+                                    <p class="mb-1">{{ $order->email }}</p>
+                                    <p class="mb-1">{{ $order->phone }}</p>
+                                    <p class="mb-0">{{ $order->full_address }}</p>
+                                </div>
+                            </div>
+                        @endif
 
                         <!-- Order Items -->
                         <div class="order-items">

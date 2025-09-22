@@ -503,6 +503,11 @@ class Helper
                 continue;
             }
 
+            // if warehouse have no warehouseProducts, skip and go to next warehouse
+            if ($wh->warehouseProducts()->count() == 0) {
+                continue;
+            }
+
             $distance = self::haversineDistance($originLat, $originLng, $wh->location_lat, $wh->location_lng);
 
             $isAuth = auth()->check();

@@ -27,10 +27,32 @@
                 <div class="col-lg-12">
                     <div class="cart_item">
 
-                      
+
                         @if ($wishlistItems->isEmpty())
-                            <div class="alert alert-info" role="alert">
-                                Your wishlist is empty.
+                            <div class="wishlist-empty text-center py-1">
+                                <div class="empty-illustration mb-3">
+                                    <i class="fa-regular fa-heart fa-4x text-muted"></i>
+                                </div>
+
+                                <h4 class="mb-2">Your wishlist is empty</h4>
+                                <p class="text-muted mb-4">Save items you love to find them quickly later.</p>
+
+                                <div class="d-flex justify-content-center gap-2 mb-3">
+                                    <a href="{{ route('e-store') }}" class="btn btn-outline-primary px-4">Continue
+                                        shopping</a>
+
+                                    @if (!auth()->check())
+                                        <a href="javascript:void(0);" data-bs-toggle="modal"
+                                            data-bs-target="#loginModalEstore" class="btn btn-primary px-4">Login to view
+                                            wishlist</a>
+                                    @else
+                                        <a href="{{ route('e-store') }}" class="btn btn-primary px-4">Browse
+                                            products</a>
+                                    @endif
+                                </div>
+
+                                <p class="small text-muted mb-0">Tip: Click the heart on any product to add it to your
+                                    wishlist.</p>
                             </div>
                         @endif
 
