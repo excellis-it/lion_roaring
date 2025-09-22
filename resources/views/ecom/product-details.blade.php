@@ -272,19 +272,20 @@
             </div>
         </div>
     </section>
-    <section class="feature_sec">
-        <div class="pos_zi">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-xl-7">
-                        <div class="heading_hp text-center">
-                            <h2>Related products</h2>
-                            <p> </p>
+    @if (count($related_products) > 0)
+        <section class="feature_sec">
+            <div class="pos_zi">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-7">
+                            <div class="heading_hp text-center">
+                                <h2>Related products</h2>
+                                <p> </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="featured_slider">
-                    @if (count($related_products) > 0)
+                    <div class="featured_slider">
+
                         @foreach ($related_products as $related_product)
                             <div class="feature_slid_padding">
                                 <div class="feature_box">
@@ -341,11 +342,12 @@
                                 </div>
                             </div>
                         @endforeach
-                    @endif
+
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 @endsection
 
 @push('scripts')

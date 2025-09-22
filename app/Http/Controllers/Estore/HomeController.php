@@ -89,15 +89,30 @@ class HomeController extends Controller
                 'new_arrival_image' => $homeCms->new_arrival_image,
                 'new_product_title' => $homeCms->new_product_title,
                 'new_product_subtitle' => $homeCms->new_product_subtitle,
+                'slider_data_second_title' => $homeCms->slider_data_second_title,
+                'slider_data_second' => $homeCms->slider_data_second,
+                'about_section_title' => $homeCms->about_section_title,
+                'about_section_image' => $homeCms->about_section_image,
+                'about_section_text_one_title' => $homeCms->about_section_text_one_title,
+                'about_section_text_one_content' => $homeCms->about_section_text_one_content,
+                'about_section_text_two_title' => $homeCms->about_section_text_two_title,
+                'about_section_text_two_content' => $homeCms->about_section_text_two_content,
+                'about_section_text_three_title' => $homeCms->about_section_text_three_title,
+                'about_section_text_three_content' => $homeCms->about_section_text_three_content,
             ];
 
             // Decode slider data
             if ($homeCms->slider_data) {
                 $sliderData = json_decode($homeCms->slider_data, true);
             }
+
+            // Decode second slider data
+            if ($homeCms->slider_data_second) {
+                $sliderDataSecond = json_decode($homeCms->slider_data_second, true);
+            }
         }
 
-        return view('ecom.home')->with(compact('categories', 'topParentCategories', 'feature_products', 'new_products', 'books', 'lockets', 'content', 'cartCount', 'sliderData'));
+        return view('ecom.home')->with(compact('categories', 'topParentCategories', 'feature_products', 'new_products', 'books', 'lockets', 'content', 'cartCount', 'sliderData', 'sliderDataSecond'));
     }
 
     public function newsletter(Request $request)

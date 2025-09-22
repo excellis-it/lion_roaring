@@ -33,8 +33,8 @@
         @stack('styles')
     </head>
 
-    <body style="background:url({{ asset('ecom_assets/images/main-bg-pattern.png')}})">
-        <main style="background:url({{ asset('ecom_assets/images/decorative-line.png')}})">
+    <body>
+        <main>
             @include('ecom.includes.header')
             @yield('content')
 

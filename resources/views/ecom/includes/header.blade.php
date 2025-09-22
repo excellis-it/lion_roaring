@@ -3,62 +3,52 @@
 @endphp
 <div class="top-bar-header">
     <div class="container-fluid">
-        <div class="top-bar-text">
-            <span class="d-block font-bold ms-3" onclick="changeLocation()" style="cursor: pointer;">My
-                Location </span>
-            @if (Auth::check())
-                @if (Auth::user()->location_lat || Auth::user()->location_lng)
-                    <span onclick="changeLocation()" class="location-icon location_btn" data-bs-toggle="tooltip"
-                        data-bs-placement="bottom" title="{{ Auth::user()->location_address }}">
-                        <i class="fa fa-map-marker text-danger me-2"
-                            aria-hidden="true"></i>{{ Str::limit(Auth::user()->location_address ?? '', 20, '...') }}
-                    </span>
-                @endif
-            @else
-                @if (session()->has('location_lat') && session()->has('location_lng'))
-                    <span onclick="changeLocation()" class="location-icon location_btn" data-bs-toggle="tooltip"
-                        data-bs-placement="bottom" title="{{ session('location_address') }}">
-                        <i class="fa fa-map-marker text-danger me-2"
-                            aria-hidden="true"></i>{{ Str::limit(session('location_address') ?? '', 20, '...') }}
-                    </span>
-                @endif
-            @endif
-        </div>
-    </div>
-</div>
-<div class="main_menu_hdr">
-    <div class="container-fluid">
-        <div class="main_menu">
-            <div class="navigation navbar">
-                <div class="left_top order-1 order-lg-1">
-                    <div class="logo">
-                        <a href="{{ route('e-store') }}" class="">
-                            <img src="{{ asset('ecom_assets/images/estore_logo.png') }}" alt="" />
-                        </a>
+        <div class="top-bar-wrepper">
+            <div class="row align-items-center">
+                <div class="col-lg-4">
+                    <div class="top-bar-text">
+                        <span class="d-block font-bold ms-3" onclick="changeLocation()" style="cursor: pointer;">My
+                            Location </span>
+
+                        @if (Auth::check())
+                            @if (Auth::user()->location_lat || Auth::user()->location_lng)
+                                <span onclick="changeLocation()" class="location-icon location_btn"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="{{ Auth::user()->location_address }}">
+                                    <i class="fa fa-map-marker text-danger me-2"
+                                        aria-hidden="true"></i>{{ Str::limit(Auth::user()->location_address ?? '', 20, '...') }}
+                                </span>
+                            @endif
+                        @else
+                            @if (session()->has('location_lat') && session()->has('location_lng'))
+                                <span onclick="changeLocation()" class="location-icon location_btn"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="{{ session('location_address') }}">
+                                    <i class="fa fa-map-marker text-danger me-2"
+                                        aria-hidden="true"></i>{{ Str::limit(session('location_address') ?? '', 20, '...') }}
+                                </span>
+                            @endif
+                        @endif
                     </div>
                 </div>
-
-                <div class="right_btm order-4 order-lg-3">
-                    <div id="cssmenu">
-                        <ul>
-
-                            <li><a href="{{ route('e-store') }}">Home</a></li>
-                            <li><a href="{{ route('e-store') }}">Category</a>
-                                {!! Helper::renderCategoryTree() !!}
-                            </li>
-                            <li><a href="{{ route('e-store.all-products') }}">Shop</a></li>
-                            <li><a href="{{ route('contact-us') }}">Contact Us</a></li>
-                        </ul>
+                <div class="col-lg-4">
+                    <div class="search-box">
+                        <form class="d-flex mx-auto">
+                            <input class="form-control me-2" type="search" placeholder="Search for products">
+                            <button class="btn search-submit" type="submit"><i class="fa fa-search"></i></button>
+                        </form>
                     </div>
                 </div>
-                <div class="right_top order-3 order-lg-4">
+                <div class="col-lg-4">
                     <div class="right_login">
                         <div class="d-flex align-items-center justify-content-end">
                             {{-- <a href="{{ route('user.profile') }}" class="back_main">back to main page</a> --}}
 
+                            <a href="{{ route('e-store.wishlist') }}" class="shoping_cart"><i
+                                    class="fa-solid fa-heart"></i></a>
+
                             <a href="{{ route('e-store.cart') }}" class="shoping_cart"><i class="fa fa-shopping-cart"
-                                    aria-hidden="true"></i><span
-                                    class="cart_count">{{ Helper::cartCount() }}</span></a>
+                                    aria-hidden="true"></i><span class="cart_count">{{ Helper::cartCount() }}</span></a>
                             <div class="profile_dropdown">
                                 <div class="dropdown">
                                     <button class="profile_img_round dropdown-toggle" type="button"
@@ -101,24 +91,60 @@
                                 </div>
                             </div>
                             <!-- <div class="icon_c ms-2">
-            <a href="" class=""><i class="fa-solid fa-user"></i></a>
-          </div>
-          <div class="icon_c ms-2">
-            <a href="" class="add_cart_active"><i class="fa-solid fa-cart-shopping"></i></a>
-          </div>
-          <div class="icon_c ms-2">
-            <a href="" class="add_cart_active"><i class="fa-solid fa-heart"></i></a>
-          </div> -->
+                                <a href="" class=""><i class="fa-solid fa-user"></i></a>
+                              </div>
+                              <div class="icon_c ms-2">
+                                <a href="" class="add_cart_active"><i class="fa-solid fa-cart-shopping"></i></a>
+                              </div>
+                              <div class="icon_c ms-2">
+                                <a href="" class="add_cart_active"><i class="fa-solid fa-heart"></i></a>
+                              </div> -->
                         </div>
                     </div>
                 </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+</div>
+<div class="main_menu_hdr">
+    <div class="container-fluid">
+        <div class="main_menu">
+            <div class="navigation navbar">
+                <div class="left_top order-1 order-lg-1">
+                    <div class="logo">
+                        <a href="{{ route('e-store') }}" class="">
+                            <img src="{{ asset('ecom_assets/images/estore_logo.png') }}" alt="" />
+                        </a>
+                    </div>
+                </div>
+
+                <div class="right_btm order-4 order-lg-3">
+                    <div id="cssmenu">
+                        <ul>
+                            <li><a href="{{ route('e-store') }}">Home</a></li>
+                            <li><a href="{{ route('e-store') }}">Category</a>
+                                {!! Helper::renderCategoryTree() !!}
+                            </li>
+                            <li><a href="{{ route('e-store.all-products') }}">Shop</a></li>
+                            <li><a href="{{ route('contact-us') }}">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!--<div class="right_top order-3 order-lg-4">-->
+
+                <!--</div>-->
             </div>
         </div>
     </div>
 </div>
 
 <!-- Location Modal -->
-<div class="modal fade" id="locationModal" tabindex="-1" aria-labelledby="locationModalLabel" aria-hidden="true">
+<div class="modal location-modal fade" id="locationModal" tabindex="-1" aria-labelledby="locationModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-3 shadow">
             <div class="modal-header">
@@ -154,11 +180,11 @@
                             }
                             return null;
                         }
-                        
+
                         // Get user's timezone based on IP address
                         $ip = $_SERVER['REMOTE_ADDR'];
                         $timezone = getTimezoneFromIp($ip);
-                        
+
                         if ($timezone) {
                             // Set the default timezone
                             date_default_timezone_set($timezone);
@@ -166,10 +192,10 @@
                             // Fallback timezone
                             date_default_timezone_set('UTC');
                         }
-                        
+
                         // Get the current hour in 24-hour format
                         $time = date('H');
-                        
+
                         // Determine greeting based on time
                         if ($time < '12') {
                             echo 'Perfect morning';

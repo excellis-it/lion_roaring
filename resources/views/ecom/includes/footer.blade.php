@@ -90,13 +90,7 @@
                     </div>
 
 
-                    <span>Follow us</span>
-                    <ul>
-                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_facebook_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-facebook"></i></a></li>
-                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_instagram_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-instagram"></i></a></li>
-                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_twitter_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-twitter"></i></a></li>
-                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_youtube_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-youtube"></i></a></li>
-                    </ul>
+
                 </div>
             </div>
 
@@ -153,9 +147,18 @@
         </div>
     </div>
     <div class="copy_right">
-        <div class="container">
-
+        <div class="container-fluid">
+            <div class="copy_right_text">
             <p> {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_copywrite_text : '' !!}</p>
+            <div class="left_ali left_logo">
+                    <ul>
+                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_facebook_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-facebook"></i></a></li>
+                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_instagram_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-instagram"></i></a></li>
+                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_twitter_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-twitter"></i></a></li>
+                        <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_youtube_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-youtube"></i></a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
     </div>

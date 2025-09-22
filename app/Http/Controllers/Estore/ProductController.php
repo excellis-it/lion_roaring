@@ -1168,16 +1168,17 @@ class ProductController extends Controller
 
         // if not auth then redirect to login
         if (!auth()->check()) {
-            return redirect()->route('home')->with('error', 'Please login to view your wishlist');
+            // return redirect()->route('home')->with('error', 'Please login to view your wishlist');
+            $wishlistItems = [];
         }
 
         $wishlistItems = EcomWishList::where('user_id', auth()->id())
             ->with('product')
             ->get();
 
-        $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 
-        return view('ecom.wishlist')->with(compact('wishlistItems', 'cartCount'));
+
+        return view('ecom.wishlist')->with(compact('wishlistItems'));
     }
 
     // Remove from wishlist
