@@ -73,6 +73,8 @@ class HomeController extends Controller
         $homeCms = EcomHomeCms::orderBy('id', 'desc')->first();
         $content = [];
         $sliderData = [];
+        $sliderDataSecond = [];
+
 
         if ($homeCms) {
             $content = [
