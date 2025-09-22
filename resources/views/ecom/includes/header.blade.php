@@ -32,11 +32,15 @@
                     </div>
                 </div>
                 <div class="col-lg-4">
-                    <div class="search-box">
-                        <form class="d-flex mx-auto">
-                            <input class="form-control me-2" type="search" placeholder="Search for products">
-                            <button class="btn search-submit" type="submit"><i class="fa fa-search"></i></button>
-                        </form>
+                    <div class="input-group border-0">
+
+                        <input id="global-search" class="form-control" type="search" autocomplete="off"
+                            placeholder="Search products..." aria-autocomplete="list" aria-expanded="false"
+                            aria-haspopup="listbox">
+                        <span class="input-group-text"
+                            style="background-color: #ff6632;border-radius: 0px 5px 5px 0px;"><i
+                                class="fa fa-search"></i></span>
+                        <div id="search-suggestions" class="search-suggestions d-none" role="listbox"></div>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -557,5 +561,81 @@
                 });
             });
         });
+    </script>
+    <script>
+        (function() {
+            const input = document.getElementById('global-search');
+            const box = document.getElementById('search-suggestions');
+            if (!input) return;
+            let timer, controller;
+
+            function hideBox() {
+                box.classList.add('d-none');
+                box.setAttribute('aria-expanded', 'false');
+            }
+
+            input.addEventListener('input', function() {
+                const q = this.value.trim();
+                clearTimeout(timer);
+                if (!q) {
+                    box.innerHTML = '';
+                    hideBox();
+                    return;
+                }
+                timer = setTimeout(() => {
+                    if (controller) controller.abort();
+                    controller = new AbortController();
+                    fetch("{{ route('e-store.live-search') }}?q=" + encodeURIComponent(q), {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            signal: controller.signal
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            if (!Array.isArray(data) || !data.length) {
+                                box.innerHTML =
+                                    '<div class="ss-empty p-2 text-muted">No matches</div>';
+                            } else {
+                                box.innerHTML = data.map(p => `
+<a class="ss-item d-flex align-items-center" href="${p.url}" role="option">
+    <img src="${p.image}" alt="${p.name}">
+    <div class="flex-grow-1">
+        <div class="ss-name">${p.name}</div>
+        <div class="ss-price">$${p.price}</div>
+    </div>
+</a>`).join('');
+                            }
+                            box.classList.remove('d-none');
+                            box.setAttribute('aria-expanded', 'true');
+                        })
+                        .catch(() => {
+                            /* ignore abort */
+                        });
+                }, 250);
+            });
+
+            document.addEventListener('click', e => {
+                if (!box.contains(e.target) && e.target !== input) hideBox();
+            });
+
+            input.addEventListener('keydown', e => {
+                const items = [...box.querySelectorAll('.ss-item')];
+                if (!items.length) return;
+                const current = document.activeElement;
+                let idx = items.indexOf(current);
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    idx = (idx + 1) % items.length;
+                    items[idx].focus();
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    idx = (idx - 1 + items.length) % items.length;
+                    items[idx].focus();
+                } else if (e.key === 'Escape') {
+                    hideBox();
+                }
+            });
+        })();
     </script>
 @endpush

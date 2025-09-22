@@ -730,6 +730,7 @@ Route::prefix('e-store')->group(function () {
     Route::post('/newsletter', [HomeController::class, 'newsletter'])->name('e-store.newsletter');
     Route::get('/product/{slug}', [EstoreProductController::class, 'productDetails'])->name('e-store.product-details');
     Route::get('/all-products', [EstoreProductController::class, 'products'])->name('e-store.all-products');
+    Route::get('/live-search', [EstoreProductController::class, 'liveSearch'])->name('e-store.live-search');
     Route::get('/products-filter', [EstoreProductController::class, 'productsFilter'])->name('e-store.products-filter');
     Route::post('/product-add-review', [EstoreProductController::class, 'productAddReview'])->name('e-store.product-add-review');
     Route::post('/add-to-cart', [EstoreProductController::class, 'addToCart'])->name('e-store.add-to-cart');

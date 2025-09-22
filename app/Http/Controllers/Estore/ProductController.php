@@ -35,6 +35,7 @@ use Stripe\PaymentIntent;
 use App\Models\EstoreRefund;
 use App\Models\ProductVariation;
 use App\Models\WarehouseProductVariation;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -1367,5 +1368,41 @@ class ProductController extends Controller
             // return response()->json(['status' => false, 'message' => 'Failed to cancel order: ' . $e->getMessage()]);
             return redirect()->back()->with('error', 'Failed to cancel order: ' . $e->getMessage());
         }
+    }
+
+    public function liveSearch(Request $request)
+    {
+        if (!$request->ajax()) {
+            abort(404);
+        }
+
+        $q = trim($request->get('q', ''));
+        if ($q === '') {
+            return response()->json([]);
+        }
+
+        $products = Product::where('is_deleted', false)
+            ->where('status', 1)
+            ->where(function ($qr) use ($q) {
+                $qr->where('name', 'LIKE', "%{$q}%")
+                    ->orWhere('short_description', 'LIKE', "%{$q}%");
+            })
+            ->with('images') // in case main_image accessor relies on relation
+            ->orderBy('id', 'desc')
+            ->limit(8)
+            ->get();
+
+        $results = $products->map(function ($p) {
+            $image = $p->main_image ? Storage::url($p->main_image) : asset('ecom_assets/images/placeholder.png');
+            return [
+                'id'    => $p->id,
+                'name'  => $p->name,
+                'price' => number_format($p->price, 2),
+                'image' => $image,
+                'url'   => route('e-store.product-details', $p->slug),
+            ];
+        });
+
+        return response()->json($results);
     }
 }
