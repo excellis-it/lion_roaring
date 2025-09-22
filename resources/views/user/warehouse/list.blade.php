@@ -29,7 +29,7 @@
                             <th>Name</th>
                             <th>Address</th>
                             <th>Warehouse Admins</th>
-                            <th>Products Count</th>
+
                             <th>Status</th>
                             @if (Auth::user()->hasRole('SUPER ADMIN'))
                                 <th>Actions</th>
@@ -51,20 +51,14 @@
                                     @endforeach
                                 </td>
 
-                                <td class="text-center">
-                                    <a href="{{ route('ware-houses.products.list', $wareHouse->id) }}"
-                                        class="btn btn-sm btn-primary" style="max-height: 30px; line-height:15px;">
-                                        <span
-                                            class="badge bg-secondary rounded-pill">{{ $wareHouse->products->count() ?? 0 }}</span>
-                                    </a>
 
-
-
-                                </td>
                                 <td>{{ $wareHouse->is_active ? 'Active' : 'Inactive' }}</td>
                                 @if (Auth::user()->hasRole('SUPER ADMIN'))
                                     <td class="d-flex">
-
+                                        <a href="{{ route('ware-houses.products.list', $wareHouse->id) }}"
+                                            class="edit_icon me-2" title="View Products">
+                                            <i class="fa-solid fa-box"></i>
+                                        </a>
                                         <a href="{{ route('ware-houses.edit', $wareHouse->id) }}" class="edit_icon me-2">
                                             <i class="fa-solid fa-edit"></i>
                                         </a>

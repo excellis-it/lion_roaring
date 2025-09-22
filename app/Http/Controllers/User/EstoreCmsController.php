@@ -86,27 +86,28 @@ class EstoreCmsController extends Controller
     public function homeCmsUpdate(Request $request)
     {
         if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
-            $request->validate([
-                'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'banner_image_small' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'product_category_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'featured_product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'new_product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'new_arrival_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'banner_title' => 'nullable|string',
-                'banner_subtitle' => 'nullable|string',
-                'product_category_title' => 'required|string',
-                'product_category_subtitle' => 'required|string',
-                'featured_product_title' => 'required|string',
-                'featured_product_subtitle' => 'required|string',
-                'new_arrival_title' => 'required|string',
-                'new_arrival_subtitle' => 'required|string',
-                'new_product_title' => 'required|string',
-                'new_product_subtitle' => 'required|string',
-                'slider_titles.*' => 'nullable|string|max:255',
-                'slider_subtitles.*' => 'nullable|string|max:500',
-                'slider_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            ]);
+            // return $request->all();
+            // $request->validate([
+            //     'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            //     'banner_image_small' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            //     'product_category_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            //     'featured_product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            //     'new_product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            //     'new_arrival_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            //     'banner_title' => 'nullable|string',
+            //     'banner_subtitle' => 'nullable|string',
+            //     'product_category_title' => 'required|string',
+            //     'product_category_subtitle' => 'required|string',
+            //     'featured_product_title' => 'required|string',
+            //     'featured_product_subtitle' => 'required|string',
+            //     'new_arrival_title' => 'required|string',
+            //     'new_arrival_subtitle' => 'required|string',
+            //     'new_product_title' => 'required|string',
+            //     'new_product_subtitle' => 'required|string',
+            //     'slider_titles.*' => 'nullable|string|max:255',
+            //     'slider_subtitles.*' => 'nullable|string|max:500',
+            //     'slider_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            // ]);
 
             if ($request->id) {
                 $cms = EcomHomeCms::find($request->id);
@@ -116,35 +117,27 @@ class EstoreCmsController extends Controller
                 $message = 'Home CMS added successfully';
             }
 
-            $cms->banner_title = $request->banner_title ?? '';
-            $cms->banner_subtitle = $request->banner_subtitle ?? '';
-            $cms->product_category_title = $request->product_category_title;
-            $cms->product_category_subtitle = $request->product_category_subtitle;
-            $cms->featured_product_title = $request->featured_product_title;
-            $cms->featured_product_subtitle = $request->featured_product_subtitle;
-            $cms->new_product_title = $request->new_product_title;
-            $cms->new_product_subtitle = $request->new_product_subtitle;
-            $cms->new_arrival_title = $request->new_arrival_title;
-            $cms->new_arrival_subtitle = $request->new_arrival_subtitle;
 
-            // Handle slider data
+
+            ///////// section 1: Top Banner Slider Management //////////
+
             if ($request->has('slider_titles') && $request->has('slider_subtitles')) {
                 $sliderData = [];
                 $titles = $request->slider_titles;
                 $subtitles = $request->slider_subtitles;
+                $links = $request->slider_links ?? [];
+                $buttons = $request->slider_buttons ?? [];
                 $images = $request->file('slider_images') ?? [];
-
-                // Get existing slider data if updating
                 $existingSliders = $cms->slider_data ? json_decode($cms->slider_data, true) : [];
-
                 foreach ($titles as $index => $title) {
                     if (!empty($title)) {
                         $slideData = [
                             'title' => $title,
                             'subtitle' => $subtitles[$index] ?? '',
+                            'link' => $links[$index] ?? '',
+                            'button' => $buttons[$index] ?? '',
                             'image' => null
                         ];
-
                         // Handle image upload
                         if (isset($images[$index])) {
                             $slideData['image'] = $this->imageUpload($images[$index], 'slider_images');
@@ -152,13 +145,71 @@ class EstoreCmsController extends Controller
                             // Keep existing image if no new image uploaded
                             $slideData['image'] = $existingSliders[$index]['image'];
                         }
-
                         $sliderData[] = $slideData;
                     }
                 }
-
                 $cms->slider_data = json_encode($sliderData);
             }
+
+            ///////// section 2: Featured Product //////////
+            $cms->featured_product_title = $request->featured_product_title ?? '';
+            $cms->featured_product_subtitle = $request->featured_product_subtitle ?? '';
+
+            ///////// section 3: Second Banner Slider Management //////////
+            $cms->slider_data_second_title = $request->slider_data_second_title ?? '';
+
+            if ($request->has('slider_titles_second') && $request->has('slider_subtitles_second')) {
+                $sliderDataSecond = [];
+                $titles = $request->slider_titles_second;
+                $subtitles = $request->slider_subtitles_second;
+                $links = $request->slider_links_second ?? [];
+                $buttons = $request->slider_buttons_second ?? [];
+                $images = $request->file('slider_images_second') ?? [];
+                $existingSliders = $cms->slider_data_second ? json_decode($cms->slider_data_second, true) : [];
+                foreach ($titles as $index => $title) {
+                    if (!empty($title)) {
+                        $slideDataSecond = [
+                            'title' => $title,
+                            'subtitle' => $subtitles[$index] ?? '',
+                            'link' => $links[$index] ?? '',
+                            'button' => $buttons[$index] ?? '',
+                            'image' => null
+                        ];
+                        // Handle image upload
+                        if (isset($images[$index])) {
+                            $slideDataSecond['image'] = $this->imageUpload($images[$index], 'slider_images');
+                        } elseif (isset($existingSliders[$index]['image'])) {
+                            // Keep existing image if no new image uploaded
+                            $slideDataSecond['image'] = $existingSliders[$index]['image'];
+                        }
+                        $sliderDataSecond[] = $slideDataSecond;
+                    }
+                }
+                $cms->slider_data_second = json_encode($sliderDataSecond);
+            }
+
+            ///////// section 4: New Product //////////
+            $cms->new_product_title = $request->new_product_title;
+            $cms->new_product_subtitle = $request->new_product_subtitle;
+
+            ///////// section 5: About Section Management //////////
+            $cms->about_section_title = $request->about_section_title;
+            $cms->about_section_image = $request->hasFile('about_section_image') ? $this->imageUpload($request->file('about_section_image'), 'ecom_cms') : $cms->about_section_image;
+            $cms->about_section_text_one_title = $request->about_section_text_one_title;
+            $cms->about_section_text_one_content = $request->about_section_text_one_content;
+            $cms->about_section_text_two_title = $request->about_section_text_two_title;
+            $cms->about_section_text_two_content = $request->about_section_text_two_content;
+            $cms->about_section_text_three_title = $request->about_section_text_three_title;
+            $cms->about_section_text_three_content = $request->about_section_text_three_content;
+
+            ///////// others
+
+            $cms->banner_title = $request->banner_title ?? '';
+            $cms->banner_subtitle = $request->banner_subtitle ?? '';
+            $cms->product_category_title = $request->product_category_title;
+            $cms->product_category_subtitle = $request->product_category_subtitle;
+            $cms->new_arrival_title = $request->new_arrival_title;
+            $cms->new_arrival_subtitle = $request->new_arrival_subtitle;
 
             if ($request->hasFile('banner_image')) {
                 $cms->banner_image = $this->imageUpload($request->file('banner_image'), 'ecom_cms');
