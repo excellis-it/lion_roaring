@@ -58,31 +58,50 @@
                 </div>
                 <div class="col-md-8">
                     <div class="form-area-wrepper">
-                        <div class="row">
-                            <div class="col-lg-6 mb-4">
-                                <label for="" class="form-label">First Name: </label>
-                                <input type="text" class="form-control" aria-label="First name" placeholder="First Name">
+                        <form action="{{ route('contact-us.form') }}" id="contact-us" method="POST">
+                            @csrf
+                            <div class="row">
+
+                                <div class="col-lg-6 mb-4">
+                                    <label for="" class="form-label">First Name: </label>
+                                    <input name="first_name" type="text" class="form-control" aria-label="First name"
+                                        placeholder="First Name">
+                                </div>
+                                <div class="col-lg-6 mb-4">
+                                    <label for="" class="form-label">Last Name: </label>
+                                    <input name="last_name" type="text" class="form-control" aria-label="Last name"
+                                        placeholder="Last Name">
+                                </div>
+                                <div class="col-lg-6 mb-4">
+                                    <label for="" class="form-label">Email: </label>
+                                    <input name="email" type="email" class="form-control" aria-label="email"
+                                        placeholder="Email">
+                                </div>
+                                <div class="col-lg-6 mb-4">
+                                    <label for="" class="form-label">Phone Number: </label>
+                                    <input name="phone" type="tel" class="form-control" aria-label="Phone"
+                                        placeholder="Phone Number">
+                                </div>
+                                <div class="col-lg-12 mb-4">
+                                    <label for="" class="form-label">Type Your Message: </label>
+                                    <textarea name="message" class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                        placeholder="Type Your Message..."></textarea>
+                                </div>
+                                <!-- Inside your <form> -->
+                                <div class="col-xl-12 text-center mb-3">
+                                    <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                                    <span class="text-danger" id="g-recaptcha-response_error"></span>
+                                </div>
+                                <div class="col-lg-12">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                                @if (session('success'))
+                                    <div class="alert alert-success mt-4">
+                                        {{ session('success') }}
+                                    </div>
+                                @endif
                             </div>
-                            <div class="col-lg-6 mb-4">
-                                <label for="" class="form-label">Last Name: </label>
-                                <input type="text" class="form-control" aria-label="Last name" placeholder="Last Name">
-                            </div>
-                            <div class="col-lg-6 mb-4">
-                                <label for="" class="form-label">Email: </label>
-                                <input type="email" class="form-control" aria-label="email" placeholder="Email">
-                            </div>
-                            <div class="col-lg-6 mb-4">
-                                <label for="" class="form-label">Phnone Number: </label>
-                                <input type="tel" class="form-control" aria-label="Phone" placeholder="Phnone Number">
-                            </div>
-                            <div class="col-lg-12 mb-4">
-                                <label for="" class="form-label">Type Your Massege: </label>
-                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Type Your Massege..."></textarea>
-                            </div>
-                            <div class="col-lg-12">
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -136,3 +155,56 @@
 
 
 @endsection
+
+@push('scripts')
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+       
+        $(document).ready(function() {
+            $('#contact-us').on('submit', function(e) {
+                var recaptchaResponse = grecaptcha.getResponse();
+                if (recaptchaResponse.length === 0) {
+                    e.preventDefault(); // Prevent form submission
+                    $('#g-recaptcha-response_error').text('Please verify that you are not a robot.');
+                } else {
+                    $('#g-recaptcha-response_error').text(''); // Clear any previous error message
+
+                    e.preventDefault();
+                    var form = $(this);
+                    var url = form.attr('action');
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: form.serialize(),
+                        success: function(response) {
+                            // window.location.reload();
+                            // clear form fields and toastr success message
+                            form[0].reset();
+                            toastr.success(response.message);
+                            console.log(response);
+                            window.location.reload();
+                        },
+                        error: function(xhr) {
+                            $('.text-danger').html('');
+                            var errors = xhr.responseJSON.errors;
+                            $.each(errors, function(key, value) {
+                                if (key.includes('.')) {
+                                    var fieldName = key.split('.')[0];
+                                    // Display errors for array fields
+                                    var num = key.match(/\d+/)[0];
+                                    $('#' + fieldName + '_' + num).html(
+                                        value[0]);
+                                } else {
+                                    console.log(key + '_error');
+                                    // after text danger span
+                                    $('#' + key + '_error').html(value[0]);
+                                }
+                            });
+                        }
+                    });
+
+                }
+            });
+        });
+    </script>
+@endpush
