@@ -169,7 +169,7 @@ class ProductController extends Controller
         } else {
             $category = null;
         }
-        $products = $products->orderBy('id', 'DESC')->limit(12)->get();
+        $products = $products->orderBy('id', 'DESC')->limit(12)->lazy();
         // dd($products);
 
         $products_count  = $products->count();

@@ -22,12 +22,7 @@
                             <h2>{{ $category_name ?? 'Our Collection' }}</h2>
                         @endif
 
-                        <nav>
-                            <ol class="cd-breadcrumb custom-separator">
-                               {!! \App\Helpers\Helper::renderBreadcrumbs($category ?? null) !!}
 
-                            </ol>
-                        </nav>
                     </div>
                 </div>
 
@@ -53,6 +48,17 @@
 
 
             </div>
+        </div>
+    </section>
+
+    <section class="my-5 ">
+        <div class="container-fluid">
+            <nav>
+                <ol class="cd-breadcrumb custom-separator">
+                   {!! \App\Helpers\Helper::renderBreadcrumbs($category ?? null) !!}
+
+                </ol>
+            </nav>
         </div>
     </section>
 

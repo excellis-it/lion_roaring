@@ -7,7 +7,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-4">
                     <div class="top-bar-text">
-                        <span class="d-block font-bold ms-3" onclick="changeLocation()" style="cursor: pointer;">My
+                        <span class="d-block font-bold" onclick="changeLocation()" style="cursor: pointer;">My
                             Location </span>
 
                         @if (Auth::check())
@@ -114,7 +114,7 @@
         </div>
     </div>
 </div>
-<div class="main_menu_hdr">
+<div class="main_menu_hdr page-header">
     <div class="container-fluid">
         <div class="main_menu">
             <div class="navigation navbar">
@@ -170,7 +170,7 @@
         <div class="modal-content">
             <div class="modal-body login_bg_sec border-top-0">
                 <div class="heading_hp">
-                    <h2 id="greeting">
+                    <h2 class="text-center" id="greeting">
                         <?php
                         function getTimezoneFromIp($ip)
                         {

@@ -333,6 +333,22 @@
     </section>
 
 
+    <section class="news-letter" id="News-letter" style="background-image:url('{{ asset('ecom_assets/images/banner_big.jpg') }}');">
+      <div class="news ">
+        <div class="container position-relative z-1">
+          <h2 class="news-heading">Subscribe To Get The Latest News About Us</h2>
+          <p class="des how-de">Get the Latest news about digital Marketing to Your Pocket, drop your <br> email below to
+            get daliy update about us</p>
+
+          <form action="">
+            <input type="email" required placeholder="Enter your email address">
+            <button class="bt">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+
 @endsection
 
 @push('scripts')
