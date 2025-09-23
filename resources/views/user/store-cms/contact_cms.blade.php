@@ -59,20 +59,20 @@
                         <input type="text" name="card_three_content"
                             value="{{ old('card_three_content', $cms->card_three_content ?? '') }}" class="form-control" />
                     </div>
-                    <div class="col-md-6 mb-3">
+                    {{-- <div class="col-md-6 mb-3">
                         <label class="form-label">Call Section Title</label>
                         <input type="text" name="call_section_title"
                             value="{{ old('call_section_title', $cms->call_section_title ?? '') }}" class="form-control" />
-                    </div>
+                    </div> --}}
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Follow Us Title</label>
                         <input type="text" name="follow_us_title"
                             value="{{ old('follow_us_title', $cms->follow_us_title ?? '') }}" class="form-control" />
                     </div>
-                    <div class="col-md-12 mb-3">
+                    {{-- <div class="col-md-12 mb-3">
                         <label class="form-label">Call Section Content</label>
                         <textarea name="call_section_content" class="form-control" rows="4">{{ old('call_section_content', $cms->call_section_content ?? '') }}</textarea>
-                    </div>
+                    </div> --}}
                     <div class="col-md-12 mb-3">
                         <label class="form-label">Map Iframe Src</label>
                         <textarea name="map_iframe_src" class="form-control" rows="2" placeholder="Paste Google Maps iframe src URL only">{{ old('map_iframe_src', $cms->map_iframe_src ?? '') }}</textarea>
