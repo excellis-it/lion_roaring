@@ -513,6 +513,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/store-cms-page/{page}', [EstoreCmsController::class, 'cms'])->name('user.store-cms.edit');
     Route::post('/store-cms/home/update', [EstoreCmsController::class, 'homeCmsUpdate'])->name('user.store-cms.home.update');
     Route::post('/store-cms/footer/update', [EstoreCmsController::class, 'footerUpdate'])->name('user.store-cms.footer.update');
+    // contact cms (e-store contact page)
+    Route::get('/store-cms/contact', [EstoreCmsController::class, 'contactCms'])->name('user.store-cms.contact');
+    Route::post('/store-cms/contact/update', [EstoreCmsController::class, 'contactCmsUpdate'])->name('user.store-cms.contact.update');
     Route::get('/store-orders/list', [EstoreCmsController::class, 'ordersList'])->name('user.store-orders.list');
     Route::get('/store-orders/fetch-data', [EstoreCmsController::class, 'fetchOrdersData'])->name('user.store-orders.fetch-data');
     Route::get('/store-orders/details/{id}', [EstoreCmsController::class, 'orderDetails'])->name('user.store-orders.details');

@@ -66,8 +66,18 @@
                                                         class="edit_icon me-2"> <i class="ti ti-edit"></i></a>
                                                 </td>
                                             </tr>
+                                            <tr>
+                                                <td>
+                                                    3
+                                                </td>
+                                                <td>Contact Page</td>
+                                                <td>
+                                                    <a href="{{ route('user.store-cms.contact') }}" class="edit_icon me-2">
+                                                        <i class="ti ti-edit"></i></a>
+                                                </td>
+                                            </tr>
                                             @php
-                                                $count = 3;
+                                                $count = 4;
                                             @endphp
                                             @if (count($pages) > 0)
                                                 @foreach ($pages as $key => $page)
@@ -83,7 +93,8 @@
 
                                                                 <a href="javascript:void(0);"
                                                                     data-route="{{ route('user.store-cms.delete', ['id' => $page->id]) }}"
-                                                                    class="delete_icon" id="delete"> <i class="fa-solid fa-trash"></i> </a>
+                                                                    class="delete_icon" id="delete"> <i
+                                                                        class="fa-solid fa-trash"></i> </a>
                                                             </div>
 
 
@@ -105,26 +116,26 @@
 @endsection
 
 @push('scripts')
-<script>
-    $(document).on('click', '#delete', function(e) {
-        swal({
-                title: "Are you sure?",
-                text: "To remove this page from the CMS",
-                type: "warning",
-                confirmButtonText: "Yes",
-                showCancelButton: true
-            })
-            .then((result) => {
-                if (result.value) {
-                    window.location = $(this).data('route');
-                } else if (result.dismiss === 'cancel') {
-                    swal(
-                        'Cancelled',
-                        'Your stay here :)',
-                        'error'
-                    )
-                }
-            })
-    });
-</script>
+    <script>
+        $(document).on('click', '#delete', function(e) {
+            swal({
+                    title: "Are you sure?",
+                    text: "To remove this page from the CMS",
+                    type: "warning",
+                    confirmButtonText: "Yes",
+                    showCancelButton: true
+                })
+                .then((result) => {
+                    if (result.value) {
+                        window.location = $(this).data('route');
+                    } else if (result.dismiss === 'cancel') {
+                        swal(
+                            'Cancelled',
+                            'Your stay here :)',
+                            'error'
+                        )
+                    }
+                })
+        });
+    </script>
 @endpush
