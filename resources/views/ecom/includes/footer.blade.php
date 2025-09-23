@@ -46,7 +46,7 @@
                     <ul>
                         <li><a href="{{ route('e-store') }}">Home</a></li>
                         <li><a href="{{ route('e-store.all-products') }}">Our Collections</a></li>
-                        <li><a href="{{ route('contact-us') }}">Contact us</a></li>
+                        <li><a href="{{ route('e-store.contact') }}">Contact us</a></li>
                         @if (Helper::getCmsPages() && count(Helper::getCmsPages()) > 0)
                             @foreach (Helper::getCmsPages() as $page)
                                 <li><a href="{{ route($page->slug . '.e-store.cms-page') }}">{{ $page->page_name }}</a>
