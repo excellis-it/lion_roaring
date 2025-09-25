@@ -353,6 +353,7 @@ class ProductController extends Controller
             $wareHouse = Warehouse::find($warehouseProduct->warehouse_id);
 
             $wareHouseProductPrice = $warehouseProduct->price ?? 0;
+            $isFree = $product->is_free ?? false;
 
             // Check if product already exists in cart
             if ($isAuth) {
@@ -371,6 +372,10 @@ class ProductController extends Controller
             if ($existingCart) {
                 // Update quantity instead of creating new entry
                 $existingCart->quantity += $request->quantity;
+                if ($isFree) {
+                    $existingCart->old_price = $existingCart->price; // keep previous stored
+                    $existingCart->price = 0;
+                }
                 $existingCart->save();
                 return response()->json([
                     'status' => true,
@@ -403,7 +408,8 @@ class ProductController extends Controller
             $cart->size_id = $sizeId;
             $cart->color_id = $colorId;
             $cart->quantity = $request->quantity;
-            $cart->price = $wareHouseProductPrice;
+            $cart->old_price = $wareHouseProductPrice;
+            $cart->price = $isFree ? 0 : $wareHouseProductPrice;
             $cart->session_id = $userSessionId;
             $cart->save();
 
@@ -689,10 +695,10 @@ class ProductController extends Controller
             $cart->other_charges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
         });
 
-        // Calculate subtotal safely
+        // Calculate subtotal safely (cart->price already adjusted for free products)
         $subtotal = $carts->sum(function ($cart) {
-            $price = $cart->warehouseProduct->price ?? 0;
-            return ($price * $cart->quantity) + ($cart->other_charges ?? 0);
+            $unitPrice = $cart->price ?? ($cart->warehouseProduct->price ?? 0);
+            return ($unitPrice * $cart->quantity) + ($cart->other_charges ?? 0);
         });
 
         $shippingCost = $deliveryCost = $taxAmount = 0;
@@ -727,23 +733,23 @@ class ProductController extends Controller
         DB::beginTransaction();
 
         try {
-            Stripe::setApiKey(env('STRIPE_SECRET'));
+            $paymentIntent = null;
+            if ($totalAmount > 0) {
+                Stripe::setApiKey(env('STRIPE_SECRET'));
+                $paymentIntent = PaymentIntent::create([
+                    'amount' => round($totalAmount * 100), // cents
+                    'currency' => 'usd',
+                    'payment_method' => $request->payment_method_id,
+                    'payment_method_types' => ['card'],
+                    'confirmation_method' => 'manual',
+                    'confirm' => true,
+                    'receipt_email' => $request->email,
+                ]);
 
-            $paymentIntent = PaymentIntent::create([
-                'amount' => round($totalAmount * 100), // cents
-                'currency' => 'usd',
-                'payment_method' => $request->payment_method_id,
-                'payment_method_types' => ['card'],
-                'confirmation_method' => 'manual',
-                'confirm' => true,
-                'receipt_email' => $request->email,
-            ]);
-
-
-
-            if ($paymentIntent->status !== 'succeeded') {
-                DB::rollback();
-                return response()->json(['status' => false, 'message' => 'Payment failed']);
+                if ($paymentIntent->status !== 'succeeded') {
+                    DB::rollback();
+                    return response()->json(['status' => false, 'message' => 'Payment failed']);
+                }
             }
 
             $warehouseId = $carts->first()->warehouse_id ?? null;
@@ -788,7 +794,7 @@ class ProductController extends Controller
                     'warehouse_id' => $cart->warehouse_id,
                     'product_name' => $cart->product->name ?? 'Unknown Product',
                     'product_image' => $cart->product->main_image ?? null,
-                    'price' => $cart->warehouseProduct->price ?? 0,
+                    'price' => $cart->price ?? ($cart->warehouseProduct->price ?? 0),
                     'quantity' => $cart->quantity,
                     'size_id' => $cart->size_id,
                     'color_id' => $cart->color_id,
@@ -803,7 +809,7 @@ class ProductController extends Controller
                         ]) ?? []
                     ),
 
-                    'total' => (($cart->warehouseProduct?->price ?? 0) * $cart->quantity) + ($cart->other_charges ?? 0),
+                    'total' => ((($cart->price ?? ($cart->warehouseProduct?->price ?? 0))) * $cart->quantity) + ($cart->other_charges ?? 0),
 
                 ]);
 
@@ -862,21 +868,23 @@ class ProductController extends Controller
                 }
             }
 
-            EstorePayment::create([
-                'order_id' => $order->id,
-                'stripe_payment_intent_id' => $paymentIntent->id,
-                'payment_method' => 'stripe',
-                'payment_type' => $request->payment_type,
-                'amount' => $totalAmount,
-                'currency' => 'USD',
-                'status' => 'succeeded',
-                'payment_details' => [
-                    'payment_intent_id' => $paymentIntent->id,
-                    'amount_received' => $paymentIntent->amount_received,
-                    'currency' => $paymentIntent->currency,
-                ],
-                'paid_at' => now()
-            ]);
+            if ($paymentIntent) {
+                EstorePayment::create([
+                    'order_id' => $order->id,
+                    'stripe_payment_intent_id' => $paymentIntent->id,
+                    'payment_method' => 'stripe',
+                    'payment_type' => $request->payment_type,
+                    'amount' => $totalAmount,
+                    'currency' => 'USD',
+                    'status' => 'succeeded',
+                    'payment_details' => [
+                        'payment_intent_id' => $paymentIntent->id,
+                        'amount_received' => $paymentIntent->amount_received,
+                        'currency' => $paymentIntent->currency,
+                    ],
+                    'paid_at' => now()
+                ]);
+            }
 
             $checkoutUrl = route('e-store.order-success', $order->id);
             EstoreCart::where('user_id', auth()->id())->delete();

@@ -176,6 +176,20 @@
                                             @endif
                                         </div>
                                     </div>
+                                    {{-- is_free --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label for="is_free" class=""> Free Product</label>
+                                            <div class="form-check form-switch mt-3">
+                                                <label class="form-check-label" for="is_free">Mark as Free (Price becomes
+                                                    0)</label>
+                                                <input class="form-check-input mt-3" style="width: 60px; height: 30px;" type="checkbox" role="switch"
+                                                    id="is_free" name="is_free" value="1"
+                                                    {{ old('is_free') ? 'checked' : '' }}>
+
+                                            </div>
+                                        </div>
+                                    </div>
                                     {{-- status --}}
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
@@ -428,6 +442,17 @@
                     var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
                     $('#slug').val(slug);
                 });
+
+                function togglePriceFields() {
+                    const isFree = $('#is_free').is(':checked');
+                    if (isFree) {
+                        $('#price').prop('disabled', true).val('0');
+                    } else {
+                        $('#price').prop('disabled', false);
+                    }
+                }
+                $('#is_free').on('change', togglePriceFields);
+                togglePriceFields();
 
 
             });

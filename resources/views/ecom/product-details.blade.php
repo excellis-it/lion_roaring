@@ -94,7 +94,12 @@
                         {{ $product->short_description }}
                     </div>
                     <div class="price my-2 warehouse-product-price-div">
-                        $<span id="warehouse-product-price">{{ $wareHouseHaveProductVariables?->price ?? '' }}</span></div>
+                        @if ($product->is_free ?? false)
+                            <span class="badge bg-success">FREE</span>
+                        @else
+                            $<span id="warehouse-product-price">{{ $wareHouseHaveProductVariables?->price ?? '' }}</span>
+                        @endif
+                    </div>
                     <div class=" mb-2">
                         <div class="theme-text subtitle">Description:</div>
                         <div class="subtitle p-descrition-text">
@@ -357,6 +362,8 @@
 
 @push('scripts')
     <script>
+        // Flag from backend whether this product is free
+        const IS_FREE_PRODUCT = {{ $product->is_free ?? false ? 'true' : 'false' }};
         $(document).ready(function() {
             $(document).on('submit', '#review-form', function() {
                 var formData = $(this).serialize();
@@ -525,25 +532,31 @@
                             });
                         }
 
-                        // if stock quantity is available
-                        if (response.data.quantity > 0 && response.data.price > 0) {
+                        // If stock quantity available; for free product ignore price check
+                        if (response.data.quantity > 0 && (IS_FREE_PRODUCT || response.data.price > 0)) {
                             $("#qty-div").show();
                             $("#out-of-stock-message").hide();
                             $(".cart-btns").show();
+                            // Keep price (or FREE badge) visible
                             $(".warehouse-product-price-div").show();
 
                         } else {
                             $("#qty-div").hide();
                             $("#out-of-stock-message").show();
                             $(".cart-btns").hide();
-                            $(".warehouse-product-price-div").hide();
+                            // Only hide price area if not free product
+                            if (!IS_FREE_PRODUCT) {
+                                $(".warehouse-product-price-div").hide();
+                            }
                         }
                     } else {
                         toastr.error(response.message);
                         $("#qty-div").hide();
                         $("#out-of-stock-message").show();
                         $(".cart-btns").hide();
-                        $(".warehouse-product-price-div").hide();
+                        if (!IS_FREE_PRODUCT) {
+                            $(".warehouse-product-price-div").hide();
+                        }
                     }
                 },
                 error: function(xhr, status, error) {

@@ -193,6 +193,10 @@ class ProductController extends Controller
         $product->price = $request->price;
         $product->slug = $request->slug;
         $product->feature_product = $request->feature_product;
+        $product->is_free = $request->has('is_free');
+        if ($product->is_free) {
+            $product->price = 0;
+        }
         $product->save();
 
         if ($request->hasFile('image')) {
@@ -434,6 +438,10 @@ class ProductController extends Controller
             $product->slug = $request->slug;
             $product->feature_product = $request->feature_product;
             $product->status = $request->status;
+            $product->is_free = $request->has('is_free');
+            if ($product->is_free) {
+                $product->price = 0;
+            }
             $product->save();
 
             if ($request->hasFile('image')) {

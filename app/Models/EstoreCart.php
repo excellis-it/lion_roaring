@@ -17,6 +17,8 @@ class EstoreCart extends Model
         'size_id',
         'color_id',
         'quantity',
+        'price',
+        'old_price',
         'session_id',
     ];
 

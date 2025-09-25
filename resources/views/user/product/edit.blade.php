@@ -231,6 +231,21 @@
                                             @endif
                                         </div>
                                     </div>
+                                    {{-- is_free --}}
+                                    {{-- <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label for="is_free" class="d-block"> Free Product</label>
+                                            <div class="form-check form-switch">
+                                                <label class="form-check-label" for="is_free">Mark as Free (Price becomes
+                                                    0)</label>
+                                                <input class="form-check-input mt-3" style="width: 60px; height: 30px;"
+                                                    type="checkbox" role="switch" id="is_free" name="is_free"
+                                                    value="1"
+                                                    {{ old('is_free', $product->is_free) ? 'checked' : '' }}>
+
+                                            </div>
+                                        </div>
+                                    </div> --}}
                                     {{-- status --}}
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
@@ -544,6 +559,30 @@
                 const variableProductRadio = document.getElementById('variable_product');
                 const simpleProductSection = document.getElementById('simple-product-section');
                 const variableProductSection = document.getElementById('variable-product-section');
+                const isFreeCheckbox = document.getElementById('is_free');
+                const priceInput = document.getElementById('price');
+
+                function togglePriceFields() {
+                    if (!priceInput) return;
+                    const isFree = isFreeCheckbox && isFreeCheckbox.checked;
+                    if (isFree) {
+                        priceInput.disabled = true;
+                        priceInput.value = '0';
+                        document.querySelectorAll('[name^="warehouse_products"][name$="[price]"]').forEach(inp => {
+                            inp.disabled = true;
+                            inp.value = inp.value || 0
+                        });
+                    } else {
+                        priceInput.disabled = false;
+                        document.querySelectorAll('[name^="warehouse_products"][name$="[price]"]').forEach(inp => {
+                            inp.disabled = false;
+                        });
+                    }
+                }
+                if (isFreeCheckbox) {
+                    isFreeCheckbox.addEventListener('change', togglePriceFields);
+                    togglePriceFields();
+                }
 
                 simpleProductRadio.addEventListener('change', function() {
                     simpleProductSection.style.display = 'block';

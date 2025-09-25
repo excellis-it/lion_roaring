@@ -299,4 +299,10 @@ class HomeController extends Controller
     {
         return view('ecom.change-password');
     }
+
+    // orderTracking
+    public function orderTracking()
+    {
+        return view('ecom.order-tracking');
+    }
 }

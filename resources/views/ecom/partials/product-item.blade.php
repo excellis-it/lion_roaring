@@ -7,6 +7,9 @@
         <div class="col-xl-3 col-lg-4 col-md-4 mb-4 productitem">
             <div class="feature_box">
                 <div class="feature_img">
+                    @if (($product['is_free'] ?? false) || ($product->is_free ?? false))
+                        <span class="badge bg-success position-absolute" style="top:10px;left:10px;z-index:9">FREE</span>
+                    @endif
                     <div class="wishlist_icon" data-id="{{ $product['id'] }}">
                         <a href="javascript:void(0);"><i
                                 class="fa-solid fa-heart {{ $product['is_in_wishlist'] ? 'text-danger' : '' }}"></i></a>
@@ -23,25 +26,30 @@
                     <p>{{ strlen($product['short_description']) > 50 ? substr($product['short_description'], 0, 50) . '...' : $product['short_description'] }}
                     </p>
                     <div class="d-flex justify-content-between">
-                    <span class="price_text">${{ $product['price'] }}</span>
-                    <ul class="star_ul">
-                        @if (Helper::getTotalProductRating($product['id']))
-                            @for ($i = 1; $i <= 5; $i++)
-                                <li><i
-                                        class="fa-{{ $i <= Helper::getTotalProductRating($product['id']) ? 'solid' : 'regular' }} fa-star"></i>
-                                </li>
-                            @endfor
+                        @if (($product['is_free'] ?? false) || ($product->is_free ?? false))
+                            <p class="mb-1"><strong>Free</strong></p>
                         @else
-                            <li><i class="fa-regular fa-star"></i></li>
-                            <li><i class="fa-regular fa-star"></i></li>
-                            <li><i class="fa-regular fa-star"></i></li>
-                            <li><i class="fa-regular fa-star"></i></li>
-                            <li><i class="fa-regular fa-star"></i></li>
+                            {{-- existing price display (omitted) --}}
                         @endif
+                        <span class="price_text">${{ $product['price'] }}</span>
+                        <ul class="star_ul">
+                            @if (Helper::getTotalProductRating($product['id']))
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <li><i
+                                            class="fa-{{ $i <= Helper::getTotalProductRating($product['id']) ? 'solid' : 'regular' }} fa-star"></i>
+                                    </li>
+                                @endfor
+                            @else
+                                <li><i class="fa-regular fa-star"></i></li>
+                                <li><i class="fa-regular fa-star"></i></li>
+                                <li><i class="fa-regular fa-star"></i></li>
+                                <li><i class="fa-regular fa-star"></i></li>
+                                <li><i class="fa-regular fa-star"></i></li>
+                            @endif
 
-                        <li>({{ Helper::getRatingCount($product['id']) ? Helper::getRatingCount($product['id']) : 0 }})
-                        </li>
-                    </ul>
+                            <li>({{ Helper::getRatingCount($product['id']) ? Helper::getRatingCount($product['id']) : 0 }})
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 {{-- <a class="red_btn w-100"
