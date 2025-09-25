@@ -1,6 +1,6 @@
 <div class="filter_resilt">
-    <div class="row">
-        <div class="col-md-6">
+    <div class="row align-items-center">
+        <div class="col-lg-8 col-md-8">
             <div class="filter_res_text" id="count-product">
                 @include('ecom.partials.count-product', [
                     'products_count' => $products_count,
@@ -10,7 +10,7 @@
 
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-lg-4 col-md-4">
             <div class="d-flex justify-content-end">
                 <div class="">
                     <select class="latest_filter" name="latest_filter" id="latest_filter">
@@ -23,7 +23,7 @@
         </div>
     </div>
 </div>
-<div class="row mx-3" id="products">
+<div class="row" id="products">
     @include('ecom.partials.product-item', ['products' => $products, 'products_count' => $products_count])
     <div id="loading" style="display: none; ">
         <div style="justify-content: center; align-items: center; display:flex">

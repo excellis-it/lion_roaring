@@ -19,9 +19,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8">
-                    <div class="order-details-card">
+                    <div class="order-details-card p-4">
                         <!-- Order Header -->
-                        <div class="order-header bg-light p-4 rounded mb-4">
+                        <div class="order-header bg-light rounded mb-4">
                             <div class="row">
                                 <div class="col-md-6">
                                     <h4>Order #{{ $order->order_number }}</h4>
@@ -56,7 +56,7 @@
                             <!-- Shipping Address -->
                             <div class="shipping-address mb-4">
                                 <h5>Shipping Address</h5>
-                                <div class="bg-light p-3 rounded">
+                                <div class="bg-light rounded">
                                     <p class="mb-1"><strong>{{ $order->full_name }}</strong></p>
                                     <p class="mb-1">{{ $order->email }}</p>
                                     <p class="mb-1">{{ $order->phone }}</p>
@@ -103,7 +103,7 @@
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="order-summary">
+                    <div class="order-summary p-4">
                         <!-- Order Summary -->
                         <div class="bill_details">
                             <h4>Order Summary</h4>
@@ -120,7 +120,7 @@
                                     <li>Shipping</li>
                                     <li>${{ number_format($order->shipping_amount, 2) }}</li>
                                 </ul> --}}
-                                <hr />
+                                
                                 <div class="total_payable">
                                     <div class="total_payable_l">Total</div>
                                     <div class="total_payable_r">${{ number_format($order->total_amount, 2) }}</div>
@@ -215,7 +215,7 @@
                         @endif
 
                         <!-- Actions -->
-                        <div class="order-actions mt-4">
+                        <div class="order-actions mt-2">
                             <a href="{{ route('e-store.my-orders') }}" class="red_btn w-100 mb-2">
                                 <span>Back to Orders</span>
                             </a>

@@ -4,8 +4,8 @@
 <footer class="footer_sec">
     <div class="container-fluid position-relative z-1">
         <div class="row">
-            <div class="col-lg-3 col-md-6">
-                <div class="left_logo me-0 me-xl-5">
+            <div class="col-lg-6 col-md-12">
+                <div class="left_logo left_logo_top me-0 me-xl-5">
                     {{-- <div class="ftr_logo mb-3">
                         <img src="{{ Helper::getFooterCms() ? Storage::url(Helper::getFooterCms()->footer_logo) : asset('ecom_assets/images/logo.png') }}"
                             alt="logo" />
@@ -40,9 +40,28 @@
                 </div>
             </div>
 
-            <div class="col-lg-2">
-                <div class="ftr_line_link">
-                    <h4>Quick Link</h4>
+            <div class="col-lg-6">
+                <div class="news-letter" id="News-letter" style="background-color:#202d4d;">
+                    <div class="news ">
+                        <div class="container position-relative z-1">
+                            <h2 class="news-heading text-left">Latest News</h2>
+                            <p class="des how-de">Get the Latest news about digital Marketing to Your Pocket, drop your</p>
+                            <form action="{{ route('e-store.newsletter') }}" method="post" id="submit-newsletter-home">
+                                @csrf
+                                <input type="email" required placeholder="Enter your email address" name="newsletter_email"
+                                    id="newsletter_email_home" />
+                                <button type="submit" class="bt">Subscribe</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="copy_right">
+        <div class="container-fluid">
+            <div class="copy_right_text">
+                            <div class="ftr_line_link">
                     <ul>
                         <li><a href="{{ route('e-store') }}">Home</a></li>
                         <li><a href="{{ route('e-store.all-products') }}">Our Collections</a></li>
@@ -54,101 +73,7 @@
                             @endforeach
                         @endif
                     </ul>
-                </div>
             </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="left_ali left_logo">
-                    <h4>Contact Us</h4>
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="icon_map">
-                            <span><i class="fa-solid fa-location-dot"></i></span>
-                        </div>
-                        <div class="ftr_text_h">
-                            <p><b>{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_address_title : '' !!}
-
-                                </b><br>
-                                {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_address : '' !!}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="icon_map">
-                            <span><i class="fa-solid fa-phone"></i></span>
-                        </div>
-                        <div class="ftr_text_h">
-                            <a href="javascript:void(0);">{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_phone_number : '' !!}</a>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="icon_map">
-                            <span><i class="fa-solid fa-envelope"></i></span>
-                        </div>
-                        <div class="ftr_text_h">
-                            <a href="javascript:void(0);">{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_email : '' !!}</a>
-                        </div>
-                    </div>
-
-
-
-                </div>
-            </div>
-
-            <div class="col-lg-3">
-                <div class="find-us left_ali">
-                    <h4>
-                        {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_newsletter_title : '' !!}
-                    </h4>
-                    <div class="ftr-frm">
-                        <form action="{{ route('e-store.newsletter') }}" method="post" id="submit-newsletter">
-                            @csrf
-                            <div class="row">
-                                <div class="form-group col-lg-6 col-md-12">
-                                    <input size="40" class="form-control" id="newsletter_name"
-                                        placeholder="Full Name" value="" type="text" name="newsletter_name">
-                                    <span class="text-danger" id="newsletter_name_error"></span>
-                                </div>
-                                <div class="form-group col-lg-6 col-md-12">
-                                    <input class="form-control" placeholder="Email ADDRESS" id="newsletter_email"
-                                        value="" type="email" name="newsletter_email">
-                                    <span class="text-danger" id="newsletter_email_error"></span>
-                                </div>
-                                <div class="form-group col-12">
-                                    <textarea cols="40" rows="3" class="form-control" id="newsletter_message" placeholder="Message"
-                                        name="newsletter_message"></textarea>
-                                    <span class="text-danger" id="newsletter_message_error"></span>
-                                </div>
-                            </div>
-                            <div class="main-btn">
-                                <input class="red_btn_submit ecom-submit" type="submit" value="Submit" />
-                            </div>
-                        </form>
-                        {{-- <form action="">
-                            <div class="row">
-                                <div class="form-group col-lg-6 col-md-12">
-                                    <input type="text" class="form-control" id="" value=""
-                                        placeholder="FULL NAME" required="" />
-                                </div>
-                                <div class="form-group col-lg-6 col-md-12">
-                                    <input type="text" class="form-control" id="" value=""
-                                        placeholder="EMAIL ID" required="" />
-                                </div>
-                                <div class="form-group col-12">
-                                    <textarea class="form-control" id="" placeholder="YOUR MESSAGE" rows="3"></textarea>
-                                </div>
-                            </div>
-                            <div class="main-btn">
-                                <input class="red_btn_submit" type="submit" value="Submit" />
-                            </div>
-                        </form> --}}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="copy_right">
-        <div class="container-fluid">
-            <div class="copy_right_text">
             <p> {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_copywrite_text : '' !!}</p>
             <div class="left_ali left_logo">
                     <ul>

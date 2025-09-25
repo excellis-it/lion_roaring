@@ -21,7 +21,7 @@
     <section class="form-sec common-padd">
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-lg-4">
                     <div class="contact-card-wprepper">
                         <div class="con-card text-center">
                             <div class="icon"><i class="fa-regular fa-envelope"></i></div>
@@ -56,7 +56,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-lg-8">
                     <div class="form-area-wrepper">
                         <form action="{{ route('contact-us.form') }}" id="contact-us" method="POST">
                             @csrf

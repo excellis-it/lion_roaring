@@ -42,8 +42,8 @@
     </section>
 
 
-    <section class="catagory_sec product_details">
-        <div class="container py-5">
+    <section class="catagory_sec product_details common-padd">
+        <div class="container">
             <div class="row details-snippet1 justify-content-between">
                 <div class="col-md-5" id="product-images-section">
                     <div class="slider_left">
@@ -95,9 +95,9 @@
                     </div>
                     <div class="price my-2 warehouse-product-price-div">
                         $<span id="warehouse-product-price">{{ $wareHouseHaveProductVariables?->price ?? '' }}</span></div>
-                    <div class="d-flex mb-2">
+                    <div class=" mb-2">
                         <div class="theme-text subtitle">Description:</div>
-                        <div class="subtitle ms-2">
+                        <div class="subtitle p-descrition-text">
                             {!! $product->description !!}
                         </div>
                     </div>
@@ -212,7 +212,7 @@
                 </div>
             </div>
         </div>
-        <div class="container py-5">
+        <div class="container">
             <div class="additional-details my-5 text-left">
                 <!-- Nav pills -->
                 <ul class="nav nav-tabs justify-content-start">
@@ -276,8 +276,8 @@
     </section>
     @if (count($related_products) > 0)
         <section class="feature_sec">
+            <div class="container-fluid">
             <div class="pos_zi">
-                <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-xl-7">
                             <div class="heading_hp text-center">
@@ -327,9 +327,9 @@
                                         <p>{{ strlen($related_product->short_description) > 50 ? substr($related_product->short_description, 0, 50) . '...' : $related_product->short_description }}
                                         </p>
                                         <span class="price_text">$ {{ $related_product->price }}</span>
-                                    </div>
-                                    <div class="addtocart" data-id="{{ $related_product->id }}">
-                                        <a href="javascript:void(0);">
+                                        
+                                        <div class="addtocart add-to-cart" data-id="{{ $related_product->id }}">
+                                        <a class="add-butn" href="javascript:void(0);">
                                             @php
                                                 $relatedCartItem = \App\Models\EstoreCart::where(
                                                     'user_id',
@@ -341,6 +341,8 @@
                                             {{ $relatedCartItem ? 'View Cart' : 'ADD TO CART' }}
                                         </a>
                                     </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
                         @endforeach

@@ -221,7 +221,7 @@
   top: 17px;
   height: 0;
 }
-@media all and (max-width: 768px), only screen and (-webkit-min-device-pixel-ratio: 2) and (max-width: 768px), only screen and (min--moz-device-pixel-ratio: 2) and (max-width: 768px), only screen and (-o-min-device-pixel-ratio: 2/1) and (max-width: 768px), only screen and (min-device-pixel-ratio: 2) and (max-width: 768px), only screen and (min-resolution: 192dpi) and (max-width: 768px), only screen and (min-resolution: 2dppx) and (max-width: 768px) {
+@media all and (max-width: 992px), only screen and (-webkit-min-device-pixel-ratio: 2) and (max-width: 992px), only screen and (min--moz-device-pixel-ratio: 2) and (max-width: 992px), only screen and (-o-min-device-pixel-ratio: 2/1) and (max-width: 992px), only screen and (min-device-pixel-ratio: 2) and (max-width: 992px), only screen and (min-resolution: 192dpi) and (max-width: 992px), only screen and (min-resolution: 2dppx) and (max-width: 992px) {
   #cssmenu {
     width: 100%;
   }
@@ -298,8 +298,8 @@
     display: block;
     height: 8px;
     width: 20px;
-    border-top: 2px solid var(--black-color);
-    border-bottom: 2px solid var(--black-color);
+    border-top: 2px solid var(--white-color);
+    border-bottom: 2px solid var(--white-color);
     content: '';
   }
   #cssmenu #menu-button:before {
@@ -309,7 +309,7 @@
     display: block;
     height: 2px;
     width: 20px;
-    background: var(--black-color);
+    background: var(--white-color);
     content: '';
   }
   #cssmenu #menu-button.menu-opened:after {
@@ -385,6 +385,9 @@
   }
   #cssmenu .submenu-button.submenu-opened:before {
     display: none;
+  }
+  #cssmenu ul li a, #cssmenu ul ul li a{
+      color: var(--text-color);
   }
 }
 @media all and (max-width: 768px){

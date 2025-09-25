@@ -51,11 +51,11 @@
             if (settings.sticky === true) cssmenu.css("position", "fixed");
 
             resizeFix = function () {
-                if ($(window).width() > 768) {
+                if ($(window).width() > 992) {
                     cssmenu.find("ul").show();
                 }
 
-                if ($(window).width() <= 768) {
+                if ($(window).width() <= 992) {
                     cssmenu.find("ul").hide().removeClass("open");
                 }
             };
@@ -144,6 +144,7 @@ $(".catagory_slider").slick({
                 dots: false,
             },
         },
+     
     ],
 });
 
@@ -161,7 +162,7 @@ $(".featured_slider").slick({
         '<div class="slick-nav next-arrow"><i class="fa-solid fa-arrow-right-long"></i><svg><use xlink:href="#circle"></svg></div>',
     responsive: [
         {
-            breakpoint: 1367,
+            breakpoint: 1900,
             settings: {
                 slidesToShow: 6,
                 slidesToScroll: 1,
@@ -169,9 +170,17 @@ $(".featured_slider").slick({
             },
         },
         {
+            breakpoint: 1700,
+            settings: {
+                slidesToShow: 4,
+                slidesToScroll: 1,
+                dots: false,
+            },
+        },
+        {
             breakpoint: 1025,
             settings: {
-                slidesToShow: 2,
+                slidesToShow: 3,
                 slidesToScroll: 1,
                 dots: false,
             },
@@ -208,7 +217,7 @@ $(".featured_slider_two").slick({
         '<div class="slick-nav next-arrow"><i class="fa-solid fa-arrow-right-long"></i><svg><use xlink:href="#circle"></svg></div>',
     responsive: [
         {
-            breakpoint: 1367,
+            breakpoint: 1900,
             settings: {
                 slidesToShow: 6,
                 slidesToScroll: 1,
@@ -216,9 +225,17 @@ $(".featured_slider_two").slick({
             },
         },
         {
+            breakpoint: 1700,
+            settings: {
+                slidesToShow: 4,
+                slidesToScroll: 1,
+                dots: false,
+            },
+        },
+        {
             breakpoint: 1025,
             settings: {
-                slidesToShow: 2,
+                slidesToShow: 3,
                 slidesToScroll: 1,
                 dots: false,
             },
@@ -942,12 +959,23 @@ $(document).on("click", ".remove-from-wishlist", function (e) {
 
 
 
+$('.search-toggle').addClass('closed');
+
+$('.search-toggle .search-icon').click(function(e) {
+  if ($('.search-toggle').hasClass('closed')) {
+    $('.search-toggle').removeClass('closed').addClass('opened');
+    $('.search-toggle, .search-container').addClass('opened');
+    $('#search-terms').focus();
+  } else {
+    $('.search-toggle').removeClass('opened').addClass('closed');
+    $('.search-toggle, .search-container').removeClass('opened');
+  }
+});
 
 
 
 
-
-
+// =========================sticky header===================================
 const header = document.querySelector(".page-header");
 const toggleClass = "is-sticky";
 
@@ -959,8 +987,6 @@ window.addEventListener("scroll", () => {
     header.classList.remove(toggleClass);
   }
 });
-
-
 
 
 
