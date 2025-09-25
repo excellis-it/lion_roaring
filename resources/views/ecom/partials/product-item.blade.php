@@ -27,11 +27,11 @@
                     </p>
                     <div class="d-flex justify-content-between">
                         @if (($product['is_free'] ?? false) || ($product->is_free ?? false))
-                            <p class="mb-1"><strong>Free</strong></p>
+                            <span class="price_text"><strong>Free</strong></span>
                         @else
-                            {{-- existing price display (omitted) --}}
+                             <span class="price_text">${{ $product['price'] }}</span>
                         @endif
-                        <span class="price_text">${{ $product['price'] }}</span>
+
                         <ul class="star_ul">
                             @if (Helper::getTotalProductRating($product['id']))
                                 @for ($i = 1; $i <= 5; $i++)
