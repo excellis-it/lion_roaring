@@ -45,11 +45,12 @@
                     <div class="news ">
                         <div class="container position-relative z-1">
                             <h2 class="news-heading text-left">Latest News</h2>
-                            <p class="des how-de">Get the Latest news about digital Marketing to Your Pocket, drop your</p>
+                            <p class="des how-de">Get the Latest news about digital Marketing to Your Pocket, drop your
+                            </p>
                             <form action="{{ route('e-store.newsletter') }}" method="post" id="submit-newsletter-home">
                                 @csrf
-                                <input type="email" required placeholder="Enter your email address" name="newsletter_email"
-                                    id="newsletter_email_home" />
+                                <input type="email" required placeholder="Enter your email address"
+                                    name="newsletter_email" id="newsletter_email_home" />
                                 <button type="submit" class="bt">Subscribe</button>
                             </form>
                         </div>
@@ -61,10 +62,11 @@
     <div class="copy_right">
         <div class="container-fluid">
             <div class="copy_right_text">
-                            <div class="ftr_line_link">
+                <div class="ftr_line_link">
                     <ul>
                         <li><a href="{{ route('e-store') }}">Home</a></li>
                         <li><a href="{{ route('e-store.all-products') }}">Our Collections</a></li>
+                        <li><a href="{{ route('e-store.order-tracking') }}">Track Order</a></li>
                         <li><a href="{{ route('e-store.contact') }}">Contact us</a></li>
                         @if (Helper::getCmsPages() && count(Helper::getCmsPages()) > 0)
                             @foreach (Helper::getCmsPages() as $page)
@@ -73,9 +75,9 @@
                             @endforeach
                         @endif
                     </ul>
-            </div>
-            <p> {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_copywrite_text : '' !!}</p>
-            <div class="left_ali left_logo">
+                </div>
+                <p> {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_copywrite_text : '' !!}</p>
+                <div class="left_ali left_logo">
                     <ul>
                         <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_facebook_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-facebook"></i></a></li>
                         <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_instagram_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-instagram"></i></a></li>

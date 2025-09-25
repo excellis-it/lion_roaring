@@ -301,8 +301,14 @@ class HomeController extends Controller
     }
 
     // orderTracking
-    public function orderTracking()
+    public function orderTracking(Request $request)
     {
-        return view('ecom.order-tracking');
+        $order = null;
+        if ($request->filled('order_number')) {
+            $order = \App\Models\EstoreOrder::with(['payments'])
+                ->where('order_number', $request->order_number)
+                ->first();
+        }
+        return view('ecom.order-tracking', compact('order'));
     }
 }
