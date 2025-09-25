@@ -20,6 +20,11 @@ class EstoreCart extends Model
         'price',
         'old_price',
         'session_id',
+        'meta',
+    ];
+
+    protected $casts = [
+        'meta' => 'array',
     ];
 
     public function product()

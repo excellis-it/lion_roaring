@@ -572,27 +572,63 @@ class ProductController extends Controller
         $isAuth = auth()->check();
         $userSessionId = session()->getId();
 
-        $carts = $isAuth ? EstoreCart::where('user_id', auth()->id())->with('product.otherCharges')->get() : EstoreCart::where('session_id', $userSessionId)->with('product.otherCharges')->get();
+        $carts = $isAuth
+            ? EstoreCart::where('user_id', auth()->id())->with(['product.otherCharges', 'warehouseProduct'])
+            ->get()
+            : EstoreCart::where('session_id', $userSessionId)->with(['product.otherCharges', 'warehouseProduct'])
+            ->get();
         $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
 
         $total = 0;
+        $hasChanges = false; // flag if any price changed or stock issue
 
         foreach ($carts as $cart) {
-            // Check if cart quantity exceeds available stock
-            if ($cart->warehouseProduct && $cart->quantity > $cart->warehouseProduct->quantity) {
-                // Update cart quantity to match available stock
-                $cart->quantity = $cart->warehouseProduct->quantity;
+            $warehouseProduct = $cart->warehouseProduct;
+            $currentWarehousePrice = $warehouseProduct?->price ?? 0;
+            $availableQty = $warehouseProduct?->quantity ?? 0;
+            // Build meta locally to avoid indirect modification issue
+            $meta = [
+                'price_changed' => false,
+                'out_of_stock' => false,
+                'original_price' => $cart->price,
+                'current_price' => $currentWarehousePrice,
+            ];
+
+            // Detect price change (ignore free products where price forced to 0)
+            if (($cart->price ?? 0) != $currentWarehousePrice && !($cart->product?->is_free)) {
+                // Update cart price in DB so subsequent calculations are correct
+                $cart->old_price = $cart->price;
+                $cart->price = $currentWarehousePrice;
                 $cart->save();
-                $quantityUpdated = true;
+                $meta['price_changed'] = true;
+                $hasChanges = true;
             }
-            // Calculate other charges for this cart item
+
+            // Stock validation: if no stock or quantity exceeds available
+            if ($availableQty <= 0) {
+                $meta['out_of_stock'] = true;
+                $hasChanges = true;
+            } elseif ($cart->quantity > $availableQty) {
+                // Reduce quantity to available
+                $cart->quantity = $availableQty;
+                $cart->save();
+                $hasChanges = true;
+            }
+
+            // Recalculate other charges
             $otherCharges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
 
-            $cart->subtotal = ($cart->warehouseProduct->price ?? 0) * $cart->quantity + ($otherCharges ?? 0);
-            $total += $cart->subtotal;
+            // Subtotal only if not out_of_stock
+            if (!$meta['out_of_stock']) {
+                $cart->subtotal = ($cart->price ?? 0) * $cart->quantity + ($otherCharges ?? 0);
+                $total += $cart->subtotal;
+            } else {
+                $cart->subtotal = 0;
+            }
+            // Assign meta at end
+            $cart->setAttribute('meta', $meta);
         }
-
-        return view('ecom.cart')->with(compact('carts', 'total', 'cartCount'));
+        return view('ecom.cart')->with(compact('carts', 'total', 'cartCount', 'hasChanges'));
     }
 
     // checkout page
@@ -603,7 +639,7 @@ class ProductController extends Controller
         }
 
         $carts = EstoreCart::where('user_id', auth()->id())
-            ->with('product.otherCharges')
+            ->with(['product.otherCharges', 'warehouseProduct'])
             ->get();
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 
@@ -617,11 +653,34 @@ class ProductController extends Controller
         $subtotal = 0;
         $cartItems = [];
 
+        $hasChanges = false;
         foreach ($carts as $cart) {
-            // Calculate other charges for this cart item
-            $otherCharges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
-            $itemSubtotal = (($cart->warehouseProduct->price ?? 0) * $cart->quantity) + $otherCharges;
+            $warehouseProduct = $cart->warehouseProduct;
+            $currentWarehousePrice = $warehouseProduct?->price ?? 0;
+            $availableQty = $warehouseProduct?->quantity ?? 0;
 
+            $priceChanged = false;
+            $outOfStock = false;
+
+            if (($cart->price ?? 0) != $currentWarehousePrice && !($cart->product?->is_free)) {
+                $cart->old_price = $cart->price;
+                $cart->price = $currentWarehousePrice;
+                $cart->save();
+                $priceChanged = true;
+                $hasChanges = true;
+            }
+
+            if ($availableQty <= 0) {
+                $outOfStock = true;
+                $hasChanges = true;
+            } elseif ($cart->quantity > $availableQty) {
+                $cart->quantity = $availableQty;
+                $cart->save();
+                $hasChanges = true;
+            }
+
+            $otherCharges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
+            $itemSubtotal = $outOfStock ? 0 : ((($cart->price ?? 0) * $cart->quantity) + $otherCharges);
             $subtotal += $itemSubtotal;
 
             $cartItems[] = [
@@ -629,10 +688,14 @@ class ProductController extends Controller
                 'product_id' => $cart->product_id,
                 'product_name' => $cart->product->name ?? '',
                 'product_image' => $cart->product->main_image ?? '',
-                'price' => $cart->warehouseProduct->price ?? 0,
+                'price' => $cart->price ?? 0,
                 'quantity' => $cart->quantity,
                 'other_charges' => $otherCharges,
-                'subtotal' => $itemSubtotal
+                'subtotal' => $itemSubtotal,
+                'price_changed' => $priceChanged,
+                'out_of_stock' => $outOfStock,
+                'original_price' => $cart->old_price ?? null,
+                'current_price' => $cart->price ?? 0,
             ];
         }
 
@@ -655,7 +718,7 @@ class ProductController extends Controller
         $total = $subtotal + $shippingCost + $deliveryCost + $taxAmount;
 
 
-        return view('ecom.checkout')->with(compact('cartItems', 'subtotal', 'shippingCost', 'deliveryCost', 'taxAmount', 'total', 'cartCount', 'estoreSettings'));
+        return view('ecom.checkout')->with(compact('cartItems', 'subtotal', 'shippingCost', 'deliveryCost', 'taxAmount', 'total', 'cartCount', 'estoreSettings', 'hasChanges'));
     }
 
     // Process checkout
@@ -682,7 +745,7 @@ class ProductController extends Controller
 
         $is_pickup = $request->order_method ?? 0;
 
-        $carts = EstoreCart::where('user_id', auth()->id())->with('product', 'warehouseProduct')->get();
+        $carts = EstoreCart::where('user_id', auth()->id())->with(['product.otherCharges', 'warehouseProduct'])->get();
 
         if ($carts->isEmpty()) {
             return response()->json(['status' => false, 'message' => 'Your cart is empty']);
@@ -690,16 +753,42 @@ class ProductController extends Controller
 
         $estoreSettings = EstoreSetting::first();
 
-        // Attach other charges safely
-        $carts->each(function ($cart) {
-            $cart->other_charges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
-        });
+        // Revalidate price & stock just before order placement
+        $hasBlockingStockIssue = false;
+        $recalculatedSubtotal = 0;
+        foreach ($carts as $cart) {
+            $warehouseProduct = $cart->warehouseProduct;
+            $currentWarehousePrice = $warehouseProduct?->price ?? 0;
+            $availableQty = $warehouseProduct?->quantity ?? 0;
 
-        // Calculate subtotal safely (cart->price already adjusted for free products)
-        $subtotal = $carts->sum(function ($cart) {
-            $unitPrice = $cart->price ?? ($cart->warehouseProduct->price ?? 0);
-            return ($unitPrice * $cart->quantity) + ($cart->other_charges ?? 0);
-        });
+            // Update price if changed (except free products)
+            if (($cart->price ?? 0) != $currentWarehousePrice && !($cart->product?->is_free)) {
+                $cart->old_price = $cart->price;
+                $cart->price = $currentWarehousePrice;
+                $cart->save();
+            }
+
+            // Stock validation
+            if ($availableQty <= 0) {
+                $hasBlockingStockIssue = true;
+                $cart->rejected_reason = 'out_of_stock';
+                continue; // Skip subtotal contribution
+            } elseif ($cart->quantity > $availableQty) {
+                $cart->quantity = $availableQty;
+                $cart->save();
+            }
+
+            $cart->other_charges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
+            $unitPrice = $cart->price ?? ($currentWarehousePrice);
+            $recalculatedSubtotal += ($unitPrice * $cart->quantity) + ($cart->other_charges ?? 0);
+        }
+        $subtotal = $recalculatedSubtotal;
+        if ($subtotal <= 0 && $hasBlockingStockIssue) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Some items are out of stock. Please review your cart before proceeding.'
+            ], 422);
+        }
 
         $shippingCost = $deliveryCost = $taxAmount = 0;
 
