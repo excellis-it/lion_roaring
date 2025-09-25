@@ -7,6 +7,12 @@
 @endsection
 
 @push('styles')
+    <style>
+        .list-group-item {
+            background-color: #202d4d;
+            color: #fff;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -21,32 +27,8 @@
                         @else
                             <h2>{{ $category_name ?? 'Our Collection' }}</h2>
                         @endif
-
-
                     </div>
                 </div>
-
-                {{-- <div class="featured_slider">
-                    @if (count($childCategoriesList) > 0)
-                        @foreach ($childCategoriesList as $category)
-                            <div class="feature_slid_padding">
-                                <div class="feature_box">
-                                    <div class="feature_img">
-                                        <a href="{{ route($category->slug . '.e-store.page') }}"><img
-                                                src="{{ Storage::url($category->image) }}" /></a>
-                                    </div>
-                                    <div class="feature_text text-white">
-                                        <a class="text-white text-center"
-                                            href="{{ route($category->slug . '.e-store.page') }}">{{ $category->name }}</a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    @endif
-
-                </div> --}}
-
-
             </div>
         </div>
     </section>
@@ -55,8 +37,7 @@
         <div class="container-fluid">
             <nav>
                 <ol class="cd-breadcrumb custom-separator">
-                   {!! \App\Helpers\Helper::renderBreadcrumbs($category ?? null) !!}
-
+                    {!! \App\Helpers\Helper::renderBreadcrumbs($category ?? null) !!}
                 </ol>
             </nav>
         </div>
@@ -80,167 +61,94 @@
                                 </button>
                             </div>
                         </div>
-                        @if ($category_id != '')
-                            <div class="padding_filter">
-                                <div class="accordion" id="agegroup">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="headingAgeChG">
-                                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#collapseAge" aria-expanded="true"
-                                                aria-controls="collapseAge">
-                                                Category - {{ $category_name }}
-                                            </button>
-                                        </h2>
-                                        <div id="collapseAgeChg" class="accordion-collapse collapse show"
-                                            aria-labelledby="headingAgeChg" data-bs-parent="#agegroup">
-                                            <div class="accordion-body">
-                                                <div class="new">
+                        <div class="padding_filter">
+                            <div class="accordion" id="categoryTreeAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingCategories">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseCategories" aria-expanded="true"
+                                            aria-controls="collapseCategories">
+                                            Categories
+                                        </button>
+                                    </h2>
+                                    <div id="collapseCategories" class="accordion-collapse collapse show"
+                                        aria-labelledby="headingCategories" data-bs-parent="#categoryTreeAccordion">
+                                        <div class="accordion-body">
+                                            <div class="category-tree" id="category-tree">
+                                                @php
+                                                    $selectedCategoryIds = (array) ($category_id ? [$category_id] : []);
+                                                    $renderCategory = function ($cat, $level = 0) use (
+                                                        &$renderCategory,
+                                                        $selectedCategoryIds,
+                                                    ) {
+                                                        $hasChildren = $cat->children && $cat->children->count();
+                                                        $isChecked = in_array($cat->id, $selectedCategoryIds)
+                                                            ? 'checked'
+                                                            : '';
+                                                        $html =
+                                                            '<li class="list-group-item category-node d-flex align-items-start" data-category-id="' .
+                                                            $cat->id .
+                                                            '">';
+                                                        if ($hasChildren) {
+                                                            $html .=
+                                                                '<button type="button" class="btn btn-sm btn-light toggle-children me-2" data-state="collapsed" aria-label="Expand children" style="padding:2px 6px;">+</button>';
+                                                        } else {
+                                                            $html .=
+                                                                '<span class="me-2" style="width:18px;display:inline-block;"></span>';
+                                                        }
+                                                        $html .= '<div class="form-check">';
+                                                        $html .=
+                                                            '<input class="form-check-input category-checkbox" type="checkbox" id="cat-' .
+                                                            $cat->id .
+                                                            '" value="' .
+                                                            $cat->id .
+                                                            '" ' .
+                                                            $isChecked .
+                                                            ' />';
+                                                        $html .=
+                                                            '<label class="form-check-label ms-1" for="cat-' .
+                                                            $cat->id .
+                                                            '">' .
+                                                            e($cat->name) .
+                                                            '</label>';
+                                                        $html .= '</div>';
+                                                        if ($hasChildren) {
+                                                            $html .=
+                                                                '<ul class="list-group children mt-2 ms-4" style="display:none;" data-parent-id="' .
+                                                                $cat->id .
+                                                                '">';
+                                                            foreach ($cat->children as $child) {
+                                                                $html .= $renderCategory($child, $level + 1);
+                                                            }
+                                                            $html .= '</ul>';
+                                                        }
+                                                        $html .= '</li>';
+                                                        return $html;
+                                                    };
+                                                @endphp
 
-                                                    @if (count($childCategoriesList) > 0)
-                                                        @foreach ($childCategoriesList as $category)
-                                                            <div class="form-group">
-                                                                <input type="checkbox" id="catagory{{ $category->id }}"
-                                                                    name="category_id" value="{{ $category->id }}">
-                                                                <label
-                                                                    for="catagory{{ $category->id }}">{{ $category->name }}</label>
-                                                            </div>
-                                                        @endforeach
-                                                    @endif
+                                                <ul class="list-group">
+                                                    @foreach ($categories as $rootCat)
+                                                        {!! $renderCategory($rootCat, 0) !!}
+                                                    @endforeach
+                                                </ul>
 
-                                                </div>
                                             </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        @else
-                            <div class="padding_filter">
-                                <div class="accordion" id="agegroup">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="headingAge">
-                                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#collapseAge" aria-expanded="true"
-                                                aria-controls="collapseAge">
-                                                Categories
-                                            </button>
-                                        </h2>
-                                        <div id="collapseAge" class="accordion-collapse collapse show"
-                                            aria-labelledby="headingAge" data-bs-parent="#agegroup">
-                                            <div class="accordion-body">
-                                                <div class="new">
-
-                                                    @if (count($categories) > 0)
-                                                        @foreach ($categories as $category)
-                                                            <div class="form-group">
-                                                                <input type="checkbox" id="catagory{{ $category->id }}"
-                                                                    name="category_id" value="{{ $category->id }}">
-                                                                <label
-                                                                    for="catagory{{ $category->id }}">{{ $category->name }}</label>
-                                                            </div>
-                                                        @endforeach
-                                                    @endif
-
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-
-
-
-                        {{-- <div class="padding_filter">
-                        <div class="accordion" id="price">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingPrice">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapsePrice" aria-expanded="false" aria-controls="collapsePrice">
-                                        Price
-                                    </button>
-                                </h2>
-                                <div id="collapsePrice" class="accordion-collapse collapse" aria-labelledby="headingPrice"
-                                    data-bs-parent="#price">
-                                    <div class="accordion-body">
-                                        <div class="new">
-                                            <div class="form-group">
-                                                <input type="checkbox" id="price1" value="Below 500" name="price">
-                                                <label for="price1">BELOW 500</label>
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="checkbox" id="price2" value="500-999" name="price">
-                                                <label for="price2">₹500 - ₹999</label>
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="checkbox" id="price3" value="1000-1499" name="price">
-                                                <label for="price3">₹1000 - ₹1,499</label>
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="checkbox" id="price4" value="1500-2499" name="price">
-                                                <label for="price4">₹1500 - ₹2,499</label>
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="checkbox" id="price5" value="2500-4499" name="price">
-                                                <label for="price5">₹₹2500 - ₹4,499</label>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <input type="checkbox" id="price6" value="Above 5000" name="price">
-                                                <label for="price6">ABOVE ₹5000</label>
+                                            <div class="mt-2">
+                                                <button type="button" id="expand-all" class="btn btn-link p-0 me-3">Expand
+                                                    All</button>
+                                                <button type="button" id="collapse-all" class="btn btn-link p-0">Collapse
+                                                    All</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div> --}}
-                        {{-- <div class="padding_filter">
-                        <div class="accordion" id="starrating">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingStarrating">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseStarrating" aria-expanded="true"
-                                        aria-controls="collapseStarrating">
-                                        Star Rating
-                                    </button>
-                                </h2>
-                                <div id="collapseStarrating" class="accordion-collapse collapse show"
-                                    aria-labelledby="headingStarrating" data-bs-parent="#starrating">
-                                    <div class="accordion-body">
-                                        <div class="new">
-                                            <div class="form-group">
-                                                <input type="checkbox" id="star">
-                                                <label for="star"><i class="fa-solid fa-star"></i> 1</label>
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="checkbox" id="star1">
-                                                <label for="star1"><i class="fa-solid fa-star"></i> 2</label>
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="checkbox" id="star2">
-                                                <label for="star2"><i class="fa-solid fa-star"></i> 3</label>
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="checkbox" id="star3">
-                                                <label for="star3"><i class="fa-solid fa-star"></i> 4</label>
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="checkbox" id="star4">
-                                                <label for="star4"><i class="fa-solid fa-star"></i> 5</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
                     </div>
                 </div>
                 <div class="col-xl-9 col-lg-8" id="product-filter">
                     @include('ecom.partials.product-filter')
-
                 </div>
             </div>
     </section>
@@ -251,149 +159,119 @@
         $(document).ready(function() {
             var page = 1;
             var loading = false;
-            var numSlick = 0; // Initialize numSlick variable
 
-
-            // Show loading GIF function
             function showLoading() {
-                $('#loading').show(); // Show loading GIF
+                $('#loading').show();
             }
 
-            // Hide loading GIF function
             function hideLoading() {
-                $('#loading').hide(); // Hide loading GIF
+                $('#loading').hide();
             }
 
-            // Scroll event handler
             $(window).on('scroll', handleScroll);
 
             function handleScroll() {
                 var lastProduct = $('.productitem:last');
+                if (!lastProduct.length) return;
                 var lastProductOffset = lastProduct.offset().top + lastProduct.outerHeight();
                 var scrollTop = $(window).scrollTop() + $(window).height();
-
                 if (scrollTop > lastProductOffset && !loading) {
                     loading = true;
                     page++;
                     var prices = [];
                     var category_id = [];
                     var search = $('#serach-product').val();
-
-
                     $('input[name="price"]:checked').each(function() {
                         prices.push($(this).val());
                     });
-
                     var latestFilter = $('#latest_filter').val();
-
                     @if ($category_id != '')
                         var cat = '{{ $category_id }}';
                         category_id.push(cat);
                     @else
-                        $('input[name="category_id"]:checked').each(function() {
+                        $('.category-checkbox:checked').each(function() {
                             category_id.push($(this).val());
                         });
                     @endif
-
-                    showLoading(); // Show loading GIF
-                    loadMoreProducts(page, prices, category_id, latestFilter, search); // Load more products
+                    showLoading();
+                    loadMoreProducts(page, prices, category_id, latestFilter, search);
                 }
             }
 
-            // Filter products by frame shape, size, material, price, gender
-            $(document).on('change',
-                'input[name="price"], #latest_filter, input[name="category_id"]',
-                function() {
-                    var prices = [];
-                    var category_id = [];
-                    var search = $('#serach-product').val();
+            $(document).on('change', 'input[name="price"], #latest_filter, .category-checkbox', function() {
+                var $target = $(this);
+                // Ensure parent category checkbox propagates its state to all descendants BEFORE collecting selected IDs
+                if ($target.hasClass('category-checkbox')) {
+                    var $node = $target.closest('.category-node');
+                    // propagate to all descendant checkboxes
+                    $node.find('.children .category-checkbox').prop('checked', $target.is(':checked'));
+                }
 
-                    $('input[name="price"]:checked').each(function() {
-                        prices.push($(this).val());
-                    });
-
-
-                    var latestFilter = $('#latest_filter').val();
-
-                    @if ($category_id != '')
-                        var cat = '{{ $category_id }}';
-                        category_id.push(cat);
-                    @else
-                        $('input[name="category_id"]:checked').each(function() {
-                            category_id.push($(this).val());
-                        });
-                    @endif
-
-                    showLoading(); // Show loading GIF before making the AJAX request
-
-                    // Reset page to 1 and container for new filtered results
-                    page = 1;
-                    $('#products').html('');
-
-                    loadMoreProducts(page, prices, category_id, latestFilter, search);
+                var prices = [];
+                var category_id = [];
+                var search = $('#serach-product').val();
+                $('input[name="price"]:checked').each(function() {
+                    prices.push($(this).val());
                 });
+                var latestFilter = $('#latest_filter').val();
+                @if ($category_id != '')
+                    var cat = '{{ $category_id }}';
+                    category_id.push(cat);
+                @else
+                    $('.category-checkbox:checked').each(function() {
+                        category_id.push($(this).val());
+                    });
+                @endif
+                showLoading();
+                page = 1;
+                $('#products').html('');
+                loadMoreProducts(page, prices, category_id, latestFilter, search);
+            });
 
-            // Search products
             $(document).on('submit', '#product-search-form', function(e) {
                 e.preventDefault();
                 var search = $('#serach-product').val();
                 var prices = [];
                 var category_id = [];
-
-
                 $('input[name="price"]:checked').each(function() {
                     prices.push($(this).val());
                 });
-
                 var latestFilter = $('#latest_filter').val();
-
                 @if ($category_id != '')
                     var cat = '{{ $category_id }}';
                     category_id.push(cat);
                 @else
-                    $('input[name="category_id"]:checked').each(function() {
+                    $('.category-checkbox:checked').each(function() {
                         category_id.push($(this).val());
                     });
                 @endif
-
                 page = 1;
                 $('#products').html('');
-
                 loadMoreProducts(page, prices, category_id, latestFilter, search);
             });
 
             $(document).on('keyup', '#serach-product', function(e) {
-                e.preventDefault();
                 var search = $('#serach-product').val();
                 var prices = [];
                 var category_id = [];
-
-
                 $('input[name="price"]:checked').each(function() {
                     prices.push($(this).val());
                 });
-
                 var latestFilter = $('#latest_filter').val();
-
                 @if ($category_id != '')
                     var cat = '{{ $category_id }}';
                     category_id.push(cat);
                 @else
-                    $('input[name="category_id"]:checked').each(function() {
+                    $('.category-checkbox:checked').each(function() {
                         category_id.push($(this).val());
                     });
                 @endif
-
                 page = 1;
                 $('#products').html('');
-
                 loadMoreProducts(page, prices, category_id, latestFilter, search);
             });
 
-
-
-            function loadMoreProducts(page, prices = [], category_id = [],
-                latestFilter = '', search = '') {
+            function loadMoreProducts(page, prices = [], category_id = [], latestFilter = '', search = '') {
                 $.ajax({
                     url: '{{ route('e-store.products-filter') }}',
                     type: 'GET',
@@ -403,38 +281,69 @@
                         prices: prices,
                         latestFilter: latestFilter,
                         search: search
-
                     },
                     success: function(response) {
                         var productsContainer = $('#products');
                         var productsCount = $('#count-product');
                         if (page === 1) {
-                            productsContainer.html(response
-                                .view); // Replace products if it's the first page
-                            productsCount.html(response
-                                .view2); // Replace filters if it's the first page
+                            productsContainer.html(response.view);
+                            productsCount.html(response.view2);
                             $('#proccedtologin').hide();
                         } else {
-                            productsContainer.append(response.view); // Append new products
-                            productsCount.html(response
-                                .view2); // Replace filters if it's the first page
+                            productsContainer.append(response.view);
+                            productsCount.html(response.view2);
                         }
-
-                        // console.log(response);
-
                         if (response.products.length < 12) {
-                            $(window).off('scroll',
-                                handleScroll
-                            ); // Stop loading more if fewer than 12 products are returned
+                            $(window).off('scroll', handleScroll);
                         } else {
-                            $(window).on('scroll', handleScroll); // Reattach scroll event
+                            $(window).on('scroll', handleScroll);
                         }
-
-                        hideLoading(); // Hide loading GIF after products are loaded
+                        hideLoading();
                         loading = false;
                     }
                 });
             }
+
+            // Tree controls
+            $(document).on('click', '.toggle-children', function() {
+                var $btn = $(this);
+                var $node = $btn.closest('.category-node');
+                var $children = $node.children('.children');
+                if (!$children.length) return;
+                var state = $btn.data('state');
+                if (state === 'expanded') {
+                    $children.slideUp(150);
+                    $btn.text('+').data('state', 'collapsed').attr('aria-label', 'Expand children');
+                } else {
+                    $children.slideDown(150);
+                    $btn.text('-').data('state', 'expanded').attr('aria-label', 'Collapse children');
+                }
+            });
+            $('#expand-all').on('click', function() {
+                $('.category-node > .children').each(function() {
+                    var $wrap = $(this);
+                    if ($wrap.is(':hidden')) $wrap.slideDown(120);
+                });
+                $('.toggle-children').each(function() {
+                    var $b = $(this);
+                    if ($b.data('state') === 'collapsed') {
+                        $b.text('-').data('state', 'expanded');
+                    }
+                });
+            });
+            $('#collapse-all').on('click', function() {
+                $('.category-node > .children').each(function() {
+                    var $wrap = $(this);
+                    if ($wrap.is(':visible')) $wrap.slideUp(120);
+                });
+                $('.toggle-children').each(function() {
+                    var $b = $(this);
+                    if ($b.data('state') === 'expanded') {
+                        $b.text('+').data('state', 'collapsed');
+                    }
+                });
+            });
+            // (Parent/child checkbox propagation handled inside unified change handler above.)
         });
     </script>
 @endpush

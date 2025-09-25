@@ -17,6 +17,9 @@
 
     <section class="shopping_cart_sec">
         <div class="container">
+
+
+
             <div class="row">
                 <div class="col-lg-8">
                     <div class="order-details-card p-4">
@@ -120,7 +123,7 @@
                                     <li>Shipping</li>
                                     <li>${{ number_format($order->shipping_amount, 2) }}</li>
                                 </ul> --}}
-                                
+
                                 <div class="total_payable">
                                     <div class="total_payable_l">Total</div>
                                     <div class="total_payable_r">${{ number_format($order->total_amount, 2) }}</div>
@@ -228,6 +231,109 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row mt-3">
+                <div class="col-lg-12">
+                    <div class="delevry-sumry shadow p-3">
+                        @php
+                            // Define the canonical progression
+                            $progression = ['pending', 'processing', 'shipped', 'delivered'];
+                            $labels = [
+                                'pending' => 'Ordered',
+                                'processing' => 'Processing',
+                                'shipped' => 'Shipped',
+                                'delivered' => 'Delivered',
+                                'cancelled' => 'Cancelled',
+                            ];
+                            $currentStatus = $order->status;
+                            if ($currentStatus === 'cancelled') {
+                                $timeline = ['pending', 'cancelled'];
+                            } else {
+                                $timeline = $progression; // full path
+                            }
+                            // Determine index of current status in its timeline
+                            $statusIndex = array_search($currentStatus, $timeline);
+                            // Fallback if status not in timeline (unexpected custom status)
+                            if ($statusIndex === false) {
+                                $timeline[] = $currentStatus;
+                                $statusIndex = array_search($currentStatus, $timeline);
+                            }
+                        @endphp
+
+                        <div class="info-del mb-3">
+                            <h4 class="mb-1">Order Tracking</h4>
+                            <p class="mb-0">Order <strong>#{{ $order->order_number }}</strong></p>
+                        </div>
+
+                        <div class="d-position mb-4">
+                            <ul class="list-unstyled d-flex flex-wrap gap-3" style="row-gap:1.5rem;">
+                                @foreach ($timeline as $idx => $st)
+                                    @php
+                                        $reached = $idx <= $statusIndex;
+                                        $isCurrent = $idx === $statusIndex;
+                                        $cancelled = $st === 'cancelled';
+                                        $colorClass = $cancelled
+                                            ? 'btn-danger'
+                                            : ($reached
+                                                ? ($st === 'delivered'
+                                                    ? 'btn-success'
+                                                    : ($isCurrent
+                                                        ? 'btn-primary'
+                                                        : 'btn-secondary'))
+                                                : 'btn-outline-secondary');
+                                    @endphp
+                                    <li class="text-center" style="min-width:90px;">
+                                        <span
+                                            class="btn {{ $colorClass }} rounded-circle d-inline-flex align-items-center justify-content-center"
+                                            style="width:42px;height:42px;">
+                                            @if ($reached)
+                                                <i class="fa-solid fa-check"></i>
+                                            @else
+                                                <i class="fa-solid fa-ellipsis"></i>
+                                            @endif
+                                        </span>
+                                        <p
+                                            class="mb-0 mt-2 small fw-semibold {{ $isCurrent ? 'text-primary' : 'text-muted' }}">
+                                            {{ $labels[$st] ?? ucfirst($st) }}</p>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+
+                        @php
+                            // Basic detail lines (without a status history table available we only show key data points)
+                            $createdAt = $order->created_at;
+                            $deliveredAt = $order->status === 'delivered' ? $order->updated_at : null; // approximation
+                        @endphp
+
+                        <div class="d-details">
+                            <h5 class="h6 mb-1">Current Status: <span
+                                    class="fw-bold">{{ $labels[$currentStatus] ?? ucfirst($currentStatus) }}</span></h5>
+                            <p class="mb-2 small text-muted">Last updated {{ $order->updated_at->format('M d, Y h:i A') }}
+                            </p>
+                            <ul class="list-unstyled small mb-0">
+                                <li>Placed: <strong>{{ $createdAt->format('M d, Y h:i A') }}</strong></li>
+                                @if ($deliveredAt)
+                                    <li>Delivered: <strong>{{ $deliveredAt->format('M d, Y h:i A') }}</strong></li>
+                                @endif
+                                @if ($currentStatus === 'cancelled')
+                                    <li class="text-danger">Order was cancelled.</li>
+                                @endif
+                            </ul>
+                        </div>
+                        @if ($currentStatus === 'cancelled' && $order->refund_status !== null)
+                            <div
+                                class="alert mt-3 {{ $order->refund_status ? 'alert-success' : 'alert-warning' }} p-2 mb-0">
+                                {{ $order->refund_status ? 'Refund processed.' : 'Refund pending.' }}
+                            </div>
+                        @endif
+                    </div>
+
+
+                </div>
+
+            </div>
+
         </div>
     </section>
 @endsection

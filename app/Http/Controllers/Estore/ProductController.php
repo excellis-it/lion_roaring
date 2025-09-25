@@ -173,7 +173,14 @@ class ProductController extends Controller
         // dd($products);
 
         $products_count  = $products->count();
-        $categories = Category::where('status', 1)->orderBy('id', 'DESC')->get();
+        // Build hierarchical categories (up to 3 levels for UI)
+        $categories = Category::whereNull('parent_id')
+            ->where('status', 1)
+            ->with(['children' => function ($q) {
+                $q->with(['children']); // nested second level
+            }])
+            ->orderBy('name')
+            ->get();
         //  return $categories;
         $isAuth = auth()->check();
         $userSessionId = session()->getId();
@@ -223,7 +230,26 @@ class ProductController extends Controller
             //  }
 
             if (!empty($category_id)) {
-                $products->whereIn('category_id', $category_id);
+                // Expand selected categories to include all descendants
+                $allCategoryIds = [];
+                $queue = Category::whereIn('id', $category_id)->get();
+                foreach ($queue as $cat) {
+                    $allCategoryIds[] = $cat->id;
+                }
+                // BFS through children to collect all descendants
+                $index = 0;
+                while ($index < count($queue)) {
+                    $current = $queue[$index];
+                    $children = $current->children()->pluck('id')->toArray();
+                    foreach ($children as $childId) {
+                        if (!in_array($childId, $allCategoryIds)) {
+                            $allCategoryIds[] = $childId;
+                            $queue->push(Category::find($childId));
+                        }
+                    }
+                    $index++;
+                }
+                $products->whereIn('category_id', $allCategoryIds);
             }
 
             // if (!empty($prices)) {
