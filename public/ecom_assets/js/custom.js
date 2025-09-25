@@ -144,16 +144,15 @@ $(".catagory_slider").slick({
                 dots: false,
             },
         },
-
     ],
 });
 
 $(".featured_slider").slick({
     autoplay: false,
-    speed: 2000,
+    // speed: 500,
     slidesToShow: 6,
     slidesToScroll: 1,
-    lazyLoad: "progressive",
+    // lazyLoad: "progressive",
     arrows: true,
     dots: false,
     prevArrow:
@@ -205,10 +204,10 @@ $(".featured_slider").slick({
 });
 $(".featured_slider_two").slick({
     autoplay: false,
-    speed: 2000,
+    // speed: 2000,
     slidesToShow: 6,
     slidesToScroll: 1,
-    lazyLoad: "progressive",
+    // lazyLoad: "progressive",
     arrows: true,
     dots: false,
     prevArrow:
@@ -538,7 +537,7 @@ var QtyInput = (function () {
                         .not(":checked")
                         .prop("disabled", true);
 
-                        // fade other color images and not clickable product-select-color-input-image img
+                    // fade other color images and not clickable product-select-color-input-image img
                     // <img class="product-select-color-input-image" data-color-id="{{ $color->id }}"
                     //                 data-color-name="{{ $color->color_name ?? ($color->name ?? '') }}"
                     //                 style="max-width: 80px; max-height: 80px; cursor: pointer; border: 2px solid #ddd; border-radius: 5px; margin-right: 10px;"
@@ -548,7 +547,6 @@ var QtyInput = (function () {
                         .not('[data-color-id="' + colorId + '"]')
                         .css("opacity", "0.5")
                         .css("pointer-events", "none");
-
                 } else {
                     toastr.error(response.message);
                 }
@@ -631,6 +629,7 @@ $(document).ready(function () {
             data: {
                 warehouse_product_id: $("#warehouse-product-id").val(),
                 product_id: productId,
+                product_variation_id: $("#product-variation-id").val(),
                 size_id: sizeId,
                 color_id: colorId,
                 quantity: quantity,
@@ -642,48 +641,48 @@ $(document).ready(function () {
                     updateCartCount();
 
                     // Update button text to "View Cart" if product was added/updated
-                    if (
-                        response.action === "added" ||
-                        response.action === "updated"
-                    ) {
-                        $button.find("a").text("View Cart");
+                    // if (
+                    //     response.action === "added" ||
+                    //     response.action === "updated"
+                    // ) {
+                    //     $button.find("a").text("View Cart");
 
-                        // For product details page, update the quantity input data
-                        if (
-                            qtyInput.length > 0 &&
-                            qtyInput.data("product-id")
-                        ) {
-                            // Get cart item ID for the product details page
-                            $.ajax({
-                                url: window.cartRoutes.checkProductInCart,
-                                type: "GET",
-                                data: {
-                                    product_id: productId,
-                                },
-                                success: function (checkResponse) {
-                                    if (
-                                        checkResponse.status &&
-                                        checkResponse.inCart &&
-                                        checkResponse.cartItem
-                                    ) {
-                                        qtyInput.data(
-                                            "cart-id",
-                                            checkResponse.cartItem.id
-                                        );
-                                        qtyInput.val(
-                                            checkResponse.cartItem.quantity
-                                        );
-                                    }
-                                },
-                            });
-                        }
-                    }
-                    $(".product-select-size-input")
-                        .not(":checked")
-                        .prop("disabled", true);
-                    $(".product-select-color-input")
-                        .not(":checked")
-                        .prop("disabled", true);
+                    //     // For product details page, update the quantity input data
+                    //     if (
+                    //         qtyInput.length > 0 &&
+                    //         qtyInput.data("product-id")
+                    //     ) {
+                    //         // Get cart item ID for the product details page
+                    //         $.ajax({
+                    //             url: window.cartRoutes.checkProductInCart,
+                    //             type: "GET",
+                    //             data: {
+                    //                 product_id: productId,
+                    //             },
+                    //             success: function (checkResponse) {
+                    //                 if (
+                    //                     checkResponse.status &&
+                    //                     checkResponse.inCart &&
+                    //                     checkResponse.cartItem
+                    //                 ) {
+                    //                     qtyInput.data(
+                    //                         "cart-id",
+                    //                         checkResponse.cartItem.id
+                    //                     );
+                    //                     qtyInput.val(
+                    //                         checkResponse.cartItem.quantity
+                    //                     );
+                    //                 }
+                    //             },
+                    //         });
+                    //     }
+                    // }
+                    // $(".product-select-size-input")
+                    //     .not(":checked")
+                    //     .prop("disabled", true);
+                    // $(".product-select-color-input")
+                    //     .not(":checked")
+                    //     .prop("disabled", true);
                 } else {
                     toastr.error(response.message);
                 }
@@ -953,50 +952,42 @@ $(document).on("click", ".remove-from-wishlist", function (e) {
     });
 });
 
+$(".search-toggle").addClass("closed");
 
-
-
-
-
-
-$('.search-toggle').addClass('closed');
-
-$('.search-toggle .search-icon').click(function(e) {
-  if ($('.search-toggle').hasClass('closed')) {
-    $('.search-toggle').removeClass('closed').addClass('opened');
-    $('.search-toggle, .search-container').addClass('opened');
-    $('#search-terms').focus();
-  } else {
-    $('.search-toggle').removeClass('opened').addClass('closed');
-    $('.search-toggle, .search-container').removeClass('opened');
-  }
+$(".search-toggle .search-icon").click(function (e) {
+    e.stopPropagation();
+    if ($(".search-toggle").hasClass("closed")) {
+        $(".search-toggle").removeClass("closed").addClass("opened");
+        $(".search-toggle, .search-container").addClass("opened");
+        $("#search-terms").focus();
+    } else {
+        $(".search-toggle").removeClass("opened").addClass("closed");
+        $(".search-toggle, .search-container").removeClass("opened");
+    }
 });
 
-
-
+$(document).click(function (e) {
+    if (
+        !$(e.target).closest(".search-toggle").length &&
+        !$(e.target).closest(".search-container").length
+    ) {
+        // Agar search bar open hai to close kar do
+        if ($(".search-toggle").hasClass("opened")) {
+            $(".search-toggle").removeClass("opened").addClass("closed");
+            $(".search-toggle, .search-container").removeClass("opened");
+        }
+    }
+});
 
 // =========================sticky header===================================
 const header = document.querySelector(".page-header");
 const toggleClass = "is-sticky";
 
 window.addEventListener("scroll", () => {
-  const currentScroll = window.pageYOffset;
-  if (currentScroll > 150) {
-    header.classList.add(toggleClass);
-  } else {
-    header.classList.remove(toggleClass);
-  }
+    const currentScroll = window.pageYOffset;
+    if (currentScroll > 150) {
+        header.classList.add(toggleClass);
+    } else {
+        header.classList.remove(toggleClass);
+    }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-

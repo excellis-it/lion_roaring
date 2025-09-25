@@ -335,6 +335,7 @@ class ProductController extends Controller
                 'product_id' => 'required|integer',
                 'quantity' => 'required|integer|min:1',
                 'warehouse_product_id' => 'required|integer',
+                'product_variation_id' => 'required|integer',
             ]);
 
             $isAuth = auth()->check();
@@ -351,14 +352,19 @@ class ProductController extends Controller
             $warehouseProduct = WarehouseProduct::find($warehouseProductId);
             $wareHouse = Warehouse::find($warehouseProduct->warehouse_id);
 
+            $wareHouseProductPrice = $warehouseProduct->price ?? 0;
+
             // Check if product already exists in cart
             if ($isAuth) {
                 $existingCart = EstoreCart::where('user_id', auth()->id())
                     ->where('product_id', $product->id)
+                    // ->where('warehouse_product_id', $warehouseProductId)
+                    ->where('product_variation_id', $request->product_variation_id)
                     ->first();
             } else {
                 $existingCart = EstoreCart::where('session_id', $userSessionId)
                     ->where('product_id', $product->id)
+                    ->where('product_variation_id', $request->product_variation_id)
                     ->first();
             }
 
@@ -391,11 +397,13 @@ class ProductController extends Controller
             $cart = new EstoreCart();
             $cart->user_id = auth()->id();
             $cart->product_id = $product->id;
+            $cart->product_variation_id = $warehouseProduct->product_variation_id;
             $cart->warehouse_product_id = $warehouseProduct->id;
             $cart->warehouse_id = $wareHouse->id;
             $cart->size_id = $sizeId;
             $cart->color_id = $colorId;
             $cart->quantity = $request->quantity;
+            $cart->price = $wareHouseProductPrice;
             $cart->session_id = $userSessionId;
             $cart->save();
 
@@ -423,13 +431,18 @@ class ProductController extends Controller
             $cartItem = $isAuth ? EstoreCart::where('user_id', auth()->id()) : EstoreCart::where('session_id', $userSessionId);
             $cartItem = $cartItem->where('product_id', $request->product_id)->first();
 
+            // return response()->json([
+            //     'status' => true,
+            //     'inCart' => $cartItem ? true : false,
+            //     'cartItem' => $cartItem ? [
+            //         'id' => $cartItem->id,
+            //         'quantity' => $cartItem->quantity
+            //     ] : null
+            // ]);
             return response()->json([
                 'status' => true,
-                'inCart' => $cartItem ? true : false,
-                'cartItem' => $cartItem ? [
-                    'id' => $cartItem->id,
-                    'quantity' => $cartItem->quantity
-                ] : null
+                'inCart' => false,
+                'cartItem' => null
             ]);
         }
     }

@@ -140,7 +140,7 @@ white-space: nowrap;
 }
 .shoping_cart {
     color: var(--text-color);
-    padding: 15px;
+    /*padding: 15px;*/
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -946,7 +946,7 @@ white-space: nowrap;
 
 .feature_img {
     width: 100%;
-    height: 300px;
+    height: 400px;
     display: block;
     position: relative;
     margin-bottom: 6px;
@@ -1395,7 +1395,7 @@ white-space: nowrap;
 
 
 .inner_banner_sec {
-    padding: 170px 0 120px 0;
+    padding: 250px 0 150px 0;
     position: relative
 }
 
@@ -1411,7 +1411,7 @@ white-space: nowrap;
 .inner_banner_ontent {
     position: relative;
     z-index: 9;
-    text-align: center;
+    /*text-align: center;*/
 }
 
 .inner_banner_ontent h2 {
@@ -1770,7 +1770,7 @@ input[type="range"]::-moz-range-thumb {
 
 /* Main text uses this styling and color */
 .details-snippet1 .theme-text {
-    color: var(--main-color);
+    color: #202d4d;
     font-weight: bold;
 }
 
@@ -1781,7 +1781,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .details-snippet1 .title {
-    color: var(--main-color);
+    color: #202d4d;
     font-weight: bold;
     font-size: 2rem;
 }
@@ -1824,10 +1824,10 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .additional-details .nav-link.active {
-    background-color: var(--main-color);
+    background-color: #202d4d;
     color: #fff;
     border: none;
-    border-bottom: 4px solid var(--main-color);
+    border-bottom: 4px solid #202d4d;
 }
 
 .small_number .form-control {

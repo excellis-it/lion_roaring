@@ -755,6 +755,12 @@ Route::prefix('e-store')->group(function () {
     Route::get('/my-orders', [EstoreProductController::class, 'myOrders'])->name('e-store.my-orders');
     Route::get('/order-details/{orderId}', [EstoreProductController::class, 'orderDetails'])->name('e-store.order-details');
 
+    // profile and change password page
+    Route::get('/profile', [HomeController::class, 'profile'])->name('e-store.profile')->middleware('user');
+    Route::post('/update-profile', [HomeController::class, 'updateProfile'])->name('e-store.update-profile');
+    Route::get('/change-password', [HomeController::class, 'changePassword'])->name('e-store.change-password');
+
+
     // e-store.cancel-order
     Route::post('/cancel-order', [EstoreProductController::class, 'cancelOrder'])->name('e-store.cancel-order');
 

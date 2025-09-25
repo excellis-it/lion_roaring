@@ -269,4 +269,34 @@ class HomeController extends Controller
         $contactCms = \App\Models\EcomContactCms::orderBy('id', 'desc')->first();
         return view('ecom.contact', compact('contactCms'));
     }
+
+    // // profile and change password page
+    public function profile()
+    {
+        $user = auth()->user();
+        return view('ecom.profile', compact('user'));
+    }
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
+            'address' => 'nullable|string|max:500',
+        ]);
+
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->phone = $request->phone;
+        $user->address = $request->address;
+        $user->save();
+
+        return redirect()->back()->with('success', 'Profile updated successfully');
+    }
+    public function changePassword()
+    {
+        return view('ecom.change-password');
+    }
 }
