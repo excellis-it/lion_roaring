@@ -1058,6 +1058,7 @@ white-space: nowrap;
     transition: all ease-in 0.3s;
     background-color: #fff;
     border-radius: 20px;
+    overflow: hidden;
 }
 .pos_zi .feature_img{
    border: none;
@@ -4022,10 +4023,31 @@ content: none !important;
 .d-details h5 i{
     font-size: 14px;
 }
-
-
-
-
+/*=====================================================*/
+.list-group-item.category-node{
+    border: none;
+    border-bottom: 1px solid #ccc;
+    position: relative;
+}
+.toggle-children{
+   position: absolute;
+    right: 0;
+    color: #fff;
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    top: 0;
+}
+.feature_img .sales{
+    position: absolute;
+    background-color:#c50707;
+    width: 100%;
+    text-align: center;
+    transform: rotate(-43deg);
+    left: -116px;
+    top: 22px;
+    color: #fff;
+}
 
 
 

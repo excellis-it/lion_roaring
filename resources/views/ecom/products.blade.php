@@ -86,7 +86,7 @@
                                                             ? 'checked'
                                                             : '';
                                                         $html =
-                                                            '<li class="list-group-item category-node d-flex align-items-start" data-category-id="' .
+                                                            '<li class="list-group-item category-node border-0" data-category-id="' .
                                                             $cat->id .
                                                             '">';
                                                         if ($hasChildren) {
@@ -114,7 +114,7 @@
                                                         $html .= '</div>';
                                                         if ($hasChildren) {
                                                             $html .=
-                                                                '<ul class="list-group children mt-2 ms-4" style="display:none;" data-parent-id="' .
+                                                                '<ul class="list-group children mt-2 border-0" style="display:none;" data-parent-id="' .
                                                                 $cat->id .
                                                                 '">';
                                                             foreach ($cat->children as $child) {

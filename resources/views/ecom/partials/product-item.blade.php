@@ -7,8 +7,11 @@
         <div class="col-xl-3 col-lg-4 col-md-4 mb-4 productitem">
             <div class="feature_box">
                 <div class="feature_img">
+
                     @if (($product['is_free'] ?? false) || ($product->is_free ?? false))
                         <span class="badge bg-success position-absolute" style="top:10px;left:10px;z-index:9">FREE</span>
+                    @else
+                        <div class="sales">Sale</div>
                     @endif
                     <div class="wishlist_icon" data-id="{{ $product['id'] }}">
                         <a href="javascript:void(0);"><i
@@ -29,9 +32,8 @@
                         @if (($product['is_free'] ?? false) || ($product->is_free ?? false))
                             <span class="price_text"><strong>Free</strong></span>
                         @else
-                             <span class="price_text">${{ $product['price'] }}</span>
+                            <span class="price_text">${{ $product['price'] }}</span>
                         @endif
-
                         <ul class="star_ul">
                             @if (Helper::getTotalProductRating($product['id']))
                                 @for ($i = 1; $i <= 5; $i++)
