@@ -513,6 +513,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/store-cms-page/{page}', [EstoreCmsController::class, 'cms'])->name('user.store-cms.edit');
     Route::post('/store-cms/home/update', [EstoreCmsController::class, 'homeCmsUpdate'])->name('user.store-cms.home.update');
     Route::post('/store-cms/footer/update', [EstoreCmsController::class, 'footerUpdate'])->name('user.store-cms.footer.update');
+    // contact cms (e-store contact page)
+    Route::get('/store-cms/contact', [EstoreCmsController::class, 'contactCms'])->name('user.store-cms.contact');
+    Route::post('/store-cms/contact/update', [EstoreCmsController::class, 'contactCmsUpdate'])->name('user.store-cms.contact.update');
     Route::get('/store-orders/list', [EstoreCmsController::class, 'ordersList'])->name('user.store-orders.list');
     Route::get('/store-orders/fetch-data', [EstoreCmsController::class, 'fetchOrdersData'])->name('user.store-orders.fetch-data');
     Route::get('/store-orders/details/{id}', [EstoreCmsController::class, 'orderDetails'])->name('user.store-orders.details');
@@ -751,6 +754,15 @@ Route::prefix('e-store')->group(function () {
     Route::get('/order-success/{orderId}', [EstoreProductController::class, 'orderSuccess'])->name('e-store.order-success');
     Route::get('/my-orders', [EstoreProductController::class, 'myOrders'])->name('e-store.my-orders');
     Route::get('/order-details/{orderId}', [EstoreProductController::class, 'orderDetails'])->name('e-store.order-details');
+
+    // profile and change password page
+    Route::get('/profile', [HomeController::class, 'profile'])->name('e-store.profile')->middleware('user');
+    Route::post('/update-profile', [HomeController::class, 'updateProfile'])->name('e-store.update-profile');
+    Route::get('/change-password', [HomeController::class, 'changePassword'])->name('e-store.change-password');
+    // order tracking page
+    Route::get('/track-order', [HomeController::class, 'orderTracking'])->name('e-store.order-tracking');
+    Route::post('/track-order-id', [HomeController::class, 'trackOrder'])->name('e-store.track-order');
+
 
     // e-store.cancel-order
     Route::post('/cancel-order', [EstoreProductController::class, 'cancelOrder'])->name('e-store.cancel-order');

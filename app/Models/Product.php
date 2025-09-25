@@ -19,6 +19,7 @@ class Product extends Model
         'slug',
         'feature_product',
         'status',
+        'is_free',
         'is_deleted',
 
         // only for simple product type
@@ -139,6 +140,22 @@ class Product extends Model
     public function variationImages()
     {
         return $this->hasManyThrough(ProductVariationImage::class, ProductVariation::class, 'product_id', 'product_variation_id', 'id', 'id');
+    }
+
+    /**
+     * Determine if the product is free.
+     */
+    public function getIsFreeAttribute($value)
+    {
+        return (bool) $value;
+    }
+
+    /**
+     * Convenience helper.
+     */
+    public function isFree(): bool
+    {
+        return (bool) $this->is_free;
     }
 
     // unique color first image with color detail by product variation (only one image for each color)

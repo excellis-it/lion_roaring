@@ -906,4 +906,63 @@ class EstoreCmsController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function contactCms()
+    {
+        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+            $cms = \App\Models\EcomContactCms::orderBy('id', 'desc')->first();
+            return view('user.store-cms.contact_cms', compact('cms'));
+        }
+        abort(403, 'You do not have permission to access this page.');
+    }
+
+    public function contactCmsUpdate(\Illuminate\Http\Request $request)
+    {
+        if (!(auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR'))) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        $validated = $request->validate([
+            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+            'banner_title' => 'nullable|string|max:255',
+            'card_one_title' => 'nullable|string|max:255',
+            'card_one_content' => 'nullable|string',
+            'card_two_title' => 'nullable|string|max:255',
+            'card_two_content' => 'nullable|string',
+            'card_three_title' => 'nullable|string|max:255',
+            'card_three_content' => 'nullable|string',
+            'form_title' => 'nullable|string|max:255',
+            'form_subtitle' => 'nullable|string',
+            'call_section_title' => 'nullable|string|max:255',
+            'call_section_content' => 'nullable|string',
+            'follow_us_title' => 'nullable|string|max:255',
+            'map_iframe_src' => 'nullable|string',
+        ]);
+
+        if ($request->id) {
+            $cms = \App\Models\EcomContactCms::find($request->id);
+            $message = 'Contact CMS updated successfully';
+        } else {
+            $cms = new \App\Models\EcomContactCms();
+            $message = 'Contact CMS added successfully';
+        }
+
+        foreach ($validated as $key => $val) {
+            if ($key !== 'banner_image') {
+                $cms->$key = $val;
+            }
+        }
+
+        if ($request->hasFile('banner_image')) {
+            if (method_exists($this, 'imageUpload')) {
+                $cms->banner_image = $this->imageUpload($request->file('banner_image'), 'ecom_cms');
+            } else {
+                $path = $request->file('banner_image')->store('ecom_cms', 'public');
+                $cms->banner_image = $path;
+            }
+        }
+
+        $cms->save();
+        return redirect()->back()->with('message', $message);
+    }
 }

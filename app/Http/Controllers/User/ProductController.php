@@ -193,6 +193,10 @@ class ProductController extends Controller
         $product->price = $request->price;
         $product->slug = $request->slug;
         $product->feature_product = $request->feature_product;
+        $product->is_free = $request->has('is_free');
+        if ($product->is_free) {
+            $product->price = 0;
+        }
         $product->save();
 
         if ($request->hasFile('image')) {
@@ -427,13 +431,17 @@ class ProductController extends Controller
             $product->description = $request->description;
             $product->short_description = $request->short_description;
             $product->specification = $request->specification;
-            $product->product_type = $request->product_type;
-            $product->sku = $request->sku ?? '';
-            $product->quantity = $request->quantity ?? 0;
-            $product->price = $request->price;
+            //  $product->product_type = $request->product_type;
+            // $product->sku = $request->sku ?? '';
+            // $product->quantity = $request->quantity ?? 0;
+            // $product->price = $request->price;
             $product->slug = $request->slug;
             $product->feature_product = $request->feature_product;
             $product->status = $request->status;
+            $product->is_free = $request->has('is_free');
+            if ($product->is_free) {
+                $product->price = 0;
+            }
             $product->save();
 
             if ($request->hasFile('image')) {
@@ -458,25 +466,7 @@ class ProductController extends Controller
                 }
             }
 
-            // Update sizes
-            $product->sizes()->delete();
-            if ($request->filled('sizes')) {
-                foreach ($request->sizes as $size) {
-                    if ($size) {
-                        $product->sizes()->create(['size_id' => $size]);
-                    }
-                }
-            }
 
-            // Update colors
-            $product->colors()->delete();
-            if ($request->filled('colors')) {
-                foreach ($request->colors as $color) {
-                    if ($color) {
-                        $product->colors()->create(['color_id' => $color]);
-                    }
-                }
-            }
 
             // save other charges
             $product->otherCharges()->delete();
@@ -488,73 +478,15 @@ class ProductController extends Controller
                 }
             }
 
-            // Update warehouse products
-            if ($request->filled('warehouse_products')) {
-                // Get existing warehouse product IDs
-                $existingIds = [];
-
-                foreach ($request->warehouse_products as $wp) {
-                    if (!empty($wp['warehouse_id'])) {
-                        if (!empty($wp['id'])) {
-                            // Update existing warehouse product
-                            $warehouseProduct = WarehouseProduct::find($wp['id']);
-                            if ($warehouseProduct) {
-                                $warehouseProduct->update([
-                                    'warehouse_id' => $wp['warehouse_id'],
-                                    'sku' => $wp['sku'],
-                                    'price' => $wp['price'],
-                                    'color_id' => $wp['color_id'] ?? null,
-                                    'size_id' => $wp['size_id'] ?? null,
-                                    'quantity' => $wp['quantity'],
-                                ]);
-
-                                // Handle new images for existing warehouse product
-                                if (!empty($wp['images'])) {
-                                    foreach ($wp['images'] as $file) {
-                                        $wpImage = new WarehouseProductImage();
-                                        $wpImage->warehouse_product_id = $warehouseProduct->id;
-                                        $wpImage->image_path = $this->imageUpload($file, 'warehouse_product');
-                                        $wpImage->save();
-                                    }
-                                }
-
-                                $existingIds[] = $warehouseProduct->id;
-                            }
-                        } else {
-                            // Create new warehouse product
-                            $warehouseProduct = WarehouseProduct::create([
-                                'product_id' => $product->id,
-                                'warehouse_id' => $wp['warehouse_id'],
-                                'sku' => $wp['sku'],
-                                'price' => $wp['price'],
-                                'color_id' => $wp['color_id'] ?? null,
-                                'size_id' => $wp['size_id'] ?? null,
-                                'quantity' => $wp['quantity'],
-                            ]);
-
-                            // Save warehouse product images
-                            if (!empty($wp['images'])) {
-                                foreach ($wp['images'] as $file) {
-                                    $wpImage = new WarehouseProductImage();
-                                    $wpImage->warehouse_product_id = $warehouseProduct->id;
-                                    $wpImage->image_path = $this->imageUpload($file, 'warehouse_product');
-                                    $wpImage->save();
-                                }
-                            }
-
-                            $existingIds[] = $warehouseProduct->id;
-                        }
-                    }
-                }
-
-                // Delete warehouse products that were removed
-                WarehouseProduct::where('product_id', $product->id)
-                    ->whereNotIn('id', $existingIds)
-                    ->delete();
-            } else {
-                // Delete all warehouse products if none were submitted
-                WarehouseProduct::where('product_id', $product->id)->delete();
-            }
+            // if ($request->product_type == 'simple') {
+            //     $productVariations = ProductVariation::where('product_id', $product->id)->get();
+            //     // update product variations price and stock_quantity from product price and quantity
+            //     foreach ($productVariations as $variation) {
+            //         $variation->price = $product->price;
+            //         $variation->stock_quantity = $product->quantity;
+            //         $variation->save();
+            //     }
+            // }
 
             return redirect()->route('products.index')->with('message', 'Product updated successfully!');
         } else {
@@ -754,6 +686,18 @@ class ProductController extends Controller
             $variation->additional_info = '';
             $variation->save();
 
+            // get product variation in WarehouseProductVariation
+            $wpVariations = WarehouseProductVariation::where('product_variation_id', $variation->id)->get();
+
+
+            // update product variation in WarehouseProduct
+            $wpProducts = WarehouseProduct::where('product_variation_id', $variation->id)->get();
+            foreach ($wpProducts as $wp) {
+                $wp->sku = $variation->sku;
+                $wp->price = $variation->price;
+                $wp->save();
+            }
+
             // update images if available to ProductVariationImage
             if (!empty($variationData['images'])) {
                 $targetColorId = $variationData['color_id'] ?? $variation->color_id;
@@ -773,6 +717,30 @@ class ProductController extends Controller
                         $pvImage->product_variation_id = $var->id;
                         $pvImage->image_path = $this->imageUpload($file, 'product_variation');
                         $pvImage->save();
+                    }
+                }
+            }
+
+            // update images if available to WarehouseProductImage
+            if (!empty($variationData['images'])) {
+                $targetColorId = $variationData['color_id'] ?? $variation->color_id;
+
+                // Find warehouse products for this variation matching the target color (null handled)
+                $wpQuery = WarehouseProduct::where('product_variation_id', $variation->id);
+                if (is_null($targetColorId)) {
+                    $wpQuery->whereNull('color_id');
+                } else {
+                    $wpQuery->where('color_id', $targetColorId);
+                }
+
+                $wpIds = $wpQuery->pluck('id')->toArray();
+
+                foreach ($wpIds as $wpId) {
+                    foreach ($variationData['images'] as $file) {
+                        $wpImage = new WarehouseProductImage();
+                        $wpImage->warehouse_product_id = $wpId;
+                        $wpImage->image_path = $this->imageUpload($file, 'warehouse_product');
+                        $wpImage->save();
                     }
                 }
             }

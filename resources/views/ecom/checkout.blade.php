@@ -16,7 +16,7 @@
             <div class="row justify-content-center">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
                     <div class="inner_banner_ontent">
-                        <h2>CHECKOUT</h2>
+                        <h2>Checkout</h2>
                     </div>
                 </div>
             </div>
@@ -246,7 +246,7 @@
 
                             <!-- Submit -->
                             <div class="col-md-12 mt-3 text-end">
-                                <button type="submit" class="red_btn w-25 text-center border-0" id="submit-payment">
+                                <button type="submit" class="red_btn text-center border-0" id="submit-payment">
                                     <span>PLACE ORDER</span>
                                 </button>
                             </div>

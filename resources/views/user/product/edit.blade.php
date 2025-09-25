@@ -231,6 +231,21 @@
                                             @endif
                                         </div>
                                     </div>
+                                    {{-- is_free --}}
+                                    {{-- <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label for="is_free" class="d-block"> Free Product</label>
+                                            <div class="form-check form-switch">
+                                                <label class="form-check-label" for="is_free">Mark as Free (Price becomes
+                                                    0)</label>
+                                                <input class="form-check-input mt-3" style="width: 60px; height: 30px;"
+                                                    type="checkbox" role="switch" id="is_free" name="is_free"
+                                                    value="1"
+                                                    {{ old('is_free', $product->is_free) ? 'checked' : '' }}>
+
+                                            </div>
+                                        </div>
+                                    </div> --}}
                                     {{-- status --}}
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
@@ -315,102 +330,7 @@
 
                                 </div>
 
-                                <div id="simple-product-section"
-                                    style="{{ $product->product_type == 'simple' ? '' : 'display:none;' }}">
-                                    <div class="row mb-5">
-                                        <div class="col-md-12">
-                                            <div class="heading_box mb-3">
-                                                <h3>Simple Product Details</h3>
-                                            </div>
-                                        </div>
 
-                                        <div class="col-md-4 mb-2">
-                                            <div class="box_label">
-                                                <label for="simple_sku"> Product SKU</label>
-                                                <input type="text" name="sku" id="simple_sku"
-                                                    class="form-control" value="{{ $product->sku }}">
-                                                @if ($errors->has('sku'))
-                                                    <span class="error">{{ $errors->first('sku') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-4 mb-2">
-                                            <div class="box_label">
-                                                <label for="simple_price"> Product Price</label>
-                                                <input type="text" name="price" id="simple_price"
-                                                    class="form-control" value="{{ $product->price }}">
-                                                @if ($errors->has('price'))
-                                                    <span class="error">{{ $errors->first('price') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-4 mb-2">
-                                            <div class="box_label">
-                                                <label for="simple_quantity"> Stock Quantity</label>
-                                                <input type="number" name="quantity" id="simple_quantity"
-                                                    class="form-control" value="{{ $product->quantity }}">
-                                                @if ($errors->has('quantity'))
-                                                    <span class="error">{{ $errors->first('quantity') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                <div id="variable-product-section"
-                                    style="{{ $product->product_type == 'variable' ? '' : 'display:none;' }}">
-                                    <div class="row mb-5">
-                                        <div class="col-md-12">
-                                            <div class="heading_box mb-3">
-                                                <h3>Variable Product Details</h3>
-                                            </div>
-                                        </div>
-
-                                        {{-- Multi Sizes --}}
-                                        <div class="col-md-4 mb-2">
-                                            <div class="box_label">
-                                                <label>Product Sizes </label>
-                                                <div id="sizes-wrapper">
-                                                    <div class=" mb-2">
-                                                        <select multiple name="sizes[]" class="sizeSelect"
-                                                            id="global-size-select">
-                                                            @foreach ($sizes as $size)
-                                                                <option value="{{ $size->id }}"
-                                                                    {{ $product->sizeIds()->contains($size->id) ? 'selected' : '' }}>
-                                                                    {{ $size->size }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {{-- Multi Colors --}}
-                                        <div class="col-md-4 mb-2" hidden>
-                                            <div class="box_label">
-                                                <label>Product Colors</label>
-                                                <div id="colors-wrapper">
-                                                    <div class="mb-2">
-                                                        <select multiple name="colors[]" class="colorSelect"
-                                                            id="global-color-select">
-                                                            @foreach ($colors as $color)
-                                                                <option value="{{ $color->id }}"
-                                                                    {{ $product->colorIds()->contains($color->id) ? 'selected' : '' }}>
-                                                                    {{ $color->color_name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
 
                                 <!-- Other Charges Section -->
                                 <div class="row">
@@ -639,6 +559,30 @@
                 const variableProductRadio = document.getElementById('variable_product');
                 const simpleProductSection = document.getElementById('simple-product-section');
                 const variableProductSection = document.getElementById('variable-product-section');
+                const isFreeCheckbox = document.getElementById('is_free');
+                const priceInput = document.getElementById('price');
+
+                function togglePriceFields() {
+                    if (!priceInput) return;
+                    const isFree = isFreeCheckbox && isFreeCheckbox.checked;
+                    if (isFree) {
+                        priceInput.disabled = true;
+                        priceInput.value = '0';
+                        document.querySelectorAll('[name^="warehouse_products"][name$="[price]"]').forEach(inp => {
+                            inp.disabled = true;
+                            inp.value = inp.value || 0
+                        });
+                    } else {
+                        priceInput.disabled = false;
+                        document.querySelectorAll('[name^="warehouse_products"][name$="[price]"]').forEach(inp => {
+                            inp.disabled = false;
+                        });
+                    }
+                }
+                if (isFreeCheckbox) {
+                    isFreeCheckbox.addEventListener('change', togglePriceFields);
+                    togglePriceFields();
+                }
 
                 simpleProductRadio.addEventListener('change', function() {
                     simpleProductSection.style.display = 'block';

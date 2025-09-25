@@ -164,6 +164,7 @@ class CmsController extends Controller
 
     public function contactUsForm(Request $request)
     {
+        // return $request->all();
         $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',

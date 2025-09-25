@@ -41,6 +41,12 @@
             </div>
 
             @if (count($carts) > 0)
+                @if (isset($hasChanges) && $hasChanges)
+                    <div class="alert alert-warning">
+                        Some items in your cart were sold out. Please review before
+                        proceeding to checkout.
+                    </div>
+                @endif
                 <div class="row">
                     <div class="col-lg-8">
                         <div id="cart-items-container">
@@ -72,13 +78,32 @@
                                                     </h6>
                                                     {{-- <span class="">{!! \Illuminate\Support\Str::limit($item->product->description, 50) !!}</span> --}}
 
-                                                    <ul class="wl_price">
+                                                    <ul class="wl_price mb-1">
                                                         <li>Unit Price</li>
                                                         <li class="ms-auto">
-                                                            {{ number_format($item->warehouseProduct->price ?? 0, 2) }}
-
+                                                            @php
+                                                                $displayPrice =
+                                                                    $item->price ??
+                                                                    ($item->warehouseProduct->price ?? 0);
+                                                            @endphp
+                                                            @if (isset($item->meta['price_changed']) && $item->meta['price_changed'])
+                                                                <span style="text-decoration: none;"
+                                                                    class="fw-bold text-dark">{{ number_format($item->meta['current_price'], 2) }}</span>
+                                                                <span
+                                                                    class="text-decoration-line-through text-muted">{{ number_format($item->meta['original_price'], 2) }}</span>
+                                                            @else
+                                                                {{ number_format($displayPrice, 2) }}
+                                                            @endif
                                                         </li>
                                                     </ul>
+
+                                                    @if (isset($item->meta['price_changed']) && $item->meta['price_changed'])
+                                                        <div class="text-warning small mb-2">Price updated</div>
+                                                    @endif
+                                                    @if (isset($item->meta['out_of_stock']) && $item->meta['out_of_stock'])
+                                                        <div class="text-danger small mb-2">This item is currently out of
+                                                            stock.</div>
+                                                    @endif
 
                                                     <!-- Display other charges if any -->
                                                     @if (isset($item->product->otherCharges) && $item->product->otherCharges->count() > 0)
@@ -109,16 +134,21 @@
                                                             <div class="qty d-flex align-items-center">
                                                                 <span>Qty</span>
                                                                 <div class="qty-input mx-2" style="border: none;">
-                                                                    <button class="cart-qty-count qty-count--minus"
-                                                                        data-action="minus" type="button">-</button>
-                                                                    <input class="cart-quantity product-qty" type="number"
-                                                                        min="1"
-                                                                        max="{{ $item->warehouseProduct->quantity ?? 0 }}"
-                                                                        value="{{ $item['quantity'] }}"
-                                                                        data-id="{{ $item['id'] }}"
-                                                                        data-price="{{ $item['price'] }}">
-                                                                    <button class="cart-qty-count qty-count--add"
-                                                                        data-action="add" type="button">+</button>
+                                                                    @if (isset($item->meta['out_of_stock']) && $item->meta['out_of_stock'])
+                                                                        <input class="cart-quantity product-qty"
+                                                                            type="number" value="0" disabled>
+                                                                    @else
+                                                                        <button class="cart-qty-count qty-count--minus"
+                                                                            data-action="minus" type="button">-</button>
+                                                                        <input class="cart-quantity product-qty"
+                                                                            type="number" min="1"
+                                                                            max="{{ $item->warehouseProduct->quantity ?? 0 }}"
+                                                                            value="{{ $item['quantity'] }}"
+                                                                            data-id="{{ $item['id'] }}"
+                                                                            data-price="{{ $item['price'] }}">
+                                                                        <button class="cart-qty-count qty-count--add"
+                                                                            data-action="add" type="button">+</button>
+                                                                    @endif
                                                                 </div>
                                                             </div>
                                                         </div>

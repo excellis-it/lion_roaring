@@ -154,6 +154,59 @@
                 });
             });
         </script>
+         <script>
+            $(document).ready(function() {
+                $(document).on('submit', '#submit-newsletter-home', function(e) {
+                    e.preventDefault();
+                    var form = $(this);
+                    var url = form.attr('action');
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: new FormData(this),
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            if (response.status === true) {
+                                $('.text-danger').html('');
+                                $('#newsletter_email_home').val('');
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: response.message,
+                                    showConfirmButton: true,
+                                    timer: 3000
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: response.message,
+                                    showConfirmButton: true,
+                                    timer: 3000
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            $('.text-danger').html('');
+                            var errors = xhr.responseJSON.errors;
+                            $.each(errors, function(key, value) {
+                                if (key.includes('.')) {
+                                    var fieldName = key.split('.')[0];
+                                    // Display errors for array fields
+                                    var num = key.match(/\d+/)[0];
+                                    $('#' + fieldName + '_' + num).html(value[0]);
+                                } else {
+                                    // after text danger span
+                                    $('#' + key + '_error').html(value[0]);
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
         @stack('scripts')
     </body>
 

@@ -3,9 +3,9 @@
 
 @section('content')
     <section class="inner_banner_sec"
-        style="background-image: url({{ asset('ecom_assets/images/slider-bg.png') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+        style="background-image: url({{ asset('ecom_assets/images/bn-4.jpg') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
-            <div class="row justify-content-center">
+            <div class="row">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
                     <div class="inner_banner_ontent">
                         <h2>My Orders</h2>
@@ -25,9 +25,12 @@
                 <div class="row">
                     <div class="col-12">
                         @foreach ($orders as $order)
-                            <div class="order-card mb-4 p-4 border rounded">
+                            <div class="order-card mb-4 p-4 border rounded shadow">
                                 <div class="row">
-                                    <div class="col-md-8">
+                                    <!--<div class="col-md-3">-->
+                                       
+                                    <!--</div>-->
+                                    <div class="col-md-12">
                                         <div class="order-header d-flex justify-content-between align-items-start mb-3">
                                             <div>
                                                 <h5>Order #{{ $order->order_number }}</h5>
@@ -50,18 +53,16 @@
 
                                         <div class="order-items">
                                             @foreach ($order->orderItems->take(2) as $item)
-                                                <div class="d-flex align-items-center mb-2">
+                                                <div class="single-item-box d-flex align-items-center mb-2">
                                                     <div class="item-image me-3">
                                                         @if ($item->warehouseProduct?->images->first())
                                                             <img src="{{ Storage::url($item->warehouseProduct?->images->first()->image_path) }}"
                                                                 alt="{{ $item->product_name }}"
-                                                                style="width: 60px; height: 60px; object-fit: cover;"
-                                                                class="rounded">
+                                                                >
                                                         @elseif ($item->product_image)
                                                             <img src="{{ Storage::url($item->product_image) }}"
                                                                 alt="{{ $item->product_name }}"
-                                                                style="width: 60px; height: 60px; object-fit: cover;"
-                                                                class="rounded">
+                                                                >
                                                         @else
                                                             <div class="bg-light rounded d-flex align-items-center justify-content-center"
                                                                 style="width: 60px; height: 60px;">
@@ -71,8 +72,12 @@
                                                     </div>
                                                     <div>
                                                         <h6 class="mb-0">{{ $item->product_name }}</h6>
-                                                        <small class="text-muted">Qty: {{ $item->quantity }} ×
-                                                            ${{ number_format($item->price, 2) }}</small>
+                                                        <p class="text-muted">Qty: {{ $item->quantity }} ×
+                                                            ${{ number_format($item->price, 2) }}</p>
+                                                            
+                                                            <!--<button class="order-btn">Buy it Again</button>-->
+                                                            <!--<button class="order-btn">View your item</button>-->
+                                                            <!--<button class="order-btn">Track package</button>-->
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -81,9 +86,8 @@
                                                     items</small>
                                             @endif
                                         </div>
-                                    </div>
-                                    <div class="col-md-4 text-end">
-                                        <div class="order-actions">
+                                        
+                                        <div class="order-actions text-end">
                                             <a href="{{ route('e-store.order-details', $order->id) }}"
                                                 class="red_btn mb-2">
                                                 <span>View Details</span>
@@ -95,6 +99,7 @@
                                             @endif --}}
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         @endforeach

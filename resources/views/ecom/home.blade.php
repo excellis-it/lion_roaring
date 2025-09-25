@@ -136,7 +136,11 @@
 
 
                                                 <div class="d-flex justify-content-between">
-                                                    <span class="price_text">$ {{ $product->price }}</span>
+                                                    @if (($product['is_free'] ?? false) || ($product->is_free ?? false))
+                                                        <span class="price_text"><strong>Free</strong></span>
+                                                    @else
+                                                        <span class="price_text">${{ $product['price'] }}</span>
+                                                    @endif
                                                     <ul class="star_ul">
                                                         @if (Helper::getTotalProductRating($product->id))
                                                             @for ($i = 1; $i <= 5; $i++)
@@ -175,38 +179,67 @@
     </section>
 
 
-
-    <section class="home-appliances-sec">
-        <div class="container-fluid">
-            <div class="heading_hp">
-                <h2 class="text-white">
-                    {{ isset($content['slider_data_second_title']) ? $content['slider_data_second_title'] : '' }}</h2>
-            </div>
-            <div class="home-appliances-wrepper">
+    <section class="news-letter news-letter-center" id="News-letter"
+        style="background-image:url('{{ asset('ecom_assets/images/banner_big.jpg') }}');">
+        <div class="news ">
+            <div class="container position-relative z-1">
                 <div class="row">
-
-                    @if (isset($sliderDataSecond) && count($sliderDataSecond) > 0)
-                        @foreach ($sliderDataSecond as $slide)
-                            <div class="col-lg-4">
-                                <div class="h-appicent">
-                                    <img src="{{ Storage::url($slide['image']) }}"
-                                        alt="{{ $slide['title'] ?? 'Banner' }}" />
-                                    <div class="text-box">
-                                        <h4>{{ $slide['title'] ?? '' }}</h4>
-                                        <h5>{{ $slide['subtitle'] ?? '' }}</h5>
-                                        <a href="{{ $slide['link'] ?? '#' }}" target="_blank"
-                                            class="red_btn"><span>{{ $slide['button'] ?? 'Visit' }}</span></a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    @endif
-
-
+                    <div class="col-lg-10 mx-auto">
+                        <h2 class="news-heading text-center">when an unknown printer took a galley of type and scrambled
+                        </h2>
+                        <p class="des how-de text-center">Get the Latest news about digital Marketing to Your Pocket, drop
+                            your email
+                            below to get daliy update about us when an unknown printer took a galley of type and scrambled
+                            it to make a type specimen book.
+                        </p>
+                        <div class="text-center">
+                            <a class="red_btn slidebottomleft" href="{{ $slide['link'] ?? '#' }}" target="_blank">
+                                <span>Shop Now <i class="fa-solid fa-arrow-right"></i></span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+
+
+
+    <!--<section class="home-appliances-sec">-->
+    <!--    <div class="container-fluid">-->
+    <!--        <div class="heading_hp">-->
+    <!--            <h2 class="text-white">-->
+    <!--                {{ isset($content['slider_data_second_title']) ? $content['slider_data_second_title'] : '' }}</h2>-->
+    <!--        </div>-->
+    <!--        <div class="home-appliances-wrepper">-->
+    <!--            <div class="row">-->
+
+    <!--                @if (isset($sliderDataSecond) && count($sliderDataSecond) > 0)
+    -->
+    <!--                    @foreach ($sliderDataSecond as $slide)
+    -->
+    <!--                        <div class="col-lg-4">-->
+    <!--                            <div class="h-appicent">-->
+    <!--                                <img src="{{ Storage::url($slide['image']) }}"-->
+    <!--                                    alt="{{ $slide['title'] ?? 'Banner' }}" />-->
+    <!--                                <div class="text-box">-->
+    <!--                                    <h4>{{ $slide['title'] ?? '' }}</h4>-->
+    <!--                                    <h5>{{ $slide['subtitle'] ?? '' }}</h5>-->
+    <!--                                    <a href="{{ $slide['link'] ?? '#' }}" target="_blank"-->
+    <!--                                        class="red_btn"><span>{{ $slide['button'] ?? 'Visit' }}</span></a>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--
+    @endforeach-->
+    <!--
+    @endif-->
+
+
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--</section>-->
 
 
 
@@ -252,7 +285,11 @@
                                                 <p>{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
                                                 </p>
                                                 <div class="d-flex justify-content-between">
-                                                    <span class="price_text">${{ $product->price }}</span>
+                                                    @if (($product['is_free'] ?? false) || ($product->is_free ?? false))
+                                                        <span class="price_text"><strong>Free</strong></span>
+                                                    @else
+                                                        <span class="price_text">${{ $product['price'] }}</span>
+                                                    @endif
                                                     <ul class="star_ul">
                                                         @if (Helper::getTotalProductRating($product->id))
                                                             @for ($i = 1; $i <= 5; $i++)
@@ -299,12 +336,12 @@
                 </h2>
             </div>
             <div class="row align-items-center">
-                <div class="col-lg-3">
+                <div class="col-lg-3 col-md-6">
                     <div class="small-img">
                         <img src="{{ Storage::url($content['about_section_image'] ?? '') }}" alt="">
                     </div>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-3 col-md-6">
                     <div class="long-card">
                         <div class="center-box">
                             <h4>{{ $content['about_section_text_one_title'] ?? '' }}</h4>
@@ -312,7 +349,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-3 col-md-6">
                     <div class="long-card">
                         <div class="center-box">
                             <h4>{{ $content['about_section_text_two_title'] ?? '' }}</h4>
@@ -320,7 +357,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-3 col-md-6">
                     <div class="long-card">
                         <div class="center-box">
                             <h4>{{ $content['about_section_text_three_title'] ?? '' }}</h4>
@@ -331,6 +368,9 @@
             </div>
         </div>
     </section>
+
+
+
 
 
 @endsection

@@ -42,8 +42,8 @@
     </section>
 
 
-    <section class="catagory_sec product_details">
-        <div class="container py-5">
+    <section class="catagory_sec product_details common-padd">
+        <div class="container">
             <div class="row details-snippet1 justify-content-between">
                 <div class="col-md-5" id="product-images-section">
                     <div class="slider_left">
@@ -94,10 +94,15 @@
                         {{ $product->short_description }}
                     </div>
                     <div class="price my-2 warehouse-product-price-div">
-                        $<span id="warehouse-product-price">{{ $wareHouseHaveProductVariables?->price ?? '' }}</span></div>
-                    <div class="d-flex mb-2">
+                        @if ($product->is_free ?? false)
+                            <span class="badge bg-success">FREE</span>
+                        @else
+                            $<span id="warehouse-product-price">{{ $wareHouseHaveProductVariables?->price ?? '' }}</span>
+                        @endif
+                    </div>
+                    <div class=" mb-2">
                         <div class="theme-text subtitle">Description:</div>
-                        <div class="subtitle ms-2">
+                        <div class="subtitle p-descrition-text">
                             {!! $product->description !!}
                         </div>
                     </div>
@@ -116,6 +121,9 @@
                     </div>
 
                     <input id="warehouse-product-id" type="hidden" value="{{ $wareHouseHaveProductVariables?->id }}" />
+                    <input id="product-variation-id" type="hidden"
+                        value="{{ $wareHouseHaveProductVariables?->product_variation_id }}" />
+                    {{-- Select Size radio input button $product->sizes --}}
 
 
                     <div class="mb-3">
@@ -125,9 +133,7 @@
                             @foreach ($product->sizes as $key => $size)
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input product-select-size-input" type="radio" name="size"
-                                        id="size-{{ $size->size?->id }}" value="{{ $size->size?->id }}"
-                                        {{ ($cartItem ? ($cartItem->size_id == $size->size?->id ? 'checked' : '') : $key == 0) ? 'checked' : '' }}
-                                        {{ $cartItem && $cartItem->size_id !== $size->size?->id ? 'disabled' : '' }}>
+                                        id="size-{{ $size->size?->id }}" value="{{ $size->size?->id }}">
                                     <label class="form-check-label" for="size-{{ $size->size?->id }}">
                                         {{ $size->size?->size }}
                                     </label>
@@ -151,9 +157,7 @@
                                         <div class="form-check form-check-inline border rounded" hidden>
                                             {{-- add class product-select-color-input --}}
                                             <input class="btn-check product-select-color-input " type="radio"
-                                                name="color" id="color-{{ $color->id }}" value="{{ $color->id }}"
-                                                {{ ($cartItem ? ($cartItem->color_id == $color->id ? 'checked' : '') : $key == 0) ? 'checked' : '' }}
-                                                {{ $cartItem && $cartItem->color_id !== $color->id ? 'disabled' : '' }}>
+                                                name="color" id="color-{{ $color->id }}" value="{{ $color->id }}">
                                             <label class="btn" for="color-{{ $color->id }}">
                                                 {{ $color->color_name }}
 
@@ -163,10 +167,10 @@
                                             data-color-name="{{ $color->color_name ?? ($color->name ?? '') }}"
                                             style="max-width: 80px;
                                     max-height: 80px;
-                                    cursor: {{ $cartItem ? ($cartItem->color_id == $color->id ? 'pointer' : 'not-allowed') : 'pointer' }};
+                                    cursor: pointer;
                                     border: 2px solid #ddd; border-radius: 5px; margin-right: 10px;
-                                    opacity: {{ $cartItem ? ($cartItem->color_id == $color->id ? '1' : '0.5') : '1' }};
-                                    pointer-events: {{ $cartItem ? ($cartItem->color_id == $color->id ? 'auto' : 'none') : 'auto' }};"
+                                    opacity: 1;
+                                    pointer-events: auto;"
                                             src="{{ Storage::url($image->image_path ?? '') }}"
                                             alt="{{ $color->color_name ?? ($color->name ?? '') }}">
                                     @endif
@@ -175,44 +179,58 @@
                         @endif
                     </div>
                     <div class="d-flex">
-                        <div id="qty-div" class="me-3">
+                        {{-- <div id="qty-div" class="me-3">
                             <div class="d-flex justify-content-start align-items-center">
                                 <div class="small_number mb-3">
                                     <div class="qty-input">
                                         <button class="qty-count qty-count--minus" data-action="minus"
                                             type="button">-</button>
                                         <input class="product-qty" type="number" name="product-qty" min="0"
-                                            max="{{ $wareHouseHaveProductVariables?->quantity ?? 0 }}"
-                                            value="{{ $cartItem ? $cartItem->quantity : 0 }}"
-                                            data-cart-id="{{ $cartItem ? $cartItem->id : '' }}"
+                                            max="{{ $wareHouseHaveProductVariables?->quantity ?? 0 }}" value="0"
                                             data-product-id="{{ $product->id }}">
                                         <button class="qty-count qty-count--add" data-action="add" type="button">+</button>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                         {{-- hidden div for out of stock message badge --}}
                         <div id="out-of-stock-message" class="text-danger " style="display: none;">
                             <span class="h5">Out of Stock</span>
                         </div>
 
-                        @if ($cartItem)
-                            <div class="view-cart-btn cart-btns">
-                                <a href="{{ route('e-store.cart') }}" class="red_btn w-100 text-center"><span>View
-                                        Cart</span></a>
+                        {{-- Select option dropdown for quantity --}}
+                        <div class="me-3">
+                            <div class="d-flex justify-content-start align-items-center">
+                                <div class="small_number mb-3">
+                                    <div class="">
+                                        <select class="form-select product-qty" name="product-qty"
+                                            data-product-id="{{ $product->id }}">
+                                            <option value="1">Qty: 1</option>
+                                            @php
+                                                $qty = (int) ($wareHouseHaveProductVariables?->quantity ?? 0);
+                                                $max = $qty > 0 ? min($qty, 20) : 0;
+                                            @endphp
+                                            @for ($i = 2; $i <= $max; $i++)
+                                                <option value="{{ $i }}">{{ $i }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                        @else
-                            <div class="addtocart cart-btns" data-id="{{ $product->id }}">
-                                <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to
-                                        Cart</span></a>
-                            </div>
-                        @endif
+                        </div>
+
+
+                        <div class="addtocart cart-btns" data-id="{{ $product->id }}">
+                            <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to
+                                    Cart</span></a>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
-        <div class="container py-5">
+        <div class="container">
             <div class="additional-details my-5 text-left">
                 <!-- Nav pills -->
                 <ul class="nav nav-tabs justify-content-start">
@@ -276,8 +294,8 @@
     </section>
     @if (count($related_products) > 0)
         <section class="feature_sec">
-            <div class="pos_zi">
-                <div class="container">
+            <div class="container-fluid">
+                <div class="pos_zi">
                     <div class="row justify-content-center">
                         <div class="col-xl-7">
                             <div class="heading_hp text-center">
@@ -327,20 +345,10 @@
                                         <p>{{ strlen($related_product->short_description) > 50 ? substr($related_product->short_description, 0, 50) . '...' : $related_product->short_description }}
                                         </p>
                                         <span class="price_text">$ {{ $related_product->price }}</span>
+
+
                                     </div>
-                                    <div class="addtocart" data-id="{{ $related_product->id }}">
-                                        <a href="javascript:void(0);">
-                                            @php
-                                                $relatedCartItem = \App\Models\EstoreCart::where(
-                                                    'user_id',
-                                                    auth()->id(),
-                                                )
-                                                    ->where('product_id', $related_product->id)
-                                                    ->first();
-                                            @endphp
-                                            {{ $relatedCartItem ? 'View Cart' : 'ADD TO CART' }}
-                                        </a>
-                                    </div>
+
                                 </div>
                             </div>
                         @endforeach
@@ -354,6 +362,8 @@
 
 @push('scripts')
     <script>
+        // Flag from backend whether this product is free
+        const IS_FREE_PRODUCT = {{ $product->is_free ?? false ? 'true' : 'false' }};
         $(document).ready(function() {
             $(document).on('submit', '#review-form', function() {
                 var formData = $(this).serialize();
@@ -393,129 +403,7 @@
             });
         });
 
-        // on page load get-warehouse-product-details
-        $(document).ready(function() {
-            var selectedSize = $(".product-select-size-input:checked").val();
-            var selectedColor = $(".product-select-color-input:checked").val();
-            $.ajax({
-                url: "{{ route('e-store.get-warehouse-product-details') }}",
-                type: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    product_id: "{{ $product->id }}",
-                    size_id: selectedSize,
-                    color_id: selectedColor
-                },
-                success: function(response) {
-                    if (response.status == true) {
-                        console.log("Warehouse product details:", response.data);
-                        $("#product-sku").text(response.data.sku);
-                        $("#warehouse-product-id").val(response.data.id);
-                        $("#warehouse-product-price").text(response.data.price);
-                        // Update max quantity
-                        $(".product-qty").attr("max", response.data.quantity);
-
-                        $(".product-qty").trigger("change");
-
-                        // products images section update by response.data.images on product-images-section
-                        var productImagesSection = $("#product-images-section");
-
-                        // build same HTML structure as original
-                        var sliderLeft = $('<div class="slider_left"></div>');
-                        var sliderFor = $('<div class="slider-for" id="prodcut-first-image"></div>');
-                        var sliderNav = $('<div class="slider-nav" id="product-other-images"></div>');
-
-                        // base storage url from server side
-                        var storageBase = "{{ rtrim(Storage::url(''), '/') }}/";
-
-                        if (Array.isArray(response.data.images) && response.data.images.length) {
-                            response.data.images.forEach(function(image) {
-                                var src = (typeof image.image_path === 'string' && image
-                                        .image_path.indexOf('http') === 0) ?
-                                    image.image_path :
-                                    storageBase + image.image_path;
-
-                                sliderFor.append(
-                                    $('<div class="slid_big_img"></div>').append(
-                                        $('<img>').attr('src', src)
-                                    )
-                                );
-
-                                sliderNav.append(
-                                    $('<div class="small_box_img"></div>').append(
-                                        $('<div class="slid_small_img"></div>').append(
-                                            $('<img>').attr('src', src)
-                                        )
-                                    )
-                                );
-                            });
-                        } else {
-                            // fallback: empty content or a placeholder
-                            sliderFor.append(
-                                '<div class="slid_big_img"><img src="{{ asset('ecom_assets/images/no-image.png') }}" /></div>'
-                            );
-                        }
-
-                        productImagesSection.empty().append(sliderLeft.append(sliderFor).append(
-                            sliderNav));
-
-                        // re-init sliders if slick is available
-                        if ($.fn.slick) {
-                            // destroy existing instances if any
-                            if ($('.slider-for').hasClass('slick-initialized')) {
-                                $('.slider-for').slick('unslick');
-                            }
-                            if ($('.slider-nav').hasClass('slick-initialized')) {
-                                $('.slider-nav').slick('unslick');
-                            }
-
-                            $('.slider-for').slick({
-                                slidesToShow: 1,
-                                slidesToScroll: 1,
-                                arrows: false,
-                                fade: true,
-                                asNavFor: '.slider-nav'
-                            });
-                            $('.slider-nav').slick({
-                                slidesToShow: 4,
-                                slidesToScroll: 1,
-                                asNavFor: '.slider-for',
-                                dots: false,
-                                centerMode: false,
-                                focusOnSelect: true
-                            });
-                        }
-
-                        // if stock quantity is available
-                        if (response.data.quantity > 0 && response.data.price > 0) {
-                            $("#qty-div").show();
-                            $("#out-of-stock-message").hide();
-                            $(".cart-btns").show();
-                            $(".warehouse-product-price-div").show();
-
-                        } else {
-                            $("#qty-div").hide();
-                            $("#out-of-stock-message").show();
-                            $(".cart-btns").hide();
-
-                            $(".warehouse-product-price-div").hide();
-                        }
-                    } else {
-                        toastr.error(response.message);
-                        $("#qty-div").hide();
-                        $("#out-of-stock-message").show();
-                        $(".cart-btns").hide();
-                        $(".warehouse-product-price-div").hide();
-                    }
-                },
-                error: function(xhr, status, error) {
-                    toastr.error("An error occurred while fetching product details.");
-                }
-            });
-        });
-
-        // on change product-select-size-input or product-select-color-input // by ajax get warehouse product details by product id with optional size and color
-        $(document).on("change", ".product-select-size-input, .product-select-color-input", function() {
+        function getWareHouseProductDetails() {
             var selectedSize = $(".product-select-size-input:checked").val();
             var selectedColor = $(".product-select-color-input:checked").val();
             console.log("Selected size:", selectedSize);
@@ -569,6 +457,7 @@
                         $("#product-sku").text(response.data.sku);
                         // update warehouse-product-id input value
                         $("#warehouse-product-id").val(response.data.id);
+                        $("#product-variation-id").val(response.data.product_variation_id);
                         $("#warehouse-product-price").text(response.data.price);
                         // Update max quantity
                         $(".product-qty").attr("max", response.data.quantity);
@@ -643,31 +532,68 @@
                             });
                         }
 
-                        // if stock quantity is available
-                        if (response.data.quantity > 0 && response.data.price > 0) {
+                        // If stock quantity available; for free product ignore price check
+                        if (response.data.quantity > 0 && (IS_FREE_PRODUCT || response.data.price > 0)) {
                             $("#qty-div").show();
                             $("#out-of-stock-message").hide();
                             $(".cart-btns").show();
+                            // Keep price (or FREE badge) visible
                             $(".warehouse-product-price-div").show();
 
                         } else {
                             $("#qty-div").hide();
                             $("#out-of-stock-message").show();
                             $(".cart-btns").hide();
-                            $(".warehouse-product-price-div").hide();
+                            // Only hide price area if not free product
+                            if (!IS_FREE_PRODUCT) {
+                                $(".warehouse-product-price-div").hide();
+                            }
                         }
                     } else {
                         toastr.error(response.message);
                         $("#qty-div").hide();
                         $("#out-of-stock-message").show();
                         $(".cart-btns").hide();
-                        $(".warehouse-product-price-div").hide();
+                        if (!IS_FREE_PRODUCT) {
+                            $(".warehouse-product-price-div").hide();
+                        }
                     }
                 },
                 error: function(xhr, status, error) {
                     toastr.error("An error occurred while fetching product details.");
                 }
             });
+        }
+
+        // on page load get-warehouse-product-details
+        $(document).ready(function() {
+            // Auto-select first size if sizes exist and none selected
+            var $firstSize = $(".product-select-size-input").first();
+            if ($firstSize.length && $(".product-select-size-input:checked").length === 0) {
+                $firstSize.prop('checked', true);
+            }
+
+            // Auto-select first color if color images / radios exist and none selected
+            var $firstColorRadio = $(".product-select-color-input").first();
+            if ($firstColorRadio.length && $(".product-select-color-input:checked").length === 0) {
+                $firstColorRadio.prop('checked', true);
+                // Also visually highlight corresponding image if present
+                var colorId = $firstColorRadio.val();
+                $(".product-select-color-input-image").css('border', '4px solid #ddd');
+                $(".product-select-color-input-image[data-color-id='" + colorId + "']").css('border',
+                    '4px solid #643171');
+                var colorName = $('label[for="color-' + colorId + '"]').text().trim();
+                if (colorName) {
+                    $("#selected-color").text(colorName);
+                }
+            }
+
+            getWareHouseProductDetails();
+        });
+
+        // on change product-select-size-input or product-select-color-input // by ajax get warehouse product details by product id with optional size and color
+        $(document).on("change", ".product-select-size-input, .product-select-color-input", function() {
+            getWareHouseProductDetails();
         });
     </script>
 

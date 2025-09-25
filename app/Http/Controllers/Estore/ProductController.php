@@ -140,7 +140,7 @@ class ProductController extends Controller
         if (!empty($nearest['warehouse']->id)) {
             $nearbyWareHouseId = $nearest['warehouse']->id;
         }
-        // return $getNearbywareHouse;
+        // return $nearest;
 
         $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
             $q->where('warehouse_id', $nearbyWareHouseId)
@@ -169,11 +169,18 @@ class ProductController extends Controller
         } else {
             $category = null;
         }
-        $products = $products->orderBy('id', 'DESC')->limit(12)->get();
+        $products = $products->orderBy('id', 'DESC')->limit(12)->lazy();
         // dd($products);
 
         $products_count  = $products->count();
-        $categories = Category::where('status', 1)->orderBy('id', 'DESC')->get();
+        // Build hierarchical categories (up to 3 levels for UI)
+        $categories = Category::whereNull('parent_id')
+            ->where('status', 1)
+            ->with(['children' => function ($q) {
+                $q->with(['children']); // nested second level
+            }])
+            ->orderBy('name')
+            ->get();
         //  return $categories;
         $isAuth = auth()->check();
         $userSessionId = session()->getId();
@@ -223,7 +230,26 @@ class ProductController extends Controller
             //  }
 
             if (!empty($category_id)) {
-                $products->whereIn('category_id', $category_id);
+                // Expand selected categories to include all descendants
+                $allCategoryIds = [];
+                $queue = Category::whereIn('id', $category_id)->get();
+                foreach ($queue as $cat) {
+                    $allCategoryIds[] = $cat->id;
+                }
+                // BFS through children to collect all descendants
+                $index = 0;
+                while ($index < count($queue)) {
+                    $current = $queue[$index];
+                    $children = $current->children()->pluck('id')->toArray();
+                    foreach ($children as $childId) {
+                        if (!in_array($childId, $allCategoryIds)) {
+                            $allCategoryIds[] = $childId;
+                            $queue->push(Category::find($childId));
+                        }
+                    }
+                    $index++;
+                }
+                $products->whereIn('category_id', $allCategoryIds);
             }
 
             // if (!empty($prices)) {
@@ -335,6 +361,7 @@ class ProductController extends Controller
                 'product_id' => 'required|integer',
                 'quantity' => 'required|integer|min:1',
                 'warehouse_product_id' => 'required|integer',
+                'product_variation_id' => 'required|integer',
             ]);
 
             $isAuth = auth()->check();
@@ -351,20 +378,30 @@ class ProductController extends Controller
             $warehouseProduct = WarehouseProduct::find($warehouseProductId);
             $wareHouse = Warehouse::find($warehouseProduct->warehouse_id);
 
+            $wareHouseProductPrice = $warehouseProduct->price ?? 0;
+            $isFree = $product->is_free ?? false;
+
             // Check if product already exists in cart
             if ($isAuth) {
                 $existingCart = EstoreCart::where('user_id', auth()->id())
                     ->where('product_id', $product->id)
+                    // ->where('warehouse_product_id', $warehouseProductId)
+                    ->where('product_variation_id', $request->product_variation_id)
                     ->first();
             } else {
                 $existingCart = EstoreCart::where('session_id', $userSessionId)
                     ->where('product_id', $product->id)
+                    ->where('product_variation_id', $request->product_variation_id)
                     ->first();
             }
 
             if ($existingCart) {
                 // Update quantity instead of creating new entry
                 $existingCart->quantity += $request->quantity;
+                if ($isFree) {
+                    $existingCart->old_price = $existingCart->price; // keep previous stored
+                    $existingCart->price = 0;
+                }
                 $existingCart->save();
                 return response()->json([
                     'status' => true,
@@ -391,11 +428,14 @@ class ProductController extends Controller
             $cart = new EstoreCart();
             $cart->user_id = auth()->id();
             $cart->product_id = $product->id;
+            $cart->product_variation_id = $warehouseProduct->product_variation_id;
             $cart->warehouse_product_id = $warehouseProduct->id;
             $cart->warehouse_id = $wareHouse->id;
             $cart->size_id = $sizeId;
             $cart->color_id = $colorId;
             $cart->quantity = $request->quantity;
+            $cart->old_price = $wareHouseProductPrice;
+            $cart->price = $isFree ? 0 : $wareHouseProductPrice;
             $cart->session_id = $userSessionId;
             $cart->save();
 
@@ -423,13 +463,18 @@ class ProductController extends Controller
             $cartItem = $isAuth ? EstoreCart::where('user_id', auth()->id()) : EstoreCart::where('session_id', $userSessionId);
             $cartItem = $cartItem->where('product_id', $request->product_id)->first();
 
+            // return response()->json([
+            //     'status' => true,
+            //     'inCart' => $cartItem ? true : false,
+            //     'cartItem' => $cartItem ? [
+            //         'id' => $cartItem->id,
+            //         'quantity' => $cartItem->quantity
+            //     ] : null
+            // ]);
             return response()->json([
                 'status' => true,
-                'inCart' => $cartItem ? true : false,
-                'cartItem' => $cartItem ? [
-                    'id' => $cartItem->id,
-                    'quantity' => $cartItem->quantity
-                ] : null
+                'inCart' => false,
+                'cartItem' => null
             ]);
         }
     }
@@ -553,27 +598,63 @@ class ProductController extends Controller
         $isAuth = auth()->check();
         $userSessionId = session()->getId();
 
-        $carts = $isAuth ? EstoreCart::where('user_id', auth()->id())->with('product.otherCharges')->get() : EstoreCart::where('session_id', $userSessionId)->with('product.otherCharges')->get();
+        $carts = $isAuth
+            ? EstoreCart::where('user_id', auth()->id())->with(['product.otherCharges', 'warehouseProduct'])
+            ->get()
+            : EstoreCart::where('session_id', $userSessionId)->with(['product.otherCharges', 'warehouseProduct'])
+            ->get();
         $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
 
         $total = 0;
+        $hasChanges = false; // flag if any price changed or stock issue
 
         foreach ($carts as $cart) {
-            // Check if cart quantity exceeds available stock
-            if ($cart->warehouseProduct && $cart->quantity > $cart->warehouseProduct->quantity) {
-                // Update cart quantity to match available stock
-                $cart->quantity = $cart->warehouseProduct->quantity;
+            $warehouseProduct = $cart->warehouseProduct;
+            $currentWarehousePrice = $warehouseProduct?->price ?? 0;
+            $availableQty = $warehouseProduct?->quantity ?? 0;
+            // Build meta locally to avoid indirect modification issue
+            $meta = [
+                'price_changed' => false,
+                'out_of_stock' => false,
+                'original_price' => $cart->price,
+                'current_price' => $currentWarehousePrice,
+            ];
+
+            // Detect price change (ignore free products where price forced to 0)
+            if (($cart->price ?? 0) != $currentWarehousePrice && !($cart->product?->is_free)) {
+                // Update cart price in DB so subsequent calculations are correct
+                $cart->old_price = $cart->price;
+                $cart->price = $currentWarehousePrice;
                 $cart->save();
-                $quantityUpdated = true;
+                $meta['price_changed'] = true;
+                $hasChanges = true;
             }
-            // Calculate other charges for this cart item
+
+            // Stock validation: if no stock or quantity exceeds available
+            if ($availableQty <= 0) {
+                $meta['out_of_stock'] = true;
+                $hasChanges = true;
+            } elseif ($cart->quantity > $availableQty) {
+                // Reduce quantity to available
+                $cart->quantity = $availableQty;
+                $cart->save();
+                $hasChanges = true;
+            }
+
+            // Recalculate other charges
             $otherCharges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
 
-            $cart->subtotal = ($cart->warehouseProduct->price ?? 0) * $cart->quantity + ($otherCharges ?? 0);
-            $total += $cart->subtotal;
+            // Subtotal only if not out_of_stock
+            if (!$meta['out_of_stock']) {
+                $cart->subtotal = ($cart->price ?? 0) * $cart->quantity + ($otherCharges ?? 0);
+                $total += $cart->subtotal;
+            } else {
+                $cart->subtotal = 0;
+            }
+            // Assign meta at end
+            $cart->setAttribute('meta', $meta);
         }
-
-        return view('ecom.cart')->with(compact('carts', 'total', 'cartCount'));
+        return view('ecom.cart')->with(compact('carts', 'total', 'cartCount', 'hasChanges'));
     }
 
     // checkout page
@@ -584,7 +665,7 @@ class ProductController extends Controller
         }
 
         $carts = EstoreCart::where('user_id', auth()->id())
-            ->with('product.otherCharges')
+            ->with(['product.otherCharges', 'warehouseProduct'])
             ->get();
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 
@@ -598,11 +679,34 @@ class ProductController extends Controller
         $subtotal = 0;
         $cartItems = [];
 
+        $hasChanges = false;
         foreach ($carts as $cart) {
-            // Calculate other charges for this cart item
-            $otherCharges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
-            $itemSubtotal = (($cart->warehouseProduct->price ?? 0) * $cart->quantity) + $otherCharges;
+            $warehouseProduct = $cart->warehouseProduct;
+            $currentWarehousePrice = $warehouseProduct?->price ?? 0;
+            $availableQty = $warehouseProduct?->quantity ?? 0;
 
+            $priceChanged = false;
+            $outOfStock = false;
+
+            if (($cart->price ?? 0) != $currentWarehousePrice && !($cart->product?->is_free)) {
+                $cart->old_price = $cart->price;
+                $cart->price = $currentWarehousePrice;
+                $cart->save();
+                $priceChanged = true;
+                $hasChanges = true;
+            }
+
+            if ($availableQty <= 0) {
+                $outOfStock = true;
+                $hasChanges = true;
+            } elseif ($cart->quantity > $availableQty) {
+                $cart->quantity = $availableQty;
+                $cart->save();
+                $hasChanges = true;
+            }
+
+            $otherCharges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
+            $itemSubtotal = $outOfStock ? 0 : ((($cart->price ?? 0) * $cart->quantity) + $otherCharges);
             $subtotal += $itemSubtotal;
 
             $cartItems[] = [
@@ -610,10 +714,14 @@ class ProductController extends Controller
                 'product_id' => $cart->product_id,
                 'product_name' => $cart->product->name ?? '',
                 'product_image' => $cart->product->main_image ?? '',
-                'price' => $cart->warehouseProduct->price ?? 0,
+                'price' => $cart->price ?? 0,
                 'quantity' => $cart->quantity,
                 'other_charges' => $otherCharges,
-                'subtotal' => $itemSubtotal
+                'subtotal' => $itemSubtotal,
+                'price_changed' => $priceChanged,
+                'out_of_stock' => $outOfStock,
+                'original_price' => $cart->old_price ?? null,
+                'current_price' => $cart->price ?? 0,
             ];
         }
 
@@ -636,7 +744,7 @@ class ProductController extends Controller
         $total = $subtotal + $shippingCost + $deliveryCost + $taxAmount;
 
 
-        return view('ecom.checkout')->with(compact('cartItems', 'subtotal', 'shippingCost', 'deliveryCost', 'taxAmount', 'total', 'cartCount', 'estoreSettings'));
+        return view('ecom.checkout')->with(compact('cartItems', 'subtotal', 'shippingCost', 'deliveryCost', 'taxAmount', 'total', 'cartCount', 'estoreSettings', 'hasChanges'));
     }
 
     // Process checkout
@@ -663,7 +771,7 @@ class ProductController extends Controller
 
         $is_pickup = $request->order_method ?? 0;
 
-        $carts = EstoreCart::where('user_id', auth()->id())->with('product', 'warehouseProduct')->get();
+        $carts = EstoreCart::where('user_id', auth()->id())->with(['product.otherCharges', 'warehouseProduct'])->get();
 
         if ($carts->isEmpty()) {
             return response()->json(['status' => false, 'message' => 'Your cart is empty']);
@@ -671,16 +779,42 @@ class ProductController extends Controller
 
         $estoreSettings = EstoreSetting::first();
 
-        // Attach other charges safely
-        $carts->each(function ($cart) {
-            $cart->other_charges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
-        });
+        // Revalidate price & stock just before order placement
+        $hasBlockingStockIssue = false;
+        $recalculatedSubtotal = 0;
+        foreach ($carts as $cart) {
+            $warehouseProduct = $cart->warehouseProduct;
+            $currentWarehousePrice = $warehouseProduct?->price ?? 0;
+            $availableQty = $warehouseProduct?->quantity ?? 0;
 
-        // Calculate subtotal safely
-        $subtotal = $carts->sum(function ($cart) {
-            $price = $cart->warehouseProduct->price ?? 0;
-            return ($price * $cart->quantity) + ($cart->other_charges ?? 0);
-        });
+            // Update price if changed (except free products)
+            if (($cart->price ?? 0) != $currentWarehousePrice && !($cart->product?->is_free)) {
+                $cart->old_price = $cart->price;
+                $cart->price = $currentWarehousePrice;
+                $cart->save();
+            }
+
+            // Stock validation
+            if ($availableQty <= 0) {
+                $hasBlockingStockIssue = true;
+                $cart->rejected_reason = 'out_of_stock';
+                continue; // Skip subtotal contribution
+            } elseif ($cart->quantity > $availableQty) {
+                $cart->quantity = $availableQty;
+                $cart->save();
+            }
+
+            $cart->other_charges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
+            $unitPrice = $cart->price ?? ($currentWarehousePrice);
+            $recalculatedSubtotal += ($unitPrice * $cart->quantity) + ($cart->other_charges ?? 0);
+        }
+        $subtotal = $recalculatedSubtotal;
+        if ($subtotal <= 0 && $hasBlockingStockIssue) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Some items are out of stock. Please review your cart before proceeding.'
+            ], 422);
+        }
 
         $shippingCost = $deliveryCost = $taxAmount = 0;
 
@@ -714,23 +848,23 @@ class ProductController extends Controller
         DB::beginTransaction();
 
         try {
-            Stripe::setApiKey(env('STRIPE_SECRET'));
+            $paymentIntent = null;
+            if ($totalAmount > 0) {
+                Stripe::setApiKey(env('STRIPE_SECRET'));
+                $paymentIntent = PaymentIntent::create([
+                    'amount' => round($totalAmount * 100), // cents
+                    'currency' => 'usd',
+                    'payment_method' => $request->payment_method_id,
+                    'payment_method_types' => ['card'],
+                    'confirmation_method' => 'manual',
+                    'confirm' => true,
+                    'receipt_email' => $request->email,
+                ]);
 
-            $paymentIntent = PaymentIntent::create([
-                'amount' => round($totalAmount * 100), // cents
-                'currency' => 'usd',
-                'payment_method' => $request->payment_method_id,
-                'payment_method_types' => ['card'],
-                'confirmation_method' => 'manual',
-                'confirm' => true,
-                'receipt_email' => $request->email,
-            ]);
-
-
-
-            if ($paymentIntent->status !== 'succeeded') {
-                DB::rollback();
-                return response()->json(['status' => false, 'message' => 'Payment failed']);
+                if ($paymentIntent->status !== 'succeeded') {
+                    DB::rollback();
+                    return response()->json(['status' => false, 'message' => 'Payment failed']);
+                }
             }
 
             $warehouseId = $carts->first()->warehouse_id ?? null;
@@ -775,7 +909,7 @@ class ProductController extends Controller
                     'warehouse_id' => $cart->warehouse_id,
                     'product_name' => $cart->product->name ?? 'Unknown Product',
                     'product_image' => $cart->product->main_image ?? null,
-                    'price' => $cart->warehouseProduct->price ?? 0,
+                    'price' => $cart->price ?? ($cart->warehouseProduct->price ?? 0),
                     'quantity' => $cart->quantity,
                     'size_id' => $cart->size_id,
                     'color_id' => $cart->color_id,
@@ -790,7 +924,7 @@ class ProductController extends Controller
                         ]) ?? []
                     ),
 
-                    'total' => (($cart->warehouseProduct?->price ?? 0) * $cart->quantity) + ($cart->other_charges ?? 0),
+                    'total' => ((($cart->price ?? ($cart->warehouseProduct?->price ?? 0))) * $cart->quantity) + ($cart->other_charges ?? 0),
 
                 ]);
 
@@ -849,21 +983,23 @@ class ProductController extends Controller
                 }
             }
 
-            EstorePayment::create([
-                'order_id' => $order->id,
-                'stripe_payment_intent_id' => $paymentIntent->id,
-                'payment_method' => 'stripe',
-                'payment_type' => $request->payment_type,
-                'amount' => $totalAmount,
-                'currency' => 'USD',
-                'status' => 'succeeded',
-                'payment_details' => [
-                    'payment_intent_id' => $paymentIntent->id,
-                    'amount_received' => $paymentIntent->amount_received,
-                    'currency' => $paymentIntent->currency,
-                ],
-                'paid_at' => now()
-            ]);
+            if ($paymentIntent) {
+                EstorePayment::create([
+                    'order_id' => $order->id,
+                    'stripe_payment_intent_id' => $paymentIntent->id,
+                    'payment_method' => 'stripe',
+                    'payment_type' => $request->payment_type,
+                    'amount' => $totalAmount,
+                    'currency' => 'USD',
+                    'status' => 'succeeded',
+                    'payment_details' => [
+                        'payment_intent_id' => $paymentIntent->id,
+                        'amount_received' => $paymentIntent->amount_received,
+                        'currency' => $paymentIntent->currency,
+                    ],
+                    'paid_at' => now()
+                ]);
+            }
 
             $checkoutUrl = route('e-store.order-success', $order->id);
             EstoreCart::where('user_id', auth()->id())->delete();
@@ -1217,7 +1353,8 @@ class ProductController extends Controller
 
 
 
-            $product = Product::find($request->product_id);
+            $product = Product::where('id', $request->product_id)->where('is_deleted', 0)->first();
+
             if (!$product) {
                 return response()->json(['status' => false, 'message' => 'Product not found']);
             }
@@ -1238,21 +1375,28 @@ class ProductController extends Controller
             if (!empty($nearest['warehouse']->id)) {
                 $nearbyWareHouseId = $nearest['warehouse']->id;
             }
-            // return $getNearbywareHouse;
 
             $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
                 $q->where('warehouse_id', $nearbyWareHouseId)
                     ->where('quantity', '>', 0);
             })->pluck('id')->toArray();
 
-            $warehouseProduct = WarehouseProduct::with('images')->where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)
-                ->when($request->size_id, function ($query) use ($request) {
-                    return $query->where('size_id', $request->size_id);
-                })
-                ->when($request->color_id, function ($query) use ($request) {
-                    return $query->where('color_id', $request->color_id);
-                })
-                ->first();
+            // return $nearbyWareHouseId;
+
+            if ($product->product_type != 'simple') {
+                $warehouseProduct = WarehouseProduct::with('images')->where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)
+                    ->when($request->size_id, function ($query) use ($request) {
+                        return $query->where('size_id', $request->size_id);
+                    })
+                    ->when($request->color_id, function ($query) use ($request) {
+                        return $query->where('color_id', $request->color_id);
+                    })
+                    ->first();
+            } else {
+                $warehouseProduct = WarehouseProduct::with('images')->where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)->first();
+            }
+
+            // return $warehouseProduct;
 
             if (!$warehouseProduct) {
                 return response()->json(['status' => false, 'message' => 'Item Out Of Stock']);

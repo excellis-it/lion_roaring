@@ -1,5 +1,5 @@
 :root {
-  --yellow-color: #D98B1C;
+  --yellow-color: #ff6632;
   --main-color: #643271;
   --heading-color:#303030;
   --text-color: #1E1E1E;
@@ -68,10 +68,10 @@
 }
 #cssmenu > ul > li > a {
   padding: 12px 12px;
-  font-size: 15px;
+  font-size: 16px;
   letter-spacing: 1px;
   text-decoration: none;
-  color: var(--text-color);
+  color: var(--white-color);
   font-weight: 400;
   text-transform: uppercase;
   font-family: var(--main-font);
@@ -105,7 +105,7 @@
   width: 8px;
   height: 2px;
   display: block;
-  background: var(--text-color);
+  background: var(--white-color);
   content: '';
 }
 #cssmenu > ul > li.has-sub > a:before {
@@ -115,13 +115,17 @@
   display: block;
   width: 2px;
   height: 8px;
-  background: var(--text-color);
+  background: var(--white-color);
   content: '';
   -webkit-transition: all .25s ease;
   -moz-transition: all .25s ease;
   -ms-transition: all .25s ease;
   -o-transition: all .25s ease;
   transition: all .25s ease;
+}
+.main_menu_hdr.is-sticky #cssmenu > ul > li.has-sub > a:before,
+.main_menu_hdr.is-sticky #cssmenu > ul > li.has-sub > a:after{
+    background-color: var(--text-color);
 }
 #cssmenu > ul > li.has-sub:hover > a:before {
   top: 23px;
@@ -153,7 +157,7 @@
   height: 35px;
 }
 #cssmenu ul ul ul {
-  margin-left: 100%;
+  margin-left: -100%;
   top: 0;
 }
 #cssmenu.align-right ul ul ul {
@@ -217,7 +221,7 @@
   top: 17px;
   height: 0;
 }
-@media all and (max-width: 768px), only screen and (-webkit-min-device-pixel-ratio: 2) and (max-width: 768px), only screen and (min--moz-device-pixel-ratio: 2) and (max-width: 768px), only screen and (-o-min-device-pixel-ratio: 2/1) and (max-width: 768px), only screen and (min-device-pixel-ratio: 2) and (max-width: 768px), only screen and (min-resolution: 192dpi) and (max-width: 768px), only screen and (min-resolution: 2dppx) and (max-width: 768px) {
+@media all and (max-width: 992px), only screen and (-webkit-min-device-pixel-ratio: 2) and (max-width: 992px), only screen and (min--moz-device-pixel-ratio: 2) and (max-width: 992px), only screen and (-o-min-device-pixel-ratio: 2/1) and (max-width: 992px), only screen and (min-device-pixel-ratio: 2) and (max-width: 992px), only screen and (min-resolution: 192dpi) and (max-width: 992px), only screen and (min-resolution: 2dppx) and (max-width: 992px) {
   #cssmenu {
     width: 100%;
   }
@@ -294,8 +298,8 @@
     display: block;
     height: 8px;
     width: 20px;
-    border-top: 2px solid var(--black-color);
-    border-bottom: 2px solid var(--black-color);
+    border-top: 2px solid var(--white-color);
+    border-bottom: 2px solid var(--white-color);
     content: '';
   }
   #cssmenu #menu-button:before {
@@ -305,7 +309,7 @@
     display: block;
     height: 2px;
     width: 20px;
-    background: var(--black-color);
+    background: var(--white-color);
     content: '';
   }
   #cssmenu #menu-button.menu-opened:after {
@@ -381,6 +385,9 @@
   }
   #cssmenu .submenu-button.submenu-opened:before {
     display: none;
+  }
+  #cssmenu ul li a, #cssmenu ul ul li a{
+      color: var(--text-color);
   }
 }
 @media all and (max-width: 768px){

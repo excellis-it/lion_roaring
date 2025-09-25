@@ -1,13 +1,49 @@
 @php
     use App\Helpers\Helper;
 @endphp
-<div class="top-bar-header">
+<!--<div class="top-bar-header">-->
+<!--    <div class="container-fluid">-->
+<!--        <div class="top-bar-wrepper">-->
+<!--            <div class="row align-items-center">-->
+<!--                <div class="col-lg-4">-->
+
+<!--                </div>-->
+<!--                <div class="col-lg-4">-->
+<!--                    <div class="input-group border-0">-->
+
+<!--                        <input id="global-search" class="form-control" type="search" autocomplete="off"-->
+<!--                            placeholder="Search products..." aria-autocomplete="list" aria-expanded="false"-->
+<!--                            aria-haspopup="listbox">-->
+<!--                        <span class="input-group-text"-->
+<!--                            style="background-color: #ff6632;border-radius: 0px 5px 5px 0px;"><i-->
+<!--                                class="fa fa-search"></i></span>-->
+<!--                        <div id="search-suggestions" class="search-suggestions d-none" role="listbox"></div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-lg-4">-->
+
+<!--                </div>-->
+<!--            </div>-->
+
+
+
+
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<div class="main_menu_hdr page-header">
     <div class="container-fluid">
-        <div class="top-bar-wrepper">
-            <div class="row align-items-center">
-                <div class="col-lg-4">
+        <div class="main_menu">
+            <div class="navigation navbar">
+                <div class="left_top">
+                    <div class="logo">
+                        <a href="{{ route('e-store') }}" class="">
+                            <img src="{{ asset('ecom_assets/images/estore_logo.png') }}" alt="" />
+                        </a>
+                    </div>
+
                     <div class="top-bar-text">
-                        <span class="d-block font-bold ms-3" onclick="changeLocation()" style="cursor: pointer;">My
+                        <span class="d-block font-bold" onclick="changeLocation()" style="cursor: pointer;">My
                             Location </span>
 
                         @if (Auth::check())
@@ -31,116 +67,97 @@
                         @endif
                     </div>
                 </div>
-                <div class="col-lg-4">
-                    <div class="input-group border-0">
-
-                        <input id="global-search" class="form-control" type="search" autocomplete="off"
-                            placeholder="Search products..." aria-autocomplete="list" aria-expanded="false"
-                            aria-haspopup="listbox">
-                        <span class="input-group-text"
-                            style="background-color: #ff6632;border-radius: 0px 5px 5px 0px;"><i
-                                class="fa fa-search"></i></span>
-                        <div id="search-suggestions" class="search-suggestions d-none" role="listbox"></div>
+                <div class="menu-with-login-right">
+                    <div class="right_btm order-4 order-lg-3">
+                        <div id="cssmenu">
+                            <ul>
+                                <li><a href="{{ route('e-store') }}">Home</a></li>
+                                <li><a href="{{ route('e-store') }}">Category</a>
+                                    {!! Helper::renderCategoryTree() !!}
+                                </li>
+                                <li><a href="{{ route('e-store.all-products') }}">Shop</a></li>
+                                <li><a href="{{ route('e-store.contact') }}">Contact Us</a></li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="right_login">
-                        <div class="d-flex align-items-center justify-content-end">
-                            {{-- <a href="{{ route('user.profile') }}" class="back_main">back to main page</a> --}}
+                    <div class="right_top order-3 order-lg-4">
+                        <div class="right_login">
+                            <div class="search-toggle">
+                            <button class="search-icon icon-search"><i class="fa fa-fw fa-search"></i></button>
+                            <button class="search-icon icon-close"><i class="fa fa-fw  fa-close"></i></button>
+                          </div>
+                          <div class="search-container">
+                            <form>
+                              <input type="text" name="q" id="search-terms" placeholder="Search terms..." />
+                              <button type="submit" name="submit" value="Go" class="search-icon"><i class="fa fa-fw fa-search"></i></button>
+                            </form>
+                          </div>
 
-                            <a href="{{ route('e-store.wishlist') }}" class="shoping_cart"><i
-                                    class="fa-solid fa-heart"></i></a>
 
-                            <a href="{{ route('e-store.cart') }}" class="shoping_cart"><i class="fa fa-shopping-cart"
-                                    aria-hidden="true"></i><span class="cart_count">{{ Helper::cartCount() }}</span></a>
-                            <div class="profile_dropdown">
-                                <div class="dropdown">
-                                    <button class="profile_img_round dropdown-toggle" type="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span>
-                                            @if (Auth::user() && Auth::user()->profile_picture)
-                                                <img src="{{ Storage::url(Auth::user()->profile_picture) }}"
-                                                    alt="" />
-                                            @else
-                                                <img src="{{ asset('user_assets/images/profile_dummy.png') }}"
-                                                    alt="" />
-                                            @endif
-                                        </span>
-                                    </button>
-                                    @if (Auth::user())
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="{{ route('e-store.wishlist') }}">My
-                                                    Wishlist</a>
-                                            <li><a class="dropdown-item" href="{{ route('user.profile') }}">Profile</a>
-                                            </li>
-                                            <li><a class="dropdown-item" href="{{ route('e-store.my-orders') }}">My
-                                                    Orders</a></li>
-                                            <li><a class="dropdown-item"
-                                                    href="{{ route('user.change.password') }}">Change
-                                                    Password</a></li>
-                                            <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a>
-                                            </li>
-                                        </ul>
-                                    @else
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="javascript:void(0);"
-                                                    data-bs-toggle="modal" data-bs-target="#loginModalEstore"
-                                                    href="{{ route('login') }}">Login</a></li>
-                                            <li><a class="dropdown-item" href="javascrip:void(0);"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#registerModalEstore">Register</a>
-                                            </li>
-                                        </ul>
-                                    @endif
+
+
+                            <div class="d-flex align-items-center justify-content-end">
+                                {{-- <a href="{{ route('user.profile') }}" class="back_main">back to main page</a> --}}
+
+                                <a href="{{ route('e-store.wishlist') }}" class="shoping_cart"><i
+                                        class="fa-solid fa-heart"></i></a>
+
+                                <a href="{{ route('e-store.cart') }}" class="shoping_cart"><i class="fa fa-shopping-cart"
+                                        aria-hidden="true"></i><span class="cart_count">{{ Helper::cartCount() }}</span></a>
+                                <div class="profile_dropdown">
+                                    <div class="dropdown">
+                                        <button class="profile_img_round dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span>
+                                                @if (Auth::user() && Auth::user()->profile_picture)
+                                                    <img src="{{ Storage::url(Auth::user()->profile_picture) }}"
+                                                        alt="" />
+                                                @else
+                                                    <img src="{{ asset('user_assets/images/profile_dummy.png') }}"
+                                                        alt="" />
+                                                @endif
+                                            </span>
+                                        </button>
+                                        @if (Auth::user())
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="{{ route('e-store.wishlist') }}">My
+                                                        Wishlist</a>
+                                                <li><a class="dropdown-item" href="{{ route('e-store.profile') }}">Profile</a>
+                                                </li>
+                                                <li><a class="dropdown-item" href="{{ route('e-store.my-orders') }}">My
+                                                        Orders</a></li>
+                                                <li><a class="dropdown-item"
+                                                        href="{{ route('e-store.change-password') }}">Change
+                                                        Password</a></li>
+                                                <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a>
+                                                </li>
+                                            </ul>
+                                        @else
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                                        data-bs-toggle="modal" data-bs-target="#loginModalEstore"
+                                                        href="{{ route('login') }}">Login</a></li>
+                                                <li><a class="dropdown-item" href="javascrip:void(0);"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#registerModalEstore">Register</a>
+                                                </li>
+                                            </ul>
+                                        @endif
+                                    </div>
                                 </div>
+                                <!-- <div class="icon_c ms-2">
+                                    <a href="" class=""><i class="fa-solid fa-user"></i></a>
+                                  </div>
+                                  <div class="icon_c ms-2">
+                                    <a href="" class="add_cart_active"><i class="fa-solid fa-cart-shopping"></i></a>
+                                  </div>
+                                  <div class="icon_c ms-2">
+                                    <a href="" class="add_cart_active"><i class="fa-solid fa-heart"></i></a>
+                                  </div> -->
                             </div>
-                            <!-- <div class="icon_c ms-2">
-                                <a href="" class=""><i class="fa-solid fa-user"></i></a>
-                              </div>
-                              <div class="icon_c ms-2">
-                                <a href="" class="add_cart_active"><i class="fa-solid fa-cart-shopping"></i></a>
-                              </div>
-                              <div class="icon_c ms-2">
-                                <a href="" class="add_cart_active"><i class="fa-solid fa-heart"></i></a>
-                              </div> -->
                         </div>
                     </div>
                 </div>
-            </div>
-
-
-
-
-        </div>
-    </div>
-</div>
-<div class="main_menu_hdr">
-    <div class="container-fluid">
-        <div class="main_menu">
-            <div class="navigation navbar">
-                <div class="left_top order-1 order-lg-1">
-                    <div class="logo">
-                        <a href="{{ route('e-store') }}" class="">
-                            <img src="{{ asset('ecom_assets/images/estore_logo.png') }}" alt="" />
-                        </a>
-                    </div>
-                </div>
-
-                <div class="right_btm order-4 order-lg-3">
-                    <div id="cssmenu">
-                        <ul>
-                            <li><a href="{{ route('e-store') }}">Home</a></li>
-                            <li><a href="{{ route('e-store') }}">Category</a>
-                                {!! Helper::renderCategoryTree() !!}
-                            </li>
-                            <li><a href="{{ route('e-store.all-products') }}">Shop</a></li>
-                            <li><a href="{{ route('contact-us') }}">Contact Us</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <!--<div class="right_top order-3 order-lg-4">-->
-
-                <!--</div>-->
             </div>
         </div>
     </div>
@@ -170,7 +187,7 @@
         <div class="modal-content">
             <div class="modal-body login_bg_sec border-top-0">
                 <div class="heading_hp">
-                    <h2 id="greeting">
+                    <h2 class="text-center" id="greeting">
                         <?php
                         function getTimezoneFromIp($ip)
                         {
