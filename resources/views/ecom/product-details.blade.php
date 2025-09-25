@@ -327,7 +327,7 @@
                                         <p>{{ strlen($related_product->short_description) > 50 ? substr($related_product->short_description, 0, 50) . '...' : $related_product->short_description }}
                                         </p>
                                         <span class="price_text">$ {{ $related_product->price }}</span>
-                                        
+
                                         <div class="addtocart add-to-cart" data-id="{{ $related_product->id }}">
                                         <a class="add-butn" href="javascript:void(0);">
                                             @php
@@ -342,7 +342,7 @@
                                         </a>
                                     </div>
                                     </div>
-                                    
+
                                 </div>
                             </div>
                         @endforeach

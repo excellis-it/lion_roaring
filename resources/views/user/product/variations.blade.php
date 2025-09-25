@@ -199,6 +199,21 @@
                                                         color.</small>
                                                 </div>
                                             </div>
+                                        @else
+                                            {{-- // images without color variation --}}
+
+                                            <div class="d-flex justify-content-between align-items-start mb-3">
+
+                                                <div class="w-25">
+                                                    <label class="small fw-semibold mb-1">Images
+
+                                                    </label>
+                                                    <input type="file"
+                                                        name="variation_products[{{ $index }}][images][]"
+                                                        class="form-control" multiple>
+                                                    <small class="text-muted d-block mt-1">Upload images </small>
+                                                </div>
+                                            </div>
                                         @endif
 
                                         <div class="d-flex flex-wrap mb-3">

@@ -144,7 +144,7 @@ $(".catagory_slider").slick({
                 dots: false,
             },
         },
-     
+
     ],
 });
 

@@ -140,7 +140,7 @@ class ProductController extends Controller
         if (!empty($nearest['warehouse']->id)) {
             $nearbyWareHouseId = $nearest['warehouse']->id;
         }
-        // return $getNearbywareHouse;
+        // return $nearest;
 
         $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
             $q->where('warehouse_id', $nearbyWareHouseId)
@@ -1217,7 +1217,8 @@ class ProductController extends Controller
 
 
 
-            $product = Product::find($request->product_id);
+            $product = Product::where('id', $request->product_id)->where('is_deleted', 0)->first();
+
             if (!$product) {
                 return response()->json(['status' => false, 'message' => 'Product not found']);
             }
@@ -1238,21 +1239,28 @@ class ProductController extends Controller
             if (!empty($nearest['warehouse']->id)) {
                 $nearbyWareHouseId = $nearest['warehouse']->id;
             }
-            // return $getNearbywareHouse;
 
             $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
                 $q->where('warehouse_id', $nearbyWareHouseId)
                     ->where('quantity', '>', 0);
             })->pluck('id')->toArray();
 
-            $warehouseProduct = WarehouseProduct::with('images')->where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)
-                ->when($request->size_id, function ($query) use ($request) {
-                    return $query->where('size_id', $request->size_id);
-                })
-                ->when($request->color_id, function ($query) use ($request) {
-                    return $query->where('color_id', $request->color_id);
-                })
-                ->first();
+            // return $nearbyWareHouseId;
+
+            if ($product->product_type != 'simple') {
+                $warehouseProduct = WarehouseProduct::with('images')->where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)
+                    ->when($request->size_id, function ($query) use ($request) {
+                        return $query->where('size_id', $request->size_id);
+                    })
+                    ->when($request->color_id, function ($query) use ($request) {
+                        return $query->where('color_id', $request->color_id);
+                    })
+                    ->first();
+            } else {
+                $warehouseProduct = WarehouseProduct::with('images')->where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)->first();
+            }
+
+            // return $warehouseProduct;
 
             if (!$warehouseProduct) {
                 return response()->json(['status' => false, 'message' => 'Item Out Of Stock']);
