@@ -567,6 +567,27 @@
 
         // on page load get-warehouse-product-details
         $(document).ready(function() {
+            // Auto-select first size if sizes exist and none selected
+            var $firstSize = $(".product-select-size-input").first();
+            if ($firstSize.length && $(".product-select-size-input:checked").length === 0) {
+                $firstSize.prop('checked', true);
+            }
+
+            // Auto-select first color if color images / radios exist and none selected
+            var $firstColorRadio = $(".product-select-color-input").first();
+            if ($firstColorRadio.length && $(".product-select-color-input:checked").length === 0) {
+                $firstColorRadio.prop('checked', true);
+                // Also visually highlight corresponding image if present
+                var colorId = $firstColorRadio.val();
+                $(".product-select-color-input-image").css('border', '4px solid #ddd');
+                $(".product-select-color-input-image[data-color-id='" + colorId + "']").css('border',
+                    '4px solid #643171');
+                var colorName = $('label[for="color-' + colorId + '"]').text().trim();
+                if (colorName) {
+                    $("#selected-color").text(colorName);
+                }
+            }
+
             getWareHouseProductDetails();
         });
 
