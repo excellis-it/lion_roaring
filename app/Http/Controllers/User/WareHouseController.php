@@ -524,7 +524,8 @@ class WareHouseController extends Controller
                             'color_id' => $variation->color_id,
                             'size_id' => $variation->size_id,
                             'quantity' => 0,
-                            'price' => $variation->price,
+                            'price' => $variation->sale_price ? $variation->sale_price : $variation->price,
+                            'before_sale_price' => $variation->sale_price ? $variation->price : null,
                             'tax_rate' => 0,
                         ]);
 
@@ -559,6 +560,18 @@ class WareHouseController extends Controller
                 $variation->warehouse_quantity = $warehouseProductVariation ? $warehouseProductVariation->warehouse_quantity : 0;
                 // get admin_available_quantity
                 $variation->admin_available_quantity = $variation->available_quantity;
+
+                // warehouse price and warehouse before_sale_price
+                $warehouseProduct = WarehouseProduct::where('warehouse_id', $warehouseId)
+                    ->where('product_variation_id', $variation->id)
+                    ->first();
+                if ($warehouseProduct) {
+                    $variation->warehouse_price = $warehouseProduct->price;
+                    $variation->warehouse_before_sale_price = $warehouseProduct->before_sale_price;
+                } else {
+                    $variation->warehouse_price = 0;
+                    $variation->warehouse_before_sale_price = 0;
+                }
 
                 // $variation->warehouse_available_quantity = $variation->warehouse_quantity ?? 0;
             }
@@ -677,7 +690,7 @@ class WareHouseController extends Controller
         $warehouseProducts = ProductVariation::whereIn('id', $productVariationIds)
             ->with(['product', 'colorDetail', 'sizeDetail', 'images'])
             ->get();
-       // return $warehouseProducts;
+        // return $warehouseProducts;
 
         // get warehouse_quantity from WarehouseProductVariation model
         foreach ($warehouseProducts as $variation) {

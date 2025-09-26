@@ -607,4 +607,16 @@ class Helper
         // Final fallback to static asset
         return asset($defaultAsset);
     }
+
+    // estore header logo
+    public static function estoreHeaderLogoUrl(string $defaultAsset = 'ecom_assets/images/estore_logo.png'): string
+    {
+        $headerLogo = EcomHomeCms::orderByDesc('id')->value('header_logo');
+        if ($headerLogo) {
+            return Storage::url($headerLogo);
+        }
+
+        // Final fallback to static asset
+        return asset($defaultAsset);
+    }
 }

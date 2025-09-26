@@ -79,6 +79,7 @@ class CategoryController extends Controller
             'parent_id' => 'nullable|exists:categories,id',
             'slug' => 'required|string|max:255|unique:categories',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:255',
             'status' => 'required|boolean',
@@ -94,6 +95,10 @@ class CategoryController extends Controller
 
         if ($request->hasFile('image')) {
             $category->image = $this->imageUpload($request->file('image'), 'category');
+        }
+
+        if ($request->hasFile('background_image')) {
+            $category->background_image = $this->imageUpload($request->file('background_image'), 'category');
         }
 
         $category->save();
@@ -146,6 +151,7 @@ class CategoryController extends Controller
                 'parent_id' => 'nullable|exists:categories,id',
                 'slug' => 'required|string|max:255|unique:categories,slug,' . $category->id,
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+                'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
                 'meta_title' => 'nullable|string|max:255',
                 'meta_description' => 'nullable|string|max:255',
                 'status' => 'required|boolean',
@@ -162,6 +168,10 @@ class CategoryController extends Controller
 
             if ($request->hasFile('image')) {
                 $category->image = $this->imageUpload($request->file('image'), 'category');
+            }
+
+            if ($request->hasFile('background_image')) {
+                $category->background_image = $this->imageUpload($request->file('background_image'), 'category');
             }
 
             $category->save();

@@ -191,11 +191,13 @@ class ProductController extends Controller
         $product->sku = $request->sku ?? '';
         $product->quantity = $request->quantity ?? 0;
         $product->price = $request->price;
+        $product->sale_price = $request->sale_price ?? null;
         $product->slug = $request->slug;
         $product->feature_product = $request->feature_product;
         $product->is_free = $request->has('is_free');
         if ($product->is_free) {
             $product->price = 0;
+            $product->sale_price = null;
         }
         $product->save();
 
@@ -277,6 +279,8 @@ class ProductController extends Controller
             $variation->product_id = $product->id;
             $variation->sku = $product->sku;
             $variation->price = $product->price;
+            $variation->sale_price = $product->sale_price ? $product->sale_price : null;
+            $variation->before_sale_price = $product->sale_price ? $product->price : null;
             $variation->stock_quantity = $product->quantity;
             $variation->additional_info = $product->product_type;
             $variation->save();
@@ -311,7 +315,8 @@ class ProductController extends Controller
                     'product_id' => $product->id,
                     'warehouse_id' => $warehouse->id,
                     'sku' => $variation->sku,
-                    'price' => $variation->price,
+                    'price' => $variation->sale_price ? $variation->sale_price : $variation->price,
+                    'before_sale_price' => $variation->before_sale_price ?? null,
                     'color_id' => null,
                     'size_id' => null,
                     'quantity' => 0,
@@ -664,6 +669,7 @@ class ProductController extends Controller
             'variation_products.*.id' => 'required|exists:product_variations,id',
             'variation_products.*.sku' => 'required|string|max:255',
             'variation_products.*.price' => 'required|numeric|min:0',
+            'variation_products.*.sale_price' => 'nullable|numeric|min:0',
             'variation_products.*.stock_quantity' => 'required|integer|min:0',
             'variation_products.*.color_id' => 'nullable|exists:colors,id',
             'variation_products.*.size_id' => 'nullable|exists:sizes,id',
@@ -680,6 +686,8 @@ class ProductController extends Controller
             $variation = ProductVariation::findOrFail($variationData['id']);
             $variation->sku = $variationData['sku'];
             $variation->price = $variationData['price'];
+            $variation->sale_price = $variationData['sale_price'] ? $variationData['sale_price'] : null;
+            $variation->before_sale_price = $variationData['sale_price'] ? $variationData['price'] : null;
             $variation->stock_quantity = $variationData['stock_quantity'];
             $variation->color_id = $variationData['color_id'];
             $variation->size_id = $variationData['size_id'];
@@ -694,7 +702,8 @@ class ProductController extends Controller
             $wpProducts = WarehouseProduct::where('product_variation_id', $variation->id)->get();
             foreach ($wpProducts as $wp) {
                 $wp->sku = $variation->sku;
-                $wp->price = $variation->price;
+                $wp->price = $variation->sale_price ? $variation->sale_price : $variation->price;
+                $wp->before_sale_price = $variation->before_sale_price ?? null;
                 $wp->save();
             }
 
@@ -746,11 +755,21 @@ class ProductController extends Controller
             }
 
             // Set first price for product price update for from first variation only
-            if ($first_price == 0) {
-                $first_price = $variationData['price'];
-                // save price to product price
-                $product->price = $first_price;
+            // Prioritize any variation that has a sale_price. If found, use that variation's price/sale_price.
+            if (isset($variationData['sale_price']) && $variationData['sale_price'] !== null) {
+                $product->price = $variationData['price'];
+                $product->sale_price = $variationData['sale_price'];
                 $product->save();
+                // mark that a sale price was captured so later non-sale variations won't overwrite it
+                $first_price = -1;
+            } else {
+                // If no sale price captured yet, use the first variation's price as the product price
+                if ($first_price === 0) {
+                    $first_price = $variationData['price'];
+                    $product->price = $variationData['price'];
+                    $product->sale_price = null;
+                    $product->save();
+                }
             }
         }
 

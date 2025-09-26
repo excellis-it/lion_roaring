@@ -94,7 +94,8 @@
                                 </div>
                             </div>
 
-
+                            <div class="col-md-6 mb-2">
+                            </div>
 
                             {{-- image --}}
                             <div class="col-md-6 mb-2">
@@ -106,7 +107,43 @@
                                         <span class="error">{{ $errors->first('image') }}</span>
                                     @endif
                                 </div>
+                                {{-- view image --}}
+                                @if ($category->image)
+                                    <div class="mb-2">
+                                        <div class="box_label">
+                                            <label for="image"> Category Image</label>
+                                            <img src="{{ Storage::url($category->image) }}" alt="Category Image"
+                                                class="img-thumbnail" style="width: 100px; height: 100px;">
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
+
+                            {{-- background image --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="background_image"> Category Background Image</label>
+                                    <input type="file" name="background_image" id="background_image" class="form-control"
+                                        value="{{ old('background_image') }}"
+                                        placeholder="Enter Category Background Image">
+                                    @if ($errors->has('background_image'))
+                                        <span class="error">{{ $errors->first('background_image') }}</span>
+                                    @endif
+                                </div>
+                                {{-- view background image --}}
+                                @if ($category->background_image)
+                                    <div class="mb-2">
+                                        <div class="box_label">
+                                            <label for="background_image"> Category Background Image</label>
+                                            <img src="{{ Storage::url($category->background_image) }}"
+                                                alt="Category Background Image" class="img-thumbnail"
+                                                style="width: 100px; height: 100px;">
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+
                             {{-- status --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -123,16 +160,7 @@
                                     @endif
                                 </div>
                             </div>
-                            {{-- view image --}}
-                            @if ($category->image)
-                                <div class="col-md-6 mb-2">
-                                    <div class="box_label">
-                                        <label for="image"> Category Image</label>
-                                        <img src="{{ Storage::url($category->image) }}" alt="Category Image"
-                                            class="img-thumbnail" style="width: 100px; height: 100px;">
-                                    </div>
-                                </div>
-                            @endif
+
                         </div>
                         <div class="row">
                             <div class="col-md-12">

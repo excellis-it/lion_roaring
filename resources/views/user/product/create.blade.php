@@ -183,9 +183,9 @@
                                             <div class="form-check form-switch mt-3">
                                                 <label class="form-check-label" for="is_free">Mark as Free (Price becomes
                                                     0)</label>
-                                                <input class="form-check-input mt-3" style="width: 60px; height: 30px;" type="checkbox" role="switch"
-                                                    id="is_free" name="is_free" value="1"
-                                                    {{ old('is_free') ? 'checked' : '' }}>
+                                                <input class="form-check-input mt-3" style="width: 60px; height: 30px;"
+                                                    type="checkbox" role="switch" id="is_free" name="is_free"
+                                                    value="1" {{ old('is_free') ? 'checked' : '' }}>
 
                                             </div>
                                         </div>
@@ -267,7 +267,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4 mb-2">
+                                            <div class="col-md-3 mb-2">
                                                 <div class="box_label">
                                                     <label for="sku"> Product SKU</label>
                                                     <input type="text" name="sku" id="sku"
@@ -278,9 +278,9 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4 mb-2">
+                                            <div class="col-md-3 mb-2">
                                                 <div class="box_label">
-                                                    <label for="price"> Product Price</label>
+                                                    <label for="price"> Price</label>
                                                     <input type="text" name="price" id="price"
                                                         class="form-control" value="{{ old('price') }}">
                                                     @if ($errors->has('price'))
@@ -289,7 +289,18 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4 mb-2">
+                                            <div class="col-md-3 mb-2">
+                                                <div class="box_label">
+                                                    <label for="sale_price"> Sale Price</label>
+                                                    <input type="text" name="sale_price" id="sale_price"
+                                                        class="form-control" value="{{ old('sale_price') }}">
+                                                    @if ($errors->has('sale_price'))
+                                                        <span class="error">{{ $errors->first('sale_price') }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 mb-2">
                                                 <div class="box_label">
                                                     <label for="quantity"> Stock Quantity</label>
                                                     <input type="number" name="quantity" id="quantity"
