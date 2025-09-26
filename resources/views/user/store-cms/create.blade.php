@@ -18,6 +18,36 @@
                                 <div class="heading_box mb-5">
                                     <h3>Add CMS Page</h3>
                                 </div>
+                                <div class="alert alert-info">
+                                    <strong>Tip:</strong> To set the background image of e-store pages (the inner page
+                                    banner), create a CMS page with the following slug values and upload a Page Banner
+                                    Image:
+                                    <div class="row mt-2">
+                                        <div class="col-md-6">
+                                            <ul class="mb-1">
+                                                <li><code>home</code> (Global fallback via Home CMS Banner Image)</li>
+                                                <li><code>products</code> (Products list)</li>
+                                                <li><code>product-details</code> (Product details)</li>
+                                                <li><code>cart</code> (Cart)</li>
+                                                <li><code>checkout</code> (Checkout)</li>
+                                                <li><code>my-orders</code> (My Orders)</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <ul class="mb-1">
+                                                <li><code>order-details</code> (Order details)</li>
+                                                <li><code>order-success</code> (Order success)</li>
+                                                <li><code>order-tracking</code> (Public order tracking)</li>
+                                                <li><code>wishlist</code> (Wishlist)</li>
+                                                <li><code>profile</code> (My profile)</li>
+                                                <li><code>change-password</code> (My password)</li>
+                                                <li><code>product-not-available</code> (Product not available)</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    If a page-specific slug is missing, the system falls back to the Home CMS Banner Image;
+                                    otherwise, the default theme image is used.
+                                </div>
                             </div>
                         </div>
                         <div class="row">

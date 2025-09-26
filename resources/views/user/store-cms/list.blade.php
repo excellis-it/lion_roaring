@@ -18,6 +18,45 @@
                                         {{-- <h3 class="mb-3">Ecclesias List</h3> --}}
                                     </div>
                                 </div>
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        @php
+                                            $requiredSlugs = [
+                                                'products',
+                                                'product-details',
+                                                'cart',
+                                                'checkout',
+                                                'my-orders',
+                                                'order-details',
+                                                'order-success',
+                                                'order-tracking',
+                                                'wishlist',
+                                                'profile',
+                                                'change-password',
+                                                'product-not-available',
+                                            ];
+                                            $existing = isset($pages) ? $pages->pluck('slug')->toArray() : [];
+                                        @endphp
+                                        <div class="alert alert-secondary">
+                                            <strong>Page Banner Status:</strong>
+                                            <div class="row mt-2">
+                                                @foreach ($requiredSlugs as $slug)
+                                                    <div class="col-md-3 col-sm-6 mb-2">
+                                                        @if (in_array($slug, $existing))
+                                                            <span class="badge bg-success">{{ $slug }} ✓</span>
+                                                        @else
+                                                            <span class="badge bg-warning text-dark">{{ $slug }}
+                                                                missing</span>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                            <small class="text-muted">Create a CMS page with any missing slug and upload a
+                                                Page Banner Image to set that page's background. Pages without a CMS banner
+                                                fall back to the Home CMS banner, then the default image.</small>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row ">
                                     <div class="col-md-10">
                                         <h3 class="mb-3 float-left">Store CMS List</h3>

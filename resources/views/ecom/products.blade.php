@@ -86,7 +86,7 @@
                                                             ? 'checked'
                                                             : '';
                                                         $html =
-                                                            '<li class="list-group-item category-node d-flex align-items-start" data-category-id="' .
+                                                            '<li class="list-group-item category-node" data-category-id="' .
                                                             $cat->id .
                                                             '">';
                                                         if ($hasChildren) {
@@ -114,7 +114,7 @@
                                                         $html .= '</div>';
                                                         if ($hasChildren) {
                                                             $html .=
-                                                                '<ul class="list-group children mt-2 ms-4" style="display:none;" data-parent-id="' .
+                                                                '<ul class="list-group children mt-2 border-0" style="display:none;" data-parent-id="' .
                                                                 $cat->id .
                                                                 '">';
                                                             foreach ($cat->children as $child) {
@@ -135,10 +135,9 @@
 
                                             </div>
                                             <div class="mt-2">
-                                                <button type="button" id="expand-all" class="btn btn-link p-0 me-3">Expand
-                                                    All</button>
-                                                <button type="button" id="collapse-all" class="btn btn-link p-0">Collapse
-                                                    All</button>
+                                                <button type="button" id="expand-all" class="red_btn border-0 w-100 my-3"><span>Expand All</span></button>
+                                                <button type="button" id="collapse-all" class="red_btn border-0 w-100"><span>Collapse
+                                                    All</span></button>
                                             </div>
                                         </div>
                                     </div>

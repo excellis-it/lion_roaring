@@ -1035,7 +1035,7 @@ white-space: nowrap;
 
 .price_text {
     display: block;
-    color: #643271;
+    color: var(--main-color);
     font-size: 18px;
     font-weight: 800;
 }
@@ -1058,6 +1058,7 @@ white-space: nowrap;
     transition: all ease-in 0.3s;
     background-color: #fff;
     border-radius: 20px;
+    overflow: hidden;
 }
 .pos_zi .feature_img{
    border: none;
@@ -3572,8 +3573,8 @@ content: none !important;
 }
 
 .form-check-input:checked {
-    background-color: var(--main-color) !important;
-    border-color: var(--main-color) !important;
+    background-color: var(--yellow-color) !important;
+    border-color: var(--yellow-color) !important;
 }
 
 /* ===============================profile page css start============================================ */
@@ -3683,7 +3684,7 @@ content: none !important;
   top: 15px;
 }
 .other-information .edit-profile a{
-    background-color: var(--main-color);    
+    background-color: var(--main-color);
     padding: 10px 13px;
     border-radius: 40px;
     color: var(--white-color);
@@ -4022,13 +4023,39 @@ content: none !important;
 .d-details h5 i{
     font-size: 14px;
 }
+/*=====================================================*/
+.list-group-item.category-node{
+    border: none;
+    /*border-bottom: 1px solid #ccc;*/
+    position: relative;
+}
+.toggle-children{
+   position: absolute;
+    right: 0;
+    color: #fff;
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    top: 0;
+}
+.feature_img .sales{
+    position: absolute;
+    background-color:#c50707;
+    width: 100%;
+    text-align: center;
+    transform: rotate(-43deg);
+    left: -116px;
+    top: 22px;
+    color: #fff;
+}
 
-
-
-
-
-
-
+.filter .list-group{
+    border-radius: 0px;
+}
+*:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
 
 
 
