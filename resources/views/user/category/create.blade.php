@@ -51,11 +51,22 @@
                                         <option value="">Select Parent Category</option>
 
                                         @php
-                                            $renderCategoryOptions = function ($nodes, $prefix = '') use (&$renderCategoryOptions) {
+                                            $renderCategoryOptions = function ($nodes, $prefix = '') use (
+                                                &$renderCategoryOptions,
+                                            ) {
                                                 foreach ($nodes as $node) {
-                                                    echo '<option value="'.$node->id.'"'.(old('parent_id') == $node->id ? ' selected' : '').'>'.e($prefix.$node->name).'</option>';
+                                                    echo '<option value="' .
+                                                        $node->id .
+                                                        '"' .
+                                                        (old('parent_id') == $node->id ? ' selected' : '') .
+                                                        '>' .
+                                                        e($prefix . $node->name) .
+                                                        '</option>';
                                                     if (!empty($node->children) && $node->children->count()) {
-                                                        $renderCategoryOptions($node->children, $prefix.$node->name.'->');
+                                                        $renderCategoryOptions(
+                                                            $node->children,
+                                                            $prefix . $node->name . '->',
+                                                        );
                                                     }
                                                 }
                                             };
@@ -81,6 +92,19 @@
                                     @endif
                                 </div>
                             </div>
+
+                            {{-- background image --}}
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label for="background_image"> Category Background Image</label>
+                                    <input type="file" name="background_image" id="background_image" class="form-control"
+                                        value="{{ old('background_image') }}" placeholder="Enter Category Background Image">
+                                    @if ($errors->has('background_image'))
+                                        <span class="error">{{ $errors->first('background_image') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+
                             {{-- status --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">

@@ -8,8 +8,17 @@
                         style="width: 50px; height: 50px; object-fit: cover;">
                 </div>
             </td>
+
             <td>
-                 {{ $category->parent_tree ?: '—' }}
+                <div class="d-flex">
+                    @if ($category->background_image)
+                        <img src="{{ Storage::url($category->background_image) }}" alt="{{ $category->name }}"
+                            style="width: 50px; height: 50px; object-fit: cover;">
+                    @endif
+                </div>
+            </td>
+            <td>
+                {{ $category->parent_tree ?: '—' }}
             </td>
 
             <td> {{ $category->name }}</td>
