@@ -71,7 +71,8 @@
                 </div>
                 <h5>Product Name : <strong>{{ $product->name }}</strong></h5>
                 <h5>Product {{ $product->product_type == 'simple' ? 'stock' : 'variations' }} for Warehouse :
-                    <strong>{{ $wareHouse->name }}</strong></h5>
+                    <strong>{{ $wareHouse->name }}</strong>
+                </h5>
 
             </div>
 
@@ -278,7 +279,7 @@
 
                                     if ($row.length) {
                                         $row.find('input[name$="[available_quantity]"]').val(avail)
-                                            .css('background-color', '#d4edda');
+                                            .css('background-color', '#edd4d4');
                                         $row.find('input[name$="[warehouse_quantity]"]').val(
                                                 warehouse_available_quantity)
                                             .css('background-color', '#d4edda');
@@ -306,7 +307,7 @@
                                         vid + '"]');
                                     if ($row.length) {
                                         $row.find('input[name$="[available_quantity]"]').val(avail)
-                                            .css('background-color', '#d4edda');
+                                            .css('background-color', '#edd4d4');
                                         $row.find('input[name$="[warehouse_quantity]"]').val(
                                                 warehouse_available_quantity)
                                             .css('background-color', '#d4edda');

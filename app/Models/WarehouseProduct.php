@@ -19,6 +19,7 @@ class WarehouseProduct extends Model
         'tax_rate',
         'quantity',
         'price',
+        'before_sale_price',
     ];
 
     public function warehouse()

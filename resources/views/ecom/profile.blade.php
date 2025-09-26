@@ -122,14 +122,14 @@
                                     <td>Name :</td>
                                     <td>{{ $user->first_name }} {{ $user->last_name }}</td>
                                 </tr>
-                                <tr>
+                                {{-- <tr>
                                     <td>Date of birth :</td>
                                     <td>{{ $user->date_of_birth ?? '-' }}</td>
                                 </tr>
                                 <tr>
                                     <td>Gender :</td>
                                     <td>{{ $user->gender ?? '-' }}</td>
-                                </tr>
+                                </tr> --}}
                                 <tr>
                                     <td>Home Address :</td>
                                     <td>{{ $user->address ?? '-' }}</td>

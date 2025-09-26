@@ -265,6 +265,14 @@
                                                     </div>
 
                                                     <div class="col-md-2">
+                                                        <label class="small fw-semibold">Sale Price (If Any)</label>
+                                                        <input type="number" step="0.01"
+                                                            name="variation_products[{{ $index }}][sale_price]"
+                                                            class="form-control"
+                                                            value="{{ $variation->sale_price }}">
+                                                    </div>
+
+                                                    <div class="col-md-1">
                                                         <label class="small fw-semibold">Color</label>
                                                         <input type="text" class="form-control"
                                                             value="{{ $variation->colorDetail->color_name ?? '' }}"
@@ -291,7 +299,7 @@
 
 
 
-                                                    <div class="col-md-2 text-end">
+                                                    <div class="col-md-1 text-end">
                                                         <button type="button"
                                                             class="btn btn-sm btn-danger remove-variation-product">
                                                             <i class="fa fa-trash"></i>

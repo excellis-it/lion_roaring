@@ -16,11 +16,21 @@
                     </div>
                 </div>
 
-                <div class="col-md-2 mb-2">
+                <div class="col-md-1 mb-2">
                     <div class="box_label">
                         <label>Price <span class="text-danger"></span></label>
                         <input type="number" step="0.01" name="variation_products[{{ $index }}][price]"
-                            class="form-control" value="{{ $variation->price }}" readonly>
+                            class="form-control" value="{{ $variation->warehouse_price }}" readonly>
+                    </div>
+                </div>
+
+                <div class="col-md-1 mb-2">
+                    <div class="box_label">
+                        <label>Before Price </label>
+
+                        <input type="number" step="0.01"
+                            name="variation_products[{{ $index }}][before_sale_price]" class="form-control"
+                            value="{{ $variation->warehouse_before_sale_price }}" readonly>
                     </div>
                 </div>
 
