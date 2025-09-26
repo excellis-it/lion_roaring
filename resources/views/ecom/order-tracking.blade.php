@@ -3,7 +3,7 @@
 
 @section('content')
     <section class="inner_banner_sec"
-        style="background-image: url({{ asset('ecom_assets/images/bn-4.jpg') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+        style="background-image: url({{ \App\Helpers\Helper::estorePageBannerUrl('order-tracking') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
             <div class="row">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
@@ -34,7 +34,8 @@
                         </form>
                         @if (request()->filled('order_number') && !isset($order))
                             <div class="alert alert-danger mt-3 mb-0 py-2">No order found for number
-                                <strong>{{ request('order_number') }}</strong>.</div>
+                                <strong>{{ request('order_number') }}</strong>.
+                            </div>
                         @endif
                     </div>
                 </div>

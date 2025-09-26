@@ -57,7 +57,7 @@
         width: 270px;
         height: 270px;
     }
-    
+
     .left_ali h4{
         font-size: 18px;
     }
@@ -233,7 +233,7 @@
     .logo a{
         width: 70px;
     }
-    
+
 }
 @media (max-width:767px){
     .red_btn {
@@ -450,7 +450,7 @@
     .delevry-sumry{
         padding: 25px;
     }
-   
+
 }
 @media (max-width:425.98px){
     .img_servic {

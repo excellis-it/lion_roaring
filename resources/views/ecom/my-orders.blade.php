@@ -3,7 +3,7 @@
 
 @section('content')
     <section class="inner_banner_sec"
-        style="background-image: url({{ asset('ecom_assets/images/bn-4.jpg') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+        style="background-image: url({{ \App\Helpers\Helper::estorePageBannerUrl('my-orders') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
             <div class="row">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
@@ -28,7 +28,7 @@
                             <div class="order-card mb-4 p-4 border rounded shadow">
                                 <div class="row">
                                     <!--<div class="col-md-3">-->
-                                       
+
                                     <!--</div>-->
                                     <div class="col-md-12">
                                         <div class="order-header d-flex justify-content-between align-items-start mb-3">
@@ -57,12 +57,10 @@
                                                     <div class="item-image me-3">
                                                         @if ($item->warehouseProduct?->images->first())
                                                             <img src="{{ Storage::url($item->warehouseProduct?->images->first()->image_path) }}"
-                                                                alt="{{ $item->product_name }}"
-                                                                >
+                                                                alt="{{ $item->product_name }}">
                                                         @elseif ($item->product_image)
                                                             <img src="{{ Storage::url($item->product_image) }}"
-                                                                alt="{{ $item->product_name }}"
-                                                                >
+                                                                alt="{{ $item->product_name }}">
                                                         @else
                                                             <div class="bg-light rounded d-flex align-items-center justify-content-center"
                                                                 style="width: 60px; height: 60px;">
@@ -74,10 +72,10 @@
                                                         <h6 class="mb-0">{{ $item->product_name }}</h6>
                                                         <p class="text-muted">Qty: {{ $item->quantity }} ×
                                                             ${{ number_format($item->price, 2) }}</p>
-                                                            
-                                                            <!--<button class="order-btn">Buy it Again</button>-->
-                                                            <!--<button class="order-btn">View your item</button>-->
-                                                            <!--<button class="order-btn">Track package</button>-->
+
+                                                        <!--<button class="order-btn">Buy it Again</button>-->
+                                                        <!--<button class="order-btn">View your item</button>-->
+                                                        <!--<button class="order-btn">Track package</button>-->
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -86,7 +84,7 @@
                                                     items</small>
                                             @endif
                                         </div>
-                                        
+
                                         <div class="order-actions text-end">
                                             <a href="{{ route('e-store.order-details', $order->id) }}"
                                                 class="red_btn mb-2">

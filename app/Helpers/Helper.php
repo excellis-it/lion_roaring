@@ -9,6 +9,7 @@ use App\Models\ChatMember;
 use App\Models\Country;
 use App\Models\EcomCmsPage;
 use App\Models\EcomFooterCms;
+use App\Models\EcomHomeCms;
 use App\Models\ElearningEcomCmsPage;
 use App\Models\ElearningEcomFooterCms;
 use App\Models\Footer;
@@ -518,7 +519,7 @@ class Helper
                 $user_location_country_name = session('location_country') ?? null;
             }
 
-           // $user_location_country_name = auth()->check() && auth()->user()->location_country ? auth()->user()->location_country : null;
+            // $user_location_country_name = auth()->check() && auth()->user()->location_country ? auth()->user()->location_country : null;
             $warehouses_location_country_name = $wh->country ? $wh->country->name : null;
 
             if ($user_location_country_name && $warehouses_location_country_name && $user_location_country_name == $warehouses_location_country_name) {
@@ -575,5 +576,35 @@ class Helper
     public static function getCurrencyFormat($amount, $currencySymbol = '$')
     {
         return $currencySymbol . number_format($amount, 2);
+    }
+
+    /**
+     * Resolve the banner image URL for e-store pages.
+     * Priority:
+     * 1) EcomCmsPage by slug ($pageKey) -> page_banner_image
+     * 2) EcomHomeCms latest -> banner_image
+     * 3) Provided $defaultAsset (public asset path)
+     *
+     * Example usage in blade:
+     * style="background-image: url({{ \App\Helpers\Helper::estorePageBannerUrl('cart') }})"
+     */
+    public static function estorePageBannerUrl(?string $pageKey = null, string $defaultAsset = 'ecom_assets/images/slider-bg.png'): string
+    {
+        // Try CMS page specific banner by slug
+        if ($pageKey) {
+            $path = EcomCmsPage::where('slug', $pageKey)->value('page_banner_image');
+            if ($path) {
+                return Storage::url($path);
+            }
+        }
+
+        // Fallback to Home CMS banner if available
+        $homeBanner = EcomHomeCms::orderByDesc('id')->value('banner_image');
+        if ($homeBanner) {
+            return Storage::url($homeBanner);
+        }
+
+        // Final fallback to static asset
+        return asset($defaultAsset);
     }
 }

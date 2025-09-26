@@ -11,14 +11,40 @@
             <!--  Row 1 -->
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('user.store-cms.update', $cms->id) }}" method="POST"
-                        enctype="multipart/form-data">
+                    <form action="{{ route('user.store-cms.update', $cms->id) }}" method="POST" enctype="multipart/form-data">
                         @method('PUT')
                         @csrf
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
                                     <h3>Update CMS Page</h3>
+                                </div>
+                                <div class="alert alert-info">
+                                    <strong>Tip:</strong> Slug controls which e-store page uses this banner image. Use one
+                                    of:
+                                    <div class="row mt-2">
+                                        <div class="col-md-6">
+                                            <ul class="mb-1">
+                                                <li><code>products</code> (Products list)</li>
+                                                <li><code>product-details</code> (Product details)</li>
+                                                <li><code>cart</code> (Cart)</li>
+                                                <li><code>checkout</code> (Checkout)</li>
+                                                <li><code>my-orders</code> (My Orders)</li>
+                                                <li><code>order-details</code> (Order details)</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <ul class="mb-1">
+                                                <li><code>order-success</code> (Order success)</li>
+                                                <li><code>order-tracking</code> (Public order tracking)</li>
+                                                <li><code>wishlist</code> (Wishlist)</li>
+                                                <li><code>profile</code> (My profile)</li>
+                                                <li><code>change-password</code> (My password)</li>
+                                                <li><code>product-not-available</code> (Product not available)</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    If not set, pages will fall back to Home CMS banner or the default theme image.
                                 </div>
                             </div>
                         </div>

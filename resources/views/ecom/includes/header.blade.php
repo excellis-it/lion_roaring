@@ -83,15 +83,17 @@
                     <div class="right_top order-3 order-lg-4">
                         <div class="right_login">
                             <div class="search-toggle">
-                            <button class="search-icon icon-search"><i class="fa fa-fw fa-search"></i></button>
-                            <button class="search-icon icon-close"><i class="fa fa-fw  fa-close"></i></button>
-                          </div>
-                          <div class="search-container">
-                            <form>
-                              <input type="text" name="q" id="search-terms" placeholder="Search terms..." />
-                              <button type="submit" name="submit" value="Go" class="search-icon"><i class="fa fa-fw fa-search"></i></button>
-                            </form>
-                          </div>
+                                <button class="search-icon icon-search"><i class="fa fa-fw fa-search"></i></button>
+                                <button class="search-icon icon-close"><i class="fa fa-fw  fa-close"></i></button>
+                            </div>
+                            <div class="search-container">
+                                <form>
+                                    <input type="text" name="q" id="search-terms"
+                                        placeholder="Search terms..." />
+                                    <button type="submit" name="submit" value="Go" class="search-icon"><i
+                                            class="fa fa-fw fa-search"></i></button>
+                                </form>
+                            </div>
 
 
 
@@ -102,8 +104,9 @@
                                 <a href="{{ route('e-store.wishlist') }}" class="shoping_cart"><i
                                         class="fa-solid fa-heart"></i></a>
 
-                                <a href="{{ route('e-store.cart') }}" class="shoping_cart"><i class="fa fa-shopping-cart"
-                                        aria-hidden="true"></i><span class="cart_count">{{ Helper::cartCount() }}</span></a>
+                                <a href="{{ route('e-store.cart') }}" class="shoping_cart"><i
+                                        class="fa fa-shopping-cart" aria-hidden="true"></i><span
+                                        class="cart_count">{{ Helper::cartCount() }}</span></a>
                                 <div class="profile_dropdown">
                                     <div class="dropdown">
                                         <button class="profile_img_round dropdown-toggle" type="button"
@@ -122,7 +125,8 @@
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item" href="{{ route('e-store.wishlist') }}">My
                                                         Wishlist</a>
-                                                <li><a class="dropdown-item" href="{{ route('e-store.profile') }}">Profile</a>
+                                                <li><a class="dropdown-item"
+                                                        href="{{ route('e-store.profile') }}">Profile</a>
                                                 </li>
                                                 <li><a class="dropdown-item" href="{{ route('e-store.my-orders') }}">My
                                                         Orders</a></li>

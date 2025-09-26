@@ -6,9 +6,9 @@
 
 @section('content')
     <section class="inner_banner_sec"
-        style="background-image: url({{ isset($contactCms->banner_image) ? asset($contactCms->banner_image) : asset('ecom_assets/images/slider-bg.png') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+        style="background-image: url({{ isset($contactCms->banner_image) && $contactCms->banner_image ? (\Illuminate\Support\Str::startsWith($contactCms->banner_image, 'http') ? $contactCms->banner_image : (\Illuminate\Support\Str::startsWith($contactCms->banner_image, 'storage/') ? asset($contactCms->banner_image) : Storage::url($contactCms->banner_image))) : \App\Helpers\Helper::estorePageBannerUrl('contact') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
-            <div class="row justify-content-center">
+            <div class="row">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
                     <div class="inner_banner_ontent">
                         <h2>{{ $contactCms->banner_title ?? 'Contact Us' }}</h2>
@@ -159,7 +159,6 @@
 @push('scripts')
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
-       
         $(document).ready(function() {
             $('#contact-us').on('submit', function(e) {
                 var recaptchaResponse = grecaptcha.getResponse();

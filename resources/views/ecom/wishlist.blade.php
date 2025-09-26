@@ -6,7 +6,7 @@
         use App\Helpers\Helper;
     @endphp
     <section class="inner_banner_sec"
-        style="background-image: url({{ asset('ecom_assets/images/bn-5.jpg') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+        style="background-image: url({{ \App\Helpers\Helper::estorePageBannerUrl('wishlist') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
             <div class="row">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
@@ -21,7 +21,7 @@
     <section class="shopping_cart_sec">
         <div class="container">
             <div class="heading_hp mb-3">
-                <h2>My wishlist</h2>
+                {{-- <h2>My wishlist</h2> --}}
             </div>
             <div class="row">
                 <div class="col-lg-12">
@@ -38,16 +38,15 @@
                                 <p class="text-muted mb-4">Save items you love to find them quickly later.</p>
 
                                 <div class="d-flex justify-content-center gap-2 mb-3">
-                                    <a href="{{ route('e-store') }}" class="btn btn-outline-primary px-4">Continue
-                                        shopping</a>
+                                    <a href="{{ route('e-store') }}" class="red_btn"><span>Continue shopping</span></a>
 
                                     @if (!auth()->check())
                                         <a href="javascript:void(0);" data-bs-toggle="modal"
                                             data-bs-target="#loginModalEstore" class="btn btn-primary px-4">Login to view
                                             wishlist</a>
                                     @else
-                                        <a href="{{ route('e-store') }}" class="btn btn-primary px-4">Browse
-                                            products</a>
+                                        <a href="{{ route('e-store') }}" class="red_btn"><span>Browse
+                                                products</span></a>
                                     @endif
                                 </div>
 

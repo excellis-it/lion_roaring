@@ -3,7 +3,7 @@
 
 @section('content')
     <section class="inner_banner_sec"
-        style="background-image: url({{ asset('ecom_assets/images/bn-5.jpg') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+        style="background-image: url({{ \App\Helpers\Helper::estorePageBannerUrl('order-details') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
             <div class="row">
                 <div class="col-xxl-6 col-xl-8 col-md-12">

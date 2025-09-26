@@ -22,9 +22,9 @@
 
 @section('content')
     <section class="inner_banner_sec"
-        style="background-image: url({{ asset('ecom_assets/images/slider-bg.png') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+        style="background-image: url({{ \App\Helpers\Helper::estorePageBannerUrl('cart') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
-            <div class="row justify-content-center">
+            <div class="row">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
                     <div class="inner_banner_ontent">
                         <h2>CART</h2>
@@ -37,7 +37,7 @@
     <section class="shopping_cart_sec">
         <div class="container">
             <div class="heading_hp mb-3">
-                <h2>Shopping Cart ({{ count($carts) }} items)</h2>
+                {{-- <h2>Shopping Cart ({{ count($carts) }} items)</h2> --}}
             </div>
 
             @if (count($carts) > 0)
