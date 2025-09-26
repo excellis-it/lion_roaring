@@ -29,6 +29,12 @@
                                 <div class="col-md-6">
                                     <h4>Order #{{ $order->order_number }}</h4>
                                     <p class="mb-0">Placed on {{ $order->created_at->format('M d, Y \a\t h:i A') }}</p>
+                                      @if ($order->status == 'delivered' && $order->payment_status == 'paid')
+                                        <a href="{{ route('user.store-orders.invoice', $order->id) }}" target="_blank"
+                                            class="btn btn-sm btn-primary">
+                                            <i class="fas fa-download"></i> Download Invoice
+                                        </a>
+                                    @endif
                                 </div>
                                 <div class="col-md-6 text-end">
                                     <span
@@ -38,7 +44,10 @@
                                     <span class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : 'warning' }}">
                                         Payment {{ ucfirst($order->payment_status) }}
                                     </span>
+
+
                                 </div>
+
                             </div>
                         </div>
 

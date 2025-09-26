@@ -715,6 +715,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
 
     Route::prefix('newsletters')->group(function () {
         Route::get('/', [UserNewsletterController::class, 'list'])->name('user.newsletters.index');
+        Route::post('/send-email', [UserNewsletterController::class, 'sendEmail'])->name('user.newsletters.send-mail');
         // newsletters.delete
         Route::get('/newsletter-delete/{id}', [UserNewsletterController::class, 'delete'])->name('user.newsletters.delete');
     });
