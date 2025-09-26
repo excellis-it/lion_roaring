@@ -79,6 +79,7 @@ class HomeController extends Controller
 
         if ($homeCms) {
             $content = [
+                'header_logo' => $homeCms->header_logo,
                 'banner_title' => $homeCms->banner_title,
                 'banner_subtitle' => $homeCms->banner_subtitle,
                 'banner_image' => $homeCms->banner_image,

@@ -38,7 +38,7 @@
                 <div class="left_top">
                     <div class="logo">
                         <a href="{{ route('e-store') }}" class="">
-                            <img src="{{ asset('ecom_assets/images/estore_logo.png') }}" alt="" />
+                            <img src="{{ Helper::estoreHeaderLogoUrl() }}" alt="" />
                         </a>
                     </div>
 
