@@ -17,6 +17,7 @@
 
     <section class="dashboard_section section change-ps">
         <div class="container">
+
             {{-- Flash + validation messages --}}
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
@@ -34,14 +35,16 @@
                 </div>
             @endif
 
-            <div class="row">
-                <div class="col-md-12">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+
                     <div class="right_content_main rounded shadow">
                         <div class="right_content">
                             <div class="my_order_titel">
                                 <h4>Change Password</h4>
                             </div>
                             <div class="my_profile">
+
                                 <form method="POST" action="{{ route('e-store.password.update') }}">
                                     @csrf
                                     <div class="row">
@@ -75,6 +78,7 @@
                                         </div>
                                     </div>
                                 </form>
+
                             </div>
 
                         </div>

@@ -19,7 +19,7 @@
     <section class="common-padd">
         <div class="container">
             <div class="heading_hp pe-0 pe-lg-5">
-                <h2 class="text-white">Track you order</h2>
+                <h2 class="text-white">Track your order</h2>
             </div>
             <div class="row">
                 <div class="col-lg-5">
@@ -62,13 +62,13 @@
                                 $statusIndex = array_search($currentStatus, $timeline);
                             }
                         @endphp
-                        <div class="delevry-sumry p-3 shadow">
+                        <div class="delevry-sumry shadow">
                             <div class="info-del mb-3">
                                 <h4 class="mb-1">Order #{{ $order->order_number }}</h4>
                                 <p class="mb-0 small text-muted">Placed {{ $order->created_at->format('M d, Y h:i A') }}</p>
                             </div>
                             <div class="d-position mb-4">
-                                <ul class="list-unstyled d-flex flex-wrap gap-3" style="row-gap:1.5rem;">
+                                <ul class="list-unstyled">
                                     @foreach ($timeline as $idx => $st)
                                         @php
                                             $reached = $idx <= $statusIndex;
@@ -87,7 +87,7 @@
                                         <li class="text-center" style="min-width:90px;">
                                             <span
                                                 class="btn {{ $colorClass }} rounded-circle d-inline-flex align-items-center justify-content-center"
-                                                style="width:42px;height:42px;">
+                                                >
                                                 @if ($reached)
                                                     <i class="fa-solid fa-check"></i>
                                                 @else

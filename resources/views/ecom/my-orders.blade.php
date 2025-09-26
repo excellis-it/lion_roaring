@@ -34,22 +34,41 @@
                                         <div class="order-header d-flex justify-content-between align-items-start mb-3">
                                             <div>
                                                 <h5>Order #{{ $order->order_number }}</h5>
-                                                <p class="text-muted mb-1">Placed on
+                                                <p class="text-muted mb-0">Placed on
                                                     {{ $order->created_at->format('M d, Y') }}</p>
                                                 <p class="text-muted mb-0">Total:
                                                     ${{ number_format($order->total_amount, 2) }}</p>
+                                                    
+                                                   <div class="text-start mt-2">
+                                                    <span
+                                                        class="badge bg-{{ $order->status == 'delivered' ? 'success' : ($order->status == 'cancelled' ? 'danger' : 'primary') }} mb-1">
+                                                        {{ ucfirst($order->status) }}
+                                                    </span>
+                                                    <span
+                                                        class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : 'warning' }}">
+                                                        {{ ucfirst($order->payment_status) }}
+                                                    </span>
+                                                </div> 
                                             </div>
-                                            <div class="text-end">
-                                                <span
-                                                    class="badge bg-{{ $order->status == 'delivered' ? 'success' : ($order->status == 'cancelled' ? 'danger' : 'primary') }} mb-1">
-                                                    {{ ucfirst($order->status) }}
-                                                </span><br>
-                                                <span
-                                                    class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : 'warning' }}">
-                                                    {{ ucfirst($order->payment_status) }}
-                                                </span>
-                                            </div>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            <div class="order-actions text-end">
+                                            <a href="{{ route('e-store.order-details', $order->id) }}"
+                                                class="red_btn mb-2">
+                                                <span>View Details</span>
+                                            </a>
+                                            {{-- @if ($order->status == 'delivered')
+                                                <a href="#" class="btn btn-outline-secondary w-100 mb-2">
+                                                    Download Invoice
+                                                </a>
+                                            @endif --}}
                                         </div>
+                                        </div>
+                                        
+                                        
 
                                         <div class="order-items">
                                             @foreach ($order->orderItems->take(2) as $item)
@@ -85,17 +104,7 @@
                                             @endif
                                         </div>
 
-                                        <div class="order-actions text-end">
-                                            <a href="{{ route('e-store.order-details', $order->id) }}"
-                                                class="red_btn mb-2">
-                                                <span>View Details</span>
-                                            </a>
-                                            {{-- @if ($order->status == 'delivered')
-                                                <a href="#" class="btn btn-outline-secondary w-100 mb-2">
-                                                    Download Invoice
-                                                </a>
-                                            @endif --}}
-                                        </div>
+
                                     </div>
 
                                 </div>

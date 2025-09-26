@@ -69,7 +69,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-7 col-xl-6">
+                <div class="col-md-7">
+                    <div class="p-details-main-div">
                     <div class="ratings my-2">
                         <div class="stars d-flex">
                             {{ Helper::getTotalProductRating($product->id) ? Helper::getTotalProductRating($product->id) : 0 }}
@@ -228,6 +229,7 @@
 
                     </div>
                 </div>
+            </div>
             </div>
         </div>
         <div class="container">
