@@ -757,8 +757,9 @@ Route::prefix('e-store')->group(function () {
 
     // profile and change password page
     Route::get('/profile', [HomeController::class, 'profile'])->name('e-store.profile')->middleware('user');
-    Route::post('/update-profile', [HomeController::class, 'updateProfile'])->name('e-store.update-profile');
-    Route::get('/change-password', [HomeController::class, 'changePassword'])->name('e-store.change-password');
+    Route::post('/update-profile', [HomeController::class, 'updateProfile'])->name('e-store.update-profile')->middleware('user');
+    Route::get('/change-password', [HomeController::class, 'changePassword'])->name('e-store.change-password')->middleware('user');
+    Route::post('/update-password', [HomeController::class, 'passwordUpdate'])->name('e-store.password.update')->middleware('user');
     // order tracking page
     Route::get('/track-order', [HomeController::class, 'orderTracking'])->name('e-store.order-tracking');
     Route::post('/track-order-id', [HomeController::class, 'trackOrder'])->name('e-store.track-order');

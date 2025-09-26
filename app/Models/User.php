@@ -50,7 +50,8 @@ class User extends Authenticatable
         'location_address',
         'location_zip',
         'location_country',
-        'location_state'
+        'location_state',
+        'profile_picture',
     ];
     protected $appends = ['ecclesia_access']; // Add this line
 
@@ -161,9 +162,9 @@ class User extends Authenticatable
     // Check if user is a warehouse admin
     public function isWarehouseAdmin()
     {
-       // return $this->hasRole('WAREHOUSE_ADMIN');
-       // check if user has any warehouses assigned
-       return $this->warehouses()->exists();
+        // return $this->hasRole('WAREHOUSE_ADMIN');
+        // check if user has any warehouses assigned
+        return $this->warehouses()->exists();
     }
 
     // Check if user can manage a specific warehouse

@@ -15,6 +15,7 @@ use App\Helpers\Helper;
 use App\Models\WareHouse;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -280,24 +281,66 @@ class HomeController extends Controller
     {
         $user = auth()->user();
 
-        $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
-            'address' => 'nullable|string|max:500',
-        ]);
+        // Build validation rules conditionally
+        $rules = [];
+        if ($request->has('first_name') || $request->has('last_name') || $request->has('phone') || $request->has('address')) {
+            $rules = array_merge($rules, [
+                'first_name' => 'required|string|max:255',
+                'last_name'  => 'required|string|max:255',
+                'phone'      => 'required|string|max:255',
+                'address'    => 'nullable|string|max:500',
+            ]);
+        }
+        if ($request->hasFile('profile_picture')) {
+            $rules['profile_picture'] = 'image|mimes:jpg,jpeg,png,webp,avif,gif|max:200480';
+        }
 
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
-        $user->phone = $request->phone;
-        $user->address = $request->address;
+        if (!empty($rules)) {
+            $request->validate($rules);
+        }
+
+        // Update text fields if provided
+        if ($request->filled('first_name')) $user->first_name = $request->first_name;
+        if ($request->filled('last_name'))  $user->last_name  = $request->last_name;
+        if ($request->filled('phone'))      $user->phone      = $request->phone;
+        if ($request->has('address'))       $user->address    = $request->address;
+
+        // Handle profile image upload
+        if ($request->hasFile('profile_picture')) {
+            $path = $request->file('profile_picture')->store('profile_pictures', 'public');
+
+            // Delete old image if exists
+            if (!empty($user->profile_picture)) {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+
+            $user->profile_picture = $path;
+        }
+
         $user->save();
 
         return redirect()->back()->with('success', 'Profile updated successfully');
     }
+
+    // change password page
     public function changePassword()
     {
         return view('ecom.change-password');
+    }
+
+    // handle change password
+    public function passwordUpdate(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'string', 'min:8', 'confirmed', 'different:current_password'],
+        ]);
+
+        $user = auth()->user();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return back()->with('success', 'Password updated successfully.');
     }
 
     // orderTracking
