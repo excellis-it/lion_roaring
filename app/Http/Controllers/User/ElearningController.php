@@ -82,7 +82,7 @@ class ElearningController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'category_id' => 'required|numeric|exists:categories,id',
+            'category_id' => 'required|numeric|exists:elearning_categories,id',
             'name' => 'required|string|max:255',
             // 'description' => 'required|string',
             'short_description' => 'required|string',
@@ -185,7 +185,7 @@ class ElearningController extends Controller
     {
         if (auth()->user()->hasRole('SUPER ADMIN')) {
             $request->validate([
-                'category_id' => 'required|numeric|exists:categories,id',
+                'category_id' => 'required|numeric|exists:elearning_categories,id',
                 'name' => 'required|string|max:255',
                 // 'description' => 'required|string',
                 'short_description' => 'required|string',
