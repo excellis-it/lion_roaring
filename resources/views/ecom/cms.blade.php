@@ -33,7 +33,7 @@
                     <div class="about__content">
                         <div class="about__content--headings">
                         </div>
-                        <div class="about__content--text mt-5">
+                        <div class="about__content--text privact-policy-sec mt-5">
                             {!! isset($cms['page_content']) ? $cms['page_content'] : '' !!}
                         </div>
                     </div>

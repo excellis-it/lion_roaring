@@ -34,7 +34,7 @@
         </div>
     </section>
 
-    <section class="shopping_cart_sec">
+    <section class="shopping_cart_sec add-to-cart-sec">
         <div class="container">
             <div class="heading_hp mb-3">
                 {{-- <h2>Shopping Cart ({{ count($carts) }} items)</h2> --}}
@@ -72,10 +72,10 @@
                                                 <div class="cart_text">
                                                     <h4>{{ $item->product->name ?? '' }}</h4>
                                                     <h6>SKU: {{ $item->warehouseProduct->sku ?? '' }}</h6>
-                                                    <h6>{{ $item->size ? 'Size: ' . $item->size?->size ?? '' : '' }}
+                                                    <!-- <h6>{{ $item->size ? 'Size: ' . $item->size?->size ?? '' : '' }}
                                                         &nbsp;&nbsp;
                                                         {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
-                                                    </h6>
+                                                    </h6> -->
                                                     {{-- <span class="">{!! \Illuminate\Support\Str::limit($item->product->description, 50) !!}</span> --}}
 
                                                     <ul class="wl_price mb-1">

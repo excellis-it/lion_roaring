@@ -9,6 +9,11 @@
     --heading-font: "Nunito", sans-serif;
     --button-font: "Nunito", sans-serif;
 }
+@media (max-width:1700px){
+.feature_img .sales{
+    left: -103px;
+}
+}
 @media (max-width:1600px){
     .slide .slide__content--headings .title{
         font-size: 50px;
@@ -23,6 +28,9 @@
     .feature_img{
         height: 400px;
     }
+    .feature_img .sales{
+        left: -90px;
+    }
 }
 @media (max-width:1440px){
     .container-fluid {
@@ -34,6 +42,14 @@
     .slide .slide__content--headings .title {
         font-size: 45px;
     }
+    .feature_img .sales {
+        left: -88px;
+        top: 17px;
+    }
+    .filter_resilt{
+        padding: 20px;
+    }
+
 }
 @media (max-width:1366px){
 
@@ -64,6 +80,16 @@
     .form-area-wrepper{
         padding: 42px 50px;
     }
+    .feature_img {
+        height: 300px;
+    }
+    .feature_img .sales {
+        left: -84px;
+        top: 15px;
+    }
+    .filter .padding_filter {
+        padding: 20px 20px 20px 20px;
+    }
 }
 @media (max-width:1280px){
     .left_ali p, .left_ali a {
@@ -88,6 +114,10 @@
     }
     .contact-card-wprepper{
         padding: 10px;
+    }
+    .feature_img .sales {
+        left: -77px;
+        top: 15px;
     }
 }
 @media (max-width:1024px){
@@ -181,6 +211,31 @@
         left: -100px;
         width: 150px;
     }
+    .img-with-name h4 {
+    width: 190px;
+    font-size: 14px;
+}
+.wishlist_cart_sec .cart_product .cart_images {
+    width: 60px;
+    height: 80px;
+}
+.add_wishlist i {
+    font-size: 14px;
+}
+.cart_text .red_btn {
+    padding: 4px 12px;
+    font-size: 10px;
+}
+.shopping_cart_sec .cart_item {
+    padding: 10px;
+}
+.wish_head .right_p_text {
+    width: 70px;
+}
+.feature_img .sales {
+        left: -115px;
+        top: 15px;
+    }
 }
 @media (max-width:768px){
     .right_login {
@@ -233,7 +288,10 @@
     .logo a{
         width: 70px;
     }
-
+    .feature_img .sales {
+        left: -85px;
+        top: 15px;
+    }
 }
 @media (max-width:767px){
     .red_btn {
@@ -297,7 +355,24 @@
     .location_btn{
     width: 100px;
 }
-
+.order-header h5{
+    font-size: 16px;
+}
+.shopping_cart_sec .red_btn {
+        padding: 6px 10px;
+        letter-spacing: 0px;
+        font-size: 12px;
+    }
+    .cart_product{
+        flex-direction: column;
+    }
+    .p-details-main-div{
+        padding-left: 0px;
+    }
+    .feature_img .sales {
+        left: -313px;
+        top: 15px;
+    }
 }
 @media (max-width:576px){
     .slick-nav.next-arrow {
@@ -436,10 +511,10 @@
         width: 2px;
         height: 100px;
         top: -65px;
-        left: 34px;
+        left: 23px;
     }
     .delevry-sumry .info-del p{
-        font-size: 20px;
+        font-size: 14px;
     }
     .delevry-sumry .info-del h4 {
     font-size: 16px;
@@ -450,7 +525,42 @@
     .delevry-sumry{
         padding: 25px;
     }
-
+.img-with-name h4{
+    width: 100%;
+    font-size: 16px;
+}
+.img-with-name{
+    gap: 15px;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.wishlist_cart_sec .cart_text{
+    position: absolute;
+    right: 15px;
+    width: auto;
+    padding: 0px;
+}
+.wishlist_cart_sec .cart_product{
+    position: relative;
+}
+.add-to-cart-sec .cart_images{
+    height: 450px;
+    border-right: 0px;
+}
+.d-position ul li span{
+        width: 40px;
+    height: 40px;
+}
+.d-position ul li span i{
+    font-size: 16px;
+}
+.filter .padding_filter{
+    padding: 20px 20px 20px 20px;
+}
+    .feature_img .sales {
+        left: -187px;
+        top: 15px;
+    }
 }
 @media (max-width:425.98px){
     .img_servic {
@@ -526,6 +636,29 @@
     }
     .d-position ul li::before{
         left: 23px;
+    }
+    .order-header.d-flex{
+        display: block !important;
+    }
+    .order-actions.text-end{
+        text-align: left !important;
+    }
+    .order-header.mb-3{
+        margin-bottom: 0rem !important;
+    }
+    .slid_big_img{
+        height: 450px;
+    }
+        .feature_img .sales {
+        left: -153px;
+        top: 20px;
+    }
+}
+
+@media (max-width:380px){
+  .feature_img .sales {
+        left: -133px;
+        top: 25px;
     }
 }
 @media (max-width:375.98px){
@@ -614,6 +747,7 @@
     .social-box{
         height: 35px;
     }
+      
 }
 
 

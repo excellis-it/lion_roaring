@@ -94,7 +94,7 @@
                                                                 '<button type="button" class="btn btn-sm btn-light toggle-children me-2" data-state="collapsed" aria-label="Expand children" style="padding:2px 6px;">+</button>';
                                                         } else {
                                                             $html .=
-                                                                '<span class="me-2" style="width:18px;display:inline-block;"></span>';
+                                                                '<span></span>';
                                                         }
                                                         $html .= '<div class="form-check">';
                                                         $html .=
