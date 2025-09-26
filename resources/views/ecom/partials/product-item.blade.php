@@ -10,8 +10,11 @@
 
                     @if (($product['is_free'] ?? false) || ($product->is_free ?? false))
                         <span class="badge bg-success position-absolute" style="top:10px;left:10px;z-index:9">FREE</span>
-                    @else
+                    @endif
+
+                    @if (($product['sale_price'] ?? false) || ($product->sale_price ?? false))
                         <div class="sales">Sale</div>
+                        {{-- <span>{{ round((($product['price'] - $product['sale_price']) / $product['price']) * 100) }}%OFF</span> --}}
                     @endif
                     <div class="wishlist_icon" data-id="{{ $product['id'] }}">
                         <a href="javascript:void(0);"><i
@@ -32,7 +35,15 @@
                         @if (($product['is_free'] ?? false) || ($product->is_free ?? false))
                             <span class="price_text"><strong>Free</strong></span>
                         @else
-                            <span class="price_text">${{ $product['price'] }}</span>
+                            @if (($product['sale_price'] ?? false) || ($product->sale_price ?? false))
+                                <span class="price_text">${{ $product['sale_price'] }}</span>
+                                <span class=" text-muted text-decoration-line-through">${{ $product['price'] }}</span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            @else
+                                <span class="price_text">${{ $product['price'] }}</span>
+                            @endif
                         @endif
                         <ul class="star_ul">
                             @if (Helper::getTotalProductRating($product['id']))

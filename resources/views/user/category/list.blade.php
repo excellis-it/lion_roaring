@@ -41,6 +41,9 @@
                                                     Image
                                                 </th>
                                                 <th>
+                                                    Background Image
+                                                </th>
+                                                <th>
                                                     Parent Category
                                                 </th>
                                                 <th class="sorting" data-tippy-content="Sort by Category Name"

@@ -17,7 +17,7 @@
 
 @section('content')
     <section class="inner_banner_sec"
-        style="background-image: url({{ asset('ecom_assets/images/slider-bg.png') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+        style="background-image: url({{ isset($category['background_image']) ? Storage::url($category['background_image']) : asset('ecom_assets/images/slider-bg.png') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
@@ -135,9 +135,11 @@
 
                                             </div>
                                             <div class="mt-2">
-                                                <button type="button" id="expand-all" class="red_btn border-0 w-100 my-3"><span>Expand All</span></button>
-                                                <button type="button" id="collapse-all" class="red_btn border-0 w-100"><span>Collapse
-                                                    All</span></button>
+                                                <button type="button" id="expand-all"
+                                                    class="red_btn border-0 w-100 my-3"><span>Expand All</span></button>
+                                                <button type="button" id="collapse-all"
+                                                    class="red_btn border-0 w-100"><span>Collapse
+                                                        All</span></button>
                                             </div>
                                         </div>
                                     </div>

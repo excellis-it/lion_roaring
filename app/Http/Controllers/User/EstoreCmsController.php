@@ -117,7 +117,11 @@ class EstoreCmsController extends Controller
                 $message = 'Home CMS added successfully';
             }
 
+            /// Header Logo
 
+            if ($request->hasFile('header_logo')) {
+                $cms->header_logo = $this->imageUpload($request->file('header_logo'), 'header_logos');
+            }
 
             ///////// section 1: Top Banner Slider Management //////////
 

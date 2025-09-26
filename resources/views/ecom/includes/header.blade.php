@@ -38,7 +38,7 @@
                 <div class="left_top">
                     <div class="logo">
                         <a href="{{ route('e-store') }}" class="">
-                            <img src="{{ asset('ecom_assets/images/estore_logo.png') }}" alt="" />
+                            <img src="{{ Helper::estoreHeaderLogoUrl() }}" alt="" />
                         </a>
                     </div>
 
@@ -87,12 +87,15 @@
                                 <button class="search-icon icon-close"><i class="fa fa-fw  fa-close"></i></button>
                             </div>
                             <div class="search-container">
-                                <form>
-                                    <input type="text" name="q" id="search-terms"
-                                        placeholder="Search terms..." />
-                                    <button type="submit" name="submit" value="Go" class="search-icon"><i
-                                            class="fa fa-fw fa-search"></i></button>
-                                </form>
+
+                                <input type="text" name="q" id="search-terms" placeholder="Search products..."
+                                    aria-autocomplete="list" aria-expanded="false" aria-haspopup="listbox"
+                                    autocomplete="off" />
+                                <button type="button" name="submit" value="Go" class="search-icon"><i
+                                        class="fa fa-fw fa-search"></i></button>
+
+                                <div id="search-suggestions" class="search-suggestions d-none"
+                                    style="position: relative !important;" role="listbox"></div>
                             </div>
 
 
@@ -123,12 +126,14 @@
                                         </button>
                                         @if (Auth::user())
                                             <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="{{ route('e-store.wishlist') }}">My
+                                                <li><a class="dropdown-item"
+                                                        href="{{ route('e-store.wishlist') }}">My
                                                         Wishlist</a>
                                                 <li><a class="dropdown-item"
                                                         href="{{ route('e-store.profile') }}">Profile</a>
                                                 </li>
-                                                <li><a class="dropdown-item" href="{{ route('e-store.my-orders') }}">My
+                                                <li><a class="dropdown-item"
+                                                        href="{{ route('e-store.my-orders') }}">My
                                                         Orders</a></li>
                                                 <li><a class="dropdown-item"
                                                         href="{{ route('e-store.change-password') }}">Change
@@ -585,7 +590,7 @@
     </script>
     <script>
         (function() {
-            const input = document.getElementById('global-search');
+            const input = document.getElementById('search-terms');
             const box = document.getElementById('search-suggestions');
             if (!input) return;
             let timer, controller;

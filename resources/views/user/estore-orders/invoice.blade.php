@@ -206,7 +206,7 @@
                                 TOTAL AMOUNT</td>
                             <td
                                 style="text-align: right;font-size:13px;border-bottom: 2px solid #eaeaea;color: #333; padding-right: 30px;">
-                                $ {{ number_format($order->total_amount, 2) }}
+                                ${{ number_format($order->total_amount, 2) }}
                             </td>
                         </tr>
 

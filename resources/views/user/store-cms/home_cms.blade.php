@@ -105,6 +105,39 @@
 
                             <div class="accordion" id="accordion1">
 
+                                 {{-- Header Logo --}}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading_header_logo">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapse_header_logo" aria-expanded="true" aria-controls="collapse_header_logo">
+                                            <strong>Header Logo</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse_header_logo" class="accordion-collapse collapse" aria-labelledby="heading_header_logo"
+                                        data-bs-parent="#accordion1">
+                                        <div class="accordion-body">
+                                            <div class="col-md-12 mb-4">
+
+                                                <div class="box_label">
+                                                    <label for="header_logo"> Header Logo (Max width: 150px, Max Height: 150px)*</label>
+                                                    <input type="file" name="header_logo" id="header_logo" class="form-control" accept="image/*">
+                                                    @if ($errors->has('header_logo'))
+                                                        <span class="error">{{ $errors->first('header_logo') }}</span>
+                                                    @endif
+                                                </div>
+                                                @if (isset($cms->header_logo) && $cms->header_logo)
+                                                    <div class="mt-2">
+                                                        <img src="{{ Storage::url($cms->header_logo) }}" alt="Header Logo" class="img-thumbnail" style="width: 150px; height: 150px; object-fit: contain;">
+                                                    </div>
+                                                @endif
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- Header Logo end --}}
+
                                 {{-- Top banner accordion start --}}
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="heading1">
