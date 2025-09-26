@@ -129,6 +129,7 @@
                                                 <li><a class="dropdown-item"
                                                         href="{{ route('e-store.wishlist') }}">My
                                                         Wishlist</a>
+                                                </li>
                                                 <li><a class="dropdown-item"
                                                         href="{{ route('e-store.profile') }}">Profile</a>
                                                 </li>

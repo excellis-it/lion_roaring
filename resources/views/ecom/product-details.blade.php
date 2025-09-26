@@ -71,116 +71,121 @@
                 </div>
                 <div class="col-md-7">
                     <div class="p-details-main-div">
-                    <div class="ratings my-2">
-                        <div class="stars d-flex">
-                            {{ Helper::getTotalProductRating($product->id) ? Helper::getTotalProductRating($product->id) : 0 }}
-                            <div class="mx-2"> <i class="fa-solid fa-star"></i> </div>
-                            ({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
+                        <div class="ratings my-2">
+                            <div class="stars d-flex">
+                                {{ Helper::getTotalProductRating($product->id) ? Helper::getTotalProductRating($product->id) : 0 }}
+                                <div class="mx-2"> <i class="fa-solid fa-star"></i> </div>
+                                ({{ Helper::getRatingCount($product->id) ? Helper::getRatingCount($product->id) : 0 }})
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="title">{{ $product->name }}</div>
-                    <div class="product-category mt-2 mb-2">
-                        @php
-                            $categoryPath = [];
-                            $currentCategory = $product->category;
-                            while ($currentCategory) {
-                                array_unshift($categoryPath, $currentCategory->name);
-                                $currentCategory = $currentCategory->parent;
-                            }
-                        @endphp
-                        Category: {{ implode(' > ', $categoryPath) }}
-                    </div>
-                    <div class="brief-description">
-                        {{ $product->short_description }}
-                    </div>
-                    <div class="price my-2 warehouse-product-price-div">
-                        @if ($product->is_free ?? false)
-                            <span class="badge bg-success">FREE</span>
-                        @else
-                            $<span id="warehouse-product-price">{{ $wareHouseHaveProductVariables?->price ?? '' }}</span>
-                        @endif
-                    </div>
-                    <div class=" mb-2">
-                        <div class="theme-text subtitle">Description:</div>
-                        <div class="subtitle p-descrition-text">
-                            {!! $product->description !!}
+                        <div class="title">{{ $product->name }}</div>
+                        <div class="product-category mt-2 mb-2">
+                            @php
+                                $categoryPath = [];
+                                $currentCategory = $product->category;
+                                while ($currentCategory) {
+                                    array_unshift($categoryPath, $currentCategory->name);
+                                    $currentCategory = $currentCategory->parent;
+                                }
+                            @endphp
+                            Category: {{ implode(' > ', $categoryPath) }}
                         </div>
-                    </div>
-
-                    <div class="d-flex mb-2">
-                        <div class="theme-text subtitle">Warehouse:</div>
-                        <div class="subtitle ms-2">
-                            {{ $wareHouseHaveProductVariables?->warehouse?->name ?? '' }}
+                        <div class="brief-description">
+                            {{ $product->short_description }}
                         </div>
-                    </div>
-                    <div class="d-flex mb-2">
-                        <div class="theme-text subtitle">SKU:</div>
-                        <div class="subtitle ms-2" id="product-sku">
-                            {{ $wareHouseHaveProductVariables?->sku ?? '' }}
+                        <div class="price my-2 warehouse-product-price-div">
+                            @if ($product->is_free ?? false)
+                                <span class="badge bg-success">FREE</span>
+                            @else
+                                $<span
+                                    id="warehouse-product-price">{{ $wareHouseHaveProductVariables?->price ?? '' }}</span>
+                            @endif
                         </div>
-                    </div>
+                        <div class=" mb-2">
+                            <div class="theme-text subtitle">Description:</div>
+                            <div class="subtitle p-descrition-text">
+                                {!! $product->description !!}
+                            </div>
+                        </div>
 
-                    <input id="warehouse-product-id" type="hidden" value="{{ $wareHouseHaveProductVariables?->id }}" />
-                    <input id="product-variation-id" type="hidden"
-                        value="{{ $wareHouseHaveProductVariables?->product_variation_id }}" />
-                    {{-- Select Size radio input button $product->sizes --}}
+                        <div class="d-flex mb-2">
+                            <div class="theme-text subtitle">Warehouse:</div>
+                            <div class="subtitle ms-2">
+                                {{ $wareHouseHaveProductVariables?->warehouse?->name ?? '' }}
+                            </div>
+                        </div>
+                        <div class="d-flex mb-2">
+                            <div class="theme-text subtitle">SKU:</div>
+                            <div class="subtitle ms-2" id="product-sku">
+                                {{ $wareHouseHaveProductVariables?->sku ?? '' }}
+                            </div>
+                        </div>
 
-
-                    <div class="mb-3">
+                        <input id="warehouse-product-id" type="hidden"
+                            value="{{ $wareHouseHaveProductVariables?->id }}" />
+                        <input id="product-variation-id" type="hidden"
+                            value="{{ $wareHouseHaveProductVariables?->product_variation_id }}" />
                         {{-- Select Size radio input button $product->sizes --}}
-                        @if ($product->sizes->count() > 0)
-                            <p>Select Size:</p>
-                            @foreach ($product->sizes as $key => $size)
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input product-select-size-input" type="radio" name="size"
-                                        id="size-{{ $size->size?->id }}" value="{{ $size->size?->id }}">
-                                    <label class="form-check-label" for="size-{{ $size->size?->id }}">
-                                        {{ $size->size?->size }}
-                                    </label>
-                                </div>
-                            @endforeach
-                        @endif
 
-                    </div>
 
-                    <div class="mb-3">
-                        @if ($product->product_type != 'simple')
-                            @if ($product->variation_unique_color_first_images->count() > 0)
-                                <p class="theme-text subtitle">Selected Color: <span id="selected-color"
-                                        class="text-dark ms-2"></span></p>
-                                @foreach ($product->variation_unique_color_first_images as $key => $item)
-                                    @php
-                                        $color = $item->color;
-                                        $image = $item->image;
-                                    @endphp
-                                    @if ($color)
-                                        <div class="form-check form-check-inline border rounded" hidden>
-                                            {{-- add class product-select-color-input --}}
-                                            <input class="btn-check product-select-color-input " type="radio"
-                                                name="color" id="color-{{ $color->id }}" value="{{ $color->id }}">
-                                            <label class="btn" for="color-{{ $color->id }}">
-                                                {{ $color->color_name }}
+                        <div class="mb-3">
+                            {{-- Select Size radio input button $product->sizes --}}
+                            @if ($product->sizes->count() > 0)
+                                <p>Select Size:</p>
+                                @foreach ($product->sizes as $key => $size)
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input product-select-size-input" type="radio"
+                                            name="size" id="size-{{ $size->size?->id }}"
+                                            value="{{ $size->size?->id }}">
+                                        <label class="form-check-label" for="size-{{ $size->size?->id }}">
+                                            {{ $size->size?->size }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            @endif
 
-                                            </label>
-                                        </div>
-                                        <img class="product-select-color-input-image" data-color-id="{{ $color->id }}"
-                                            data-color-name="{{ $color->color_name ?? ($color->name ?? '') }}"
-                                            style="max-width: 80px;
+                        </div>
+
+                        <div class="mb-3">
+                            @if ($product->product_type != 'simple')
+                                @if ($product->variation_unique_color_first_images->count() > 0)
+                                    <p class="theme-text subtitle">Selected Color: <span id="selected-color"
+                                            class="text-dark ms-2"></span></p>
+                                    @foreach ($product->variation_unique_color_first_images as $key => $item)
+                                        @php
+                                            $color = $item->color;
+                                            $image = $item->image;
+                                        @endphp
+                                        @if ($color)
+                                            <div class="form-check form-check-inline border rounded" hidden>
+                                                {{-- add class product-select-color-input --}}
+                                                <input class="btn-check product-select-color-input " type="radio"
+                                                    name="color" id="color-{{ $color->id }}"
+                                                    value="{{ $color->id }}">
+                                                <label class="btn" for="color-{{ $color->id }}">
+                                                    {{ $color->color_name }}
+
+                                                </label>
+                                            </div>
+                                            <img class="product-select-color-input-image"
+                                                data-color-id="{{ $color->id }}"
+                                                data-color-name="{{ $color->color_name ?? ($color->name ?? '') }}"
+                                                style="max-width: 80px;
                                     max-height: 80px;
                                     cursor: pointer;
                                     border: 2px solid #ddd; border-radius: 5px; margin-right: 10px;
                                     opacity: 1;
                                     pointer-events: auto;"
-                                            src="{{ Storage::url($image->image_path ?? '') }}"
-                                            alt="{{ $color->color_name ?? ($color->name ?? '') }}">
-                                    @endif
-                                @endforeach
+                                                src="{{ Storage::url($image->image_path ?? '') }}"
+                                                alt="{{ $color->color_name ?? ($color->name ?? '') }}">
+                                        @endif
+                                    @endforeach
+                                @endif
                             @endif
-                        @endif
-                    </div>
-                    <div class="d-flex">
-                        {{-- <div id="qty-div" class="me-3">
+                        </div>
+                        <div class="d-flex">
+                            {{-- <div id="qty-div" class="me-3">
                             <div class="d-flex justify-content-start align-items-center">
                                 <div class="small_number mb-3">
                                     <div class="qty-input">
@@ -195,41 +200,41 @@
                             </div>
                         </div> --}}
 
-                        {{-- hidden div for out of stock message badge --}}
-                        <div id="out-of-stock-message" class="text-danger " style="display: none;">
-                            <span class="h5">Out of Stock</span>
-                        </div>
+                            {{-- hidden div for out of stock message badge --}}
+                            <div id="out-of-stock-message" class="text-danger me-2" style="display: none;">
+                                <span class="h5">Out of Stock</span>
+                            </div>
 
-                        {{-- Select option dropdown for quantity --}}
-                        <div class="me-3">
-                            <div class="d-flex justify-content-start align-items-center">
-                                <div class="small_number mb-3">
-                                    <div class="">
-                                        <select class="form-select product-qty" name="product-qty"
-                                            data-product-id="{{ $product->id }}">
-                                            <option value="1">Qty: 1</option>
-                                            @php
-                                                $qty = (int) ($wareHouseHaveProductVariables?->quantity ?? 0);
-                                                $max = $qty > 0 ? min($qty, 20) : 0;
-                                            @endphp
-                                            @for ($i = 2; $i <= $max; $i++)
-                                                <option value="{{ $i }}">{{ $i }}</option>
-                                            @endfor
-                                        </select>
+                            {{-- Select option dropdown for quantity --}}
+                            <div class="me-3">
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <div class="small_number mb-3">
+                                        <div class="">
+                                            <select class="form-select product-qty" name="product-qty"
+                                                data-product-id="{{ $product->id }}">
+                                                <option value="1">Qty: 1</option>
+                                                @php
+                                                    $qty = (int) ($wareHouseHaveProductVariables?->quantity ?? 0);
+                                                    $max = $qty > 0 ? min($qty, 20) : 0;
+                                                @endphp
+                                                @for ($i = 2; $i <= $max; $i++)
+                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
+
+                            <div class="addtocart cart-btns" data-id="{{ $product->id }}">
+                                <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to
+                                        Cart</span></a>
+                            </div>
+
                         </div>
-
-
-                        <div class="addtocart cart-btns" data-id="{{ $product->id }}">
-                            <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to
-                                    Cart</span></a>
-                        </div>
-
                     </div>
                 </div>
-            </div>
             </div>
         </div>
         <div class="container">
