@@ -25,16 +25,19 @@
                                     <div class="row mt-2">
                                         <div class="col-md-6">
                                             <ul class="mb-1">
+                                             <li><code>privacy-policy</code> (Privacy Policy)</li>
+                                                <li><code>terms-and-condition</code> (Terms and Conditions)</li>
                                                 <li><code>products</code> (Products list)</li>
                                                 <li><code>product-details</code> (Product details)</li>
                                                 <li><code>cart</code> (Cart)</li>
                                                 <li><code>checkout</code> (Checkout)</li>
                                                 <li><code>my-orders</code> (My Orders)</li>
-                                                <li><code>order-details</code> (Order details)</li>
+                                                
                                             </ul>
                                         </div>
                                         <div class="col-md-6">
                                             <ul class="mb-1">
+                                            <li><code>order-details</code> (Order details)</li>
                                                 <li><code>order-success</code> (Order success)</li>
                                                 <li><code>order-tracking</code> (Public order tracking)</li>
                                                 <li><code>wishlist</code> (Wishlist)</li>
@@ -64,7 +67,7 @@
                                     <div class="box_label">
                                         <label for="image"> Page Banner Image</label>
                                         <img src="{{ Storage::url($cms->page_banner_image) }}" alt="Banner Image"
-                                            class="img-thumbnail" style="width: 100px; height: 100px;">
+                                            class="img-thumbnail" style="width: 150px; height: 100px;">
                                     </div>
                                 </div>
                             @else
