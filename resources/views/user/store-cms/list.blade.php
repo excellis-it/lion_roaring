@@ -22,6 +22,8 @@
                                     <div class="col-12">
                                         @php
                                             $requiredSlugs = [
+                                                'privacy-policy',
+                                                'terms-and-condition',
                                                 'products',
                                                 'product-details',
                                                 'cart',
@@ -36,7 +38,10 @@
                                                 'product-not-available',
                                             ];
                                             $existing = isset($pages) ? $pages->pluck('slug')->toArray() : [];
+                                            $missing = array_values(array_diff($requiredSlugs, $existing));
                                         @endphp
+                                        @if (count($missing) > 0)
+
                                         <div class="alert alert-secondary">
                                             <strong>Page Banner Status:</strong>
                                             <div class="row mt-2">
@@ -55,6 +60,7 @@
                                                 Page Banner Image to set that page's background. Pages without a CMS banner
                                                 fall back to the Home CMS banner, then the default image.</small>
                                         </div>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="row ">

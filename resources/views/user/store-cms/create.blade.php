@@ -25,12 +25,13 @@
                                     <div class="row mt-2">
                                         <div class="col-md-6">
                                             <ul class="mb-1">
-                                                <li><code>home</code> (Global fallback via Home CMS Banner Image)</li>
-                                                <li><code>products</code> (Products list)</li>
+                                               <li><code>privacy-policy</code> (Privacy Policy)</li>
+                                                <li><code>terms-and-condition</code> (Terms and Conditions)</li>
                                                 <li><code>product-details</code> (Product details)</li>
                                                 <li><code>cart</code> (Cart)</li>
                                                 <li><code>checkout</code> (Checkout)</li>
                                                 <li><code>my-orders</code> (My Orders)</li>
+                                                
                                             </ul>
                                         </div>
                                         <div class="col-md-6">

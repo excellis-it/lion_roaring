@@ -68,12 +68,9 @@
                         <li><a href="{{ route('e-store.all-products') }}">Our Collections</a></li>
                         <li><a href="{{ route('e-store.order-tracking') }}">Track Order</a></li>
                         <li><a href="{{ route('e-store.contact') }}">Contact us</a></li>
-                        @if (Helper::getCmsPages() && count(Helper::getCmsPages()) > 0)
-                            @foreach (Helper::getCmsPages() as $page)
-                                <li><a href="{{ route($page->slug . '.e-store.cms-page') }}">{{ $page->page_name }}</a>
-                                </li>
-                            @endforeach
-                        @endif
+                        <li><a href="{{ route('privacy-policy.e-store.cms-page') }}">Privacy Policy</a></li>
+                        <li><a href="{{ route('terms-and-condition.e-store.cms-page') }}">Terms and Conditions</a></li>
+                     
                     </ul>
                 </div>
                 <p> {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_copywrite_text : '' !!}</p>

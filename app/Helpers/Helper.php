@@ -201,7 +201,7 @@ class Helper
 
     public static function getCmsPages()
     {
-        $pages = EcomCmsPage::get();
+        $pages = EcomCmsPage::where('id', '<', 3)->get();
         return $pages;
     }
 
