@@ -753,17 +753,17 @@ Route::prefix('e-store')->group(function () {
     Route::get('/payment-cancelled', [EstoreProductController::class, 'paymentCancelled'])->name('e-store.payment-cancelled');
 
     Route::get('/order-success/{orderId}', [EstoreProductController::class, 'orderSuccess'])->name('e-store.order-success');
-    Route::get('/my-orders', [EstoreProductController::class, 'myOrders'])->name('e-store.my-orders');
-    Route::get('/order-details/{orderId}', [EstoreProductController::class, 'orderDetails'])->name('e-store.order-details');
+    Route::get('/my-orders', [EstoreProductController::class, 'myOrders'])->name('e-store.my-orders')->middleware('user');
+    Route::get('/order-details/{orderId}', [EstoreProductController::class, 'orderDetails'])->name('e-store.order-details')->middleware('user');
 
     // profile and change password page
-    Route::get('/profile', [HomeController::class, 'profile'])->name('e-store.profile')->middleware('user');
-    Route::post('/update-profile', [HomeController::class, 'updateProfile'])->name('e-store.update-profile')->middleware('user');
-    Route::get('/change-password', [HomeController::class, 'changePassword'])->name('e-store.change-password')->middleware('user');
-    Route::post('/update-password', [HomeController::class, 'passwordUpdate'])->name('e-store.password.update')->middleware('user');
+    Route::get('/estore-profile', [HomeController::class, 'profile'])->name('e-store.profile')->middleware('user');
+    Route::post('/estore-update-profile', [HomeController::class, 'updateProfile'])->name('e-store.update-profile')->middleware('user');
+    Route::get('/estore-change-password', [HomeController::class, 'changePassword'])->name('e-store.change-password')->middleware('user');
+    Route::post('/estore-update-password', [HomeController::class, 'passwordUpdate'])->name('e-store.password.update')->middleware('user');
     // order tracking page
-    Route::get('/track-order', [HomeController::class, 'orderTracking'])->name('e-store.order-tracking');
-    Route::post('/track-order-id', [HomeController::class, 'trackOrder'])->name('e-store.track-order');
+    Route::get('/estore-track-order', [HomeController::class, 'orderTracking'])->name('e-store.order-tracking');
+    Route::post('/estore-track-order-id', [HomeController::class, 'trackOrder'])->name('e-store.track-order');
 
 
     // e-store.cancel-order
@@ -791,7 +791,7 @@ Route::prefix('e-store')->group(function () {
         }
     }
 
-    $pages = EcomCmsPage::get();
+    $pages = EcomCmsPage::where('id', '<', 3)->get();
     foreach ($pages as $page) {
         if ($page->slug) {
             Route::get($page->slug, [EstoreCmsController::class, 'cmsPage'])
