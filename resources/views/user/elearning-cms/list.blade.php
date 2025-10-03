@@ -23,8 +23,11 @@
                                         <h3 class="mb-3 float-left">E-learning CMS List</h3>
                                     </div>
                                     <div class="col-md-2 ">
-                                        <a href="{{ route('user.elearning-cms.create') }}" class="btn btn-primary w-100"><i
-                                                class="fa-solid fa-plus"></i> Create Page</a>
+                                        @if (auth()->user()->can('Create Elearning CMS'))
+                                            <a href="{{ route('user.elearning-cms.create') }}"
+                                                class="btn btn-primary w-100"><i class="fa-solid fa-plus"></i> Create
+                                                Page</a>
+                                        @endif
                                     </div>
                                     {{-- <div class="col-lg-4">
                                         <div class="search-field float-right">
@@ -51,8 +54,10 @@
                                                 </td>
                                                 <td>Home Page</td>
                                                 <td>
-                                                    <a href="{{ route('user.elearning-cms.edit', ['page' => 'home']) }}"
-                                                        class="edit_icon me-2"> <i class="ti ti-edit"></i></a>
+                                                    @if (auth()->user()->can('Edit Elearning CMS'))
+                                                        <a href="{{ route('user.elearning-cms.edit', ['page' => 'home']) }}"
+                                                            class="edit_icon me-2"> <i class="ti ti-edit"></i></a>
+                                                    @endif
                                                 </td>
                                             </tr>
 
@@ -62,8 +67,10 @@
                                                 </td>
                                                 <td>Footer Section</td>
                                                 <td>
-                                                    <a href="{{ route('user.elearning-cms.edit', ['page' => 'footer']) }}"
-                                                        class="edit_icon me-2"> <i class="ti ti-edit"></i></a>
+                                                    @if (auth()->user()->can('Edit Elearning CMS'))
+                                                        <a href="{{ route('user.elearning-cms.edit', ['page' => 'footer']) }}"
+                                                            class="edit_icon me-2"> <i class="ti ti-edit"></i></a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             @php
@@ -78,12 +85,17 @@
                                                         <td>{{ $page->page_name }}</td>
                                                         <td>
                                                             <div class="d-flex">
-                                                                <a href="{{ route('user.elearning-cms.edit', ['page' => $page->slug]) }}"
-                                                                    class="edit_icon me-2"> <i class="ti ti-edit"></i></a>
-
-                                                                <a href="javascript:void(0);"
-                                                                    data-route="{{ route('user.elearning-cms.delete', ['id' => $page->id]) }}"
-                                                                    class="delete_icon" id="delete"> <i class="fa-solid fa-trash"></i> </a>
+                                                                @if (auth()->user()->can('Edit Elearning CMS'))
+                                                                    <a href="{{ route('user.elearning-cms.edit', ['page' => $page->slug]) }}"
+                                                                        class="edit_icon me-2"> <i
+                                                                            class="ti ti-edit"></i></a>
+                                                                @endif
+                                                                @if (auth()->user()->can('Delete Elearning CMS'))
+                                                                    <a href="javascript:void(0);"
+                                                                        data-route="{{ route('user.elearning-cms.delete', ['id' => $page->id]) }}"
+                                                                        class="delete_icon" id="delete"> <i
+                                                                            class="fa-solid fa-trash"></i> </a>
+                                                                @endif
                                                             </div>
 
 
@@ -105,26 +117,26 @@
 @endsection
 
 @push('scripts')
-<script>
-    $(document).on('click', '#delete', function(e) {
-        swal({
-                title: "Are you sure?",
-                text: "To remove this page from the CMS",
-                type: "warning",
-                confirmButtonText: "Yes",
-                showCancelButton: true
-            })
-            .then((result) => {
-                if (result.value) {
-                    window.location = $(this).data('route');
-                } else if (result.dismiss === 'cancel') {
-                    swal(
-                        'Cancelled',
-                        'Your stay here :)',
-                        'error'
-                    )
-                }
-            })
-    });
-</script>
+    <script>
+        $(document).on('click', '#delete', function(e) {
+            swal({
+                    title: "Are you sure?",
+                    text: "To remove this page from the CMS",
+                    type: "warning",
+                    confirmButtonText: "Yes",
+                    showCancelButton: true
+                })
+                .then((result) => {
+                    if (result.value) {
+                        window.location = $(this).data('route');
+                    } else if (result.dismiss === 'cancel') {
+                        swal(
+                            'Cancelled',
+                            'Your stay here :)',
+                            'error'
+                        )
+                    }
+                })
+        });
+    </script>
 @endpush

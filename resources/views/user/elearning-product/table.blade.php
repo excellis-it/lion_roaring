@@ -36,13 +36,17 @@
             <td> {{ $product->created_at->format('d M Y') }}</td>
             <td>
                 <div class="d-flex">
-                    <a href="{{ route('elearning.edit', $product->id) }}" class="delete_icon">
-                        <i class="fa-solid fa-edit"></i>
-                    </a> &nbsp; &nbsp;
-                    <a href="javascript:void(0)" id="delete"
-                        data-route="{{ route('elearning.delete', $product->id) }}" class="delete_icon">
-                        <i class="fa-solid fa-trash"></i>
-                    </a>
+                    @if (auth()->user()->can('Edit Elearning Product'))
+                        <a href="{{ route('elearning.edit', $product->id) }}" class="delete_icon">
+                            <i class="fa-solid fa-edit"></i>
+                        </a> &nbsp; &nbsp;
+                    @endif
+                    @if (auth()->user()->can('Delete Elearning Product'))
+                        <a href="javascript:void(0)" id="delete"
+                            data-route="{{ route('elearning.delete', $product->id) }}" class="delete_icon">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    @endif
                 </div>
             </td>
         </tr>

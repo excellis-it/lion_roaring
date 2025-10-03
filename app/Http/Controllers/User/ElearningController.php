@@ -21,7 +21,7 @@ class ElearningController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Manage Elearning Product')) {
             $products = ElearningProduct::orderBy('id', 'desc')->paginate(10);
             return view('user.elearning-product.list', compact('products'));
         } else {
@@ -65,7 +65,7 @@ class ElearningController extends Controller
      */
     public function create()
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Create Elearning Product')) {
             $categories = ElearningCategory::orderBy('id', 'desc')->get();
             return view('user.elearning-product.create')->with('categories', $categories);
         } else {
@@ -165,7 +165,7 @@ class ElearningController extends Controller
      */
     public function edit($id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Edit Elearning Product')) {
             $product = ElearningProduct::findOrFail($id);
             $categories = ElearningCategory::orderBy('id', 'desc')->get();
             return view('user.elearning-product.edit', compact('product', 'categories'));
@@ -183,7 +183,7 @@ class ElearningController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Edit Elearning Product')) {
             $request->validate([
                 'category_id' => 'required|numeric|exists:elearning_categories,id',
                 'name' => 'required|string|max:255',
@@ -264,7 +264,7 @@ class ElearningController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Delete Elearning Product')) {
             $product = ElearningProduct::findOrFail($id);
             $product->delete();
             return redirect()->route('elearning.index')->with('message', 'Product deleted successfully!');

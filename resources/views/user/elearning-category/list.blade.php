@@ -18,9 +18,11 @@
                                         <h3 class="mb-3">E-learning Category List</h3>
                                     </div>
                                     <div class="col-md-2 float-right">
-                                        <a href="{{ route('elearning-categories.create') }}"
-                                            class="btn btn-primary w-100"><i class="fa-solid fa-plus"></i> Create
-                                            Category</a>
+                                        @if (auth()->user()->can('Create Elearning Category'))
+                                            <a href="{{ route('elearning-categories.create') }}"
+                                                class="btn btn-primary w-100"><i class="fa-solid fa-plus"></i> Create
+                                                Category</a>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="row justify-content-end">

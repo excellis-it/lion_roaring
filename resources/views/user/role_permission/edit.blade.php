@@ -27,7 +27,8 @@
                                 <div class="box_label">
                                     <label>Role Name</label>
                                     <input type="text" class="form-control" value="{{ $role->name }}" name="role_name"
-                                        placeholder="" {{ ($role->name == 'MEMBER_NON_SOVEREIGN' || $role->name == 'WAREHOUSE_ADMIN' || $role->name == 'ESTORE_USER' || $role->name == 'ECCLESIA') ? 'readonly' : '' }}>
+                                        placeholder=""
+                                        {{ $role->name == 'MEMBER_NON_SOVEREIGN' || $role->name == 'WAREHOUSE_ADMIN' || $role->name == 'ESTORE_USER' || $role->name == 'ECCLESIA' ? 'readonly' : '' }}>
                                     @if ($errors->has('role_name'))
                                         @error('role_name')
                                             <span class="text-danger" style="color: red !important"> {{ $message }}</span>
@@ -77,6 +78,18 @@
                                                 'Policy',
                                                 'Help',
                                                 'Role Permission',
+                                                'Elearning CMS',
+                                                'Elearning Category',
+                                                'Elearning Product',
+                                                'Estore CMS',
+                                                'Estore Users',
+                                                'Estore Category',
+                                                'Estore Sizes',
+                                                'Estore Colors',
+                                                'Estore Products',
+                                                'Estore Settings',
+                                                'Estore Warehouse',
+                                                'Estore Orders',
                                             ];
 
                                         @endphp

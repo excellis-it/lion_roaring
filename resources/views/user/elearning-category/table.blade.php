@@ -12,14 +12,19 @@
             <td> {{ $category->slug }}</td>
             <td>
                 <div class="d-flex">
-                    <a href="{{ route('elearning-categories.edit', $category->id) }}" class="delete_icon">
-                        <i class="fa-solid fa-edit"></i>
-                    </a> &nbsp; &nbsp;
-                    @if ($category->main == 0)
-                        <a href="javascript:void(0)" id="delete"
-                            data-route="{{ route('elearning-categories.delete', $category->id) }}" class="delete_icon">
-                            <i class="fa-solid fa-trash"></i>
-                        </a>
+                    @if (auth()->user()->can('Edit Elearning Category'))
+                        <a href="{{ route('elearning-categories.edit', $category->id) }}" class="delete_icon">
+                            <i class="fa-solid fa-edit"></i>
+                        </a> &nbsp; &nbsp;
+                    @endif
+                    @if (auth()->user()->can('Delete Elearning Category'))
+                        @if ($category->main == 0)
+                            <a href="javascript:void(0)" id="delete"
+                                data-route="{{ route('elearning-categories.delete', $category->id) }}"
+                                class="delete_icon">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        @endif
                     @endif
                 </div>
             </td>
