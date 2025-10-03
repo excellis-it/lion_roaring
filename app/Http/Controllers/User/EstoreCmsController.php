@@ -159,6 +159,9 @@ class EstoreCmsController extends Controller
             $cms->featured_product_title = $request->featured_product_title ?? '';
             $cms->featured_product_subtitle = $request->featured_product_subtitle ?? '';
 
+            $cms->new_arrival_title = $request->new_arrival_title;
+            $cms->new_arrival_subtitle = $request->new_arrival_subtitle;
+
             ///////// section 3: Second Banner Slider Management //////////
             $cms->slider_data_second_title = $request->slider_data_second_title ?? '';
 
@@ -212,8 +215,7 @@ class EstoreCmsController extends Controller
             $cms->banner_subtitle = $request->banner_subtitle ?? '';
             $cms->product_category_title = $request->product_category_title;
             $cms->product_category_subtitle = $request->product_category_subtitle;
-            $cms->new_arrival_title = $request->new_arrival_title;
-            $cms->new_arrival_subtitle = $request->new_arrival_subtitle;
+
 
             if ($request->hasFile('banner_image')) {
                 $cms->banner_image = $this->imageUpload($request->file('banner_image'), 'ecom_cms');

@@ -58,7 +58,7 @@
     </section>
 
 
-     <section class="product_catagory arrw-color">
+    <section class="product_catagory arrw-color">
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-xl-7">
@@ -91,7 +91,7 @@
                 </div>
             </div>
         </div>
-    </section> 
+    </section>
 
     <section class="feature_sec arrw-color bg_right_img">
         <div class="container-fluid">
@@ -141,7 +141,8 @@
                                                     @else
                                                         @if (($product['sale_price'] ?? false) || ($product->sale_price ?? false))
                                                             <span class="price_text">${{ $product['sale_price'] }}</span>
-                                                            <span class=" text-muted text-decoration-line-through">${{ $product['price'] }}</span>
+                                                            <span
+                                                                class=" text-muted text-decoration-line-through">${{ $product['price'] }}</span>
                                                             <span></span>
                                                             <span></span>
                                                             <span></span>
@@ -187,21 +188,18 @@
     </section>
 
 
+
+
     <section class="news-letter news-letter-center" id="News-letter"
         style="background-image:url('{{ asset('ecom_assets/images/banner_big.jpg') }}');">
         <div class="news ">
             <div class="container position-relative z-1">
                 <div class="row">
                     <div class="col-lg-10 mx-auto">
-                        <h2 class="news-heading text-center">when an unknown printer took a galley of type and scrambled
-                        </h2>
-                        <p class="des how-de text-center">Get the Latest news about digital Marketing to Your Pocket, drop
-                            your email
-                            below to get daliy update about us when an unknown printer took a galley of type and scrambled
-                            it to make a type specimen book.
-                        </p>
+                        <h2 class="news-heading text-center">{!! isset($content['new_arrival_title']) ? $content['new_arrival_title'] : '' !!}</h2>
+                        <p class="des how-de text-center">{!! isset($content['new_arrival_subtitle']) ? $content['new_arrival_subtitle'] : '' !!}</p>
                         <div class="text-center">
-                            <a class="red_btn slidebottomleft" href="{{ $slide['link'] ?? '#' }}" target="_blank">
+                            <a class="red_btn slidebottomleft" href="{{ route('e-store.all-products') }}" target="_blank">
                                 <span>Shop Now <i class="fa-solid fa-arrow-right"></i></span>
                             </a>
                         </div>

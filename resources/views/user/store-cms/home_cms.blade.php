@@ -105,29 +105,34 @@
 
                             <div class="accordion" id="accordion1">
 
-                                 {{-- Header Logo --}}
+                                {{-- Header Logo --}}
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="heading_header_logo">
                                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapse_header_logo" aria-expanded="true" aria-controls="collapse_header_logo">
+                                            data-bs-target="#collapse_header_logo" aria-expanded="true"
+                                            aria-controls="collapse_header_logo">
                                             <strong>Header Logo</strong>
                                         </button>
                                     </h2>
-                                    <div id="collapse_header_logo" class="accordion-collapse collapse" aria-labelledby="heading_header_logo"
-                                        data-bs-parent="#accordion1">
+                                    <div id="collapse_header_logo" class="accordion-collapse collapse"
+                                        aria-labelledby="heading_header_logo" data-bs-parent="#accordion1">
                                         <div class="accordion-body">
                                             <div class="col-md-12 mb-4">
 
                                                 <div class="box_label">
-                                                    <label for="header_logo"> Header Logo (Max width: 150px, Max Height: 150px)*</label>
-                                                    <input type="file" name="header_logo" id="header_logo" class="form-control" accept="image/*">
+                                                    <label for="header_logo"> Header Logo (Max width: 150px, Max Height:
+                                                        150px)*</label>
+                                                    <input type="file" name="header_logo" id="header_logo"
+                                                        class="form-control" accept="image/*">
                                                     @if ($errors->has('header_logo'))
                                                         <span class="error">{{ $errors->first('header_logo') }}</span>
                                                     @endif
                                                 </div>
                                                 @if (isset($cms->header_logo) && $cms->header_logo)
                                                     <div class="mt-2">
-                                                        <img src="{{ Storage::url($cms->header_logo) }}" alt="Header Logo" class="img-thumbnail" style="width: 150px; height: 150px; object-fit: contain;">
+                                                        <img src="{{ Storage::url($cms->header_logo) }}" alt="Header Logo"
+                                                            class="img-thumbnail"
+                                                            style="width: 150px; height: 150px; object-fit: contain;">
                                                     </div>
                                                 @endif
 
@@ -175,7 +180,8 @@
                                                                         <div class="box_label">
                                                                             <label>Slide {{ $index + 1 }}
                                                                                 Subtitle</label>
-                                                                            <input type="text" name="slider_subtitles[]"
+                                                                            <input type="text"
+                                                                                name="slider_subtitles[]"
                                                                                 class="form-control"
                                                                                 value="{{ $slide['subtitle'] ?? '' }}"
                                                                                 placeholder="Enter slide subtitle">
@@ -305,6 +311,55 @@
                                                         @if ($errors->has('featured_product_subtitle'))
                                                             <span
                                                                 class="error">{{ $errors->first('featured_product_subtitle') }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- Featured Product accordion end --}}
+
+                                {{-- Shop Now accordion start --}}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingShopNow">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseShopNow" aria-expanded="true"
+                                            aria-controls="collapseShopNow">
+                                            <strong>Shop Now Section</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="collapseShopNow" class="accordion-collapse collapse "
+                                        aria-labelledby="headingShopNow" data-bs-parent="#accordion1">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                {{-- new_arrival_title --}}
+                                                <div class="col-md-6 mb-2">
+                                                    <div class="box_label">
+                                                        <label for="new_arrival_title"> Shop Now Section
+                                                            Title*</label>
+                                                        <input type="text" name="new_arrival_title"
+                                                            id="new_arrival_title" class="form-control"
+                                                            value="{{ isset($cms->new_arrival_title) ? $cms->new_arrival_title : old('new_arrival_title') }}">
+                                                        @if ($errors->has('new_arrival_title'))
+                                                            <span
+                                                                class="error">{{ $errors->first('new_arrival_title') }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                {{-- new_arrival_subtitle --}}
+                                                <div class="col-md-6 mb-2">
+                                                    <div class="box_label">
+                                                        <label for="new_arrival_subtitle"> Shop Now Section
+                                                            Subtitle*</label>
+                                                        <input type="text" name="new_arrival_subtitle"
+                                                            id="new_arrival_subtitle" class="form-control"
+                                                            value="{{ isset($cms->new_arrival_subtitle) ? $cms->new_arrival_subtitle : old('new_arrival_subtitle') }}">
+                                                        @if ($errors->has('new_arrival_subtitle'))
+                                                            <span
+                                                                class="error">{{ $errors->first('new_arrival_subtitle') }}</span>
                                                         @endif
                                                     </div>
                                                 </div>
