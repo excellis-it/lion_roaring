@@ -269,60 +269,80 @@
                         </a>
                     </li> --}}
                 @endif
-                @if (Auth::user()->hasRole('SUPER ADMIN') || Auth::user()->hasRole('ADMINISTRATOR'))
+                @if (Gate::check('Manage Estore CMS') ||
+                        Gate::check('Manage Estore Users') ||
+                        Gate::check('Manage Estore Category') ||
+                        Gate::check('Manage Estore Sizes') ||
+                        Gate::check('Manage Estore Colors') ||
+                        Gate::check('Manage Estore Products') ||
+                        Gate::check('Manage Estore Settings') ||
+                        Gate::check('Manage Estore Warehouse') ||
+                        Gate::check('Manage Estore Orders'))
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExample10">
                             <span>
                                 <img src="{{ asset('user_assets/images/ICON/Store/Store.svg') }}" alt="">
                             </span>
-                            <span class="hide-menu">Store</span>
+                            <span class="hide-menu">E-Store</span>
                         </a>
                         {{-- Collapse content --}}
                         <div class="collapse {{ Request::is('user/products*') || Request::is('user/store-orders*') || Request::is('user/ware-houses*') || Request::is('user/store-settings*') || Request::is('user/sizes*') || Request::is('user/colors*') || Request::is('user/store-promo-codes*') || Request::is('user/warehouse-admins*') || Request::is('user/store-cms*') || Request::is('user/store-cms-page/home*') || Request::is('user/store-cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
                             id="collapseExample10">
                             <div class="menu_bb">
                                 {{-- bulletins --}}
-                                <a href="{{ route('user.store-cms.dashboard') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/E-store_Dashboard.svg') }}"
-                                            alt="">
-                                    </span>
-                                    <span>E-store Dashboard</span>
-                                </a>
+                                @if (Gate::check('Manage Estore CMS'))
+                                    <a href="{{ route('user.store-cms.dashboard') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Store/E-store_Dashboard.svg') }}"
+                                                alt="">
+                                        </span>
+                                        <span>E-store Dashboard</span>
+                                    </a>
+                                @endif
 
-                                <a href="{{ route('estore-users.list') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/All_Member.svg') }}"
-                                            alt="">
-                                    </span>
-                                    <span>E-store Users</span>
-                                </a>
+                                @if (Gate::check('Manage Estore Users'))
+                                    <a href="{{ route('estore-users.list') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/All_Member.svg') }}"
+                                                alt="">
+                                        </span>
+                                        <span>E-store Users</span>
+                                    </a>
+                                @endif
 
-                                <a href="{{ route('categories.index') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Product_Categories.svg') }}"
-                                            alt="">
-                                    </span>
-                                    <span>Product Categories</span>
-                                </a>
+                                @if (Gate::check('Manage Estore Category'))
+                                    <a href="{{ route('categories.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Store/Product_Categories.svg') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Product Categories</span>
+                                    </a>
+                                @endif
+
 
                                 {{-- product size/colors management --}}
-                                <a href="{{ route('sizes.index') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/size.png') }}"
-                                            alt="">
-                                    </span>
-                                    <span>Manage Sizes</span>
-                                </a>
+                                @if (Gate::check('Manage Estore Sizes'))
+                                    <a href="{{ route('sizes.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Store/size.png') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Manage Sizes</span>
+                                    </a>
+                                @endif
+                                @if (Gate::check('Manage Estore Colors'))
+                                    <a href="{{ route('colors.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Store/color-wheel.png') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Manage Colors</span>
+                                    </a>
+                                @endif
 
-                                <a href="{{ route('colors.index') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/color-wheel.png') }}"
-                                            alt="">
-                                    </span>
-                                    <span>Manage Colors</span>
-                                </a>
+
 
                                 {{-- <a href="{{ route('store-promo-codes.index') }}">
                                     <span>
@@ -332,29 +352,37 @@
                                     <span>Promo Codes</span>
                                 </a> --}}
 
-                                <a href="{{ route('store-settings.index') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/settings.png') }}"
-                                            alt="">
-                                    </span>
-                                    <span>E-store Settings</span>
-                                </a>
+                                @if (Gate::check('Manage Estore Settings'))
+                                    <a href="{{ route('store-settings.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Store/settings.png') }}"
+                                                alt="">
+                                        </span>
+                                        <span>E-store Settings</span>
+                                    </a>
+                                @endif
 
-                                <a href="{{ route('products.index') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
-                                            alt="">
-                                    </span>
-                                    <span>Products</span>
-                                </a>
+                                @if (Gate::check('Manage Estore Products'))
+                                    <a href="{{ route('products.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Products</span>
+                                    </a>
+                                @endif
                                 {{-- warehouse management --}}
-                                <a href="{{ route('ware-houses.index') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/wharehouse.png') }}"
-                                            alt="">
-                                    </span>
-                                    <span>Warehouses</span>
-                                </a>
+                                @if (Gate::check('Manage Estore Warehouse'))
+                                    <a href="{{ route('ware-houses.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Store/wharehouse.png') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Warehouses</span>
+                                    </a>
+                                @endif
+
+
 
                                 {{-- warehouse admin management --}}
                                 {{-- <a href="{{ route('warehouse-admins.index') }}">
@@ -366,13 +394,15 @@
                                 </a> --}}
 
                                 {{-- Orders List --}}
-                                <a href="{{ route('user.store-orders.list') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Orders.svg') }}"
-                                            alt="">
-                                    </span>
-                                    <span>Orders</span>
-                                </a>
+                                @if (Gate::check('Manage Estore Orders'))
+                                    <a href="{{ route('user.store-orders.list') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Store/Orders.svg') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Orders</span>
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </li>
@@ -381,44 +411,17 @@
                 @if (Auth::user()->warehouses->count() > 0)
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
-                            data-bs-target="#collapseExample10">
+                            data-bs-target="#collapseExampleWarehouseStore">
                             <span>
-                                <img src="{{ asset('user_assets/images/ICON/Store/Store.svg') }}" alt="">
+                                <img src="{{ asset('user_assets/images/ICON/Store/store-wa.svg') }}" alt="">
                             </span>
-                            <span class="hide-menu">Store</span>
+                            <span class="hide-menu">Warehouse Store</span>
                         </a>
                         {{-- Collapse content --}}
                         <div class="collapse {{ Request::is('user/products*') || Request::is('user/store-orders*') || Request::is('user/ware-houses*') || Request::is('user/store-settings*') || Request::is('user/sizes*') || Request::is('user/colors*') || Request::is('user/store-promo-codes*') || Request::is('user/warehouse-admins*') || Request::is('user/store-cms*') || Request::is('user/store-cms-page/home*') || Request::is('user/store-cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
-                            id="collapseExample10">
+                            id="collapseExampleWarehouseStore">
                             <div class="menu_bb">
 
-
-
-
-                                {{-- product size/colors management --}}
-                                <a href="{{ route('sizes.index') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/size.png') }}"
-                                            alt="">
-                                    </span>
-                                    <span>Manage Sizes</span>
-                                </a>
-
-                                <a href="{{ route('colors.index') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/color-wheel.png') }}"
-                                            alt="">
-                                    </span>
-                                    <span>Manage Colors</span>
-                                </a>
-
-                                <a href="{{ route('products.index') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
-                                            alt="">
-                                    </span>
-                                    <span>Products</span>
-                                </a>
                                 {{-- warehouse management --}}
                                 <a href="{{ route('ware-houses.index') }}">
                                     <span>
@@ -428,6 +431,15 @@
                                     <span>Warehouses</span>
                                 </a>
 
+                                <a href="{{ route('products.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Warehouse Products</span>
+                                </a>
+
+
 
                                 {{-- Orders List --}}
                                 <a href="{{ route('user.store-orders.list') }}">
@@ -435,14 +447,16 @@
                                         <img src="{{ asset('user_assets/images/ICON/Store/Orders.svg') }}"
                                             alt="">
                                     </span>
-                                    <span>Orders</span>
+                                    <span>Warehouse Orders</span>
                                 </a>
                             </div>
                         </div>
                     </li>
                 @endif
 
-                @if (Auth::user()->hasRole('SUPER ADMIN'))
+                @if (Gate::check('Manage Elearning CMS') ||
+                        Gate::check('Manage Elearning Category') ||
+                        Gate::check('Manage Elearning Product'))
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExample11">

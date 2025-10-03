@@ -14,8 +14,10 @@
                 </div>
                 <div class="col-md-2 float-right">
 
-                    <a href="{{ route('sizes.create') }}" class="btn btn-primary w-100"><i class="fa-solid fa-upload"></i>
-                        Create Size</a>
+                    @if (auth()->user()->can('Create Estore Sizes'))
+                        <a href="{{ route('sizes.create') }}" class="btn btn-primary w-100"><i class="fa-solid fa-upload"></i>
+                            Create Size</a>
+                    @endif
 
                 </div>
             </div>
@@ -34,8 +36,10 @@
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $size->size }}</td>
                                 <td class="d-flex">
-                                    <a href="{{ route('sizes.edit', $size->id) }}" class="edit_icon me-2"><i
-                                            class="fa-solid fa-edit"></i></a>
+                                    @if (auth()->user()->can('Edit Estore Sizes'))
+                                        <a href="{{ route('sizes.edit', $size->id) }}" class="edit_icon me-2"><i
+                                                class="fa-solid fa-edit"></i></a>
+                                    @endif
                                     {{-- <a href="javascript:void(0)" id="delete"
                                         data-route="{{ route('sizes.delete', $size->id) }}" class="delete_icon">
                                         <i class="fa-solid fa-trash"></i>

@@ -60,15 +60,19 @@
                 </td>
                 <td>
                     <div class="btn-group" role="group">
-                        <a href="{{ route('user.store-orders.details', $order->id) }}" class="btn btn-sm btn-info"
-                            title="View Details">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <button type="button" class="btn btn-sm btn-warning"
-                            onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}')"
-                            title="Update Status">
-                            <i class="fas fa-edit"></i>
-                        </button>
+                        @if (auth()->user()->can('View Estore Orders') || auth()->user()->isWarehouseAdmin())
+                            <a href="{{ route('user.store-orders.details', $order->id) }}" class="btn btn-sm btn-info"
+                                title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        @endif
+                        @if (auth()->user()->can('Edit Estore Orders'))
+                            <button type="button" class="btn btn-sm btn-warning"
+                                onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}')"
+                                title="Update Status">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        @endif
                         {{-- <button type="button" class="btn btn-sm btn-danger" onclick="deleteOrder({{ $order->id }})"
                             title="Delete Order">
                             <i class="fas fa-trash"></i>

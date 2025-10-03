@@ -12,6 +12,9 @@ class SizeController extends Controller
     public function index()
     {
         // Logic to list sizes
+        if (!auth()->user()->can('Manage Estore Sizes')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         $sizes = Size::where('status', 1)->paginate(10);
         return view('user.estore-sizes.list', compact('sizes'));
     }
@@ -20,11 +23,17 @@ class SizeController extends Controller
     {
 
         // Logic to show create size form
+        if (!auth()->user()->can('Create Estore Sizes')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         return view('user.estore-sizes.create');
     }
 
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Create Estore Sizes')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         // validate
         $request->validate([
             'name' => 'required|string|max:255',
@@ -42,6 +51,9 @@ class SizeController extends Controller
 
     public function edit($id)
     {
+        if (!auth()->user()->can('Edit Estore Sizes')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         // Logic to show edit size form
         $size = Size::findOrFail($id);
         return view('user.estore-sizes.edit', compact('size'));
@@ -49,6 +61,9 @@ class SizeController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (!auth()->user()->can('Edit Estore Sizes')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         // Logic to update size
         $size = Size::findOrFail($id);
 
@@ -61,6 +76,7 @@ class SizeController extends Controller
 
     public function destroy($id)
     {
+      
         // Logic to delete size
         $size = Size::findOrFail($id);
         $size->delete();

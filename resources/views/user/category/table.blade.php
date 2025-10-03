@@ -25,21 +25,25 @@
             <td> {{ $category->slug }}</td>
             <td>
                 <div class="d-flex">
-                    <a href="{{ route('categories.edit', $category->id) }}" class="delete_icon">
-                        <i class="fa-solid fa-edit"></i>
-                    </a> &nbsp; &nbsp;
-                    @if ($category->main == 0)
-                        <a href="javascript:void(0)" id="delete"
-                            data-route="{{ route('categories.delete', $category->id) }}" class="delete_icon">
-                            <i class="fa-solid fa-trash"></i>
-                        </a>
+                    @if (auth()->user()->can('Edit Estore Category'))
+                        <a href="{{ route('categories.edit', $category->id) }}" class="delete_icon">
+                            <i class="fa-solid fa-edit"></i>
+                        </a> &nbsp; &nbsp;
+                    @endif
+                    @if (auth()->user()->can('Delete Estore Category'))
+                        @if ($category->main == 0)
+                            <a href="javascript:void(0)" id="delete"
+                                data-route="{{ route('categories.delete', $category->id) }}" class="delete_icon">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        @endif
                     @endif
                 </div>
             </td>
         </tr>
     @endforeach
     <tr class="toxic">
-        <td colspan="5">
+        <td colspan="7">
             <div class="d-flex justify-content-center">
                 {!! $categories->links() !!}
             </div>

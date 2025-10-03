@@ -29,7 +29,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="card-title mb-0">Order #{{ $order->order_number }}</h5>
+                                <p class="text-none mb-0 h5">Order #{{ $order->order_number }}</p>
 
                                 <div>
                                     {{-- <span
@@ -61,7 +61,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <h6>Warehouse:</h6>
-                                    <p>{{ $order->warehouse_name ?? 'N/A' }}, {{ $order->warehouse_address ?? 'N/A' }}
+                                    <p>{{ $order->warehouse_name ?? 'N/A' }}, {{ $order->warehouse_address ?? '' }}
                                     </p>
                                     <h6>Shipping Address</h6>
                                     <address>
@@ -189,10 +189,12 @@
                         </div>
                         <div class="card-body">
                             @if ($order->payment_status === 'paid' && $order->status === 'cancelled')
-                                <button type="button" class="btn btn-danger w-100 mb-2"
-                                    onclick="processRefund({{ $order->id }})">
-                                    <i class="fas fa-undo"></i> Refund
-                                </button>
+                                @if (auth()->user()->can('Edit Estore Orders') || auth()->user()->isWarehouseAdmin())
+                                    <button type="button" class="btn btn-danger w-100 mb-2"
+                                        onclick="processRefund({{ $order->id }})">
+                                        <i class="fas fa-undo"></i> Refund
+                                    </button>
+                                @endif
 
                                 @if ($order->notes)
                                     <div class="alert alert-warning mt-2">
@@ -200,10 +202,12 @@
                                     </div>
                                 @endif
                             @else
-                                <button type="button" class="btn btn-warning w-100 mb-2"
-                                    onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}')">
-                                    <i class="fas fa-edit"></i> Update Status
-                                </button>
+                                @if (auth()->user()->can('Edit Estore Orders') || auth()->user()->isWarehouseAdmin())
+                                    <button type="button" class="btn btn-warning w-100 mb-2"
+                                        onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}')">
+                                        <i class="fas fa-edit"></i> Update Status
+                                    </button>
+                                @endif
                             @endif
 
 

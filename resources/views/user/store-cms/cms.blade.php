@@ -19,25 +19,25 @@
                                 <div class="heading_box mb-5">
                                     <h3>Update CMS Page</h3>
                                 </div>
-                                <div class="alert alert-info">
+                                <div class="alert alert-info" hidden>
                                     <strong>Tip:</strong> Slug controls which e-store page uses this banner image. Use one
                                     of:
                                     <div class="row mt-2">
                                         <div class="col-md-6">
                                             <ul class="mb-1">
-                                             <li><code>privacy-policy</code> (Privacy Policy)</li>
+                                                <li><code>privacy-policy</code> (Privacy Policy)</li>
                                                 <li><code>terms-and-condition</code> (Terms and Conditions)</li>
                                                 <li><code>products</code> (Products list)</li>
                                                 <li><code>product-details</code> (Product details)</li>
                                                 <li><code>cart</code> (Cart)</li>
                                                 <li><code>checkout</code> (Checkout)</li>
                                                 <li><code>my-orders</code> (My Orders)</li>
-                                                
+
                                             </ul>
                                         </div>
                                         <div class="col-md-6">
                                             <ul class="mb-1">
-                                            <li><code>order-details</code> (Order details)</li>
+                                                <li><code>order-details</code> (Order details)</li>
                                                 <li><code>order-success</code> (Order success)</li>
                                                 <li><code>order-tracking</code> (Public order tracking)</li>
                                                 <li><code>wishlist</code> (Wishlist)</li>

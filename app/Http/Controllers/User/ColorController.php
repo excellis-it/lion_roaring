@@ -12,6 +12,9 @@ class ColorController extends Controller
     // list/store/edit/update colors
     public function index()
     {
+        if (!auth()->user()->can('Manage Estore Colors')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         // Logic to list colors
         $colors = Color::where('status', 1)->paginate(10);
         return view('user.estore-colors.list', compact('colors'));
@@ -19,12 +22,18 @@ class ColorController extends Controller
 
     public function create()
     {
+        if (!auth()->user()->can('Create Estore Colors')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         // Logic to show create color form
         return view('user.estore-colors.create');
     }
 
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Create Estore Colors')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         //  return $request;
         // validation
         $request->validate([
@@ -45,6 +54,9 @@ class ColorController extends Controller
 
     public function edit($id)
     {
+        if (!auth()->user()->can('Edit Estore Colors')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         // Logic to show edit color form
         $color = Color::findOrFail($id);
         return view('user.estore-colors.edit', compact('color'));
@@ -52,6 +64,9 @@ class ColorController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (!auth()->user()->can('Edit Estore Colors')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         // validation
         $request->validate([
             'color_name' => 'required|string|max:255',

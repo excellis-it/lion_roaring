@@ -481,7 +481,7 @@ class PartnerController extends Controller
     public function estoreUsers()
     {
         // return 'hello';
-        if (Auth::user()->can('Manage Partners')) {
+        if (Auth::user()->can('Manage Estore Users')) {
 
 
             $user = Auth::user();
