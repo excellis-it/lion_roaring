@@ -148,11 +148,13 @@
                                                                         class="edit_icon me-2"> <i
                                                                             class="ti ti-edit"></i></a>
                                                                 @endif
-                                                                @if (auth()->user()->can('Delete Estore CMS'))
-                                                                    <a href="javascript:void(0);"
-                                                                        data-route="{{ route('user.store-cms.delete', ['id' => $page->id]) }}"
-                                                                        class="delete_icon" id="delete"> <i
-                                                                            class="fa-solid fa-trash"></i> </a>
+                                                                @if ($page->id > 17)
+                                                                    @if (auth()->user()->can('Delete Estore CMS'))
+                                                                        <a href="javascript:void(0);"
+                                                                            data-route="{{ route('user.store-cms.delete', ['id' => $page->id]) }}"
+                                                                            class="delete_icon" id="delete"> <i
+                                                                                class="fa-solid fa-trash"></i> </a>
+                                                                    @endif
                                                                 @endif
                                                             </div>
 

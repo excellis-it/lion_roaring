@@ -84,12 +84,15 @@
                                 <div class="box_label">
                                     <label for="page_name"> Page Name *</label>
                                     <input type="text" name="page_name" id="page_name" class="form-control"
-                                        value="{{ $cms->page_name ? $cms->page_name : old('page_name') }}" placeholder="">
+                                        value="{{ $cms->page_name ? $cms->page_name : old('page_name') }}" placeholder=""
+                                        readonly>
                                     @if ($errors->has('page_name'))
                                         <span class="error">{{ $errors->first('page_name') }}</span>
                                     @endif
                                 </div>
                             </div>
+
+
                             {{-- page_title --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -107,7 +110,7 @@
                                 <div class="box_label">
                                     <label for="slug"> Page Slug *</label>
                                     <input type="text" name="slug" id="slug" class="form-control"
-                                        value="{{ $cms->slug ? $cms->slug : old('slug') }}" placeholder="">
+                                        value="{{ $cms->slug ? $cms->slug : old('slug') }}" placeholder="" readonly>
                                     @if ($errors->has('slug'))
                                         <span class="error">{{ $errors->first('slug') }}</span>
                                     @endif
