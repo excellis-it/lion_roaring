@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
                     <div class="inner_banner_ontent">
-                        <h2> Tracking</h2>
+                        <h2>Tracking</h2>
                     </div>
                 </div>
             </div>

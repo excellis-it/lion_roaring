@@ -58,40 +58,40 @@
     </section>
 
 
-    {{-- <section class="product_catagory arrw-color">
+     <section class="product_catagory arrw-color">
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-xl-7">
-                    <div class="heading_hp text-center">
-                        <h2>{!! isset($content['product_category_title']) ? $content['product_category_title'] : '' !!}</h2>
-                        <p>
+                    <div class="heading_hp text-center mb-3">
+                        <h2 class="text-white">{!! isset($content['product_category_title']) ? $content['product_category_title'] : '' !!}</h2>
+                        <p class="text-white">
                             {!! isset($content['product_category_subtitle']) ? $content['product_category_subtitle'] : '' !!}
                         </p>
                     </div>
                 </div>
-
             </div>
-            <div class="catagory_slider">
-                @if (count($topParentCategories) > 0)
-                    @foreach ($topParentCategories as $category)
-                        <div class="catagory_slid_padding">
-                            <div class="catagory_box">
-                                <div class="catagory_img">
-                                    <a href="{{ route($category->slug . '.page') }}"><img
-                                            src="{{ Storage::url($category->image) }}" /></a>
-                                </div>
-                                <div class="catagory_text">
-                                    <a href="{{ route($category->slug . '.page') }}">{{ $category->name }}</a>
+            <div class="catagory-slider-wrepper">
+                <div class="catagory_slider">
+                    @if (count($topParentCategories) > 0)
+                        @foreach ($topParentCategories as $category)
+                            <div class="catagory_slid_padding">
+                                <div class="catagory_box">
+                                    <div class="catagory_img">
+                                        <a href="{{ route($category->slug . '.page') }}"><img
+                                                src="{{ Storage::url($category->image) }}" /></a>
+                                    </div>
+                                    <div class="catagory_text">
+                                        <a href="{{ route($category->slug . '.page') }}">{{ $category->name }}</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
-                @endif
+                        @endforeach
+                    @endif
 
+                </div>
             </div>
-
         </div>
-    </section> --}}
+    </section> 
 
     <section class="feature_sec arrw-color bg_right_img">
         <div class="container-fluid">
@@ -131,22 +131,17 @@
                                                 </a>
                                             </div>
                                             <div class="feature_text">
-
                                                 <a
                                                     href="{{ route('e-store.product-details', $product->slug) }}">{{ $product->name }}</a>
                                                 <p>{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
                                                 </p>
-
-
-
                                                 <div class="d-flex justify-content-between">
                                                     @if (($product['is_free'] ?? false) || ($product->is_free ?? false))
                                                         <span class="price_text"><strong>Free</strong></span>
                                                     @else
                                                         @if (($product['sale_price'] ?? false) || ($product->sale_price ?? false))
                                                             <span class="price_text">${{ $product['sale_price'] }}</span>
-                                                            <span
-                                                                class=" text-muted text-decoration-line-through">${{ $product['price'] }}</span>
+                                                            <span class=" text-muted text-decoration-line-through">${{ $product['price'] }}</span>
                                                             <span></span>
                                                             <span></span>
                                                             <span></span>

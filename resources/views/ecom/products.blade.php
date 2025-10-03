@@ -19,7 +19,7 @@
     <section class="inner_banner_sec"
         style="background-image: url({{ isset($category['background_image']) ? Storage::url($category['background_image']) : asset('ecom_assets/images/slider-bg.png') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
-            <div class="row justify-content-center">
+            <div class="row">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
                     <div class="inner_banner_ontent">
                         @if (request('type') === 'new-arrivals')
@@ -33,7 +33,7 @@
         </div>
     </section>
 
-    <section class="my-5 ">
+    <section class="mt-5 inner-product-list">
         <div class="container-fluid">
             <nav>
                 <ol class="cd-breadcrumb custom-separator">
