@@ -102,10 +102,14 @@
                             </div>
 
                             <!-- Buttons -->
-                            <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
-                                <button type="submit" class="print_btn me-2">Save</button>
-                                <a href="{{ route('store-settings.index') }}" class="print_btn print_btn_vv">Cancel</a>
-                            </div>
+                            @if (auth()->user()->can('Edit Estore Settings'))
+                                <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
+
+                                    <button type="submit" class="print_btn me-2">Save</button>
+
+                                    <a href="{{ route('store-settings.index') }}" class="print_btn print_btn_vv">Cancel</a>
+                                </div>
+                            @endif
                         </div>
                     </form>
 

@@ -14,8 +14,10 @@
                 </div>
                 <div class="col-md-2 float-right">
 
-                    <a href="{{ route('colors.create') }}" class="btn btn-primary w-100"><i class="fa-solid fa-upload"></i>
-                        Create Color</a>
+                    @if (auth()->user()->can('Create Estore Colors'))
+                        <a href="{{ route('colors.create') }}" class="btn btn-primary w-100"><i class="fa-solid fa-upload"></i>
+                            Create Color</a>
+                    @endif
 
                 </div>
             </div>
@@ -38,8 +40,10 @@
                                     <div style="width: 60px; height: 25px; background-color: {{ $color->color }};"></div>
                                 </td>
                                 <td class="d-flex">
-                                    <a href="{{ route('colors.edit', $color->id) }}" class="edit_icon me-2"><i
-                                            class="fa-solid fa-edit"></i></a>
+                                    @if (auth()->user()->can('Edit Estore Colors'))
+                                        <a href="{{ route('colors.edit', $color->id) }}" class="edit_icon me-2"><i
+                                                class="fa-solid fa-edit"></i></a>
+                                    @endif
                                     {{-- <a href="javascript:void(0)" id="delete"
                                         data-route="{{ route('colors.delete', $color->id) }}" class="delete_icon">
                                         <i class="fa-solid fa-trash"></i>

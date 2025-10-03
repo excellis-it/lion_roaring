@@ -18,6 +18,9 @@ class EstoreSettingController extends Controller
     public function index()
     {
         //
+        if (!auth()->user()->can('Manage Estore Settings') && !auth()->user()->can('View Estore Settings')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         $storeSetting = EstoreSetting::first();
         return view('user.estore-settings.settings', compact('storeSetting'));
     }
@@ -74,6 +77,9 @@ class EstoreSettingController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!auth()->user()->can('Edit Estore Settings')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         // ✅ Validate request
         $validated = $request->validate([
             'shipping_cost' => 'nullable|numeric|min:0',

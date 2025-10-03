@@ -45,7 +45,7 @@ class EstoreCmsController extends Controller
 
     public function dashboard()
     {
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->can('Manage Estore CMS')) {
             $count['pages'] = EcomCmsPage::count() + 2;
             $count['newsletter'] = EcomNewsletter::count();
             return view('user.store-cms.dashboard')->with('count', $count);
@@ -56,7 +56,7 @@ class EstoreCmsController extends Controller
 
     public function list()
     {
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->can('Manage Estore CMS')) {
             $pages = EcomCmsPage::get();
             return view('user.store-cms.list')->with('pages', $pages);
         } else {
@@ -67,7 +67,7 @@ class EstoreCmsController extends Controller
     public function cms($page)
     {
 
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->can('Manage Estore CMS')) {
             if ($page == 'home') {
                 $cms = EcomHomeCms::orderBy('id', 'desc')->first();
                 return view('user.store-cms.home_cms')->with('cms', $cms);
@@ -85,7 +85,7 @@ class EstoreCmsController extends Controller
 
     public function homeCmsUpdate(Request $request)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->can('Edit Estore CMS')) {
             // return $request->all();
             // $request->validate([
             //     'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -246,7 +246,7 @@ class EstoreCmsController extends Controller
 
     public function footerUpdate(Request $request)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->can('Edit Estore CMS')) {
             $request->validate([
                 'footer_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
                 'footer_title' => 'required|string',
@@ -294,7 +294,7 @@ class EstoreCmsController extends Controller
 
     public function create()
     {
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->can('Create Estore CMS')) {
             return view('user.store-cms.create');
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -304,7 +304,7 @@ class EstoreCmsController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->can('Create Estore CMS')) {
 
             $request->validate([
                 'page_name' => 'required|string',
@@ -335,7 +335,7 @@ class EstoreCmsController extends Controller
     public function update(Request $request, $id)
     {
         // dd($id);
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->can('Edit Estore CMS')) {
 
             $request->validate([
                 'page_name' => 'required|string',
@@ -363,7 +363,7 @@ class EstoreCmsController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->can('Delete Estore CMS')) {
             $cms = EcomCmsPage::find($id);
             $cms->delete();
             return redirect()->back()->with('message', 'CMS page deleted successfully');
@@ -382,6 +382,9 @@ class EstoreCmsController extends Controller
     // Orders List
     public function ordersList()
     {
+        if (!auth()->user()->can('Manage Estore Orders') && !auth()->user()->isWarehouseAdmin()) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         return view('user.estore-orders.list');
     }
 
@@ -435,6 +438,9 @@ class EstoreCmsController extends Controller
     // Order Details
     public function orderDetails($orderId)
     {
+        if (!auth()->user()->can('View Estore Orders') && !auth()->user()->isWarehouseAdmin()) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         $order = EstoreOrder::with(['user', 'orderItems.product', 'payments'])
             ->findOrFail($orderId);
 
@@ -444,6 +450,15 @@ class EstoreCmsController extends Controller
     // Update Order Status
     public function updateOrderStatus(Request $request)
     {
+        if (!auth()->user()->can('Edit Estore Orders') && !auth()->user()->isWarehouseAdmin()) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'You do not have permission to access this page.'
+                ]);
+            }
+            abort(403, 'You do not have permission to access this page.');
+        }
         $request->validate([
             'order_id' => 'required|exists:estore_orders,id',
             'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
@@ -489,6 +504,9 @@ class EstoreCmsController extends Controller
     // Delete Order
     public function deleteOrder($orderId)
     {
+        if (!auth()->user()->can('Delete Estore Orders')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         try {
             $order = EstoreOrder::findOrFail($orderId);
 
@@ -913,7 +931,7 @@ class EstoreCmsController extends Controller
 
     public function contactCms()
     {
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->can('Manage Estore CMS')) {
             $cms = \App\Models\EcomContactCms::orderBy('id', 'desc')->first();
             return view('user.store-cms.contact_cms', compact('cms'));
         }
@@ -922,7 +940,7 @@ class EstoreCmsController extends Controller
 
     public function contactCmsUpdate(\Illuminate\Http\Request $request)
     {
-        if (!(auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR'))) {
+        if (!auth()->user()->can('Edit Estore CMS')) {
             abort(403, 'You do not have permission to access this page.');
         }
 

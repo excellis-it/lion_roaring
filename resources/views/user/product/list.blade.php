@@ -17,7 +17,7 @@
                                     <div class="col-md-10">
                                         <h3 class="mb-3">Product List</h3>
                                     </div>
-                                    @if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR'))
+                                    @if (auth()->user()->can('Create Estore Products'))
                                         <div class="col-md-2 float-right">
                                             <a href="{{ route('products.create') }}" class="btn btn-primary w-100"><i
                                                     class="fa-solid fa-plus"></i> Create Product</a>

@@ -51,7 +51,7 @@ class ProductController extends Controller
         //     abort(403, 'You do not have permission to access this page.');
         // }
         // return User::with('roles')->where('id', auth()->id())->first();
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
+        if (auth()->user()->can('Manage Estore Products') || auth()->user()->isWarehouseAdmin()) {
             $products = Product::where('is_deleted', false)->orderBy('id', 'desc')->paginate(10);
             return view('user.product.list', compact('products'));
         } else {
@@ -80,7 +80,7 @@ class ProductController extends Controller
             //     abort(403, 'You do not have permission to access this page.');
             // }
 
-            if (!auth()->user()->hasRole('SUPER ADMIN') && !auth()->user()->hasRole('ADMINISTRATOR') && !auth()->user()->isWarehouseAdmin()) {
+            if (!auth()->user()->can('Manage Estore Products') && !auth()->user()->isWarehouseAdmin()) {
                 abort(403, 'You do not have permission to access this page.');
             }
 
@@ -127,7 +127,7 @@ class ProductController extends Controller
             $warehouses = auth()->user()->warehouses;
         }
 
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
+        if (auth()->user()->can('Create Estore Products') || auth()->user()->isWarehouseAdmin()) {
             return view('user.product.create')
                 ->with(compact('categories', 'sizes', 'colors', 'warehouses'));
         } else {
@@ -375,7 +375,7 @@ class ProductController extends Controller
             $warehouses = auth()->user()->warehouses;
         }
 
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
+        if (auth()->user()->can('Edit Estore Products') || auth()->user()->isWarehouseAdmin()) {
             $product = Product::findOrFail($id);
 
             // Get existing warehouse products
@@ -397,7 +397,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         // return $request->all();
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
+        if (auth()->user()->can('Edit Estore Products') || auth()->user()->isWarehouseAdmin()) {
             $request->validate([
                 // 'category_id' => 'required|numeric|exists:categories,id',
                 // 'name' => 'required|string|max:255',
@@ -512,7 +512,7 @@ class ProductController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->can('Delete Estore Products')) {
             $product = Product::findOrFail($id);
             $product->is_deleted = true;
             $product->save();

@@ -41,25 +41,26 @@
                                             $missing = array_values(array_diff($requiredSlugs, $existing));
                                         @endphp
                                         @if (count($missing) > 0)
-
-                                        <div class="alert alert-secondary">
-                                            <strong>Page Banner Status:</strong>
-                                            <div class="row mt-2">
-                                                @foreach ($requiredSlugs as $slug)
-                                                    <div class="col-md-3 col-sm-6 mb-2">
-                                                        @if (in_array($slug, $existing))
-                                                            <span class="badge bg-success">{{ $slug }} ✓</span>
-                                                        @else
-                                                            <span class="badge bg-warning text-dark">{{ $slug }}
-                                                                missing</span>
-                                                        @endif
-                                                    </div>
-                                                @endforeach
+                                            <div class="alert alert-secondary">
+                                                <strong>Page Banner Status:</strong>
+                                                <div class="row mt-2">
+                                                    @foreach ($requiredSlugs as $slug)
+                                                        <div class="col-md-3 col-sm-6 mb-2">
+                                                            @if (in_array($slug, $existing))
+                                                                <span class="badge bg-success">{{ $slug }} ✓</span>
+                                                            @else
+                                                                <span class="badge bg-warning text-dark">{{ $slug }}
+                                                                    missing</span>
+                                                            @endif
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                <small class="text-muted">Create a CMS page with any missing slug and upload
+                                                    a
+                                                    Page Banner Image to set that page's background. Pages without a CMS
+                                                    banner
+                                                    fall back to the Home CMS banner, then the default image.</small>
                                             </div>
-                                            <small class="text-muted">Create a CMS page with any missing slug and upload a
-                                                Page Banner Image to set that page's background. Pages without a CMS banner
-                                                fall back to the Home CMS banner, then the default image.</small>
-                                        </div>
                                         @endif
                                     </div>
                                 </div>
@@ -68,8 +69,10 @@
                                         <h3 class="mb-3 float-left">Store CMS List</h3>
                                     </div>
                                     <div class="col-md-2 ">
-                                        <a href="{{ route('user.store-cms.create') }}" class="btn btn-primary w-100"><i
-                                                class="fa-solid fa-plus"></i> Create Page</a>
+                                        @if (auth()->user()->can('Create Estore CMS'))
+                                            <a href="{{ route('user.store-cms.create') }}" class="btn btn-primary w-100"><i
+                                                    class="fa-solid fa-plus"></i> Create Page</a>
+                                        @endif
                                     </div>
                                     {{-- <div class="col-lg-4">
                                         <div class="search-field float-right">
@@ -96,8 +99,10 @@
                                                 </td>
                                                 <td>Home Page</td>
                                                 <td>
-                                                    <a href="{{ route('user.store-cms.edit', ['page' => 'home']) }}"
-                                                        class="edit_icon me-2"> <i class="ti ti-edit"></i></a>
+                                                    @if (auth()->user()->can('Edit Estore CMS'))
+                                                        <a href="{{ route('user.store-cms.edit', ['page' => 'home']) }}"
+                                                            class="edit_icon me-2"> <i class="ti ti-edit"></i></a>
+                                                    @endif
                                                 </td>
                                             </tr>
 
@@ -107,8 +112,10 @@
                                                 </td>
                                                 <td>Footer Section</td>
                                                 <td>
-                                                    <a href="{{ route('user.store-cms.edit', ['page' => 'footer']) }}"
-                                                        class="edit_icon me-2"> <i class="ti ti-edit"></i></a>
+                                                    @if (auth()->user()->can('Edit Estore CMS'))
+                                                        <a href="{{ route('user.store-cms.edit', ['page' => 'footer']) }}"
+                                                            class="edit_icon me-2"> <i class="ti ti-edit"></i></a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr>
@@ -117,8 +124,11 @@
                                                 </td>
                                                 <td>Contact Page</td>
                                                 <td>
-                                                    <a href="{{ route('user.store-cms.contact') }}" class="edit_icon me-2">
-                                                        <i class="ti ti-edit"></i></a>
+                                                    @if (auth()->user()->can('Edit Estore CMS'))
+                                                        <a href="{{ route('user.store-cms.contact') }}"
+                                                            class="edit_icon me-2">
+                                                            <i class="ti ti-edit"></i></a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             @php
@@ -133,13 +143,17 @@
                                                         <td>{{ $page->page_name }}</td>
                                                         <td>
                                                             <div class="d-flex">
-                                                                <a href="{{ route('user.store-cms.edit', ['page' => $page->slug]) }}"
-                                                                    class="edit_icon me-2"> <i class="ti ti-edit"></i></a>
-
-                                                                <a href="javascript:void(0);"
-                                                                    data-route="{{ route('user.store-cms.delete', ['id' => $page->id]) }}"
-                                                                    class="delete_icon" id="delete"> <i
-                                                                        class="fa-solid fa-trash"></i> </a>
+                                                                @if (auth()->user()->can('Edit Estore CMS'))
+                                                                    <a href="{{ route('user.store-cms.edit', ['page' => $page->slug]) }}"
+                                                                        class="edit_icon me-2"> <i
+                                                                            class="ti ti-edit"></i></a>
+                                                                @endif
+                                                                @if (auth()->user()->can('Delete Estore CMS'))
+                                                                    <a href="javascript:void(0);"
+                                                                        data-route="{{ route('user.store-cms.delete', ['id' => $page->id]) }}"
+                                                                        class="delete_icon" id="delete"> <i
+                                                                            class="fa-solid fa-trash"></i> </a>
+                                                                @endif
                                                             </div>
 
 

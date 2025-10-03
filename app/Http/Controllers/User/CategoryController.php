@@ -18,7 +18,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->can('Manage Estore Category')) {
             $categories = Category::orderBy('id', 'desc')->paginate(10);
             return view('user.category.list', compact('categories'));
         } else {
@@ -59,7 +59,7 @@ class CategoryController extends Controller
     public function create()
     {
         $categories = Category::where('status', 1)->get();
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->can('Create Estore Category')) {
             return view('user.category.create', compact('categories'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -74,6 +74,9 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Create Estore Category')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         $request->validate([
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
@@ -126,7 +129,7 @@ class CategoryController extends Controller
     public function edit($id)
     {
         $categories = Category::where('status', 1)->get();
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->can('Edit Estore Category')) {
             $category = Category::findOrFail($id);
             return view('user.category.edit', compact('category', 'categories'));
         } else {
@@ -143,7 +146,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR')) {
+        if (auth()->user()->can('Edit Estore Category')) {
             $category = Category::findOrFail($id);
 
             $request->validate([
@@ -195,6 +198,9 @@ class CategoryController extends Controller
 
     public function delete(Request $request)
     {
+        if (!auth()->user()->can('Delete Estore Category')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         $category = Category::findOrFail($request->id);
         Log::info($category->name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
         $category->delete();

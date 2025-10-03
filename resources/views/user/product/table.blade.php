@@ -36,25 +36,32 @@
             <td> {{ $product->created_at->format('d M Y') }}</td>
             <td>
 
-                @if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR'))
-                    <div class="d-flex">
+
+                <div class="d-flex">
+                    @if (auth()->user()->can('Edit Estore Products'))
                         <a href="{{ route('products.edit', $product->id) }}" class="delete_icon">
                             <i class="fa-solid fa-edit"></i>
                         </a> &nbsp; &nbsp;
+                    @endif
+                    @if (auth()->user()->can('Edit Estore Products'))
                         <a href="{{ route('products.variations', $product->id) }}" class="delete_icon">
                             <i class="fa-solid fa-th"></i>
                         </a> &nbsp; &nbsp;
+                    @endif
+                    @if (auth()->user()->can('Delete Estore Products'))
                         <a href="javascript:void(0)" id="delete"
                             data-route="{{ route('products.delete', $product->id) }}" class="delete_icon">
                             <i class="fa-solid fa-trash"></i>
                         </a>
-                    </div>
-                @endif
+                    @endif
+                </div>
+
 
                 @if (auth()->user()->isWarehouseAdmin())
                     <div class="d-flex">
 
-                        <a href="{{ route('ware-houses.select-warehouse', $product->id) }}" class="delete_icon" title="Product Variations">
+                        <a href="{{ route('ware-houses.select-warehouse', $product->id) }}" class="delete_icon"
+                            title="Product Variations">
                             <i class="fa-solid fa-th-list"></i>
                         </a> &nbsp; &nbsp;
 
