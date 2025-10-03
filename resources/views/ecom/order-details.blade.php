@@ -17,9 +17,6 @@
 
     <section class="shopping_cart_sec">
         <div class="container">
-
-
-
             <div class="row">
                 <div class="col-lg-8">
                     <div class="order-details-card p-4">

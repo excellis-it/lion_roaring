@@ -497,18 +497,18 @@
 @media (max-width:360px){
         .login_prf a span{
         /*display: none;*/
-        width: 10px;
-        height: 10px;
+        width: 18px;
+        height: 18px;
     }
         .login_prf a {
-        padding: 2px 4px;
-        font-size: 10px;
+        padding: 4px 4px;
+        font-size: 14px;
     }
     .login_prf a span i {
-        font-size: 6px;
+        font-size: 10px;
     }
     .goog-te-gadget .goog-te-combo{
-                padding: 2px 0px;
+        padding: 4px 0px;
     }
     .button_container span {
         top: 9px;

@@ -878,7 +878,7 @@ white-space: nowrap;
     display: block;
     position: relative;
     margin-bottom: 6px;
-    border-radius: 100px;
+    /* border-radius: 100px; */
     overflow: hidden;
     /*border: 1px solid rgb(0 0 0 / 14%);*/
     /* -webkit-clip-path: polygon(0 17%, 100% 0, 100% 100%, 0% 100%);
@@ -907,10 +907,14 @@ white-space: nowrap;
     margin-bottom: 5px;
     min-height: 45px;
 }
-
+.catagory-slider-wrepper{
+    background-color: #fff;
+    border-radius: 10px;
+}
 .catagory_slid_padding {
     padding: 15px 15px;
-    border: 1px solid #dfdfdf;
+    border-right: 2px solid #dfdfdf;
+    /* background-color: #fff; */
 }
 
 .catagory_box {
@@ -3184,7 +3188,7 @@ content: none !important;
   font-size: 16px;
   display: inline-block;
   font-weight: 600;
-  padding: 16px 32px;
+  padding: 12px 30px;
   border-radius: 40px;
 
   /* Only necessary for .btn */
@@ -4079,7 +4083,7 @@ content: none !important;
     position: relative;
 }
 .toggle-children{
-   position: absolute;
+    position: absolute;
     right: 0;
     color: #fff;
     background-color: transparent;
@@ -4138,19 +4142,6 @@ content: none !important;
     color: var(--white-color);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 .dropdown-item:focus,
 .dropdown-item:hover {
   background-color: var(--main-color) !important; 
@@ -4163,27 +4154,18 @@ content: none !important;
 }
 
 
+.slid_big_img {
+  position: relative;
+  overflow: hidden;
+  cursor: zoom-in;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.slid_big_img img {
+  width: 100%;
+  height: auto;
+  transition: transform 0.2s ease-out;
+  transform-origin: center center;
+}
 
 
 

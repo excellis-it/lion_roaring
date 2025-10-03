@@ -317,7 +317,7 @@
     border: 0;
     height: 2px;
     width: 15px;
-    background: var(--black-color);
+    background: var(--white-color);
     -webkit-transform: rotate(45deg);
     -moz-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
@@ -326,7 +326,7 @@
   }
   #cssmenu #menu-button.menu-opened:before {
     top: 16px;
-    background: var(--black-color);
+    background: var(--white-color);
     width: 15px;
     -webkit-transform: rotate(-45deg);
     -moz-transform: rotate(-45deg);

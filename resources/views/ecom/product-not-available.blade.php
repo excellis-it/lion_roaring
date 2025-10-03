@@ -5,7 +5,7 @@
     <section class="inner_banner_sec"
         style="background-image: url({{ \App\Helpers\Helper::estorePageBannerUrl('product-not-available') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
         <div class="container">
-            <div class="row justify-content-center">
+            <div class="row">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
                     <div class="inner_banner_ontent">
                         <h2>Product Not Available</h2>
