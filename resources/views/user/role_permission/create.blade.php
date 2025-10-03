@@ -73,6 +73,18 @@
                                                 'Policy',
                                                 'Help',
                                                 'Role Permission',
+                                                'Elearning CMS',
+                                                'Elearning Category',
+                                                'Elearning Product',
+                                                'Estore CMS',
+                                                'Estore Users',
+                                                'Estore Category',
+                                                'Estore Sizes',
+                                                'Estore Colors',
+                                                'Estore Products',
+                                                'Estore Settings',
+                                                'Estore Warehouse',
+                                                'Estore Orders',
                                             ];
 
                                         @endphp

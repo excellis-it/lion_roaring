@@ -456,28 +456,34 @@
                             id="collapseExample11">
                             <div class="menu_bb">
                                 {{-- bulletins --}}
-                                <a href="{{ route('user.elearning-cms.dashboard') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/E-store_Dashboard.svg') }}"
-                                            alt="">
-                                    </span>
-                                    <span>E-learning Dashboard</span>
-                                </a>
+                                @if (Gate::check('Manage Elearning CMS'))
+                                    <a href="{{ route('user.elearning-cms.dashboard') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Store/E-store_Dashboard.svg') }}"
+                                                alt="">
+                                        </span>
+                                        <span>E-learning Dashboard</span>
+                                    </a>
+                                @endif
 
-                                <a href="{{ route('elearning-categories.index') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Product_Categories.svg') }}"
-                                            alt="">
-                                    </span>
-                                    <span>E-learning Categories</span>
-                                </a>
-                                <a href="{{ route('elearning.index') }}">
-                                    <span>
-                                        <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
-                                            alt="">
-                                    </span>
-                                    <span>E-learning Products</span>
-                                </a>
+                                @if (Gate::check('Manage Elearning Category'))
+                                    <a href="{{ route('elearning-categories.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Store/Product_Categories.svg') }}"
+                                                alt="">
+                                        </span>
+                                        <span>E-learning Categories</span>
+                                    </a>
+                                @endif
+                                @if (Gate::check('Manage Elearning Product'))
+                                    <a href="{{ route('elearning.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Store/Products.svg') }}"
+                                                alt="">
+                                        </span>
+                                        <span>E-learning Products</span>
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </li>

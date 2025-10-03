@@ -18,8 +18,10 @@
                                         <h3 class="mb-3">E-Learning Product List</h3>
                                     </div>
                                     <div class="col-md-2 float-right">
-                                        <a href="{{ route('elearning.create') }}" class="btn btn-primary w-100"><i
-                                                class="fa-solid fa-plus"></i> Create Product</a>
+                                        @if (auth()->user()->can('Create Elearning Product'))
+                                            <a href="{{ route('elearning.create') }}" class="btn btn-primary w-100"><i
+                                                    class="fa-solid fa-plus"></i> Create Product</a>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="row justify-content-end">
@@ -79,7 +81,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @include('user.elearning-product.table', ['products' => $products])
+                                            @include('user.elearning-product.table', [
+                                                'products' => $products,
+                                            ])
 
                                         </tbody>
                                     </table>

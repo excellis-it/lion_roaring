@@ -18,7 +18,7 @@ class ElearningCategoryController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Manage Elearning Category')) {
             $categories = ElearningCategory::orderBy('id', 'desc')->paginate(10);
             return view('user.elearning-category.list', compact('categories'));
         } else {
@@ -58,7 +58,7 @@ class ElearningCategoryController extends Controller
      */
     public function create()
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Create Elearning Category')) {
             return view('user.elearning-category.create');
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -73,6 +73,9 @@ class ElearningCategoryController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('Create Elearning Category')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:categories',
@@ -117,7 +120,7 @@ class ElearningCategoryController extends Controller
      */
     public function edit($id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Edit Elearning Category')) {
             $category = ElearningCategory::findOrFail($id);
             return view('user.elearning-category.edit', compact('category'));
         } else {
@@ -134,7 +137,7 @@ class ElearningCategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Edit Elearning Category')) {
             $category = ElearningCategory::findOrFail($id);
 
             $request->validate([
@@ -179,6 +182,9 @@ class ElearningCategoryController extends Controller
 
     public function delete(Request $request)
     {
+        if (!auth()->user()->can('Delete Elearning Category')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
         $category = ElearningCategory::findOrFail($request->id);
         Log::info($category->name . ' deleted by ' . auth()->user()->email . ' deleted at ' . now());
         $category->delete();

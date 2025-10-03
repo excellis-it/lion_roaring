@@ -33,7 +33,7 @@ class ElearningCmsController extends Controller
 
     public function dashboard()
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Manage Elearning CMS')) {
             $count['pages'] = ElearningEcomCmsPage::count() + 2;
             $count['newsletter'] = ElearningEcomNewsletter::count();
             return view('user.elearning-cms.dashboard')->with('count', $count);
@@ -44,7 +44,7 @@ class ElearningCmsController extends Controller
 
     public function list()
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Manage Elearning CMS')) {
             $pages = ElearningEcomCmsPage::get();
             return view('user.elearning-cms.list')->with('pages', $pages);
         } else {
@@ -55,7 +55,7 @@ class ElearningCmsController extends Controller
     public function cms($page)
     {
 
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('View Elearning CMS')) {
             if ($page == 'home') {
                 $cms = ElearningEcomHomeCms::orderBy('id', 'desc')->first();
                 return view('user.elearning-cms.home_cms')->with('cms', $cms);
@@ -73,7 +73,7 @@ class ElearningCmsController extends Controller
 
     public function homeCmsUpdate(Request $request)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Edit Elearning CMS')) {
             $request->validate([
                 'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'banner_title' => 'required|string',
@@ -118,7 +118,7 @@ class ElearningCmsController extends Controller
 
     public function footerUpdate(Request $request)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Edit Elearning CMS')) {
             $request->validate([
                 'footer_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
                 'footer_title' => 'required|string',
@@ -166,7 +166,7 @@ class ElearningCmsController extends Controller
 
     public function create()
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Create Elearning CMS')) {
             return view('user.elearning-cms.create');
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -176,7 +176,7 @@ class ElearningCmsController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Create Elearning CMS')) {
 
             $request->validate([
                 'page_name' => 'required|string',
@@ -207,7 +207,7 @@ class ElearningCmsController extends Controller
     public function update(Request $request, $id)
     {
         // dd($id);
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Edit Elearning CMS')) {
 
             $request->validate([
                 'page_name' => 'required|string',
@@ -235,7 +235,7 @@ class ElearningCmsController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->hasRole('SUPER ADMIN')) {
+        if (auth()->user()->can('Delete Elearning CMS')) {
             $cms = ElearningEcomCmsPage::find($id);
             $cms->delete();
             return redirect()->back()->with('message', 'CMS page deleted successfully');
