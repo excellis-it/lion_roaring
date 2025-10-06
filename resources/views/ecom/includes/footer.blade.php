@@ -65,12 +65,17 @@
                 <div class="ftr_line_link">
                     <ul>
                         <li><a href="{{ route('e-store') }}">Home</a></li>
-                        <li><a href="{{ route('e-store.all-products') }}">Our Collections</a></li>
+                        {{-- <li><a href="{{ route('e-store.all-products') }}">Our Collections</a></li> --}}
+                        <li>
+                            <a href="{{ Helper::getPDFAttribute() ?? 'javascript:void(0);' }}" target="_blank">Article
+                                of
+                                Agreement</a>
+                        </li>
                         <li><a href="{{ route('e-store.order-tracking') }}">Track Order</a></li>
                         <li><a href="{{ route('e-store.contact') }}">Contact us</a></li>
                         <li><a href="{{ route('privacy-policy.e-store.cms-page') }}">Privacy Policy</a></li>
                         <li><a href="{{ route('terms-and-condition.e-store.cms-page') }}">Terms and Conditions</a></li>
-                     
+
                     </ul>
                 </div>
                 <p> {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_copywrite_text : '' !!}</p>

@@ -748,6 +748,12 @@ Route::prefix('e-store')->group(function () {
     Route::get('/estore-cart', [EstoreProductController::class, 'cart'])->name('e-store.cart');
     Route::get('/estore-checkout', [EstoreProductController::class, 'checkout'])->name('e-store.checkout');
 
+
+    // e-store.apply-promo-code
+    Route::post('/apply-promo-code', [EstoreProductController::class, 'applyPromoCode'])->name('e-store.apply-promo-code');
+    // e-store.remove-promo-code
+    Route::post('/remove-promo-code', [EstoreProductController::class, 'removePromoCode'])->name('e-store.remove-promo-code');
+
     Route::post('/process-checkout', [EstoreProductController::class, 'processCheckout'])->name('e-store.process-checkout');
     Route::get('/payment-success', [EstoreProductController::class, 'paymentSuccess'])->name('e-store.payment-success');
     Route::get('/payment-cancelled', [EstoreProductController::class, 'paymentCancelled'])->name('e-store.payment-cancelled');
@@ -762,7 +768,7 @@ Route::prefix('e-store')->group(function () {
     Route::get('/estore-change-password', [HomeController::class, 'changePassword'])->name('e-store.change-password')->middleware('user');
     Route::post('/estore-update-password', [HomeController::class, 'passwordUpdate'])->name('e-store.password.update')->middleware('user');
     // order tracking page
-    Route::get('/estore-track-order', [HomeController::class, 'orderTracking'])->name('e-store.order-tracking');
+    Route::get('/estore_track-order', [HomeController::class, 'orderTracking'])->name('e-store.order-tracking');
     Route::post('/estore-track-order-id', [HomeController::class, 'trackOrder'])->name('e-store.track-order');
 
 
