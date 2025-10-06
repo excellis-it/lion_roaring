@@ -154,6 +154,7 @@ class ProductController extends Controller
             'feature_product' => 'required',
             'slug' => 'required|string|unique:products',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
 
@@ -199,6 +200,18 @@ class ProductController extends Controller
             $product->price = 0;
             $product->sale_price = null;
         }
+
+        if ($request->has('is_new_product')) {
+            $product->is_new_product = true;
+        } else {
+            $product->is_new_product = false;
+        }
+
+        // background_image
+        if ($request->hasFile('background_image')) {
+            $product->background_image = $this->imageUpload($request->file('background_image'), 'product');
+        }
+
         $product->save();
 
         if ($request->hasFile('image')) {
@@ -447,6 +460,22 @@ class ProductController extends Controller
             if ($product->is_free) {
                 $product->price = 0;
             }
+
+            if ($request->has('is_new_product')) {
+                $product->is_new_product = true;
+            } else {
+                $product->is_new_product = false;
+            }
+
+            // background_image
+            if ($request->hasFile('background_image')) {
+                // delete old image from storage
+                if ($product->background_image && file_exists(storage_path('app/public/' . $product->background_image))) {
+                    unlink(storage_path('app/public/' . $product->background_image));
+                }
+                $product->background_image = $this->imageUpload($request->file('background_image'), 'product');
+            }
+
             $product->save();
 
             if ($request->hasFile('image')) {
