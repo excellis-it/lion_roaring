@@ -152,7 +152,7 @@
 
 
                                     {{-- slug --}}
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label for="slug"> Product Slug*</label>
                                             <input type="text" name="slug" id="slug" class="form-control"
@@ -163,7 +163,7 @@
                                         </div>
                                     </div>
                                     {{-- image --}}
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label for="image"> Product Featured Image</label>
                                             <input type="file" name="image" id="image" class="form-control"
@@ -175,6 +175,21 @@
                                         </div>
                                         <label for="" class="ms-3 "><a class="text-link text-primary"
                                                 href="{{ Storage::url($product->image?->image ?? '') }}"
+                                                target="_blank">View</a></label>
+                                    </div>
+
+                                    {{-- background_image --}}
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+                                            <label for="background_image"> Product Background Image</label>
+                                            <input type="file" name="background_image" id="background_image"
+                                                class="form-control" value="{{ old('background_image') }}">
+                                            @if ($errors->has('background_image'))
+                                                <span class="error">{{ $errors->first('background_image') }}</span>
+                                            @endif
+                                        </div>
+                                        <label for="" class="ms-3 "><a class="text-link text-primary"
+                                                href="{{ Storage::url($product->background_image ?? '') }}"
                                                 target="_blank">View</a></label>
                                     </div>
 
@@ -213,7 +228,7 @@
                                     </div>
 
                                     {{-- feature_product --}}
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label for="feature_product"> Feature Product*</label>
                                             <select name="feature_product" id="feature_product" class="form-control">
@@ -231,8 +246,32 @@
                                             @endif
                                         </div>
                                     </div>
+
+                                    {{-- is_new_product --}}
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+                                            <label for="is_new_product"> New Product*</label>
+                                            <select name="is_new_product" id="is_new_product" class="form-control">
+                                                <option value="">Select New Product</option>
+                                                <option value="1"
+                                                    {{ $product->is_new_product == 1 ? 'selected' : '' }}>Yes
+                                                </option>
+                                                <option value="0"
+                                                    {{ $product->is_new_product == 0 ? 'selected' : '' }}>No
+                                                </option>
+                                            </select>
+                                            @if ($errors->has('is_new_product'))
+                                                <span class="error">{{ $errors->first('is_new_product') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-2 mb-2">
+                                    </div>
+
                                     {{-- is_free --}}
-                                    {{-- <div class="col-md-6 mb-2">
+                                    <div class="col-md-2 mb-2">
                                         <div class="box_label">
                                             <label for="is_free" class="d-block"> Free Product</label>
                                             <div class="form-check form-switch">
@@ -245,7 +284,7 @@
 
                                             </div>
                                         </div>
-                                    </div> --}}
+                                    </div>
                                     {{-- status --}}
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
@@ -441,6 +480,26 @@
                 maxFilesize: 1,
                 acceptedFiles: ".jpeg,.jpg,.png,.gif,.webp"
             };
+        </script>
+        <script>
+            $(document).ready(function() {
+                $('.remove-image').click(function() {
+                    var id = $(this).data('id');
+                    var token = $("meta[name='csrf-token']").attr("content");
+                    $.ajax({
+                        url: "{{ route('products.image.delete') }}",
+                        type: 'GET',
+                        data: {
+                            "id": id,
+                            "_token": token,
+                        },
+                        success: function() {
+                            console.log("it Works");
+                            $('#' + id).remove();
+                        }
+                    });
+                });
+            });
         </script>
         <script>
             ClassicEditor.create(document.querySelector("#description"));

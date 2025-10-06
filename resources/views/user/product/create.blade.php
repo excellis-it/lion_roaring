@@ -124,6 +124,18 @@
                                         </div>
                                     </div>
 
+                                    {{-- image --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label for="image"> Product Background Image*</label>
+                                            <input type="file" name="background_image" id="background_image"
+                                                class="form-control" value="{{ old('background_image') }}">
+                                            @if ($errors->has('background_image'))
+                                                <span class="error">{{ $errors->first('background_image') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
                                     {{-- short_description --}}
                                     <div class="col-md-12 mb-2">
                                         <div class="box_label">
@@ -159,15 +171,17 @@
                                     </div>
 
                                     {{-- feature_product --}}
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label for="feature_product"> Feature Product</label>
                                             <select name="feature_product" id="feature_product" class="form-control">
                                                 <option value="">Select Feature Product</option>
-                                                <option value="1" {{ old('feature_product') == 1 ? 'selected' : '' }}>
+                                                <option value="1"
+                                                    {{ old('feature_product') == 1 ? 'selected' : '' }}>
                                                     Yes
                                                 </option>
-                                                <option value="0" {{ old('feature_product') == 0 ? 'selected' : '' }}>
+                                                <option value="0"
+                                                    {{ old('feature_product') == 0 ? 'selected' : '' }}>
                                                     No
                                                 </option>
                                             </select>
@@ -176,8 +190,32 @@
                                             @endif
                                         </div>
                                     </div>
+
+
+                                    {{-- is_new_product --}}
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+                                            <label for="is_new_product"> Is New Product</label>
+                                            <select name="is_new_product" id="is_new_product" class="form-control">
+                                                <option value="">Select Is New Product</option>
+                                                <option value="1" {{ old('is_new_product') == 1 ? 'selected' : '' }}>
+                                                    Yes
+                                                </option>
+                                                <option value="0" {{ old('is_new_product') == 0 ? 'selected' : '' }}>
+                                                    No
+                                                </option>
+                                            </select>
+                                            @if ($errors->has('is_new_product'))
+                                                <span class="error">{{ $errors->first('is_new_product') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 mb-2">
+                                    </div>
+
                                     {{-- is_free --}}
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-2 mb-2">
                                         <div class="box_label">
                                             <label for="is_free" class=""> Free Product</label>
                                             <div class="form-check form-switch mt-3">

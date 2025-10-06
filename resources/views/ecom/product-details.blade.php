@@ -28,7 +28,8 @@
         use App\Helpers\Helper;
     @endphp
     <section class="inner_banner_sec"
-        style="background-image: url({{ \App\Helpers\Helper::estorePageBannerUrl('product-details') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+        style="background-image: url({{ isset($product->background_image) && $product->background_image ? (\Illuminate\Support\Str::startsWith($product->background_image, 'http') ? $product->background_image : (\Illuminate\Support\Str::startsWith($product->background_image, 'storage/') ? asset($product->background_image) : Storage::url($product->background_image))) : \App\Helpers\Helper::estorePageBannerUrl('product-details') }}); background-position: center; background-repeat: no-repeat; background-size: cover">
+
         <div class="container">
             <div class="row">
                 <div class="col-xxl-6 col-xl-8 col-md-12">
@@ -53,7 +54,6 @@
                                     <div class="slid_big_img">
                                         <img src="{{ Storage::url($image->image) }}" />
                                     </div>
-
                                 @endforeach
                             @endif
                         </div>
@@ -371,46 +371,46 @@
 @push('scripts')
     <script>
         function enableZoomOnSlide(slide) {
-    const img = slide.querySelector('img');
-    if (!img) return;
+            const img = slide.querySelector('img');
+            if (!img) return;
 
-    if (slide.dataset.zoomAttached) return;
-    slide.dataset.zoomAttached = true;
+            if (slide.dataset.zoomAttached) return;
+            slide.dataset.zoomAttached = true;
 
-    function moveZoom(e) {
-      const rect = img.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      img.style.transformOrigin = `${x}% ${y}%`;
-      img.style.transform = 'scale(2.2)';
-    }
+            function moveZoom(e) {
+                const rect = img.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                img.style.transformOrigin = `${x}% ${y}%`;
+                img.style.transform = 'scale(2.2)';
+            }
 
-    function resetZoom() {
-      img.style.transformOrigin = 'center center';
-      img.style.transform = 'scale(1)';
-    }
+            function resetZoom() {
+                img.style.transformOrigin = 'center center';
+                img.style.transform = 'scale(1)';
+            }
 
-    slide.addEventListener('mousemove', moveZoom);
-    slide.addEventListener('mouseleave', resetZoom);
-  }
+            slide.addEventListener('mousemove', moveZoom);
+            slide.addEventListener('mouseleave', resetZoom);
+        }
 
 
 
-function initZoom() {
-    const visibleSlides = document.querySelectorAll('.slick-slide .slid_big_img');
-    visibleSlides.forEach(slide => {
-      const img = slide.querySelector('img');
-      if (!img) return;
+        function initZoom() {
+            const visibleSlides = document.querySelectorAll('.slick-slide .slid_big_img');
+            visibleSlides.forEach(slide => {
+                const img = slide.querySelector('img');
+                if (!img) return;
 
-      if (img.complete) {
-        enableZoomOnSlide(slide);
-      } else {
-        img.addEventListener('load', function () {
-          enableZoomOnSlide(slide);
-        });
-      }
-    });
-  }
+                if (img.complete) {
+                    enableZoomOnSlide(slide);
+                } else {
+                    img.addEventListener('load', function() {
+                        enableZoomOnSlide(slide);
+                    });
+                }
+            });
+        }
         // Flag from backend whether this product is free
         const IS_FREE_PRODUCT = {{ $product->is_free ?? false ? 'true' : 'false' }};
         $(document).ready(function() {
@@ -694,6 +694,4 @@ function initZoom() {
             $('.product-select-color-input-image[data-color-id="' + id + '"]').css('border', '4px solid #643171');
         });
     </script>
-
-
 @endpush
