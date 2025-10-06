@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="name">Size Name</label>
+                                    <label for="name">Size Name *</label>
                                     <input type="text" name="name" id="name" class="form-control"
                                         value="{{ $size->size }}" required>
 

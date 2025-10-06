@@ -89,7 +89,7 @@
         $(document).on('click', '#delete', function(e) {
             swal({
                     title: "Are you sure?",
-                    text: "To delete this file.",
+                    text: "To delete this Promo code.",
                     type: "warning",
                     confirmButtonText: "Yes",
                     showCancelButton: true

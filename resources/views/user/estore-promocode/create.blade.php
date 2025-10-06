@@ -91,13 +91,15 @@
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="start_date">Start Date</label>
-                                    <input type="date" name="start_date" id="start_date" class="form-control">
+                                    <input type="date" name="start_date" id="start_date" class="form-control"
+                                        min="{{ date('Y-m-d') }}">
                                 </div>
                             </div>
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="end_date">End Date</label>
-                                    <input type="date" name="end_date" id="end_date" class="form-control">
+                                    <input type="date" name="end_date" id="end_date" class="form-control"
+                                        min="{{ date('Y-m-d') }}">
                                 </div>
                             </div>
                             <div class="col-md-6 mb-2">
@@ -150,6 +152,28 @@
                     $("#discount-type").text(" (%)");
                 } else {
                     $("#discount-type").text(" (Flat)");
+                }
+            });
+
+            // Date validation
+            $("#start_date").change(function() {
+                const startDate = $(this).val();
+                if (startDate) {
+                    $("#end_date").attr('min', startDate);
+                    // Clear end date if it's before the new start date
+                    const endDate = $("#end_date").val();
+                    if (endDate && endDate < startDate) {
+                        $("#end_date").val('');
+                    }
+                }
+            });
+
+            $("#end_date").change(function() {
+                const endDate = $(this).val();
+                const startDate = $("#start_date").val();
+                if (startDate && endDate && endDate < startDate) {
+                    alert('End date must be after start date');
+                    $(this).val('');
                 }
             });
         });

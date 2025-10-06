@@ -16,38 +16,38 @@ class EstorePromoCodeController extends Controller
         // Code to list all promo codes
         $promoCodes = EstorePromoCode::orderBy('created_at', 'desc')->get();
 
-         // Add scope summary to each promo code
-         foreach ($promoCodes as $promoCode) {
-             $promoCode->scope_summary = $promoCode->scopeSummary();
+        // Add scope summary to each promo code
+        foreach ($promoCodes as $promoCode) {
+            $promoCode->scope_summary = $promoCode->scopeSummary();
 
-             // Determine scope label for display
-             $scopeLabel = '';
-             switch ($promoCode->scope_type) {
-                 case 'all':
-                     $scopeLabel = 'All Orders';
-                     break;
-                 case 'all_users':
-                     $scopeLabel = 'All Users';
-                     break;
-                 case 'selected_users':
-                     $scopeLabel = 'Selected Users';
-                     break;
-                 case 'all_products':
-                     $scopeLabel = 'All Products';
-                     break;
-                 case 'selected_products':
-                     $scopeLabel = 'Selected Products';
-                     break;
-             }
-             $promoCode->scope_label = $scopeLabel;
-         }
+            // Determine scope label for display
+            $scopeLabel = '';
+            switch ($promoCode->scope_type) {
+                case 'all':
+                    $scopeLabel = 'All Orders';
+                    break;
+                case 'all_users':
+                    $scopeLabel = 'All Users';
+                    break;
+                case 'selected_users':
+                    $scopeLabel = 'Selected Users';
+                    break;
+                case 'all_products':
+                    $scopeLabel = 'All Products';
+                    break;
+                case 'selected_products':
+                    $scopeLabel = 'Selected Products';
+                    break;
+            }
+            $promoCode->scope_label = $scopeLabel;
+        }
         return view('user.estore-promocode.list', compact('promoCodes'));
     }
 
     public function create()
     {
         $users = User::orderBy('first_name')->orderBy('last_name')->get();
-        $products = Product::orderBy('name')->get();
+        $products = Product::where('status', 1)->orderBy('name')->get();
 
         return view('user.estore-promocode.create', compact('users', 'products'));
     }

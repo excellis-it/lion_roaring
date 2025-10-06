@@ -16,7 +16,7 @@
                         <div class="row">
                             <div class="col-md-4 mb-2">
                                 <div class="box_label">
-                                    <label for="name">Color Name</label>
+                                    <label for="name">Color Name *</label>
                                     <input type="text" name="color_name" id="name" class="form-control">
                                     @if ($errors->has('color_name'))
                                         <span class="error">{{ $errors->first('color_name') }}</span>

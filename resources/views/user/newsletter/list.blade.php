@@ -214,8 +214,12 @@
                         const modalEl = document.getElementById('sendEmailModal');
                         const modal = bootstrap.Modal.getInstance(modalEl);
                         if (modal) modal.hide();
-                        alert(res.message || 'Emails queued successfully.');
+                        // alert(res.message || 'Emails queued successfully.');
                         $('#sendEmailsBtn').prop('disabled', false);
+                        toastr.success(res.message || 'Emails sent successfully.');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1200);
                     },
                     error: function(xhr) {
                         $('#sendEmailsBtn').prop('disabled', false);
