@@ -412,8 +412,9 @@ class ProductController extends Controller
 
             // Get existing warehouse products
             $warehouseProducts = WarehouseProduct::where('product_id', $product->id)->get();
+            $productSizes = $product->sizesWithDetails();
 
-            return view('user.product.edit', compact('product', 'categories', 'sizes', 'colors', 'warehouses', 'warehouseProducts'));
+            return view('user.product.edit', compact('product', 'categories', 'sizes', 'colors', 'warehouses', 'warehouseProducts', 'productSizes'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -529,6 +530,28 @@ class ProductController extends Controller
                         $product->otherCharges()->create($charge);
                     }
                 }
+            }
+
+            if ($request->product_type == 'variable') {
+                // Save sizes
+                $product->sizes()->delete();
+                if ($request->filled('sizes')) {
+                    foreach ($request->sizes as $size) {
+                        if ($size) {
+                            $product->sizes()->create(['size_id' => $size]);
+                        }
+                    }
+                }
+
+                // // Save colors
+                // $product->colors()->delete();
+                // if ($request->filled('colors')) {
+                //     foreach ($request->colors as $color) {
+                //         if ($color) {
+                //             $product->colors()->create(['color_id' => $color]);
+                //         }
+                //     }
+                // }
             }
 
             // if ($request->product_type == 'simple') {
