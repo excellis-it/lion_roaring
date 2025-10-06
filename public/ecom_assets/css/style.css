@@ -4162,9 +4162,10 @@ content: none !important;
 
 .slid_big_img img {
   width: 100%;
-  height: auto;
+  height: 100%;
   transition: transform 0.2s ease-out;
   transform-origin: center center;
+  object-fit: cover;
 }
 
 
