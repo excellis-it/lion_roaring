@@ -267,6 +267,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://js.stripe.com/v3/"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const paymentRadios = document.querySelectorAll("input[name='payment_type']");
