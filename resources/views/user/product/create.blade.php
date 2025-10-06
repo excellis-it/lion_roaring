@@ -70,26 +70,30 @@
                                             <select name="category_id" id="category_id" class="form-control">
                                                 <option value="">Select Category</option>
                                                 @php
-                                                    $renderCategoryOptions = function ($nodes, $prefix = '') use (
-                                                        &$renderCategoryOptions,
-                                                    ) {
+                                                    $renderCategoryOptions = function ($nodes, $prefix = '') use (&$renderCategoryOptions) {
                                                         foreach ($nodes as $node) {
-                                                            echo '<option value="' .
-                                                                $node->id .
-                                                                '"' .
-                                                                (old('parent_id') == $node->id ? ' selected' : '') .
-                                                                '>' .
-                                                                e($prefix . $node->name) .
-                                                                '</option>';
-                                                            if (!empty($node->children) && $node->children->count()) {
-                                                                $renderCategoryOptions(
-                                                                    $node->children,
-                                                                    $prefix . $node->name . '->',
-                                                                );
+                                                            // only render active categories
+                                                            if (!$node->status) {
+                                                                continue;
+                                                            }
+
+                                                            echo '<option value="' . $node->id . '"' . (old('category_id') == $node->id ? ' selected' : '') . '>' . e($prefix . $node->name) . '</option>';
+
+                                                            // only recurse into active children
+                                                            $children = $node->children->filter(function ($c) {
+                                                                return $c->status;
+                                                            });
+
+                                                            if ($children->count()) {
+                                                                $renderCategoryOptions($children, $prefix . $node->name . '->');
                                                             }
                                                         }
                                                     };
-                                                    $topLevelCategories = $categories->whereNull('parent_id');
+
+                                                    $topLevelCategories = $categories->whereNull('parent_id')->filter(function ($c) {
+                                                        return $c->status;
+                                                    });
+
                                                     $renderCategoryOptions($topLevelCategories);
                                                 @endphp
                                             </select>
