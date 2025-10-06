@@ -181,6 +181,16 @@ class ProductController extends Controller
             'image.required' => 'The featured image field is required.',
         ]);
 
+        if ($request->product_type == 'simple') {
+
+            // validate input of price, unique sku and quantity
+            $request->validate([
+                'price' => 'required|numeric|min:0',
+                'sku' => 'required|string|max:255|unique:products,sku',
+                'quantity' => 'required|integer|min:0',
+            ]);
+        }
+
         $product = new Product();
         $product->category_id = $request->category_id;
         $product->user_id = auth()->user()->id;
@@ -288,6 +298,14 @@ class ProductController extends Controller
 
         // if product_type is simple then direct create product variation without color and sizes
         if ($product->product_type == 'simple') {
+
+            // // validate input of price, unique sku and quantity
+            // $request->validate([
+            //     'price' => 'required|numeric|min:0',
+            //     'sku' => 'required|string|max:255|unique:products,sku,' . $product->id,
+            //     'quantity' => 'required|integer|min:0',
+            // ]);
+
             $variation = new ProductVariation();
             $variation->product_id = $product->id;
             $variation->sku = $product->sku;
@@ -345,6 +363,7 @@ class ProductController extends Controller
                 }
             }
         }
+
 
 
 
@@ -583,7 +602,7 @@ class ProductController extends Controller
 
         // return $productSizes;
 
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
+        if (auth()->user()->can('Edit Estore Products') || auth()->user()->isWarehouseAdmin()) {
 
 
 

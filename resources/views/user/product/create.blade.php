@@ -319,7 +319,7 @@
                                             <div class="col-md-3 mb-2">
                                                 <div class="box_label">
                                                     <label for="price"> Price</label>
-                                                    <input type="text" name="price" id="price"
+                                                    <input type="number" step="any" name="price" id="price"
                                                         class="form-control" value="{{ old('price') }}">
                                                     @if ($errors->has('price'))
                                                         <span class="error">{{ $errors->first('price') }}</span>
@@ -330,8 +330,9 @@
                                             <div class="col-md-3 mb-2">
                                                 <div class="box_label">
                                                     <label for="sale_price"> Sale Price</label>
-                                                    <input type="text" name="sale_price" id="sale_price"
-                                                        class="form-control" value="{{ old('sale_price') }}">
+                                                    <input type="number" step="any" name="sale_price"
+                                                        id="sale_price" class="form-control"
+                                                        value="{{ old('sale_price') }}">
                                                     @if ($errors->has('sale_price'))
                                                         <span class="error">{{ $errors->first('sale_price') }}</span>
                                                     @endif

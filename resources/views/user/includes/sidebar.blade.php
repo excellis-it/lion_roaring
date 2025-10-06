@@ -344,13 +344,13 @@
 
 
 
-                                {{-- <a href="{{ route('store-promo-codes.index') }}">
+                                <a href="{{ route('store-promo-codes.index') }}">
                                     <span>
                                         <img src="{{ asset('user_assets/images/ICON/Store/coupon.png') }}"
                                             alt="">
                                     </span>
                                     <span>Promo Codes</span>
-                                </a> --}}
+                                </a>
 
                                 @if (Gate::check('Manage Estore Settings'))
                                     <a href="{{ route('store-settings.index') }}">
