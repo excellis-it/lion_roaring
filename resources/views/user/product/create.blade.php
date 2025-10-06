@@ -70,26 +70,30 @@
                                             <select name="category_id" id="category_id" class="form-control">
                                                 <option value="">Select Category</option>
                                                 @php
-                                                    $renderCategoryOptions = function ($nodes, $prefix = '') use (
-                                                        &$renderCategoryOptions,
-                                                    ) {
+                                                    $renderCategoryOptions = function ($nodes, $prefix = '') use (&$renderCategoryOptions) {
                                                         foreach ($nodes as $node) {
-                                                            echo '<option value="' .
-                                                                $node->id .
-                                                                '"' .
-                                                                (old('parent_id') == $node->id ? ' selected' : '') .
-                                                                '>' .
-                                                                e($prefix . $node->name) .
-                                                                '</option>';
-                                                            if (!empty($node->children) && $node->children->count()) {
-                                                                $renderCategoryOptions(
-                                                                    $node->children,
-                                                                    $prefix . $node->name . '->',
-                                                                );
+                                                            // only render active categories
+                                                            if (!$node->status) {
+                                                                continue;
+                                                            }
+
+                                                            echo '<option value="' . $node->id . '"' . (old('category_id') == $node->id ? ' selected' : '') . '>' . e($prefix . $node->name) . '</option>';
+
+                                                            // only recurse into active children
+                                                            $children = $node->children->filter(function ($c) {
+                                                                return $c->status;
+                                                            });
+
+                                                            if ($children->count()) {
+                                                                $renderCategoryOptions($children, $prefix . $node->name . '->');
                                                             }
                                                         }
                                                     };
-                                                    $topLevelCategories = $categories->whereNull('parent_id');
+
+                                                    $topLevelCategories = $categories->whereNull('parent_id')->filter(function ($c) {
+                                                        return $c->status;
+                                                    });
+
                                                     $renderCategoryOptions($topLevelCategories);
                                                 @endphp
                                             </select>
@@ -319,7 +323,7 @@
                                             <div class="col-md-3 mb-2">
                                                 <div class="box_label">
                                                     <label for="price"> Price</label>
-                                                    <input type="text" name="price" id="price"
+                                                    <input type="number" step="any" name="price" id="price"
                                                         class="form-control" value="{{ old('price') }}">
                                                     @if ($errors->has('price'))
                                                         <span class="error">{{ $errors->first('price') }}</span>
@@ -330,8 +334,9 @@
                                             <div class="col-md-3 mb-2">
                                                 <div class="box_label">
                                                     <label for="sale_price"> Sale Price</label>
-                                                    <input type="text" name="sale_price" id="sale_price"
-                                                        class="form-control" value="{{ old('sale_price') }}">
+                                                    <input type="number" step="any" name="sale_price"
+                                                        id="sale_price" class="form-control"
+                                                        value="{{ old('sale_price') }}">
                                                     @if ($errors->has('sale_price'))
                                                         <span class="error">{{ $errors->first('sale_price') }}</span>
                                                     @endif

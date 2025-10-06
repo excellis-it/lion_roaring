@@ -181,6 +181,16 @@ class ProductController extends Controller
             'image.required' => 'The featured image field is required.',
         ]);
 
+        if ($request->product_type == 'simple') {
+
+            // validate input of price, unique sku and quantity
+            $request->validate([
+                'price' => 'required|numeric|min:0',
+                'sku' => 'required|string|max:255|unique:products,sku',
+                'quantity' => 'required|integer|min:0',
+            ]);
+        }
+
         $product = new Product();
         $product->category_id = $request->category_id;
         $product->user_id = auth()->user()->id;
@@ -288,6 +298,14 @@ class ProductController extends Controller
 
         // if product_type is simple then direct create product variation without color and sizes
         if ($product->product_type == 'simple') {
+
+            // // validate input of price, unique sku and quantity
+            // $request->validate([
+            //     'price' => 'required|numeric|min:0',
+            //     'sku' => 'required|string|max:255|unique:products,sku,' . $product->id,
+            //     'quantity' => 'required|integer|min:0',
+            // ]);
+
             $variation = new ProductVariation();
             $variation->product_id = $product->id;
             $variation->sku = $product->sku;
@@ -348,6 +366,7 @@ class ProductController extends Controller
 
 
 
+
         // notify users
         $userName = Auth::user()->getFullNameAttribute();
         $noti = NotificationService::notifyAllUsers('New Product created by ' . $userName, 'product');
@@ -393,8 +412,9 @@ class ProductController extends Controller
 
             // Get existing warehouse products
             $warehouseProducts = WarehouseProduct::where('product_id', $product->id)->get();
+            $productSizes = $product->sizesWithDetails();
 
-            return view('user.product.edit', compact('product', 'categories', 'sizes', 'colors', 'warehouses', 'warehouseProducts'));
+            return view('user.product.edit', compact('product', 'categories', 'sizes', 'colors', 'warehouses', 'warehouseProducts', 'productSizes'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -512,6 +532,28 @@ class ProductController extends Controller
                 }
             }
 
+            if ($request->product_type == 'variable') {
+                // Save sizes
+                $product->sizes()->delete();
+                if ($request->filled('sizes')) {
+                    foreach ($request->sizes as $size) {
+                        if ($size) {
+                            $product->sizes()->create(['size_id' => $size]);
+                        }
+                    }
+                }
+
+                // // Save colors
+                // $product->colors()->delete();
+                // if ($request->filled('colors')) {
+                //     foreach ($request->colors as $color) {
+                //         if ($color) {
+                //             $product->colors()->create(['color_id' => $color]);
+                //         }
+                //     }
+                // }
+            }
+
             // if ($request->product_type == 'simple') {
             //     $productVariations = ProductVariation::where('product_id', $product->id)->get();
             //     // update product variations price and stock_quantity from product price and quantity
@@ -583,7 +625,7 @@ class ProductController extends Controller
 
         // return $productSizes;
 
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
+        if (auth()->user()->can('Edit Estore Products') || auth()->user()->isWarehouseAdmin()) {
 
 
 

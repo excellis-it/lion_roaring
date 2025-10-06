@@ -45,30 +45,9 @@
                                     @endif
                                 </div>
                             </div>
-                            {{-- product_category_title --}}
-                            <div class="col-md-6 mb-2" hidden>
-                                <div class="box_label">
-                                    <label for="product_category_title"> Product Category Title*</label>
-                                    <input type="text" name="product_category_title" id="product_category_title"
-                                        class="form-control"
-                                        value="{{ isset($cms->product_category_title) ? $cms->product_category_title : old('product_category_title') }}">
-                                    @if ($errors->has('product_category_title'))
-                                        <span class="error">{{ $errors->first('product_category_title') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                            {{-- product_category_subtitle --}}
-                            <div class="col-md-6 mb-2" hidden>
-                                <div class="box_label">
-                                    <label for="product_category_subtitle"> Product Category Subtitle*</label>
-                                    <input type="text" name="product_category_subtitle" id="product_category_subtitle"
-                                        class="form-control"
-                                        value="{{ isset($cms->product_category_subtitle) ? $cms->product_category_subtitle : old('product_category_subtitle') }}">
-                                    @if ($errors->has('product_category_subtitle'))
-                                        <span class="error">{{ $errors->first('product_category_subtitle') }}</span>
-                                    @endif
-                                </div>
-                            </div>
+
+
+
 
 
                             {{-- new_arrival_title --}}
@@ -104,6 +83,7 @@
 
 
                             <div class="accordion" id="accordion1">
+
 
                                 {{-- Header Logo --}}
                                 <div class="accordion-item">
@@ -142,6 +122,59 @@
                                     </div>
                                 </div>
                                 {{-- Header Logo end --}}
+
+
+                                {{-- Product Category --}}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading_product_category">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapse_product_category" aria-expanded="true"
+                                            aria-controls="collapse_product_category">
+                                            <strong>Product Category Section</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse_product_category" class="accordion-collapse collapse"
+                                        aria-labelledby="heading_product_category" data-bs-parent="#accordion1">
+                                        <div class="accordion-body">
+
+                                            <div class="row">
+
+
+                                                {{-- product_category_title --}}
+                                                <div class="col-md-6 mb-2">
+                                                    <div class="box_label">
+                                                        <label for="product_category_title"> Product Category Title*</label>
+                                                        <input type="text" name="product_category_title"
+                                                            id="product_category_title" class="form-control"
+                                                            value="{{ isset($cms->product_category_title) ? $cms->product_category_title : old('product_category_title') }}">
+                                                        @if ($errors->has('product_category_title'))
+                                                            <span
+                                                                class="error">{{ $errors->first('product_category_title') }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                {{-- product_category_subtitle --}}
+                                                <div class="col-md-6 mb-2">
+                                                    <div class="box_label">
+                                                        <label for="product_category_subtitle"> Product Category
+                                                            Subtitle*</label>
+                                                        <input type="text" name="product_category_subtitle"
+                                                            id="product_category_subtitle" class="form-control"
+                                                            value="{{ isset($cms->product_category_subtitle) ? $cms->product_category_subtitle : old('product_category_subtitle') }}">
+                                                        @if ($errors->has('product_category_subtitle'))
+                                                            <span
+                                                                class="error">{{ $errors->first('product_category_subtitle') }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- Product Category end --}}
+
 
                                 {{-- Top banner accordion start --}}
                                 <div class="accordion-item">

@@ -370,6 +370,37 @@
                                 </div>
 
 
+                                @if ($product->product_type == 'variable')
+                                    <div class="row mb-5">
+                                        <div class="col-md-12">
+                                            <div class="heading_box mb-3">
+                                                <h3>Variable Product Details</h3>
+                                            </div>
+                                        </div>
+
+                                        {{-- Multi Sizes --}}
+                                        <div class="col-md-4 mb-2">
+                                            <div class="box_label">
+                                                <label>Product Sizes </label>
+                                                <div id="sizes-wrapper">
+                                                    <div class=" mb-2">
+                                                        <select multiple name="sizes[]" class="sizeSelect"
+                                                            id="global-size-select">
+                                                            @foreach ($sizes as $size)
+                                                                <option value="{{ $size->id }}"
+                                                                    @if (in_array($size->id, $productSizes->pluck('size_id')->toArray())) selected @endif>
+                                                                    {{ $size->size }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
+
 
                                 <!-- Other Charges Section -->
                                 <div class="row">
