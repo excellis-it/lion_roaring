@@ -106,7 +106,9 @@ class ProductController extends Controller
             ->orderBy('id', 'DESC')
             ->limit(8)
             ->get();
-        $reviews = $product->reviews()->where('status', 1)->orderBy('id', 'DESC')->get();
+
+        $own_review = $product->reviews()->where('user_id', auth()->id() ?? 0)->first();
+        $reviews = $product->reviews()->where('status', 2)->orderBy('id', 'DESC')->get();
 
         // Check if product is already in cart
         $cartItem = $isAuth ? EstoreCart::where('user_id', auth()->id())
@@ -116,7 +118,7 @@ class ProductController extends Controller
             ->first();
 
 
-        return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews', 'cartCount', 'cartItem', 'wareHouseHaveProductVariables'));
+        return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews', 'own_review', 'cartCount', 'cartItem', 'wareHouseHaveProductVariables'));
     }
 
     public function products(Request $request, $category_id = null)
