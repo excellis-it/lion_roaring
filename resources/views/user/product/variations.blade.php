@@ -182,6 +182,7 @@
                                 @foreach ($groupedVariations as $colorId => $colorGroup)
                                     @php
                                         $first = $colorGroup->first();
+                                        $canDelete = $colorGroup->count() > 1;
                                     @endphp
                                     <div class="color-variation-group mb-4 p-3">
                                         @if ($product->product_type != 'simple')
@@ -298,15 +299,14 @@
                                                             value="{{ $variation->available_quantity }}">
                                                     </div>
 
-
-
-                                                    <div class="col-md-1 text-end"
-                                                        {{ $product->product_type == 'simple' ? 'hidden' : '' }}>
-                                                        <button type="button"
-                                                            class="btn btn-sm btn-danger remove-variation-product">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </div>
+                                                    @if ($product->product_type != 'simple' && $canDelete)
+                                                        <div class="col-md-1 text-end">
+                                                            <button type="button"
+                                                                class="btn btn-sm btn-danger remove-variation-product">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                             @php $index++; @endphp
@@ -340,92 +340,94 @@
                 </div>
             </div>
         </div>
-    @endsection
+    </div>
+@endsection
 
-    @push('scripts')
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js"></script>
-        <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
-        <!-- Choices.js -->
-        <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-        <script type="text/javascript">
-            Dropzone.options.imageUpload = {
-                maxFilesize: 1,
-                acceptedFiles: ".jpeg,.jpg,.png,.gif,.webp"
-            };
-        </script>
-        <script>
-            ClassicEditor.create(document.querySelector("#description"));
-            ClassicEditor.create(document.querySelector("#specification"));
-        </script>
-        <script>
-            $(document).ready(function() {
-                $('.remove-image').click(function() {
-                    var id = $(this).data('id');
-                    var token = $("meta[name='csrf-token']").attr("content");
-                    $.ajax({
-                        url: "{{ route('products.variation.image.delete') }}",
-                        type: 'POST',
-                        data: {
-                            "id": id,
-                            "_token": token,
-                        },
-                        success: function() {
-                            console.log("it Works");
-                            $('#' + id).remove();
-                        }
-                    });
+@push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js"></script>
+    <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
+    <!-- Choices.js -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script type="text/javascript">
+        Dropzone.options.imageUpload = {
+            maxFilesize: 1,
+            acceptedFiles: ".jpeg,.jpg,.png,.gif,.webp"
+        };
+    </script>
+    <script>
+        ClassicEditor.create(document.querySelector("#description"));
+        ClassicEditor.create(document.querySelector("#specification"));
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.remove-image').click(function() {
+                var id = $(this).data('id');
+                var token = $("meta[name='csrf-token']").attr("content");
+                $.ajax({
+                    url: "{{ route('products.variation.image.delete') }}",
+                    type: 'POST',
+                    data: {
+                        "id": id,
+                        "_token": token,
+                    },
+                    success: function() {
+                        console.log("it Works");
+                        $('#' + id).remove();
+                    }
                 });
-
-
             });
-        </script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                // Initialize Choices.js for global selects
-                const globalSizeSelect = new Choices("#generate-size-select", {
-                    removeItemButton: true,
-                    searchPlaceholderValue: "Type to search...",
-                    closeDropdownOnSelect: 'auto',
-                    placeholderValue: "Select size",
+
+
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize Choices.js for global selects
+            const globalSizeSelect = new Choices("#generate-size-select", {
+                removeItemButton: true,
+                searchPlaceholderValue: "Type to search...",
+                closeDropdownOnSelect: 'auto',
+                placeholderValue: "Select size",
+            });
+
+
+
+
+        });
+    </script>
+    <script>
+        // remove-variation-product
+        $(document).on('click', '.remove-variation-product', function() {
+            var entry = $(this).closest('.variation-product-entry');
+            var variationId = entry.data('id');
+
+            if (variationId) {
+                // Send AJAX request to delete the variation from the database
+                $.ajax({
+                    url: "{{ route('products.variation.delete') }}",
+                    data: {
+                        id: variationId
+                    },
+                    type: 'POST',
+                    success: function(response) {
+                        // On success, remove the entry from the DOM
+                        entry.remove();
+                        toastr.success('Variation deleted successfully.');
+                        window.location.reload();
+                    },
+                    error: function(xhr) {
+                        alert('An error occurred while deleting the variation.');
+                    }
                 });
-
-
-
-
-            });
-        </script>
-        <script>
-            // remove-variation-product
-            $(document).on('click', '.remove-variation-product', function() {
-                var entry = $(this).closest('.variation-product-entry');
-                var variationId = entry.data('id');
-
-                if (variationId) {
-                    // Send AJAX request to delete the variation from the database
-                    $.ajax({
-                        url: "{{ route('products.variation.delete') }}",
-                        data: {
-                            id: variationId
-                        },
-                        type: 'POST',
-                        success: function(response) {
-                            // On success, remove the entry from the DOM
-                            entry.remove();
-                            toastr.success('Variation deleted successfully.');
-                        },
-                        error: function(xhr) {
-                            alert('An error occurred while deleting the variation.');
-                        }
-                    });
-                } else {
-                    // If no ID, just remove the entry from the DOM
-                    entry.remove();
-                }
-            });
-
-            // After existing success callback where entry.remove();
-            if (!group.find('.variation-product-entry').length) {
-                group.remove();
+            } else {
+                // If no ID, just remove the entry from the DOM
+                entry.remove();
             }
-        </script>
-    @endpush
+        });
+
+        // After existing success callback where entry.remove();
+        if (!group.find('.variation-product-entry').length) {
+            group.remove();
+        }
+    </script>
+@endpush

@@ -148,7 +148,7 @@ class ProductController extends Controller
             'category_id' => 'required|numeric|exists:categories,id',
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-           // 'short_description' => 'required|string',
+            // 'short_description' => 'required|string',
             'specification' => 'required|string',
             // 'price' => 'required|numeric',
             'feature_product' => 'required',
@@ -173,7 +173,7 @@ class ProductController extends Controller
             'category_id.exists' => 'The selected category is invalid.',
             'name.required' => 'The product name field is required.',
             'description.required' => 'The description field is required.',
-           // 'short_description.required' => 'The short description field is required.',
+            // 'short_description.required' => 'The short description field is required.',
             'specification.required' => 'The specification field is required.',
             'feature_product.required' => 'The feature product field is required.',
             'slug.required' => 'The slug field is required.',
@@ -619,7 +619,7 @@ class ProductController extends Controller
     public function variations($id)
     {
         $product = Product::findOrFail($id);
-        $product_variations = ProductVariation::where('product_id', $product->id)->get();
+        $product_variations = ProductVariation::where('product_id', $product->id)->orderBy('id', 'desc')->get();
         $colors = Color::where('status', 1)->get();
         $productSizes = $product->sizesWithDetails();
 
