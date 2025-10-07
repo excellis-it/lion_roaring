@@ -47,7 +47,7 @@ class EstorePromoCodeController extends Controller
     public function create()
     {
         $users = User::orderBy('first_name')->orderBy('last_name')->get();
-        $products = Product::where('status', 1)->orderBy('name')->get();
+        $products = Product::where('status', 1)->where('is_deleted', 0)->orderBy('name')->get();
 
         return view('user.estore-promocode.create', compact('users', 'products'));
     }

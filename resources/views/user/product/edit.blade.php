@@ -71,7 +71,8 @@
             <!--  Row 1 -->
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+                    <form id="productEditForm" action="{{ route('products.update', $product->id) }}" method="POST"
+                        enctype="multipart/form-data">
                         @method('PUT')
                         @csrf
 
@@ -90,8 +91,9 @@
 
                                 <div class="row mt-3">
                                     <div class="col-md-12">
-                                        <div class="heading_box mb-5">
+                                        <div class="heading_box mb-5 d-flex align-items-center justify-content-between">
                                             <h3>Product Details</h3>
+                                            <h3>Product Type : {{ $product->product_type }}</h3>
                                         </div>
                                     </div>
                                 </div>
@@ -163,9 +165,9 @@
                                         </div>
                                     </div>
                                     {{-- image --}}
-                                    <div class="col-md-4 mb-2">
+                                    <div class="col-md-2 mb-2">
                                         <div class="box_label">
-                                            <label for="image"> Product Featured Image</label>
+                                            <label for="image"> Product Featured Image*</label>
                                             <input type="file" name="image" id="image" class="form-control"
                                                 value="{{ old('image') }}">
 
@@ -173,30 +175,63 @@
                                                 <span class="error">{{ $errors->first('image') }}</span>
                                             @endif
                                         </div>
-                                        <label for="" class="ms-3 "><a class="text-link text-primary"
+                                        {{-- <label for="" class="ms-3 "><a class="text-link text-primary"
                                                 href="{{ Storage::url($product->image?->image ?? '') }}"
-                                                target="_blank">View</a></label>
+                                                target="_blank">View</a></label> --}}
+                                    </div>
+
+                                    {{-- image preview --}}
+                                    <div class="col-md-2 mb-2">
+                                        <div class="box_label">
+                                            <a href="{{ Storage::url($product->image?->image ?? '') }}" target="_blank">
+                                                <img style="height: 80px; width: 80px; object-fit: cover;"
+                                                    id="image_preview"
+                                                    src="{{ Storage::url($product->image?->image ?? '') }}"
+                                                    alt="Product Image" class="img-fluid">
+                                            </a>
+                                        </div>
                                     </div>
 
                                     {{-- background_image --}}
-                                    <div class="col-md-4 mb-2">
+                                    <div class="col-md-2 mb-2">
                                         <div class="box_label">
-                                            <label for="background_image"> Product Background Image</label>
+                                            <label for="background_image"> Product Banner Image</label>
                                             <input type="file" name="background_image" id="background_image"
                                                 class="form-control" value="{{ old('background_image') }}">
                                             @if ($errors->has('background_image'))
                                                 <span class="error">{{ $errors->first('background_image') }}</span>
                                             @endif
                                         </div>
-                                        <label for="" class="ms-3 "><a class="text-link text-primary"
+                                        {{-- <label for="" class="ms-3 "><a class="text-link text-primary"
                                                 href="{{ Storage::url($product->background_image ?? '') }}"
-                                                target="_blank">View</a></label>
+                                                target="_blank">View</a></label> --}}
+                                    </div>
+
+
+                                    {{-- background image preview --}}
+                                    <div class="col-md-2 mb-2">
+                                        <div class="box_label">
+                                            @if ($product->background_image)
+                                                <a href="{{ Storage::url($product->background_image ?? '') }}"
+                                                    target="_blank">
+                                                    <img style="height: 80px; width: 80px; object-fit: cover;"
+                                                        id="background_image_preview"
+                                                        src="{{ Storage::url($product->background_image ?? '') }}"
+                                                        alt="Product Background Image" class="img-fluid">
+                                                </a>
+                                            @else
+                                                {{-- // dummy placehoder image box --}}
+                                                <div
+                                                    style="height: 80px; width: 80px; background: #f0f0f0; border: 1px dashed #ccc;">
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
 
                                     {{-- short_description --}}
                                     <div class="col-md-12 mb-2">
                                         <div class="box_label">
-                                            <label for="short_description"> Product Short Description*</label>
+                                            <label for="short_description"> Product Short Description</label>
                                             <input type="text" name="short_description" id="short_description"
                                                 class="form-control" value="{{ $product->short_description }}">
                                             @if ($errors->has('short_description'))
@@ -230,7 +265,7 @@
                                     {{-- feature_product --}}
                                     <div class="col-md-4 mb-2">
                                         <div class="box_label">
-                                            <label for="feature_product"> Feature Product*</label>
+                                            <label for="feature_product"> Feature Product</label>
                                             <select name="feature_product" id="feature_product" class="form-control">
                                                 <option value="">Select Feature Product</option>
                                                 <option value="1"
@@ -250,7 +285,7 @@
                                     {{-- is_new_product --}}
                                     <div class="col-md-4 mb-2">
                                         <div class="box_label">
-                                            <label for="is_new_product"> New Product*</label>
+                                            <label for="is_new_product"> New Product</label>
                                             <select name="is_new_product" id="is_new_product" class="form-control">
                                                 <option value="">Select New Product</option>
                                                 <option value="1"
@@ -288,9 +323,9 @@
                                     {{-- status --}}
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
-                                            <label for="status"> Status*</label>
+                                            <label for="status"> Status</label>
                                             <select name="status" id="status" class="form-control">
-                                                <option value="">Select Status</option>
+
                                                 <option value="1" {{ $product->status == 1 ? 'selected' : '' }}>
                                                     Active
                                                 </option>
@@ -308,7 +343,7 @@
                                         <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image(Drag and
                                             drop
                                             atleast 1
-                                            images)</label>
+                                            images)*</label>
                                         <input type="file" class="form-control dropzone" id="image-upload"
                                             name="images[]" multiple>
                                         @if ($errors->has('images.*'))
@@ -343,7 +378,7 @@
                                 <div class="row mb-5">
                                     <div class="col-md-12">
                                         <div class="heading_box mb-3">
-                                            <h3>Product Type : {{ $product->product_type }}</h3>
+                                            {{-- <h3>Product Type : {{ $product->product_type }}</h3> --}}
                                         </div>
                                     </div>
 
@@ -684,5 +719,144 @@
                     variableProductSection.style.display = 'block';
                 });
             });
+        </script>
+
+        <!-- Client-side validation for productEditForm -->
+        <script>
+            (function() {
+                // number of existing gallery images (rendered on server)
+                var existingImagesCount = {{ $product->withOutMainImage->count() ?? 0 }};
+
+                function addClientError($el, message) {
+                    $el.addClass('is-invalid');
+                    if ($el.next('.client-error').length) {
+                        $el.next('.client-error').text(message);
+                    } else {
+                        $el.after('<span class="error client-error" style="color:red;display:block;margin-top:4px;">' +
+                            message + '</span>');
+                    }
+                }
+
+                function clearClientErrors($form) {
+                    $form.find('.client-error').remove();
+                    $form.find('.is-invalid').removeClass('is-invalid');
+                }
+
+                $('#productEditForm').on('submit', function(e) {
+                    var $form = $(this);
+                    clearClientErrors($form);
+
+                    var errors = [];
+                    var val = function(selector) {
+                        return $.trim($(selector).val() || '');
+                    };
+
+                    // Basic required fields
+                    if (!val('#name')) {
+                        addClientError($('#name'), 'Product name is required.');
+                        errors.push('#name');
+                    }
+
+                    if (!val('#category_id')) {
+                        addClientError($('#category_id'), 'Category is required.');
+                        errors.push('#category_id');
+                    }
+
+                    if (!val('#slug')) {
+                        addClientError($('#slug'), 'Product slug is required.');
+                        errors.push('#slug');
+                    }
+
+                    // if (!val('#short_description')) {
+                    //     addClientError($('#short_description'), 'Short description is required.');
+                    //     errors.push('#short_description');
+                    // }
+
+                    if (!val('#description')) {
+                        addClientError($('#description'), 'Description is required.');
+                        errors.push('#description');
+                    }
+
+                    if (!val('#specification')) {
+                        addClientError($('#specification'), 'Specification is required.');
+                        errors.push('#specification');
+                    }
+
+                    // Image gallery: allow if there are existing images OR user selected new files
+                    var galleryInput = $('#image-upload')[0];
+                    var galleryHasFiles = galleryInput && galleryInput.files && galleryInput.files.length > 0;
+                    if (!galleryHasFiles && (!existingImagesCount || existingImagesCount === 0)) {
+                        addClientError($('#image-upload'),
+                            'Please have at least one gallery image (existing or new).');
+                        errors.push('#image-upload');
+                    }
+
+                    // Product type specific checks (only when fields exist)
+                    var productType = ($('input[name="product_type"]:checked').val() || '').toLowerCase() ||
+                        '{{ $product->product_type }}';
+                    if (productType === 'simple') {
+                        if ($('#sku').length && !val('#sku')) {
+                            addClientError($('#sku'), 'SKU is required for simple products.');
+                            errors.push('#sku');
+                        }
+                        var skuValue = val('#sku');
+                        if (skuValue && !/^[a-zA-Z0-9]/.test(skuValue)) {
+                            addClientError($('#sku'), 'SKU must start with a letter or number.');
+                            errors.push('#sku');
+                        }
+                        if ($('#price').length) {
+                            var isFree = $('#is_free').is(':checked');
+                            var priceVal = val('#price');
+                            if (!isFree && (priceVal === '' || isNaN(Number(priceVal)) || Number(parsepriceVal) < 0)) {
+                                addClientError($('#price'), 'Valid price is required (or mark product as Free).');
+                                errors.push('#price');
+                            }
+                        }
+                        // if set sale_price then should not negetive and not greater than price
+                        if ($('#sale_price').length && val('#sale_price')) {
+                            var salePriceVal = val('#sale_price');
+                            var mainPriceVal = val('#price');
+                            if (isNaN(Number(salePriceVal)) || Number(salePriceVal) < 0) {
+                                addClientError($('#sale_price'), 'Sale price cannot be negative.');
+                                errors.push('#sale_price');
+                            } else if (mainPriceVal && !isNaN(Number(mainPriceVal)) && Number(salePriceVal) > Number(
+                                    mainPriceVal)) {
+                                addClientError($('#sale_price'), 'Sale price cannot be greater than the main price.');
+                                errors.push('#sale_price');
+                            }
+                        }
+                        if ($('#quantity').length && (val('#quantity') === '' || isNaN(Number(val('#quantity'))) ||
+                                Number(val('#quantity')) < 0)) {
+                            addClientError($('#quantity'), 'Valid stock quantity is required.');
+                            errors.push('#quantity');
+                        }
+                    } else if (productType === 'variable') {
+                        if ($('#global-size-select').length) {
+                            var sizesVal = $('#global-size-select').val() || [];
+                            if (!Array.isArray(sizesVal)) sizesVal = [sizesVal];
+                            if (sizesVal.length === 0 || (sizesVal.length === 1 && sizesVal[0] === '')) {
+                                addClientError($('#global-size-select'),
+                                    'Please select at least one size for variable products.');
+                                errors.push('#global-size-select');
+                            }
+                        }
+                    }
+
+                    if (errors.length) {
+                        e.preventDefault();
+                        var firstSel = errors[0];
+                        var $first = $(firstSel);
+                        if ($first.length) {
+                            $('html, body').animate({
+                                scrollTop: $first.offset().top - 100
+                            }, 300, function() {
+                                $first.focus();
+                            });
+                        }
+                        return false;
+                    }
+                    // no errors -> allow form submission
+                });
+            })();
         </script>
     @endpush

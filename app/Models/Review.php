@@ -9,6 +9,9 @@ class Review extends Model
 {
     use HasFactory;
 
+    public const STATUS_PENDING = 1;
+    public const STATUS_APPROVED = 2;
+
     protected $fillable = [
         'product_id',
         'user_id',
@@ -16,6 +19,14 @@ class Review extends Model
         'rating',
         'status',
     ];
+
+    public static function statusOptions(): array
+    {
+        return [
+            self::STATUS_PENDING => 'Pending',
+            self::STATUS_APPROVED => 'Approved',
+        ];
+    }
 
     public function product()
     {
@@ -27,5 +38,14 @@ class Review extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
+
+    public function scopeApproved($query)
+    {
+        return $query->where('status', self::STATUS_APPROVED);
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return self::statusOptions()[$this->status] ?? 'Unknown';
+    }
 }

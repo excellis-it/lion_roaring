@@ -54,26 +54,28 @@
 
                                 <td>{{ $wareHouse->is_active ? 'Active' : 'Inactive' }}</td>
 
-                                <td class="d-flex">
-                                    @if (auth()->user()->can('View Estore Warehouse'))
-                                        <a href="{{ route('ware-houses.products.list', $wareHouse->id) }}"
-                                            class="edit_icon me-2" title="View Products">
-                                            <i class="fa-solid fa-box"></i>
-                                        </a>
-                                    @endif
-                                    @if (auth()->user()->can('Edit Estore Warehouse'))
-                                        <a href="{{ route('ware-houses.edit', $wareHouse->id) }}" class="edit_icon me-2">
-                                            <i class="fa-solid fa-edit"></i>
-                                        </a>
-                                    @endif
-                                    @if (auth()->user()->can('Delete Estore Warehouse'))
-                                        <a href="javascript:void(0)" id="delete"
-                                            data-route="{{ route('ware-houses.delete', $wareHouse->id) }}"
-                                            class="delete_icon">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </a>
-                                    @endif
-
+                                <td>
+                                    <div class="d-flex">
+                                        @if (auth()->user()->can('View Estore Warehouse'))
+                                            <a href="{{ route('ware-houses.products.list', $wareHouse->id) }}"
+                                                class="edit_icon me-2" title="View Products">
+                                                <i class="fa-solid fa-box"></i>
+                                            </a>
+                                        @endif
+                                        @if (auth()->user()->can('Edit Estore Warehouse'))
+                                            <a href="{{ route('ware-houses.edit', $wareHouse->id) }}"
+                                                class="edit_icon me-2">
+                                                <i class="fa-solid fa-edit"></i>
+                                            </a>
+                                        @endif
+                                        @if (auth()->user()->can('Delete Estore Warehouse'))
+                                            <a href="javascript:void(0)" id="delete"
+                                                data-route="{{ route('ware-houses.delete', $wareHouse->id) }}"
+                                                class="delete_icon">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        @endif
+                                    </div>
 
                                 </td>
 

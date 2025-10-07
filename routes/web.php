@@ -478,7 +478,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         // product variations manage route
 
         Route::get('/{id}/variations', [ProductController::class, 'variations'])->name('products.variations');
-
+        Route::get('/{id}/product-stocks', [ProductController::class, 'variations'])->name('products.simple.stocks');
 
 
         Route::get('/product-delete/{id}', [ProductController::class, 'delete'])->name('products.delete');
@@ -528,6 +528,12 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::post('/orders/{order}/refund', [EstoreCmsController::class, 'refund'])->name('user.store-orders.refund');
 
 
+    // products review routes
+    Route::prefix('store-products')->name('user.store-products.')->group(function () {
+        Route::get('/{product}/reviews', [EstoreCmsController::class, 'productReviews'])->name('reviews');
+        Route::patch('/{product}/reviews/{review}/approve', [EstoreCmsController::class, 'approveProductReview'])->name('reviews.approve');
+        Route::delete('/{product}/reviews/{review}', [EstoreCmsController::class, 'deleteProductReview'])->name('reviews.delete');
+    });
 
     // Reports routes
     Route::get('/store-orders/reports', [EstoreCmsController::class, 'reportsIndex'])->name('user.store-orders.reports');

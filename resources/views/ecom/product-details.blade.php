@@ -260,7 +260,8 @@
                     <div class="tab-pane fade" id="menu1">
                         <div class="review">
                             <div class="pure_tab">
-                                @if (auth()->check())
+                                @if (auth()->check() && $product->isPurchasedByUser(auth()->id()) && !$product->isReviewedByUser(auth()->id()))
+                                    {{-- Review Form --}}
                                     <form id="review-form" action="javascript:void(0);" method="POST">
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product['id'] }}">
@@ -428,6 +429,7 @@
                             toastr.success(response.message);
                             $('#review-form')[0].reset();
                             $('#show-review').html(response.view);
+                            $("#review-form").remove();
                         } else {
                             toastr.error(response.message);
                         }

@@ -178,4 +178,23 @@ class Product extends Model
                 ];
             })->values();
     }
+
+    // check if this product purchased by the user anytime
+    public function isPurchasedByUser($userId)
+    {
+        return EstoreOrderItem::where('product_id', $this->id)
+            ->whereHas('order', function ($query) use ($userId) {
+                $query->where('user_id', $userId)
+                    ->where('payment_status', 'paid');
+            })
+            ->exists();
+    }
+
+    // check if user already reviewed this product
+    public function isReviewedByUser($userId)
+    {
+        return Review::where('product_id', $this->id)
+            ->where('user_id', $userId)
+            ->exists();
+    }
 }

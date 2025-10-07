@@ -2520,3 +2520,17 @@ section {
     padding: 0px 5px 0px 5px;
 }
 
+
+.required-star {
+    color: red;
+}
+
+/* // tooltip color and background color  */
+
+.tooltip-inner {
+    background-color: #572b62 !important;
+    color: #fff !important;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 5px;
+}

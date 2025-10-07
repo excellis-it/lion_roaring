@@ -73,9 +73,9 @@
                                 data-bs-target="#exampleModal1"><span><i
                                         class="fa-solid fa-hand-holding-medical"></i></span> Gift/Seed</a>
                         </div>
-                        <div class="login_prf e-store-btn">
+                        {{-- <div class="login_prf e-store-btn">
                             <a href="{{ route('e-store') }}"><span><i class="fa-solid fa-store"></i></span> E-Store</a>
-                        </div>
+                        </div> --}}
 
                         <div class="button_container" id="toggle">
                             <span class="top"></span>
