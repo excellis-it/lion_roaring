@@ -194,7 +194,7 @@
                                                     </label>
                                                     <input type="file"
                                                         name="variation_products[{{ $index }}][images][]"
-                                                        class="form-control" multiple>
+                                                        class="form-control" multiple accept="image/*">
                                                     <small class="text-muted d-block mt-1">Upload images once per
                                                         color.</small>
                                                 </div>
@@ -210,7 +210,7 @@
                                                     </label>
                                                     <input type="file"
                                                         name="variation_products[{{ $index }}][images][]"
-                                                        class="form-control" multiple>
+                                                        class="form-control" multiple accept="image/*">
                                                     <small class="text-muted d-block mt-1">Upload images </small>
                                                 </div>
                                             </div>
@@ -268,18 +268,19 @@
                                                         <label class="small fw-semibold">Sale Price (If Any)</label>
                                                         <input type="number" step="0.01"
                                                             name="variation_products[{{ $index }}][sale_price]"
-                                                            class="form-control"
-                                                            value="{{ $variation->sale_price }}">
+                                                            class="form-control" value="{{ $variation->sale_price }}">
                                                     </div>
 
-                                                    <div class="col-md-1">
+                                                    <div class="col-md-1"
+                                                        {{ $product->product_type == 'simple' ? 'hidden' : '' }}>
                                                         <label class="small fw-semibold">Color</label>
                                                         <input type="text" class="form-control"
                                                             value="{{ $variation->colorDetail->color_name ?? '' }}"
                                                             readonly>
                                                     </div>
 
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-2"
+                                                        {{ $product->product_type == 'simple' ? 'hidden' : '' }}>
                                                         <label class="small fw-semibold">Size</label>
                                                         <input type="hidden"
                                                             name="variation_products[{{ $index }}][size_id]"
@@ -299,7 +300,8 @@
 
 
 
-                                                    <div class="col-md-1 text-end">
+                                                    <div class="col-md-1 text-end"
+                                                        {{ $product->product_type == 'simple' ? 'hidden' : '' }}>
                                                         <button type="button"
                                                             class="btn btn-sm btn-danger remove-variation-product">
                                                             <i class="fa fa-trash"></i>

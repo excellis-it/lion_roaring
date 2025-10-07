@@ -108,7 +108,10 @@ class ProductController extends Controller
             ->get();
 
         $own_review = $product->reviews()->where('user_id', auth()->id() ?? 0)->first();
-        $reviews = $product->reviews()->where('status', 2)->orderBy('id', 'DESC')->get();
+        $reviews = $product->reviews()
+            ->where('status', Review::STATUS_APPROVED)
+            ->orderBy('id', 'DESC')
+            ->get();
 
         // Check if product is already in cart
         $cartItem = $isAuth ? EstoreCart::where('user_id', auth()->id())
@@ -346,13 +349,17 @@ class ProductController extends Controller
         $review->user_id = auth()->id();
         $review->rating = $request->rate;
         $review->review = $request->review;
-        $review->status = 1;
+        $review->status = Review::STATUS_PENDING;
         $review->save();
 
         // Render the review view
-        $reviews = $product->reviews()->where('status', 1)->orderBy('id', 'DESC')->get();
+        $own_review = $product->reviews()->where('user_id', auth()->id() ?? 0)->first();
+        $reviews = $product->reviews()
+            ->where('status', Review::STATUS_APPROVED)
+            ->orderBy('id', 'DESC')
+            ->get();
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
-        $view = view('ecom.partials.product-review', compact('reviews', 'cartCount'))->render();
+        $view = view('ecom.partials.product-review', compact('reviews', 'own_review', 'cartCount'))->render();
 
         return response()->json(['status' => true, 'message' => 'Review submitted successfully', 'view' => $view]);
     }

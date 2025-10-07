@@ -449,7 +449,8 @@
                                                         <div class="mb-2">
                                                             <input step="any" type="number"
                                                                 name="other_charges[0][charge_amount]"
-                                                                class="form-control" placeholder="Charge Amount" min="0.00">
+                                                                class="form-control" placeholder="Charge Amount"
+                                                                min="0.00">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -514,9 +515,9 @@
                 function togglePriceFields() {
                     const isFree = $('#is_free').is(':checked');
                     if (isFree) {
-                        $('#price').prop('disabled', true).val('0');
+                        $('#price').prop('readonly', true).val('0');
                     } else {
-                        $('#price').prop('disabled', false);
+                        $('#price').prop('readonly', false);
                     }
                 }
                 $('#is_free').on('change', togglePriceFields);
@@ -715,7 +716,7 @@
 
 
                         if (val('#quantity') === '' || isNaN(Number(val('#quantity'))) || parseInt(val(
-                            '#quantity')) < 0) {
+                                '#quantity')) < 0) {
                             addClientError($('#quantity'), 'Valid stock quantity is required.');
                             errors.push('#quantity');
                         }

@@ -10,6 +10,8 @@ use App\Models\EcomNewsletter;
 use App\Models\MemberPrivacyPolicy;
 use App\Models\EstoreOrder;
 use App\Models\EstoreOrderItem;
+use App\Models\Product;
+use App\Models\Review;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -608,6 +610,114 @@ class EstoreCmsController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    // -----------------------------------------------------------------
+    // Product Reviews Management
+    // -----------------------------------------------------------------
+
+    public function productReviews(Product $product, Request $request)
+    {
+        if (!auth()->user()->can('Edit Estore Products')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        $statusFilter = $request->get('status', '');
+        $searchTerm = trim($request->get('search', ''));
+
+        $reviewsQuery = Review::with(['user'])
+            ->where('product_id', $product->id)
+            ->orderByDesc('created_at');
+
+        if ($statusFilter !== '') {
+            $reviewsQuery->where('status', (int) $statusFilter);
+        }
+
+        if (!empty($searchTerm)) {
+            $reviewsQuery->where(function ($query) use ($searchTerm) {
+                $query->where('review', 'like', "%{$searchTerm}%")
+                    ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+                        $userQuery->where('full_name', 'like', "%{$searchTerm}%")
+                            ->orWhere('email', 'like', "%{$searchTerm}%");
+                    });
+            });
+        }
+
+        $reviews = $reviewsQuery->paginate(15)->withQueryString();
+
+        return view('user.product.reviews', [
+            'product' => $product,
+            'reviews' => $reviews,
+            'statusFilter' => $statusFilter,
+            'searchTerm' => $searchTerm,
+            'statusOptions' => Review::statusOptions(),
+            'statusBadgeClasses' => [
+                Review::STATUS_PENDING => 'bg-warning text-dark',
+                Review::STATUS_APPROVED => 'bg-success',
+            ],
+        ]);
+    }
+
+    public function approveProductReview(Product $product, Review $review, Request $request)
+    {
+        if (!auth()->user()->can('Edit Estore Products')) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'You do not have permission to perform this action.'
+                ], 403);
+            }
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        if ($review->product_id !== $product->id) {
+            abort(404);
+        }
+
+        $review->status = Review::STATUS_APPROVED;
+        $review->save();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Review approved successfully.',
+                'review' => $review->fresh(['user'])
+            ]);
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', 'Review approved successfully.');
+    }
+
+    public function deleteProductReview(Product $product, Review $review, Request $request)
+    {
+        if (!auth()->user()->can('Delete Estore Products')) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'You do not have permission to perform this action.'
+                ], 403);
+            }
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        if ($review->product_id !== $product->id) {
+            abort(404);
+        }
+
+        $review->delete();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Review deleted successfully.'
+            ]);
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', 'Review deleted successfully.');
     }
 
     // Reports Dashboard
