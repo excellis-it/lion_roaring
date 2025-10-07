@@ -239,7 +239,7 @@
             </div>
 
             <div class="row mt-3">
-                <div class="col-lg-12">
+                <div class="col-lg-6">
                     <div class="delevry-sumry shadow p-3">
                         @php
                             // Define the canonical progression

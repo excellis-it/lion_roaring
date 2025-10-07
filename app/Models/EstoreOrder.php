@@ -35,6 +35,8 @@ class EstoreOrder extends Model
         'payment_type',
         'warehouse_name',
         'warehouse_address',
+        'promo_code',
+        'promo_discount',
     ];
 
     protected $casts = [

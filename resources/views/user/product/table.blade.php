@@ -39,21 +39,39 @@
 
                 <div class="d-flex">
                     @if (auth()->user()->can('Edit Estore Products'))
-                        <a href="{{ route('products.edit', $product->id) }}" class="delete_icon">
+                        <a href="{{ route('products.edit', $product->id) }}" class="edit_icon">
                             <i class="fa-solid fa-edit"></i>
                         </a> &nbsp; &nbsp;
                     @endif
                     @if (auth()->user()->can('Edit Estore Products'))
-                        <a href="{{ route('products.variations', $product->id) }}" class="delete_icon">
-                            <i class="fa-solid fa-th"></i>
+                        @if ($product->product_type == 'simple')
+                            <a href="{{ route('products.simple.stocks', $product->id) }}" class="edit_icon"
+                                title="Simple Product Stock" data-bs-toggle="tooltip" data-bs-placement="top">
+                                <i class="fa-solid fa-box-open"></i>
+                            </a> &nbsp; &nbsp;
+                        @else
+                            <a href="{{ route('products.variations', $product->id) }}" class="edit_icon"
+                                title="Product Variations" data-bs-toggle="tooltip" data-bs-placement="top">
+                                <i class="fa-solid fa-th"></i>
+                            </a> &nbsp; &nbsp;
+                        @endif
+                    @endif
+
+                    @if (auth()->user()->can('Edit Estore Products'))
+                        <a href="{{ route('user.store-products.reviews', $product->id) }}" class="edit_icon"
+                            title="Product Reviews" data-bs-toggle="tooltip" data-bs-placement="top">
+                            <i class="fa-solid fa-star"></i>
                         </a> &nbsp; &nbsp;
                     @endif
+
                     @if (auth()->user()->can('Delete Estore Products'))
                         <a href="javascript:void(0)" id="delete"
                             data-route="{{ route('products.delete', $product->id) }}" class="delete_icon">
                             <i class="fa-solid fa-trash"></i>
-                        </a>
+                        </a> &nbsp; &nbsp;
                     @endif
+
+
                 </div>
 
 

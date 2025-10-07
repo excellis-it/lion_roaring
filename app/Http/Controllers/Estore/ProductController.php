@@ -36,6 +36,8 @@ use App\Models\EstoreRefund;
 use App\Models\ProductVariation;
 use App\Models\WarehouseProductVariation;
 use Illuminate\Support\Facades\Storage;
+use App\Services\PromoCodeService;
+use App\Models\EstorePromoCode;
 
 class ProductController extends Controller
 {
@@ -104,7 +106,12 @@ class ProductController extends Controller
             ->orderBy('id', 'DESC')
             ->limit(8)
             ->get();
-        $reviews = $product->reviews()->where('status', 1)->orderBy('id', 'DESC')->get();
+
+        $own_review = $product->reviews()->where('user_id', auth()->id() ?? 0)->first();
+        $reviews = $product->reviews()
+            ->where('status', Review::STATUS_APPROVED)
+            ->orderBy('id', 'DESC')
+            ->get();
 
         // Check if product is already in cart
         $cartItem = $isAuth ? EstoreCart::where('user_id', auth()->id())
@@ -114,7 +121,7 @@ class ProductController extends Controller
             ->first();
 
 
-        return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews', 'cartCount', 'cartItem', 'wareHouseHaveProductVariables'));
+        return view('ecom.product-details')->with(compact('product', 'related_products', 'reviews', 'own_review', 'cartCount', 'cartItem', 'wareHouseHaveProductVariables'));
     }
 
     public function products(Request $request, $category_id = null)
@@ -342,13 +349,17 @@ class ProductController extends Controller
         $review->user_id = auth()->id();
         $review->rating = $request->rate;
         $review->review = $request->review;
-        $review->status = 1;
+        $review->status = Review::STATUS_PENDING;
         $review->save();
 
         // Render the review view
-        $reviews = $product->reviews()->where('status', 1)->orderBy('id', 'DESC')->get();
+        $own_review = $product->reviews()->where('user_id', auth()->id() ?? 0)->first();
+        $reviews = $product->reviews()
+            ->where('status', Review::STATUS_APPROVED)
+            ->orderBy('id', 'DESC')
+            ->get();
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
-        $view = view('ecom.partials.product-review', compact('reviews', 'cartCount'))->render();
+        $view = view('ecom.partials.product-review', compact('reviews', 'own_review', 'cartCount'))->render();
 
         return response()->json(['status' => true, 'message' => 'Review submitted successfully', 'view' => $view]);
     }
@@ -599,20 +610,19 @@ class ProductController extends Controller
         $userSessionId = session()->getId();
 
         $carts = $isAuth
-            ? EstoreCart::where('user_id', auth()->id())->with(['product.otherCharges', 'warehouseProduct'])
-            ->get()
-            : EstoreCart::where('session_id', $userSessionId)->with(['product.otherCharges', 'warehouseProduct'])
-            ->get();
+            ? EstoreCart::where('user_id', auth()->id())->with(['product.otherCharges', 'warehouseProduct'])->get()
+            : EstoreCart::where('session_id', $userSessionId)->with(['product.otherCharges', 'warehouseProduct'])->get();
+
         $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
 
         $total = 0;
-        $hasChanges = false; // flag if any price changed or stock issue
+        $hasChanges = false;
 
         foreach ($carts as $cart) {
             $warehouseProduct = $cart->warehouseProduct;
             $currentWarehousePrice = $warehouseProduct?->price ?? 0;
             $availableQty = $warehouseProduct?->quantity ?? 0;
-            // Build meta locally to avoid indirect modification issue
+
             $meta = [
                 'price_changed' => false,
                 'out_of_stock' => false,
@@ -620,9 +630,7 @@ class ProductController extends Controller
                 'current_price' => $currentWarehousePrice,
             ];
 
-            // Detect price change (ignore free products where price forced to 0)
             if (($cart->price ?? 0) != $currentWarehousePrice && !($cart->product?->is_free)) {
-                // Update cart price in DB so subsequent calculations are correct
                 $cart->old_price = $cart->price;
                 $cart->price = $currentWarehousePrice;
                 $cart->save();
@@ -630,31 +638,55 @@ class ProductController extends Controller
                 $hasChanges = true;
             }
 
-            // Stock validation: if no stock or quantity exceeds available
             if ($availableQty <= 0) {
                 $meta['out_of_stock'] = true;
                 $hasChanges = true;
             } elseif ($cart->quantity > $availableQty) {
-                // Reduce quantity to available
                 $cart->quantity = $availableQty;
                 $cart->save();
                 $hasChanges = true;
             }
 
-            // Recalculate other charges
             $otherCharges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
 
-            // Subtotal only if not out_of_stock
             if (!$meta['out_of_stock']) {
                 $cart->subtotal = ($cart->price ?? 0) * $cart->quantity + ($otherCharges ?? 0);
                 $total += $cart->subtotal;
             } else {
                 $cart->subtotal = 0;
             }
-            // Assign meta at end
+
             $cart->setAttribute('meta', $meta);
         }
-        return view('ecom.cart')->with(compact('carts', 'total', 'cartCount', 'hasChanges'));
+
+        // Get promo code discount from session
+        $appliedPromoCode = session('applied_promo_code');
+        $promoDiscount = session('promo_discount', 0);
+
+        // Recalculate promo discount if code is applied
+        if ($appliedPromoCode && $total > 0) {
+            $cartItems = [];
+            foreach ($carts as $cart) {
+                if (!($cart->meta['out_of_stock'] ?? false)) {
+                    $cartItems[] = [
+                        'product_id' => $cart->product_id,
+                        'subtotal' => $cart->subtotal,
+                    ];
+                }
+            }
+
+            $validation = PromoCodeService::validatePromoCode($appliedPromoCode, $isAuth ? auth()->id() : null, $cartItems);
+            if ($validation['valid']) {
+                $promoDiscount = PromoCodeService::calculateDiscount($validation['promo_code'], $total, $cartItems);
+                session(['promo_discount' => $promoDiscount]);
+            } else {
+                session()->forget(['applied_promo_code', 'promo_discount']);
+                $appliedPromoCode = null;
+                $promoDiscount = 0;
+            }
+        }
+
+        return view('ecom.cart')->with(compact('carts', 'total', 'cartCount', 'hasChanges', 'appliedPromoCode', 'promoDiscount'));
     }
 
     // checkout page
@@ -678,8 +710,8 @@ class ProductController extends Controller
 
         $subtotal = 0;
         $cartItems = [];
-
         $hasChanges = false;
+
         foreach ($carts as $cart) {
             $warehouseProduct = $cart->warehouseProduct;
             $currentWarehousePrice = $warehouseProduct?->price ?? 0;
@@ -725,7 +757,20 @@ class ProductController extends Controller
             ];
         }
 
-        // Calculate additional costs
+        // Get promo code discount
+        $appliedPromoCode = session('applied_promo_code');
+        $promoDiscount = 0;
+
+        if ($appliedPromoCode && $subtotal > 0) {
+            $validation = PromoCodeService::validatePromoCode($appliedPromoCode, auth()->id(), $cartItems);
+            if ($validation['valid']) {
+                $promoDiscount = PromoCodeService::calculateDiscount($validation['promo_code'], $subtotal, $cartItems);
+            } else {
+                session()->forget(['applied_promo_code', 'promo_discount']);
+                $appliedPromoCode = null;
+            }
+        }
+
         $shippingCost = 0;
         $deliveryCost = 0;
         $taxAmount = 0;
@@ -735,16 +780,27 @@ class ProductController extends Controller
             $deliveryCost = $estoreSettings->delivery_cost ?? 0;
             $taxPercentage = $estoreSettings->tax_percentage ?? 0;
 
-            // Calculate tax on subtotal
             if ($taxPercentage > 0) {
-                $taxAmount = ($subtotal * $taxPercentage) / 100;
+                $taxAmount = (($subtotal - $promoDiscount) * $taxPercentage) / 100;
             }
         }
 
-        $total = $subtotal + $shippingCost + $deliveryCost + $taxAmount;
+        $total = $subtotal - $promoDiscount + $shippingCost + $deliveryCost + $taxAmount;
 
 
-        return view('ecom.checkout')->with(compact('cartItems', 'subtotal', 'shippingCost', 'deliveryCost', 'taxAmount', 'total', 'cartCount', 'estoreSettings', 'hasChanges'));
+        return view('ecom.checkout')->with(compact(
+            'cartItems',
+            'subtotal',
+            'shippingCost',
+            'deliveryCost',
+            'taxAmount',
+            'total',
+            'cartCount',
+            'estoreSettings',
+            'hasChanges',
+            'appliedPromoCode',
+            'promoDiscount'
+        ));
     }
 
     // Process checkout
@@ -770,7 +826,6 @@ class ProductController extends Controller
         ]);
 
         $is_pickup = $request->order_method ?? 0;
-
         $carts = EstoreCart::where('user_id', auth()->id())->with(['product.otherCharges', 'warehouseProduct'])->get();
 
         if ($carts->isEmpty()) {
@@ -779,26 +834,25 @@ class ProductController extends Controller
 
         $estoreSettings = EstoreSetting::first();
 
-        // Revalidate price & stock just before order placement
         $hasBlockingStockIssue = false;
         $recalculatedSubtotal = 0;
+        $cartItems = [];
+
         foreach ($carts as $cart) {
             $warehouseProduct = $cart->warehouseProduct;
             $currentWarehousePrice = $warehouseProduct?->price ?? 0;
             $availableQty = $warehouseProduct?->quantity ?? 0;
 
-            // Update price if changed (except free products)
             if (($cart->price ?? 0) != $currentWarehousePrice && !($cart->product?->is_free)) {
                 $cart->old_price = $cart->price;
                 $cart->price = $currentWarehousePrice;
                 $cart->save();
             }
 
-            // Stock validation
             if ($availableQty <= 0) {
                 $hasBlockingStockIssue = true;
                 $cart->rejected_reason = 'out_of_stock';
-                continue; // Skip subtotal contribution
+                continue;
             } elseif ($cart->quantity > $availableQty) {
                 $cart->quantity = $availableQty;
                 $cart->save();
@@ -806,14 +860,32 @@ class ProductController extends Controller
 
             $cart->other_charges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
             $unitPrice = $cart->price ?? ($currentWarehousePrice);
-            $recalculatedSubtotal += ($unitPrice * $cart->quantity) + ($cart->other_charges ?? 0);
+            $itemSubtotal = ($unitPrice * $cart->quantity) + ($cart->other_charges ?? 0);
+            $recalculatedSubtotal += $itemSubtotal;
+
+            $cartItems[] = [
+                'product_id' => $cart->product_id,
+                'subtotal' => $itemSubtotal,
+            ];
         }
+
         $subtotal = $recalculatedSubtotal;
         if ($subtotal <= 0 && $hasBlockingStockIssue) {
             return response()->json([
                 'status' => false,
                 'message' => 'Some items are out of stock. Please review your cart before proceeding.'
             ], 422);
+        }
+
+        // Apply promo code discount
+        $appliedPromoCode = session('applied_promo_code');
+        $promoDiscount = 0;
+
+        if ($appliedPromoCode && $subtotal > 0) {
+            $validation = PromoCodeService::validatePromoCode($appliedPromoCode, auth()->id(), $cartItems);
+            if ($validation['valid']) {
+                $promoDiscount = PromoCodeService::calculateDiscount($validation['promo_code'], $subtotal, $cartItems);
+            }
         }
 
         $shippingCost = $deliveryCost = $taxAmount = 0;
@@ -823,17 +895,16 @@ class ProductController extends Controller
                 $shippingCost = $estoreSettings->shipping_cost ?? 0;
                 $deliveryCost = $estoreSettings->delivery_cost ?? 0;
             }
-            $taxAmount = ($subtotal * ($estoreSettings->tax_percentage ?? 0)) / 100;
+            $taxAmount = (($subtotal - $promoDiscount) * ($estoreSettings->tax_percentage ?? 0)) / 100;
         }
 
-        $withAmount = $subtotal + $shippingCost + $deliveryCost + $taxAmount;
+        $withAmount = $subtotal - $promoDiscount + $shippingCost + $deliveryCost + $taxAmount;
         $creditCardFee = ($request->payment_type === 'credit')
             ? ($withAmount * ($estoreSettings->credit_card_percentage ?? 0)) / 100
             : 0;
 
         $totalAmount = $withAmount + $creditCardFee;
 
-        // Aggregate other charges safely
         $otherCharges = [];
         foreach ($carts as $cart) {
             if (!empty($cart->product?->otherCharges)) {
@@ -844,7 +915,6 @@ class ProductController extends Controller
             }
         }
 
-
         DB::beginTransaction();
 
         try {
@@ -852,7 +922,7 @@ class ProductController extends Controller
             if ($totalAmount > 0) {
                 Stripe::setApiKey(env('STRIPE_SECRET'));
                 $paymentIntent = PaymentIntent::create([
-                    'amount' => round($totalAmount * 100), // cents
+                    'amount' => round($totalAmount * 100),
                     'currency' => 'usd',
                     'payment_method' => $request->payment_method_id,
                     'payment_method_types' => ['card'],
@@ -869,7 +939,7 @@ class ProductController extends Controller
 
             $warehouseId = $carts->first()->warehouse_id ?? null;
             $wareHouse = WareHouse::find($warehouseId);
-            // Create order
+
             $order = EstoreOrder::create([
                 'warehouse_id' => $warehouseId,
                 'is_pickup' => $is_pickup,
@@ -894,14 +964,15 @@ class ProductController extends Controller
                 'status' => 'processing',
                 'warehouse_name' => $wareHouse->name ?? null,
                 'warehouse_address' => $wareHouse->address ?? null,
+                'promo_code' => $appliedPromoCode,
+                'promo_discount' => $promoDiscount,
             ]);
-
-
 
             foreach ($carts as $cart) {
                 $size = Size::find($cart->size_id);
                 $color = Color::find($cart->color_id);
                 $wareHouseProduct = WareHouse::find($cart->warehouse_id);
+
                 EstoreOrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $cart->product_id,
@@ -923,9 +994,7 @@ class ProductController extends Controller
                             'charge_amount' => $charge->charge_amount ?? 0,
                         ]) ?? []
                     ),
-
                     'total' => ((($cart->price ?? ($cart->warehouseProduct?->price ?? 0))) * $cart->quantity) + ($cart->other_charges ?? 0),
-
                 ]);
 
                 $warehouseProduct = WarehouseProduct::where('warehouse_id', $cart->warehouse_id)
@@ -935,16 +1004,12 @@ class ProductController extends Controller
 
                 if ($warehouseProduct) {
                     $warehouseProduct->decrement('quantity', $cart->quantity);
-
-
-                    // laravel log notify
                     \Log::info('Warehouse product stock updated', ['product_id' => $warehouseProduct->id, 'new_quantity' => $warehouseProduct->quantity]);
 
                     $wareHouseProductVariation = WarehouseProductVariation::where('warehouse_id', $cart->warehouse_id)
                         ->where('product_variation_id', $warehouseProduct->product_variation_id)
                         ->where('product_id', $cart->product_id)
                         ->first();
-                    //  dd($wareHouseProductVariation);
 
                     if ($wareHouseProductVariation) {
                         $newWarehouseQty = max(0, ($wareHouseProductVariation->warehouse_quantity ?? 0) - $cart->quantity);
@@ -955,22 +1020,6 @@ class ProductController extends Controller
                             'warehouse_product_variation_id' => $wareHouseProductVariation->id,
                             'new_quantity' => $newWarehouseQty
                         ]);
-
-                        // decrement quantity from ProductVariation (global) - guarded
-                        // $productVariationId = $wareHouseProductVariation->product_variation_id;
-                        // if ($productVariationId) {
-                        //     $productVariation = ProductVariation::find($productVariationId);
-                        //     if ($productVariation) {
-                        //         $newStockQty = max(0, ($productVariation->stock_quantity ?? 0) - $cart->quantity);
-                        //         $productVariation->stock_quantity = $newStockQty;
-                        //         $productVariation->updated_at = now();
-                        //         $productVariation->save();
-                        //         \Log::info('Product variation stock updated', [
-                        //             'product_variation_id' => $productVariation->id,
-                        //             'new_quantity' => $newStockQty
-                        //         ]);
-                        //     }
-                        // }
                     } else {
                         \Log::warning('WarehouseProductVariation not found for order item', [
                             'warehouse_id' => $cart->warehouse_id,
@@ -1003,6 +1052,9 @@ class ProductController extends Controller
 
             $checkoutUrl = route('e-store.order-success', $order->id);
             EstoreCart::where('user_id', auth()->id())->delete();
+
+            // Clear promo code from session
+            session()->forget(['applied_promo_code', 'promo_discount']);
 
             DB::commit();
 
@@ -1548,5 +1600,87 @@ class ProductController extends Controller
         });
 
         return response()->json($results);
+    }
+
+    // Apply promo code
+    public function applyPromoCode(Request $request)
+    {
+        if ($request->ajax()) {
+            $request->validate([
+                'promo_code' => 'required|string|max:255',
+            ]);
+
+            $isAuth = auth()->check();
+            $userSessionId = session()->getId();
+
+            $carts = $isAuth
+                ? EstoreCart::where('user_id', auth()->id())->with(['product.otherCharges', 'warehouseProduct'])->get()
+                : EstoreCart::where('session_id', $userSessionId)->with(['product.otherCharges', 'warehouseProduct'])->get();
+
+            if ($carts->isEmpty()) {
+                return response()->json(['status' => false, 'message' => 'Your cart is empty']);
+            }
+
+            // Build cart items array for validation
+            $cartItems = [];
+            $subtotal = 0;
+
+            foreach ($carts as $cart) {
+                $warehouseProduct = $cart->warehouseProduct;
+                $currentWarehousePrice = $warehouseProduct?->price ?? 0;
+                $availableQty = $warehouseProduct?->quantity ?? 0;
+
+                if ($availableQty > 0) {
+                    $otherCharges = $cart->product?->otherCharges?->sum('charge_amount') ?? 0;
+                    $itemSubtotal = (($cart->price ?? 0) * $cart->quantity) + $otherCharges;
+                    $subtotal += $itemSubtotal;
+
+                    $cartItems[] = [
+                        'product_id' => $cart->product_id,
+                        'subtotal' => $itemSubtotal,
+                    ];
+                }
+            }
+
+            // Validate promo code
+            $validation = PromoCodeService::validatePromoCode(
+                $request->promo_code,
+                $isAuth ? auth()->id() : null,
+                $cartItems
+            );
+
+            if (!$validation['valid']) {
+                return response()->json(['status' => false, 'message' => $validation['message']]);
+            }
+
+            $promoCode = $validation['promo_code'];
+            $discountAmount = PromoCodeService::calculateDiscount($promoCode, $subtotal, $cartItems);
+
+            // Store promo code in session
+            session(['applied_promo_code' => $request->promo_code]);
+            session(['promo_discount' => $discountAmount]);
+
+            return response()->json([
+                'status' => true,
+                'message' => $validation['message'],
+                'discount_amount' => $discountAmount,
+                'promo_code' => $request->promo_code,
+                'is_percentage' => $promoCode->is_percentage,
+                'discount_value' => $promoCode->discount_amount
+            ]);
+        }
+    }
+
+    // Remove promo code
+    public function removePromoCode(Request $request)
+    {
+        if ($request->ajax()) {
+            session()->forget(['applied_promo_code', 'promo_discount']);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Promo code removed successfully'
+            ]);
+        }
     }
 }

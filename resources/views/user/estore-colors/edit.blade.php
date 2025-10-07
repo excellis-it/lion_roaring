@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="name">Color Name</label>
+                                    <label for="name">Color Name *</label>
                                     <input type="text" name="color_name" id="name" class="form-control"
                                         value="{{ $color->color_name }}" required>
 

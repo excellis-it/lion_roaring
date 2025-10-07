@@ -170,6 +170,15 @@
                                         </li>
                                     </ul>
 
+                                    @if (isset($appliedPromoCode) && $appliedPromoCode && $promoDiscount > 0)
+                                        <ul class="text-success">
+                                            <li>Promo Discount ({{ $appliedPromoCode }})</li>
+                                            <li id="promo-discount-amount" data-value="{{ $promoDiscount }}">
+                                                -${{ number_format($promoDiscount, 2) }}
+                                            </li>
+                                        </ul>
+                                    @endif
+
                                     @if ($estoreSettings && $estoreSettings->shipping_cost > 0)
                                         <ul id="shipping-cost-row"
                                             style="{{ request('order_method') == 1 && $estoreSettings->is_pickup_available ? 'display: none;' : '' }}">
@@ -210,8 +219,7 @@
                                     <div class="total_payable">
                                         <div class="total_payable_l">Total Payable</div>
                                         <div class="total_payable_r" id="total-amount" data-base="{{ $total }}">
-                                            ${{ number_format($total, 2) }}
-                                        </div>
+                                            ${{ number_format($total, 2) }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -259,7 +267,6 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://js.stripe.com/v3/"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -275,6 +282,7 @@
             // Store base costs
             const costs = {
                 subtotal: {{ $subtotal }},
+                promoDiscount: {{ $promoDiscount ?? 0 }},
                 shipping: {{ $shippingCost }},
                 delivery: {{ $deliveryCost }},
                 tax: {{ $taxAmount }},
@@ -283,7 +291,7 @@
 
             function calculateTotal() {
                 const isPickup = document.querySelector(".order-method-radio:checked").value == "1";
-                let baseTotal = costs.subtotal + costs.tax;
+                let baseTotal = costs.subtotal - costs.promoDiscount + costs.tax;
 
                 if (!isPickup) {
                     baseTotal += costs.shipping + costs.delivery;

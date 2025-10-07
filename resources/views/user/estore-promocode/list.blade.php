@@ -27,6 +27,7 @@
                             <th>ID</th>
                             <th>Promo Code</th>
                             <th>Discount</th>
+                            <th>Scope</th>
                             <th>Start Date</th>
                             <th>End Date</th>
                             <th>Status</th>
@@ -35,11 +36,30 @@
                     </thead>
                     <tbody>
                         @foreach ($promoCodes as $key => $promoCode)
+                            @php
+                                $scopeMap = [
+                                    'all' => 'All orders',
+                                    'all_users' => 'All users',
+                                    'selected_users' => 'Selected users',
+                                    'all_products' => 'All products',
+                                    'selected_products' => 'Selected products',
+                                ];
+                                $scopeLabel = $scopeMap[$promoCode->scope_type] ?? 'All orders';
+                            @endphp
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $promoCode->code }}</td>
                                 <td>{{ $promoCode->discount_amount }} <span>
-                                        ({{ $promoCode->is_percentage ? '%' : 'Flat' }})</span></td>
+                                        ({{ $promoCode->is_percentage ? '%' : 'Flat' }})
+                                    </span></td>
+                                <td>
+                                    {{ $scopeLabel }}
+                                    @if ($promoCode->scope_type === 'selected_users')
+                                        <br><small>{{ count($promoCode->user_ids ?? []) }} user(s)</small>
+                                    @elseif ($promoCode->scope_type === 'selected_products')
+                                        <br><small>{{ count($promoCode->product_ids ?? []) }} product(s)</small>
+                                    @endif
+                                </td>
                                 <td>{{ \Carbon\Carbon::parse($promoCode->start_date)->format('d-m-Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($promoCode->end_date)->format('d-m-Y') }}</td>
                                 <td>{{ $promoCode->status == 1 ? 'Active' : 'Inactive' }}</td>
@@ -69,7 +89,7 @@
         $(document).on('click', '#delete', function(e) {
             swal({
                     title: "Are you sure?",
-                    text: "To delete this file.",
+                    text: "To delete this Promo code.",
                     type: "warning",
                     confirmButtonText: "Yes",
                     showCancelButton: true

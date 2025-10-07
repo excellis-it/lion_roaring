@@ -329,6 +329,8 @@ white-space: nowrap;
     animation: fadeInLeft 0.5s both 1.5s;
 }
 
+
+
 .slide .slide__content--headings h5 {
     margin: 10px 0;
 }
@@ -3734,7 +3736,7 @@ content: none !important;
   top: 15px;
 }
 .other-information .edit-profile a{
-    background-color: var(--main-color);    
+    background-color: var(--main-color);
     padding: 6px 9px;
     border-radius: 40px;
     color: var(--white-color);
@@ -4144,7 +4146,7 @@ content: none !important;
 
 .dropdown-item:focus,
 .dropdown-item:hover {
-  background-color: var(--main-color) !important; 
+  background-color: var(--main-color) !important;
   color: var(--white-color) !important;
 }
 

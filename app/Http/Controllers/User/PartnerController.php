@@ -516,9 +516,12 @@ class PartnerController extends Controller
 
             if ($query) {
                 $partners->where(function ($q) use ($query) {
-                    $q->where('email', 'LIKE', "%{$query}%")
-                        ->orWhere('name', 'LIKE', "%{$query}%")
-                        ->orWhere('phone', 'LIKE', "%{$query}%");
+                    $q->where('id', 'like', "%{$query}%")
+                        ->orWhereRaw('CONCAT(COALESCE(first_name, ""), " ", COALESCE(middle_name, ""), " ", COALESCE(last_name, "")) LIKE ?', ["%{$query}%"])
+                        ->orWhere('email', 'like', "%{$query}%")
+                        ->orWhere('phone', 'like', "%{$query}%")
+                        //  ->orWhere('address', 'like', "%{$query}%")
+                        ->orWhere('user_name', 'like', "%{$query}%");
                 });
             }
 

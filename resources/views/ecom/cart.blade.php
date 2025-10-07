@@ -73,9 +73,9 @@
                                                     <h4>{{ $item->product->name ?? '' }}</h4>
                                                     <h6>SKU: {{ $item->warehouseProduct->sku ?? '' }}</h6>
                                                     <!-- <h6>{{ $item->size ? 'Size: ' . $item->size?->size ?? '' : '' }}
-                                                        &nbsp;&nbsp;
-                                                        {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
-                                                    </h6> -->
+                                                            &nbsp;&nbsp;
+                                                            {{ $item->color ? 'Color: ' . $item->color?->color_name ?? '' : '' }}
+                                                        </h6> -->
                                                     {{-- <span class="">{!! \Illuminate\Support\Str::limit($item->product->description, 50) !!}</span> --}}
 
                                                     <ul class="wl_price mb-1">
@@ -184,6 +184,40 @@
 
                     <div class="col-lg-4">
                         <div class="cart_right">
+                            <!-- Promo Code Section -->
+                            <div class="bill_details mb-3">
+                                <h4>Promo Code</h4>
+                                <div class="promo-code-section">
+                                    @if (isset($appliedPromoCode) && $appliedPromoCode)
+                                        <div class="applied-promo" id="applied-promo-section">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="text-success">
+                                                    <i class="fa-solid fa-check"></i> {{ $appliedPromoCode }}
+                                                </span>
+                                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                                    id="remove-promo-btn">
+                                                    Remove
+                                                </button>
+                                            </div>
+                                            <small class="text-success">Discount:
+                                                ${{ number_format($promoDiscount ?? 0, 2) }}</small>
+                                        </div>
+                                    @else
+                                        <div class="promo-input-section" id="promo-input-section">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="promo-code-input"
+                                                    placeholder="Enter promo code">
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                    id="apply-promo-btn">
+                                                    Apply
+                                                </button>
+                                            </div>
+                                            <div id="promo-message" class="mt-2"></div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
                             <div class="bill_details">
                                 <h4>Bill Details</h4>
                                 <div class="bill_text">
@@ -192,11 +226,17 @@
                                         <li id="cart-total">${{ number_format($total, 2) }}</li>
                                     </ul>
 
+                                    @if (isset($appliedPromoCode) && $appliedPromoCode && $promoDiscount > 0)
+                                        <ul class="text-success">
+                                            <li>Promo Discount ({{ $appliedPromoCode }})</li>
+                                            <li id="promo-discount">-${{ number_format($promoDiscount, 2) }}</li>
+                                        </ul>
+                                    @endif
 
                                     <div class="total_payable">
                                         <div class="total_payable_l">Total Payable</div>
                                         <div class="total_payable_r" id="final-total">
-                                            ${{ number_format($total, 2) }}</div>
+                                            ${{ number_format($total - ($promoDiscount ?? 0), 2) }}</div>
                                     </div>
                                 </div>
 
@@ -485,6 +525,71 @@
                         });
                     }
                 });
+            });
+
+            // Apply promo code
+            $('#apply-promo-btn').on('click', function() {
+                const promoCode = $('#promo-code-input').val().trim();
+
+                if (!promoCode) {
+                    $('#promo-message').html(
+                    '<small class="text-danger">Please enter a promo code</small>');
+                    return;
+                }
+
+                $('#apply-promo-btn').prop('disabled', true).text('Applying...');
+                $('#promo-message').empty();
+
+                $.ajax({
+                    url: '{{ route('e-store.apply-promo-code') }}',
+                    type: 'POST',
+                    data: {
+                        promo_code: promoCode,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.status) {
+                            // Reload page to update totals
+                            location.reload();
+                        } else {
+                            $('#promo-message').html('<small class="text-danger">' + response
+                                .message + '</small>');
+                        }
+                    },
+                    error: function() {
+                        $('#promo-message').html(
+                            '<small class="text-danger">Error applying promo code</small>');
+                    },
+                    complete: function() {
+                        $('#apply-promo-btn').prop('disabled', false).text('Apply');
+                    }
+                });
+            });
+
+            // Remove promo code
+            $('#remove-promo-btn').on('click', function() {
+                $.ajax({
+                    url: '{{ route('e-store.remove-promo-code') }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.status) {
+                            location.reload();
+                        }
+                    },
+                    error: function() {
+                        toastr.error('Error removing promo code');
+                    }
+                });
+            });
+
+            // Allow Enter key to apply promo code
+            $('#promo-code-input').on('keypress', function(e) {
+                if (e.which === 13) {
+                    $('#apply-promo-btn').click();
+                }
             });
 
             function updateCartCount() {

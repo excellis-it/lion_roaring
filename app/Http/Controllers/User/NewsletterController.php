@@ -35,8 +35,8 @@ class NewsletterController extends Controller
             ->where(function ($q) use ($query) {
                 $q->where('id', 'like', '%' . $query . '%')
                     ->orWhere('name', 'like', '%' . $query . '%')
-                    ->orWhere('email', 'like', '%' . $query . '%')
-                    ->orWhere('message', 'like', '%' . $query . '%');
+                    ->orWhere('email', 'like', '%' . $query . '%');
+                  //  ->orWhere('message', 'like', '%' . $query . '%');
             })
             ->orderBy($sort_by, $sort_type)
             ->paginate($perPage);

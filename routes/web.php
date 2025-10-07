@@ -478,7 +478,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         // product variations manage route
 
         Route::get('/{id}/variations', [ProductController::class, 'variations'])->name('products.variations');
-
+        Route::get('/{id}/product-stocks', [ProductController::class, 'variations'])->name('products.simple.stocks');
 
 
         Route::get('/product-delete/{id}', [ProductController::class, 'delete'])->name('products.delete');
@@ -528,6 +528,12 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::post('/orders/{order}/refund', [EstoreCmsController::class, 'refund'])->name('user.store-orders.refund');
 
 
+    // products review routes
+    Route::prefix('store-products')->name('user.store-products.')->group(function () {
+        Route::get('/{product}/reviews', [EstoreCmsController::class, 'productReviews'])->name('reviews');
+        Route::patch('/{product}/reviews/{review}/approve', [EstoreCmsController::class, 'approveProductReview'])->name('reviews.approve');
+        Route::delete('/{product}/reviews/{review}', [EstoreCmsController::class, 'deleteProductReview'])->name('reviews.delete');
+    });
 
     // Reports routes
     Route::get('/store-orders/reports', [EstoreCmsController::class, 'reportsIndex'])->name('user.store-orders.reports');
@@ -748,6 +754,12 @@ Route::prefix('e-store')->group(function () {
     Route::get('/estore-cart', [EstoreProductController::class, 'cart'])->name('e-store.cart');
     Route::get('/estore-checkout', [EstoreProductController::class, 'checkout'])->name('e-store.checkout');
 
+
+    // e-store.apply-promo-code
+    Route::post('/apply-promo-code', [EstoreProductController::class, 'applyPromoCode'])->name('e-store.apply-promo-code');
+    // e-store.remove-promo-code
+    Route::post('/remove-promo-code', [EstoreProductController::class, 'removePromoCode'])->name('e-store.remove-promo-code');
+
     Route::post('/process-checkout', [EstoreProductController::class, 'processCheckout'])->name('e-store.process-checkout');
     Route::get('/payment-success', [EstoreProductController::class, 'paymentSuccess'])->name('e-store.payment-success');
     Route::get('/payment-cancelled', [EstoreProductController::class, 'paymentCancelled'])->name('e-store.payment-cancelled');
@@ -762,7 +774,7 @@ Route::prefix('e-store')->group(function () {
     Route::get('/estore-change-password', [HomeController::class, 'changePassword'])->name('e-store.change-password')->middleware('user');
     Route::post('/estore-update-password', [HomeController::class, 'passwordUpdate'])->name('e-store.password.update')->middleware('user');
     // order tracking page
-    Route::get('/estore-track-order', [HomeController::class, 'orderTracking'])->name('e-store.order-tracking');
+    Route::get('/estore_track-order', [HomeController::class, 'orderTracking'])->name('e-store.order-tracking');
     Route::post('/estore-track-order-id', [HomeController::class, 'trackOrder'])->name('e-store.track-order');
 
 

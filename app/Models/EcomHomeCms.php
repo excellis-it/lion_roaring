@@ -40,6 +40,11 @@ class EcomHomeCms extends Model
         'about_section_text_two_content',
         'about_section_text_three_title',
         'about_section_text_three_content',
+        'shop_now_title',
+        'shop_now_description',
+        'shop_now_button_text',
+        'shop_now_button_link',
+        'shop_now_image',
     ];
 
     protected $casts = [

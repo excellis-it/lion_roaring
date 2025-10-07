@@ -21,6 +21,8 @@ class EstoreCart extends Model
         'old_price',
         'session_id',
         'meta',
+        'promo_code',
+        'promo_discount',
     ];
 
     protected $casts = [

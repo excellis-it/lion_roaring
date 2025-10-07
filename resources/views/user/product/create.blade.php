@@ -25,7 +25,8 @@
             <!--  Row 1 -->
             <div class="row mb-4">
                 <div class="col-lg-12">
-                    <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+                    <form id="productCreateForm" action="{{ route('products.store') }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
 
 
@@ -74,22 +75,39 @@
                                                         &$renderCategoryOptions,
                                                     ) {
                                                         foreach ($nodes as $node) {
+                                                            // only render active categories
+                                                            if (!$node->status) {
+                                                                continue;
+                                                            }
+
                                                             echo '<option value="' .
                                                                 $node->id .
                                                                 '"' .
-                                                                (old('parent_id') == $node->id ? ' selected' : '') .
+                                                                (old('category_id') == $node->id ? ' selected' : '') .
                                                                 '>' .
                                                                 e($prefix . $node->name) .
                                                                 '</option>';
-                                                            if (!empty($node->children) && $node->children->count()) {
+
+                                                            // only recurse into active children
+                                                            $children = $node->children->filter(function ($c) {
+                                                                return $c->status;
+                                                            });
+
+                                                            if ($children->count()) {
                                                                 $renderCategoryOptions(
-                                                                    $node->children,
+                                                                    $children,
                                                                     $prefix . $node->name . '->',
                                                                 );
                                                             }
                                                         }
                                                     };
-                                                    $topLevelCategories = $categories->whereNull('parent_id');
+
+                                                    $topLevelCategories = $categories
+                                                        ->whereNull('parent_id')
+                                                        ->filter(function ($c) {
+                                                            return $c->status;
+                                                        });
+
                                                     $renderCategoryOptions($topLevelCategories);
                                                 @endphp
                                             </select>
@@ -117,9 +135,21 @@
                                         <div class="box_label">
                                             <label for="image"> Product Featured Image*</label>
                                             <input type="file" name="image" id="image" class="form-control"
-                                                value="{{ old('image') }}">
+                                                value="{{ old('image') }}" accept="image/*">
                                             @if ($errors->has('image'))
                                                 <span class="error">{{ $errors->first('image') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    {{-- image --}}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="box_label">
+                                            <label for="image"> Product Banner Image</label>
+                                            <input type="file" name="background_image" id="background_image"
+                                                class="form-control" value="{{ old('background_image') }}">
+                                            @if ($errors->has('background_image'))
+                                                <span class="error">{{ $errors->first('background_image') }}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -127,7 +157,7 @@
                                     {{-- short_description --}}
                                     <div class="col-md-12 mb-2">
                                         <div class="box_label">
-                                            <label for="short_description"> Product Short Description*</label>
+                                            <label for="short_description"> Product Short Description</label>
                                             <input type="text" name="short_description" id="short_description"
                                                 class="form-control" value="{{ old('short_description') }}">
                                             @if ($errors->has('short_description'))
@@ -159,15 +189,17 @@
                                     </div>
 
                                     {{-- feature_product --}}
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label for="feature_product"> Feature Product</label>
                                             <select name="feature_product" id="feature_product" class="form-control">
-                                                <option value="">Select Feature Product</option>
-                                                <option value="1" {{ old('feature_product') == 1 ? 'selected' : '' }}>
+
+                                                <option value="1"
+                                                    {{ old('feature_product') == 1 ? 'selected' : '' }}>
                                                     Yes
                                                 </option>
-                                                <option value="0" {{ old('feature_product') == 0 ? 'selected' : '' }}>
+                                                <option value="0"
+                                                    {{ old('feature_product') == 0 ? 'selected' : '' }}>
                                                     No
                                                 </option>
                                             </select>
@@ -176,8 +208,32 @@
                                             @endif
                                         </div>
                                     </div>
+
+
+                                    {{-- is_new_product --}}
+                                    <div class="col-md-4 mb-2">
+                                        <div class="box_label">
+                                            <label for="is_new_product"> Is New Product</label>
+                                            <select name="is_new_product" id="is_new_product" class="form-control">
+
+                                                <option value="1" {{ old('is_new_product') == 1 ? 'selected' : '' }}>
+                                                    Yes
+                                                </option>
+                                                <option value="0" {{ old('is_new_product') == 0 ? 'selected' : '' }}>
+                                                    No
+                                                </option>
+                                            </select>
+                                            @if ($errors->has('is_new_product'))
+                                                <span class="error">{{ $errors->first('is_new_product') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 mb-2">
+                                    </div>
+
                                     {{-- is_free --}}
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-2 mb-2">
                                         <div class="box_label">
                                             <label for="is_free" class=""> Free Product</label>
                                             <div class="form-check form-switch mt-3">
@@ -195,11 +251,11 @@
                                         <div class="box_label">
                                             <label for="status"> Status</label>
                                             <select name="status" id="status" class="form-control">
-                                                <option value="">Select Status</option>
-                                                <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Active
-                                                </option>
-                                                <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Inactive
-                                                </option>
+
+                                                <option value="1" {{ old('status', '1') == '1' ? 'selected' : '' }}>
+                                                    Active</option>
+                                                <option value="0" {{ old('status', '1') == '0' ? 'selected' : '' }}>
+                                                    Inactive</option>
                                             </select>
                                             @if ($errors->has('status'))
                                                 <span class="error">{{ $errors->first('status') }}</span>
@@ -213,7 +269,7 @@
                                             (Drag and
                                             drop
                                             atleast 1
-                                            images)<span style="color:red">*<span></label>
+                                            images)*</label>
                                         <input type="file" class="form-control dropzone" id="image-upload"
                                             name="images[]" multiple>
                                         @if ($errors->has('images.*'))
@@ -269,7 +325,7 @@
 
                                             <div class="col-md-3 mb-2">
                                                 <div class="box_label">
-                                                    <label for="sku"> Product SKU</label>
+                                                    <label for="sku"> Product SKU*</label>
                                                     <input type="text" name="sku" id="sku"
                                                         class="form-control" value="{{ old('sku') }}">
                                                     @if ($errors->has('sku'))
@@ -280,8 +336,8 @@
 
                                             <div class="col-md-3 mb-2">
                                                 <div class="box_label">
-                                                    <label for="price"> Price</label>
-                                                    <input type="text" name="price" id="price"
+                                                    <label for="price"> Price*</label>
+                                                    <input type="number" step="any" name="price" id="price"
                                                         class="form-control" value="{{ old('price') }}">
                                                     @if ($errors->has('price'))
                                                         <span class="error">{{ $errors->first('price') }}</span>
@@ -292,8 +348,9 @@
                                             <div class="col-md-3 mb-2">
                                                 <div class="box_label">
                                                     <label for="sale_price"> Sale Price</label>
-                                                    <input type="text" name="sale_price" id="sale_price"
-                                                        class="form-control" value="{{ old('sale_price') }}">
+                                                    <input type="number" step="any" name="sale_price"
+                                                        id="sale_price" class="form-control"
+                                                        value="{{ old('sale_price') }}" min="0.00">
                                                     @if ($errors->has('sale_price'))
                                                         <span class="error">{{ $errors->first('sale_price') }}</span>
                                                     @endif
@@ -302,7 +359,7 @@
 
                                             <div class="col-md-3 mb-2">
                                                 <div class="box_label">
-                                                    <label for="quantity"> Stock Quantity</label>
+                                                    <label for="quantity"> Stock Quantity*</label>
                                                     <input type="number" name="quantity" id="quantity"
                                                         class="form-control" value="{{ old('quantity') }}">
                                                     @if ($errors->has('quantity'))
@@ -392,7 +449,8 @@
                                                         <div class="mb-2">
                                                             <input step="any" type="number"
                                                                 name="other_charges[0][charge_amount]"
-                                                                class="form-control" placeholder="Charge Amount">
+                                                                class="form-control" placeholder="Charge Amount"
+                                                                min="0.00">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -457,9 +515,9 @@
                 function togglePriceFields() {
                     const isFree = $('#is_free').is(':checked');
                     if (isFree) {
-                        $('#price').prop('disabled', true).val('0');
+                        $('#price').prop('readonly', true).val('0');
                     } else {
-                        $('#price').prop('disabled', false);
+                        $('#price').prop('readonly', false);
                     }
                 }
                 $('#is_free').on('change', togglePriceFields);
@@ -503,7 +561,7 @@
                         </div>
                         <div class="col-md-4 mb-2">
                             <div class="box_label">
-                                <input step="any" type="number" name="other_charges[${otherChargeIndex}][charge_amount]" class="form-control" placeholder="Charge Amount">
+                                <input step="any" type="number" name="other_charges[${otherChargeIndex}][charge_amount]" class="form-control" placeholder="Charge Amount" min="0.00">
                             </div>
                         </div>
                         <div class="col-md-4 mb-2">
@@ -543,5 +601,155 @@
                     variableProductSection.style.display = 'block';
                 });
             });
+        </script>
+        <script>
+            // productCreateForm validate before submit
+            (function() {
+                function addClientError($el, message) {
+                    $el.addClass('is-invalid');
+                    // if there's already a client error next to element update it, otherwise append
+                    if ($el.next('.client-error').length) {
+                        $el.next('.client-error').text(message);
+                    } else {
+                        $el.after('<span class="error client-error" style="color:red;display:block;margin-top:4px;">' +
+                            message + '</span>');
+                    }
+                }
+
+                function clearClientErrors($form) {
+                    $form.find('.client-error').remove();
+                    $form.find('.is-invalid').removeClass('is-invalid');
+                }
+
+                $('#productCreateForm').on('submit', function(e) {
+                    var $form = $(this);
+                    clearClientErrors($form);
+
+                    var errors = [];
+
+                    // Helpers
+                    var val = function(selector) {
+                        return $.trim($(selector).val() || '');
+                    };
+
+                    // Basic required fields
+                    if (!val('#name')) {
+                        addClientError($('#name'), 'Product name is required.');
+                        errors.push('#name');
+                    }
+
+                    if (!val('#category_id')) {
+                        addClientError($('#category_id'), 'Category is required.');
+                        errors.push('#category_id');
+                    }
+
+                    if (!val('#slug')) {
+                        addClientError($('#slug'), 'Product slug is required.');
+                        errors.push('#slug');
+                    }
+
+                    if (!$('#image').val()) {
+                        addClientError($('#image'), 'Image is required.');
+                        errors.push('#image');
+                    }
+
+                    // if (!val('#short_description')) {
+                    //     addClientError($('#short_description'), 'Short description is required.');
+                    //     errors.push('#short_description');
+                    // }
+
+                    // For CKEditor fields we try to read textarea value (works in most setups).
+                    if (!val('#description')) {
+                        addClientError($('#description'), 'Description is required.');
+                        errors.push('#description');
+                    }
+
+                    if (!val('#specification')) {
+                        addClientError($('#specification'), 'Specification is required.');
+                        errors.push('#specification');
+                    }
+
+                    // Image gallery at least one file
+                    var galleryInput = $('#image-upload')[0];
+                    if (!galleryInput || (galleryInput.files && galleryInput.files.length === 0)) {
+                        // target visible input element
+                        addClientError($('#image-upload'), 'Please upload at least one gallery image.');
+                        errors.push('#image-upload');
+                    }
+
+                    // Product type specific checks
+                    var productType = $('input[name="product_type"]:checked').val() || 'simple';
+                    if (productType === 'simple') {
+                        if (!val('#sku')) {
+                            addClientError($('#sku'), 'SKU is required for simple products.');
+                            errors.push('#sku');
+                        }
+
+                        // Product SKU field should not accept special characters as first character.
+                        var skuValue = val('#sku');
+                        if (skuValue && !/^[a-zA-Z0-9]/.test(skuValue)) {
+                            addClientError($('#sku'), 'SKU must start with a letter or number.');
+                            errors.push('#sku');
+                        }
+
+                        // price is optional if marked free; otherwise required
+                        var isFree = $('#is_free').is(':checked');
+                        if (!isFree && (val('#price') === '' || isNaN(Number(val('#price'))) || Number(val(
+                                '#price')) < 0)) {
+                            addClientError($('#price'), 'Valid price is required (or mark product as Free).');
+                            errors.push('#price');
+                        }
+
+                        // if set sale_price then should not negetive and not greater than price
+                        var salePriceVal = val('#sale_price');
+                        var priceVal = val('#price');
+                        if (salePriceVal) {
+                            if (isNaN(Number(salePriceVal)) || Number(salePriceVal) < 0) {
+                                addClientError($('#sale_price'), 'Sale Price cannot be negative.');
+                                errors.push('#sale_price');
+                            } else if (priceVal && !isNaN(Number(priceVal)) && Number(salePriceVal) > Number(
+                                    priceVal)) {
+                                addClientError($('#sale_price'), 'Sale Price cannot be greater than Price.');
+                                errors.push('#sale_price');
+                            }
+                        }
+
+
+                        if (val('#quantity') === '' || isNaN(Number(val('#quantity'))) || parseInt(val(
+                                '#quantity')) < 0) {
+                            addClientError($('#quantity'), 'Valid stock quantity is required.');
+                            errors.push('#quantity');
+                        }
+                    } else if (productType === 'variable') {
+                        // sizes select may be enhanced by Choices.js; check underlying select value
+                        var sizesVal = $('#global-size-select').val() || [];
+                        if (!Array.isArray(sizesVal)) {
+                            sizesVal = [sizesVal];
+                        }
+                        if (sizesVal.length === 0 || (sizesVal.length === 1 && sizesVal[0] === '')) {
+                            addClientError($('#global-size-select'),
+                                'Please select at least one size for variable products.');
+                            errors.push('#global-size-select');
+                        }
+                    }
+
+                    // If errors found, prevent submit and focus first invalid field
+                    if (errors.length) {
+                        e.preventDefault();
+                        var firstSel = errors[0];
+                        var $first = $(firstSel);
+                        if ($first.length) {
+                            $('html, body').animate({
+                                scrollTop: $first.offset().top - 100
+                            }, 300, function() {
+                                $first.focus();
+                            });
+                        }
+                        return false;
+                    }
+
+                    // No client-side errors -> allow submit
+                });
+            })();
         </script>
     @endpush

@@ -11,7 +11,8 @@
             <!--  Row 1 -->
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('user.store-cms.home.update') }}" method="POST" enctype="multipart/form-data">
+                    <form id="home-cms-form" action="{{ route('user.store-cms.home.update') }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="id" value="{{ isset($cms->id) ? $cms->id : '' }}">
                         <div class="row">
@@ -45,30 +46,9 @@
                                     @endif
                                 </div>
                             </div>
-                            {{-- product_category_title --}}
-                            <div class="col-md-6 mb-2" hidden>
-                                <div class="box_label">
-                                    <label for="product_category_title"> Product Category Title*</label>
-                                    <input type="text" name="product_category_title" id="product_category_title"
-                                        class="form-control"
-                                        value="{{ isset($cms->product_category_title) ? $cms->product_category_title : old('product_category_title') }}">
-                                    @if ($errors->has('product_category_title'))
-                                        <span class="error">{{ $errors->first('product_category_title') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                            {{-- product_category_subtitle --}}
-                            <div class="col-md-6 mb-2" hidden>
-                                <div class="box_label">
-                                    <label for="product_category_subtitle"> Product Category Subtitle*</label>
-                                    <input type="text" name="product_category_subtitle" id="product_category_subtitle"
-                                        class="form-control"
-                                        value="{{ isset($cms->product_category_subtitle) ? $cms->product_category_subtitle : old('product_category_subtitle') }}">
-                                    @if ($errors->has('product_category_subtitle'))
-                                        <span class="error">{{ $errors->first('product_category_subtitle') }}</span>
-                                    @endif
-                                </div>
-                            </div>
+
+
+
 
 
                             {{-- new_arrival_title --}}
@@ -103,7 +83,8 @@
 
 
 
-                            <div class="accordion" id="accordion1">
+                            <div class="accordion " id="accordion1">
+
 
                                 {{-- Header Logo --}}
                                 <div class="accordion-item">
@@ -142,6 +123,59 @@
                                     </div>
                                 </div>
                                 {{-- Header Logo end --}}
+
+
+                                {{-- Product Category --}}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading_product_category">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapse_product_category" aria-expanded="true"
+                                            aria-controls="collapse_product_category">
+                                            <strong>Product Category Section</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse_product_category" class="accordion-collapse collapse"
+                                        aria-labelledby="heading_product_category" data-bs-parent="#accordion1">
+                                        <div class="accordion-body">
+
+                                            <div class="row">
+
+
+                                                {{-- product_category_title --}}
+                                                <div class="col-md-6 mb-2">
+                                                    <div class="box_label">
+                                                        <label for="product_category_title"> Product Category Title*</label>
+                                                        <input type="text" name="product_category_title"
+                                                            id="product_category_title" class="form-control"
+                                                            value="{{ isset($cms->product_category_title) ? $cms->product_category_title : old('product_category_title') }}">
+                                                        @if ($errors->has('product_category_title'))
+                                                            <span
+                                                                class="error">{{ $errors->first('product_category_title') }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                {{-- product_category_subtitle --}}
+                                                <div class="col-md-6 mb-2">
+                                                    <div class="box_label">
+                                                        <label for="product_category_subtitle"> Product Category
+                                                            Subtitle*</label>
+                                                        <input type="text" name="product_category_subtitle"
+                                                            id="product_category_subtitle" class="form-control"
+                                                            value="{{ isset($cms->product_category_subtitle) ? $cms->product_category_subtitle : old('product_category_subtitle') }}">
+                                                        @if ($errors->has('product_category_subtitle'))
+                                                            <span
+                                                                class="error">{{ $errors->first('product_category_subtitle') }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- Product Category end --}}
+
 
                                 {{-- Top banner accordion start --}}
                                 <div class="accordion-item">
@@ -335,33 +369,89 @@
                                         aria-labelledby="headingShopNow" data-bs-parent="#accordion1">
                                         <div class="accordion-body">
                                             <div class="row">
-                                                {{-- new_arrival_title --}}
+                                                {{-- shop_now_title --}}
                                                 <div class="col-md-6 mb-2">
                                                     <div class="box_label">
-                                                        <label for="new_arrival_title"> Shop Now Section
+                                                        <label for="shop_now_title"> Shop Now Section
                                                             Title*</label>
-                                                        <input type="text" name="new_arrival_title"
-                                                            id="new_arrival_title" class="form-control"
-                                                            value="{{ isset($cms->new_arrival_title) ? $cms->new_arrival_title : old('new_arrival_title') }}">
-                                                        @if ($errors->has('new_arrival_title'))
+                                                        <input type="text" name="shop_now_title" id="shop_now_title"
+                                                            class="form-control"
+                                                            value="{{ isset($cms->shop_now_title) ? $cms->shop_now_title : old('shop_now_title') }}">
+                                                        @if ($errors->has('shop_now_title'))
                                                             <span
-                                                                class="error">{{ $errors->first('new_arrival_title') }}</span>
+                                                                class="error">{{ $errors->first('shop_now_title') }}</span>
                                                         @endif
                                                     </div>
                                                 </div>
-                                                {{-- new_arrival_subtitle --}}
+                                                {{-- shop_now_description --}}
                                                 <div class="col-md-6 mb-2">
                                                     <div class="box_label">
-                                                        <label for="new_arrival_subtitle"> Shop Now Section
-                                                            Subtitle*</label>
-                                                        <input type="text" name="new_arrival_subtitle"
-                                                            id="new_arrival_subtitle" class="form-control"
-                                                            value="{{ isset($cms->new_arrival_subtitle) ? $cms->new_arrival_subtitle : old('new_arrival_subtitle') }}">
-                                                        @if ($errors->has('new_arrival_subtitle'))
+                                                        <label for="shop_now_description"> Shop Now Section
+                                                            Description*</label>
+                                                        <input type="text" name="shop_now_description"
+                                                            id="shop_now_description" class="form-control"
+                                                            value="{{ isset($cms->shop_now_description) ? $cms->shop_now_description : old('shop_now_description') }}">
+                                                        @if ($errors->has('shop_now_description'))
                                                             <span
-                                                                class="error">{{ $errors->first('new_arrival_subtitle') }}</span>
+                                                                class="error">{{ $errors->first('shop_now_description') }}</span>
                                                         @endif
                                                     </div>
+                                                </div>
+
+
+                                                {{-- shop_now_button_text --}}
+                                                <div class="col-md-3 mb-2">
+                                                    <div class="box_label">
+                                                        <label for="shop_now_button_text"> Shop Now Button
+                                                            Text*</label>
+                                                        <input type="text" name="shop_now_button_text"
+                                                            id="shop_now_button_text" class="form-control"
+                                                            value="{{ isset($cms->shop_now_button_text) ? $cms->shop_now_button_text : old('shop_now_button_text') }}">
+                                                        @if ($errors->has('shop_now_button_text'))
+                                                            <span
+                                                                class="error">{{ $errors->first('shop_now_button_text') }}</span>
+                                                        @endif
+                                                    </div>
+
+                                                </div>
+                                                {{-- shop_now_button_link --}}
+                                                <div class="col-md-3 mb-2">
+                                                    <div class="box_label">
+                                                        <label for="shop_now_button_link"> Shop Now Button
+                                                            Link*</label>
+                                                        <input type="text" name="shop_now_button_link"
+                                                            id="shop_now_button_link" class="form-control"
+                                                            value="{{ isset($cms->shop_now_button_link) ? $cms->shop_now_button_link : old('shop_now_button_link') }}">
+                                                        @if ($errors->has('shop_now_button_link'))
+                                                            <span
+                                                                class="error">{{ $errors->first('shop_now_button_link') }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+
+                                                {{-- shop_now_image --}}
+                                                <div class="col-md-3 mb-2">
+                                                    <div class="box_label">
+                                                        <label for="shop_now_image"> Shop Now Image*</label>
+                                                        <input type="file" name="shop_now_image" id="shop_now_image"
+                                                            class="form-control"
+                                                            value="{{ isset($cms->shop_now_image) ? $cms->shop_now_image : old('shop_now_image') }}"
+                                                            accept="image/*">
+                                                        @if ($errors->has('shop_now_image'))
+                                                            <span
+                                                                class="error">{{ $errors->first('shop_now_image') }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2 mb-4">
+                                                    @if (isset($cms->shop_now_image) && $cms->shop_now_image)
+                                                        <div class="mt-2">
+                                                            <img src="{{ Storage::url($cms->shop_now_image) }}"
+                                                                alt="Shop Now Image" class="img-thumbnail"
+                                                                style="width: 150px; height: 150px; object-fit: contain;">
+                                                        </div>
+                                                    @endif
                                                 </div>
 
                                             </div>
@@ -759,17 +849,21 @@
                             </div>
                         </div>
                 </div>
-            @endsection
 
-            @push('scripts')
-                <script>
-                    $(document).ready(function() {
-                        let slideIndex = {{ count($sliderData ?? []) }};
+            </div>
+        </div>
+    </div>
+@endsection
 
-                        // Add new slide
-                        $('#add-slide').click(function() {
-                            slideIndex++;
-                            const newSlide = `
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            let slideIndex = {{ count($sliderData ?? []) }};
+
+            // Add new slide
+            $('#add-slide').click(function() {
+                slideIndex++;
+                const newSlide = `
                     <div class="slider-item mb-4 p-0 border rounded">
                         <div class="row">
                             <div class="col-md-2">
@@ -813,28 +907,28 @@
                         </div>
                     </div>
                 `;
-                            $('#slider-container').append(newSlide);
-                        });
+                $('#slider-container').append(newSlide);
+            });
 
-                        // Remove slide
-                        $(document).on('click', '.remove-slide-second', function() {
-                            if ($('.slider-item').length > 1) {
-                                $(this).closest('.slider-item').remove();
-                            } else {
-                                alert('At least one slide is required.');
-                            }
-                        });
-                    });
-                </script>
+            // Remove slide
+            $(document).on('click', '.remove-slide-second', function() {
+                if ($('.slider-item').length > 1) {
+                    $(this).closest('.slider-item').remove();
+                } else {
+                    alert('At least one slide is required.');
+                }
+            });
+        });
+    </script>
 
-                <script>
-                    $(document).ready(function() {
-                        let secondSlideIndex = {{ count($sliderDataSecond ?? []) }};
+    <script>
+        $(document).ready(function() {
+            let secondSlideIndex = {{ count($sliderDataSecond ?? []) }};
 
-                        // Add new slide
-                        $('#add-slide-second').click(function() {
-                            secondSlideIndex++;
-                            const newSlide = `
+            // Add new slide
+            $('#add-slide-second').click(function() {
+                secondSlideIndex++;
+                const newSlide = `
                     <div class="slider-item mb-4 p-0 border rounded">
                         <div class="row">
                             <div class="col-md-2">
@@ -878,17 +972,170 @@
                         </div>
                     </div>
                 `;
-                            $('#slider-container-second').append(newSlide);
-                        });
+                $('#slider-container-second').append(newSlide);
+            });
 
-                        // Remove slide
-                        $(document).on('click', '.remove-slide-second', function() {
-                            if ($('.slider-item-second').length > 1) {
-                                $(this).closest('.slider-item-second').remove();
-                            } else {
-                                alert('At least one slide is required.');
-                            }
+            // Remove slide
+            $(document).on('click', '.remove-slide-second', function() {
+                if ($('.slider-item-second').length > 1) {
+                    $(this).closest('.slider-item-second').remove();
+                } else {
+                    alert('At least one slide is required.');
+                }
+            });
+        });
+    </script>
+
+    <!-- Client-side validation for home-cms-form -->
+    <script>
+        (function() {
+            // Flags injected from server: whether images already exist
+            var existingHeaderLogo = {{ isset($cms->header_logo) && $cms->header_logo ? 1 : 0 }};
+            var existingShopNowImage = {{ isset($cms->shop_now_image) && $cms->shop_now_image ? 1 : 0 }};
+            var existingAboutImage = {{ isset($cms->about_section_image) && $cms->about_section_image ? 1 : 0 }};
+
+            function addClientError($el, message) {
+                $el.addClass('is-invalid');
+                if ($el.next('.client-error').length) {
+                    $el.next('.client-error').text(message);
+                } else {
+                    $el.after('<span class="error client-error" style="color:red;display:block;margin-top:4px;">' +
+                        message + '</span>');
+
+                    toastr.error(message);
+                }
+            }
+
+            function clearClientErrors($form) {
+                $form.find('.client-error').remove();
+                $form.find('.is-invalid').removeClass('is-invalid');
+            }
+
+            function val(selector) {
+                return $.trim($(selector).val() || '');
+            }
+
+            $('#home-cms-form').on('submit', function(e) {
+                var $form = $(this);
+                clearClientErrors($form);
+                var errors = [];
+
+                // Product Category Section
+                if ($('#product_category_title').length && !val('#product_category_title')) {
+                    addClientError($('#product_category_title'), 'Product category title is required.');
+                    errors.push('#product_category_title');
+                }
+                if ($('#product_category_subtitle').length && !val('#product_category_subtitle')) {
+                    addClientError($('#product_category_subtitle'), 'Product category subtitle is required.');
+                    errors.push('#product_category_subtitle');
+                }
+
+                // Featured Product
+                if ($('#featured_product_title').length && !val('#featured_product_title')) {
+                    addClientError($('#featured_product_title'), 'Featured product title is required.');
+                    errors.push('#featured_product_title');
+                }
+                if ($('#featured_product_subtitle').length && !val('#featured_product_subtitle')) {
+                    addClientError($('#featured_product_subtitle'), 'Featured product subtitle is required.');
+                    errors.push('#featured_product_subtitle');
+                }
+
+                // Shop Now Section
+                if ($('#shop_now_title').length && !val('#shop_now_title')) {
+                    addClientError($('#shop_now_title'), 'Shop Now title is required.');
+                    errors.push('#shop_now_title');
+                }
+                if ($('#shop_now_description').length && !val('#shop_now_description')) {
+                    addClientError($('#shop_now_description'), 'Shop Now description is required.');
+                    errors.push('#shop_now_description');
+                }
+                if ($('#shop_now_button_text').length && !val('#shop_now_button_text')) {
+                    addClientError($('#shop_now_button_text'), 'Shop Now button text is required.');
+                    errors.push('#shop_now_button_text');
+                }
+                if ($('#shop_now_button_link').length && !val('#shop_now_button_link')) {
+                    addClientError($('#shop_now_button_link'), 'Shop Now button link is required.');
+                    errors.push('#shop_now_button_link');
+                }
+
+                // Shop Now image required only if no existing image present
+                var shopNowInput = $('#shop_now_image')[0];
+                var shopNowHasFile = shopNowInput && shopNowInput.files && shopNowInput.files.length > 0;
+                if (!existingShopNowImage && !shopNowHasFile) {
+                    addClientError($('#shop_now_image'), 'Shop Now image is required (existing or new).');
+                    errors.push('#shop_now_image');
+                }
+
+                // Header logo required only if no existing
+                var headerInput = $('#header_logo')[0];
+                var headerHasFile = headerInput && headerInput.files && headerInput.files.length > 0;
+                if (!existingHeaderLogo && !headerHasFile) {
+                    addClientError($('#header_logo'), 'Header logo is required (existing or new).');
+                    errors.push('#header_logo');
+                }
+
+                // About section
+                if ($('#about_section_title').length && !val('#about_section_title')) {
+                    addClientError($('#about_section_title'), 'About section title is required.');
+                    errors.push('#about_section_title');
+                }
+                if ($('#about_section_text_one_content').length && !val('#about_section_text_one_content')) {
+                    addClientError($('#about_section_text_one_content'),
+                        'About section text one content is required.');
+                    errors.push('#about_section_text_one_content');
+                }
+                if ($('#about_section_text_two_content').length && !val('#about_section_text_two_content')) {
+                    addClientError($('#about_section_text_two_content'),
+                        'About section text two content is required.');
+                    errors.push('#about_section_text_two_content');
+                }
+                if ($('#about_section_text_three_content').length && !val(
+                        '#about_section_text_three_content')) {
+                    addClientError($('#about_section_text_three_content'),
+                        'About section text three content is required.');
+                    errors.push('#about_section_text_three_content');
+                }
+
+                var aboutInput = $('#about_section_image')[0];
+                var aboutHasFile = aboutInput && aboutInput.files && aboutInput.files.length > 0;
+                if (!existingAboutImage && !aboutHasFile) {
+                    addClientError($('#about_section_image'),
+                        'About section image is required (existing or new).');
+                    errors.push('#about_section_image');
+                }
+
+                // Slider validation - ensure at least one slide has a title or image
+                var validSlideFound = false;
+                $('#slider-container .slider-item').each(function() {
+                    var title = $(this).find('input[name="slider_titles[]"]').val() || '';
+                    var fileInput = $(this).find('input[name="slider_images[]"]')[0];
+                    var hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+                    if ($.trim(title) !== '' || hasFile) {
+                        validSlideFound = true;
+                        return false; // break
+                    }
+                });
+                if (!validSlideFound) {
+                    addClientError($('#slider-container'),
+                        'Please provide at least one slide with a title or image.');
+                    errors.push('#slider-container');
+                }
+
+                if (errors.length) {
+                    e.preventDefault();
+                    var firstSel = errors[0];
+                    var $first = $(firstSel);
+                    if ($first.length) {
+                        $('html, body').animate({
+                            scrollTop: $first.offset().top - 100
+                        }, 300, function() {
+                            $first.focus();
                         });
-                    });
-                </script>
-            @endpush
+                    }
+                    return false;
+                }
+                // no errors -> allow submit
+            });
+        })();
+    </script>
+@endpush

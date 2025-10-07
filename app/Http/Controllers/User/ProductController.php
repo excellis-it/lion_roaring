@@ -148,12 +148,13 @@ class ProductController extends Controller
             'category_id' => 'required|numeric|exists:categories,id',
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'short_description' => 'required|string',
+            // 'short_description' => 'required|string',
             'specification' => 'required|string',
             // 'price' => 'required|numeric',
             'feature_product' => 'required',
             'slug' => 'required|string|unique:products',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
 
@@ -172,7 +173,7 @@ class ProductController extends Controller
             'category_id.exists' => 'The selected category is invalid.',
             'name.required' => 'The product name field is required.',
             'description.required' => 'The description field is required.',
-            'short_description.required' => 'The short description field is required.',
+            // 'short_description.required' => 'The short description field is required.',
             'specification.required' => 'The specification field is required.',
             'feature_product.required' => 'The feature product field is required.',
             'slug.required' => 'The slug field is required.',
@@ -180,12 +181,22 @@ class ProductController extends Controller
             'image.required' => 'The featured image field is required.',
         ]);
 
+        if ($request->product_type == 'simple') {
+
+            // validate input of price, unique sku and quantity
+            $request->validate([
+                'price' => 'required|numeric|min:0',
+                'sku' => 'required|string|max:255|unique:products,sku',
+                'quantity' => 'required|integer|min:0',
+            ]);
+        }
+
         $product = new Product();
         $product->category_id = $request->category_id;
         $product->user_id = auth()->user()->id;
         $product->name = $request->name;
         $product->description = $request->description;
-        $product->short_description = $request->short_description;
+        $product->short_description = $request->short_description ?? '';
         $product->specification = $request->specification;
         $product->product_type = $request->product_type; // 'simple' or 'variable'
         $product->sku = $request->sku ?? '';
@@ -199,6 +210,18 @@ class ProductController extends Controller
             $product->price = 0;
             $product->sale_price = null;
         }
+
+        if ($request->has('is_new_product')) {
+            $product->is_new_product = true;
+        } else {
+            $product->is_new_product = false;
+        }
+
+        // background_image
+        if ($request->hasFile('background_image')) {
+            $product->background_image = $this->imageUpload($request->file('background_image'), 'product');
+        }
+
         $product->save();
 
         if ($request->hasFile('image')) {
@@ -275,6 +298,14 @@ class ProductController extends Controller
 
         // if product_type is simple then direct create product variation without color and sizes
         if ($product->product_type == 'simple') {
+
+            // // validate input of price, unique sku and quantity
+            // $request->validate([
+            //     'price' => 'required|numeric|min:0',
+            //     'sku' => 'required|string|max:255|unique:products,sku,' . $product->id,
+            //     'quantity' => 'required|integer|min:0',
+            // ]);
+
             $variation = new ProductVariation();
             $variation->product_id = $product->id;
             $variation->sku = $product->sku;
@@ -335,6 +366,7 @@ class ProductController extends Controller
 
 
 
+
         // notify users
         $userName = Auth::user()->getFullNameAttribute();
         $noti = NotificationService::notifyAllUsers('New Product created by ' . $userName, 'product');
@@ -380,8 +412,9 @@ class ProductController extends Controller
 
             // Get existing warehouse products
             $warehouseProducts = WarehouseProduct::where('product_id', $product->id)->get();
+            $productSizes = $product->sizesWithDetails();
 
-            return view('user.product.edit', compact('product', 'categories', 'sizes', 'colors', 'warehouses', 'warehouseProducts'));
+            return view('user.product.edit', compact('product', 'categories', 'sizes', 'colors', 'warehouses', 'warehouseProducts', 'productSizes'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -434,7 +467,7 @@ class ProductController extends Controller
             $product->category_id = $request->category_id;
             $product->name = $request->name;
             $product->description = $request->description;
-            $product->short_description = $request->short_description;
+            $product->short_description = $request->short_description ?? '';
             $product->specification = $request->specification;
             //  $product->product_type = $request->product_type;
             // $product->sku = $request->sku ?? '';
@@ -447,6 +480,22 @@ class ProductController extends Controller
             if ($product->is_free) {
                 $product->price = 0;
             }
+
+            if ($request->has('is_new_product')) {
+                $product->is_new_product = true;
+            } else {
+                $product->is_new_product = false;
+            }
+
+            // background_image
+            if ($request->hasFile('background_image')) {
+                // delete old image from storage
+                if ($product->background_image && file_exists(storage_path('app/public/' . $product->background_image))) {
+                    unlink(storage_path('app/public/' . $product->background_image));
+                }
+                $product->background_image = $this->imageUpload($request->file('background_image'), 'product');
+            }
+
             $product->save();
 
             if ($request->hasFile('image')) {
@@ -481,6 +530,28 @@ class ProductController extends Controller
                         $product->otherCharges()->create($charge);
                     }
                 }
+            }
+
+            if ($request->product_type == 'variable') {
+                // Save sizes
+                $product->sizes()->delete();
+                if ($request->filled('sizes')) {
+                    foreach ($request->sizes as $size) {
+                        if ($size) {
+                            $product->sizes()->create(['size_id' => $size]);
+                        }
+                    }
+                }
+
+                // // Save colors
+                // $product->colors()->delete();
+                // if ($request->filled('colors')) {
+                //     foreach ($request->colors as $color) {
+                //         if ($color) {
+                //             $product->colors()->create(['color_id' => $color]);
+                //         }
+                //     }
+                // }
             }
 
             // if ($request->product_type == 'simple') {
@@ -548,13 +619,13 @@ class ProductController extends Controller
     public function variations($id)
     {
         $product = Product::findOrFail($id);
-        $product_variations = ProductVariation::where('product_id', $product->id)->get();
+        $product_variations = ProductVariation::where('product_id', $product->id)->orderBy('id', 'desc')->get();
         $colors = Color::where('status', 1)->get();
         $productSizes = $product->sizesWithDetails();
 
         // return $productSizes;
 
-        if (auth()->user()->hasRole('SUPER ADMIN') || auth()->user()->hasRole('ADMINISTRATOR') || auth()->user()->isWarehouseAdmin()) {
+        if (auth()->user()->can('Edit Estore Products') || auth()->user()->isWarehouseAdmin()) {
 
 
 

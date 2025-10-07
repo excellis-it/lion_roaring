@@ -61,7 +61,7 @@ class HomeController extends Controller
         // $feature_products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
         // $new_products = Product::whereIn('id', $wareHouseProducts)->where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
         $feature_products = Product::where('is_deleted', false)->where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
-        $new_products = Product::where('is_deleted', false)->where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
+        $new_products = Product::where('is_deleted', false)->where('is_new_product', 1)->where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
         $books = Product::where('is_deleted', false)->whereIn('id', $wareHouseProducts)->where('status', 1)->whereHas('category', function ($q) {
             $q->where('slug', 'books');
         })->orderBy('id', 'DESC')->limit(10)->get();
@@ -103,6 +103,11 @@ class HomeController extends Controller
                 'about_section_text_two_content' => $homeCms->about_section_text_two_content,
                 'about_section_text_three_title' => $homeCms->about_section_text_three_title,
                 'about_section_text_three_content' => $homeCms->about_section_text_three_content,
+                'shop_now_title' => $homeCms->shop_now_title,
+                'shop_now_description' => $homeCms->shop_now_description,
+                'shop_now_button_text' => $homeCms->shop_now_button_text,
+                'shop_now_button_link' => $homeCms->shop_now_button_link,
+                'shop_now_image' => $homeCms->shop_now_image,
             ];
 
             // Decode slider data

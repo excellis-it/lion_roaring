@@ -38,10 +38,18 @@
                     </p>
                     <span>Follow us</span>
                     <ul>
-                        <li><a href="{!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_facebook_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-facebook"></i></a></li>
-                        <li><a href="{!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_instagram_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-instagram"></i></a></li>
-                        <li><a href="{!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_twitter_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-twitter"></i></a></li>
-                        <li><a href="{!! Helper::getElearningFooterCms() ? Helper::getElearningFooterCms()->footer_youtube_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-youtube"></i></a></li>
+                        <li><a href="{!! Helper::getElearningFooterCms()
+                            ? Helper::getElearningFooterCms()->footer_facebook_link
+                            : 'javascript:void(0);' !!}"><i class="fa-brands fa-facebook"></i></a></li>
+                        <li><a href="{!! Helper::getElearningFooterCms()
+                            ? Helper::getElearningFooterCms()->footer_instagram_link
+                            : 'javascript:void(0);' !!}"><i class="fa-brands fa-instagram"></i></a></li>
+                        <li><a href="{!! Helper::getElearningFooterCms()
+                            ? Helper::getElearningFooterCms()->footer_twitter_link
+                            : 'javascript:void(0);' !!}"><i class="fa-brands fa-twitter"></i></a></li>
+                        <li><a href="{!! Helper::getElearningFooterCms()
+                            ? Helper::getElearningFooterCms()->footer_youtube_link
+                            : 'javascript:void(0);' !!}"><i class="fa-brands fa-youtube"></i></a></li>
                     </ul>
                 </div>
             </div>
@@ -135,11 +143,16 @@
             <div class="ftr_line_link">
                 <ul>
                     <li><a href="{{ route('e-learning') }}">Home</a></li>
-                    <li><a href="{{ route('e-learning.all-products') }}">Our Collections</a></li>
+                    {{-- <li><a href="{{ route('e-learning.all-products') }}">Our Collections</a></li> --}}
+                    <li>
+                        <a href="{{ Helper::getPDFAttribute() ?? 'javascript:void(0);' }}" target="_blank">Article of
+                            Agreement</a>
+                    </li>
                     <li><a href="{{ route('contact-us') }}">Contact us</a></li>
                     @if (Helper::getElearningCmsPages() && count(Helper::getElearningCmsPages()) > 0)
                         @foreach (Helper::getElearningCmsPages() as $page)
-                            <li><a href="{{ route($page->slug . '.e-learning.cms-page') }}">{{ $page->page_name }}</a></li>
+                            <li><a href="{{ route($page->slug . '.e-learning.cms-page') }}">{{ $page->page_name }}</a>
+                            </li>
                         @endforeach
                     @endif
                 </ul>

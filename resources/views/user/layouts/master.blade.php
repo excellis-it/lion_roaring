@@ -118,6 +118,15 @@
         <script src="{{ asset('user_assets/js/inapp-notification.js') }}"></script>
 
         <script>
+            $(function() {
+                $('label:contains("*")').each(function() {
+                    const html = $(this).html().replace('*', '<span class="required-star">*</span>');
+                    $(this).html(html);
+                });
+            });
+        </script>
+
+        <script>
             tippy("[data-tippy-content]", {
                 allowHTML: true,
                 placement: "bottom",

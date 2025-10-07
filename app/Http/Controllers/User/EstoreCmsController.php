@@ -10,6 +10,8 @@ use App\Models\EcomNewsletter;
 use App\Models\MemberPrivacyPolicy;
 use App\Models\EstoreOrder;
 use App\Models\EstoreOrderItem;
+use App\Models\Product;
+use App\Models\Review;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -159,8 +161,7 @@ class EstoreCmsController extends Controller
             $cms->featured_product_title = $request->featured_product_title ?? '';
             $cms->featured_product_subtitle = $request->featured_product_subtitle ?? '';
 
-            $cms->new_arrival_title = $request->new_arrival_title;
-            $cms->new_arrival_subtitle = $request->new_arrival_subtitle;
+
 
             ///////// section 3: Second Banner Slider Management //////////
             $cms->slider_data_second_title = $request->slider_data_second_title ?? '';
@@ -199,7 +200,14 @@ class EstoreCmsController extends Controller
             $cms->new_product_title = $request->new_product_title;
             $cms->new_product_subtitle = $request->new_product_subtitle;
 
-            ///////// section 5: About Section Management //////////
+            ///////// section 5: Shop Now Section Management //////////
+            $cms->shop_now_title = $request->shop_now_title;
+            $cms->shop_now_description = $request->shop_now_description;
+            $cms->shop_now_button_text = $request->shop_now_button_text;
+            $cms->shop_now_button_link = $request->shop_now_button_link;
+            $cms->shop_now_image = $request->hasFile('shop_now_image') ? $this->imageUpload($request->file('shop_now_image'), 'ecom_cms') : $cms->shop_now_image;
+
+            ///////// section 6: About Section Management //////////
             $cms->about_section_title = $request->about_section_title;
             $cms->about_section_image = $request->hasFile('about_section_image') ? $this->imageUpload($request->file('about_section_image'), 'ecom_cms') : $cms->about_section_image;
             $cms->about_section_text_one_title = $request->about_section_text_one_title;
@@ -215,6 +223,8 @@ class EstoreCmsController extends Controller
             $cms->banner_subtitle = $request->banner_subtitle ?? '';
             $cms->product_category_title = $request->product_category_title;
             $cms->product_category_subtitle = $request->product_category_subtitle;
+            $cms->new_arrival_title = $request->new_arrival_title;
+            $cms->new_arrival_subtitle = $request->new_arrival_subtitle;
 
 
             if ($request->hasFile('banner_image')) {
@@ -600,6 +610,114 @@ class EstoreCmsController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    // -----------------------------------------------------------------
+    // Product Reviews Management
+    // -----------------------------------------------------------------
+
+    public function productReviews(Product $product, Request $request)
+    {
+        if (!auth()->user()->can('Edit Estore Products')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        $statusFilter = $request->get('status', '');
+        $searchTerm = trim($request->get('search', ''));
+
+        $reviewsQuery = Review::with(['user'])
+            ->where('product_id', $product->id)
+            ->orderByDesc('created_at');
+
+        if ($statusFilter !== '') {
+            $reviewsQuery->where('status', (int) $statusFilter);
+        }
+
+        if (!empty($searchTerm)) {
+            $reviewsQuery->where(function ($query) use ($searchTerm) {
+                $query->where('review', 'like', "%{$searchTerm}%")
+                    ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+                        $userQuery->where('full_name', 'like', "%{$searchTerm}%")
+                            ->orWhere('email', 'like', "%{$searchTerm}%");
+                    });
+            });
+        }
+
+        $reviews = $reviewsQuery->paginate(15)->withQueryString();
+
+        return view('user.product.reviews', [
+            'product' => $product,
+            'reviews' => $reviews,
+            'statusFilter' => $statusFilter,
+            'searchTerm' => $searchTerm,
+            'statusOptions' => Review::statusOptions(),
+            'statusBadgeClasses' => [
+                Review::STATUS_PENDING => 'bg-warning text-dark',
+                Review::STATUS_APPROVED => 'bg-success',
+            ],
+        ]);
+    }
+
+    public function approveProductReview(Product $product, Review $review, Request $request)
+    {
+        if (!auth()->user()->can('Edit Estore Products')) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'You do not have permission to perform this action.'
+                ], 403);
+            }
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        if ($review->product_id !== $product->id) {
+            abort(404);
+        }
+
+        $review->status = Review::STATUS_APPROVED;
+        $review->save();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Review approved successfully.',
+                'review' => $review->fresh(['user'])
+            ]);
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', 'Review approved successfully.');
+    }
+
+    public function deleteProductReview(Product $product, Review $review, Request $request)
+    {
+        if (!auth()->user()->can('Delete Estore Products')) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'You do not have permission to perform this action.'
+                ], 403);
+            }
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        if ($review->product_id !== $product->id) {
+            abort(404);
+        }
+
+        $review->delete();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Review deleted successfully.'
+            ]);
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', 'Review deleted successfully.');
     }
 
     // Reports Dashboard
