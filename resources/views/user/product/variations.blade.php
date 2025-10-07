@@ -262,14 +262,15 @@
                                                                 class="text-danger">*</span></label>
                                                         <input type="number" step="0.01"
                                                             name="variation_products[{{ $index }}][price]"
-                                                            class="form-control" value="{{ $variation->price }}">
+                                                            class="form-control" value="{{ $variation->price }}"
+                                                            {{ $product->is_free == 1 ? 'readonly' : '' }}>
                                                     </div>
 
                                                     <div class="col-md-2">
                                                         <label class="small fw-semibold">Sale Price (If Any)</label>
                                                         <input type="number" step="0.01"
                                                             name="variation_products[{{ $index }}][sale_price]"
-                                                            class="form-control" value="{{ $variation->sale_price }}">
+                                                            class="form-control" value="{{ $variation->sale_price }}" {{ $product->is_free == 1 ? 'readonly' : '' }}>
                                                     </div>
 
                                                     <div class="col-md-1"
