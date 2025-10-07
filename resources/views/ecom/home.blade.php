@@ -190,17 +190,19 @@
 
 
 
-    <section class="news-letter news-letter-center" id="News-letter"
-        style="background-image:url('{{ asset('ecom_assets/images/banner_big.jpg') }}');">
+    <section class="news-letter news-letter-center"
+        style="background-image:url('{{ isset($content['shop_now_image']) ? Storage::url($content['shop_now_image']) : 'ecom_assets/images/banner_big.jpg' }}');">
         <div class="news ">
             <div class="container position-relative z-1">
                 <div class="row">
                     <div class="col-lg-10 mx-auto">
-                        <h2 class="news-heading text-center">{!! isset($content['new_arrival_title']) ? $content['new_arrival_title'] : '' !!}</h2>
-                        <p class="des how-de text-center">{!! isset($content['new_arrival_subtitle']) ? $content['new_arrival_subtitle'] : '' !!}</p>
+                        <h2 class="news-heading text-center">{!! isset($content['shop_now_title']) ? $content['shop_now_title'] : '' !!}</h2>
+                        <p class="des how-de text-center">{!! isset($content['shop_now_description']) ? $content['shop_now_description'] : '' !!}</p>
                         <div class="text-center">
-                            <a class="red_btn slidebottomleft" href="{{ route('e-store.all-products') }}" target="_blank">
-                                <span>Shop Now <i class="fa-solid fa-arrow-right"></i></span>
+                            <a class="red_btn slidebottomleft" href="{{ $content['shop_now_button_link'] ?? '#' }}"
+                                target="_blank">
+                                <span>{{ $content['shop_now_button_text'] ?? 'Shop Now' }} <i
+                                        class="fa-solid fa-arrow-right"></i></span>
                             </a>
                         </div>
                     </div>

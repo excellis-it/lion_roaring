@@ -103,6 +103,11 @@ class HomeController extends Controller
                 'about_section_text_two_content' => $homeCms->about_section_text_two_content,
                 'about_section_text_three_title' => $homeCms->about_section_text_three_title,
                 'about_section_text_three_content' => $homeCms->about_section_text_three_content,
+                'shop_now_title' => $homeCms->shop_now_title,
+                'shop_now_description' => $homeCms->shop_now_description,
+                'shop_now_button_text' => $homeCms->shop_now_button_text,
+                'shop_now_button_link' => $homeCms->shop_now_button_link,
+                'shop_now_image' => $homeCms->shop_now_image,
             ];
 
             // Decode slider data

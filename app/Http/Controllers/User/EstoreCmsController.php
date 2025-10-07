@@ -159,8 +159,7 @@ class EstoreCmsController extends Controller
             $cms->featured_product_title = $request->featured_product_title ?? '';
             $cms->featured_product_subtitle = $request->featured_product_subtitle ?? '';
 
-            $cms->new_arrival_title = $request->new_arrival_title;
-            $cms->new_arrival_subtitle = $request->new_arrival_subtitle;
+
 
             ///////// section 3: Second Banner Slider Management //////////
             $cms->slider_data_second_title = $request->slider_data_second_title ?? '';
@@ -199,7 +198,14 @@ class EstoreCmsController extends Controller
             $cms->new_product_title = $request->new_product_title;
             $cms->new_product_subtitle = $request->new_product_subtitle;
 
-            ///////// section 5: About Section Management //////////
+            ///////// section 5: Shop Now Section Management //////////
+            $cms->shop_now_title = $request->shop_now_title;
+            $cms->shop_now_description = $request->shop_now_description;
+            $cms->shop_now_button_text = $request->shop_now_button_text;
+            $cms->shop_now_button_link = $request->shop_now_button_link;
+            $cms->shop_now_image = $request->hasFile('shop_now_image') ? $this->imageUpload($request->file('shop_now_image'), 'ecom_cms') : $cms->shop_now_image;
+
+            ///////// section 6: About Section Management //////////
             $cms->about_section_title = $request->about_section_title;
             $cms->about_section_image = $request->hasFile('about_section_image') ? $this->imageUpload($request->file('about_section_image'), 'ecom_cms') : $cms->about_section_image;
             $cms->about_section_text_one_title = $request->about_section_text_one_title;
@@ -215,6 +221,8 @@ class EstoreCmsController extends Controller
             $cms->banner_subtitle = $request->banner_subtitle ?? '';
             $cms->product_category_title = $request->product_category_title;
             $cms->product_category_subtitle = $request->product_category_subtitle;
+            $cms->new_arrival_title = $request->new_arrival_title;
+            $cms->new_arrival_subtitle = $request->new_arrival_subtitle;
 
 
             if ($request->hasFile('banner_image')) {

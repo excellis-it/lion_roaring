@@ -478,7 +478,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         // product variations manage route
 
         Route::get('/{id}/variations', [ProductController::class, 'variations'])->name('products.variations');
-
+        Route::get('/{id}/product-stocks', [ProductController::class, 'variations'])->name('products.simple.stocks');
 
 
         Route::get('/product-delete/{id}', [ProductController::class, 'delete'])->name('products.delete');
