@@ -63,11 +63,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12 mb-2">
-                                <div class="box_label">
-                                    <label for="name">Warehouse Location</label>
-                                </div>
-                            </div>
+                           
 
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">

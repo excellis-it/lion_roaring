@@ -107,7 +107,7 @@ class ProductController extends Controller
             ->limit(8)
             ->get();
 
-        $own_review = $product->reviews()->where('user_id', auth()->id() ?? 0)->first();
+        $own_review = $product->reviews()->where('user_id', auth()->id() ?? 0)->where('status', 1)->first();
         $reviews = $product->reviews()
             ->where('status', Review::STATUS_APPROVED)
             ->orderBy('id', 'DESC')
@@ -353,7 +353,7 @@ class ProductController extends Controller
         $review->save();
 
         // Render the review view
-        $own_review = $product->reviews()->where('user_id', auth()->id() ?? 0)->first();
+        $own_review = $product->reviews()->where('user_id', auth()->id() ?? 0)->where('status', 1)->first();
         $reviews = $product->reviews()
             ->where('status', Review::STATUS_APPROVED)
             ->orderBy('id', 'DESC')

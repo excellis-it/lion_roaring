@@ -280,7 +280,7 @@ Route::get('/faq', [CmsController::class, 'faq'])->name('faq');
 Route::get('/contact-us', [CmsController::class, 'contactUs'])->name('contact-us');
 Route::get('/account-delete-request', [CmsController::class, 'accountDeleteRequest'])->name('account-delete-request');
 Route::get('/principle-and-business', [CmsController::class, 'principleAndBusiness'])->name('principle-and-business');
-Route::get('/ecclesia-associations', [CmsController::class, 'ecclesiaAssociations'])->name('ecclesia-associations');
+Route::get('/ecclesia-covenant', [CmsController::class, 'ecclesiaAssociations'])->name('ecclesia-associations');
 Route::get('/organization', [CmsController::class, 'organization'])->name('organization');
 Route::get('/service/{slug}', [CmsController::class, 'service'])->name('service');
 Route::get('/our-organization/{slug}', [CmsController::class, 'ourOrganization'])->name('our-organization');

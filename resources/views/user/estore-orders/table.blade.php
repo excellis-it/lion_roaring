@@ -66,7 +66,7 @@
                                 <i class="fas fa-eye"></i>
                             </a>
                         @endif
-                        @if (auth()->user()->can('Edit Estore Orders'))
+                        @if (auth()->user()->can('Edit Estore Orders') && !in_array($order->status, ['delivered', 'cancelled']))
                             <button type="button" class="btn btn-sm btn-warning"
                                 onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}')"
                                 title="Update Status">
