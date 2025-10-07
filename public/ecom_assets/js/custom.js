@@ -266,6 +266,15 @@ $(".slider-for").slick({
     fade: true,
     asNavFor: ".slider-nav",
 });
+// $(".slider-nav").slick({
+//     slidesToShow: 4,
+//     slidesToScroll: 1,
+//     asNavFor: ".slider-for",
+//     dots: true,
+//     centerMode: false,
+//     centerPadding: "60px",
+//     focusOnSelect: true,
+// });
 $(".slider-nav").slick({
     slidesToShow: 4,
     slidesToScroll: 1,
@@ -274,12 +283,13 @@ $(".slider-nav").slick({
     centerMode: false,
     centerPadding: "60px",
     focusOnSelect: true,
+    arrows: false,
 });
 /*----- slier --------*/
 const rangeInput = document.querySelectorAll(".range-input input"),
     priceInput = document.querySelectorAll(".price-input input"),
     range = document.querySelector(".slider .progress");
-let priceGap = 1000;
+    let priceGap = 1000;
 
 priceInput.forEach((input) => {
     input.addEventListener("input", (e) => {

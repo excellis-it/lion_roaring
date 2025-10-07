@@ -53,7 +53,6 @@
                                     <div class="slid_big_img">
                                         <img src="{{ Storage::url($image->image) }}" />
                                     </div>
-
                                 @endforeach
                             @endif
                         </div>
@@ -277,6 +276,7 @@
                                             <input type="radio" id="star1" name="rate" value="1" />
                                             <label for="star1" title="text">1 star</label>
                                         </div>
+
                                         <div class="form-group">
                                             <label class="control-label" for="review">Your Review:</label>
                                             <textarea class="form-control" rows="5" placeholder="Your Reivew" name="review" id="review"></textarea>
@@ -371,18 +371,18 @@
 @push('scripts')
     <script>
         function enableZoomOnSlide(slide) {
-    const img = slide.querySelector('img');
-    if (!img) return;
+        const img = slide.querySelector('img');
+        if (!img) return;
 
-    if (slide.dataset.zoomAttached) return;
-    slide.dataset.zoomAttached = true;
+        if (slide.dataset.zoomAttached) return;
+        slide.dataset.zoomAttached = true;
 
-    function moveZoom(e) {
-      const rect = img.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      img.style.transformOrigin = `${x}% ${y}%`;
-      img.style.transform = 'scale(2.2)';
+        function moveZoom(e) {
+        const rect = img.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        img.style.transformOrigin = `${x}% ${y}%`;
+        img.style.transform = 'scale(2.2)';
     }
 
     function resetZoom() {

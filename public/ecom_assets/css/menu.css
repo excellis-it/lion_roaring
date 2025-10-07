@@ -167,12 +167,12 @@
 #cssmenu ul ul li a {
   border-bottom: 1px solid rgba(150, 150, 150, 0.15);
   padding: 11px 15px;
-  min-width: 250px;
+  min-width: 400px;
   font-size: 15px;
   text-decoration: none;
   color: #333;
   font-weight: 400;
-  background: #fff;
+  background: var(--white-color);
   line-height: 18px;
   text-align: left;
 }
@@ -226,7 +226,7 @@
     width: 100%;
   }
   #cssmenu ul {
-    width: 300px;
+    width: 400px;
     display: none;
     position: absolute;
     background: #fff;
@@ -409,5 +409,11 @@
 }
 .logo img{
   width: 100%;
+}
+
+@media all and (max-width: 576px){
+  #cssmenu ul {
+    width: 300px;
+  }
 }
 
