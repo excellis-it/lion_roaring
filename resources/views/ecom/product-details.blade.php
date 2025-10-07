@@ -278,6 +278,7 @@
                                             <input type="radio" id="star1" name="rate" value="1" />
                                             <label for="star1" title="text">1 star</label>
                                         </div>
+
                                         <div class="form-group">
                                             <label class="control-label" for="review">Your Review:</label>
                                             <textarea class="form-control" rows="5" placeholder="Your Reivew" name="review" id="review"></textarea>

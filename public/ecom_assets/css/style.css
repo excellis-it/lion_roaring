@@ -4099,8 +4099,8 @@ content: none !important;
     width: 100%;
     text-align: center;
     transform: rotate(-43deg);
-    left: -116px;
-    top: 22px;
+    left: -103px;
+    top: 20px;
     color: #fff;
 }
 
@@ -4169,13 +4169,40 @@ content: none !important;
   transform-origin: center center;
   object-fit: cover;
 }
+.product_details .slider-nav .slick-prev,
+.product_details .slider-nav .slick-next{
+    display: none;
+}
 
+.rate {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: end;
+  margin-bottom: 10px;
+}
 
+.rate input {
+  display: none;
+}
 
+.rate label {
+  font-size: 2rem;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+}
 
+.rate input:checked ~ label {
+  color: #f5b301;
+}
 
+.rate label:hover,
+.rate label:hover ~ label {
+  color: #f5b301;
+}
 
-
-
-
-
+#rating-value {
+  text-align: center;
+  font-weight: bold;
+  color: #333;
+}
