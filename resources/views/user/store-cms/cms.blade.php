@@ -11,7 +11,8 @@
             <!--  Row 1 -->
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('user.store-cms.update', $cms->id) }}" method="POST" enctype="multipart/form-data">
+                    <form id="store-cms-update-form" action="{{ route('user.store-cms.update', $cms->id) }}" method="POST"
+                        enctype="multipart/form-data">
                         @method('PUT')
                         @csrf
                         <div class="row">
@@ -57,6 +58,7 @@
                                     <label for="image"> Page Banner Image *</label>
                                     <input type="file" name="page_banner_image" id="image" class="form-control"
                                         value="{{ old('page_banner_image') }}">
+                                    <span class="text-sm ms-2 text-muted">(width: 1920px, height: 520px, max 2MB)</span>
                                     @if ($errors->has('page_banner_image'))
                                         <span class="error">{{ $errors->first('page_banner_image') }}</span>
                                     @endif
@@ -141,6 +143,127 @@
     @push('scripts')
         <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
         <script>
-            ClassicEditor.create(document.querySelector("#page_content"));
+            var pageContentEditor;
+            ClassicEditor.create(document.querySelector("#page_content"))
+                .then(function(editor) {
+                    pageContentEditor = editor;
+                })
+                .catch(function(error) {
+                    console.error(error);
+                });
+
+            (function() {
+                var existingPageBannerImage = {{ isset($cms->page_banner_image) && $cms->page_banner_image ? 1 : 0 }};
+
+                function addClientError($el, message) {
+                    $el.addClass('is-invalid');
+                    if ($el.next('.client-error').length) {
+                        $el.next('.client-error').text(message);
+                    } else {
+                        $el.after('<span class="error client-error" style="color:red;display:block;margin-top:4px;">' +
+                            message + '</span>');
+                    }
+                }
+
+                function clearClientErrors($form) {
+                    $form.find('.client-error').remove();
+                    $form.find('.is-invalid').removeClass('is-invalid');
+                }
+
+                function validateImageFile(file, maxBytes, reqW, reqH, $input, messagePrefix) {
+                    return new Promise(function(resolve) {
+                        if (!file) {
+                            resolve(false);
+                            return;
+                        }
+                        if (maxBytes && file.size > maxBytes) {
+                            addClientError($input, messagePrefix + ' must be under ' + (maxBytes / 1024 / 1024)
+                                .toFixed(2) + 'MB.');
+                            resolve(false);
+                            return;
+                        }
+                        var url = URL.createObjectURL(file);
+                        var img = new Image();
+                        var timedOut = false;
+                        var timer = setTimeout(function() {
+                            timedOut = true;
+                            URL.revokeObjectURL(url);
+                            addClientError($input, messagePrefix + ' validation timed out.');
+                            resolve(false);
+                        }, 5000);
+
+                        function finish(ok, msg) {
+                            if (timedOut) return;
+                            clearTimeout(timer);
+                            URL.revokeObjectURL(url);
+                            if (!ok && msg) addClientError($input, msg);
+                            resolve(!!ok);
+                        }
+
+                        img.onload = function() {
+                            var w = this.naturalWidth || this.width;
+                            var h = this.naturalHeight || this.height;
+                            if ((reqW && w !== reqW) || (reqH && h !== reqH)) {
+                                finish(false, messagePrefix + ' must be ' + reqW + 'x' + reqH + '. Uploaded ' +
+                                    w + 'x' + h + '.');
+                            } else {
+                                finish(true);
+                            }
+                        };
+                        img.onerror = function() {
+                            finish(false, messagePrefix + ' is not a valid image.');
+                        };
+                        img.src = url;
+                    });
+                }
+
+                $('#store-cms-update-form').on('submit', async function(e) {
+                    e.preventDefault();
+                    var $form = $(this);
+                    clearClientErrors($form);
+                    var errors = [];
+
+                    var $pageTitle = $('#page_title');
+                    if (!$.trim($pageTitle.val())) {
+                        addClientError($pageTitle, 'Page title is required.');
+                        errors.push($pageTitle);
+                    }
+
+                    var editorData = pageContentEditor ? pageContentEditor.getData() : $('#page_content').val();
+                    var plainContent = $('<div>').html(editorData || '').text().trim();
+                    if (!plainContent) {
+                        addClientError($('#page_content'), 'Page content is required.');
+                        errors.push($('#page_content'));
+                    } else if (pageContentEditor) {
+                        $('#page_content').val(editorData);
+                    }
+
+                    var $bannerInput = $('#image');
+                    var bannerInputEl = $bannerInput[0];
+                    var hasFile = bannerInputEl && bannerInputEl.files && bannerInputEl.files.length > 0;
+
+                    if (!existingPageBannerImage && !hasFile) {
+                        addClientError($bannerInput, 'Banner image is required (existing or new).');
+                        errors.push($bannerInput);
+                    } else if (hasFile) {
+                        var ok = await validateImageFile(bannerInputEl.files[0], 2 * 1024 * 1024, 1920, 520,
+                            $bannerInput, 'Banner image');
+                        if (!ok) errors.push($bannerInput);
+                    }
+
+                    if (errors.length) {
+                        var $first = errors[0];
+                        $('html, body').animate({
+                            scrollTop: $first.offset().top - 100
+                        }, 300, function() {
+                            $first.focus();
+                        });
+                        return;
+                    }
+
+                    $('#store-cms-update-form').off('submit');
+                    $form.submit();
+                });
+            })();
         </script>
     @endpush
