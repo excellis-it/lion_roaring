@@ -651,8 +651,8 @@ class ProductController extends Controller
             }
         }
 
-         // Delete the file from storage if needed
-         if (file_exists(storage_path('app/public/' . $image->image))) {
+        // Delete the file from storage if needed
+        if (file_exists(storage_path('app/public/' . $image->image))) {
             unlink(storage_path('app/public/' . $image->image));
         }
 
@@ -840,7 +840,6 @@ class ProductController extends Controller
             if (!empty($variationData['images'])) {
                 $targetColorId = $variationData['color_id'] ?? $variation->color_id;
 
-                // Get variations with same color for this product
                 $query = ProductVariation::where('product_id', $product->id);
                 if (is_null($targetColorId)) {
                     $query->whereNull('color_id');
@@ -848,21 +847,16 @@ class ProductController extends Controller
                     $query->where('color_id', $targetColorId);
                 }
                 $variationsWithSameColor = $query->get();
-
-                // Get warehouse product ids for this variation matching the target color (null handled)
-                $wpQuery = WarehouseProduct::where('product_variation_id', $variation->id);
-                if (is_null($targetColorId)) {
-                    $wpQuery->whereNull('color_id');
-                } else {
-                    $wpQuery->where('color_id', $targetColorId);
+                if ($variationsWithSameColor->isEmpty()) {
+                    $variationsWithSameColor = collect([$variation]);
                 }
-                $wpIds = $wpQuery->pluck('id')->toArray();
+                $variationIdsForColor = $variationsWithSameColor->pluck('id')->all();
 
-                // For each uploaded file, upload once and reuse the same path for all related PV and WP images
+                $warehouseProductsForColor = WarehouseProduct::whereIn('product_variation_id', $variationIdsForColor)->get();
+
                 foreach ($variationData['images'] as $file) {
                     $path = $this->imageUpload($file, 'product_variation');
 
-                    // create ProductVariationImage for each variation with same color
                     foreach ($variationsWithSameColor as $var) {
                         $pvImage = new ProductVariationImage();
                         $pvImage->product_variation_id = $var->id;
@@ -870,10 +864,9 @@ class ProductController extends Controller
                         $pvImage->save();
                     }
 
-                    // create WarehouseProductImage for each warehouse product id using the same path
-                    foreach ($wpIds as $wpId) {
+                    foreach ($warehouseProductsForColor as $wp) {
                         $wpImage = new WarehouseProductImage();
-                        $wpImage->warehouse_product_id = $wpId;
+                        $wpImage->warehouse_product_id = $wp->id;
                         $wpImage->image_path = $path;
                         $wpImage->save();
                     }
@@ -937,7 +930,7 @@ class ProductController extends Controller
 
 
         // remove images from WarehouseProductImage by WarehouseProduct have product_variation_id
-        $wpIds = WarehouseProduct::where('product_variation_id', $variation->id)->pluck('id')->toArray();
+        $wpIds = WarehouseProduct::whereIn('product_variation_id', $variationIds)->pluck('id')->toArray();
 
         $wpImages = WarehouseProductImage::whereIn('warehouse_product_id', $wpIds)
             ->where('image_path', $targetImagePath)
