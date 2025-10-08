@@ -15,6 +15,11 @@
         max-width: 1500px;
     }
 }
+@media (max-width:1700px){
+    .box_label label{
+        font-size: 12px;
+    }
+}
 @media (max-width:1600px){
     .slide .slide__content--headings .title{
         font-size: 50px;
@@ -433,6 +438,19 @@ input{
     .menu_bb a{
     font-size: 14px;
     line-height: 18px;
+}
+.heading_box h3 {
+    font-size: 16px;
+}
+.print_btn{
+    padding: 5px 20px;
+}
+.variation-file .w-25{
+    width: 100% !important;
+}
+.chatbot-container{
+    bottom: 5px;
+    right: 5px;
 }
 }
 

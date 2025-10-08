@@ -97,7 +97,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mb-5">
+                                <div class="row align-items-center mb-5">
 
                                     <div class="col-md-6 mb-2">
                                         <div class="box_label">
@@ -165,7 +165,7 @@
                                         </div>
                                     </div>
                                     {{-- image --}}
-                                    <div class="col-md-2 mb-2">
+                                    <div class="col-md-3 mb-2">
                                         <div class="box_label">
                                             <label for="image"> Product Featured Image*</label>
                                             <input type="file" name="image" id="image" class="form-control"
@@ -181,10 +181,10 @@
                                     </div>
 
                                     {{-- image preview --}}
-                                    <div class="col-md-2 mb-2">
+                                    <div class="col-md-1 mb-2">
                                         <div class="box_label">
                                             <a href="{{ Storage::url($product->image?->image ?? '') }}" target="_blank">
-                                                <img style="height: 80px; width: 80px; object-fit: cover;"
+                                                <img style="height: 50px; width: 50px; object-fit: cover;"
                                                     id="image_preview"
                                                     src="{{ Storage::url($product->image?->image ?? '') }}"
                                                     alt="Product Image" class="img-fluid">
@@ -193,7 +193,7 @@
                                     </div>
 
                                     {{-- background_image --}}
-                                    <div class="col-md-2 mb-2">
+                                    <div class="col-md-3 mb-2">
                                         <div class="box_label">
                                             <label for="background_image"> Product Banner Image</label>
                                             <input type="file" name="background_image" id="background_image"
@@ -209,12 +209,12 @@
 
 
                                     {{-- background image preview --}}
-                                    <div class="col-md-2 mb-2">
+                                    <div class="col-md-1 mb-2">
                                         <div class="box_label">
                                             @if ($product->background_image)
                                                 <a href="{{ Storage::url($product->background_image ?? '') }}"
                                                     target="_blank">
-                                                    <img style="height: 80px; width: 80px; object-fit: cover;"
+                                                    <img style="height: 50px; width: 50px; object-fit: cover;"
                                                         id="background_image_preview"
                                                         src="{{ Storage::url($product->background_image ?? '') }}"
                                                         alt="Product Background Image" class="img-fluid">
@@ -222,7 +222,7 @@
                                             @else
                                                 {{-- // dummy placehoder image box --}}
                                                 <div
-                                                    style="height: 80px; width: 80px; background: #f0f0f0; border: 1px dashed #ccc;">
+                                                    style="height: 50px; width: 50px; background: #f0f0f0; border: 1px dashed #ccc;">
                                                 </div>
                                             @endif
                                         </div>
@@ -302,17 +302,17 @@
                                     </div>
 
 
-                                    <div class="col-md-2 mb-2">
-                                    </div>
+                                    <!-- <div class="col-md-2 mb-2">
+                                    </div> -->
 
                                     {{-- is_free --}}
-                                    <div class="col-md-2 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <div class="box_label">
                                             <label for="is_free" class="d-block"> Free Product</label>
                                             <div class="form-check form-switch">
                                                 <label class="form-check-label" for="is_free">Mark as Free (Price becomes
                                                     0)</label>
-                                                <input class="form-check-input mt-3" style="width: 60px; height: 30px;"
+                                                <input class="form-check-input mt-3" style="width: 60px; height: 30px; margin-bottom:10px;"
                                                     type="checkbox" role="switch" id="is_free" name="is_free"
                                                     value="1"
                                                     {{ old('is_free', $product->is_free) ? 'checked' : '' }}>

@@ -113,7 +113,7 @@
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="assign_user">Assign User</label>
-                                    <select name="assign_user[]" id="assign_user" class="selectpicker"
+                                    <select name="assign_user[]" id="assign_user" class="selectpicker form-control"
                                         data-live-search="true" data-width="100%" data-size="10" multiple>
                                         <option value="">Select User</option>
                                         @foreach ($all_users as $user)

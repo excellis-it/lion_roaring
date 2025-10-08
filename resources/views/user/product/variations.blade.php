@@ -172,7 +172,7 @@
                             </div>
                         </div>
 
-                        <div id="variation-products-container">
+                        <div class="variation-file" id="variation-products-container">
                             @if ($product_variations->count() > 0)
                                 @php
                                     $groupedVariations = $product_variations->groupBy('color_id');
@@ -249,7 +249,7 @@
                                                     value="{{ $variation->color_id }}">
 
                                                 <div class="row align-items-end g-2">
-                                                    <div class="col-md-2">
+                                                    <div class="col-xxl-2 col-lg-2 col-md-6">
                                                         <label class="small fw-semibold">SKU <span
                                                                 class="text-danger">*</span></label>
                                                         <input type="text"
@@ -257,7 +257,7 @@
                                                             class="form-control" value="{{ $variation->sku }}">
                                                     </div>
 
-                                                    <div class="col-md-2">
+                                                    <div class="col-xxl-2 col-lg-2 col-md-6">
                                                         <label class="small fw-semibold">Price <span
                                                                 class="text-danger">*</span></label>
                                                         <input type="number" step="0.01"
@@ -265,14 +265,14 @@
                                                             class="form-control" value="{{ $variation->price }}">
                                                     </div>
 
-                                                    <div class="col-md-2">
+                                                    <div class="col-xxl-2 col-lg-2 col-md-6">
                                                         <label class="small fw-semibold">Sale Price (If Any)</label>
                                                         <input type="number" step="0.01"
                                                             name="variation_products[{{ $index }}][sale_price]"
                                                             class="form-control" value="{{ $variation->sale_price }}">
                                                     </div>
 
-                                                    <div class="col-md-1"
+                                                    <div class="col-xxl-1 col-lg-1 col-md-6"
                                                         {{ $product->product_type == 'simple' ? 'hidden' : '' }}>
                                                         <label class="small fw-semibold">Color</label>
                                                         <input type="text" class="form-control"
@@ -280,7 +280,7 @@
                                                             readonly>
                                                     </div>
 
-                                                    <div class="col-md-2"
+                                                    <div class="col-xxl-2 col-lg-2 col-md-6"
                                                         {{ $product->product_type == 'simple' ? 'hidden' : '' }}>
                                                         <label class="small fw-semibold">Size</label>
                                                         <input type="hidden"
@@ -290,7 +290,7 @@
                                                             value="{{ $variation->sizeDetail->size ?? '' }}" readonly>
                                                     </div>
 
-                                                    <div class="col-md-2">
+                                                    <div class="col-xxl-2 col-lg-2 col-md-6">
                                                         <label class="small fw-semibold">Global Stock Qty <span
                                                                 class="text-danger">*</span></label>
                                                         <input type="number" min="0"
@@ -300,7 +300,7 @@
                                                     </div>
 
                                                     @if ($product->product_type != 'simple' && $canDelete)
-                                                        <div class="col-md-1 text-end">
+                                                        <div class="col-xxl-1 col-lg-1 col-md-6 text-end">
                                                             <button type="button"
                                                                 class="btn btn-sm btn-danger remove-variation-product">
                                                                 <i class="fa fa-trash"></i>
