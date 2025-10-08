@@ -517,6 +517,27 @@ class ProductController extends Controller
                     $image->image = $this->imageUpload($file, 'product');
                     $image->featured_image = 0;
                     $image->save();
+
+                    // if product type is simple then also add this image to product variation images and warehouse product images
+
+                    if ($product->product_type == 'simple') {
+                        $variation = ProductVariation::where('product_id', $product->id)->first();
+                        if ($variation) {
+                            $variationImage = new ProductVariationImage();
+                            $variationImage->product_variation_id = $variation->id;
+                            $variationImage->image_path = $image->image;
+                            $variationImage->save();
+
+                            // add this image to all warehouse products images of this variation
+                            $warehouseProducts = WarehouseProduct::where('product_variation_id', $variation->id)->get();
+                            foreach ($warehouseProducts as $wp) {
+                                $wpImage = new WarehouseProductImage();
+                                $wpImage->warehouse_product_id = $wp->id;
+                                $wpImage->image_path = $image->image;
+                                $wpImage->save();
+                            }
+                        }
+                    }
                 }
             }
 
@@ -601,6 +622,43 @@ class ProductController extends Controller
     {
         $image = ProductImage::findOrFail($request->id);
         $image->delete();
+        // then also delete from product variation images and warehouse product images if exists and product type is simple
+
+        if ($image->featured_image == 0) {
+            $product = Product::find($image->product_id);
+            if ($product && $product->product_type == 'simple') {
+                $variation = ProductVariation::where('product_id', $product->id)->first();
+                if ($variation) {
+                    // delete from product variation images
+                    $pVarImage = ProductVariationImage::where('product_variation_id', $variation->id)
+                        ->where('image_path', $image->image)
+                        ->first();
+                    if ($pVarImage) {
+                        $pVarImage->delete();
+                    }
+
+                    // delete from warehouse product images
+                    $warehouseProducts = WarehouseProduct::where('product_variation_id', $variation->id)->get();
+                    foreach ($warehouseProducts as $wp) {
+                        $wpImage = WarehouseProductImage::where('warehouse_product_id', $wp->id)
+                            ->where('image_path', $image->image)
+                            ->first();
+                        if ($wpImage) {
+                            $wpImage->delete();
+                        }
+                    }
+                }
+            }
+        }
+
+         // Delete the file from storage if needed
+         if (file_exists(storage_path('app/public/' . $image->image))) {
+            unlink(storage_path('app/public/' . $image->image));
+        }
+
+
+
+
         return response()->json(['message' => 'Image deleted successfully!']);
     }
 
@@ -778,48 +836,45 @@ class ProductController extends Controller
                 $wp->save();
             }
 
-            // update images if available to ProductVariationImage
+            // update images if available to ProductVariationImage and WarehouseProductImage (use same path)
             if (!empty($variationData['images'])) {
                 $targetColorId = $variationData['color_id'] ?? $variation->color_id;
 
+                // Get variations with same color for this product
                 $query = ProductVariation::where('product_id', $product->id);
                 if (is_null($targetColorId)) {
                     $query->whereNull('color_id');
                 } else {
                     $query->where('color_id', $targetColorId);
                 }
-
                 $variationsWithSameColor = $query->get();
 
-                foreach ($variationsWithSameColor as $var) {
-                    foreach ($variationData['images'] as $file) {
-                        $pvImage = new ProductVariationImage();
-                        $pvImage->product_variation_id = $var->id;
-                        $pvImage->image_path = $this->imageUpload($file, 'product_variation');
-                        $pvImage->save();
-                    }
-                }
-            }
-
-            // update images if available to WarehouseProductImage
-            if (!empty($variationData['images'])) {
-                $targetColorId = $variationData['color_id'] ?? $variation->color_id;
-
-                // Find warehouse products for this variation matching the target color (null handled)
+                // Get warehouse product ids for this variation matching the target color (null handled)
                 $wpQuery = WarehouseProduct::where('product_variation_id', $variation->id);
                 if (is_null($targetColorId)) {
                     $wpQuery->whereNull('color_id');
                 } else {
                     $wpQuery->where('color_id', $targetColorId);
                 }
-
                 $wpIds = $wpQuery->pluck('id')->toArray();
 
-                foreach ($wpIds as $wpId) {
-                    foreach ($variationData['images'] as $file) {
+                // For each uploaded file, upload once and reuse the same path for all related PV and WP images
+                foreach ($variationData['images'] as $file) {
+                    $path = $this->imageUpload($file, 'product_variation');
+
+                    // create ProductVariationImage for each variation with same color
+                    foreach ($variationsWithSameColor as $var) {
+                        $pvImage = new ProductVariationImage();
+                        $pvImage->product_variation_id = $var->id;
+                        $pvImage->image_path = $path;
+                        $pvImage->save();
+                    }
+
+                    // create WarehouseProductImage for each warehouse product id using the same path
+                    foreach ($wpIds as $wpId) {
                         $wpImage = new WarehouseProductImage();
                         $wpImage->warehouse_product_id = $wpId;
-                        $wpImage->image_path = $this->imageUpload($file, 'warehouse_product');
+                        $wpImage->image_path = $path;
                         $wpImage->save();
                     }
                 }
@@ -852,6 +907,7 @@ class ProductController extends Controller
     {
         $image = ProductVariationImage::findOrFail($request->id);
         $targetImagePath = $image->image_path;
+        //  return $targetImagePath;
 
         // Get the variation to know product_id and color_id
         $variation = ProductVariation::findOrFail($image->product_variation_id);
@@ -882,9 +938,11 @@ class ProductController extends Controller
 
         // remove images from WarehouseProductImage by WarehouseProduct have product_variation_id
         $wpIds = WarehouseProduct::where('product_variation_id', $variation->id)->pluck('id')->toArray();
+
         $wpImages = WarehouseProductImage::whereIn('warehouse_product_id', $wpIds)
             ->where('image_path', $targetImagePath)
             ->get();
+        // return $wpImages;
 
         foreach ($wpImages as $img) {
             if (file_exists(storage_path('app/public/' . $img->image_path))) {

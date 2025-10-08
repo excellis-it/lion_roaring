@@ -158,7 +158,7 @@
                                             $color = $item->color;
                                             $image = $item->image;
                                         @endphp
-                                        @if ($color)
+                                        @if ($color and $image)
                                             <div class="form-check form-check-inline border rounded" hidden>
                                                 {{-- add class product-select-color-input --}}
                                                 <input class="btn-check product-select-color-input " type="radio"

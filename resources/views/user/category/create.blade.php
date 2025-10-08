@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
-                                    <h3>Main Section</h3>
+                                    <h3>Create Category</h3>
                                 </div>
                             </div>
                         </div>
@@ -87,7 +87,7 @@
                                 <div class="box_label">
                                     <label for="image"> Category Image*</label>
                                     <input type="file" name="image" id="image" class="form-control"
-                                        value="{{ old('image') }}" placeholder="Enter Category Image">
+                                        value="{{ old('image') }}" placeholder="Enter Category Image" accept="image/*">
                                     <span class="text-sm ms-2 text-muted">(width: 410px, height: 150px, max 2MB)</span>
                                     @if ($errors->has('image'))
                                         <span class="error">{{ $errors->first('image') }}</span>
@@ -100,7 +100,7 @@
                                 <div class="box_label">
                                     <label for="background_image"> Category Background Image</label>
                                     <input type="file" name="background_image" id="background_image" class="form-control"
-                                        value="{{ old('background_image') }}" placeholder="Enter Category Background Image">
+                                        value="{{ old('background_image') }}" placeholder="Enter Category Background Image" accept="image/*">
                                     <span class="text-sm ms-2 text-muted">(width: 1920px, height: 520px, max 2MB)</span>
                                     @if ($errors->has('background_image'))
                                         <span class="error">{{ $errors->first('background_image') }}</span>
@@ -113,9 +113,8 @@
                                 <div class="box_label">
                                     <label for="status"> Status*</label>
                                     <select name="status" id="status" class="form-control">
-                                        <option value="">Select Status</option>
-                                        <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Active</option>
-                                        <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Inactive</option>
+                                        <option value="1" {{ old('status', '1') == '1' ? 'selected' : '' }}>Active</option>
+                                        <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Inactive</option>
                                     </select>
                                     @if ($errors->has('status'))
                                         <span class="error">{{ $errors->first('status') }}</span>
