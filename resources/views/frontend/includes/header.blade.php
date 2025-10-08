@@ -21,7 +21,7 @@
                                             <a href="{{ route('organization') }}">Organization</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('ecclesia-associations') }}">Ecclesia Association</a>
+                                            <a href="{{ route('ecclesia-associations') }}">Ecclesia Covenant</a>
                                         </li>
                                         <li>
                                             <a href="{{ route('principle-and-business') }}">Principle and Business

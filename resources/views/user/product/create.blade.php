@@ -16,6 +16,36 @@
         .choices__list--dropdown.is-active {
             z-index: 999999;
         }
+
+        /* Added preview styling */
+        .image-preview {
+            margin-top: .5rem;
+        }
+
+        .image-preview img {
+            max-width: 220px;
+            max-height: 160px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .gallery-previews {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .gallery-previews img {
+            width: 120px;
+            height: 90px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            padding: 3px;
+            border-radius: 4px;
+        }
     </style>
 @endpush
 @section('content')
@@ -136,9 +166,16 @@
                                             <label for="image"> Product Featured Image*</label>
                                             <input type="file" name="image" id="image" class="form-control"
                                                 value="{{ old('image') }}" accept="image/*">
+                                            <span class="text-sm ms-2 text-muted">(width: 300px, height: 400px, max
+                                                2MB)</span>
                                             @if ($errors->has('image'))
                                                 <span class="error">{{ $errors->first('image') }}</span>
                                             @endif
+
+                                            <!-- Preview for featured image -->
+                                            <div class="image-preview" id="image-preview-container" style="display:none;">
+                                                <img id="image-preview" src="#" alt="Featured preview" />
+                                            </div>
                                         </div>
                                     </div>
 
@@ -147,10 +184,18 @@
                                         <div class="box_label">
                                             <label for="image"> Product Banner Image</label>
                                             <input type="file" name="background_image" id="background_image"
-                                                class="form-control" value="{{ old('background_image') }}">
+                                                class="form-control" value="{{ old('background_image') }}" accept="image/*">
+                                            <span class="text-sm ms-2 text-muted">(width: 1920px, height: 520px, max
+                                                2MB)</span>
                                             @if ($errors->has('background_image'))
                                                 <span class="error">{{ $errors->first('background_image') }}</span>
                                             @endif
+
+                                            <!-- Preview for banner image -->
+                                            <div class="image-preview" id="background-image-preview-container"
+                                                style="display:none;">
+                                                <img id="background-image-preview" src="#" alt="Banner preview" />
+                                            </div>
                                         </div>
                                     </div>
 
@@ -270,8 +315,10 @@
                                             drop
                                             atleast 1
                                             images)*</label>
+                                        <br><span class="text-sm ms-2 text-muted">(width: 300px, height: 400px, max
+                                            2MB)</span>
                                         <input type="file" class="form-control dropzone" id="image-upload"
-                                            name="images[]" multiple>
+                                            name="images[]" multiple accept="image/*">
                                         @if ($errors->has('images.*'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('images.*') }}</div>
@@ -280,6 +327,9 @@
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('images') }}</div>
                                         @endif
+
+                                        <!-- Gallery previews -->
+                                        <div id="gallery-previews" class="gallery-previews" style="display:none;"></div>
                                     </div>
 
 
@@ -516,8 +566,10 @@
                     const isFree = $('#is_free').is(':checked');
                     if (isFree) {
                         $('#price').prop('readonly', true).val('0');
+                        $('#sale_price').prop('readonly', true).val('');
                     } else {
                         $('#price').prop('readonly', false);
+                        $('#sale_price').prop('readonly', false);
                     }
                 }
                 $('#is_free').on('change', togglePriceFields);
@@ -621,7 +673,61 @@
                     $form.find('.is-invalid').removeClass('is-invalid');
                 }
 
-                $('#productCreateForm').on('submit', function(e) {
+                async function validateImageFile(file, maxBytes, reqW, reqH, $input, label) {
+                    return new Promise(function(resolve) {
+                        if (!file) {
+                            resolve(false);
+                            return;
+                        }
+                        if (maxBytes && file.size > maxBytes) {
+                            addClientError($input, label + ' must be under ' + (maxBytes / 1024 / 1024).toFixed(
+                                2) + 'MB.');
+                            resolve(false);
+                            return;
+                        }
+                        if (!reqW && !reqH) {
+                            resolve(true);
+                            return;
+                        }
+                        var url = URL.createObjectURL(file);
+                        var img = new Image();
+                        var timedOut = false;
+                        var timer = setTimeout(function() {
+                            timedOut = true;
+                            URL.revokeObjectURL(url);
+                            addClientError($input, label + ' validation timed out.');
+                            resolve(false);
+                        }, 5000);
+
+                        function finish(ok, msg) {
+                            if (timedOut) return;
+                            clearTimeout(timer);
+                            URL.revokeObjectURL(url);
+                            if (!ok && msg) addClientError($input, msg);
+                            resolve(!!ok);
+                        }
+
+                        img.onload = function() {
+                            var w = this.naturalWidth || this.width;
+                            var h = this.naturalHeight || this.height;
+                            if ((reqW && w !== reqW) || (reqH && h !== reqH)) {
+                                finish(false, label + ' must be ' + reqW + 'x' + reqH + '. Uploaded ' + w +
+                                    'x' + h + '.');
+                            } else {
+                                finish(true);
+                            }
+                        };
+
+                        img.onerror = function() {
+                            finish(false, label + ' is not a valid image.');
+                        };
+
+                        img.src = url;
+                    });
+                }
+
+                $('#productCreateForm').on('submit', async function(e) {
+                    e.preventDefault();
                     var $form = $(this);
                     clearClientErrors($form);
 
@@ -653,12 +759,6 @@
                         errors.push('#image');
                     }
 
-                    // if (!val('#short_description')) {
-                    //     addClientError($('#short_description'), 'Short description is required.');
-                    //     errors.push('#short_description');
-                    // }
-
-                    // For CKEditor fields we try to read textarea value (works in most setups).
                     if (!val('#description')) {
                         addClientError($('#description'), 'Description is required.');
                         errors.push('#description');
@@ -669,12 +769,33 @@
                         errors.push('#specification');
                     }
 
-                    // Image gallery at least one file
+                    var featuredInput = $('#image')[0];
+                    if (featuredInput && featuredInput.files && featuredInput.files.length) {
+                        var okFeatured = await validateImageFile(featuredInput.files[0], 2 * 1024 * 1024, 300,
+                            400, $('#image'), 'Featured image');
+                        if (!okFeatured) errors.push('#image');
+                    }
+
+                    var backgroundInput = $('#background_image')[0];
+                    if (backgroundInput && backgroundInput.files && backgroundInput.files.length) {
+                        var okBackground = await validateImageFile(backgroundInput.files[0], 2 * 1024 * 1024,
+                            1920, 520, $('#background_image'), 'Banner image');
+                        if (!okBackground) errors.push('#background_image');
+                    }
+
                     var galleryInput = $('#image-upload')[0];
                     if (!galleryInput || (galleryInput.files && galleryInput.files.length === 0)) {
-                        // target visible input element
                         addClientError($('#image-upload'), 'Please upload at least one gallery image.');
                         errors.push('#image-upload');
+                    } else {
+                        for (var i = 0; i < galleryInput.files.length; i++) {
+                            var okGallery = await validateImageFile(galleryInput.files[i], 2 * 1024 * 1024, 300,
+                                400, $('#image-upload'), 'Gallery image');
+                            if (!okGallery) {
+                                errors.push('#image-upload');
+                                break;
+                            }
+                        }
                     }
 
                     // Product type specific checks
@@ -735,7 +856,6 @@
 
                     // If errors found, prevent submit and focus first invalid field
                     if (errors.length) {
-                        e.preventDefault();
                         var firstSel = errors[0];
                         var $first = $(firstSel);
                         if ($first.length) {
@@ -745,10 +865,90 @@
                                 $first.focus();
                             });
                         }
-                        return false;
+                        return;
                     }
 
-                    // No client-side errors -> allow submit
+                    $('#productCreateForm').off('submit');
+                    $form.submit();
+                });
+            })();
+        </script>
+
+        <script>
+            // Real-time image previews for featured, banner, and gallery inputs
+            (function() {
+                function readSingleImage(input, previewImgEl, containerEl) {
+                    if (input.files && input.files[0]) {
+                        const file = input.files[0];
+                        if (!file.type.startsWith('image/')) {
+                            containerEl.hide();
+                            previewImgEl.attr('src', '#');
+                            return;
+                        }
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImgEl.attr('src', e.target.result);
+                            containerEl.show();
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        previewImgEl.attr('src', '#');
+                        containerEl.hide();
+                    }
+                }
+
+                function readMultipleImages(input, containerEl) {
+                    containerEl.empty();
+                    const files = input.files || [];
+                    if (!files.length) {
+                        containerEl.hide();
+                        return;
+                    }
+                    Array.from(files).forEach(function(file) {
+                        if (!file.type.startsWith('image/')) {
+                            return;
+                        }
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const img = $('<img />', {
+                                src: e.target.result,
+                                alt: file.name
+                            });
+                            containerEl.append(img);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                    containerEl.show();
+                }
+
+                $(function() {
+                    const $featuredInput = $('#image');
+                    const $featuredPreview = $('#image-preview');
+                    const $featuredContainer = $('#image-preview-container');
+
+                    const $bgInput = $('#background_image');
+                    const $bgPreview = $('#background-image-preview');
+                    const $bgContainer = $('#background-image-preview-container');
+
+                    const $galleryInput = $('#image-upload');
+                    const $galleryContainer = $('#gallery-previews');
+
+                    // initial preview if old files are present is not possible without server URLs,
+                    // so previews only appear on client selection.
+
+                    $featuredInput.on('change', function() {
+                        readSingleImage(this, $featuredPreview, $featuredContainer);
+                    });
+
+                    $bgInput.on('change', function() {
+                        readSingleImage(this, $bgPreview, $bgContainer);
+                    });
+
+                    $galleryInput.on('change', function() {
+                        readMultipleImages(this, $galleryContainer);
+                    });
+
+                    // If validation prevents submit and user re-selects, previews update accordingly.
                 });
             })();
         </script>

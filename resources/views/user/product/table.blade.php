@@ -57,6 +57,18 @@
                         @endif
                     @endif
 
+
+                    @if (auth()->user()->isWarehouseAdmin())
+                        <div class="d-flex">
+
+                            <a href="{{ route('ware-houses.select-warehouse', $product->id) }}" class="edit_icon"
+                                title="Warehouse Product Stocks" data-bs-toggle="tooltip" data-bs-placement="top">
+                                <i class="fa-solid fa-th-list"></i>
+                            </a> &nbsp; &nbsp;
+
+                        </div>
+                    @endif
+
                     @if (auth()->user()->can('Edit Estore Products'))
                         <a href="{{ route('user.store-products.reviews', $product->id) }}" class="edit_icon"
                             title="Product Reviews" data-bs-toggle="tooltip" data-bs-placement="top">
@@ -71,21 +83,7 @@
                         </a> &nbsp; &nbsp;
                     @endif
 
-
                 </div>
-
-
-                @if (auth()->user()->isWarehouseAdmin())
-                    <div class="d-flex">
-
-                        <a href="{{ route('ware-houses.select-warehouse', $product->id) }}" class="delete_icon"
-                            title="Product Variations">
-                            <i class="fa-solid fa-th-list"></i>
-                        </a> &nbsp; &nbsp;
-
-                    </div>
-                @endif
-
 
             </td>
         </tr>

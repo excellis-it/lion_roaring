@@ -13,7 +13,8 @@
                     <h3 class="mb-3">Warehouse Products Stocks</h3>
                 </div>
                 <div class="col-md-2 float-right">
-                    <a href="{{ route('ware-houses.index') }}" class="btn btn-primary w-100"><i class="fa-solid fa-arrow-left"></i>
+                    <a href="{{ route('ware-houses.index') }}" class="btn btn-primary w-100"><i
+                            class="fa-solid fa-arrow-left"></i>
                         Back</a>
 
                 </div>
@@ -40,13 +41,13 @@
                         @foreach ($warehouseProducts as $key => $warehouseProduct)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td>{{ $warehouseProduct->sku }}</td>
-                                <td>{{ $warehouseProduct->product->name }}</td>
+                                <td>{{ $warehouseProduct->sku ?? '' }}</td>
+                                <td>{{ $warehouseProduct->product?->name ?? '-' }}</td>
                                 <td>{{ $warehouseProduct->colorDetail?->color_name ?? '-' }}</td>
                                 <td>{{ $warehouseProduct->sizeDetail?->size ?? '-' }}</td>
-                                <td>{{ $warehouseProduct->price }}</td>
-                                <td>{{ $warehouseProduct->stock_quantity }}</td>
-                                <td>{{ $warehouseProduct->warehouse_quantity }}</td>
+                                <td>{{ $warehouseProduct->price ?? '' }}</td>
+                                <td>{{ $warehouseProduct->stock_quantity ?? '' }}</td>
+                                <td>{{ $warehouseProduct->warehouse_quantity ?? '' }}</td>
 
 
 

@@ -62,6 +62,36 @@
         .choices__list--dropdown.is-active {
             z-index: 999999;
         }
+
+        /* Added preview styling */
+        .image-preview {
+            margin-top: .5rem;
+        }
+
+        .image-preview img {
+            max-width: 220px;
+            max-height: 160px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .gallery-previews {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: .5rem;
+        }
+
+        .gallery-previews img {
+            width: 120px;
+            height: 90px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            padding: 3px;
+            border-radius: 4px;
+        }
     </style>
 @endpush
 @section('content')
@@ -169,7 +199,9 @@
                                         <div class="box_label">
                                             <label for="image"> Product Featured Image*</label>
                                             <input type="file" name="image" id="image" class="form-control"
-                                                value="{{ old('image') }}">
+                                                value="{{ old('image') }}" accept="image/*">
+                                            <span class="text-sm ms-2 text-muted">(width: 300px, height: 400px, max
+                                                2MB)</span>
 
                                             @if ($errors->has('image'))
                                                 <span class="error">{{ $errors->first('image') }}</span>
@@ -183,7 +215,8 @@
                                     {{-- image preview --}}
                                     <div class="col-md-2 mb-2">
                                         <div class="box_label">
-                                            <a href="{{ Storage::url($product->image?->image ?? '') }}" target="_blank">
+                                            <a href="{{ Storage::url($product->image?->image ?? '') }}" target="_blank"
+                                                id="image_preview_anchor">
                                                 <img style="height: 80px; width: 80px; object-fit: cover;"
                                                     id="image_preview"
                                                     src="{{ Storage::url($product->image?->image ?? '') }}"
@@ -197,7 +230,10 @@
                                         <div class="box_label">
                                             <label for="background_image"> Product Banner Image</label>
                                             <input type="file" name="background_image" id="background_image"
-                                                class="form-control" value="{{ old('background_image') }}">
+                                                class="form-control" value="{{ old('background_image') }}"
+                                                accept="image/*">
+                                            <span class="text-sm ms-2 text-muted">(width: 1920px, height: 520px, max
+                                                2MB)</span>
                                             @if ($errors->has('background_image'))
                                                 <span class="error">{{ $errors->first('background_image') }}</span>
                                             @endif
@@ -210,10 +246,10 @@
 
                                     {{-- background image preview --}}
                                     <div class="col-md-2 mb-2">
-                                        <div class="box_label">
+                                        <div class="box_label" id="background_preview_wrapper">
                                             @if ($product->background_image)
                                                 <a href="{{ Storage::url($product->background_image ?? '') }}"
-                                                    target="_blank">
+                                                    target="_blank" id="background_image_preview_anchor">
                                                     <img style="height: 80px; width: 80px; object-fit: cover;"
                                                         id="background_image_preview"
                                                         src="{{ Storage::url($product->background_image ?? '') }}"
@@ -341,11 +377,10 @@
 
                                     <div class="col-md-12">
                                         <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image(Drag and
-                                            drop
-                                            atleast 1
-                                            images)*</label>
+                                            drop atleast 1 images)*</label><br>
+                                        <span class="text-sm ms-2 text-muted">(width: 300px, height: 400px, max 2MB)</span>
                                         <input type="file" class="form-control dropzone" id="image-upload"
-                                            name="images[]" multiple>
+                                            name="images[]" multiple accept="image/*">
                                         @if ($errors->has('images.*'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('images.*') }}</div>
@@ -354,13 +389,16 @@
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('images') }}</div>
                                         @endif
+
+                                        <!-- Gallery previews for newly selected files -->
+                                        <div id="gallery-previews" class="gallery-previews" style="display:none;"></div>
                                     </div>
 
 
                                 </div>
 
-                                @if ($product->withOutMainImage)
-                                    <div class="row mb-6">
+                                @if ($product->withOutMainImage && $product->withOutMainImage->count())
+                                    <div class="row mb-6" id="existing-gallery-wrapper">
                                         <label for="inputConfirmPassword2" class="col-form-label">Image Preview</label>
 
                                         @foreach ($product->withOutMainImage as $image)
@@ -541,6 +579,9 @@
         <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
         <!-- Choices.js -->
         <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+        <script>
+            window.existingGalleryImageCount = {{ optional($product->withOutMainImage)->count() ?? 0 }};
+        </script>
         <script type="text/javascript">
             Dropzone.options.imageUpload = {
                 maxFilesize: 1,
@@ -562,6 +603,13 @@
                         success: function() {
                             console.log("it Works");
                             $('#' + id).remove();
+                            const $wrapper = $('#existing-gallery-wrapper');
+                            const remaining = $wrapper.length ? $wrapper.find('.image-area')
+                                .length : 0;
+                            if (!remaining && $wrapper.length) {
+                                $wrapper.remove();
+                            }
+                            window.existingGalleryImageCount = remaining;
                         }
                     });
                 });
@@ -570,6 +618,104 @@
         <script>
             ClassicEditor.create(document.querySelector("#description"));
             ClassicEditor.create(document.querySelector("#specification"));
+        </script>
+
+        <script>
+            // Real-time image previews for featured, banner, and gallery inputs (edit form)
+            (function() {
+                function readSingleImage(input, previewSelector, anchorSelector, wrapperForCreateIfMissing) {
+                    if (!input.files || !input.files[0]) {
+                        return;
+                    }
+                    const file = input.files[0];
+                    if (!file.type.startsWith('image/')) {
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const src = e.target.result;
+                        const $preview = $(previewSelector);
+                        if ($preview.length) {
+                            $preview.attr('src', src);
+                            if ($(anchorSelector).length) {
+                                $(anchorSelector).attr('href', src);
+                            } else {
+                                // if anchor not present but img inside anchor originally, try closest anchor
+                                $preview.closest('a').attr('href', src);
+                            }
+                        } else {
+                            // create preview img if not present (use small size consistent with existing markup)
+                            const $img = $('<img/>', {
+                                id: previewSelector.replace('#', ''),
+                                src: src,
+                                style: 'height:80px;width:80px;object-fit:cover;',
+                                class: 'img-fluid'
+                            });
+                            if (wrapperForCreateIfMissing && $(wrapperForCreateIfMissing).length) {
+                                $(wrapperForCreateIfMissing).append($img);
+                            } else {
+                                $(input).closest('.box_label').append($img);
+                            }
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+
+                function readMultipleImages(input, containerSelector) {
+                    const $container = $(containerSelector);
+                    $container.empty();
+                    const files = input.files || [];
+                    if (!files.length) {
+                        $container.hide();
+                        return;
+                    }
+                    Array.from(files).forEach(function(file) {
+                        if (!file.type.startsWith('image/')) return;
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const img = $('<img/>', {
+                                src: e.target.result,
+                                alt: file.name
+                            });
+                            $container.append(img);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                    $container.show();
+                }
+
+                $(function() {
+                    $('#image').attr('accept', 'image/*').on('change', function() {
+                        readSingleImage(this, '#image_preview', '#image_preview_anchor', null);
+                    });
+
+                    $('#background_image').attr('accept', 'image/*').on('change', function() {
+                        // ensure wrapper exists for background preview when previously missing
+                        if (!$('#background_image_preview').length && $('#background_preview_wrapper')
+                            .length) {
+                            // create anchor+img structure to match existing preview pattern
+                            const $anchor = $('<a/>', {
+                                id: 'background_image_preview_anchor',
+                                target: '_blank'
+                            });
+                            const $img = $('<img/>', {
+                                id: 'background_image_preview',
+                                style: 'height:80px;width:80px;object-fit:cover;',
+                                class: 'img-fluid',
+                                alt: 'Product Background Image'
+                            });
+                            $anchor.append($img);
+                            $('#background_preview_wrapper').empty().append($anchor);
+                        }
+                        readSingleImage(this, '#background_image_preview',
+                            '#background_image_preview_anchor', '#background_preview_wrapper');
+                    });
+
+                    $('#image-upload').attr('accept', 'image/*').on('change', function() {
+                        readMultipleImages(this, '#gallery-previews');
+                    });
+                });
+            })();
         </script>
 
         <script>
@@ -742,7 +888,61 @@
                     $form.find('.is-invalid').removeClass('is-invalid');
                 }
 
-                $('#productEditForm').on('submit', function(e) {
+                async function validateImageFile(file, maxBytes, reqW, reqH, $input, label) {
+                    return new Promise(function(resolve) {
+                        if (!file) {
+                            resolve(false);
+                            return;
+                        }
+                        if (maxBytes && file.size > maxBytes) {
+                            addClientError($input, label + ' must be under ' + (maxBytes / 1024 / 1024).toFixed(
+                                2) + 'MB.');
+                            resolve(false);
+                            return;
+                        }
+                        if (!reqW && !reqH) {
+                            resolve(true);
+                            return;
+                        }
+                        var url = URL.createObjectURL(file);
+                        var img = new Image();
+                        var timedOut = false;
+                        var timer = setTimeout(function() {
+                            timedOut = true;
+                            URL.revokeObjectURL(url);
+                            addClientError($input, label + ' validation timed out.');
+                            resolve(false);
+                        }, 5000);
+
+                        function finish(ok, msg) {
+                            if (timedOut) return;
+                            clearTimeout(timer);
+                            URL.revokeObjectURL(url);
+                            if (!ok && msg) addClientError($input, msg);
+                            resolve(!!ok);
+                        }
+
+                        img.onload = function() {
+                            var w = this.naturalWidth || this.width;
+                            var h = this.naturalHeight || this.height;
+                            if ((reqW && w !== reqW) || (reqH && h !== reqH)) {
+                                finish(false, label + ' must be ' + reqW + 'x' + reqH + '. Uploaded ' + w +
+                                    'x' + h + '.');
+                            } else {
+                                finish(true);
+                            }
+                        };
+
+                        img.onerror = function() {
+                            finish(false, label + ' is not a valid image.');
+                        };
+
+                        img.src = url;
+                    });
+                }
+
+                $('#productEditForm').on('submit', async function(e) {
+                    e.preventDefault();
                     var $form = $(this);
                     clearClientErrors($form);
 
@@ -782,13 +982,38 @@
                         errors.push('#specification');
                     }
 
-                    // Image gallery: allow if there are existing images OR user selected new files
+                    var featuredInput = $('#image')[0];
+                    if (featuredInput && featuredInput.files && featuredInput.files.length) {
+                        var okFeatured = await validateImageFile(featuredInput.files[0], 2 * 1024 * 1024, 300,
+                            400, $('#image'), 'Featured image');
+                        if (!okFeatured) errors.push('#image');
+                    }
+
+                    var backgroundInput = $('#background_image')[0];
+                    if (backgroundInput && backgroundInput.files && backgroundInput.files.length) {
+                        var okBackground = await validateImageFile(backgroundInput.files[0], 2 * 1024 * 1024,
+                            1920, 520, $('#background_image'), 'Banner image');
+                        if (!okBackground) errors.push('#background_image');
+                    }
+
                     var galleryInput = $('#image-upload')[0];
                     var galleryHasFiles = galleryInput && galleryInput.files && galleryInput.files.length > 0;
+                    var existingImagesCount = (typeof window.existingGalleryImageCount !== 'undefined') ?
+                        window.existingGalleryImageCount :
+                        $('#existing-gallery-wrapper .image-area').length;
                     if (!galleryHasFiles && (!existingImagesCount || existingImagesCount === 0)) {
                         addClientError($('#image-upload'),
                             'Please have at least one gallery image (existing or new).');
                         errors.push('#image-upload');
+                    } else if (galleryHasFiles) {
+                        for (var i = 0; i < galleryInput.files.length; i++) {
+                            var okGallery = await validateImageFile(galleryInput.files[i], 2 * 1024 * 1024, 300,
+                                400, $('#image-upload'), 'Gallery image');
+                            if (!okGallery) {
+                                errors.push('#image-upload');
+                                break;
+                            }
+                        }
                     }
 
                     // Product type specific checks (only when fields exist)
@@ -807,8 +1032,11 @@
                         if ($('#price').length) {
                             var isFree = $('#is_free').is(':checked');
                             var priceVal = val('#price');
-                            if (!isFree && (priceVal === '' || isNaN(Number(priceVal)) || Number(parsepriceVal) < 0)) {
-                                addClientError($('#price'), 'Valid price is required (or mark product as Free).');
+                            if (!isFree && (priceVal === '' || isNaN(Number(priceVal)) || Number(
+                                        parsepriceVal) <
+                                    0)) {
+                                addClientError($('#price'),
+                                    'Valid price is required (or mark product as Free).');
                                 errors.push('#price');
                             }
                         }
@@ -819,13 +1047,16 @@
                             if (isNaN(Number(salePriceVal)) || Number(salePriceVal) < 0) {
                                 addClientError($('#sale_price'), 'Sale price cannot be negative.');
                                 errors.push('#sale_price');
-                            } else if (mainPriceVal && !isNaN(Number(mainPriceVal)) && Number(salePriceVal) > Number(
+                            } else if (mainPriceVal && !isNaN(Number(mainPriceVal)) && Number(salePriceVal) >
+                                Number(
                                     mainPriceVal)) {
-                                addClientError($('#sale_price'), 'Sale price cannot be greater than the main price.');
+                                addClientError($('#sale_price'),
+                                    'Sale price cannot be greater than the main price.');
                                 errors.push('#sale_price');
                             }
                         }
-                        if ($('#quantity').length && (val('#quantity') === '' || isNaN(Number(val('#quantity'))) ||
+                        if ($('#quantity').length && (val('#quantity') === '' || isNaN(Number(val(
+                                    '#quantity'))) ||
                                 Number(val('#quantity')) < 0)) {
                             addClientError($('#quantity'), 'Valid stock quantity is required.');
                             errors.push('#quantity');
@@ -843,7 +1074,6 @@
                     }
 
                     if (errors.length) {
-                        e.preventDefault();
                         var firstSel = errors[0];
                         var $first = $(firstSel);
                         if ($first.length) {
@@ -853,9 +1083,10 @@
                                 $first.focus();
                             });
                         }
-                        return false;
+                        return;
                     }
-                    // no errors -> allow form submission
+                    $('#productEditForm').off('submit');
+                    $form.submit();
                 });
             })();
         </script>

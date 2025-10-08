@@ -21,7 +21,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OrdersReportExport;
 use App\Models\EstorePayment;
 use App\Models\EstoreRefund;
-use PDF;
+use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Stripe\Refund;
 use Stripe\Stripe;
 
@@ -1010,11 +1011,31 @@ class EstoreCmsController extends Controller
             abort(403, 'Invoice not available.');
         }
 
-        // return response()->view('user.estore-orders.invoice', compact('order'));
+        // Prepare header logo as a base64 data URI so DomPDF doesn't try to fetch remote URLs (prevents timeouts)
+        $cms = EcomHomeCms::first();
+        $header_logo_full_url = null;
 
-        $pdf = PDF::loadView('user.estore-orders.invoice', compact('order'));
+        try {
+            if ($cms && $cms->header_logo && Storage::disk('public')->exists($cms->header_logo)) {
+                $content = Storage::disk('public')->get($cms->header_logo);
+                $mime = Storage::disk('public')->mimeType($cms->header_logo) ?? 'image/png';
+                $header_logo_full_url = 'data:' . $mime . ';base64,' . base64_encode($content);
+            } else {
+                $defaultPath = public_path('ecom_assets/images/estore_logo.png');
+                if (file_exists($defaultPath)) {
+                    $content = file_get_contents($defaultPath);
+                    $mime = mime_content_type($defaultPath) ?: 'image/png';
+                    $header_logo_full_url = 'data:' . $mime . ';base64,' . base64_encode($content);
+                }
+            }
+        } catch (\Exception $e) {
+            // fallback to null and let the view handle absence of logo
+            $header_logo_full_url = null;
+        }
 
-        return $pdf->download('invoice-' . $order->id . '.pdf');
+        $pdf = PDF::loadView('user.estore-orders.invoice', compact('order', 'header_logo_full_url'));
+
+        return $pdf->download('invoice-' . $order->order_number . '.pdf');
     }
 
     public function refund(EstoreOrder $order)
