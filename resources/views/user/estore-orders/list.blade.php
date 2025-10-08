@@ -135,10 +135,49 @@
     <script>
         const STATUS_SEQUENCE = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
         $(document).ready(function() {
+            // set today's max for date inputs to prevent future dates
+            const todayStr = new Date().toISOString().split('T')[0];
+            $('#date-from, #date-to').attr('max', todayStr);
+
             loadOrdersTable();
 
             // Filter event handlers
-            $('#status-filter, #payment-status-filter, #date-from, #date-to').on('change', function() {
+            $('#status-filter, #payment-status-filter').on('change', function() {
+                loadOrdersTable();
+            });
+
+            // date inputs need extra validation and min/max linking
+            $('#date-from').on('change', function() {
+                const from = $(this).val();
+                // enforce max today
+                if (from && from > todayStr) {
+                    toastr.warning('From Date cannot be in the future.');
+                    $(this).val(todayStr);
+                }
+                // set the minimum allowed for 'to' to the selected from date
+                if (from) {
+                    $('#date-to').attr('min', from);
+                } else {
+                    $('#date-to').removeAttr('min');
+                }
+                if (!validateDateFilters()) return;
+                loadOrdersTable();
+            });
+
+            $('#date-to').on('change', function() {
+                const to = $(this).val();
+                // enforce max today
+                if (to && to > todayStr) {
+                    toastr.warning('To Date cannot be in the future.');
+                    $(this).val(todayStr);
+                }
+                // set the maximum allowed for 'from' to the selected to date
+                if (to) {
+                    $('#date-from').attr('max', to);
+                } else {
+                    $('#date-from').attr('max', todayStr);
+                }
+                if (!validateDateFilters()) return;
                 loadOrdersTable();
             });
 
@@ -153,6 +192,31 @@
             });
         });
 
+        /**
+         * Validate date filters:
+         * - From Date <= To Date (if both present)
+         * - Neither date is in the future
+         * Returns true if valid, false otherwise (and shows a toastr warning).
+         */
+        function validateDateFilters() {
+            const from = $('#date-from').val();
+            const to = $('#date-to').val();
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            if (from && from > todayStr) {
+                toastr.warning('From Date cannot be in the future.');
+                return false;
+            }
+            if (to && to > todayStr) {
+                toastr.warning('To Date cannot be in the future.');
+                return false;
+            }
+            if (from && to && from > to) {
+                toastr.warning('From Date cannot be greater than To Date.');
+                return false;
+            }
+            return true;
+        }
 
         // every 5 sec fetch orders
         setInterval(function() {
@@ -160,6 +224,8 @@
         }, 5000);
 
         function loadOrdersTable() {
+            // validate date filters before making request
+            if (!validateDateFilters()) return;
             $.ajax({
                 url: '{{ route('user.store-orders.fetch-data') }}',
                 type: 'GET',
@@ -273,7 +339,9 @@
             });
         }
 
+        // ensure export also respects validation
         function exportOrders() {
+            if (!validateDateFilters()) return;
             const params = new URLSearchParams({
                 status: $('#status-filter').val(),
                 payment_status: $('#payment-status-filter').val(),
@@ -281,7 +349,6 @@
                 date_to: $('#date-to').val(),
                 search: $('#search-filter').val()
             });
-
             window.open('{{ route('user.store-orders.export') }}?' + params.toString(), '_blank');
         }
 

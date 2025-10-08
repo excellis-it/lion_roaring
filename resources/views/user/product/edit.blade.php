@@ -397,8 +397,8 @@
 
                                 </div>
 
-                                @if ($product->withOutMainImage)
-                                    <div class="row mb-6">
+                                @if ($product->withOutMainImage && $product->withOutMainImage->count())
+                                    <div class="row mb-6" id="existing-gallery-wrapper">
                                         <label for="inputConfirmPassword2" class="col-form-label">Image Preview</label>
 
                                         @foreach ($product->withOutMainImage as $image)
@@ -579,6 +579,9 @@
         <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
         <!-- Choices.js -->
         <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+        <script>
+            window.existingGalleryImageCount = {{ optional($product->withOutMainImage)->count() ?? 0 }};
+        </script>
         <script type="text/javascript">
             Dropzone.options.imageUpload = {
                 maxFilesize: 1,
@@ -600,6 +603,13 @@
                         success: function() {
                             console.log("it Works");
                             $('#' + id).remove();
+                            const $wrapper = $('#existing-gallery-wrapper');
+                            const remaining = $wrapper.length ? $wrapper.find('.image-area')
+                                .length : 0;
+                            if (!remaining && $wrapper.length) {
+                                $wrapper.remove();
+                            }
+                            window.existingGalleryImageCount = remaining;
                         }
                     });
                 });
@@ -988,6 +998,9 @@
 
                     var galleryInput = $('#image-upload')[0];
                     var galleryHasFiles = galleryInput && galleryInput.files && galleryInput.files.length > 0;
+                    var existingImagesCount = (typeof window.existingGalleryImageCount !== 'undefined') ?
+                        window.existingGalleryImageCount :
+                        $('#existing-gallery-wrapper .image-area').length;
                     if (!galleryHasFiles && (!existingImagesCount || existingImagesCount === 0)) {
                         addClientError($('#image-upload'),
                             'Please have at least one gallery image (existing or new).');
@@ -1020,7 +1033,7 @@
                             var isFree = $('#is_free').is(':checked');
                             var priceVal = val('#price');
                             if (!isFree && (priceVal === '' || isNaN(Number(priceVal)) || Number(
-                                    parsepriceVal) <
+                                        parsepriceVal) <
                                     0)) {
                                 addClientError($('#price'),
                                     'Valid price is required (or mark product as Free).');
@@ -1043,7 +1056,7 @@
                             }
                         }
                         if ($('#quantity').length && (val('#quantity') === '' || isNaN(Number(val(
-                                '#quantity'))) ||
+                                    '#quantity'))) ||
                                 Number(val('#quantity')) < 0)) {
                             addClientError($('#quantity'), 'Valid stock quantity is required.');
                             errors.push('#quantity');
