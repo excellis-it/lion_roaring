@@ -54,13 +54,12 @@ class EstorePromoCodeController extends Controller
 
     public function store(Request $request)
     {
-        try {
-            $request->validate([
+         $request->validate([
                 'code' => 'required|string|max:255|unique:estore_promo_codes',
                 'is_percentage' => 'required|boolean',
                 'discount_amount' => 'required|numeric|min:0',
-                'start_date' => 'required|date',
-                'end_date' => 'required|date|after:start_date',
+                'start_date' => 'required|date|after_or_equal:today',
+                'end_date'   => 'required|date|after_or_equal:start_date',
                 'status' => 'required|boolean',
                 'scope_type' => 'required|in:all,all_users,selected_users,all_products,selected_products',
                 'user_ids' => 'nullable|array|required_if:scope_type,selected_users',
@@ -69,6 +68,7 @@ class EstorePromoCodeController extends Controller
                 'product_ids.*' => 'integer|exists:products,id',
             ]);
 
+        try {
             $promoCode = new EstorePromoCode();
             $promoCode->code = $request->input('code');
             $promoCode->is_percentage = $request->boolean('is_percentage');
@@ -102,20 +102,23 @@ class EstorePromoCodeController extends Controller
 
     public function update(Request $request, $id)
     {
+
+        
+        $request->validate([
+            'code' => 'required|string|max:255|unique:estore_promo_codes,code,' . $id,
+            'is_percentage' => 'required|boolean',
+            'discount_amount' => 'required|numeric|min:0',
+            'start_date' => 'required|date|after_or_equal:today',
+            'end_date'   => 'required|date|after_or_equal:start_date',
+            'status' => 'required|boolean',
+            'scope_type' => 'required|in:all,all_users,selected_users,all_products,selected_products',
+            'user_ids' => 'nullable|array|required_if:scope_type,selected_users',
+            'user_ids.*' => 'integer|exists:users,id',
+            'product_ids' => 'nullable|array|required_if:scope_type,selected_products',
+            'product_ids.*' => 'integer|exists:products,id',
+        ]);
         try {
-            $request->validate([
-                'code' => 'required|string|max:255|unique:estore_promo_codes,code,' . $id,
-                'is_percentage' => 'required|boolean',
-                'discount_amount' => 'required|numeric|min:0',
-                'start_date' => 'required|date',
-                'end_date' => 'required|date|after:start_date',
-                'status' => 'required|boolean',
-                'scope_type' => 'required|in:all,all_users,selected_users,all_products,selected_products',
-                'user_ids' => 'nullable|array|required_if:scope_type,selected_users',
-                'user_ids.*' => 'integer|exists:users,id',
-                'product_ids' => 'nullable|array|required_if:scope_type,selected_products',
-                'product_ids.*' => 'integer|exists:products,id',
-            ]);
+
 
             $promoCode = EstorePromoCode::findOrFail($id);
             $promoCode->code = $request->input('code');

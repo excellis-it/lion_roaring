@@ -101,8 +101,8 @@
                                             <div class="col-md-12 mb-4">
 
                                                 <div class="box_label">
-                                                    <label for="header_logo"> Header Logo (Max width: 150px, Max Height:
-                                                        150px)*</label>
+                                                    <label for="header_logo"> Header Logo (width: 90px, height:
+                                                        90px, max 1MB)*</label>
                                                     <input type="file" name="header_logo" id="header_logo"
                                                         class="form-control" accept="image/*">
                                                     @if ($errors->has('header_logo'))
@@ -203,7 +203,7 @@
                                                                 <div class="row">
                                                                     <div class="col-xxl-2 col-lg-3 col-md-6">
                                                                         <div class="box_label">
-                                                                            <label>Slide {{ $index + 1 }} Title</label>
+                                                                            <label>Slide {{ $index + 1 }} Title*</label>
                                                                             <input type="text" name="slider_titles[]"
                                                                                 class="form-control"
                                                                                 value="{{ $slide['title'] ?? '' }}"
@@ -213,7 +213,7 @@
                                                                     <div class="col-xxl-3 col-lg-3 col-md-6">
                                                                         <div class="box_label">
                                                                             <label>Slide {{ $index + 1 }}
-                                                                                Subtitle</label>
+                                                                                Subtitle*</label>
                                                                             <input type="text"
                                                                                 name="slider_subtitles[]"
                                                                                 class="form-control"
@@ -223,7 +223,7 @@
                                                                     </div>
                                                                     <div class="col-xxl-2 col-lg-3 col-md-6">
                                                                         <div class="box_label">
-                                                                            <label>Slide {{ $index + 1 }} Link</label>
+                                                                            <label>Slide {{ $index + 1 }} Link*</label>
                                                                             <input type="text" name="slider_links[]"
                                                                                 class="form-control"
                                                                                 value="{{ $slide['link'] ?? '' }}"
@@ -233,7 +233,7 @@
                                                                     <div class="col-xxl-2 col-lg-3 col-md-6">
                                                                         <div class="box_label">
                                                                             <label>Slide {{ $index + 1 }} Link
-                                                                                Button</label>
+                                                                                Button*</label>
                                                                             <input type="text" name="slider_buttons[]"
                                                                                 class="form-control"
                                                                                 value="{{ $slide['button'] ?? '' }}"
@@ -242,9 +242,13 @@
                                                                     </div>
                                                                     <div class="col-xxl-2 col-lg-3 col-md-6">
                                                                         <div class="box_label">
-                                                                            <label>Slide {{ $index + 1 }} Image</label>
+
+                                                                            <label>Slide {{ $index + 1 }} Image
+                                                                                *</label>
                                                                             <input type="file" name="slider_images[]"
                                                                                 class="form-control" accept="image/*">
+                                                                            <span class="text-sm ms-2 text-muted">(width:
+                                                                                1920px, height: 550px, max 2MB)</span>
                                                                             @if (isset($slide['image']) && $slide['image'])
                                                                                 <div class="mt-2">
                                                                                     <img src="{{ Storage::url($slide['image']) }}"
@@ -269,7 +273,7 @@
                                                             <div class="row">
                                                                 <div class="col-md-3">
                                                                     <div class="box_label">
-                                                                        <label>Slide 1 Title</label>
+                                                                        <label>Slide 1 Title*</label>
                                                                         <input type="text" name="slider_titles[]"
                                                                             class="form-control"
                                                                             placeholder="Enter slide title">
@@ -277,7 +281,7 @@
                                                                 </div>
                                                                 <div class="col-md-5">
                                                                     <div class="box_label">
-                                                                        <label>Slide 1 Subtitle</label>
+                                                                        <label>Slide 1 Subtitle*</label>
                                                                         <input type="text" name="slider_subtitles[]"
                                                                             class="form-control"
                                                                             placeholder="Enter slide subtitle">
@@ -285,9 +289,11 @@
                                                                 </div>
                                                                 <div class="col-md-3">
                                                                     <div class="box_label">
-                                                                        <label>Slide 1 Image</label>
+                                                                        <label>Slide 1 Image*</label>
                                                                         <input type="file" name="slider_images[]"
                                                                             class="form-control" accept="image/*">
+                                                                        <span class="text-sm ms-2 text-muted">(width:
+                                                                            1920px, height: 550px, max 2MB)</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -437,6 +443,8 @@
                                                             class="form-control"
                                                             value="{{ isset($cms->shop_now_image) ? $cms->shop_now_image : old('shop_now_image') }}"
                                                             accept="image/*">
+                                                        <span class="text-sm ms-2 text-muted">(width: 1920px, height:
+                                                            550px, max 2MB)</span>
                                                         @if ($errors->has('shop_now_image'))
                                                             <span
                                                                 class="error">{{ $errors->first('shop_now_image') }}</span>
@@ -462,7 +470,7 @@
                                 {{-- Featured Product accordion end --}}
 
                                 {{-- 2nd Banner accordion start --}}
-                                <div class="accordion-item">
+                                <div class="accordion-item" hidden>
                                     <h2 class="accordion-header" id="heading3">
                                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
@@ -721,6 +729,8 @@
                                                         <input type="file" name="about_section_image"
                                                             id="about_section_image" class="form-control"
                                                             accept="image/*">
+                                                        <span class="text-sm ms-2 text-muted">(width: 420px, height:
+                                                            300px, max 2MB)</span>
                                                         @if ($errors->has('about_section_image'))
                                                             <span
                                                                 class="error">{{ $errors->first('about_section_image') }}</span>
@@ -868,36 +878,37 @@
                         <div class="row">
                             <div class="col-md-2">
                                 <div class="box_label">
-                                    <label>Slide ${slideIndex} Title</label>
+                                    <label>Slide ${slideIndex} Title*</label>
                                     <input type="text" name="slider_titles[]" class="form-control"
                                         placeholder="Enter slide title">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="box_label">
-                                    <label>Slide ${slideIndex} Subtitle</label>
+                                    <label>Slide ${slideIndex} Subtitle*</label>
                                     <input type="text" name="slider_subtitles[]" class="form-control"
                                         placeholder="Enter slide subtitle">
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="box_label">
-                                    <label>Slide ${slideIndex} Link</label>
+                                    <label>Slide ${slideIndex} Link*</label>
                                     <input type="text" name="slider_links[]" class="form-control"
                                         placeholder="Enter slide link">
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="box_label">
-                                    <label>Slide ${slideIndex} Link Button</label>
+                                    <label>Slide ${slideIndex} Link Button*</label>
                                     <input type="text" name="slider_buttons[]" class="form-control"
                                         placeholder="Enter slide button text">
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="box_label">
-                                    <label>Slide ${slideIndex} Image</label>
+                                    <label>Slide ${slideIndex} Image*</label>
                                     <input type="file" name="slider_images[]" class="form-control" accept="image/*">
+                                    <span class="text-sm ms-2 text-muted">(width: 1920px, height: 550px, max 2MB)</span>
                                 </div>
                             </div>
 
@@ -911,7 +922,7 @@
             });
 
             // Remove slide
-            $(document).on('click', '.remove-slide-second', function() {
+            $(document).on('click', '.remove-slide', function() {
                 if ($('.slider-item').length > 1) {
                     $(this).closest('.slider-item').remove();
                 } else {
@@ -1001,7 +1012,6 @@
                 } else {
                     $el.after('<span class="error client-error" style="color:red;display:block;margin-top:4px;">' +
                         message + '</span>');
-
                     toastr.error(message);
                 }
             }
@@ -1015,8 +1025,73 @@
                 return $.trim($(selector).val() || '');
             }
 
-            $('#home-cms-form').on('submit', function(e) {
+            // helper: validate a File object's size and required width/height. Returns Promise<boolean>
+            function validateImageFile(file, maxBytes, reqW, reqH, $input, messagePrefix) {
+                return new Promise(function(resolve) {
+                    if (!file) {
+                        resolve(false);
+                        return;
+                    }
+                    if (maxBytes && file.size > maxBytes) {
+                        addClientError($input, messagePrefix + ' file size must be less than ' + (maxBytes /
+                            1024 / 1024).toFixed(2) + 'MB.');
+                        resolve(false);
+                        return;
+                    }
+                    // if no resolution required, pass
+                    if (!reqW && !reqH) {
+                        resolve(true);
+                        return;
+                    }
+
+                    var url = URL.createObjectURL(file);
+                    var img = new Image();
+                    var timedOut = false;
+                    var timer = setTimeout(function() {
+                        timedOut = true;
+                        try {
+                            URL.revokeObjectURL(url);
+                        } catch (e) {}
+                        addClientError($input, messagePrefix + ' could not be validated (timeout).');
+                        resolve(false);
+                    }, 5000);
+
+                    function finish(ok, msg) {
+                        if (timedOut) return;
+                        clearTimeout(timer);
+                        try {
+                            URL.revokeObjectURL(url);
+                        } catch (e) {}
+                        if (!ok && msg) addClientError($input, msg);
+                        resolve(!!ok);
+                    }
+
+                    img.onload = function() {
+                        var w = this.naturalWidth || this.width;
+                        var h = this.naturalHeight || this.height;
+                        if ((reqW && w !== reqW) || (reqH && h !== reqH)) {
+
+                            finish(false, messagePrefix + ' resolution must be ' + reqW + 'x' + reqH +
+                                '. Your image is ' + w + 'x' + h + '.');
+                            return;
+                        } else {
+                            finish(true);
+                        }
+                    };
+
+                    img.onerror = function() {
+                        finish(false, messagePrefix + ' is not a valid image.');
+                    };
+
+                    img.src = url;
+                });
+            }
+
+            // Make submit handler async to await image resolution checks
+            $('#home-cms-form').on('submit', async function(e) {
                 var $form = $(this);
+                // prevent default immediately so async validation can run without the browser submitting
+                e.preventDefault();
                 clearClientErrors($form);
                 var errors = [];
 
@@ -1026,7 +1101,8 @@
                     errors.push('#product_category_title');
                 }
                 if ($('#product_category_subtitle').length && !val('#product_category_subtitle')) {
-                    addClientError($('#product_category_subtitle'), 'Product category subtitle is required.');
+                    addClientError($('#product_category_subtitle'),
+                        'Product category subtitle is required.');
                     errors.push('#product_category_subtitle');
                 }
 
@@ -1036,7 +1112,8 @@
                     errors.push('#featured_product_title');
                 }
                 if ($('#featured_product_subtitle').length && !val('#featured_product_subtitle')) {
-                    addClientError($('#featured_product_subtitle'), 'Featured product subtitle is required.');
+                    addClientError($('#featured_product_subtitle'),
+                        'Featured product subtitle is required.');
                     errors.push('#featured_product_subtitle');
                 }
 
@@ -1064,6 +1141,11 @@
                 if (!existingShopNowImage && !shopNowHasFile) {
                     addClientError($('#shop_now_image'), 'Shop Now image is required (existing or new).');
                     errors.push('#shop_now_image');
+                } else if (shopNowHasFile) {
+                    // validate size/resolution: 1920x550, max 2MB
+                    var ok = await validateImageFile(shopNowInput.files[0], 2 * 1024 * 1024, 1920, 550, $(
+                        '#shop_now_image'), 'Shop Now image');
+                    if (!ok) errors.push('#shop_now_image');
                 }
 
                 // Header logo required only if no existing
@@ -1072,6 +1154,11 @@
                 if (!existingHeaderLogo && !headerHasFile) {
                     addClientError($('#header_logo'), 'Header logo is required (existing or new).');
                     errors.push('#header_logo');
+                } else if (headerHasFile) {
+                    // validate header: 90x90, max 1MB
+                    var okHeader = await validateImageFile(headerInput.files[0], 1 * 1024 * 1024, 90, 90, $(
+                        '#header_logo'), 'Header logo');
+                    if (!okHeader) errors.push('#header_logo');
                 }
 
                 // About section
@@ -1079,12 +1166,14 @@
                     addClientError($('#about_section_title'), 'About section title is required.');
                     errors.push('#about_section_title');
                 }
-                if ($('#about_section_text_one_content').length && !val('#about_section_text_one_content')) {
+                if ($('#about_section_text_one_content').length && !val(
+                        '#about_section_text_one_content')) {
                     addClientError($('#about_section_text_one_content'),
                         'About section text one content is required.');
                     errors.push('#about_section_text_one_content');
                 }
-                if ($('#about_section_text_two_content').length && !val('#about_section_text_two_content')) {
+                if ($('#about_section_text_two_content').length && !val(
+                        '#about_section_text_two_content')) {
                     addClientError($('#about_section_text_two_content'),
                         'About section text two content is required.');
                     errors.push('#about_section_text_two_content');
@@ -1102,39 +1191,83 @@
                     addClientError($('#about_section_image'),
                         'About section image is required (existing or new).');
                     errors.push('#about_section_image');
+                } else if (aboutHasFile) {
+                    // validate about image: 420x300, max 2MB
+                    var okAbout = await validateImageFile(aboutInput.files[0], 2 * 1024 * 1024, 420, 300, $(
+                        '#about_section_image'), 'About section image');
+                    if (!okAbout) errors.push('#about_section_image');
                 }
 
-                // Slider validation - ensure at least one slide has a title or image
-                var validSlideFound = false;
-                $('#slider-container .slider-item').each(function() {
-                    var title = $(this).find('input[name="slider_titles[]"]').val() || '';
-                    var fileInput = $(this).find('input[name="slider_images[]"]')[0];
-                    var hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
-                    if ($.trim(title) !== '' || hasFile) {
-                        validSlideFound = true;
-                        return false; // break
-                    }
-                });
-                if (!validSlideFound) {
-                    addClientError($('#slider-container'),
-                        'Please provide at least one slide with a title or image.');
+                // Top Banner Slider validation:
+                var $slides = $('#slider-container .slider-item');
+                if ($slides.length === 0) {
+                    addClientError($('#add-slide'), 'At least one top banner slide is required.');
                     errors.push('#slider-container');
+                } else {
+                    // iterate slides and validate title, subtitle and image (file or existing img)
+                    var slidePromises = [];
+                    $slides.each(function(idx, el) {
+                        var $slide = $(el);
+                        var slideIndex = idx + 1;
+                        var $title = $slide.find('input[name="slider_titles[]"]');
+                        var $subtitle = $slide.find('input[name="slider_subtitles[]"]');
+                        var $fileInput = $slide.find('input[type="file"][name="slider_images[]"]');
+                        var hasExistingImg = $slide.find('img').length > 0;
+                        // title
+                        if ($title.length && !$.trim($title.val() || '')) {
+                            addClientError($title, 'Slide ' + slideIndex + ' title is required.');
+                            errors.push($title);
+                        }
+                        // subtitle
+                        if ($subtitle.length && !$.trim($subtitle.val() || '')) {
+                            addClientError($subtitle, 'Slide ' + slideIndex +
+                                ' subtitle is required.');
+                            errors.push($subtitle);
+                        }
+                        // image: require if no existing img and no file selected
+                        var fileObj = ($fileInput.length && $fileInput[0].files && $fileInput[0]
+                            .files[0]) ? $fileInput[0].files[0] : null;
+                        if (!hasExistingImg && !fileObj) {
+                            addClientError($fileInput, 'Slide ' + slideIndex +
+                                ' image is required (existing or new).');
+                            errors.push($fileInput);
+                        } else if (fileObj) {
+                            // push promise to validate resolution/size: 1920x550, max 2MB
+                            slidePromises.push(
+                                validateImageFile(fileObj, 2 * 1024 * 1024, 1920, 550,
+                                    $fileInput, 'Slide ' + slideIndex + ' image')
+                                .then(function(ok) {
+                                    if (!ok) errors.push($fileInput);
+                                })
+                            );
+                        }
+                    });
+                    // await all slide image validations
+                    if (slidePromises.length) {
+                        await Promise.all(slidePromises);
+                    }
                 }
 
+                // if any errors collected, prevent submission and scroll to first
                 if (errors.length) {
-                    e.preventDefault();
+                    // we've already prevented default; just scroll to first error
                     var firstSel = errors[0];
                     var $first = $(firstSel);
-                    if ($first.length) {
+                    if ($first.length === 0 && typeof firstSel === 'string') {
+                        $first = $(firstSel);
+                    }
+                    if ($first && $first.length) {
                         $('html, body').animate({
                             scrollTop: $first.offset().top - 100
                         }, 300, function() {
                             $first.focus();
                         });
                     }
-                    return false;
+                    return;
                 }
-                // no errors -> allow submit
+                // no errors -> submit programmatically (remove handler to avoid recursion)
+                $('#home-cms-form').off('submit');
+                $form.submit();
             });
         })();
     </script>

@@ -202,7 +202,9 @@
                                     </div>
                                 @endif
                             @else
-                                @if (auth()->user()->can('Edit Estore Orders') || auth()->user()->isWarehouseAdmin())
+                                @if (
+                                    (auth()->user()->can('Edit Estore Orders') || auth()->user()->isWarehouseAdmin()) &&
+                                        !in_array($order->status, ['delivered', 'cancelled']))
                                     <button type="button" class="btn btn-warning w-100 mb-2"
                                         onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}')">
                                         <i class="fas fa-edit"></i> Update Status
@@ -312,6 +314,7 @@
                 <form id="updateStatusForm">
                     <div class="modal-body">
                         <input type="hidden" id="order-id" name="order_id" value="{{ $order->id }}">
+                        <input type="hidden" id="current-status" name="current_status" value="{{ $order->status }}">
 
                         <div class="mb-3">
                             <label for="order-status" class="form-label">Order Status</label>
@@ -463,16 +466,46 @@
         }
     </script>
     <script>
+        const STATUS_SEQUENCE = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+
         function openUpdateStatusModal(orderId, currentStatus, currentPaymentStatus, notes) {
+            if (['delivered', 'cancelled'].includes(currentStatus)) {
+                toastr.warning('This order status is final and cannot be changed.');
+                return;
+            }
             $('#order-id').val(orderId);
+            $('#current-status').val(currentStatus);
+            $('#order-status option').each(function() {
+                $(this).prop('disabled', false);
+                const optionValue = $(this).val();
+                const optionIndex = STATUS_SEQUENCE.indexOf(optionValue);
+                const currentIndex = STATUS_SEQUENCE.indexOf(currentStatus);
+                const isPreviousStep = optionIndex !== -1 && optionIndex < currentIndex && optionValue !==
+                    currentStatus;
+                $(this).prop('disabled', isPreviousStep);
+            });
             $('#order-status').val(currentStatus);
-            //$('#payment-status').val('');
             $('#order-notes').val(notes || '');
             $('#updateStatusModal').modal('show');
         }
 
         $('#updateStatusForm').on('submit', function(e) {
             e.preventDefault();
+
+            const currentStatus = $('#current-status').val();
+            const targetStatus = $('#order-status').val();
+            const currentIndex = STATUS_SEQUENCE.indexOf(currentStatus);
+            const targetIndex = STATUS_SEQUENCE.indexOf(targetStatus);
+
+            if (['delivered', 'cancelled'].includes(currentStatus)) {
+                toastr.warning('Finalized orders cannot be updated.');
+                return;
+            }
+
+            if (targetIndex !== -1 && currentIndex !== -1 && targetIndex < currentIndex) {
+                toastr.warning('Cannot revert an order to a previous status.');
+                return;
+            }
 
             const formData = new FormData(this);
 

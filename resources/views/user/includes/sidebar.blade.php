@@ -287,7 +287,7 @@
                             <span class="hide-menu">E-Store</span>
                         </a>
                         {{-- Collapse content --}}
-                        <div class="collapse {{ Request::is('user/products*') || Request::is('user/store-orders*') || Request::is('user/ware-houses*') || Request::is('user/store-settings*') || Request::is('user/sizes*') || Request::is('user/colors*') || Request::is('user/store-promo-codes*') || Request::is('user/warehouse-admins*') || Request::is('user/store-cms*') || Request::is('user/store-cms-page/home*') || Request::is('user/store-cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
+                        <div class="collapse {{ Request::is('user/products*') ||Request::is('user/estore-users-list*')   || Request::is('user/store-orders*') || Request::is('user/ware-houses*') || Request::is('user/store-settings*') || Request::is('user/sizes*') || Request::is('user/colors*') || Request::is('user/store-promo-codes*') || Request::is('user/warehouse-admins*') || Request::is('user/store-cms*') || Request::is('user/store-cms-page/home*') || Request::is('user/store-cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
                             id="collapseExample10">
                             <div class="menu_bb">
                                 {{-- bulletins --}}

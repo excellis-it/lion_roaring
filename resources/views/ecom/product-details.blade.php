@@ -158,7 +158,7 @@
                                             $color = $item->color;
                                             $image = $item->image;
                                         @endphp
-                                        @if ($color)
+                                        @if ($color and $image)
                                             <div class="form-check form-check-inline border rounded" hidden>
                                                 {{-- add class product-select-color-input --}}
                                                 <input class="btn-check product-select-color-input " type="radio"
@@ -207,13 +207,16 @@
                             </div>
 
                             {{-- Select option dropdown for quantity --}}
-                            <div class="me-3">
+                            <div class="me-3" id="qty-div">
                                 <div class="d-flex justify-content-start align-items-center">
                                     <div class="small_number mb-3">
-                                        <div class="">
+                                        <div class="d-flex " >
+                                            <label for="product-qty" class="form-label me-2">Qty:</label>
+                                            {{-- default value 1 and max value from $wareHouseHaveProductVariables->quantity --}}
+                                            {{-- if $wareHouseHaveProductVariables->quantity is 0 then hide this div --}}
                                             <select class="form-select product-qty" name="product-qty"
                                                 data-product-id="{{ $product->id }}">
-                                                <option value="1">Qty: 1</option>
+                                                <option value="1"> 1</option>
                                                 @php
                                                     $qty = (int) ($wareHouseHaveProductVariables?->quantity ?? 0);
                                                     $max = $qty > 0 ? min($qty, 20) : 0;
@@ -590,6 +593,8 @@
                             $("#qty-div").show();
                             $("#out-of-stock-message").hide();
                             $(".cart-btns").show();
+
+
                             // Keep price (or FREE badge) visible
                             $(".warehouse-product-price-div").show();
 
@@ -597,6 +602,7 @@
                             $("#qty-div").hide();
                             $("#out-of-stock-message").show();
                             $(".cart-btns").hide();
+
                             // Only hide price area if not free product
                             if (!IS_FREE_PRODUCT) {
                                 $(".warehouse-product-price-div").hide();

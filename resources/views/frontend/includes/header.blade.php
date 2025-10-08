@@ -18,14 +18,14 @@
                                             <a href="{{ route('home') }}">Home</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('organization') }}">Organization</a>
+                                            <a href="{{ route('organization') }}">Private Ecclesia</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('ecclesia-associations') }}">Ecclesia Association</a>
+                                            <a href="{{ route('ecclesia-associations') }}">Ecclesia Covenant</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('principle-and-business') }}">Principle and Business
-                                                Model</a>
+                                            <a href="{{ route('principle-and-business') }}">Mandate of Kingdom Precepts
+                                                and Dominion</a>
                                         </li>
                                         <li>
                                             <a href="{{ route('gallery') }}">Gallery</a>
