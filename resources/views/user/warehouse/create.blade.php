@@ -11,6 +11,15 @@
 
     <style>
         /* map sizing */
+        .text-danger {
+            color: red !important;
+            font-size: 0.875em !important;
+        }
+
+        .is-invalid {
+            border-color: red !important;
+        }
+
         #map {
             height: 320px;
             width: 100%;
@@ -42,94 +51,141 @@
                     <form action="{{ route('ware-houses.store') }}" method="POST" id="create-warehouse-form">
                         @csrf
                         <div class="row">
+                            {{-- Warehouse Name --}}
                             <div class="col-md-12 mb-2">
                                 <div class="box_label">
-                                    <label for="name">Warehouse Name</label>
-                                    <input type="text" name="name" id="name" class="form-control">
+                                    <label for="name">Warehouse Name<span class="text-danger">*</span></label>
+                                    <input type="text" name="name" id="name"
+                                        class="form-control @error('name') is-invalid @enderror"
+                                        value="{{ old('name') }}">
+                                    @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 
+                            {{-- Latitude --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="latitude">Latitude</label>
-                                    <input type="text" name="location_lat" id="latitude" class="form-control">
+                                    <label for="latitude">Latitude<span class="text-danger">*</span></label>
+                                    <input type="text" name="location_lat" id="latitude"
+                                        class="form-control @error('location_lat') is-invalid @enderror"
+                                        value="{{ old('location_lat') }}">
+                                    @error('location_lat')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 
+                            {{-- Longitude --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="name">Longitude</label>
-                                    <input type="text" name="location_lng" id="longitude" class="form-control">
+                                    <label for="longitude">Longitude<span class="text-danger">*</span></label>
+                                    <input type="text" name="location_lng" id="longitude"
+                                        class="form-control @error('location_lng') is-invalid @enderror"
+                                        value="{{ old('location_lng') }}">
+                                    @error('location_lng')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 
-
-
+                            {{-- Address --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="address">Warehouse Address</label>
-                                    <input type="text" name="address" id="address" class="form-control"
-                                        placeholder="Enter address to search location">
+                                    <label for="address">Warehouse Address<span class="text-danger">*</span></label>
+                                    <input type="text" name="address" id="address"
+                                        class="form-control @error('address') is-invalid @enderror"
+                                        placeholder="Enter address to search location" value="{{ old('address') }}">
+                                    @error('address')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 
-                            <!-- Map container -->
+                            {{-- Map --}}
                             <div class="col-md-12 mb-2">
                                 <div id="map"></div>
                             </div>
 
-                            <!-- ...existing form fields... -->
+                            {{-- Country --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="country">Warehouse Country</label>
-                                    <select name="country_id" id="country" class="form-control">
+                                    <label for="country">Warehouse Country<span class="text-danger">*</span></label>
+                                    <select name="country_id" id="country"
+                                        class="form-control @error('country_id') is-invalid @enderror">
                                         <option value="">Select Country</option>
                                         @foreach ($countries as $country)
-                                            <option value="{{ $country->id }}">{{ $country->name }}</option>
+                                            <option value="{{ $country->id }}"
+                                                {{ old('country_id') == $country->id ? 'selected' : '' }}>
+                                                {{ $country->name }}
+                                            </option>
                                         @endforeach
                                     </select>
+                                    @error('country_id')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 
+                            {{-- Service Range --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="service_range">Warehouse Service Range (In kilometers)</label>
+                                    <label for="service_range">Warehouse Service Range (In kilometers)<span class="text-danger">*</span></label>
                                     <input type="number" step="0.1" placeholder="Ex: 10.5" name="service_range"
-                                        id="service_range" class="form-control" min="0">
+                                        id="service_range" class="form-control @error('service_range') is-invalid @enderror"
+                                        min="0" value="{{ old('service_range') }}">
+                                    @error('service_range')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 
+                            {{-- Assign User --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="assign_user">Assign User</label>
-                                    <select name="assign_user[]" id="assign_user" class="selectpicker"
+                                    <select name="assign_user[]" id="assign_user"
+                                        class="selectpicker @error('assign_user') is-invalid @enderror"
                                         data-live-search="true" data-width="100%" data-size="10" multiple>
-                                        <option value="">Select User</option>
                                         @foreach ($all_users as $user)
-                                            <option value="{{ $user->id }}">
+                                            <option value="{{ $user->id }}"
+                                                {{ collect(old('assign_user'))->contains($user->id) ? 'selected' : '' }}>
                                                 {{ $user->full_name }} ({{ $user->email }})
                                             </option>
                                         @endforeach
                                     </select>
+                                    @error('assign_user')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 
+                            {{-- Status --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="status">Status</label>
-                                    <select name="is_active" id="status" class="form-control">
-                                        <option value="1">Active</option>
-                                        <option value="0">Inactive</option>
+                                    <select name="is_active" id="status"
+                                        class="form-control @error('is_active') is-invalid @enderror">
+                                        <option value="1" {{ old('is_active', 1) == 1 ? 'selected' : '' }}>Active
+                                        </option>
+                                        <option value="0" {{ old('is_active', 1) == 0 ? 'selected' : '' }}>Inactive
+                                        </option>
                                     </select>
+                                    @error('is_active')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
 
+                        {{-- Buttons --}}
                         <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
                             <button type="submit" class="print_btn me-2">Save</button>
                             <a href="{{ route('ware-houses.index') }}" class="print_btn print_btn_vv">Cancel</a>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>

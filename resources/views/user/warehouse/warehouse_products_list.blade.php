@@ -10,7 +10,7 @@
 
             <div class="row mb-3">
                 <div class="col-md-10">
-                    <h3 class="mb-3">Warehouse Products Stocks</h3>
+                    <h3 class="mb-3"><span style="color: #f6bc41; font-weight:600;">{{$wareHouse->name ?? '-'}}</span> Products Stocks</h3>
                 </div>
                 <div class="col-md-2 float-right">
                     <a href="{{ route('ware-houses.index') }}" class="btn btn-primary w-100"><i
