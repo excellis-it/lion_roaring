@@ -102,7 +102,7 @@
                                 <div class="box_label">
                                     <label for="image"> Category Image</label>
                                     <input type="file" name="image" id="image" class="form-control"
-                                        value="{{ old('image') }}" placeholder="Enter Category Image">
+                                        value="{{ old('image') }}" placeholder="Enter Category Image" accept="image/*">
                                     <span class="text-sm ms-2 text-muted">(width: 410px, height: 150px, max 2MB)</span>
                                     @if ($errors->has('image'))
                                         <span class="error">{{ $errors->first('image') }}</span>
@@ -308,7 +308,7 @@
                     var $image = $('#image');
                     var imageInput = $image[0];
                     if (!existingCategoryImage && (!imageInput || !imageInput.files || !imageInput.files
-                        .length)) {
+                            .length)) {
                         addClientError($image, 'Category image is required (existing or new).');
                         errors.push($image);
                     } else if (imageInput && imageInput.files && imageInput.files.length) {
