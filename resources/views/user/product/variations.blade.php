@@ -86,8 +86,8 @@
             @if ($product->product_type != 'simple')
                 <div class="row">
                     <div class="col-lg-12">
-                        <form action="{{ route('products.generate.variations') }}" method="POST"
-                            enctype="multipart/form-data">
+                        <form id="generate-variations-form" action="{{ route('products.generate.variations') }}"
+                            method="POST" enctype="multipart/form-data">
                             @method('POST')
                             @csrf
 
@@ -104,7 +104,7 @@
                             <div class="row multi-generate-variation">
                                 <div class="col-md-3 mb-2">
                                     <div class="box_label">
-                                        <label>Select Color</label>
+                                        <label>Select Color*</label>
                                         <div id="colors-wrapper">
                                             <div class="mb-2">
                                                 <select name="colors[]" class="form-control" id="generate-color-select">
@@ -122,7 +122,7 @@
 
                                 <div class="col-md-4 mb-2">
                                     <div class="box_label">
-                                        <label>Select Sizes </label>
+                                        <label>Select Sizes*</label>
                                         <div id="sizes-wrapper">
                                             <div class=" mb-2">
                                                 <select multiple name="sizes[]" class="sizeSelect"
@@ -270,7 +270,8 @@
                                                         <label class="small fw-semibold">Sale Price (If Any)</label>
                                                         <input type="number" step="0.01"
                                                             name="variation_products[{{ $index }}][sale_price]"
-                                                            class="form-control" value="{{ $variation->sale_price }}" {{ $product->is_free == 1 ? 'readonly' : '' }}>
+                                                            class="form-control" value="{{ $variation->sale_price }}"
+                                                            {{ $product->is_free == 1 ? 'readonly' : '' }}>
                                                     </div>
 
                                                     <div class="col-md-1"
@@ -430,5 +431,22 @@
         if (!group.find('.variation-product-entry').length) {
             group.remove();
         }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#generate-variations-form').on('submit', function(e) {
+                const color = $('#generate-color-select').val();
+                const sizes = $('#generate-size-select').val();
+                if (!color) {
+                    e.preventDefault();
+                    toastr.error('Please select a color.');
+                    return;
+                }
+                if (!sizes || !sizes.length) {
+                    e.preventDefault();
+                    toastr.error('Please select at least one size.');
+                }
+            });
+        });
     </script>
 @endpush
