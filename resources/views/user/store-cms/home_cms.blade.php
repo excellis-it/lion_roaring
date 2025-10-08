@@ -201,7 +201,7 @@
                                                         @foreach ($sliderData as $index => $slide)
                                                             <div class="slider-item mb-4 p-0 border rounded">
                                                                 <div class="row">
-                                                                    <div class="col-md-2">
+                                                                    <div class="col-xxl-2 col-lg-3 col-md-6">
                                                                         <div class="box_label">
                                                                             <label>Slide {{ $index + 1 }} Title*</label>
                                                                             <input type="text" name="slider_titles[]"
@@ -210,7 +210,7 @@
                                                                                 placeholder="Enter slide title">
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-md-3">
+                                                                    <div class="col-xxl-3 col-lg-3 col-md-6">
                                                                         <div class="box_label">
                                                                             <label>Slide {{ $index + 1 }}
                                                                                 Subtitle*</label>
@@ -221,7 +221,7 @@
                                                                                 placeholder="Enter slide subtitle">
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-md-2">
+                                                                    <div class="col-xxl-2 col-lg-3 col-md-6">
                                                                         <div class="box_label">
                                                                             <label>Slide {{ $index + 1 }} Link*</label>
                                                                             <input type="text" name="slider_links[]"
@@ -230,7 +230,7 @@
                                                                                 placeholder="Enter slide link">
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-md-2">
+                                                                    <div class="col-xxl-2 col-lg-3 col-md-6">
                                                                         <div class="box_label">
                                                                             <label>Slide {{ $index + 1 }} Link
                                                                                 Button*</label>
@@ -240,7 +240,7 @@
                                                                                 placeholder="Enter slide button text">
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-md-2">
+                                                                    <div class="col-xxl-2 col-lg-3 col-md-6">
                                                                         <div class="box_label">
 
                                                                             <label>Slide {{ $index + 1 }} Image
@@ -259,7 +259,7 @@
                                                                             @endif
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-md-1">
+                                                                    <div class="col-xxl-1 col-lg-1 col-md-1">
                                                                         <button type="button"
                                                                             class="btn btn-danger btn-sm mt-2 remove-slide"><i
                                                                                 class="fa-solid fa-trash"></i></button>

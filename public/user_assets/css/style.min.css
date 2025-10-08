@@ -45708,3 +45708,7 @@ ul {
     align-items: center;
     justify-content: center;
 }
+.bootstrap-select>.dropdown-toggle{
+    border: 1px solid #ccc !important;
+    padding: 10px !important;
+}

@@ -4169,9 +4169,11 @@ content: none !important;
   transform-origin: center center;
   object-fit: cover;
 }
-.product_details .slider-nav .slick-prev,
-.product_details .slider-nav .slick-next{
-    display: none;
+.catagory_sec.product_details .slider_left .slider-nav .slick-prev{
+    display: none !important;
+}
+.catagory_sec.product_details .slider_left .slider-nav .slick-next{
+    display: none !important;
 }
 
 .rate {

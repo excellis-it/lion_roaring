@@ -8,7 +8,7 @@
             <div class="row">
 
 
-                <div class="col-md-2 mb-2">
+                <div class="col-xxl-2 col-lg-4 col-md-6 mb-2">
                     <div class="box_label">
                         <label>SKU <span class="text-danger"></span></label>
                         <input type="text" name="variation_products[{{ $index }}][sku]" class="form-control"
@@ -16,7 +16,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-1 mb-2">
+                <div class="col-xxl-1 col-lg-4 col-md-6 mb-2">
                     <div class="box_label">
                         <label>Price <span class="text-danger"></span></label>
                         <input type="number" step="0.01" name="variation_products[{{ $index }}][price]"
@@ -24,7 +24,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-1 mb-2">
+                <div class="col-xxl-1 col-lg-4 col-md-6 mb-2">
                     <div class="box_label">
                         <label>Before Price </label>
 
@@ -34,7 +34,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-1 mb-2">
+                <div class="col-xxl-1 col-lg-4 col-md-6 mb-2">
                     <div class="box_label">
                         <label>Color</label>
                         <input type="hidden" name="variation_products[{{ $index }}][color_id]"
@@ -44,7 +44,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-1 mb-2">
+                <div class="col-xxl-1 col-lg-4 col-md-6 mb-2">
                     <div class="box_label">
                         <label>Size</label>
                         <input type="hidden" name="variation_products[{{ $index }}][size_id]"
@@ -96,7 +96,7 @@
                     @endif
                 </div> --}}
 
-                <div class="col-md-2 mb-2">
+                <div class="col-xxl-2 col-lg-4 col-md-6 mb-2">
                     <div class="box_label">
                         <label>Global Stock Quantity <span class="text-danger"></span></label>
                         <input type="number" min="0"
@@ -106,7 +106,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-2 mb-2">
+                <div class="col-xxl-2 col-lg-4 col-md-6 mb-2">
                     <div class="box_label">
                         <label>Assign Quantity <span class="text-danger">*</span></label>
                         <input type="number" min="0" name="variation_products[{{ $index }}][quantity]"
@@ -114,7 +114,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-2 mb-2">
+                <div class="col-xxl-2 col-lg-4 col-md-6 mb-2">
                     <div class="box_label">
                         <label>Warehouse Stock Quantity <span class="text-danger"></span></label>
                         <input type="number" min="0"
