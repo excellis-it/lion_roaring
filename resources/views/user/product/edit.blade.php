@@ -62,6 +62,36 @@
         .choices__list--dropdown.is-active {
             z-index: 999999;
         }
+
+        /* Added preview styling */
+        .image-preview {
+            margin-top: .5rem;
+        }
+
+        .image-preview img {
+            max-width: 220px;
+            max-height: 160px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .gallery-previews {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: .5rem;
+        }
+
+        .gallery-previews img {
+            width: 120px;
+            height: 90px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            padding: 3px;
+            border-radius: 4px;
+        }
     </style>
 @endpush
 @section('content')
@@ -169,7 +199,7 @@
                                         <div class="box_label">
                                             <label for="image"> Product Featured Image*</label>
                                             <input type="file" name="image" id="image" class="form-control"
-                                                value="{{ old('image') }}">
+                                                value="{{ old('image') }}" accept="image/*">
 
                                             @if ($errors->has('image'))
                                                 <span class="error">{{ $errors->first('image') }}</span>
@@ -183,7 +213,8 @@
                                     {{-- image preview --}}
                                     <div class="col-md-2 mb-2">
                                         <div class="box_label">
-                                            <a href="{{ Storage::url($product->image?->image ?? '') }}" target="_blank">
+                                            <a href="{{ Storage::url($product->image?->image ?? '') }}" target="_blank"
+                                                id="image_preview_anchor">
                                                 <img style="height: 80px; width: 80px; object-fit: cover;"
                                                     id="image_preview"
                                                     src="{{ Storage::url($product->image?->image ?? '') }}"
@@ -197,7 +228,8 @@
                                         <div class="box_label">
                                             <label for="background_image"> Product Banner Image</label>
                                             <input type="file" name="background_image" id="background_image"
-                                                class="form-control" value="{{ old('background_image') }}">
+                                                class="form-control" value="{{ old('background_image') }}"
+                                                accept="image/*">
                                             @if ($errors->has('background_image'))
                                                 <span class="error">{{ $errors->first('background_image') }}</span>
                                             @endif
@@ -210,10 +242,10 @@
 
                                     {{-- background image preview --}}
                                     <div class="col-md-2 mb-2">
-                                        <div class="box_label">
+                                        <div class="box_label" id="background_preview_wrapper">
                                             @if ($product->background_image)
                                                 <a href="{{ Storage::url($product->background_image ?? '') }}"
-                                                    target="_blank">
+                                                    target="_blank" id="background_image_preview_anchor">
                                                     <img style="height: 80px; width: 80px; object-fit: cover;"
                                                         id="background_image_preview"
                                                         src="{{ Storage::url($product->background_image ?? '') }}"
@@ -341,11 +373,9 @@
 
                                     <div class="col-md-12">
                                         <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image(Drag and
-                                            drop
-                                            atleast 1
-                                            images)*</label>
+                                            drop atleast 1 images)*</label>
                                         <input type="file" class="form-control dropzone" id="image-upload"
-                                            name="images[]" multiple>
+                                            name="images[]" multiple accept="image/*">
                                         @if ($errors->has('images.*'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('images.*') }}</div>
@@ -354,6 +384,9 @@
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('images') }}</div>
                                         @endif
+
+                                        <!-- Gallery previews for newly selected files -->
+                                        <div id="gallery-previews" class="gallery-previews" style="display:none;"></div>
                                     </div>
 
 
@@ -570,6 +603,104 @@
         <script>
             ClassicEditor.create(document.querySelector("#description"));
             ClassicEditor.create(document.querySelector("#specification"));
+        </script>
+
+        <script>
+            // Real-time image previews for featured, banner, and gallery inputs (edit form)
+            (function() {
+                function readSingleImage(input, previewSelector, anchorSelector, wrapperForCreateIfMissing) {
+                    if (!input.files || !input.files[0]) {
+                        return;
+                    }
+                    const file = input.files[0];
+                    if (!file.type.startsWith('image/')) {
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const src = e.target.result;
+                        const $preview = $(previewSelector);
+                        if ($preview.length) {
+                            $preview.attr('src', src);
+                            if ($(anchorSelector).length) {
+                                $(anchorSelector).attr('href', src);
+                            } else {
+                                // if anchor not present but img inside anchor originally, try closest anchor
+                                $preview.closest('a').attr('href', src);
+                            }
+                        } else {
+                            // create preview img if not present (use small size consistent with existing markup)
+                            const $img = $('<img/>', {
+                                id: previewSelector.replace('#', ''),
+                                src: src,
+                                style: 'height:80px;width:80px;object-fit:cover;',
+                                class: 'img-fluid'
+                            });
+                            if (wrapperForCreateIfMissing && $(wrapperForCreateIfMissing).length) {
+                                $(wrapperForCreateIfMissing).append($img);
+                            } else {
+                                $(input).closest('.box_label').append($img);
+                            }
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+
+                function readMultipleImages(input, containerSelector) {
+                    const $container = $(containerSelector);
+                    $container.empty();
+                    const files = input.files || [];
+                    if (!files.length) {
+                        $container.hide();
+                        return;
+                    }
+                    Array.from(files).forEach(function(file) {
+                        if (!file.type.startsWith('image/')) return;
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const img = $('<img/>', {
+                                src: e.target.result,
+                                alt: file.name
+                            });
+                            $container.append(img);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                    $container.show();
+                }
+
+                $(function() {
+                    $('#image').attr('accept', 'image/*').on('change', function() {
+                        readSingleImage(this, '#image_preview', '#image_preview_anchor', null);
+                    });
+
+                    $('#background_image').attr('accept', 'image/*').on('change', function() {
+                        // ensure wrapper exists for background preview when previously missing
+                        if (!$('#background_image_preview').length && $('#background_preview_wrapper')
+                            .length) {
+                            // create anchor+img structure to match existing preview pattern
+                            const $anchor = $('<a/>', {
+                                id: 'background_image_preview_anchor',
+                                target: '_blank'
+                            });
+                            const $img = $('<img/>', {
+                                id: 'background_image_preview',
+                                style: 'height:80px;width:80px;object-fit:cover;',
+                                class: 'img-fluid',
+                                alt: 'Product Background Image'
+                            });
+                            $anchor.append($img);
+                            $('#background_preview_wrapper').empty().append($anchor);
+                        }
+                        readSingleImage(this, '#background_image_preview',
+                            '#background_image_preview_anchor', '#background_preview_wrapper');
+                    });
+
+                    $('#image-upload').attr('accept', 'image/*').on('change', function() {
+                        readMultipleImages(this, '#gallery-previews');
+                    });
+                });
+            })();
         </script>
 
         <script>
@@ -807,7 +938,8 @@
                         if ($('#price').length) {
                             var isFree = $('#is_free').is(':checked');
                             var priceVal = val('#price');
-                            if (!isFree && (priceVal === '' || isNaN(Number(priceVal)) || Number(parsepriceVal) < 0)) {
+                            if (!isFree && (priceVal === '' || isNaN(Number(priceVal)) || Number(parsepriceVal) <
+                                0)) {
                                 addClientError($('#price'), 'Valid price is required (or mark product as Free).');
                                 errors.push('#price');
                             }
@@ -819,9 +951,11 @@
                             if (isNaN(Number(salePriceVal)) || Number(salePriceVal) < 0) {
                                 addClientError($('#sale_price'), 'Sale price cannot be negative.');
                                 errors.push('#sale_price');
-                            } else if (mainPriceVal && !isNaN(Number(mainPriceVal)) && Number(salePriceVal) > Number(
+                            } else if (mainPriceVal && !isNaN(Number(mainPriceVal)) && Number(salePriceVal) >
+                                Number(
                                     mainPriceVal)) {
-                                addClientError($('#sale_price'), 'Sale price cannot be greater than the main price.');
+                                addClientError($('#sale_price'),
+                                    'Sale price cannot be greater than the main price.');
                                 errors.push('#sale_price');
                             }
                         }

@@ -16,6 +16,36 @@
         .choices__list--dropdown.is-active {
             z-index: 999999;
         }
+
+        /* Added preview styling */
+        .image-preview {
+            margin-top: .5rem;
+        }
+
+        .image-preview img {
+            max-width: 220px;
+            max-height: 160px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .gallery-previews {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .gallery-previews img {
+            width: 120px;
+            height: 90px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            padding: 3px;
+            border-radius: 4px;
+        }
     </style>
 @endpush
 @section('content')
@@ -139,6 +169,11 @@
                                             @if ($errors->has('image'))
                                                 <span class="error">{{ $errors->first('image') }}</span>
                                             @endif
+
+                                            <!-- Preview for featured image -->
+                                            <div class="image-preview" id="image-preview-container" style="display:none;">
+                                                <img id="image-preview" src="#" alt="Featured preview" />
+                                            </div>
                                         </div>
                                     </div>
 
@@ -147,10 +182,16 @@
                                         <div class="box_label">
                                             <label for="image"> Product Banner Image</label>
                                             <input type="file" name="background_image" id="background_image"
-                                                class="form-control" value="{{ old('background_image') }}">
+                                                class="form-control" value="{{ old('background_image') }}" accept="image/*">
                                             @if ($errors->has('background_image'))
                                                 <span class="error">{{ $errors->first('background_image') }}</span>
                                             @endif
+
+                                            <!-- Preview for banner image -->
+                                            <div class="image-preview" id="background-image-preview-container"
+                                                style="display:none;">
+                                                <img id="background-image-preview" src="#" alt="Banner preview" />
+                                            </div>
                                         </div>
                                     </div>
 
@@ -271,7 +312,7 @@
                                             atleast 1
                                             images)*</label>
                                         <input type="file" class="form-control dropzone" id="image-upload"
-                                            name="images[]" multiple>
+                                            name="images[]" multiple accept="image/*">
                                         @if ($errors->has('images.*'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('images.*') }}</div>
@@ -280,6 +321,9 @@
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('images') }}</div>
                                         @endif
+
+                                        <!-- Gallery previews -->
+                                        <div id="gallery-previews" class="gallery-previews" style="display:none;"></div>
                                     </div>
 
 
@@ -749,6 +793,85 @@
                     }
 
                     // No client-side errors -> allow submit
+                });
+            })();
+        </script>
+
+        <script>
+            // Real-time image previews for featured, banner, and gallery inputs
+            (function() {
+                function readSingleImage(input, previewImgEl, containerEl) {
+                    if (input.files && input.files[0]) {
+                        const file = input.files[0];
+                        if (!file.type.startsWith('image/')) {
+                            containerEl.hide();
+                            previewImgEl.attr('src', '#');
+                            return;
+                        }
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImgEl.attr('src', e.target.result);
+                            containerEl.show();
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        previewImgEl.attr('src', '#');
+                        containerEl.hide();
+                    }
+                }
+
+                function readMultipleImages(input, containerEl) {
+                    containerEl.empty();
+                    const files = input.files || [];
+                    if (!files.length) {
+                        containerEl.hide();
+                        return;
+                    }
+                    Array.from(files).forEach(function(file) {
+                        if (!file.type.startsWith('image/')) {
+                            return;
+                        }
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const img = $('<img />', {
+                                src: e.target.result,
+                                alt: file.name
+                            });
+                            containerEl.append(img);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                    containerEl.show();
+                }
+
+                $(function() {
+                    const $featuredInput = $('#image');
+                    const $featuredPreview = $('#image-preview');
+                    const $featuredContainer = $('#image-preview-container');
+
+                    const $bgInput = $('#background_image');
+                    const $bgPreview = $('#background-image-preview');
+                    const $bgContainer = $('#background-image-preview-container');
+
+                    const $galleryInput = $('#image-upload');
+                    const $galleryContainer = $('#gallery-previews');
+
+                    // initial preview if old files are present is not possible without server URLs,
+                    // so previews only appear on client selection.
+
+                    $featuredInput.on('change', function() {
+                        readSingleImage(this, $featuredPreview, $featuredContainer);
+                    });
+
+                    $bgInput.on('change', function() {
+                        readSingleImage(this, $bgPreview, $bgContainer);
+                    });
+
+                    $galleryInput.on('change', function() {
+                        readMultipleImages(this, $galleryContainer);
+                    });
+
+                    // If validation prevents submit and user re-selects, previews update accordingly.
                 });
             })();
         </script>
