@@ -922,7 +922,7 @@
             });
 
             // Remove slide
-            $(document).on('click', '.remove-slide-second', function() {
+            $(document).on('click', '.remove-slide', function() {
                 if ($('.slider-item').length > 1) {
                     $(this).closest('.slider-item').remove();
                 } else {
