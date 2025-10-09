@@ -33,6 +33,14 @@
                     <span class=" badge-danger">No</span>
                 @endif
             </td>
+            {{-- is_new_product --}}
+            <td>
+                @if ($product->is_new_product == 1)
+                    <span class=" badge-success">Yes</span>
+                @else
+                    <span class=" badge-danger">No</span>
+                @endif
+            </td>
             <td> {{ $product->created_at->format('d M Y') }}</td>
             <td>
 

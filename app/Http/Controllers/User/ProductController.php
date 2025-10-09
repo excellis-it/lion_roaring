@@ -205,17 +205,18 @@ class ProductController extends Controller
         $product->sale_price = $request->sale_price ?? null;
         $product->slug = $request->slug;
         $product->feature_product = $request->feature_product;
+        $product->is_new_product = $request->is_new_product;
         $product->is_free = $request->has('is_free');
         if ($product->is_free) {
             $product->price = 0;
             $product->sale_price = null;
         }
 
-        if ($request->has('is_new_product')) {
-            $product->is_new_product = true;
-        } else {
-            $product->is_new_product = false;
-        }
+        // if ($request->has('is_new_product')) {
+        //     $product->is_new_product = true;
+        // } else {
+        //     $product->is_new_product = false;
+        // }
 
         // background_image
         if ($request->hasFile('background_image')) {
@@ -475,17 +476,14 @@ class ProductController extends Controller
             // $product->price = $request->price;
             $product->slug = $request->slug;
             $product->feature_product = $request->feature_product;
+            $product->is_new_product = $request->is_new_product;
             $product->status = $request->status;
             $product->is_free = $request->has('is_free');
             if ($product->is_free) {
                 $product->price = 0;
             }
 
-            if ($request->has('is_new_product')) {
-                $product->is_new_product = true;
-            } else {
-                $product->is_new_product = false;
-            }
+
 
             // background_image
             if ($request->hasFile('background_image')) {
