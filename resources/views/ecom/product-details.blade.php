@@ -529,31 +529,50 @@
                         // base storage url from server side
                         var storageBase = "{{ rtrim(Storage::url(''), '/') }}/";
 
-                        if (Array.isArray(response.data.images) && response.data.images.length) {
-                            response.data.images.forEach(function(image) {
-                                var src = (typeof image.image_path === 'string' && image
-                                        .image_path.indexOf('http') === 0) ?
-                                    image.image_path :
-                                    storageBase + image.image_path;
+                        // prefer colorMatchedImages, fallback to images
+                        var imagesArray = [];
+                        if (Array.isArray(response.data.colorMatchedImages) && response.data.colorMatchedImages.length) {
+                            imagesArray = response.data.colorMatchedImages;
+                        } else if (Array.isArray(response.data.images) && response.data.images.length) {
+                            imagesArray = response.data.images;
+                        }
+
+                        if (imagesArray.length) {
+                            imagesArray.forEach(function(image) {
+                                var path = (image.image_path || '').toString();
+                                var src;
+
+                                // absolute url
+                                if (path.indexOf('http') === 0) {
+                                    src = path;
+                                } else {
+                                    // normalize path: remove leading slashes and optional leading "storage/"
+                                    path = path.replace(/^\/+/, '').replace(/^storage\//, '');
+                                    src = storageBase + path;
+                                }
 
                                 sliderFor.append(
                                     $('<div class="slid_big_img"></div>').append(
-                                        $('<img>').attr('src', src)
+                                        $('<img>').attr('src', src).attr('alt', image.id || '')
                                     )
                                 );
 
                                 sliderNav.append(
                                     $('<div class="small_box_img"></div>').append(
                                         $('<div class="slid_small_img"></div>').append(
-                                            $('<img>').attr('src', src)
+                                            $('<img>').attr('src', src).attr('alt', image.id || '')
                                         )
                                     )
                                 );
                             });
                         } else {
-                            // fallback: empty content or a placeholder
+                            // fallback: placeholder in both main and nav
+                            var noImage = '{{ asset("ecom_assets/images/no-image.png") }}';
                             sliderFor.append(
-                                '<div class="slid_big_img"><img src="{{ asset('ecom_assets/images/no-image.png') }}" /></div>'
+                                '<div class="slid_big_img"><img src="' + noImage + '" /></div>'
+                            );
+                            sliderNav.append(
+                                '<div class="small_box_img"><div class="slid_small_img"><img src="' + noImage + '" /></div></div>'
                             );
                         }
 
