@@ -77,7 +77,29 @@
                         <!-- Order Items -->
                         <div class="order-items">
                             <h5>Items Ordered</h5>
+                            @php
+                                $all_other_charges = [];
+                                $subtotal = 0;
+                            @endphp
                             @foreach ($order->orderItems as $item)
+                                @php
+                                    $charges = $item->other_charges ? json_decode($item->other_charges, true) : [];
+                                    $otherChargesTotal = 0;
+
+                                    if (!empty($charges)) {
+                                        foreach ($charges as $charge) {
+                                            $otherChargesTotal += floatval($charge['charge_amount'] ?? 0);
+                                        }
+                                    }
+
+                                    $all_other_charges[] = [
+                                        'product_name' => $item->product_name,
+                                        'quantity' => $item->quantity,
+                                        'subtotal' => $item->price * $item->quantity,
+                                        'other_charges' => $otherChargesTotal,
+                                    ];
+                                    $subtotal += $item->total;
+                                @endphp
                                 <div class="item-card border rounded p-3 mb-3">
                                     <div class="row align-items-center">
                                         <div class="col-md-2">
@@ -94,6 +116,8 @@
                                                 </div>
                                             @endif
                                         </div>
+
+
                                         <div class="col-md-6">
                                             <h6>{{ $item->product_name }}</h6>
                                             <p class="text-muted mb-0">Quantity: {{ $item->quantity }}</p>
@@ -101,8 +125,12 @@
                                         <div class="col-md-2 text-center">
                                             <p class="mb-0">${{ number_format($item->price, 2) }}</p>
                                         </div>
+                                        @php
+                                            // Calculate total for this item
+                                            $itemTotal = $item->price * $item->quantity;
+                                        @endphp
                                         <div class="col-md-2 text-end">
-                                            <p class="mb-0"><strong>${{ number_format($item->total, 2) }}</strong></p>
+                                            <p class="mb-0"><strong>${{ number_format($itemTotal, 2) }}</strong></p>
                                         </div>
                                     </div>
                                 </div>
@@ -117,25 +145,80 @@
                         <div class="bill_details">
                             <h4>Order Summary</h4>
                             <div class="bill_text">
-                                <ul>
+
+                                {{-- <ul class="list-unstyled mb-2 d-flex justify-content-between">
                                     <li>Subtotal</li>
                                     <li>${{ number_format($order->subtotal, 2) }}</li>
-                                </ul>
-                                {{-- <ul>
-                                    <li>Tax</li>
-                                    <li>${{ number_format($order->tax_amount, 2) }}</li>
-                                </ul>
-                                <ul>
-                                    <li>Shipping</li>
-                                    <li>${{ number_format($order->shipping_amount, 2) }}</li>
                                 </ul> --}}
 
-                                <div class="total_payable">
-                                    <div class="total_payable_l">Total</div>
-                                    <div class="total_payable_r">${{ number_format($order->total_amount, 2) }}</div>
+                                @foreach ($all_other_charges as $item)
+                                    <ul class="list-unstyled mb-1 d-flex justify-content-between">
+                                        <li>{{ $item['product_name'] }} ({{ $item['quantity'] }}x)</li>
+                                        <li>${{ number_format($item['subtotal'], 2) }}</li>
+                                    </ul>
+
+                                    @if ($item['other_charges'] > 0)
+                                        <ul class="list-unstyled mb-1 d-flex justify-content-between text-muted small">
+                                            <li style="padding-left: 15px;">• Additional charges</li>
+                                            <li>${{ number_format($item['other_charges'], 2) }}</li>
+                                        </ul>
+                                    @endif
+                                @endforeach
+
+                                <hr />
+
+                                <ul>
+                                    <li>Subtotal</li>
+                                    <li id="subtotal-amount" >
+                                        ${{ number_format($subtotal, 2) }}
+                                    </li>
+                                </ul>
+
+                                @if ($order->promo_discount && $order->promo_discount > 0)
+                                    <ul class="list-unstyled mb-2 d-flex justify-content-between">
+                                        <li>
+                                            Promo Discount
+                                            @if ($order->promo_code)
+                                                (Code: {{ $order->promo_code }})
+                                            @endif
+                                        </li>
+                                        <li>- ${{ number_format($order->promo_discount, 2) }}</li>
+                                    </ul>
+                                @endif
+
+                                @if ($order->tax_amount && $order->tax_amount > 0)
+                                    <ul class="list-unstyled mb-2 d-flex justify-content-between">
+                                        <li>Tax</li>
+                                        <li>${{ number_format($order->tax_amount, 2) }}</li>
+                                    </ul>
+                                @endif
+
+                                @if ($order->shipping_amount && $order->shipping_amount > 0)
+                                    <ul class="list-unstyled mb-2 d-flex justify-content-between">
+                                        <li>Shipping</li>
+                                        <li>${{ number_format($order->shipping_amount, 2) }}</li>
+                                    </ul>
+                                @endif
+
+
+                                @if ($order->shipping_amount && $order->credit_card_fee > 0)
+                                    <ul class="list-unstyled mb-2 d-flex justify-content-between">
+                                        <li>Credit Card Fee:</li>
+                                        <li>${{ number_format($order->credit_card_fee, 2) }}</li>
+                                    </ul>
+                                @endif
+
+
+
+
+                                <div class="total_payable mt-3 border-top pt-2 d-flex justify-content-between fw-bold">
+                                    <div>Total</div>
+                                    <div>${{ number_format($order->total_amount, 2) }}</div>
                                 </div>
+
                             </div>
                         </div>
+
 
                         <!-- Payment Information -->
                         @if ($order->payments->count() > 0)
@@ -327,7 +410,7 @@
                                 @endif
                             </ul>
                         </div>
-                        
+
                     </div>
 
 

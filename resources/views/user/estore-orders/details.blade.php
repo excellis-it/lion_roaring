@@ -104,7 +104,6 @@
                                     <thead>
                                         <tr>
                                             <th>Product</th>
-                                            {{-- <th>Image</th> --}}
                                             <th>Price</th>
                                             <th>Quantity</th>
                                             <th>Total</th>
@@ -112,70 +111,101 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($order->orderItems as $item)
+                                            @php
+                                                $price = $item->price ?? 0;
+                                                $quantity = $item->quantity ?? 0;
+                                                $total = $price * $quantity;
+                                                $charges = $item->other_charges
+                                                    ? json_decode($item->other_charges, true)
+                                                    : [];
+                                            @endphp
+
+                                            {{-- Product Row --}}
                                             <tr>
                                                 <td>
-                                                    <strong>{{ $item->product_name }}</strong>
-                                                    @if (isset($item->warehouseProduct) && $item->warehouseProduct->sku)
+                                                    <strong>{{ $item->product_name ?? 'N/A' }}</strong>
+
+                                                    @if (!empty($item->warehouseProduct?->sku))
                                                         <br><small class="text-muted">SKU:
-                                                            {{ $item->warehouseProduct->sku ?? 'N/A' }}</small>
+                                                            {{ $item->warehouseProduct->sku }}</small>
                                                     @endif
 
-                                                    {{-- if item have size and color --}}
-                                                    @if ($item->size)
+                                                    @if (!empty($item->size))
                                                         <br><small class="text-muted">Size: {{ $item->size }}</small>
                                                     @endif
-                                                    @if ($item->color)
-                                                        <br><small class="text-muted">Color:
-                                                            {{ $item->color }}</small>
+
+                                                    @if (!empty($item->color))
+                                                        <br><small class="text-muted">Color: {{ $item->color }}</small>
                                                     @endif
                                                 </td>
-                                                {{-- <td>
-                                                    @if ($item->product_image)
-                                                        <img src="{{ Storage::url($item->product_image) }}"
-                                                            alt="{{ $item->product_name }}" class="img-thumbnail"
-                                                            style="width: 60px; height: 60px; object-fit: cover;">
-                                                    @else
-                                                        <div class="bg-light d-flex align-items-center justify-content-center"
-                                                            style="width: 60px; height: 60px;">
-                                                            <i class="fas fa-image text-muted"></i>
-                                                        </div>
-                                                    @endif
-                                                </td> --}}
-                                                <td>${{ number_format($item->price, 2) }}</td>
-                                                <td>{{ $item->quantity }}</td>
-                                                <td><strong>${{ number_format($item->total, 2) }}</strong></td>
+                                                <td>${{ number_format($price, 2) }}</td>
+                                                <td>{{ $quantity }}</td>
+                                                <td><strong>${{ number_format($total, 2) }}</strong></td>
                                             </tr>
+
+                                            {{-- Other Charges per Product --}}
+                                            @if (!empty($charges))
+                                                @foreach ($charges as $charge)
+                                                    <tr class="table-secondary">
+                                                        <td style="padding-left: 20px;">•
+                                                            {{ $charge['charge_name'] ?? 'Other' }}</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>${{ number_format($charge['charge_amount'] ?? 0, 2) }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
                                         @endforeach
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <th colspan="3" class="text-end">Subtotal:</th>
-                                            <th>${{ number_format($order->subtotal, 2) }}</th>
+                                            <th>${{ number_format($order->subtotal ?? 0, 2) }}</th>
                                         </tr>
-                                        @if ($order->tax_amount > 0)
+
+                                        {{-- Promo Code / Discount --}}
+                                        @if (!empty($order->promo_discount) && $order->promo_discount > 0)
+                                            <tr>
+                                                <th colspan="3" class="text-end">
+                                                    Promo Discount
+                                                    @if (!empty($order->promo_code))
+                                                        (Code: {{ $order->promo_code }})
+                                                    @endif
+                                                </th>
+                                                <th>- ${{ number_format($order->promo_discount, 2) }}</th>
+                                            </tr>
+                                        @endif
+
+                                        @if (!empty($order->tax_amount) && $order->tax_amount > 0)
                                             <tr>
                                                 <th colspan="3" class="text-end">Tax:</th>
                                                 <th>${{ number_format($order->tax_amount, 2) }}</th>
                                             </tr>
                                         @endif
-                                        @if ($order->shipping_amount > 0)
+
+                                        @if (!empty($order->shipping_amount) && $order->shipping_amount > 0)
                                             <tr>
                                                 <th colspan="3" class="text-end">Shipping:</th>
                                                 <th>${{ number_format($order->shipping_amount, 2) }}</th>
                                             </tr>
                                         @endif
-                                        @if ($order->credit_card_fee > 0)
+
+                                        @if (!empty($order->credit_card_fee) && $order->credit_card_fee > 0)
                                             <tr>
                                                 <th colspan="3" class="text-end">Credit Card Fee:</th>
                                                 <th>${{ number_format($order->credit_card_fee, 2) }}</th>
                                             </tr>
                                         @endif
+
                                         <tr class="table-primary">
                                             <th colspan="3" class="text-end">Total Amount:</th>
-                                            <th>${{ number_format($order->total_amount, 2) }}</th>
+                                            <th>${{ number_format($order->total_amount ?? 0, 2) }}</th>
                                         </tr>
                                     </tfoot>
                                 </table>
+
+
+
                             </div>
                         </div>
                     </div>
