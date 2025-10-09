@@ -242,11 +242,11 @@
                                         }
                                         return null;
                                     }
-                                    
+
                                     // Get user's timezone based on IP address
                                     $ip = $_SERVER['REMOTE_ADDR'];
                                     $timezone = getTimezoneFromIp($ip);
-                                    
+
                                     if ($timezone) {
                                         // Set the default timezone
                                         date_default_timezone_set($timezone);
@@ -254,10 +254,10 @@
                                         // Fallback timezone
                                         date_default_timezone_set('UTC');
                                     }
-                                    
+
                                     // Get the current hour in 24-hour format
                                     $time = date('H');
-                                    
+
                                     // Determine greeting based on time
                                     if ($time < '12') {
                                         echo 'Perfect morning';
@@ -362,7 +362,7 @@
                                         Resend Code
                                     </button>
                                     <div id="countdown-timer" class="mt-2" style="display: none;">
-                                        Resend available in <span id="countdown">10:00</span>
+                                        Resend available in <span id="countdown">1:00</span>
                                     </div>
                                 </div>
                                 <br>
@@ -1146,7 +1146,7 @@
 
                 // Function to start countdown timer
                 function startCountdown(seconds) {
-                    remainingSeconds = seconds || 600; // Default to 10 minutes (600 seconds)
+                    remainingSeconds = seconds || 60; // Default to 10 minutes (600 seconds)
                     $('#resend-otp-btn').prop('disabled', true);
                     $('#countdown-timer').show();
 

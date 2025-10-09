@@ -16,7 +16,7 @@
                                 <h3 class="mb-1">Product Reviews</h3>
                                 <p class="mb-0 text-muted">
                                     <strong>{{ $product->name }}</strong>
-                                    <span class="text-muted">&middot; SKU:</span> {{ $product->sku ?? 'N/A' }}
+                                    {{-- <span class="text-muted">&middot; SKU:</span> {{ $product->sku ?? 'N/A' }} --}}
                                 </p>
                             </div>
                             <div class="mt-3 mt-md-0">
