@@ -38,6 +38,7 @@ use App\Models\WarehouseProductVariation;
 use Illuminate\Support\Facades\Storage;
 use App\Services\PromoCodeService;
 use App\Models\EstorePromoCode;
+use App\Models\WarehouseProductImage;
 
 class ProductController extends Controller
 {
@@ -1448,13 +1449,20 @@ class ProductController extends Controller
                 $warehouseProduct = WarehouseProduct::with('images')->where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)->first();
             }
 
+            $wareHouseProductVariations = WarehouseProduct::where('color_id', $request->color_id)
+                ->where('size_id', $request->size_id)->pluck('id')->toArray();
+
+                $colorMatchedImages = [];
+            // get all images with same color matched
+            $colorMatchedImages = WarehouseProductImage::whereIn('warehouse_product_id', $wareHouseProductVariations)->get();
+
             // return $warehouseProduct;
 
             if (!$warehouseProduct) {
                 return response()->json(['status' => false, 'message' => 'Item Out Of Stock']);
             }
 
-            return response()->json(['status' => true, 'data' => $warehouseProduct]);
+            return response()->json(['status' => true, 'data' => $warehouseProduct, 'colorMatchedImages' => $colorMatchedImages]);
         }
     }
 

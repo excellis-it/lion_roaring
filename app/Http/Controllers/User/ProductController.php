@@ -738,8 +738,7 @@ class ProductController extends Controller
                 ->first();
 
             if (!$existingVariation) {
-                // Create new variation
-                ProductVariation::create([
+                $newVariation = ProductVariation::create([
                     'product_id' => $product->id,
                     'sku' => strtoupper(uniqid('SKU-' . $combination['color_id'] . '-' . $combination['size_id'] . '-')),
                     'price' => 0.00,
@@ -748,6 +747,40 @@ class ProductController extends Controller
                     'size_id' => $combination['size_id'],
                     'additional_info' => null,
                 ]);
+
+                $colorSiblings = ProductVariation::where('product_id', $product->id)
+                    ->where('id', '!=', $newVariation->id);
+
+                if (is_null($combination['color_id'])) {
+                    $colorSiblings->whereNull('color_id');
+                } else {
+                    $colorSiblings->where('color_id', $combination['color_id']);
+                }
+
+                $siblingIds = $colorSiblings->pluck('id')->toArray();
+
+                if (!empty($siblingIds)) {
+                    $imagePaths = ProductVariationImage::whereIn('product_variation_id', $siblingIds)
+                        ->pluck('image_path')
+                        ->unique();
+
+                    foreach ($imagePaths as $path) {
+                        ProductVariationImage::create([
+                            'product_variation_id' => $newVariation->id,
+                            'image_path' => $path,
+                        ]);
+                    }
+
+                    $newWarehouseProducts = WarehouseProduct::where('product_variation_id', $newVariation->id)->get();
+                    foreach ($newWarehouseProducts as $wp) {
+                        foreach ($imagePaths as $path) {
+                            WarehouseProductImage::create([
+                                'warehouse_product_id' => $wp->id,
+                                'image_path' => $path,
+                            ]);
+                        }
+                    }
+                }
             }
         }
 
