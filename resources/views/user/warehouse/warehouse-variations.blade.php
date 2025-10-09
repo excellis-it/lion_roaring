@@ -90,8 +90,7 @@
                                 @csrf
 
                                 <div class="col-12">
-                                    <label class="form-label" for="color-select">Select colors to load available
-                                        variations</label>
+                                    <label class="form-label" for="color-select">Choose Colors <span style="color: #E54E4E">(Click To Load Variation Button To Load The Product)</span></label>
                                 </div>
 
                                 <div class="col-9">

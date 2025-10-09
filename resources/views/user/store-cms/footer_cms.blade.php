@@ -299,11 +299,13 @@
                     if (!existingFooterLogo && !hasFile) {
                         addClientError($logoInput, 'Footer logo is required (existing or new).');
                         errors.push('#image');
-                    } else if (hasFile) {
-                        var ok = await validateImageFile(logoEl.files[0], 1 * 1024 * 1024, 120, 120, $logoInput,
-                            'Footer logo');
-                        if (!ok) errors.push('#image');
                     }
+
+                    // else if (hasFile) {
+                    //     var ok = await validateImageFile(logoEl.files[0], 1 * 1024 * 1024, 120, 120, $logoInput,
+                    //         'Footer logo');
+                    //     if (!ok) errors.push('#image');
+                    // }
 
                     if (errors.length) {
                         var firstSel = errors[0];

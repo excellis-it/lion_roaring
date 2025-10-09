@@ -203,11 +203,12 @@
                 if (!existingBannerImage && !hasFile) {
                     addClientError($bannerInput, 'Banner image is required (existing or new).');
                     errors.push($bannerInput);
-                } else if (hasFile) {
-                    var ok = await validateImageFile(bannerInputEl.files[0], 2 * 1024 * 1024, 1920, 520,
-                        $bannerInput, 'Banner image');
-                    if (!ok) errors.push($bannerInput);
                 }
+                //  else if (hasFile) {
+                //     var ok = await validateImageFile(bannerInputEl.files[0], 2 * 1024 * 1024, 1920, 520,
+                //         $bannerInput, 'Banner image');
+                //     if (!ok) errors.push($bannerInput);
+                // }
 
                 if (errors.length) {
                     var first = errors[0];

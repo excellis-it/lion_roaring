@@ -184,7 +184,7 @@
                                 @foreach ($groupedVariations as $colorId => $colorGroup)
                                     @php
                                         $first = $colorGroup->first();
-                                        $canDelete = $colorGroup->count() > 1;
+                                        // $canDelete = $colorGroup->count() > 1;
                                     @endphp
                                     <div class="color-variation-group mb-4 p-3">
                                         @if ($product->product_type != 'simple')
@@ -304,7 +304,8 @@
                                                             value="{{ $variation->available_quantity }}">
                                                     </div>
 
-                                                    @if ($product->product_type != 'simple' && $canDelete)
+                                                    {{-- @if ($product->product_type != 'simple' && $canDelete) --}}
+                                                    @if ($product->product_type != 'simple')
                                                         <div class="col-xxl-1 col-lg-1 col-md-6 text-end">
                                                             <button type="button"
                                                                 class="btn btn-sm btn-danger remove-variation-product">
@@ -570,21 +571,21 @@
                     }
                 });
 
-                const imagePromises = [];
-                imageInputs.each(function() {
-                    const input = this;
-                    if (input.files && input.files.length) {
-                        for (let i = 0; i < input.files.length; i++) {
-                            imagePromises.push(
-                                validateImageFile(input.files[i], $(input), 'Variation image')
-                                .then(ok => {
-                                    if (!ok) errors.push(input);
-                                })
-                            );
-                        }
-                    }
-                });
-                if (imagePromises.length) await Promise.all(imagePromises);
+                // const imagePromises = [];
+                // imageInputs.each(function() {
+                //     const input = this;
+                //     if (input.files && input.files.length) {
+                //         for (let i = 0; i < input.files.length; i++) {
+                //             imagePromises.push(
+                //                 validateImageFile(input.files[i], $(input), 'Variation image')
+                //                 .then(ok => {
+                //                     if (!ok) errors.push(input);
+                //                 })
+                //             );
+                //         }
+                //     }
+                // });
+                // if (imagePromises.length) await Promise.all(imagePromises);
 
                 $('.color-variation-group').each(function() {
                     const $group = $(this);

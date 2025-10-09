@@ -311,19 +311,21 @@
                             .length)) {
                         addClientError($image, 'Category image is required (existing or new).');
                         errors.push($image);
-                    } else if (imageInput && imageInput.files && imageInput.files.length) {
-                        var okFeatured = await validateImageFile(imageInput.files[0], 2 * 1024 * 1024, 410, 150,
-                            $image, 'Category image');
-                        if (!okFeatured) errors.push($image);
                     }
+
+                    // else if (imageInput && imageInput.files && imageInput.files.length) {
+                    //     var okFeatured = await validateImageFile(imageInput.files[0], 2 * 1024 * 1024, 410, 150,
+                    //         $image, 'Category image');
+                    //     if (!okFeatured) errors.push($image);
+                    // }
 
                     var $bgImage = $('#background_image');
                     var bgInput = $bgImage[0];
-                    if (bgInput && bgInput.files && bgInput.files.length) {
-                        var okBackground = await validateImageFile(bgInput.files[0], 2 * 1024 * 1024, 1920, 520,
-                            $bgImage, 'Background image');
-                        if (!okBackground) errors.push($bgImage);
-                    }
+                    // if (bgInput && bgInput.files && bgInput.files.length) {
+                    //     var okBackground = await validateImageFile(bgInput.files[0], 2 * 1024 * 1024, 1920, 520,
+                    //         $bgImage, 'Background image');
+                    //     if (!okBackground) errors.push($bgImage);
+                    // }
 
                     if (errors.length) {
                         var $first = errors[0];

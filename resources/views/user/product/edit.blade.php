@@ -983,18 +983,18 @@
                     }
 
                     var featuredInput = $('#image')[0];
-                    if (featuredInput && featuredInput.files && featuredInput.files.length) {
-                        var okFeatured = await validateImageFile(featuredInput.files[0], 2 * 1024 * 1024, 300,
-                            400, $('#image'), 'Featured image');
-                        if (!okFeatured) errors.push('#image');
-                    }
+                    // if (featuredInput && featuredInput.files && featuredInput.files.length) {
+                    //     var okFeatured = await validateImageFile(featuredInput.files[0], 2 * 1024 * 1024, 300,
+                    //         400, $('#image'), 'Featured image');
+                    //     if (!okFeatured) errors.push('#image');
+                    // }
 
                     var backgroundInput = $('#background_image')[0];
-                    if (backgroundInput && backgroundInput.files && backgroundInput.files.length) {
-                        var okBackground = await validateImageFile(backgroundInput.files[0], 2 * 1024 * 1024,
-                            1920, 520, $('#background_image'), 'Banner image');
-                        if (!okBackground) errors.push('#background_image');
-                    }
+                    // if (backgroundInput && backgroundInput.files && backgroundInput.files.length) {
+                    //     var okBackground = await validateImageFile(backgroundInput.files[0], 2 * 1024 * 1024,
+                    //         1920, 520, $('#background_image'), 'Banner image');
+                    //     if (!okBackground) errors.push('#background_image');
+                    // }
 
                     var galleryInput = $('#image-upload')[0];
                     var galleryHasFiles = galleryInput && galleryInput.files && galleryInput.files.length > 0;
@@ -1005,16 +1005,18 @@
                         addClientError($('#image-upload'),
                             'Please have at least one gallery image (existing or new).');
                         errors.push('#image-upload');
-                    } else if (galleryHasFiles) {
-                        for (var i = 0; i < galleryInput.files.length; i++) {
-                            var okGallery = await validateImageFile(galleryInput.files[i], 2 * 1024 * 1024, 300,
-                                400, $('#image-upload'), 'Gallery image');
-                            if (!okGallery) {
-                                errors.push('#image-upload');
-                                break;
-                            }
-                        }
                     }
+
+                    // else if (galleryHasFiles) {
+                    //     for (var i = 0; i < galleryInput.files.length; i++) {
+                    //         var okGallery = await validateImageFile(galleryInput.files[i], 2 * 1024 * 1024, 300,
+                    //             400, $('#image-upload'), 'Gallery image');
+                    //         if (!okGallery) {
+                    //             errors.push('#image-upload');
+                    //             break;
+                    //         }
+                    //     }
+                    // }
 
                     // Product type specific checks (only when fields exist)
                     var productType = ($('input[name="product_type"]:checked').val() || '').toLowerCase() ||
