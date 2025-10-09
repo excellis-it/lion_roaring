@@ -40,4 +40,16 @@ class WareHouse extends Model
         return $this->belongsToMany(User::class, 'user_warehouses', 'warehouse_id', 'user_id')
             ->withTimestamps();
     }
+
+    // service_range set on km and get on miles
+
+    public function getServiceRangeAttribute($value)
+    {
+        return $value * 0.621371; // Convert km to miles
+    }
+
+    public function setServiceRangeAttribute($value)
+    {
+        $this->attributes['service_range'] = $value / 0.621371; // Convert miles to km
+    }
 }

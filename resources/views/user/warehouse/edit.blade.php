@@ -133,8 +133,8 @@
                             {{-- Service Range --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="service_range">Warehouse Service Range (In kilometers)<span class="text-danger">*</span></label>
-                                    <input type="number" step="0.1" placeholder="Ex: 10.5" name="service_range"
+                                    <label for="service_range">Warehouse Service Range (In Miles)<span class="text-danger">*</span></label>
+                                    <input type="number" step="any" placeholder="Ex: 10.5" name="service_range"
                                         id="service_range" class="form-control @error('service_range') is-invalid @enderror"
                                         value="{{ old('service_range', $wareHouse->service_range) }}">
                                     @error('service_range')

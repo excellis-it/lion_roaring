@@ -339,7 +339,7 @@
 
 
                                     <!-- <div class="col-md-2 mb-2">
-                                    </div> -->
+                                        </div> -->
 
                                     {{-- is_free --}}
                                     <div class="col-md-4 mb-2">
@@ -348,9 +348,9 @@
                                             <div class="form-check form-switch">
                                                 <label class="form-check-label" for="is_free">Mark as Free (Price becomes
                                                     0)</label>
-                                                <input class="form-check-input mt-3" style="width: 60px; height: 30px; margin-bottom:10px;"
-                                                    type="checkbox" role="switch" id="is_free" name="is_free"
-                                                    value="1"
+                                                <input class="form-check-input mt-3"
+                                                    style="width: 60px; height: 30px; margin-bottom:10px;" type="checkbox"
+                                                    role="switch" id="is_free" name="is_free" value="1"
                                                     {{ old('is_free', $product->is_free) ? 'checked' : '' }}>
 
                                             </div>
@@ -621,16 +621,12 @@
         </script>
 
         <script>
-            // Real-time image previews for featured, banner, and gallery inputs (edit form)
             (function() {
                 function readSingleImage(input, previewSelector, anchorSelector, wrapperForCreateIfMissing) {
-                    if (!input.files || !input.files[0]) {
-                        return;
-                    }
+                    if (!input.files || !input.files[0]) return;
                     const file = input.files[0];
-                    if (!file.type.startsWith('image/')) {
-                        return;
-                    }
+                    if (!file.type.startsWith('image/')) return;
+
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         const src = e.target.result;
@@ -640,11 +636,9 @@
                             if ($(anchorSelector).length) {
                                 $(anchorSelector).attr('href', src);
                             } else {
-                                // if anchor not present but img inside anchor originally, try closest anchor
                                 $preview.closest('a').attr('href', src);
                             }
                         } else {
-                            // create preview img if not present (use small size consistent with existing markup)
                             const $img = $('<img/>', {
                                 id: previewSelector.replace('#', ''),
                                 src: src,
@@ -669,19 +663,47 @@
                         $container.hide();
                         return;
                     }
-                    Array.from(files).forEach(function(file) {
+
+                    Array.from(files).forEach(function(file, index) {
                         if (!file.type.startsWith('image/')) return;
+
                         const reader = new FileReader();
                         reader.onload = function(e) {
-                            const img = $('<img/>', {
-                                src: e.target.result,
-                                alt: file.name
+                            const $wrapper = $('<div/>', {
+                                class: 'preview-image-wrapper',
+                                'data-name': file.name,
+                                style: 'position:relative; display:inline-block; margin:5px;'
                             });
-                            $container.append(img);
+
+                            const $img = $('<img/>', {
+                                src: e.target.result,
+                                alt: file.name,
+                                style: 'width:100px; height:130px; object-fit:cover; border:1px solid #ccc; border-radius:4px;'
+                            });
+
+                            const $remove = $('<span/>', {
+                                class: 'remove-image',
+                                html: '&times;',
+                                style: 'position:absolute; top:-8px; right:-8px; background:red; color:white; width:20px; height:20px; display:flex; align-items:center; justify-content:center; border-radius:50%; cursor:pointer; font-size:14px;'
+                            });
+
+                            $remove.on('click', function() {
+                                $wrapper.remove();
+                                // Optional: remove from input.files by creating a new DataTransfer
+                                const dt = new DataTransfer();
+                                Array.from(input.files)
+                                    .filter(f => f.name !== file.name)
+                                    .forEach(f => dt.items.add(f));
+                                input.files = dt.files;
+
+                                if ($container.children().length === 0) $container.hide();
+                            });
+
+                            $wrapper.append($img).append($remove);
+                            $container.append($wrapper).show();
                         };
                         reader.readAsDataURL(file);
                     });
-                    $container.show();
                 }
 
                 $(function() {
@@ -690,10 +712,8 @@
                     });
 
                     $('#background_image').attr('accept', 'image/*').on('change', function() {
-                        // ensure wrapper exists for background preview when previously missing
                         if (!$('#background_image_preview').length && $('#background_preview_wrapper')
                             .length) {
-                            // create anchor+img structure to match existing preview pattern
                             const $anchor = $('<a/>', {
                                 id: 'background_image_preview_anchor',
                                 target: '_blank'
@@ -717,6 +737,7 @@
                 });
             })();
         </script>
+
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {

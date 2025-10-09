@@ -47,6 +47,39 @@
             border-radius: 4px;
         }
     </style>
+    <style>
+        .preview-image {
+            position: relative;
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .preview-image img {
+            width: 100px;
+            height: 130px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: red;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
 @endpush
 @section('content')
     <div class="container-fluid">
@@ -876,82 +909,103 @@
             })();
         </script>
 
-        <script>
-            // Real-time image previews for featured, banner, and gallery inputs
-            (function() {
-                function readSingleImage(input, previewImgEl, containerEl) {
-                    if (input.files && input.files[0]) {
-                        const file = input.files[0];
-                        if (!file.type.startsWith('image/')) {
-                            containerEl.hide();
+            <script>
+                (function() {
+                    function readSingleImage(input, previewImgEl, containerEl) {
+                        if (input.files && input.files[0]) {
+                            const file = input.files[0];
+                            if (!file.type.startsWith('image/')) {
+                                containerEl.hide();
+                                previewImgEl.attr('src', '#');
+                                return;
+                            }
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                previewImgEl.attr('src', e.target.result);
+                                containerEl.show();
+                            };
+                            reader.readAsDataURL(file);
+                        } else {
                             previewImgEl.attr('src', '#');
+                            containerEl.hide();
+                        }
+                    }
+
+                    function readMultipleImages(input, containerSelector) {
+                        const $container = $(containerSelector);
+                        $container.empty();
+                        const files = input.files || [];
+                        if (!files.length) {
+                            $container.hide();
                             return;
                         }
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            previewImgEl.attr('src', e.target.result);
-                            containerEl.show();
-                        };
-                        reader.readAsDataURL(file);
-                    } else {
-                        previewImgEl.attr('src', '#');
-                        containerEl.hide();
+
+                        Array.from(files).forEach(function(file, index) {
+                            if (!file.type.startsWith('image/')) return;
+
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                const $imgWrapper = $('<div/>', {
+                                    class: 'preview-image',
+                                    'data-index': index
+                                });
+
+                                const $img = $('<img/>', {
+                                    src: e.target.result,
+                                    alt: file.name
+                                });
+
+                                const $removeBtn = $('<span/>', {
+                                    class: 'remove-image',
+                                    text: '×'
+                                });
+
+                                // Remove image from preview and input
+                                $removeBtn.on('click', function() {
+                                    $imgWrapper.remove();
+                                    // Update the input.files by creating a new DataTransfer
+                                    const dt = new DataTransfer();
+                                    Array.from(input.files)
+                                        .filter((f, i) => i !== index)
+                                        .forEach(f => dt.items.add(f));
+                                    input.files = dt.files;
+
+                                    if (!input.files.length) $container.hide();
+                                });
+
+                                $imgWrapper.append($img).append($removeBtn);
+                                $container.append($imgWrapper);
+                            };
+                            reader.readAsDataURL(file);
+                        });
+
+                        $container.show();
                     }
-                }
 
-                function readMultipleImages(input, containerEl) {
-                    containerEl.empty();
-                    const files = input.files || [];
-                    if (!files.length) {
-                        containerEl.hide();
-                        return;
-                    }
-                    Array.from(files).forEach(function(file) {
-                        if (!file.type.startsWith('image/')) {
-                            return;
-                        }
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const img = $('<img />', {
-                                src: e.target.result,
-                                alt: file.name
-                            });
-                            containerEl.append(img);
-                        };
-                        reader.readAsDataURL(file);
+                    $(function() {
+                        const $featuredInput = $('#image');
+                        const $featuredPreview = $('#image-preview');
+                        const $featuredContainer = $('#image-preview-container');
+
+                        const $bgInput = $('#background_image');
+                        const $bgPreview = $('#background-image-preview');
+                        const $bgContainer = $('#background-image-preview-container');
+
+                        const $galleryInput = $('#image-upload');
+                        const $galleryContainer = $('#gallery-previews');
+
+                        $featuredInput.on('change', function() {
+                            readSingleImage(this, $featuredPreview, $featuredContainer);
+                        });
+
+                        $bgInput.on('change', function() {
+                            readSingleImage(this, $bgPreview, $bgContainer);
+                        });
+
+                        $galleryInput.on('change', function() {
+                            readMultipleImages(this, $galleryContainer);
+                        });
                     });
-                    containerEl.show();
-                }
-
-                $(function() {
-                    const $featuredInput = $('#image');
-                    const $featuredPreview = $('#image-preview');
-                    const $featuredContainer = $('#image-preview-container');
-
-                    const $bgInput = $('#background_image');
-                    const $bgPreview = $('#background-image-preview');
-                    const $bgContainer = $('#background-image-preview-container');
-
-                    const $galleryInput = $('#image-upload');
-                    const $galleryContainer = $('#gallery-previews');
-
-                    // initial preview if old files are present is not possible without server URLs,
-                    // so previews only appear on client selection.
-
-                    $featuredInput.on('change', function() {
-                        readSingleImage(this, $featuredPreview, $featuredContainer);
-                    });
-
-                    $bgInput.on('change', function() {
-                        readSingleImage(this, $bgPreview, $bgContainer);
-                    });
-
-                    $galleryInput.on('change', function() {
-                        readMultipleImages(this, $galleryContainer);
-                    });
-
-                    // If validation prevents submit and user re-selects, previews update accordingly.
-                });
-            })();
-        </script>
+                })();
+            </script>
     @endpush

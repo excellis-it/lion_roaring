@@ -18,8 +18,10 @@ use App\Models\User;
 use App\Models\WarehouseProductImage;
 use App\Models\EcomWishList;
 use App\Models\EstoreCart;
+use App\Models\ProductOtherCharge;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationImage;
+use App\Models\Review;
 use App\Models\WarehouseProductVariation;
 
 class ProductController extends Controller
@@ -479,6 +481,16 @@ class ProductController extends Controller
             $product->is_free = $request->has('is_free');
             if ($product->is_free) {
                 $product->price = 0;
+                ProductVariation::where('product_id', $product->id)->update([
+                    'price' => 0,
+                    'sale_price' => null,
+                    'before_sale_price' => null,
+                ]);
+
+                WarehouseProduct::where('product_id', $product->id)->update([
+                    'price' => 0,
+                    'before_sale_price' => null,
+                ]);
             }
 
             if ($request->has('is_new_product')) {
@@ -611,6 +623,10 @@ class ProductController extends Controller
 
             EcomWishList::where('product_id', $product->id)->delete();
             EstoreCart::where('product_id', $product->id)->delete();
+            Review::where('product_id', $product->id)->delete();
+            ProductOtherCharge::where('product_id', $product->id)->delete();
+            ProductVariation::where('product_id', $product->id)->delete();
+            WarehouseProductVariation::where('product_id', $product->id)->delete();
 
             return redirect()->route('products.index')->with('message', 'Product deleted successfully!');
         } else {
