@@ -184,7 +184,7 @@
 
 
                                     {{-- slug --}}
-                                    <div class="col-md-4 mb-2">
+                                    <div class="col-xxl-4 col-md-6 mb-2">
                                         <div class="box_label">
                                             <label for="slug"> Product Slug*</label>
                                             <input type="text" name="slug" id="slug" class="form-control"
@@ -195,12 +195,12 @@
                                         </div>
                                     </div>
                                     {{-- image --}}
-                                    <div class="col-md-3 mb-2">
+                                    <div class="col-xxl-3 col-md-5 mb-2">
                                         <div class="box_label">
                                             <label for="image"> Product Featured Image*</label>
                                             <input type="file" name="image" id="image" class="form-control"
                                                 value="{{ old('image') }}" accept="image/*">
-                                            <span class="text-sm ms-2 text-muted">(width: 300px, height: 400px, max
+                                            <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 300px, height: 400px, max
                                                 2MB)</span>
 
                                             @if ($errors->has('image'))
@@ -217,7 +217,7 @@
                                         <div class="box_label">
                                             <a href="{{ Storage::url($product->image?->image ?? '') }}" target="_blank"
                                                 id="image_preview_anchor">
-                                                <img style="height: 80px; width: 80px; object-fit: cover;"
+                                                <img style="height: 50px; width: 50px; object-fit: cover;"
                                                     id="image_preview"
                                                     src="{{ Storage::url($product->image?->image ?? '') }}"
                                                     alt="Product Image" class="img-fluid">
@@ -226,13 +226,13 @@
                                     </div>
 
                                     {{-- background_image --}}
-                                    <div class="col-md-3 mb-2">
+                                    <div class="col-xxl-3 col-md-5 mb-2">
                                         <div class="box_label">
                                             <label for="background_image"> Product Banner Image</label>
                                             <input type="file" name="background_image" id="background_image"
                                                 class="form-control" value="{{ old('background_image') }}"
                                                 accept="image/*">
-                                            <span class="text-sm ms-2 text-muted">(width: 1920px, height: 520px, max
+                                            <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 1920px, height: 520px, max
                                                 2MB)</span>
                                             @if ($errors->has('background_image'))
                                                 <span class="error">{{ $errors->first('background_image') }}</span>
@@ -245,12 +245,12 @@
 
 
                                     {{-- background image preview --}}
-                                    <div class="col-md-2 mb-2">
+                                    <div class="col-md-1 mb-2">
                                         <div class="box_label" id="background_preview_wrapper">
                                             @if ($product->background_image)
                                                 <a href="{{ Storage::url($product->background_image ?? '') }}"
                                                     target="_blank" id="background_image_preview_anchor">
-                                                    <img style="height: 80px; width: 80px; object-fit: cover;"
+                                                    <img style="height: 50px; width: 50px; object-fit: cover;"
                                                         id="background_image_preview"
                                                         src="{{ Storage::url($product->background_image ?? '') }}"
                                                         alt="Product Background Image" class="img-fluid">

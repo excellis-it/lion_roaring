@@ -29,7 +29,7 @@
                                     <label for="image"> Footer Logo*</label>
                                     <input type="file" name="footer_logo" id="image" class="form-control"
                                         value="{{ old('footer_logo') }}">
-                                    <span class="text-sm ms-2 text-muted">(width: 120px, height: 120px, max 1MB)</span>
+                                    <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 120px, height: 120px, max 1MB)</span>
                                     @if ($errors->has('footer_logo'))
                                         <span class="error">{{ $errors->first('footer_logo') }}</span>
                                     @endif

@@ -45378,7 +45378,7 @@ ul {
 
   .emailRow__options .material-icons,
   input {
-    margin: 5px;
+    /* margin: 5px; */
   }
 
   .emailRow {
@@ -45711,4 +45711,11 @@ ul {
 .bootstrap-select>.dropdown-toggle{
     border: 1px solid #ccc !important;
     padding: 10px !important;
+}
+.choices__inner{
+    border-radius: 7px !important;
+    /* padding: 0px !important; */
+}
+.text-sm{
+    font-size: 12px;
 }
