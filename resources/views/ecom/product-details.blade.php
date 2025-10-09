@@ -178,8 +178,9 @@
                                     border: 2px solid #ddd; border-radius: 5px; margin-right: 10px;
                                     opacity: 1;
                                     pointer-events: auto;"
-                                                src="{{ Storage::url($image->image_path ?? '') }}"
+                                                src="{{ $image->image_path ?  Storage::url($image->image_path ?? '') : asset('ecom_assets/images/no-image.png') }}"
                                                 alt="{{ $color->color_name ?? ($color->name ?? '') }}">
+
                                         @endif
                                     @endforeach
                                 @endif

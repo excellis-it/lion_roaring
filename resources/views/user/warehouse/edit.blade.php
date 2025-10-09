@@ -186,7 +186,7 @@
 
                         {{-- Buttons --}}
                         <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
-                            <button type="submit" class="print_btn me-2">Save</button>
+                            <button type="submit" class="print_btn me-2">Update</button>
                             <a href="{{ route('ware-houses.index') }}" class="print_btn print_btn_vv">Cancel</a>
                         </div>
                     </form>

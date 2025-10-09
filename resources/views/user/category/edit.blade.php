@@ -18,7 +18,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
-                                    <h3>Main Section</h3>
+                                    <h3>Edit Category</h3>
                                 </div>
                             </div>
                         </div>

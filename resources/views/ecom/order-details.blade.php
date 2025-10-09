@@ -26,7 +26,7 @@
                                 <div class="col-md-6">
                                     <h4>Order #{{ $order->order_number }}</h4>
                                     <p class="mb-0">Placed on {{ $order->created_at->format('M d, Y \a\t h:i A') }}</p>
-                                      @if ($order->status == 'delivered' && $order->payment_status == 'paid')
+                                    @if ($order->status == 'delivered' && $order->payment_status == 'paid')
                                         <a href="{{ route('user.store-orders.invoice', $order->id) }}" target="_blank"
                                             class="btn btn-sm btn-primary">
                                             <i class="fas fa-download"></i> Download Invoice
@@ -215,7 +215,7 @@
                         @if ($order->status == 'cancelled')
                             <div class="alert alert-danger mt-3">
 
-                                @if ($order->refund_status === true)
+                                @if ($payment->status == 'refunded')
                                     Your order has been cancelled and refunded.
                                 @else
                                     Your order has been cancelled. Refund is being processed.
@@ -327,12 +327,7 @@
                                 @endif
                             </ul>
                         </div>
-                        @if ($currentStatus === 'cancelled' && $order->refund_status !== null)
-                            <div
-                                class="alert mt-3 {{ $order->refund_status ? 'alert-success' : 'alert-warning' }} p-2 mb-0">
-                                {{ $order->refund_status ? 'Refund processed.' : 'Refund pending.' }}
-                            </div>
-                        @endif
+                        
                     </div>
 
 
