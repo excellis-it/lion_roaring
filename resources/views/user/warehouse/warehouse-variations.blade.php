@@ -90,7 +90,9 @@
                                 @csrf
 
                                 <div class="col-12">
-                                    <label class="form-label" for="color-select">Choose Colors <span style="color: #E54E4E">(Click To Load Variation Button To Load The Product)</span></label>
+                                    <label class="form-label" for="color-select">Choose Colors <span
+                                            style="color: #E54E4E">(Click the "Load Variation" button to load the product
+                                            variations)</span></label>
                                 </div>
 
                                 <div class="col-9">
@@ -104,7 +106,6 @@
                                         @endforeach
                                     </select>
                                 </div>
-
                                 <div class="col-3 d-grid">
                                     <button class="btn btn-primary" type="submit">Load Variations</button>
                                 </div>
@@ -183,33 +184,114 @@
             ClassicEditor.create(document.querySelector("#specification"));
         </script>
 
-        <script>
-            // ajax submit and get laravel view select-colors-form
-            $('#select-colors-form').on('submit', function(e) {
-                e.preventDefault();
-                var form = $(this);
-                var url = form.attr('action');
-                var method = form.attr('method');
-                var data = form.serialize();
-                $.ajax({
-                    url: url,
-                    type: method,
-                    data: data,
-                    success: function(response) {
-                        // console.log(response);
-                        $('#variation-products-container-data').html(response);
-                        toastr.success('Product variations loaded successfully');
-                    },
-                    error: function(xhr) {
-                        console.log(xhr.responseText);
-                    }
-                });
-            });
+        <!-- (Optional) container to show non-field errors / summary -->
+        <div id="select-colors-errors" class="mb-2"></div>
 
+        <script>
             $(document).ready(function() {
+                let autoLoad = true; // flag to send extra param on first load
+
+                $('#select-colors-form').on('submit', function(e) {
+                    e.preventDefault();
+
+                    var form = $(this);
+                    var url = form.attr('action');
+                    var method = form.attr('method');
+                    var data = form.serialize();
+
+                    // add extra param if it's the first auto load
+                    if (autoLoad) {
+                        data += '&auto_load=true';
+                    }
+
+                    // clear previous UI validation state
+                    function clearErrors() {
+                        form.find('.is-invalid').removeClass('is-invalid');
+                        form.find('.invalid-feedback').remove();
+                        $('#select-colors-errors').empty();
+                    }
+
+                    clearErrors();
+
+                    $.ajax({
+                        url: url,
+                        type: method,
+                        data: data,
+                        success: function(response) {
+                            $('#variation-products-container-data').html(response);
+                            toastr.success('Product variations loaded successfully');
+                        },
+                        error: function(xhr) {
+                            if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                                var errors = xhr.responseJSON.errors;
+
+                                Object.keys(errors).forEach(function(fieldName) {
+                                    var selector = '[name="' + fieldName + '"]';
+                                    var $field = form.find(selector);
+
+                                    if ($field.length === 0 && fieldName.indexOf('.') !== -
+                                        1) {
+                                        var alt = fieldName.replace(/\.(\d+)/g, '[$1]')
+                                            .replace(/\./g, '][');
+                                        selector = '[name="' + alt + '"]';
+                                        $field = form.find(selector);
+                                    }
+
+                                    if ($field.length === 0) {
+                                        $field = form.find('[name^="' + fieldName.replace(
+                                            /\.\d+$/, '') + '"]');
+                                    }
+
+                                    if ($field.length) {
+                                        $field.addClass('is-invalid');
+                                        var $placement = $field.last();
+                                        errors[fieldName].forEach(function(msg) {
+                                            var $existing = $placement.nextAll(
+                                                '.invalid-feedback').first();
+                                            if ($existing.length === 0) {
+                                                $placement.after(
+                                                    '<div class="invalid-feedback d-block">' +
+                                                    msg + '</div>');
+                                            } else {
+                                                $existing.append('<div>' + msg +
+                                                    '</div>');
+                                            }
+                                        });
+                                    } else {
+                                        errors[fieldName].forEach(function(msg) {
+                                            $('#select-colors-errors').append(
+                                                '<div class="alert alert-danger py-1 my-1">' +
+                                                msg + '</div>'
+                                            );
+                                        });
+                                    }
+                                });
+
+                                var firstKey = Object.keys(errors)[0];
+                                var firstMsg =
+                                    errors[firstKey] && errors[firstKey][0] ?
+                                    errors[firstKey][0] :
+                                    'Validation failed';
+                                toastr.error(firstMsg, 'Validation error');
+                            } else {
+                                console.error(xhr.responseText);
+                                toastr.error('Something went wrong. See console for details',
+                                    'Error');
+                            }
+                        },
+                        complete: function() {
+                            // disable the flag after first auto submit
+                            autoLoad = false;
+                        },
+                    });
+                });
+
+                // Trigger auto-load submit on page ready
                 $('#select-colors-form').submit();
             });
         </script>
+
+
         <script>
             const WAREHOUSE_ID = {{ $wareHouse->id }};
             const UPDATE_VARIATION_QTY_URL = "{{ route('warehouse.variation.update-quantity') }}";
