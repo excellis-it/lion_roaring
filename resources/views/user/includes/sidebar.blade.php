@@ -301,7 +301,7 @@
                                     </a>
                                 @endif
 
-                                @if (Gate::check('Manage Estore Users'))
+                                {{-- @if (Gate::check('Manage Estore Users'))
                                     <a href="{{ route('estore-users.list') }}">
                                         <span>
                                             <img src="{{ asset('user_assets/images/ICON/All_Member.svg') }}"
@@ -309,7 +309,7 @@
                                         </span>
                                         <span>E-store Users</span>
                                     </a>
-                                @endif
+                                @endif --}}
 
                                 @if (Gate::check('Manage Estore Category'))
                                     <a href="{{ route('categories.index') }}">

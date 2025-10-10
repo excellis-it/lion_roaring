@@ -21,16 +21,13 @@
                                     <a href="{{ route('user.store-orders.reports') }}" class="btn btn-primary me-2">
                                         <i class="fas fa-chart-bar"></i> Reports
                                     </a>
-                                    {{-- <button type="button" class="btn btn-success" onclick="exportOrders()">
-                                        <i class="fas fa-download"></i> Export CSV
-                                    </button> --}}
                                 </div>
                             </div>
                         </div>
                         <div class="card-body">
                             <!-- Filters -->
                             <div class="row mb-3">
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label for="status-filter">Order Status</label>
                                     <select class="form-control" id="status-filter">
                                         <option value="">All Status</option>
@@ -41,7 +38,7 @@
                                         <option value="cancelled">Cancelled</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label for="payment-status-filter">Payment Status</label>
                                     <select class="form-control" id="payment-status-filter">
                                         <option value="">All Payment Status</option>
@@ -63,6 +60,11 @@
                                     <label for="search-filter">Search</label>
                                     <input type="text" class="form-control" id="search-filter"
                                         placeholder="Search Order Number.">
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button class="btn btn-primary w-100" id="export-selected">
+                                        <i class="fas fa-file-excel"></i> Export Excel
+                                    </button>
                                 </div>
                             </div>
 
@@ -126,12 +128,109 @@
                         <button type="submit" class="btn btn-primary">Update Status</button>
                     </div>
                 </form>
+
+
             </div>
         </div>
     </div>
 @endsection
 
 @push('scripts')
+    <script>
+        $(document).ready(function() {
+
+            // ✅ "Select All" checkbox toggle
+            $(document).on('change', '#select-all', function() {
+                const isChecked = $(this).prop('checked');
+                $('.order-checkbox').prop('checked', isChecked);
+            });
+
+            // ✅ Sync "Select All" with individual checkboxes
+            $(document).on('change', '.order-checkbox', function() {
+                const allChecked = $('.order-checkbox').length === $('.order-checkbox:checked').length;
+                $('#select-all').prop('checked', allChecked);
+            });
+
+            // ✅ Export selected orders
+            $(document).on('click', '#export-selected', function(e) {
+                e.preventDefault();
+
+                let selectedIds = $('.order-checkbox:checked').map(function() {
+                    return $(this).val();
+                }).get();
+
+                // Include filters
+                const status = $('#status-filter').val();
+                const payment_status = $('#payment-status-filter').val();
+                const date_from = $('#date-from').val();
+                const date_to = $('#date-to').val();
+                const search = $('#search-filter').val();
+
+                if (selectedIds.length === 0) {
+                    swal({
+                        type: 'warning',
+                        title: 'No orders selected!',
+                        text: 'Please select at least one order to export.',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                swal({
+                    title: 'Export Selected Orders?',
+                    text: 'You are about to export ' + selectedIds.length + ' order(s).',
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Export!',
+                    cancelButtonText: 'Cancel'
+                }).then(function(result) {
+                    if (result.value) {
+                        $.ajax({
+                            url: "{{ route('user.store-orders.export') }}",
+                            type: "POST",
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                order_ids: selectedIds,
+                                status: status,
+                                payment_status: payment_status,
+                                date_from: date_from,
+                                date_to: date_to,
+                                search: search
+                            },
+                            xhrFields: {
+                                responseType: 'blob'
+                            },
+                            success: function(response) {
+                                const blob = new Blob([response], {
+                                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                                });
+                                const link = document.createElement('a');
+                                link.href = window.URL.createObjectURL(blob);
+                                link.download = 'orders_export.xlsx';
+                                link.click();
+
+                                swal({
+                                    type: 'success',
+                                    title: 'Exported!',
+                                    text: 'Selected orders exported successfully.'
+                                });
+                            },
+                            error: function(xhr) {
+                                swal({
+                                    type: 'error',
+                                    title: 'Error!',
+                                    text: 'Something went wrong while exporting.'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+        });
+    </script>
+
+
     <script>
         const STATUS_SEQUENCE = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
         $(document).ready(function() {
@@ -219,9 +318,9 @@
         }
 
         // every 5 sec fetch orders
-        setInterval(function() {
-            loadOrdersTable();
-        }, 5000);
+        // setInterval(function() {
+        //     loadOrdersTable();
+        // }, 5000);
 
         function loadOrdersTable() {
             // validate date filters before making request

@@ -524,7 +524,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/store-orders/details/{id}', [EstoreCmsController::class, 'orderDetails'])->name('user.store-orders.details');
     Route::post('/store-orders/update-status', [EstoreCmsController::class, 'updateOrderStatus'])->name('user.store-orders.update-status');
     Route::delete('/store-orders/delete/{id}', [EstoreCmsController::class, 'deleteOrder'])->name('user.store-orders.delete');
-    Route::get('/store-orders/export', [EstoreCmsController::class, 'exportOrders'])->name('user.store-orders.export');
+    Route::post('/store-orders/export', [EstoreCmsController::class, 'exportOrders'])->name('user.store-orders.export');
+    // Route::post('/orders-export', [EstoreCmsController::class, 'export'])->name('user.store-orders.export');
+
     // routes/web.php
     Route::get('/orders/{order}/invoice', [EstoreCmsController::class, 'downloadInvoice'])
         ->name('user.store-orders.invoice');
@@ -600,7 +602,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::put('/warehouse-colors/{id}', [WarehouseAdminController::class, 'updateColor'])->name('warehouse-admin.colors.update');
     Route::get('/warehouse-colors/{id}/delete', [WarehouseAdminController::class, 'deleteColor'])->name('warehouse-admin.colors.delete');
 
-    Route::get('/estore-users-list', [PartnerController::class, 'estoreUsers'])->name('estore-users.list');
+    // Route::get('/estore-users-list', [PartnerController::class, 'estoreUsers'])->name('estore-users.list');
     // estore-users.fetch-data
     Route::get('/estore-users-fetch-data', [PartnerController::class, 'estoreFetchData'])->name('estore-users.fetch-data');
 

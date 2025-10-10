@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Exports\OrdersExport;
 use App\Http\Controllers\Controller;
 use App\Models\EcomCmsPage;
 use App\Models\EcomFooterCms;
@@ -545,73 +546,107 @@ class EstoreCmsController extends Controller
     }
 
     // Export Orders
+    // public function exportOrders(Request $request)
+    // {
+    //     $orders = EstoreOrder::with(['user', 'orderItems'])
+    //         ->orderBy('created_at', 'desc');
+
+    //     // Apply same filters as in fetchOrdersData
+    //     if ($request->has('status') && $request->status != '') {
+    //         $orders->where('status', $request->status);
+    //     }
+
+    //     if ($request->has('payment_status') && $request->payment_status != '') {
+    //         $orders->where('payment_status', $request->payment_status);
+    //     }
+
+    //     if ($request->has('date_from') && $request->date_from != '') {
+    //         $orders->whereDate('created_at', '>=', $request->date_from);
+    //     }
+
+    //     if ($request->has('date_to') && $request->date_to != '') {
+    //         $orders->whereDate('created_at', '<=', $request->date_to);
+    //     }
+
+    //     $orders = $orders->get();
+
+    //     $filename = 'orders_' . date('Y-m-d_H-i-s') . '.csv';
+
+    //     $headers = [
+    //         'Content-Type' => 'text/csv',
+    //         'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+    //     ];
+
+    //     $callback = function () use ($orders) {
+    //         $file = fopen('php://output', 'w');
+
+    //         // CSV headers
+    //         fputcsv($file, [
+    //             'Order Number',
+    //             'Customer Name',
+    //             'Email',
+    //             'Phone',
+    //             'Total Amount',
+    //             'Status',
+    //             'Payment Status',
+    //             'Order Date',
+    //             'Items Count'
+    //         ]);
+
+    //         // CSV data
+    //         foreach ($orders as $order) {
+    //             fputcsv($file, [
+    //                 $order->order_number,
+    //                 $order->full_name,
+    //                 $order->email,
+    //                 $order->phone,
+    //                 '$' . number_format($order->total_amount, 2),
+    //                 ucfirst($order->status),
+    //                 ucfirst($order->payment_status),
+    //                 $order->created_at->format('Y-m-d H:i:s'),
+    //                 $order->orderItems->count()
+    //             ]);
+    //         }
+
+    //         fclose($file);
+    //     };
+
+    //     return response()->stream($callback, 200, $headers);
+    // }
+
     public function exportOrders(Request $request)
     {
-        $orders = EstoreOrder::with(['user', 'orderItems'])
-            ->orderBy('created_at', 'desc');
+        $orderIds = $request->order_ids ?? [];
+        $status = $request->status;
+        $payment_status = $request->payment_status;
+        $date_from = $request->date_from;
+        $date_to = $request->date_to;
+        $search = $request->search;
 
-        // Apply same filters as in fetchOrdersData
-        if ($request->has('status') && $request->status != '') {
-            $orders->where('status', $request->status);
+        $query = EstoreOrder::with(['user', 'orderItems']);
+
+        if ($orderIds) {
+            $query->whereIn('id', $orderIds);
         }
 
-        if ($request->has('payment_status') && $request->payment_status != '') {
-            $orders->where('payment_status', $request->payment_status);
+        if ($status) $query->where('status', $status);
+        if ($payment_status) $query->where('payment_status', $payment_status);
+        if ($date_from) $query->whereDate('created_at', '>=', $date_from);
+        if ($date_to) $query->whereDate('created_at', '<=', $date_to);
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('order_number', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->orWhere('phone', 'like', "%$search%")
+                    ->orWhereRaw("CONCAT(first_name,' ',last_name) like ?", ["%$search%"]);
+            });
         }
 
-        if ($request->has('date_from') && $request->date_from != '') {
-            $orders->whereDate('created_at', '>=', $request->date_from);
-        }
+        $orders = $query->get();
 
-        if ($request->has('date_to') && $request->date_to != '') {
-            $orders->whereDate('created_at', '<=', $request->date_to);
-        }
-
-        $orders = $orders->get();
-
-        $filename = 'orders_' . date('Y-m-d_H-i-s') . '.csv';
-
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ];
-
-        $callback = function () use ($orders) {
-            $file = fopen('php://output', 'w');
-
-            // CSV headers
-            fputcsv($file, [
-                'Order Number',
-                'Customer Name',
-                'Email',
-                'Phone',
-                'Total Amount',
-                'Status',
-                'Payment Status',
-                'Order Date',
-                'Items Count'
-            ]);
-
-            // CSV data
-            foreach ($orders as $order) {
-                fputcsv($file, [
-                    $order->order_number,
-                    $order->full_name,
-                    $order->email,
-                    $order->phone,
-                    '$' . number_format($order->total_amount, 2),
-                    ucfirst($order->status),
-                    ucfirst($order->payment_status),
-                    $order->created_at->format('Y-m-d H:i:s'),
-                    $order->orderItems->count()
-                ]);
-            }
-
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
+        return Excel::download(new OrdersExport($orders), 'orders_export.xlsx');
     }
+
 
     // -----------------------------------------------------------------
     // Product Reviews Management
