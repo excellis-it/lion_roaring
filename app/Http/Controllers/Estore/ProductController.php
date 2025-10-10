@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Estore;
 
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Mail\OrderNotificationMail;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Product;
@@ -38,7 +39,9 @@ use App\Models\WarehouseProductVariation;
 use Illuminate\Support\Facades\Storage;
 use App\Services\PromoCodeService;
 use App\Models\EstorePromoCode;
+use App\Models\Notification;
 use App\Models\WarehouseProductImage;
+use Illuminate\Support\Facades\Mail;
 
 class ProductController extends Controller
 {
@@ -1033,6 +1036,56 @@ class ProductController extends Controller
                 }
             }
 
+            $groupByWareHouse = $carts->groupBy('warehouse_id');
+
+            $allWarehouseAdminIds = [];
+
+            foreach ($groupByWareHouse as $warehouseId => $warehouseCarts) {
+                $warehouse = Warehouse::find($warehouseId);
+
+                if ($warehouse && $warehouse->admins()->exists()) {
+                    $warehouseAdmins = $warehouse->admins()->pluck('users.id')->toArray(); // 👈 fixed here
+                    $allWarehouseAdminIds = array_merge($allWarehouseAdminIds, $warehouseAdmins);
+                }
+            }
+            // dd($allWarehouseAdminIds);
+
+            $allWarehouseAdminIds = array_unique($allWarehouseAdminIds);
+
+            $superAdminIds = User::role('SUPER ADMIN')->pluck('id')->toArray();
+
+            $recipientIds = array_unique(array_merge($allWarehouseAdminIds, $superAdminIds));
+
+            if (!empty($recipientIds)) {
+                $notifications = [];
+
+                $recipientUsers = User::whereIn('id', $recipientIds)->get();
+
+                foreach ($recipientUsers as $user) {
+                    $notifications[] = [
+                        'user_id' => $user->id,
+                        'chat_id' => $order->id,
+                        'message' => 'New order #' . $order->order_number . ' placed with ' . $carts->count() . ' item(s).',
+                        'type' => 'Order',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+
+                    // Send email to user
+                    if ($user->email) {
+                        try {
+                            Mail::to($user->email)->queue(new OrderNotificationMail($order, $user, $warehouseCarts ?? []));
+                        } catch (\Throwable $th) {
+                            Log::error('Failed to send order notification email', ['error' => $th->getMessage()]);
+                        }
+
+                    }
+                }
+
+                // Insert notifications in bulk
+                Notification::insert($notifications);
+            }
+
             if ($paymentIntent) {
                 EstorePayment::create([
                     'order_id' => $order->id,
@@ -1452,7 +1505,7 @@ class ProductController extends Controller
             $wareHouseProductVariations = WarehouseProduct::where('color_id', $request->color_id)
                 ->where('size_id', $request->size_id)->pluck('id')->toArray();
 
-                $colorMatchedImages = [];
+            $colorMatchedImages = [];
             // get all images with same color matched
             $colorMatchedImages = WarehouseProductImage::whereIn('warehouse_product_id', $wareHouseProductVariations)->get();
 
