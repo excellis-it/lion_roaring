@@ -191,7 +191,7 @@
                                             <h3 class="h3 mb-3">Color : {{ $first->colorDetail->color_name ?? '' }}</h3>
                                             <div class="d-flex justify-content-between align-items-start mb-3">
 
-                                                <div class="w-25">
+                                                <div class="w-lg-25 w-sm-100">
                                                     <label class="small fw-semibold mb-1">Images
                                                         ({{ $first->colorDetail->color_name ?? '' }})
                                                     </label>

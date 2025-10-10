@@ -247,7 +247,7 @@
                                                                                 *</label>
                                                                             <input type="file" name="slider_images[]"
                                                                                 class="form-control" accept="image/*">
-                                                                            <span class="text-sm ms-2 text-muted">(width:
+                                                                            <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width:
                                                                                 1920px, height: 550px, max 2MB)</span>
                                                                             @if (isset($slide['image']) && $slide['image'])
                                                                                 <div class="mt-2">
@@ -292,7 +292,7 @@
                                                                         <label>Slide 1 Image*</label>
                                                                         <input type="file" name="slider_images[]"
                                                                             class="form-control" accept="image/*">
-                                                                        <span class="text-sm ms-2 text-muted">(width:
+                                                                        <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width:
                                                                             1920px, height: 550px, max 2MB)</span>
                                                                     </div>
                                                                 </div>
@@ -436,14 +436,14 @@
                                                 </div>
 
                                                 {{-- shop_now_image --}}
-                                                <div class="col-md-3 mb-2">
+                                                <div class="col-md-6 mb-2">
                                                     <div class="box_label">
                                                         <label for="shop_now_image"> Shop Now Image*</label>
                                                         <input type="file" name="shop_now_image" id="shop_now_image"
                                                             class="form-control"
                                                             value="{{ isset($cms->shop_now_image) ? $cms->shop_now_image : old('shop_now_image') }}"
                                                             accept="image/*">
-                                                        <span class="text-sm ms-2 text-muted">(width: 1920px, height:
+                                                        <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 1920px, height:
                                                             550px, max 2MB)</span>
                                                         @if ($errors->has('shop_now_image'))
                                                             <span
@@ -729,7 +729,7 @@
                                                         <input type="file" name="about_section_image"
                                                             id="about_section_image" class="form-control"
                                                             accept="image/*">
-                                                        <span class="text-sm ms-2 text-muted">(width: 420px, height:
+                                                        <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 420px, height:
                                                             300px, max 2MB)</span>
                                                         @if ($errors->has('about_section_image'))
                                                             <span

@@ -20,7 +20,7 @@
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Banner Image*</label>
                         <input type="file" name="banner_image" class="form-control" />
-                        <span class="text-sm ms-2 text-muted">(width: 1920px, height: 520px, max 2MB)</span><br>
+                        <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 1920px, height: 520px, max 2MB)</span><br>
                         @if (isset($cms->banner_image))
                             <img src="{{ Storage::url($cms->banner_image) }}" alt="banner" class="img-thumbnail mt-2"
                                 style="max-height:120px;">
