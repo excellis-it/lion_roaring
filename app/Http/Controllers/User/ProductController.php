@@ -24,7 +24,8 @@ use App\Models\ProductVariationImage;
 use App\Models\Review;
 use App\Models\WarehouseProductVariation;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 class ProductController extends Controller
 {
     use ImageTrait;
@@ -112,6 +113,25 @@ class ProductController extends Controller
         }
     }
 
+    public function checkSlug(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $slug = Str::slug($request->name);
+
+        // Ensure uniqueness in products table
+        $count = Product::where('slug', 'LIKE', "{$slug}%")->count();
+
+        if ($count > 0) {
+            $slug = $slug . '-' . ($count + 1);
+        }
+
+        return response()->json(['slug' => $slug]);
+    }
+
+
     /**
      * Show the form for creating a new resource.
      *
@@ -154,7 +174,7 @@ class ProductController extends Controller
             'description'       => 'required|string',
             'specification'     => 'required|string',
             'feature_product'   => 'required|in:0,1',
-            'slug'              => 'required|string|unique:products,slug',
+            'slug'              => 'required|string|unique:products,slug|regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
             'image'             => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'background_image'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             // gallery: at least 1 image (your form label requires at least 1)
@@ -212,6 +232,7 @@ class ProductController extends Controller
             'feature_product.required' => 'The feature product field is required.',
             'slug.required' => 'The slug field is required.',
             'slug.unique' => 'The slug has already been taken.',
+            'slug.regex' => 'The slug may only contain lowercase letters, numbers, and hyphens, without spaces.',
             'image.required' => 'The featured image field is required.',
             'images.required' => 'Please upload at least one gallery image.',
             'images.min' => 'Please upload at least one gallery image.',
@@ -453,41 +474,93 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $product = Product::findOrFail($id);
         // return $request->all();
         if (auth()->user()->can('Edit Estore Products') || auth()->user()->isWarehouseAdmin()) {
-            $request->validate([
-                // 'category_id' => 'required|numeric|exists:categories,id',
-                // 'name' => 'required|string|max:255',
-                // 'description' => 'required|string',
-                // 'short_description' => 'required|string',
-                // 'specification' => 'required|string',
-                // 'price' => 'required|numeric',
-                // 'slug' => 'required|string|unique:products,slug,' . $id,
-                // 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
-                // 'images' => 'nullable|array',
-                // 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
-                // 'feature_product' => 'required',
-                // 'status' => 'required',
+            $rules = [
+                'category_id'      => 'required|numeric|exists:categories,id',
+                'name'             => 'required|string|max:255',
+                'description'      => 'required|string',
+                'specification'    => 'required|string',
+                'feature_product'  => 'required|in:0,1',
+                'slug'             => [
+                    'required',
+                    'string',
+                    Rule::unique('products', 'slug')->ignore($product->id),
+                    'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+                ],
+                'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+                'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+                'images'           => 'nullable|array|min:1',
+                'images.*'         => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
+                'product_type'     => 'required|in:simple,variable',
+                'is_free'          => 'nullable|in:0,1',
+                'status'           => 'nullable|in:0,1',
+                // other charges (if present)
+                'other_charges'             => 'nullable|array',
+                'other_charges.*.charge_name' => 'nullable|string|max:255',
+                'other_charges.*.charge_amount' => 'nullable|numeric|min:0',
+            ];
 
-                // // Warehouse product validation
-                // 'warehouse_products' => 'nullable|array',
-                // 'warehouse_products.*.id' => 'nullable|exists:warehouse_products,id',
-                // 'warehouse_products.*.warehouse_id' => 'required|exists:ware_houses,id',
-                // 'warehouse_products.*.sku' => 'required|string|distinct',
-                // 'warehouse_products.*.price' => 'required|numeric|min:0',
-                // 'warehouse_products.*.color_id' => 'nullable|exists:colors,id',
-                // 'warehouse_products.*.size_id' => 'nullable|exists:sizes,id',
-                // 'warehouse_products.*.quantity' => 'required|integer|min:0',
-                // 'warehouse_products.*.images' => 'nullable|array',
-                // 'warehouse_products.*.images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
+            // Conditional rules for simple product
+            // if ($product->product_type === 'simple') {
+            //     if ($request->boolean('is_free')) {
+            //         $rules['price'] = 'nullable|numeric|min:0';
+            //     } else {
+            //         $rules['price'] = 'required|numeric|min:0';
+            //     }
+            //     $rules['sku'] = [
+            //         'required',
+            //         'string',
+            //         'max:255',
+            //         Rule::unique('products', 'sku')->ignore($product->id),
+            //     ];
+            //     $rules['quantity'] = 'required|integer|min:0';
+            // }
 
-                // // Other charges validation
-                // 'other_charges' => 'nullable|array',
-                // 'other_charges.*.charge_name' => 'nullable|string|max:255',
-                // 'other_charges.*.charge_amount' => 'nullable|numeric|min:0',
-            ]);
+            // Conditional rules for variable product
+            if ($product->product_type === 'variable') {
+                $rules['sizes'] = 'required|array|min:1';
+                $rules['sizes.*'] = 'integer|exists:sizes,id';
+            }
 
-            $product = Product::findOrFail($id);
+            $messages = [
+                'category_id.required' => 'The category field is required.',
+                'category_id.exists' => 'The selected category is invalid.',
+                'name.required' => 'The product name field is required.',
+                'description.required' => 'The description field is required.',
+                'specification.required' => 'The specification field is required.',
+                'feature_product.required' => 'The feature product field is required.',
+                'slug.required' => 'The slug field is required.',
+                'slug.unique' => 'The slug has already been taken.',
+                'slug.regex' => 'The slug may only contain lowercase letters, numbers, and hyphens, without spaces.',
+                'image.required' => 'The featured image field is required.',
+                'images.min' => 'Please upload at least one gallery image.',
+                'sizes.required' => 'Please select at least one size for variable products.',
+                'other_charges.*.charge_amount.min' => 'Charge amount must be at least 0.',
+                'other_charges.*.charge_amount.required_with' => 'Charge amount is required when adding other charges.',
+                'other_charges.*.charge_name.required_with' => 'Charge name is required when adding other charges.',
+                'product_type.required' => 'The product type field is required.',
+                'product_type.in' => 'The selected product type is invalid.',
+            ];
+
+            $validator = Validator::make($request->all(), $rules, $messages);
+
+            // Make charge_amount required if charge_name is present
+            $validator->sometimes('other_charges.*.charge_amount', 'required', function ($input) {
+                if (!empty($input->other_charges) && is_array($input->other_charges)) {
+                    foreach ($input->other_charges as $charge) {
+                        if (!empty($charge['charge_name'])) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            });
+
+            $validatedData = $validator->validate(); // throws 422 if fails
+
+
             $product->category_id = $request->category_id;
             $product->name = $request->name;
             $product->description = $request->description;

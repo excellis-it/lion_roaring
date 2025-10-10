@@ -765,11 +765,37 @@
         <script>
             $(document).ready(function() {
                 // auto set slug from name
-                $('#name').on('keyup', function() {
-                    var name = $(this).val();
-                    var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-                    $('#slug').val(slug);
+                // $('#name').on('keyup', function() {
+                //     var name = $(this).val();
+                //     var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+                //     $('#slug').val(slug);
+                // });
+
+                $('#name').on('keyup change', function() {
+                    let name = $(this).val();
+
+                    if (name.length > 0) {
+                        $.ajax({
+                            url: '{{ route('products.slug.check') }}', // route to check slug
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                name: name
+                            },
+                            success: function(response) {
+                                if (response.slug) {
+                                    $('#slug').val(response.slug);
+                                    $('#slug-feedback').text(''); // clear error
+                                } else if (response.error) {
+                                    $('#slug-feedback').text(response.error);
+                                }
+                            }
+                        });
+                    } else {
+                        $('#slug').val('');
+                    }
                 });
+
 
                 function togglePriceFields() {
                     const isFree = $('#is_free').is(':checked');

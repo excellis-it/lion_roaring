@@ -495,6 +495,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
     Route::get('/warehouse-product-image-delete', [ProductController::class, 'warehouseImageDelete'])->name('warehouse-product.image.delete');
     Route::get('/products-fetch-data', [ProductController::class, 'fetchData'])->name('products.fetch-data');
+    Route::post('/products-slug-check', [ProductController::class, 'checkSlug'])->name('products.slug.check');
+
+
     Route::get('/categories-fetch-data', [CategoryController::class, 'fetchData'])->name('categories.fetch-data');
     Route::prefix('categories')->group(function () {
         Route::get('/category-delete/{id}', [CategoryController::class, 'delete'])->name('categories.delete');

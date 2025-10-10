@@ -92,6 +92,14 @@
             padding: 3px;
             border-radius: 4px;
         }
+         .invalid-feedback {
+            display: block;
+            color: red;
+        }
+
+        .text-danger {
+            color: red !important;
+        }
     </style>
 @endpush
 @section('content')
@@ -200,7 +208,8 @@
                                             <label for="image"> Product Featured Image*</label>
                                             <input type="file" name="image" id="image" class="form-control"
                                                 value="{{ old('image') }}" accept="image/*">
-                                            <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 300px, height: 400px, max
+                                            <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 300px,
+                                                height: 400px, max
                                                 2MB)</span>
 
                                             @if ($errors->has('image'))
@@ -232,7 +241,8 @@
                                             <input type="file" name="background_image" id="background_image"
                                                 class="form-control" value="{{ old('background_image') }}"
                                                 accept="image/*">
-                                            <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 1920px, height: 520px, max
+                                            <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 1920px,
+                                                height: 520px, max
                                                 2MB)</span>
                                             @if ($errors->has('background_image'))
                                                 <span class="error">{{ $errors->first('background_image') }}</span>
@@ -339,7 +349,7 @@
 
 
                                     <!-- <div class="col-md-2 mb-2">
-                                        </div> -->
+                                                </div> -->
 
                                     {{-- is_free --}}
                                     <div class="col-md-4 mb-2">
@@ -389,7 +399,7 @@
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('images') }}</div>
                                         @endif
-
+                                        <span class="text-danger" id="images_error"></span>
                                         <!-- Gallery previews for newly selected files -->
                                         <div id="gallery-previews" class="gallery-previews" style="display:none;"></div>
                                     </div>
@@ -497,6 +507,8 @@
                                                             name="other_charges[{{ $index }}][charge_name]"
                                                             class="form-control" placeholder="Ex. Package Charge"
                                                             value="{{ $charge->charge_name }}">
+                                                        <span class="text-danger"
+                                                            id="other_charges.{{ $index }}.charge_name_error"></span>
                                                     </div>
                                                 </div>
 
@@ -506,6 +518,8 @@
                                                             name="other_charges[{{ $index }}][charge_amount]"
                                                             class="form-control" placeholder="Charge Amount"
                                                             value="{{ $charge->charge_amount }}">
+                                                        <span class="text-danger"
+                                                            id="other_charges.{{ $index }}.charge_amount_error"></span>
                                                     </div>
                                                 </div>
 
@@ -533,6 +547,8 @@
                                                     <label>Other Charges</label>
                                                     <input type="text" name="other_charges[0][charge_name]"
                                                         class="form-control" placeholder="Ex. Package Charge">
+                                                    <span class="text-danger"
+                                                        id="other_charges.0.charge_name_error"></span>
                                                 </div>
                                             </div>
 
@@ -541,6 +557,8 @@
                                                     <input step="any" type="number"
                                                         name="other_charges[0][charge_amount]" class="form-control"
                                                         placeholder="Charge Amount">
+                                                    <span class="text-danger"
+                                                        id="other_charges.0.charge_amount_error"></span>
                                                 </div>
                                             </div>
 
@@ -818,12 +836,14 @@
                         <div class="col-md-4 mb-2">
                             <div class="box_label">
                                 <input type="text" name="other_charges[${otherChargeIndex}][charge_name]" class="form-control" placeholder="Ex. Shipping Charge">
-                            </div>
+                                <span id="other_charges_${otherChargeIndex}_charge_name_error" class="text-danger"></span>
+                                </div>
                         </div>
                         <div class="col-md-4 mb-2">
                             <div class="box_label">
                                 <input step="any" type="number" name="other_charges[${otherChargeIndex}][charge_amount]" class="form-control" placeholder="Charge Amount">
-                            </div>
+                                <span id="other_charges_${otherChargeIndex}_charge_amount_error" class="text-danger"></span>
+                                </div>
                         </div>
                         <div class="col-md-4 mb-2">
                             <div class="box_label">
@@ -888,8 +908,187 @@
             });
         </script>
 
-        <!-- Client-side validation for productEditForm -->
         <script>
+            $(document).ready(function() {
+
+                $('#productEditForm').on('submit', function(e) {
+                    e.preventDefault();
+
+                    let form = $(this);
+                    let url = form.attr('action');
+                    let method = form.attr('method');
+
+                    // Create FormData to support file uploads
+                    let formData = new FormData(this);
+
+                    // Clear previous error states
+                    form.find('.is-invalid').removeClass('is-invalid');
+                    form.find('.invalid-feedback').remove();
+                    $('.error-summary').remove(); // clear any old summary
+
+                    $.ajax({
+                        url: url,
+                        type: method,
+                        data: formData,
+                        processData: false, // important for file uploads
+                        contentType: false, // important for file uploads
+                        beforeSend: function() {
+                            // Optional: disable button to prevent multiple clicks
+                            form.find('button[type=submit]').prop('disabled', true);
+                        },
+                        success: function(response) {
+                            toastr.success('Product created successfully!');
+
+                            // Redirect or reset form if needed
+                            form[0].reset();
+                            window.location.href = "{{ route('products.index') }}"; // optional
+                        },
+                        error: function(xhr) {
+                            form.find('button[type=submit]').prop('disabled', false);
+
+                            // Clear previous states
+                            form.find('.is-invalid').removeClass('is-invalid');
+                            form.find('.invalid-feedback').remove();
+                            // Clear any old "*_error" spans (like other_charges_0_charge_name_error or images_error)
+                            $('[id$="_error"]').text('');
+
+                            if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                                let errors = xhr.responseJSON.errors;
+                                let firstInvalidEl = null;
+
+                                Object.keys(errors).forEach(function(field) {
+                                    let messages = errors[field]; // array
+
+                                    // --- Resolve selector name (map images.* -> images[] etc.)
+                                    let selectorName;
+                                    if (field === 'images' || field.startsWith('images.') ||
+                                        field.startsWith('images[')) {
+                                        selectorName = 'images[]';
+                                    } else if (field.includes('.')) {
+                                        // other_charges.0.charge_name -> other_charges[0][charge_name]
+                                        selectorName = field.replace(/\.(\d+)/g, '[$1]')
+                                            .replace(/\./g, '][');
+                                    } else {
+                                        selectorName = field;
+                                    }
+
+                                    // Build selectors to try
+                                    const selectorsToTry = [
+                                        `[name="${selectorName}"]`,
+                                    ];
+                                    if (!selectorName.includes('[') && field.endsWith(
+                                            's')) {
+                                        selectorsToTry.push(`[name="${selectorName}[]"]`);
+                                    }
+                                    if (selectorName.indexOf('[') !== -1) {
+                                        const prefix = selectorName.split('[').slice(0, 2)
+                                            .join('[') + '[';
+                                        selectorsToTry.push(`[name^="${prefix}"]`);
+                                    } else {
+                                        selectorsToTry.push(`[name^="${selectorName}"]`);
+                                    }
+
+                                    // Try to find input using selectors
+                                    let $input = $();
+                                    for (let sel of selectorsToTry) {
+                                        $input = form.find(sel);
+                                        if ($input.length) break;
+                                    }
+
+                                    // Special explicit error span for images - prefer this if present
+                                    // You used <span id="images_error"></span>
+                                    const explicitImageSpan = (field.startsWith('images')) ?
+                                        $('#images_error') : $();
+                                    if (explicitImageSpan && explicitImageSpan.length) {
+                                        explicitImageSpan.text(messages.join(' '));
+                                        if (!firstInvalidEl) firstInvalidEl =
+                                            explicitImageSpan;
+                                        return; // done with this field
+                                    }
+
+                                    // Also check general "_error" span naming (field + '_error'), escape dots for ID
+                                    const errorSpanId = field + '_error';
+                                    const escapedId = errorSpanId.replace(
+                                        /([:.#[\],/\\$*+?^(){}|-])/g, "\\$1");
+                                    const $errorSpan = $(`#${escapedId}`);
+
+                                    if ($input.length) {
+                                        // Mark invalid
+                                        $input.addClass('is-invalid');
+
+                                        // Decide placement
+                                        const tag = $input.prop('tagName').toLowerCase();
+                                        const type = ($input.attr('type') || '')
+                                            .toLowerCase();
+
+                                        // If input is file/select/textarea -> place message below the visible wrapper
+                                        if (type === 'file' || tag === 'select' || tag ===
+                                            'textarea') {
+                                            const $wrapper = $input.closest('.box_label');
+                                            const messageHtml =
+                                                `<div class="invalid-feedback d-block">${messages.join('<br>')}</div>`;
+
+                                            if ($wrapper.length) {
+                                                // append inside wrapper (after label/input block)
+                                                $wrapper.append(messageHtml);
+                                            } else {
+                                                // IMPORTANT: for file inputs that have no .box_label, use after() (not append)
+                                                $input.after(messageHtml);
+                                            }
+                                        } else {
+                                            // For text/number inputs put the error after the last matched input element
+                                            $input.last().after(
+                                                `<div class="invalid-feedback d-block">${messages.join('<br>')}</div>`
+                                            );
+                                        }
+
+                                        if (!firstInvalidEl) firstInvalidEl = $input
+                                            .first();
+
+                                    } else if ($errorSpan.length) {
+                                        // Put message into explicit span if present
+                                        $errorSpan.text(messages.join(' '));
+                                        if (!firstInvalidEl) firstInvalidEl = $errorSpan;
+                                    } else {
+                                        // final fallback: summary area at top
+                                        if ($('.error-summary').length === 0) {
+                                            form.prepend(
+                                                '<div class="error-summary alert alert-danger mt-2"></div>'
+                                            );
+                                        }
+                                        $('.error-summary').append(
+                                            `<div>${messages.join('<br>')}</div>`);
+                                        if (!firstInvalidEl) firstInvalidEl = $(
+                                            '.error-summary').first();
+                                    }
+                                });
+
+                                // Scroll to first invalid item
+                                if (firstInvalidEl && firstInvalidEl.length) {
+                                    $('html, body').animate({
+                                        scrollTop: firstInvalidEl.offset().top - 100
+                                    }, 250);
+                                    try {
+                                        firstInvalidEl.focus();
+                                    } catch (e) {}
+                                }
+
+                            } else {
+                                toastr.error('Something went wrong. Please try again.');
+                                console.error(xhr.responseText);
+                            }
+                        }
+
+
+
+                    });
+                });
+
+            });
+        </script>
+
+        <!-- Client-side validation for productEditForm -->
+        {{-- <script>
             (function() {
                 // number of existing gallery images (rendered on server)
                 var existingImagesCount = {{ $product->withOutMainImage->count() ?? 0 }};
@@ -1112,5 +1311,5 @@
                     $form.submit();
                 });
             })();
-        </script>
+        </script> --}}
     @endpush
