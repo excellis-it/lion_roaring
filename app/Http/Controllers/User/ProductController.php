@@ -178,7 +178,7 @@ class ProductController extends Controller
             'image'             => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'background_image'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             // gallery: at least 1 image (your form label requires at least 1)
-            'images'            => 'required|array|min:1',
+            'images'            => 'nullable|array|min:1',
             'images.*'          => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
             // product type
             'product_type'      => 'required|in:simple,variable',

@@ -386,8 +386,8 @@
                                     </div>
 
                                     <div class="col-md-12">
-                                        <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image(Drag and
-                                            drop atleast 1 images)*</label><br>
+                                        <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image Gallery(Drag and
+                                            drop atleast 1 images)</label><br>
                                         <span class="text-sm ms-2 text-muted">(width: 300px, height: 400px, max 2MB)</span>
                                         <input type="file" class="form-control dropzone" id="image-upload"
                                             name="images[]" multiple accept="image/*">

@@ -186,14 +186,11 @@
                         prices.push($(this).val());
                     });
                     var latestFilter = $('#latest_filter').val();
-                    @if ($category_id != '')
-                        var cat = '{{ $category_id }}';
-                        category_id.push(cat);
-                    @else
+
                         $('.category-checkbox:checked').each(function() {
-                            category_id.push($(this).val());
+                            category_id.push($(this).val()); 
                         });
-                    @endif
+
                     showLoading();
                     loadMoreProducts(page, prices, category_id, latestFilter, search);
                 }
@@ -215,14 +212,11 @@
                     prices.push($(this).val());
                 });
                 var latestFilter = $('#latest_filter').val();
-                @if ($category_id != '')
-                    var cat = '{{ $category_id }}';
-                    category_id.push(cat);
-                @else
+
                     $('.category-checkbox:checked').each(function() {
                         category_id.push($(this).val());
                     });
-                @endif
+
                 showLoading();
                 page = 1;
                 $('#products').html('');
@@ -238,14 +232,10 @@
                     prices.push($(this).val());
                 });
                 var latestFilter = $('#latest_filter').val();
-                @if ($category_id != '')
-                    var cat = '{{ $category_id }}';
-                    category_id.push(cat);
-                @else
+
                     $('.category-checkbox:checked').each(function() {
                         category_id.push($(this).val());
                     });
-                @endif
                 page = 1;
                 $('#products').html('');
                 loadMoreProducts(page, prices, category_id, latestFilter, search);
@@ -259,14 +249,10 @@
                     prices.push($(this).val());
                 });
                 var latestFilter = $('#latest_filter').val();
-                @if ($category_id != '')
-                    var cat = '{{ $category_id }}';
-                    category_id.push(cat);
-                @else
+
                     $('.category-checkbox:checked').each(function() {
                         category_id.push($(this).val());
                     });
-                @endif
                 page = 1;
                 $('#products').html('');
                 loadMoreProducts(page, prices, category_id, latestFilter, search);

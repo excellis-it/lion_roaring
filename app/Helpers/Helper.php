@@ -195,7 +195,7 @@ class Helper
 
     public static function getRatingCount($product_id)
     {
-        $rating_count = Review::where('product_id', $product_id)->count();
+        $rating_count = Review::where('product_id', $product_id)->where('status', 2)->count();
         return $rating_count;
     }
 

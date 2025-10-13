@@ -2535,3 +2535,6 @@ section {
     border-radius: 5px;
 }
 
+.swal2-icon-content{
+    font-size: 0.75em !important;
+}

@@ -344,7 +344,7 @@
                                             (Drag and
                                             drop
                                             atleast 1
-                                            images)*</label>
+                                            images)</label>
                                         <br><span class="text-sm ms-2 text-muted">(width: 300px, height: 400px, max
                                             2MB)</span>
                                         <input type="file" class="form-control dropzone" id="image-upload"
