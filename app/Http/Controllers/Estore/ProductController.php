@@ -40,8 +40,10 @@ use Illuminate\Support\Facades\Storage;
 use App\Services\PromoCodeService;
 use App\Models\EstorePromoCode;
 use App\Models\Notification;
+use App\Models\OrderStatus;
 use App\Models\WarehouseProductImage;
 use Illuminate\Support\Facades\Mail;
+use Stripe\Climate\Order;
 
 class ProductController extends Controller
 {
@@ -943,7 +945,7 @@ class ProductController extends Controller
 
             $warehouseId = $carts->first()->warehouse_id ?? null;
             $wareHouse = WareHouse::find($warehouseId);
-
+            $order_status = OrderStatus::where('slug', 'processing')->first();
             $order = EstoreOrder::create([
                 'warehouse_id' => $warehouseId,
                 'is_pickup' => $is_pickup,
@@ -965,12 +967,13 @@ class ProductController extends Controller
                 'credit_card_fee' => $creditCardFee,
                 'payment_type' => $request->payment_type,
                 'payment_status' => 'paid',
-                'status' => 'processing',
+                'status' => $order_status->id ?? null,
                 'warehouse_name' => $wareHouse->name ?? null,
                 'warehouse_address' => $wareHouse->address ?? null,
                 'promo_code' => $appliedPromoCode,
                 'promo_discount' => $promoDiscount,
             ]);
+            // dd($order);
 
             foreach ($carts as $cart) {
                 $size = Size::find($cart->size_id);
@@ -1078,7 +1081,6 @@ class ProductController extends Controller
                         } catch (\Throwable $th) {
                             Log::error('Failed to send order notification email', ['error' => $th->getMessage()]);
                         }
-
                     }
                 }
 
@@ -1133,175 +1135,7 @@ class ProductController extends Controller
     }
 
 
-    // Payment success
-    // public function paymentSuccess(Request $request)
-    // {
-    //     return $request->all();
-    //     if (!auth()->check()) {
-    //         return redirect()->route('home')->with('error', 'Please login to continue');
-    //     }
-    //     $request->validate([
-    //         'session_id' => 'required|string',
-    //         'order_id' => 'required'
-    //     ]);
 
-
-
-    //     $decrypted_order_id = decrypt($request->order_id);
-
-    //     // try {
-    //     Stripe::setApiKey(env('STRIPE_SECRET'));
-
-    //     // Retrieve the session from Stripe
-    //     $session = StripeSession::retrieve($request->session_id);
-
-    //     if ($session->payment_status === 'paid') {
-    //         //    DB::beginTransaction();
-
-    //         $order = EstoreOrder::find($decrypted_order_id);
-
-    //         // Check if this order belongs to the current user
-    //         if (!$order || $order->user_id != auth()->id()) {
-    //             return redirect()->route('e-store.cart')->with('error', 'Order not found');
-    //         }
-
-    //         // Check if payment is already processed to avoid duplicate updates
-    //         if ($order->payment_status === 'paid') {
-    //             return redirect()->route('e-store.order-success', $order->id)
-    //                 ->with('info', 'Order already processed');
-    //         }
-
-    //         $payment = EstorePayment::where('order_id', $order->id)
-    //             ->where('stripe_payment_intent_id', $request->session_id)
-    //             ->first();
-
-    //         if ($order && $payment) {
-
-    //             // order items
-    //             $orderItems = EstoreOrderItem::where('order_id', $order->id)->get();
-    //             // return $orderItems;
-    //             // each order item deduct stock from warehouse product update
-    //             foreach ($orderItems as $item) {
-    //                 $wareHouseproduct = WarehouseProduct::where('warehouse_id', $item->warehouse_id)->where('id', $item->warehouse_product_id)->where('product_id', $item->product_id)->first();
-    //                 //  return $wareHouseproduct;
-    //                 if ($wareHouseproduct) {
-
-    //                     $wareHouseproduct->update(['quantity' => $wareHouseproduct->quantity - $item->quantity, 'updated_at' => now()]);
-
-    //                     // laravel log notify
-    //                     \Log::info('Warehouse product stock updated', ['product_id' => $wareHouseproduct->id, 'new_quantity' => $wareHouseproduct->quantity]);
-
-    //                     $wareHouseProductVariation = WarehouseProductVariation::where('warehouse_id', $item->warehouse_id)
-    //                         ->where('product_variation_id', $wareHouseproduct->product_variation_id)
-    //                         ->where('product_id', $item->product_id)
-    //                         ->first();
-    //                     //  dd($wareHouseProductVariation);
-
-    //                     if ($wareHouseProductVariation) {
-    //                         $newWarehouseQty = max(0, ($wareHouseProductVariation->warehouse_quantity ?? 0) - $item->quantity);
-    //                         $wareHouseProductVariation->warehouse_quantity = $newWarehouseQty;
-    //                         $wareHouseProductVariation->updated_at = now();
-    //                         $wareHouseProductVariation->save();
-    //                         \Log::info('Warehouse product variation stock updated', [
-    //                             'warehouse_product_variation_id' => $wareHouseProductVariation->id,
-    //                             'new_quantity' => $newWarehouseQty
-    //                         ]);
-
-    //                         // decrement quantity from ProductVariation (global) - guarded
-    //                         $productVariationId = $wareHouseProductVariation->product_variation_id;
-    //                         if ($productVariationId) {
-    //                             $productVariation = ProductVariation::find($productVariationId);
-    //                             if ($productVariation) {
-    //                                 $newStockQty = max(0, ($productVariation->stock_quantity ?? 0) - $item->quantity);
-    //                                 $productVariation->stock_quantity = $newStockQty;
-    //                                 $productVariation->updated_at = now();
-    //                                 $productVariation->save();
-    //                                 \Log::info('Product variation stock updated', [
-    //                                     'product_variation_id' => $productVariation->id,
-    //                                     'new_quantity' => $newStockQty
-    //                                 ]);
-    //                             }
-    //                         }
-    //                     } else {
-    //                         \Log::warning('WarehouseProductVariation not found for order item', [
-    //                             'warehouse_id' => $item->warehouse_id,
-    //                             'warehouse_product_id' => $item->warehouse_product_id,
-    //                             'product_id' => $item->product_id,
-    //                             'order_item_id' => $item->id ?? null
-    //                         ]);
-    //                     }
-
-    //                     $this->notifyAdminIfOutOfStock($wareHouseproduct);
-    //                 }
-    //             }
-
-    //             // Update order status
-    //             $order->update([
-    //                 'payment_status' => 'paid',
-    //                 'status' => 'processing'
-    //             ]);
-
-    //             // Update payment status
-    //             $payment->update([
-    //                 'status' => 'succeeded',
-    //                 'payment_details' => [
-    //                     'session_id' => $session->id,
-    //                     'payment_intent' => $session->payment_intent,
-    //                     'payment_status' => $session->payment_status,
-    //                     'amount_total' => $session->amount_total
-    //                 ],
-    //                 'paid_at' => now()
-    //             ]);
-
-    //             // Clear cart
-    //             EstoreCart::where('user_id', auth()->id())->delete();
-
-    //             //  DB::commit();
-
-    //             // return redirect()->route('e-store.order-success', $order->id)
-    //             //     ->with('success', 'Payment successful! Your order has been placed.');
-    //         }
-    //     }
-
-    //     return redirect()->route('e-store.checkout')
-    //         ->with('error', 'Payment verification failed');
-    //     // } catch (\Exception $e) {
-    //     //     DB::rollback();
-    //     //     return redirect()->route('e-store.checkout')
-    //     //         ->with('error', 'Payment processing failed: ' . $e->getMessage());
-    //     // }
-    // }
-
-    // Handle cancelled payments
-    public function paymentCancelled(Request $request)
-    {
-        //update payment status to cancelled
-        if (!auth()->check()) {
-            return redirect()->route('home')->with('error', 'Please login to continue');
-        }
-
-        $decrypted_order_id = decrypt($request->order_id);
-
-        $payment = EstorePayment::where('stripe_payment_intent_id', $request->session_id)
-            ->where('status', 'pending')
-            ->first();
-
-        if ($payment) {
-            $payment->update(['status' => 'failed']);
-        }
-
-        // update order status
-        $order = EstoreOrder::where('id', $decrypted_order_id)
-            ->where('user_id', auth()->id())
-            ->first();
-
-        if ($order) {
-            $order->update(['status' => 'cancelled', 'payment_status' => 'failed']);
-        }
-
-        return redirect()->route('e-store.checkout')
-            ->with('warning', 'Payment was cancelled. You can try again.');
-    }
 
     // My Orders page
     public function myOrders()
@@ -1348,8 +1182,44 @@ class ProductController extends Controller
         // get max refundable days from EstoreSetting
         $estoreSettings = EstoreSetting::first();
         $max_refundable_days = $estoreSettings->max_refundable_days ?? 10;
+        $allStatuses = OrderStatus::where('is_active', 1)
+            ->orderBy('sort_order', 'asc')
+            ->get();
 
-        return view('ecom.order-details', compact('order', 'cartCount', 'max_refundable_days', 'estoreSettings'));
+        // find the current status id on the order
+        $currentStatusId = $order->status; // integer id (assumption)
+
+        // Optional: handle cancelled specially — if you want timeline to be [first, cancelled]
+        $cancelSlug = 'cancelled';
+        $cancelStatus = $allStatuses->firstWhere('slug', $cancelSlug);
+
+        if ($currentStatusId && $cancelStatus && $currentStatusId == $cancelStatus->id) {
+            // timeline = first (ordered) -> cancelled
+            $first = $allStatuses->first();
+            $timelineStatuses = collect();
+            if ($first) $timelineStatuses->push($first);
+            $timelineStatuses->push($cancelStatus);
+        } else {
+            // Normal timeline: full progression
+            $timelineStatuses = $allStatuses;
+        }
+
+        // Calculate index of current status in timeline
+        $statusIndex = $timelineStatuses->search(function ($s) use ($currentStatusId) {
+            return $s->id == $currentStatusId;
+        });
+
+        // If not found (custom status etc.), append it to timeline for display
+        if ($statusIndex === false && $currentStatusId) {
+            $currentStatusModel = OrderStatus::find($currentStatusId);
+            if ($currentStatusModel) {
+                $timelineStatuses = $timelineStatuses->push($currentStatusModel);
+                $statusIndex = $timelineStatuses->count() - 1;
+            } else {
+                $statusIndex = -1;
+            }
+        }
+        return view('ecom.order-details', compact('order', 'cartCount', 'max_refundable_days', 'estoreSettings', 'timelineStatuses', 'statusIndex'));
     }
 
     // orderSuccess

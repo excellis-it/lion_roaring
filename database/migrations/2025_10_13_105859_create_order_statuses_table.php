@@ -19,7 +19,7 @@ class CreateOrderStatusesTable extends Migration
             $table->string('slug')->unique(); // e.g., pending, processing, shipped
             $table->string('color')->nullable(); // optional color for admin/UI
             $table->integer('sort_order')->default(0); // order for listing
-            $table->boolean('is_active')->default(true);
+            $table->boolean('is_active')->default(true); 
             $table->timestamps();
         });
     }

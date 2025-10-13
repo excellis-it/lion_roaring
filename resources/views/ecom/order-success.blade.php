@@ -34,7 +34,7 @@
                                 <span class="badge bg-success">{{ ucfirst($order->payment_status) }}</span>
                             </p>
                             <p><strong>Order Status:</strong>
-                                <span class="badge bg-primary">{{ ucfirst($order->status) }}</span>
+                                <span class="badge bg-primary">{{ ucfirst($order->orderStatus->name ?? '-') }}</span>
                             </p>
                         </div>
 

@@ -26,7 +26,7 @@
                                 <div class="col-md-6">
                                     <h4>Order #{{ $order->order_number }}</h4>
                                     <p class="mb-0">Placed on {{ $order->created_at->format('M d, Y \a\t h:i A') }}</p>
-                                    @if ($order->status == 'delivered' && $order->payment_status == 'paid')
+                                    @if ($order->status == 4 && $order->payment_status == 'paid')
                                         <a href="{{ route('user.store-orders.invoice', $order->id) }}" target="_blank"
                                             class="btn btn-sm btn-primary">
                                             <i class="fas fa-download"></i> Download Invoice
@@ -35,8 +35,8 @@
                                 </div>
                                 <div class="col-md-6 text-end">
                                     <span
-                                        class="badge bg-{{ $order->status == 'delivered' ? 'success' : ($order->status == 'cancelled' ? 'danger' : 'primary') }} mb-1">
-                                        {{ ucfirst($order->status) }}
+                                        class="badge bg-{{ $order->status == 4 ? 'success' : ($order->status == 5 ? 'danger' : 'primary') }} mb-1">
+                                        {{ ucfirst($order->orderStatus->name ?? '-') }}
                                     </span><br>
                                     <span class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : 'warning' }}">
                                         Payment {{ ucfirst($order->payment_status) }}
@@ -169,7 +169,7 @@
 
                                 <ul>
                                     <li>Subtotal</li>
-                                    <li id="subtotal-amount" >
+                                    <li id="subtotal-amount">
                                         ${{ number_format($subtotal, 2) }}
                                     </li>
                                 </ul>
@@ -246,8 +246,8 @@
                         <!-- Actions Order Cancellation button with modal confirm with note area and cancel button -->
                         <div class="order-cancellation mt-4">
                             @if (
-                                $order->status != 'cancelled' &&
-                                    $order->status != 'delivered' &&
+                                $order->status != 5 &&
+                                    $order->status != 4 &&
                                     $order->created_at->diffInDays(now()) <= optional($estoreSettings)->refund_max_days)
                                 <button type="button" class="btn btn-outline-danger w-100" data-bs-toggle="modal"
                                     data-bs-target="#cancelOrderModal">
@@ -295,7 +295,7 @@
                             @endif
                         </div>
 
-                        @if ($order->status == 'cancelled')
+                        @if ($order->status == 5)
                             <div class="alert alert-danger mt-3">
 
                                 @if ($payment->status == 'refunded')
@@ -323,32 +323,18 @@
 
             <div class="row mt-3">
                 <div class="col-lg-6">
-                    <div class="delevry-sumry shadow p-3">
-                        @php
-                            // Define the canonical progression
-                            $progression = ['pending', 'processing', 'shipped', 'delivered'];
-                            $labels = [
-                                'pending' => 'Ordered',
-                                'processing' => 'Processing',
-                                'shipped' => 'Shipped',
-                                'delivered' => 'Delivered',
-                                'cancelled' => 'Cancelled',
-                            ];
-                            $currentStatus = $order->status;
-                            if ($currentStatus === 'cancelled') {
-                                $timeline = ['pending', 'cancelled'];
-                            } else {
-                                $timeline = $progression; // full path
-                            }
-                            // Determine index of current status in its timeline
-                            $statusIndex = array_search($currentStatus, $timeline);
-                            // Fallback if status not in timeline (unexpected custom status)
-                            if ($statusIndex === false) {
-                                $timeline[] = $currentStatus;
-                                $statusIndex = array_search($currentStatus, $timeline);
-                            }
-                        @endphp
+                    @php
+                        $labels = [
+                            // optional overrides for label text; otherwise use $status->name
+                            'pending' => 'Ordered',
+                            'processing' => 'Processing',
+                            'shipped' => 'Shipped',
+                            'delivered' => 'Delivered',
+                            'cancelled' => 'Cancelled',
+                        ];
+                    @endphp
 
+                    <div class="delevry-sumry shadow p-3">
                         <div class="info-del mb-3">
                             <h4 class="mb-1">Order Tracking</h4>
                             <p class="mb-0">Order <strong>#{{ $order->order_number }}</strong></p>
@@ -356,21 +342,23 @@
 
                         <div class="d-position mb-4">
                             <ul class="list-unstyled d-flex flex-wrap gap-3" style="row-gap:1.5rem;">
-                                @foreach ($timeline as $idx => $st)
+                                @foreach ($timelineStatuses as $idx => $status)
                                     @php
                                         $reached = $idx <= $statusIndex;
                                         $isCurrent = $idx === $statusIndex;
-                                        $cancelled = $st === 'cancelled';
+                                        $cancelled = ($status->slug ?? '') === 'cancelled';
                                         $colorClass = $cancelled
                                             ? 'btn-danger'
                                             : ($reached
-                                                ? ($st === 'delivered'
+                                                ? ($status->slug === 'delivered'
                                                     ? 'btn-success'
                                                     : ($isCurrent
                                                         ? 'btn-primary'
                                                         : 'btn-secondary'))
                                                 : 'btn-outline-secondary');
+                                        $label = $labels[$status->slug] ?? ($status->name ?? ucfirst($status->slug));
                                     @endphp
+
                                     <li class="text-center" style="min-width:90px;">
                                         <span
                                             class="btn {{ $colorClass }} rounded-circle d-inline-flex align-items-center justify-content-center"
@@ -383,21 +371,26 @@
                                         </span>
                                         <p
                                             class="mb-0 mt-2 small fw-semibold {{ $isCurrent ? 'text-primary' : 'text-muted' }}">
-                                            {{ $labels[$st] ?? ucfirst($st) }}</p>
+                                            {{ $label }}
+                                        </p>
                                     </li>
                                 @endforeach
                             </ul>
                         </div>
 
                         @php
-                            // Basic detail lines (without a status history table available we only show key data points)
                             $createdAt = $order->created_at;
-                            $deliveredAt = $order->status === 'delivered' ? $order->updated_at : null; // approximation
+                            // if you have a status history table use that; otherwise approximate
+                            $deliveredAt =
+                                $order->orderStatus && $order->orderStatus->slug === 'delivered'
+                                    ? $order->updated_at
+                                    : null;
                         @endphp
 
                         <div class="d-details">
                             <h5 class="h6 mb-1">Current Status: <span
-                                    class="fw-bold">{{ $labels[$currentStatus] ?? ucfirst($currentStatus) }}</span></h5>
+                                    class="fw-bold">{{ $order->orderStatus->name ?? ucfirst($order->status) }}</span>
+                            </h5>
                             <p class="mb-2 small text-muted">Last updated {{ $order->updated_at->format('M d, Y h:i A') }}
                             </p>
                             <ul class="list-unstyled small mb-0">
@@ -405,13 +398,13 @@
                                 @if ($deliveredAt)
                                     <li>Delivered: <strong>{{ $deliveredAt->format('M d, Y h:i A') }}</strong></li>
                                 @endif
-                                @if ($currentStatus === 'cancelled')
+                                @if (($order->orderStatus->slug ?? $order->status) === 'cancelled')
                                     <li class="text-danger">Order was cancelled.</li>
                                 @endif
                             </ul>
                         </div>
-
                     </div>
+
 
 
                 </div>

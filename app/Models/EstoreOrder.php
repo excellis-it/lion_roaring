@@ -136,4 +136,10 @@ class EstoreOrder extends Model
     {
         return $this->belongsTo(WareHouse::class, 'warehouse_id');
     }
+
+    // status relation
+    public function orderStatus()
+    {
+        return $this->belongsTo(OrderStatus::class, 'status');
+    }
 }

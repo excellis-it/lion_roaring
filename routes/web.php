@@ -85,6 +85,8 @@ use App\Http\Controllers\User\ColorController;
 use App\Http\Controllers\User\SizeController;
 use App\Http\Controllers\User\EstorePromoCodeController;
 use App\Http\Controllers\User\EstoreSettingController;
+use App\Http\Controllers\User\OrderEmailTemplateController;
+use App\Http\Controllers\User\OrderStatusController;
 use App\Http\Controllers\User\WareHouseController;
 use App\Http\Controllers\User\WarehouseAdminController;
 
@@ -470,6 +472,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         'ecclesias' => EcclesiaContorller::class,
         'jobs' => JobpostingController::class,
         'meetings' => MeetingSchedulingController::class,
+        'order-status' => OrderStatusController::class,
+        'order-email-templates' => OrderEmailTemplateController::class,
         // 'meetings' => MeetingSchedulingController::class,
     ]);
 

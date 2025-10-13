@@ -22,8 +22,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OrdersReportExport;
 use App\Models\EstorePayment;
 use App\Models\EstoreRefund;
+use App\Models\OrderStatus;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Stripe\Climate\Order;
 use Stripe\Refund;
 use Stripe\Stripe;
 
@@ -457,6 +459,8 @@ class EstoreCmsController extends Controller
         }
         $order = EstoreOrder::with(['user', 'orderItems.product', 'payments'])
             ->findOrFail($orderId);
+
+        $order_status = OrderStatus::orderBy('sort_order', 'asc')->get();
 
         return view('user.estore-orders.details', compact('order'));
     }

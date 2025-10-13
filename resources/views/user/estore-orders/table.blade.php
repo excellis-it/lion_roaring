@@ -31,7 +31,7 @@
                 <td>
                     <div>
                         <strong>{{ $order->full_name }}</strong><br>
-                        <small class="text-muted">{{ $order->user->user_name ?? 'N/A' }}</small>
+                        <small class="text-muted">{{ $order->user->user_name ?? '-' }}</small>
                     </div>
                 </td>
                 <td>
@@ -48,7 +48,7 @@
                 </td>
                 <td>
                     <span class=" {{ $order->status_badge_class }}">
-                        {{ ucfirst($order->status) }}
+                        {{ ucfirst($order->orderStatus->name ?? '-') }}
                     </span>
                 </td>
                 <td>

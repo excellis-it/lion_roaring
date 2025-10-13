@@ -2538,3 +2538,7 @@ section {
 .swal2-icon-content{
     font-size: 0.75em !important;
 }
+
+.text-danger{
+    color: red !important;
+}
