@@ -4077,7 +4077,7 @@ content: none !important;
 }
 /*=====================================================*/
 .list-group-item{
-    padding: 10px 0px !important;
+    padding: 10px 35px 0px 0px !important;
 }
 .list-group-item.category-node{
     border: none;
@@ -4091,7 +4091,7 @@ content: none !important;
     background-color: transparent;
     border: none;
     font-size: 20px;
-    top: 0;
+    top: 5px;
 }
 .feature_img .sales{
     position: absolute;
