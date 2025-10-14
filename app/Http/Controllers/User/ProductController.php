@@ -114,22 +114,43 @@ class ProductController extends Controller
     }
 
     public function checkSlug(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+    ]);
 
-        $slug = Str::slug($request->name);
+    $base = Str::slug($request->name);
 
-        // Ensure uniqueness in products table
-        $count = Product::where('slug', 'LIKE', "{$slug}%")->count();
-
-        if ($count > 0) {
-            $slug = $slug . '-' . ( $count == 1 ? $count : $count + 1);
-        }
-
-        return response()->json(['slug' => $slug]);
+    // fallback when slug becomes empty (e.g. name had only special chars)
+    if (empty($base)) {
+        $base = Str::random(8);
     }
+
+    // Get all slugs that start with base (including base itself)
+    $existing = Product::where('slug', 'LIKE', $base . '%')
+                ->pluck('slug') // collection of strings
+                ->toArray();
+
+    // if base doesn't exist, return it immediately
+    if (! in_array($base, $existing)) {
+        return response()->json(['slug' => $base]);
+    }
+
+    // find max numeric suffix
+    $max = 0;
+    $pattern = '/^' . preg_quote($base, '/') . '-(\d+)$/';
+    foreach ($existing as $s) {
+        if (preg_match($pattern, $s, $m)) {
+            $num = (int) $m[1];
+            if ($num > $max) $max = $num;
+        }
+    }
+
+    $newSlug = $base . '-' . ($max + 1);
+
+    return response()->json(['slug' => $newSlug]);
+}
+
 
 
     /**
