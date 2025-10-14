@@ -12,6 +12,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Helpers\Helper;
+use App\Models\EstoreOrder;
+use App\Models\OrderStatus;
 use App\Models\WareHouse;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
@@ -353,11 +355,50 @@ class HomeController extends Controller
     public function orderTracking(Request $request)
     {
         $order = null;
+        $timelineStatuses = collect();
+        $statusIndex = -1;
+
         if ($request->filled('order_number')) {
-            $order = \App\Models\EstoreOrder::with(['payments'])
+            $order = EstoreOrder::with(['payments'])
                 ->where('order_number', $request->order_number)
                 ->first();
+
+            $order_status = OrderStatus::orderBy('sort_order', 'asc')->get();
+
+            // find the current status id on the order
+            $currentStatusId = $order->status; // integer id (assumption)
+
+            // Optional: handle cancelled specially — if you want timeline to be [first, cancelled]
+            $cancelSlug = 'cancelled';
+            $cancelStatus = $order_status->firstWhere('slug', $cancelSlug);
+
+            if ($currentStatusId && $cancelStatus && $currentStatusId == $cancelStatus->id) {
+                // timeline = first (ordered) -> cancelled
+                $first = $order_status->first();
+                $timelineStatuses = collect();
+                if ($first) $timelineStatuses->push($first);
+                $timelineStatuses->push($cancelStatus);
+            } else {
+                // Normal timeline: full progression
+                $timelineStatuses = $order_status;
+            }
+
+            // Calculate index of current status in timeline
+            $statusIndex = $timelineStatuses->search(function ($s) use ($currentStatusId) {
+                return $s->id == $currentStatusId;
+            });
+
+            // If not found (custom status etc.), append it to timeline for display
+            if ($statusIndex === false && $currentStatusId) {
+                $currentStatusModel = OrderStatus::find($currentStatusId);
+                if ($currentStatusModel) {
+                    $timelineStatuses = $timelineStatuses->push($currentStatusModel);
+                    $statusIndex = $timelineStatuses->count() - 1;
+                } else {
+                    $statusIndex = -1;
+                }
+            }
         }
-        return view('ecom.order-tracking', compact('order'));
+        return view('ecom.order-tracking', compact('order', 'timelineStatuses', 'statusIndex'));
     }
 }

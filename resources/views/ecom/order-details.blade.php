@@ -322,7 +322,7 @@
             </div>
 
             <div class="row mt-3">
-                <div class="col-lg-6">
+                <div class="col-md-8">
                     @php
                         $labels = [
                             // optional overrides for label text; otherwise use $status->name
@@ -381,13 +381,22 @@
                         @php
                             $createdAt = $order->created_at;
                             // if you have a status history table use that; otherwise approximate
-                            $deliveredAt =
-                                $order->orderStatus && $order->orderStatus->slug === 'delivered'
-                                    ? $order->updated_at
-                                    : null;
+                            $deliveredAt = $order->expected_delivery_date ?? null;
                         @endphp
 
                         <div class="d-details">
+                            @if ($deliveredAt && $order->status != 5 )
+                                <div
+                                    style="margin-top:15px;margin-bottom:5px; padding:10px 15px; border-left:4px solid #0d6efd; background:#f8f9fa; border-radius:5px; display:inline-block;">
+                                    <h6 style="margin:0; font-size:14px; color:#495057;">
+                                        <strong style="color:#0d6efd;">Expected Delivery Date:</strong>
+                                        <span style="font-weight:bold; color:#212529;">
+                                            {{ \Carbon\Carbon::parse($deliveredAt)->format('M d, Y') }}
+                                        </span>
+                                    </h6>
+                                </div>
+                            @endif
+
                             <h5 class="h6 mb-1">Current Status: <span
                                     class="fw-bold">{{ $order->orderStatus->name ?? ucfirst($order->status) }}</span>
                             </h5>
@@ -395,9 +404,7 @@
                             </p>
                             <ul class="list-unstyled small mb-0">
                                 <li>Placed: <strong>{{ $createdAt->format('M d, Y h:i A') }}</strong></li>
-                                @if ($deliveredAt)
-                                    <li>Delivered: <strong>{{ $deliveredAt->format('M d, Y h:i A') }}</strong></li>
-                                @endif
+
                                 @if (($order->orderStatus->slug ?? $order->status) === 'cancelled')
                                     <li class="text-danger">Order was cancelled.</li>
                                 @endif

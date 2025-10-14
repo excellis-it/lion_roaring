@@ -5,8 +5,8 @@
             <th>Order Number</th>
             <th>Warehouse</th>
             <th>Customer</th>
-             <th>Customer Email</th>
-           <th>Customer Phone</th>
+            <th>Customer Email</th>
+            <th>Customer Phone</th>
             <th>Items</th>
             <th>Total Amount</th>
             <th>Status</th>
@@ -30,14 +30,14 @@
                         <small class="text-muted">{{ $order->user->user_name ?? 'N/A' }}</small>
                     </div>
                 </td>
-                 <td>
+                <td>
                     <div>
                         <i class="fas fa-envelope"></i> {{ $order->email }}
                     </div>
                 </td>
 
 
-                 <td>
+                <td>
                     <div>
                         <i class="fas fa-envelope"></i> {{ $order->phone }}
                     </div>
@@ -49,9 +49,7 @@
                     <strong>${{ number_format($order->total_amount, 2) }}</strong>
                 </td>
                 <td>
-                    <span class=" {{ $order->status_badge_class }}">
-                        {{ ucfirst($order->status) }}
-                    </span>
+                    {{ ucfirst($order->orderStatus->name ?? '-') }}
                 </td>
                 <td>
                     <span class=" {{ $order->payment_status_badge_class }}">
@@ -78,5 +76,3 @@
         @endforelse
     </tbody>
 </table>
-
-

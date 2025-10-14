@@ -31,11 +31,9 @@
                                     <label for="status-filter">Order Status</label>
                                     <select class="form-control" id="status-filter">
                                         <option value="">All Status</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="processing">Processing</option>
-                                        <option value="shipped">Shipped</option>
-                                        <option value="delivered">Delivered</option>
-                                        <option value="cancelled">Cancelled</option>
+                                        @foreach ($order_status as $status)
+                                            <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-2">

@@ -14,5 +14,6 @@ class EstoreRefund extends Model
         'amount',
         'order_id',
         'user_id',
+        'is_approved'
     ];
 }

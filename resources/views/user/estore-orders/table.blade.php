@@ -86,7 +86,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="11" class="text-center">
+                <td colspan="12" class="text-center">
                     <div class="py-4">
                         <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                         <h5 class="text-muted">No orders found</h5>

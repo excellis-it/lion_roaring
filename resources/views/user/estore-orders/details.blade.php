@@ -2,8 +2,33 @@
 
 @section('title')
     Order Details - {{ $order->order_number }}
-@endsection
 
+@endsection
+@push('styles')
+    {{-- Custom Timeline CSS --}}
+<style>
+    .timeline {
+        position: relative;
+    }
+    .timeline-item {
+        position: relative;
+        text-align: center;
+    }
+    .timeline-item:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -50%;
+        width: 100%;
+        height: 4px;
+        background: #dee2e6;
+        z-index: 0;
+    }
+    .timeline-circle {
+        z-index: 1;
+    }
+</style>
+@endpush
 @section('content')
     <div class="container-fluid">
         <div class="bg_white_border">
@@ -38,7 +63,7 @@
                                         class="badge {{ $order->payment_status_badge_class }}">{{ ucfirst($order->payment_status) }}</span> --}}
                                     {{-- add invoice button --}}
 
-                                    @if ($order->status == 'delivered' && $order->payment_status == 'paid')
+                                    @if ($order->status == 4 && $order->payment_status == 'paid')
                                         <a href="{{ route('user.store-orders.invoice', $order->id) }}" target="_blank"
                                             class="btn btn-sm btn-primary">
                                             <i class="fas fa-download"></i> Download Invoice
@@ -209,6 +234,93 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="card shadow-sm">
+                        @php
+                            $labels = [
+                                'pending' => 'Ordered',
+                                'processing' => 'Processing',
+                                'shipped' => 'Shipped',
+                                'delivered' => 'Delivered',
+                                'cancelled' => 'Cancelled',
+                            ];
+                        @endphp
+
+                        <div class="card-body">
+                            {{-- Order Info --}}
+                            <div class="mb-4">
+                                <h4 class="mb-1 fw-bold">Order Tracking</h4>
+                                <p class="mb-0 text-muted">Order <strong>#{{ $order->order_number }}</strong></p>
+                            </div>
+
+                            {{-- Timeline --}}
+                            <div class="timeline d-flex justify-content-between align-items-center position-relative mb-4"
+                                style="gap:1rem;">
+                                @foreach ($timelineStatuses as $idx => $status)
+                                    @php
+                                        $reached = $idx <= $statusIndex;
+                                        $isCurrent = $idx === $statusIndex;
+                                        $cancelled = ($status->slug ?? '') === 'cancelled';
+                                        $colorClass = $cancelled
+                                            ? 'bg-danger'
+                                            : ($reached
+                                                ? ($status->slug === 'delivered'
+                                                    ? 'bg-success'
+                                                    : ($isCurrent
+                                                        ? 'bg-primary'
+                                                        : 'bg-secondary'))
+                                                : 'bg-light');
+                                        $label = $labels[$status->slug] ?? ($status->name ?? ucfirst($status->slug));
+                                    @endphp
+
+                                    <div class="timeline-item text-center position-relative flex-fill">
+                                        {{-- Circle --}}
+                                        <div class="timeline-circle {{ $reached ? 'text-white' : 'text-muted' }} {{ $cancelled ? 'bg-danger' : ($reached ? ($status->slug === 'delivered' ? 'bg-success' : ($isCurrent ? 'bg-primary' : 'bg-secondary')) : 'bg-light') }}"
+                                            style="width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:auto; font-size:1.2rem;">
+                                            @if ($reached)
+                                                <i class="fa-solid fa-check"></i>
+                                            @else
+                                                <i class="fa-solid fa-ellipsis"></i>
+                                            @endif
+                                        </div>
+
+                                        {{-- Connecting line --}}
+                                        @if (!$loop->last)
+                                            <div class="timeline-line position-absolute top-50 start-50 translate-middle"
+                                                style="height:4px; width:100%; background: #dee2e6; z-index:-1;"></div>
+                                        @endif
+
+                                        {{-- Label --}}
+                                        <p class="mt-2 small fw-semibold {{ $isCurrent ? 'text-primary' : 'text-muted' }}">
+                                            {{ $label }}</p>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            {{-- Expected Delivery Date --}}
+                            @if (!empty($order->expected_delivery_date))
+                                <div class="text-center mb-3">
+                                    <span class="badge bg-info text-dark p-2">
+                                        <i class="fa-solid fa-calendar-day me-1"></i>
+                                        Expected Delivery:
+                                        {{ \Carbon\Carbon::parse($order->expected_delivery_date)->format('M d, Y') }}
+                                    </span>
+                                </div>
+                            @endif
+
+                            {{-- Current Status --}}
+                            <div class="border-top pt-3 mt-3 text-center">
+                                <h6 class="mb-1">Current Status: <span
+                                        class="fw-bold">{{ $order->orderStatus->name ?? ucfirst($order->status) }}</span>
+                                </h6>
+                                <p class="mb-0 small text-muted">Last updated:
+                                    {{ $order->updated_at->format('M d, Y h:i A') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+
                 </div>
 
                 <div class="col-lg-4">
@@ -217,8 +329,9 @@
                         <div class="card-header">
                             <h5 class="card-title mb-0">Quick Actions</h5>
                         </div>
+                        {{-- @dd($order->payment_status, $order->status) --}}
                         <div class="card-body">
-                            @if ($order->payment_status === 'paid' && $order->status === 'cancelled')
+                            @if ($order->payment_status === 'paid' && $order->status == 5)
                                 @if (auth()->user()->can('Edit Estore Orders') || auth()->user()->isWarehouseAdmin())
                                     <button type="button" class="btn btn-danger w-100 mb-2"
                                         onclick="processRefund({{ $order->id }})">
@@ -234,7 +347,7 @@
                             @else
                                 @if (
                                     (auth()->user()->can('Edit Estore Orders') || auth()->user()->isWarehouseAdmin()) &&
-                                        !in_array($order->status, ['delivered', 'cancelled']))
+                                        !in_array($order->status, [4, 5]))
                                     <button type="button" class="btn btn-warning w-100 mb-2"
                                         onclick="openUpdateStatusModal({{ $order->id }}, '{{ $order->status }}', '{{ $order->payment_status }}', '{{ $order->notes }}')">
                                         <i class="fas fa-edit"></i> Update Status
@@ -286,47 +399,7 @@
                     @endif
 
                     <!-- Order Timeline -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">Order Timeline</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="timeline">
-                                @if ($order->payment_status == 'paid')
-                                    <div class="timeline-item">
-                                        <div class="timeline-marker bg-success"></div>
-                                        <div class="timeline-content">
-                                            <h6 class="timeline-title">Payment Received</h6>
-                                            @if ($order->payments->where('status', 'succeeded')->first())
-                                                <p class="timeline-text">
-                                                    {{ $order->payments->where('status', 'succeeded')->first()->paid_at->format('M d, Y h:i A') }}
-                                                </p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                @endif
-                                <div class="timeline-item">
-                                    <div class="timeline-marker bg-primary"></div>
-                                    <div class="timeline-content">
-                                        <h6 class="timeline-title">Order Placed</h6>
-                                        <p class="timeline-text">{{ $order->created_at->format('M d, Y h:i A') }}</p>
-                                    </div>
-                                </div>
 
-                                @if ($order->status != 'pending')
-                                    <div class="timeline-item">
-                                        <div class="timeline-marker bg-info"></div>
-                                        <div class="timeline-content">
-                                            <h6 class="timeline-title">Status: {{ ucfirst($order->status) }}</h6>
-                                            <p class="timeline-text">{{ $order->updated_at->format('M d, Y h:i A') }}</p>
-                                        </div>
-                                    </div>
-                                @endif
-
-
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -349,17 +422,20 @@
                         <div class="mb-3">
                             <label for="order-status" class="form-label">Order Status</label>
                             <select class="form-control" id="order-status" name="status" required>
-                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending
-                                </option>
-                                <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>
-                                    Processing</option>
-                                <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>Shipped
-                                </option>
-                                <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Delivered
-                                </option>
-                                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled
-                                </option>
+
+                                @foreach ($order_status as $status)
+                                    <option value="{{ $status->id }}"
+                                        {{ $order->status == $status->id ? 'selected' : '' }}>
+                                        {{ ucfirst($status->name) }}
+                                    </option>
+                                @endforeach
                             </select>
+                        </div>
+                        <div class="mb-3 " id="expected-delivery-wrapper">
+                            <label for="expected-delivery-date" class="form-label">Expected Delivery Date</label>
+                            <input type="date" class="form-control" id="expected-delivery-date"
+                                value="{{ $order->expected_delivery_date ? date('Y-m-d', strtotime($order->expected_delivery_date)) : '' }}"
+                                name="expected_delivery_date">
                         </div>
                         {{-- @dd($order->payment_status) --}}
                         {{-- <div class="mb-3">
@@ -496,10 +572,14 @@
         }
     </script>
     <script>
-        const STATUS_SEQUENCE = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+        const STATUS_SEQUENCE = [
+            @foreach ($order_status as $status)
+                '{{ $status->id }}',
+            @endforeach
+        ];
 
         function openUpdateStatusModal(orderId, currentStatus, currentPaymentStatus, notes) {
-            if (['delivered', 'cancelled'].includes(currentStatus)) {
+            if ([4, 5].includes(parseInt(currentStatus))) { // Assuming 4 = delivered, 5 = cancelled
                 toastr.warning('This order status is final and cannot be changed.');
                 return;
             }
@@ -554,13 +634,32 @@
                         $('#updateStatusModal').modal('hide');
                         location.reload();
                     } else {
-                        toastr.error(response.message);
+                        toastr.error(response.message || 'Something went wrong.');
                     }
                 },
-                error: function() {
-                    toastr.error('Failed to update order status');
+                error: function(xhr) {
+                    let errorMsg = 'An unexpected error occurred. Please try again.';
+
+                    // Laravel Validation Errors
+                    if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                        const errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, messages) {
+                            messages.forEach(function(message) {
+                                toastr.error(message);
+                            });
+                        });
+                        return;
+                    }
+
+                    // Custom message from controller
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    }
+
+                    toastr.error(errorMsg);
                 }
             });
+
         });
 
         function printOrder() {

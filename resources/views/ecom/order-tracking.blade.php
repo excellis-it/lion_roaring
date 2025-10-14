@@ -42,52 +42,46 @@
                 <div class="col-lg-7">
                     @if (isset($order))
                         @php
-                            $progression = ['pending', 'processing', 'shipped', 'delivered'];
                             $labels = [
+                                // optional overrides for label text; otherwise use $status->name
                                 'pending' => 'Ordered',
                                 'processing' => 'Processing',
                                 'shipped' => 'Shipped',
                                 'delivered' => 'Delivered',
                                 'cancelled' => 'Cancelled',
                             ];
-                            $currentStatus = $order->status;
-                            if ($currentStatus === 'cancelled') {
-                                $timeline = ['pending', 'cancelled'];
-                            } else {
-                                $timeline = $progression;
-                            }
-                            $statusIndex = array_search($currentStatus, $timeline);
-                            if ($statusIndex === false) {
-                                $timeline[] = $currentStatus;
-                                $statusIndex = array_search($currentStatus, $timeline);
-                            }
                         @endphp
-                        <div class="delevry-sumry shadow">
+
+                        <div class="delevry-sumry shadow p-3">
                             <div class="info-del mb-3">
-                                <h4 class="mb-1">Order #{{ $order->order_number }}</h4>
-                                <p class="mb-0 small text-muted">Placed {{ $order->created_at->format('M d, Y h:i A') }}</p>
+                                <h4 class="mb-1">Order Tracking</h4>
+                                <p class="mb-0">Order <strong>#{{ $order->order_number }}</strong></p>
                             </div>
+
                             <div class="d-position mb-4">
-                                <ul class="list-unstyled">
-                                    @foreach ($timeline as $idx => $st)
+                                <ul class="list-unstyled d-flex flex-wrap gap-3" style="row-gap:1.5rem;">
+                                    @foreach ($timelineStatuses as $idx => $status)
                                         @php
                                             $reached = $idx <= $statusIndex;
                                             $isCurrent = $idx === $statusIndex;
-                                            $cancelled = $st === 'cancelled';
+                                            $cancelled = ($status->slug ?? '') === 'cancelled';
                                             $colorClass = $cancelled
                                                 ? 'btn-danger'
                                                 : ($reached
-                                                    ? ($st === 'delivered'
+                                                    ? ($status->slug === 'delivered'
                                                         ? 'btn-success'
                                                         : ($isCurrent
                                                             ? 'btn-primary'
                                                             : 'btn-secondary'))
                                                     : 'btn-outline-secondary');
+                                            $label =
+                                                $labels[$status->slug] ?? ($status->name ?? ucfirst($status->slug));
                                         @endphp
+
                                         <li class="text-center" style="min-width:90px;">
                                             <span
                                                 class="btn {{ $colorClass }} rounded-circle d-inline-flex align-items-center justify-content-center"
-                                                >
+                                                style="width:42px;height:42px;">
                                                 @if ($reached)
                                                     <i class="fa-solid fa-check"></i>
                                                 @else
@@ -96,25 +90,44 @@
                                             </span>
                                             <p
                                                 class="mb-0 mt-2 small fw-semibold {{ $isCurrent ? 'text-primary' : 'text-muted' }}">
-                                                {{ $labels[$st] ?? ucfirst($st) }}</p>
+                                                {{ $label }}
+                                            </p>
                                         </li>
                                     @endforeach
                                 </ul>
                             </div>
+
+                            @php
+                                $createdAt = $order->created_at;
+                                // if you have a status history table use that; otherwise approximate
+                                $deliveredAt = $order->expected_delivery_date ?? null;
+                            @endphp
+
                             <div class="d-details">
-                                <h5 class="h6 mb-1">Current Status: <span
-                                        class="fw-bold">{{ $labels[$currentStatus] ?? ucfirst($currentStatus) }}</span></h5>
-                                <p class="mb-2 small text-muted">Last updated
-                                    {{ $order->updated_at->format('M d, Y h:i A') }}</p>
-                                <ul class="list-unstyled small mb-0">
-                                    <li>Total: <strong>${{ number_format($order->total_amount, 2) }}</strong></li>
-                                    <li>Payment: <span
-                                            class="badge {{ $order->payment_status == 'paid' ? 'bg-success' : 'bg-warning' }}">{{ ucfirst($order->payment_status) }}</span>
-                                    </li>
-                                </ul>
-                                @if ($currentStatus === 'cancelled')
-                                    <p class="text-danger small mt-2 mb-0">This order was cancelled.</p>
+                                @if ($deliveredAt && $order->status != 5)
+                                    <div
+                                        style="margin-top:15px;margin-bottom:5px; padding:10px 15px; border-left:4px solid #0d6efd; background:#f8f9fa; border-radius:5px; display:inline-block;">
+                                        <h6 style="margin:0; font-size:14px; color:#495057;">
+                                            <strong style="color:#0d6efd;">Expected Delivery Date:</strong>
+                                            <span style="font-weight:bold; color:#212529;">
+                                                {{ \Carbon\Carbon::parse($deliveredAt)->format('M d, Y') }}
+                                            </span>
+                                        </h6>
+                                    </div>
                                 @endif
+
+                                <h5 class="h6 mb-1">Current Status: <span
+                                        class="fw-bold">{{ $order->orderStatus->name ?? ucfirst($order->status) }}</span>
+                                </h5>
+                                <p class="mb-2 small text-muted">Last updated
+                                    {{ $order->updated_at->format('M d, Y h:i A') }}
+                                </p>
+                                <ul class="list-unstyled small mb-0">
+                                    <li>Placed: <strong>{{ $createdAt->format('M d, Y h:i A') }}</strong></li>
+                                    @if (($order->orderStatus->slug ?? $order->status) === 'cancelled')
+                                        <li class="text-danger">Order was cancelled.</li>
+                                    @endif
+                                </ul>
                             </div>
                         </div>
                     @else

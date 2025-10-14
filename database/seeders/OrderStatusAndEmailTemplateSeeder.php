@@ -19,6 +19,8 @@ class OrderStatusAndEmailTemplateSeeder extends Seeder
                 ['name' => 'Shipped',    'slug' => 'shipped',    'color' => '#32CD32', 'sort_order' => 3, 'is_active' => 1],
                 ['name' => 'Delivered',  'slug' => 'delivered',  'color' => '#008000', 'sort_order' => 4, 'is_active' => 1],
                 ['name' => 'Cancelled',  'slug' => 'cancelled',  'color' => '#FF0000', 'sort_order' => 5, 'is_active' => 1],
+                // out for delivery
+                ['name' => 'Out for Delivery', 'slug' => 'out_for_delivery', 'color' => '#0000FF', 'sort_order' => 6, 'is_active' => 1],
             ];
 
             foreach ($statuses as $s) {

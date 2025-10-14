@@ -382,7 +382,7 @@
                                 @if (Gate::check('Manage Order Status'))
                                     <a href="{{ route('order-status.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/ICON/Store/order_status.png') }}"
+                                            <img src="{{ asset('user_assets/images/ICON/Store/o-status.png') }}"
                                                 alt="">
                                         </span>
                                         <span>Order Status</span>
@@ -391,7 +391,7 @@
                                 @if (Gate::check('Manage Email Template'))
                                     <a href="{{ route('order-email-templates.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/ICON/Store/order_status.png') }}"
+                                            <img src="{{ asset('user_assets/images/ICON/Store/o-e-template.png') }}"
                                                 alt="">
                                         </span>
                                         <span>Orders Email Templates</span>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Estore;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Mail\OrderNotificationMail;
+use App\Mail\OrderStatusUpdatedMail;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Product;
@@ -40,8 +41,10 @@ use Illuminate\Support\Facades\Storage;
 use App\Services\PromoCodeService;
 use App\Models\EstorePromoCode;
 use App\Models\Notification;
+use App\Models\OrderEmailTemplate;
 use App\Models\OrderStatus;
 use App\Models\WarehouseProductImage;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Stripe\Climate\Order;
 
@@ -1104,6 +1107,46 @@ class ProductController extends Controller
                     ],
                     'paid_at' => now()
                 ]);
+            }
+
+            $template = OrderEmailTemplate::where('order_status_id', $order_status->id)
+                ->where('is_active', 1)
+                ->first();
+
+            if ($template) {
+                // Build order list table HTML
+                $orderList = view('user.emails.order_list_table', ['order' => $order])->render();
+                $orderDetailsUrl = route('e-store.order-details', $order->id);
+                $orderDetailsUrlButton = '<a href="' . $orderDetailsUrl . '" style="
+                    display: inline-block;
+                    padding: 10px 20px;
+                    font-size: 16px;
+                    color: #ffffff;
+                    background-color: #643271;
+                    text-decoration: none;
+                    border-radius: 5px;
+                ">View Order Details</a>';
+                $body = str_replace(
+                    ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}'],
+                    [
+                        $order->first_name ?? '' . ' ' . $order->last_name ?? '',
+                        $order->email ?? '',
+                        $orderList,
+                        $order->order_number ?? '',
+                        $order->expected_delivery_date ? Carbon::parse($order->expected_delivery_date)->format('M d, Y') : '',
+                        number_format($order->total_amount ?? 0, 2),
+                        $orderDetailsUrlButton
+                    ],
+                    $template->body
+                );
+
+                try {
+                    // Send email
+                    Mail::to($order->email)
+                        ->send(new OrderStatusUpdatedMail($order, $body));
+                } catch (\Throwable $th) {
+                    Log::error('Failed to send order status email: ' . $th->getMessage());
+                }
             }
 
             $checkoutUrl = route('e-store.order-success', $order->id);

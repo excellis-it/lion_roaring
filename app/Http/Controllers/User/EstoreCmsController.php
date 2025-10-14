@@ -20,11 +20,15 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OrdersReportExport;
+use App\Mail\OrderStatusUpdatedMail;
 use App\Models\EstorePayment;
 use App\Models\EstoreRefund;
+use App\Models\OrderEmailTemplate;
 use App\Models\OrderStatus;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Stripe\Climate\Order;
 use Stripe\Refund;
 use Stripe\Stripe;
@@ -401,7 +405,8 @@ class EstoreCmsController extends Controller
         if (!auth()->user()->can('Manage Estore Orders') && !auth()->user()->isWarehouseAdmin()) {
             abort(403, 'You do not have permission to access this page.');
         }
-        return view('user.estore-orders.list');
+        $order_status = OrderStatus::orderBy('sort_order', 'asc')->get();
+        return view('user.estore-orders.list')->with(compact('order_status'));
     }
 
     // Fetch Orders Data for DataTable
@@ -462,12 +467,47 @@ class EstoreCmsController extends Controller
 
         $order_status = OrderStatus::orderBy('sort_order', 'asc')->get();
 
-        return view('user.estore-orders.details', compact('order'));
+        // find the current status id on the order
+        $currentStatusId = $order->status; // integer id (assumption)
+
+        // Optional: handle cancelled specially — if you want timeline to be [first, cancelled]
+        $cancelSlug = 'cancelled';
+        $cancelStatus = $order_status->firstWhere('slug', $cancelSlug);
+
+        if ($currentStatusId && $cancelStatus && $currentStatusId == $cancelStatus->id) {
+            // timeline = first (ordered) -> cancelled
+            $first = $order_status->first();
+            $timelineStatuses = collect();
+            if ($first) $timelineStatuses->push($first);
+            $timelineStatuses->push($cancelStatus);
+        } else {
+            // Normal timeline: full progression
+            $timelineStatuses = $order_status;
+        }
+
+        // Calculate index of current status in timeline
+        $statusIndex = $timelineStatuses->search(function ($s) use ($currentStatusId) {
+            return $s->id == $currentStatusId;
+        });
+
+        // If not found (custom status etc.), append it to timeline for display
+        if ($statusIndex === false && $currentStatusId) {
+            $currentStatusModel = OrderStatus::find($currentStatusId);
+            if ($currentStatusModel) {
+                $timelineStatuses = $timelineStatuses->push($currentStatusModel);
+                $statusIndex = $timelineStatuses->count() - 1;
+            } else {
+                $statusIndex = -1;
+            }
+        }
+
+        return view('user.estore-orders.details', compact('order', 'order_status', 'timelineStatuses', 'statusIndex'));
     }
 
     // Update Order Status
     public function updateOrderStatus(Request $request)
     {
+        // Check permissions
         if (!auth()->user()->can('Edit Estore Orders') && !auth()->user()->isWarehouseAdmin()) {
             if ($request->ajax()) {
                 return response()->json([
@@ -477,17 +517,30 @@ class EstoreCmsController extends Controller
             }
             abort(403, 'You do not have permission to access this page.');
         }
-        $request->validate([
-            'order_id' => 'required|exists:estore_orders,id',
-            'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
-            'payment_status' => 'nullable|in:pending,paid,failed,refunded',
-            'notes' => 'nullable|string|max:1000'
-        ]);
+
+        // Validation
+        $request->validate(
+            [
+                'order_id' => 'required|exists:estore_orders,id',
+                'status' => 'required|exists:order_statuses,id',
+                'payment_status' => 'nullable|in:pending,paid,failed,refunded',
+                'notes' => 'nullable|string|max:1000',
+                // Only required if status is NOT 5 (e.g., cancelled)
+                'expected_delivery_date' => 'nullable|date|after_or_equal:today|required_unless:status,5',
+            ],
+            [
+                'expected_delivery_date.after_or_equal' => 'The expected delivery date must be today or a future date.',
+                'expected_delivery_date.required_unless' => 'Please provide an expected delivery date unless the order is cancelled.',
+            ]
+        );
 
         try {
+            // Find order
             $order = EstoreOrder::findOrFail($request->order_id);
 
+            // Update order fields
             $order->status = $request->status;
+            $order->expected_delivery_date = $request->expected_delivery_date;
 
             if ($request->has('payment_status') && $request->payment_status) {
                 $order->payment_status = $request->payment_status;
@@ -499,6 +552,49 @@ class EstoreCmsController extends Controller
 
             $order->save();
 
+            // Send email if template exists for this status
+            $template = OrderEmailTemplate::where('order_status_id', $request->status)
+                ->where('is_active', 1)
+                ->first();
+
+            if ($template) {
+                // Build order list table HTML
+                $orderList = view('user.emails.order_list_table', ['order' => $order])->render();
+                $orderDetailsUrl = route('e-store.order-details', $order->id);
+                $orderDetailsUrlButton = '<a href="' . $orderDetailsUrl . '" style="
+                    display: inline-block;
+                    padding: 10px 20px;
+                    font-size: 16px;
+                    color: #ffffff;
+                    background-color: #643271;
+                    text-decoration: none;
+                    border-radius: 5px;
+                ">View Order Details</a>';
+
+                $body = str_replace(
+                    ['{customer_name}', '{customer_email}', '{order_list}', '{order_id}', '{arriving_date}', '{total_order_value}', '{order_details_url_button}'],
+                    [
+                        $order->first_name ?? '' . ' ' . $order->last_name ?? '',
+                        $order->email ?? '',
+                        $orderList,
+                        $order->order_number ?? '',
+                        $order->expected_delivery_date ? Carbon::parse($order->expected_delivery_date)->format('M d, Y') : '',
+                        number_format($order->total_amount ?? 0, 2),
+                        $orderDetailsUrlButton
+                    ],
+                    $template->body
+                );
+
+                try {
+                    // Send email
+                    Mail::to($order->email)
+                        ->send(new OrderStatusUpdatedMail($order, $body));
+                } catch (\Throwable $th) {
+                    Log::error('Failed to send order status email: ' . $th->getMessage());
+                }
+            }
+
+            // Return response
             if ($request->ajax()) {
                 return response()->json([
                     'status' => true,
@@ -1085,27 +1181,42 @@ class EstoreCmsController extends Controller
             $estoreRefund =  EstoreRefund::where('order_id', $order->id)->first();
             $payment = EstorePayment::where('order_id', $order->id)->first();
             // Refund by payment intent
-            Refund::create([
-                'payment_intent' => $estoreRefund->payment_intent, // store this in your orders table
-            ]);
+            if ($payment->stripe_payment_intent_id) {
+                Refund::create([
+                    'payment_intent' => $payment->stripe_payment_intent_id, // store this in your orders table
+                ]);
 
-            // Update order status
-            $order->update([
-                'payment_status' => 'refunded',
-            ]);
+                // Update order status
+                $order->update([
+                    'payment_status' => 'refunded',
+                ]);
 
-            // Update refund record
-            $payment->update([
-                'status' => 'refunded',
-            ]);
+                // Update refund record
+                $payment->update([
+                    'status' => 'refunded',
+                ]);
+                if ($estoreRefund) {
+                    $estoreRefund->update([
+                        'is_approved' => 1,
+                    ]);
+                } else {
+                    EstoreRefund::create([
+                        'payment_intent' => $payment->stripe_payment_intent_id,
+                        'amount' => $order->total_amount,
+                        'order_id' => $order->id,
+                        'user_id' => $order->user_id,
+                        'is_approved' => 1,
+                    ]);
+                }
 
-            $estoreRefund->update([
-                'is_approved' => 1,
-            ]);
 
-            return response()->json(['success' => true, 'message' => 'Refund processed successfully']);
+
+                return response()->json(['success' => true, 'message' => 'Refund processed successfully']);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Not able to process refund. Payment intent not found.'], 400);
+            }
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Not able to process refund.'], 500);
         }
     }
 
