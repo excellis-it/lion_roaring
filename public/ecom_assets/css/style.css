@@ -4027,8 +4027,8 @@ content: none !important;
 }
 .d-position ul li span{
     display: inline-flex;
-    width: 70px;
-    height: 70px;
+    width: 40px;
+    height: 40px;
     border-radius: 50px;
     /*background-color: var(--yellow-color);*/
     align-items: center;
@@ -4047,7 +4047,7 @@ content: none !important;
   position: absolute;
   content: '';
   left: -120px;
-  top: 38px;
+  top: 20px;
   width: 150px;
   height: 2px;
   background-color: var(--yellow-color);
@@ -4064,7 +4064,7 @@ content: none !important;
 }
 .d-position ul li span i{
     color: #fff;
-    font-size: 30px;
+    font-size: 20px;
 }
 .d-details h5{
     font-weight: bold;
