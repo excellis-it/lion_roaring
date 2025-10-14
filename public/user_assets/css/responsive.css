@@ -93,6 +93,9 @@
       .srl {
         max-height: 238px;
     }
+    .sideNav2{
+        width: 335px;
+}
 }
 
 @media (max-width:1280px){
@@ -225,7 +228,9 @@
     .logo-img{
         display:none;
     }
-
+    .groupChatHead{
+        display: block;
+    }
 }
 
 @media (max-width:767px){
@@ -452,8 +457,63 @@ input{
     bottom: 5px;
     right: 5px;
 }
+.btn.btn-primary img{
+        display: none;
+    }
+    .main{
+        display: block;
+        height: auto !important;
+    }
+    
+    .sideNav2{
+        width: 100%;
+    }
+    .sidebar__compose{
+        position: fixed;
+        z-index: 11;
+        bottom: 90px;
+        right: 20px;
+    }
+    .emailList .emailList__list{
+        width: 500px;
+        height: auto;
+        overflow-x: scroll;
+    }
+    .box_slae{
+        width: 400px;
+    }
+    .emailList__settings .emailList__settingsRight{
+        font-size: 12px;
+    }
+    .material-symbols-outlined{
+        font-size: 16px;
+    }
+    #MessageForm button{
+        padding: 4px 10px;
+        width: 40px;
+        height: 40px;
+    }
+    .icon_chat{
+        width: 90%;
+    }
 }
-
+@media (max-width:480px){
+    .messaging_sec .heading_hp h2{
+        font-size: 24px;
+    }
+    .bg_white_border{
+        padding: 20px;
+    }
+    .group{
+        padding: 5px;
+    }
+    .GroupDescrp{
+        padding: 0px;
+    }
+    .GroupName{
+        padding: 0px;
+    }
+}
 @media (max-width:415px){
         .app-header .navbar{
         flex-wrap: nowrap;
@@ -464,6 +524,10 @@ input{
     .btn.btn-primary {
         font-size: 12px;
         padding: 10px 6px;
+    }
+    .group{
+        grid-template-columns: 55px calc(60% - 55px);
+        
     }
 }
 @media (max-width:380px){

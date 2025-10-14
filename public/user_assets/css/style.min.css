@@ -45719,3 +45719,6 @@ ul {
 .text-sm{
     font-size: 12px;
 }
+.bootstrap-select .dropdown-toggle .filter-option-inner-inner{
+    font-size: 12px !important;
+}
