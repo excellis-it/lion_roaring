@@ -573,6 +573,38 @@
         <!-- Choices.js -->
         <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
+        {{-- <script>
+            $(document).ready(function() {
+                //create a function that gets a string, converts to lowercase and then replace emptyspace with "-"
+                function toSlug(str) {
+                    str = str.toLowerCase().replace(/\W/g, '-').trim().split(" ");
+                    if (str[str.length - 1] == " ") {
+                        str[str.length - 1] = "";
+                    }
+                    str = str.join("-");
+
+                    return str;
+                }
+
+                function clearSlug(slug) {
+                    slug = slug.split("-");
+                    if (slug[slug.length - 1] === " ") {
+                        slug[slug.length - 1] = "";
+                    }
+                    return slug.join("-")
+                }
+                $('#slug').keyup(function() {
+                    var title = $('#slug').val();
+                    console.log(title);
+
+                    $('#slug').val(clearSlug(toSlug(title)));
+                });
+
+            });
+        </script> --}}
+
+
+
         <script type="text/javascript">
             Dropzone.options.imageUpload = {
                 maxFilesize: 1,
@@ -761,6 +793,106 @@
 
             });
         </script>
+        {{-- <script>
+            $(function() {
+                const $name = $('#name');
+                const $slug = $('#slug');
+                const $feedback = $('#slug-feedback'); // change if you use a different element
+                let typingTimer = null;
+                const doneTypingInterval = 800; // ms: wait 800ms after last keyup
+                let currentXhr = null;
+
+                // Request slug generation/validation
+                function requestSlugByName(name) {
+                    name = (name || '').trim();
+                    if (!name) {
+                        $slug.val('');
+                        $feedback.text('');
+                        return;
+                    }
+
+                    // abort previous request if still running
+                    if (currentXhr && currentXhr.readyState !== 4) currentXhr.abort();
+
+                    currentXhr = $.ajax({
+                        url: '{{ route('products.slug.check') }}', // your route
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            name: name
+                        },
+                        success: function(response) {
+                            if (response.slug) {
+                                $slug.val(response.slug);
+                                $feedback.text('');
+                            } else if (response.error) {
+                                $feedback.text(response.error);
+                            }
+                        },
+                        error: function(xhr, status) {
+                            if (status === 'abort') return;
+                            $feedback.text('Could not check slug. Try again.');
+                        }
+                    });
+                }
+
+                // Debounced typing handlers for `name`
+                $name.on('keyup', function() {
+                    clearTimeout(typingTimer);
+                    typingTimer = setTimeout(function() {
+                        requestSlugByName($name.val());
+                    }, doneTypingInterval);
+                });
+
+                $name.on('keydown', function() {
+                    clearTimeout(typingTimer); // reset timer while typing
+                });
+
+                // On blur, call immediately (user finished)
+                $name.on('blur', function() {
+                    clearTimeout(typingTimer);
+                    requestSlugByName($name.val());
+                });
+
+                // If user manually edits slug, validate on blur
+                $slug.on('blur', function() {
+                    const value = $slug.val().trim();
+                    if (!value) return;
+
+                    // basic client-side format check
+                    if (!/^[a-z0-9\-]+$/.test(value)) {
+                        $feedback.text('Invalid slug — use lowercase letters, numbers and hyphens only.');
+                        return;
+                    }
+
+                    // abort previous request and validate uniqueness
+                    if (currentXhr && currentXhr.readyState !== 4) currentXhr.abort();
+
+                    currentXhr = $.ajax({
+                        url: '{{ route('products.slug.check') }}',
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            name: value
+                        },
+                        success: function(res) {
+                            if (res.valid) {
+                                $feedback.text('');
+                            } else if (res.suggest) {
+                                $slug.val(res.suggest);
+                                $feedback.text('Slug already exists — suggestion applied.');
+                            } else if (res.error) {
+                                $feedback.text(res.error);
+                            }
+                        },
+                        error: function() {
+                            $feedback.text('Could not validate slug.');
+                        }
+                    });
+                });
+
+            });
+        </script> --}}
 
         <script>
             $(document).ready(function() {
@@ -771,30 +903,41 @@
                 //     $('#slug').val(slug);
                 // });
 
-                $('#name').on('keyup change', function() {
-                    let name = $(this).val();
+                function debounce(func, wait) {
+                    let timeout;
+                    return function() {
+                        const context = this,
+                            args = arguments;
+                        clearTimeout(timeout);
+                        timeout = setTimeout(() => func.apply(context, args), wait);
+                    };
+                }
 
-                    if (name.length > 0) {
+                $('#slug, #name').on('keyup change', debounce(function() {
+                    let slug = $(this).val().trim();
+
+                    if (slug.length > 0) {
                         $.ajax({
-                            url: '{{ route('products.slug.check') }}', // route to check slug
+                            url: '{{ route('products.slug.check') }}',
                             method: 'POST',
                             data: {
                                 _token: '{{ csrf_token() }}',
-                                name: name
+                                name: slug
                             },
                             success: function(response) {
                                 if (response.slug) {
                                     $('#slug').val(response.slug);
-                                    $('#slug-feedback').text(''); // clear error
+                                    $('#slug-feedback').text('');
                                 } else if (response.error) {
                                     $('#slug-feedback').text(response.error);
                                 }
                             }
                         });
-                    } else {
-                        $('#slug').val('');
                     }
-                });
+                }, 500)); // wait 500ms after last key press
+
+
+
 
 
                 function togglePriceFields() {

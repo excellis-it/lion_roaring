@@ -125,7 +125,7 @@ class ProductController extends Controller
         $count = Product::where('slug', 'LIKE', "{$slug}%")->count();
 
         if ($count > 0) {
-            $slug = $slug . '-' . ($count + 1);
+            $slug = $slug . '-' . ( $count == 1 ? $count : $count + 1);
         }
 
         return response()->json(['slug' => $slug]);

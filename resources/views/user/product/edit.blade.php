@@ -92,7 +92,8 @@
             padding: 3px;
             border-radius: 4px;
         }
-         .invalid-feedback {
+
+        .invalid-feedback {
             display: block;
             color: red;
         }
@@ -349,7 +350,7 @@
 
 
                                     <!-- <div class="col-md-2 mb-2">
-                                                </div> -->
+                                                    </div> -->
 
                                     {{-- is_free --}}
                                     <div class="col-md-4 mb-2">
@@ -386,7 +387,8 @@
                                     </div>
 
                                     <div class="col-md-12">
-                                        <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image Gallery(Drag and
+                                        <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image
+                                            Gallery(Drag and
                                             drop atleast 1 images)</label><br>
                                         <span class="text-sm ms-2 text-muted">(width: 300px, height: 400px, max 2MB)</span>
                                         <input type="file" class="form-control dropzone" id="image-upload"
@@ -605,6 +607,35 @@
                 maxFilesize: 1,
                 acceptedFiles: ".jpeg,.jpg,.png,.gif,.webp"
             };
+        </script>
+        <script>
+            $(document).ready(function() {
+                //create a function that gets a string, converts to lowercase and then replace emptyspace with "-"
+                function toSlug(str) {
+                    str = str.toLowerCase().replace(/\W/g, '-').trim().split(" ");
+                    if (str[str.length - 1] == " ") {
+                        str[str.length - 1] = "";
+                    }
+                    str = str.join("-");
+
+                    return str;
+                }
+
+                function clearSlug(slug) {
+                    slug = slug.split("-");
+                    if (slug[slug.length - 1] === " ") {
+                        slug[slug.length - 1] = "";
+                    }
+                    return slug.join("-")
+                }
+                $('#slug').keyup(function() {
+                    var title = $('#slug').val();
+                    console.log(title);
+
+                    $('#slug').val(clearSlug(toSlug(title)));
+                });
+
+            });
         </script>
         <script>
             $(document).ready(function() {

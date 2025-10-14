@@ -97,11 +97,11 @@ class CategoryController extends Controller
         $category->status = $request->status;
 
         if ($request->hasFile('image')) {
-            $category->image = $this->imageUpload($request->file('image'), 'category');
+            $category->image = $this->imageUpload($request->file('image'), 'category', true); // compressed
         }
 
         if ($request->hasFile('background_image')) {
-            $category->background_image = $this->imageUpload($request->file('background_image'), 'category');
+            $category->background_image = $this->imageUpload($request->file('background_image'), 'category', true); // compressed
         }
 
         $category->save();
@@ -170,11 +170,11 @@ class CategoryController extends Controller
             $category->status = $request->status;
 
             if ($request->hasFile('image')) {
-                $category->image = $this->imageUpload($request->file('image'), 'category');
+                $category->image = $this->imageUpload($request->file('image'), 'category', true); // compressed
             }
 
             if ($request->hasFile('background_image')) {
-                $category->background_image = $this->imageUpload($request->file('background_image'), 'category');
+                $category->background_image = $this->imageUpload($request->file('background_image'), 'category', true); // compressed
             }
 
             $category->save();

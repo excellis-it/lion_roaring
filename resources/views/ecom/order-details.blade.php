@@ -154,6 +154,7 @@
                                 @foreach ($all_other_charges as $item)
                                     <ul class="list-unstyled mb-1 d-flex justify-content-between">
                                         <li>{{ $item['product_name'] }} ({{ $item['quantity'] }}x)</li>
+
                                         <li>${{ number_format($item['subtotal'], 2) }}</li>
                                     </ul>
 

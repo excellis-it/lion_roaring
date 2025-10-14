@@ -30,6 +30,7 @@ use App\Models\SiteSetting;
 use GuzzleHttp\Client;
 use App\Models\WareHouse;
 use App\Models\EstoreCart;
+use App\Models\GlobalImage;
 use Illuminate\Support\Facades\Route;
 
 class Helper
@@ -619,4 +620,11 @@ class Helper
         // Final fallback to static asset
         return asset($defaultAsset);
     }
+
+    public static function getOriginalImage($compressedPath)
+    {
+        $image = GlobalImage::where('compressed_path', $compressedPath)->first();
+        return $image ? $image->original_path : null;
+    }
+
 }
