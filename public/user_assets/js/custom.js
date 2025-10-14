@@ -1,3 +1,24 @@
+// sidebar toggle for mobile
+document.addEventListener("DOMContentLoaded", function () {
+  const sideNav = document.querySelector(".sideNav2");
+  const userLists = document.querySelectorAll(".user-list");
+  const backButton = document.getElementById("backButton");
+
+  // Toggle sidebar when a user is clicked (hide user list)
+  userLists.forEach(user => {
+    user.addEventListener("click", () => {
+      sideNav.classList.add("hidden"); // hide sidebar
+    });
+  });
+
+  // Back button → show user list
+  backButton.addEventListener("click", () => {
+    sideNav.classList.remove("hidden"); // show sidebar again
+  });
+});
+
+
+
 function toggleTheme(a) {
     $(".preloader").show(),
         (document.getElementById("themeColors").href = a),

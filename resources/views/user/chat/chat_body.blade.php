@@ -76,7 +76,11 @@
 </style>
 @if (isset($is_chat))
     <div class="row align-items-center">
-        <div class="col-xxl-3"></div>
+        <div class="col-xxl-3">
+            <button id="backButton" style="color:#000;" class="btn btn-light me-3 d-inline-flex align-items-center">
+                    <i class="fa fa-arrow-left me-1"></i> Back
+            </button>
+        </div>
         <div class="col-xxl-5">
             <div class="ChatHead">
                 <div class="main_avtar">
