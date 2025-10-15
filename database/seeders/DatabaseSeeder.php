@@ -28,8 +28,6 @@ class DatabaseSeeder extends Seeder
             // AddOrderStatusTemplatePermission::class,
             // CompressCategoryImagesSeeder::class,
             // HomeCmsImageSeeder::class,
-            ProductImageSeeder::class,
-            VariationImageSeeder::class
         ]);
     }
 }
