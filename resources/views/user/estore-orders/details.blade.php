@@ -300,7 +300,7 @@
                             </div>
 
                             {{-- Expected Delivery Date --}}
-                            @if (!empty($order->expected_delivery_date))
+                            @if (!empty($order->expected_delivery_date) && $order->status != 5 && $order->status != 4)
                                 <div class="text-center mb-3">
                                     <span class="badge bg-info text-dark p-2">
                                         <i class="fa-solid fa-calendar-day me-1"></i>

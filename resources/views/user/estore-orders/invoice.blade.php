@@ -10,7 +10,7 @@
 
 <body>
     <div
-        style="font-family:'Roboto', sans-serif; font-size:12px; border:1px solid #cccccc; margin: 0 auto; width:720px;">
+        style="font-family:'Roboto', sans-serif; font-size:13px; border:1px solid #cccccc; margin: 0 auto; width:720px;">
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td align="left" valign="top" style="background:#7851a9;">&nbsp;</td>
@@ -70,18 +70,18 @@
                         style="border-bottom:1px solid #cccccc; padding-bottom:10px;font-size: 16px;color: #7851a9;text-transform:uppercase;margin-bottom: 0px;">
                         INVOICE </p>
                     <p
-                        style="border-bottom:1px solid #cccccc; padding-bottom:10px;color:#313131;font-size:13px;margin:8px 0px 0px;">
+                        style="border-bottom:1px solid #cccccc; padding-bottom:10px;color:#313131;font-size:15px;margin:8px 0px 0px;">
                         <span style="font-weight: 600;">Date:</span>
                         {{ $order->created_at ? $order->created_at->format('d M, Y') : '' }}
 
                     </p>
 
                     <p
-                        style="border-bottom:1px solid #cccccc; padding-bottom:10px;color:#313131;font-size:13px;margin:8px 0px 0px;">
+                        style="border-bottom:1px solid #cccccc; padding-bottom:10px;color:#313131;font-size:15px;margin:8px 0px 0px;">
                         <span style="font-weight: 600;">Invoice No:</span>
                         {{ isset($order->order_number) && $order->order_number != '' ? stripslashes(trim($order->order_number)) : '' }}
                     </p>
-                    <!-- <p style="padding-bottom:10px;color:#313131;font-size:13px;margin:8px 0px 0px;"><span style="font-weight: 600;">Due Date:</span> 15th August 2019</p> -->
+                    <!-- <p style="padding-bottom:10px;color:#313131;font-size:15px;margin:8px 0px 0px;"><span style="font-weight: 600;">Due Date:</span> 15th August 2019</p> -->
 
                 </td>
             </tr>
@@ -90,12 +90,12 @@
         <table width="100%" border="0" cellspacing="0" cellpadding="0"
             style="border-bottom:1px solid #cccccc; margin-top: 0;">
             <tr style="background:#7851a9">
-                <td style="height:36px;padding:0px 10px;font-size: 13px;color:#fff;">Item Description</td>
-                <td style="height:36px;padding:0px 10px;font-size: 13px;color:#fff;text-align:center;">Color</td>
-                <td style="height:36px;padding:0px 10px;font-size: 13px;color:#fff;text-align:center;">Size</td>
-                <td style="height:36px;padding:0px 10px;font-size: 13px;color:#fff;text-align:center;">No. Of Items</td>
-                <td style="height:36px;padding:0px 10px;font-size: 13px;color:#fff;text-align:right;">Unit Price</td>
-                <td style="height:36px;padding:0px 10px;font-size: 13px;color:#fff;text-align:right;">Net Price</td>
+                <td style="height:36px;padding:0px 10px;font-size: 15px;color:#fff;">Item Description</td>
+                <td style="height:36px;padding:0px 10px;font-size: 15px;color:#fff;text-align:center;">Color</td>
+                <td style="height:36px;padding:0px 10px;font-size: 15px;color:#fff;text-align:center;">Size</td>
+                <td style="height:36px;padding:0px 10px;font-size: 15px;color:#fff;text-align:center;">No. Of Items</td>
+                <td style="height:36px;padding:0px 10px;font-size: 15px;color:#fff;text-align:right;">Unit Price</td>
+                <td style="height:36px;padding:0px 10px;font-size: 15px;color:#fff;text-align:right;">Net Price</td>
             </tr>
 
             @php $qty = 0; $subtotal = 0; @endphp
@@ -112,21 +112,21 @@
 
                 {{-- Product Row --}}
                 <tr>
-                    <td style="padding:0px 10px;color: #333; font-size: 12px;">
+                    <td style="padding:0px 10px;color: #333; font-size: 13px; line-height:20px;">
                         {{ $item->product_name ?? '' }}
                         @if (isset($item->product) && $item->product->sku)
                             <br /><small class="text-muted">SKU: {{ $item->product->sku }}</small>
                         @endif
                     </td>
-                    <td style="padding:0px 10px;text-align:center;color: #333; font-size: 12px;">
+                    <td style="padding:0px 10px;text-align:center;color: #333; font-size: 13px;line-height:20px;">
                         {{ $item->color ?? '' }}</td>
-                    <td style="padding:0px 10px;text-align:center;color: #333; font-size: 12px;">
+                    <td style="padding:0px 10px;text-align:center;color: #333; font-size: 13px;line-height:20px;">
                         {{ $item->size ?? '' }}</td>
-                    <td style="padding:0px 10px;text-align:center;color: #333; font-size: 12px;">{{ $quantity }}
+                    <td style="padding:0px 10px;text-align:center;color: #333; font-size: 13px;line-height:20px;">{{ $quantity }}
                     </td>
-                    <td style="padding:0px 30px 0px 10px;text-align:right;color: #333; font-size: 12px;">$
+                    <td style="padding:0px 30px 0px 10px;text-align:right;color: #333; font-size: 13px;line-height:20px;">$
                         {{ number_format($price, 2) }}</td>
-                    <td style="padding:0px 30px 0px 10px;text-align:right;color: #333; font-size: 12px;">$
+                    <td style="padding:0px 30px 0px 10px;text-align:right;color: #333; font-size: 13px;line-height:20px;">$
                         {{ number_format($net_price, 2) }}</td>
                 </tr>
 
@@ -134,13 +134,13 @@
                 @if (!empty($charges))
                     @foreach ($charges as $charge)
                         <tr style="background:#f8f8f8;">
-                            <td style="padding-left: 25px; font-size: 12px; color:#555;">•
+                            <td style="padding-left: 25px; font-size: 13px; color:#555;">•
                                 {{ $charge['charge_name'] ?? 'Other' }}</td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td style="text-align:right; font-size:12px; color:#555;">$
+                            <td style="padding:0px 30px 0px 10px;text-align:right;color: #333; font-size: 13px;">$
                                 {{ number_format($charge['charge_amount'] ?? 0, 2) }}</td>
                         </tr>
                     @endforeach
@@ -155,18 +155,18 @@
                 <td style="width:500px;">
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                         <tr>
-                            <td style="text-align:right;font-size:13px;font-weight:bold;color:#333; height:35px;">SUBTOTAL</td>
+                            <td style="text-align:right;font-size:15px;font-weight:bold;color:#333; height:35px;">SUBTOTAL</td>
                             <td
-                                style="text-align:right;font-size:13px;border-bottom:2px solid #eaeaea;color:#333;padding-right:30px;">
+                                style="text-align:right;font-size:15px;border-bottom:2px solid #eaeaea;color:#333;padding-right:30px;">
                                 ${{ number_format($subtotal, 2) }}</td>
                         </tr>
 
                         @if (!empty($order->promo_discount) && $order->promo_discount > 0)
                             <tr>
-                                <td style="text-align:right;font-size:13px;font-weight:bold;color:#333; height:35px;">
+                                <td style="text-align:right;font-size:15px;font-weight:bold;color:#333; height:35px;">
                                     PROMO DISCOUNT:</td>
                                 <td
-                                    style="text-align:right;font-size:13px;border-bottom:2px solid #eaeaea;color:#333;padding-right:30px;">
+                                    style="text-align:right;font-size:15px;border-bottom:2px solid #eaeaea;color:#333;padding-right:30px;">
                                    - ${{ number_format($order->promo_discount, 2) }}
                                 </td>
                             </tr>
@@ -174,10 +174,10 @@
 
                         @if (!empty($order->tax_amount) && $order->tax_amount > 0)
                             <tr>
-                                <td style="text-align:right;font-size:13px;font-weight:bold;color:#333; height:35px;">
+                                <td style="text-align:right;font-size:15px;font-weight:bold;color:#333; height:35px;">
                                     TAX:</td>
                                 <td
-                                    style="text-align:right;font-size:13px;border-bottom:2px solid #eaeaea;color:#333;padding-right:30px;">
+                                    style="text-align:right;font-size:15px;border-bottom:2px solid #eaeaea;color:#333;padding-right:30px;">
                                     ${{ number_format($order->tax_amount, 2) }}
                                 </td>
                             </tr>
@@ -185,10 +185,10 @@
 
                         @if (!empty($order->shipping_amount) && $order->shipping_amount > 0)
                             <tr>
-                                <td style="text-align:right;font-size:13px;font-weight:bold;color:#333; height:35px;">
+                                <td style="text-align:right;font-size:15px;font-weight:bold;color:#333; height:35px;">
                                     SHIPPING:</td>
                                 <td
-                                    style="text-align:right;font-size:13px;border-bottom:2px solid #eaeaea;color:#333;padding-right:30px;">
+                                    style="text-align:right;font-size:15px;border-bottom:2px solid #eaeaea;color:#333;padding-right:30px;">
                                     ${{ number_format($order->shipping_amount, 2) }}
                                 </td>
                             </tr>
@@ -196,20 +196,20 @@
 
                         @if (!empty($order->credit_card_fee) && $order->credit_card_fee > 0)
                             <tr>
-                                <td style="text-align:right;font-size:13px;font-weight:bold;color:#333; height:35px;">
+                                <td style="text-align:right;font-size:15px;font-weight:bold;color:#333; height:35px;">
                                     CREDIT CARD FEE:</td>
                                 <td
-                                    style="text-align:right;font-size:13px;border-bottom:2px solid #eaeaea;color:#333;padding-right:30px;">
+                                    style="text-align:right;font-size:15px;border-bottom:2px solid #eaeaea;color:#333;padding-right:30px;">
                                     ${{ number_format($order->credit_card_fee, 2) }}
                                 </td>
                             </tr>
                         @endif
 
                         <tr>
-                            <td style="text-align:right;font-size:13px;font-weight:bold;color:#333; height:35px;">TOTAL
+                            <td style="text-align:right;font-size:15px;font-weight:bold;color:#333; height:35px;">TOTAL
                                 AMOUNT:</td>
                             <td
-                                style="text-align:right;font-size:13px;border-bottom:2px solid #eaeaea;color:#333;padding-right:30px;">
+                                style="text-align:right;font-size:15px;border-bottom:2px solid #eaeaea;color:#333;padding-right:30px;">
                                 ${{ number_format($order->total_amount, 2) }}
                             </td>
                         </tr>
@@ -235,8 +235,8 @@
 
             <tr>
                 <td align="center" valign="top" style="padding: 0px 10px 20px;">
-                    <p style="font-size:13px;color: #666; text-align:center;">
-                        <strong style="font-size: 13px;color: #000;">Note:</strong>
+                    <p style="font-size:15px;color: #666; text-align:center;">
+                        <strong style="font-size: 15px;color: #000;">Note:</strong>
                     </p>
                     <p style="margin: 0px;font-size:11px;color: #666;">
                         If you have any question about this invoice, please contact +1 (240)-982-0054<br />
