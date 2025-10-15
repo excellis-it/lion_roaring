@@ -36,7 +36,7 @@
             @endif
 
             <div class="row justify-content-center">
-                <div class="col-md-8">
+                <div class="col-md-6">
 
                     <div class="right_content_main rounded shadow">
                         <div class="right_content">
@@ -48,7 +48,7 @@
                                 <form method="POST" action="{{ route('e-store.password.update') }}">
                                     @csrf
                                     <div class="row">
-                                        <div class="col-lg-7 mb-3">
+                                        <div class="col-lg-12 mb-3">
                                             <label class="form-label">Old Password :</label>
                                             <input id="password-field" type="password" class="form-control"
                                                 name="current_password" required>
@@ -56,7 +56,7 @@
                                                 class="fa fa-fw fa-eye field-icon toggle-password"
                                                 style="cursor:pointer;"></span>
                                         </div>
-                                        <div class="col-lg-7 mb-3">
+                                        <div class="col-lg-12 mb-3">
                                             <label class="form-label">New Password :</label>
                                             <input id="password-field-1" type="password" class="form-control"
                                                 name="password" required minlength="8" autocomplete="new-password">
@@ -64,7 +64,7 @@
                                                 class="fa fa-fw fa-eye field-icon toggle-password"
                                                 style="cursor:pointer;"></span>
                                         </div>
-                                        <div class="col-lg-7 mb-3">
+                                        <div class="col-lg-12 mb-3">
                                             <label class="form-label">Confirm Password :</label>
                                             <input id="password-field-2" type="password" class="form-control"
                                                 name="password_confirmation" required minlength="8"
@@ -74,7 +74,7 @@
                                                 style="cursor:pointer;"></span>
                                         </div>
                                         <div class="col-lg-12 mb-3">
-                                            <button type="submit" class="add-product border-0"><span>Submit</span></button>
+                                            <button type="submit" class="red_btn add-product border-0"><span>Submit</span></button>
                                         </div>
                                     </div>
                                 </form>

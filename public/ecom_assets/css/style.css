@@ -989,6 +989,7 @@ white-space: nowrap;
     margin-bottom: 5px;
     color: rgb(30 30 30 / 50%);
     background: #fff;
+    border: 1px solid #ccc;
 }
 
 .wishlist_icon a:hover {
@@ -4054,7 +4055,7 @@ content: none !important;
     height: 100px;
     background-color: var(--yellow-color);
 }
-.shopping_cart_sec .d-position ul li::before{
+/* .shopping_cart_sec .d-position ul li::before{
   position: absolute;
   content: '';
   left: -105px;
@@ -4062,7 +4063,7 @@ content: none !important;
   width: 150px;
   height: 2px;
   background-color: var(--yellow-color);
-}
+} */
 .shopping_cart_sec .d-position ul li:first-child::before {
     display: none !important;
 }

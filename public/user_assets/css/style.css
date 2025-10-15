@@ -2524,6 +2524,6 @@ section {
 .emailList__settings input{
     display: none;
 }
-.btn.btn-light{
+.chat-back-button{
     display: none !important;
 }

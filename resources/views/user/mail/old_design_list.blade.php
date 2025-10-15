@@ -6,7 +6,7 @@
 @endpush
 @section('content')
     <div class="container-fluid">
-        <div class="bg_white_border">
+        <div class="bg_white_border mail-body">
             <form>
                 <div class="row">
                     <div class="col-lg-12">
