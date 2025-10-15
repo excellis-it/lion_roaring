@@ -45073,9 +45073,9 @@ ul {
 
 .count-unseen {
     position: absolute;
-    right: -9px;
+    right: 16px;
     margin: 0px;
-    top: -4px;
+    top: 30px;
     line-height: 1;
 }
 .count-unseen span p{

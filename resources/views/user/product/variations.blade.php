@@ -168,7 +168,7 @@
                         <div class="row mt-3">
                             <div class="col-md-12">
                                 <div class="heading_box mb-3">
-                                    <h3>Product {{ $product->product_type != 'simple' ? 'Variations' : 'Stock' }}</h3>
+                                    <h3>{{ $product->product_type != 'simple' ? 'Variation' : 'Simple' }} Product </h3>
                                     <h3>Product Name : {{ $product->name }}</h3>
                                 </div>
                             </div>
@@ -205,7 +205,7 @@
                                         @else
                                             {{-- // images without color variation --}}
 
-                                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                            {{-- <div class="d-flex justify-content-between align-items-start mb-3">
 
                                                 <div class="w-25">
                                                     <label class="small fw-semibold mb-1">Images
@@ -217,31 +217,34 @@
                                                     <small class="text-muted d-block mt-1">Upload images (width: 300px,
                                                         height: 400px, max 2MB)</small>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                         @endif
 
-                                        <div class="d-flex flex-wrap mb-3">
-                                            @if ($first->images && $first->images->count())
-                                                @foreach ($first->images as $image)
-                                                    <div class="image-area m-1 position-relative" id="{{ $image->id }}"
-                                                        style="width:80px; height:80px; overflow:hidden; border-radius:4px; background:#fff;">
-                                                        <img src="{{ Storage::url($image->image_path) }}"
-                                                            alt="Variation Image"
-                                                            style="width:100%; height:100%; object-fit:cover;">
-                                                        <button type="button" class="remove-image btn btn-sm"
-                                                            data-id="{{ $image->id }}" title="Remove image"
-                                                            style="position:absolute; top:4px; right:4px; display:flex; align-items:center; justify-content:center; width:26px; height:26px; padding:0; border-radius:50%;">
-                                                            <i class="fa fa-times" style="font-size:12px;"></i>
-                                                        </button>
+                                        @if ($product->product_type != 'simple')
+                                            <div class="d-flex flex-wrap mb-3">
+                                                @if ($first->images && $first->images->count())
+                                                    @foreach ($first->images as $image)
+                                                        <div class="image-area m-1 position-relative"
+                                                            id="{{ $image->id }}"
+                                                            style="width:80px; height:80px; overflow:hidden; border-radius:4px; background:#fff;">
+                                                            <img src="{{ Storage::url($image->image_path) }}"
+                                                                alt="Variation Image"
+                                                                style="width:100%; height:100%; object-fit:cover;">
+                                                            <button type="button" class="remove-image btn btn-sm"
+                                                                data-id="{{ $image->id }}" title="Remove image"
+                                                                style="position:absolute; top:4px; right:4px; display:flex; align-items:center; justify-content:center; width:26px; height:26px; padding:0; border-radius:50%;">
+                                                                <i class="fa fa-times" style="font-size:12px;"></i>
+                                                            </button>
+                                                        </div>
+                                                    @endforeach
+                                                @else
+                                                    <div class="image-area m-1 d-flex align-items-center justify-content-center"
+                                                        style="width:80px; height:80px; background:#f8f9fa; border:1px dashed #e9ecef; color:#6c757d; border-radius:4px;">
+                                                        <small>No images</small>
                                                     </div>
-                                                @endforeach
-                                            @else
-                                                <div class="image-area m-1 d-flex align-items-center justify-content-center"
-                                                    style="width:80px; height:80px; background:#f8f9fa; border:1px dashed #e9ecef; color:#6c757d; border-radius:4px;">
-                                                    <small>No images</small>
-                                                </div>
-                                            @endif
-                                        </div>
+                                                @endif
+                                            </div>
+                                        @endif
 
                                         @foreach ($colorGroup as $variation)
                                             <div class="variation-product-entry py-2" data-id="{{ $variation->id }}">

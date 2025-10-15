@@ -139,10 +139,11 @@ class Product extends Model
         return $this->variationColors()->distinct();
     }
 
-    // variation images
-    public function variationImages()
+
+    // color images
+    public function colorImages()
     {
-        return $this->hasManyThrough(ProductVariationImage::class, ProductVariation::class, 'product_id', 'product_variation_id', 'id', 'id');
+        return $this->hasMany(ProductColorImage::class, 'product_id');
     }
 
     /**
@@ -161,22 +162,18 @@ class Product extends Model
         return (bool) $this->is_free;
     }
 
-    // unique color first image with color detail by product variation (only one image for each color)
+    // unique color first image with color detail from ProductColorImage (only one image for each color)
     public function getVariationUniqueColorFirstImagesAttribute()
     {
-        return $this->variations()
-            ->with(['colorDetail', 'images' => function ($query) {
-                $query->orderBy('id', 'asc');
-            }])
+
+        // get all images for this product with color, then pick first image per color
+        $images = $this->colorImages()
+            ->with('color')
             ->get()
-            ->groupBy('color_id')
-            ->map(function ($group) {
-                $firstVariation = $group->first();
-                return (object) [
-                    'color' => $firstVariation->colorDetail,
-                    'image' => $firstVariation->images->first(),
-                ];
-            })->values();
+            ->unique('color_id')
+            ->values();
+
+        return $images;
     }
 
     // check if this product purchased by the user anytime
@@ -197,4 +194,20 @@ class Product extends Model
             ->where('user_id', $userId)
             ->exists();
     }
+
+
+    // getProductFirstImage get first image from colorImages if exists if provide color_id otherwise get from images
+    // getProductFirstImage use like $product->getProductFirstImage($color_id)
+    public function getProductFirstImage($color_id = null)
+    {
+        if ($color_id) {
+
+            return $this->colorImages->where('color_id', $color_id)->first()->image_path ?? $this->images->first()->image;
+        }
+
+        return $this->images->first()->image;
+    }
+
+
+
 }

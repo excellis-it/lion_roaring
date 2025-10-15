@@ -34,9 +34,19 @@ class ProductVariation extends Model
         return $this->belongsTo(Size::class, 'size_id');
     }
 
+
     public function images()
     {
-        return $this->hasMany(ProductVariationImage::class, 'product_variation_id');
+        return $this->hasMany(ProductColorImage::class, 'product_id', 'product_id')
+            ->where('color_id', $this->color_id);
+    }
+
+
+    // color images
+    public function colorImages()
+    {
+        return $this->hasMany(ProductColorImage::class, 'product_id', 'product_id')
+            ->where('color_id', $this->color_id);
     }
 
     public function warehouseProductVariations()

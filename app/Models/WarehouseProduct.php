@@ -42,8 +42,10 @@ class WarehouseProduct extends Model
         return $this->belongsTo(Size::class, 'size_id');
     }
 
+    // images from ProductColorImage
     public function images()
     {
-        return $this->hasMany(WarehouseProductImage::class, 'warehouse_product_id');
+        return $this->hasMany(ProductColorImage::class, 'product_id', 'product_id')
+            ->where('color_id', $this->color_id);
     }
 }
