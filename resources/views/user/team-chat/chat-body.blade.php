@@ -3,9 +3,13 @@
 @endphp
 @if (isset($is_chat))
     <div class="groupChatHead">
+        <button id="backButton" style="color:#000;" class="btn btn-light me-3 d-inline-flex align-items-center backButton">
+                    <i class="fa fa-arrow-left me-1"></i> Back
+            </button>
         <div class="main_avtar team-image-{{ $team['id'] }}"><img
                 src="{{ $team['group_image'] ? Storage::url($team['group_image']) : asset('user_assets/images/group.png') }}"
                 alt=""></div>
+
         <div class="group_text">
             <p class="GroupName group-name-{{ $team['id'] }}">{{ $team['name'] ?? '' }}</p>
             <span

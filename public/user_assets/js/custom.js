@@ -1,21 +1,31 @@
-// sidebar toggle for mobile
-document.addEventListener("DOMContentLoaded", function () {
-  const sideNav = document.querySelector(".sideNav2");
-  const userLists = document.querySelectorAll(".user-list");
-  const backButton = document.getElementById("backButton");
+// Sidebar toggle for mobile (jQuery version)
+$(document).ready(function () {
+    const $sideNav = $(".sideNav2");
+    const $userLists = $(".user-list");
+    const $groupLists = $(".group-data");
+    const $userListSection = $(".user-list-section");
 
-  // Toggle sidebar when a user is clicked (hide user list)
-  userLists.forEach(user => {
-    user.addEventListener("click", () => {
-      sideNav.classList.add("hidden"); // hide sidebar
+    // When a user is clicked → hide sidebar
+    $userLists.on("click", function () {
+        $sideNav.addClass("hidden"); // hide sidebar
     });
-  });
+    $groupLists.on("click", function () {
+        $sideNav.addClass("hidden"); // hide sidebar
+    });
 
-  // Back button → show user list
-  backButton.addEventListener("click", () => {
-    sideNav.classList.remove("hidden"); // show sidebar again
-  });
+    // When back button is clicked → show sidebar and scroll to user list section
+    $(document).on("click", ".backButton", function () {
+        $sideNav.removeClass("hidden"); // show sidebar again
+
+        // Smooth scroll to user list section (if it exists)
+        if ($userListSection.length) {
+            $("html, body").animate({
+                scrollTop: $userListSection.offset().top
+            }, 600); // 600ms = smooth scroll speed
+        }
+    });
 });
+
 
 
 
