@@ -2,32 +2,34 @@
 
 @section('title')
     Order Details - {{ $order->order_number }}
-
 @endsection
 @push('styles')
     {{-- Custom Timeline CSS --}}
-<style>
-    .timeline {
-        position: relative;
-    }
-    .timeline-item {
-        position: relative;
-        text-align: center;
-    }
-    .timeline-item:not(:last-child)::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        right: -50%;
-        width: 100%;
-        height: 4px;
-        background: #dee2e6;
-        z-index: 0;
-    }
-    .timeline-circle {
-        z-index: 1;
-    }
-</style>
+    <style>
+        .timeline {
+            position: relative;
+        }
+
+        .timeline-item {
+            position: relative;
+            text-align: center;
+        }
+
+        .timeline-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -50%;
+            width: 100%;
+            height: 4px;
+            background: #dee2e6;
+            z-index: 0;
+        }
+
+        .timeline-circle {
+            z-index: 1;
+        }
+    </style>
 @endpush
 @section('content')
     <div class="container-fluid">

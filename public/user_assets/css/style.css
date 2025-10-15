@@ -2524,6 +2524,4 @@ section {
 .emailList__settings input{
     display: none;
 }
-.btn.btn-light{
-    display: none !important;
-}
+

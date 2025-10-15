@@ -506,6 +506,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::prefix('categories')->group(function () {
         Route::get('/category-delete/{id}', [CategoryController::class, 'delete'])->name('categories.delete');
     });
+      Route::post('/categories-slug-check', [CategoryController::class, 'checkSlug'])->name('categories.slug.check');
     Route::resource('sizes', SizeController::class);
     Route::get('/sizes-delete/{id}', [SizeController::class, 'delete'])->name('sizes.delete');
     Route::resource('colors', ColorController::class);

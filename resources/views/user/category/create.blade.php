@@ -100,7 +100,8 @@
                                 <div class="box_label">
                                     <label for="background_image"> Category Background Image</label>
                                     <input type="file" name="background_image" id="background_image" class="form-control"
-                                        value="{{ old('background_image') }}" placeholder="Enter Category Background Image" accept="image/*">
+                                        value="{{ old('background_image') }}" placeholder="Enter Category Background Image"
+                                        accept="image/*">
                                     <span class="text-sm ms-2 text-muted">(width: 1920px, height: 520px, max 2MB)</span>
                                     @if ($errors->has('background_image'))
                                         <span class="error">{{ $errors->first('background_image') }}</span>
@@ -113,8 +114,10 @@
                                 <div class="box_label">
                                     <label for="status"> Status*</label>
                                     <select name="status" id="status" class="form-control">
-                                        <option value="1" {{ old('status', '1') == '1' ? 'selected' : '' }}>Active</option>
-                                        <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Inactive</option>
+                                        <option value="1" {{ old('status', '1') == '1' ? 'selected' : '' }}>Active
+                                        </option>
+                                        <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Inactive
+                                        </option>
                                     </select>
                                     @if ($errors->has('status'))
                                         <span class="error">{{ $errors->first('status') }}</span>
@@ -166,14 +169,43 @@
     @push('scripts')
         <script>
             $(document).ready(function() {
-                // auto set slug from name
-                $('#name').on('keyup', function() {
-                    var name = $(this).val();
-                    var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-                    $('#slug').val(slug);
-                });
-            });
 
+                function debounce(func, wait) {
+                    let timeout;
+                    return function() {
+                        const context = this,
+                            args = arguments;
+                        clearTimeout(timeout);
+                        timeout = setTimeout(() => func.apply(context, args), wait);
+                    };
+                }
+
+                $('#slug, #name').on('keyup change', debounce(function() {
+                    let slug = $(this).val().trim();
+
+                    if (slug.length > 0) {
+                        $.ajax({
+                            url: '{{ route('categories.slug.check') }}',
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                name: slug
+                            },
+                            success: function(response) {
+                                if (response.slug) {
+                                    $('#slug').val(response.slug);
+                                    $('#slug-feedback').text('');
+                                } else if (response.error) {
+                                    $('#slug-feedback').text(response.error);
+                                }
+                            }
+                        });
+                    }
+                }, 500)); // wait 500ms after last key press
+
+            });
+        </script>
+        <script>
             (function() {
                 function addClientError($el, message) {
                     $el.addClass('is-invalid');

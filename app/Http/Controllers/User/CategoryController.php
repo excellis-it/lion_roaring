@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -206,5 +207,45 @@ class CategoryController extends Controller
         $category->delete();
 
         return redirect()->route('categories.index')->with('message', 'Category deleted successfully.');
+    }
+
+    public function checkSlug(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $base = Str::slug($request->name);
+
+        // fallback when slug becomes empty (e.g. name had only special chars)
+        if (empty($base)) {
+            $base = Str::random(8);
+        }
+
+        // Get all slugs that start with base (including base itself)
+        $existing = Category::where('slug', 'LIKE', $base . '%')
+            ->pluck('slug') // collection of strings
+            ->toArray();
+
+        // if base doesn't exist, return it immediately
+        if (! in_array($base, $existing)) {
+            return response()->json(['slug' => $base]);
+        }
+
+        // find max numeric suffix
+        $max = 0;
+        $pattern = '/^' . preg_quote($base, '/') . '-(\d+)$/';
+
+        // dd($existing);
+        foreach ($existing as $s) {
+            if (preg_match($pattern, $s, $m)) {
+                $num = (int) $m[1];
+                if ($num > $max) $max = $num;
+            }
+        }
+
+        $newSlug = $base . '-' . ($max + 1);
+
+        return response()->json(['slug' => $newSlug]);
     }
 }

@@ -158,7 +158,7 @@
                             <td style="text-align:right;font-size:13px;font-weight:bold;color:#333; height:35px;">SUBTOTAL</td>
                             <td
                                 style="text-align:right;font-size:13px;border-bottom:2px solid #eaeaea;color:#333;padding-right:30px;">
-                                {{ $subtotal }}</td>
+                                ${{ number_format($subtotal, 2) }}</td>
                         </tr>
 
                         @if (!empty($order->promo_discount) && $order->promo_discount > 0)

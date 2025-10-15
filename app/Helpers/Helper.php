@@ -79,7 +79,7 @@ class Helper
         $breadcrumbs = [];
 
         // Home is always first
-        $breadcrumbs[] = ['name' => 'Home', 'url' => route('home')];
+        $breadcrumbs[] = ['name' => 'Home', 'url' => route('e-store')];
 
         if ($category) {
             // Traverse up the category tree to root

@@ -96,24 +96,17 @@
                         <div class="mb-3">
                             <label for="order-status" class="form-label">Order Status</label>
                             <select class="form-control" id="order-status" name="status" required>
-                                <option value="pending">Pending</option>
-                                <option value="processing">Processing</option>
-                                <option value="shipped">Shipped</option>
-                                <option value="delivered">Delivered</option>
-                                <option value="cancelled">Cancelled</option>
+                                @foreach ($order_status as $status)
+                                    <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                @endforeach
                             </select>
+                        </div>
+                        <div class="mb-3 " id="expected-delivery-wrapper">
+                            <label for="expected-delivery-date" class="form-label">Expected Delivery Date</label>
+                            <input type="date" class="form-control" id="expected-delivery-date" value=""
+                                name="expected_delivery_date">
                         </div>
 
-                        <div class="mb-3" hidden>
-                            <label for="payment-status" class="form-label">Payment Status</label>
-                            <select class="form-control" id="payment-status" name="payment_status">
-                                <option value="">Don't Change</option>
-                                <option value="pending">Pending</option>
-                                <option value="paid">Paid</option>
-                                <option value="failed">Failed</option>
-                                <option value="refunded">Refunded</option>
-                            </select>
-                        </div>
 
                         <div class="mb-3">
                             <label for="order-notes" class="form-label">Notes (Optional)</label>
@@ -230,7 +223,6 @@
 
 
     <script>
-        const STATUS_SEQUENCE = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
         $(document).ready(function() {
             // set today's max for date inputs to prevent future dates
             const todayStr = new Date().toISOString().split('T')[0];
@@ -314,7 +306,6 @@
             }
             return true;
         }
-
         // every 5 sec fetch orders
         // setInterval(function() {
         //     loadOrdersTable();
@@ -338,67 +329,6 @@
                 },
                 error: function() {
                     toastr.error('Failed to load orders');
-                }
-            });
-        }
-
-        function openUpdateStatusModal(orderId, currentStatus, currentPaymentStatus, notes) {
-            if (['delivered', 'cancelled'].includes(currentStatus)) {
-                toastr.warning('This order status is final and cannot be changed.');
-                return;
-            }
-            $('#order-id').val(orderId);
-            $('#current-status').val(currentStatus);
-            $('#payment-status').val('');
-            $('#order-notes').val(notes || '');
-            $('#updateStatusModal').modal('show');
-
-            $('#order-status option').each(function() {
-                const optionValue = $(this).val();
-                const optionIndex = STATUS_SEQUENCE.indexOf(optionValue);
-                const currentIndex = STATUS_SEQUENCE.indexOf(currentStatus);
-                const isPreviousStep = optionIndex !== -1 && optionIndex < currentIndex && optionValue !==
-                    currentStatus;
-                $(this).prop('disabled', isPreviousStep);
-            });
-            $('#order-status').val(currentStatus);
-        }
-
-        function updateOrderStatus() {
-            const currentStatus = $('#current-status').val();
-            const targetStatus = $('#order-status').val();
-            const currentIndex = STATUS_SEQUENCE.indexOf(currentStatus);
-            const targetIndex = STATUS_SEQUENCE.indexOf(targetStatus);
-            if (['delivered', 'cancelled'].includes(currentStatus)) {
-                toastr.warning('Finalized orders cannot be updated.');
-                return;
-            }
-            if (targetIndex !== -1 && currentIndex !== -1 && targetIndex < currentIndex) {
-                toastr.warning('Cannot revert an order to a previous status.');
-                return;
-            }
-            const formData = new FormData($('#updateStatusForm')[0]);
-
-            $.ajax({
-                url: '{{ route('user.store-orders.update-status') }}',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    if (response.status) {
-                        toastr.success(response.message);
-                        $('#updateStatusModal').modal('hide');
-                        loadOrdersTable();
-                    } else {
-                        toastr.error(response.message);
-                    }
-                },
-                error: function() {
-                    toastr.error('Failed to update order status');
                 }
             });
         }
@@ -459,6 +389,93 @@
                 clearTimeout(timeout);
                 timeout = setTimeout(later, wait);
             };
+        }
+    </script>
+    <script>
+        const STATUS_SEQUENCE = [
+            @foreach ($order_status as $status)
+                '{{ $status->id }}',
+            @endforeach
+        ];
+
+        function openUpdateStatusModal(orderId, currentStatus, currentPaymentStatus, notes, date) {
+            if ([4, 5].includes(parseInt(currentStatus))) { // Assuming 4 = delivered, 5 = cancelled
+                toastr.warning('This order status is final and cannot be changed.');
+                return;
+            }
+            $('#order-id').val(orderId);
+            $('#current-status').val(currentStatus);
+            $('#order-status option').each(function() {
+                $(this).prop('disabled', false);
+                const optionValue = $(this).val();
+                const optionIndex = STATUS_SEQUENCE.indexOf(optionValue);
+                const currentIndex = STATUS_SEQUENCE.indexOf(currentStatus);
+                const isPreviousStep = optionIndex !== -1 && optionIndex < currentIndex && optionValue !==
+                    currentStatus;
+                $(this).prop('disabled', isPreviousStep);
+            });
+            $('#order-status').val(currentStatus);
+            $('#order-notes').val(notes || '');
+            $('#updateStatusModal').modal('show');
+            $('#expected-delivery-date').val(date);
+
+        }
+
+        function updateOrderStatus() {
+            const currentStatus = $('#current-status').val();
+            const targetStatus = $('#order-status').val();
+            const currentIndex = STATUS_SEQUENCE.indexOf(currentStatus);
+            const targetIndex = STATUS_SEQUENCE.indexOf(targetStatus);
+            if (['delivered', 'cancelled'].includes(currentStatus)) {
+                toastr.warning('Finalized orders cannot be updated.');
+                return;
+            }
+            if (targetIndex !== -1 && currentIndex !== -1 && targetIndex < currentIndex) {
+                toastr.warning('Cannot revert an order to a previous status.');
+                return;
+            }
+            const formData = new FormData($('#updateStatusForm')[0]);
+
+            $.ajax({
+                url: '{{ route('user.store-orders.update-status') }}',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.status) {
+                        toastr.success(response.message);
+                        $('#updateStatusModal').modal('hide');
+                        loadOrdersTable();
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function(xhr) {
+                    let errorMsg = 'An unexpected error occurred. Please try again.';
+
+                    // Laravel Validation Errors
+                    if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                        const errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, messages) {
+                            messages.forEach(function(message) {
+                                toastr.error(message);
+                            });
+                        });
+                        return;
+                    }
+
+                    // Custom message from controller
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    }
+
+                    toastr.error(errorMsg);
+                }
+            });
         }
     </script>
 @endpush

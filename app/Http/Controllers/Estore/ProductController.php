@@ -949,6 +949,7 @@ class ProductController extends Controller
             $warehouseId = $carts->first()->warehouse_id ?? null;
             $wareHouse = WareHouse::find($warehouseId);
             $order_status = OrderStatus::where('slug', 'processing')->first();
+            // dd($order_status);
             $order = EstoreOrder::create([
                 'warehouse_id' => $warehouseId,
                 'is_pickup' => $is_pickup,
