@@ -9,7 +9,7 @@
         <div id="loading-content"></div>
     </section>
     <div class="container-fluid">
-        <div class="bg_white_border">
+        <div class="bg_white_border mail-body">
             <!-- Main Body Starts -->
             <div class="main__body">
                 <!-- Sidebar Starts -->

@@ -3,7 +3,7 @@
 @endphp
 @if (isset($is_chat))
     <div class="groupChatHead">
-        <button id="backButton" style="color:#000;" class="btn btn-light me-3 d-inline-flex align-items-center backButton">
+        <button id="backButton" style="color:#000;" class="btn btn-light chat-back-button me-3 d-inline-flex align-items-center backButton">
                     <i class="fa fa-arrow-left me-1"></i> Back
             </button>
         <div class="main_avtar team-image-{{ $team['id'] }}"><img

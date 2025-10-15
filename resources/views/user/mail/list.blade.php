@@ -8,67 +8,67 @@
     <section id="loading">
         <div id="loading-content"></div>
     </section>
-    <div class="container-fluid">
-        <div class="bg_white_border">
-            <!-- Main Body Starts -->
-            <div class="main__body">
-                <!-- Sidebar Starts -->
-                @include('user.mail.partials.sidebar')
-                <!-- Sidebar Ends -->
-                <!-- Email List Starts -->
-                <div class="emailList">
-                    <!-- Settings Starts -->
-                    <div class="emailList__settings">
-                        <div class="emailList__settingsLeft">
-                            <input type="checkbox" id="selectAll" />
-                            <span type="button" class="material-symbols-outlined"> arrow_drop_down </span>
-                            <span onclick="fetchLatestEmails()" type="button" class="material-symbols-outlined"> refresh
-                            </span>
-                            <span type="button" class="material-symbols-outlined" id="delete"> delete </span>
+        <div class="container-fluid">
+            <div class="bg_white_border mail-body">
+                <!-- Main Body Starts -->
+                <div class="main__body">
+                    <!-- Sidebar Starts -->
+                    @include('user.mail.partials.sidebar')
+                    <!-- Sidebar Ends -->
+                    <!-- Email List Starts -->
+                    <div class="emailList">
+                        <!-- Settings Starts -->
+                        <div class="emailList__settings">
+                            <div class="emailList__settingsLeft">
+                                <input type="checkbox" id="selectAll" />
+                                <span type="button" class="material-symbols-outlined"> arrow_drop_down </span>
+                                <span onclick="fetchLatestEmails()" type="button" class="material-symbols-outlined"> refresh
+                                </span>
+                                <span type="button" class="material-symbols-outlined" id="delete"> delete </span>
+                            </div>
+                            <div class="emailList__settingsRight d-flex">
+                                <span type="button" id="mailListPrevPage" class="material-symbols-outlined">chevron_left</span>
+                                <span id="paginationInfo"></span>
+                                <span type="button" id="mailListNextPage" class="material-symbols-outlined">chevron_right</span>
+                            </div>
+
+
                         </div>
-                        <div class="emailList__settingsRight d-flex">
-                            <span type="button" id="mailListPrevPage" class="material-symbols-outlined">chevron_left</span>
-                            <span id="paginationInfo"></span>
-                            <span type="button" id="mailListNextPage" class="material-symbols-outlined">chevron_right</span>
+                        <!-- Settings Ends -->
+
+                        <!-- Section Starts -->
+                        <div class="emailList__sections">
+                            <div class="section section__selected">
+                                <span class="material-symbols-outlined"> inbox </span>
+                                <h4>Primary</h4>
+                            </div>
+                            {{-- <div class="section">
+                            <span class="material-symbols-outlined"> people </span>
+                            <h4>Social</h4>
                         </div>
 
+                        <div class="section">
+                            <span class="material-symbols-outlined"> local_offer </span>
+                            <h4>Promotions</h4>
+                        </div> --}}
 
-                    </div>
-                    <!-- Settings Ends -->
 
-                    <!-- Section Starts -->
-                    <div class="emailList__sections">
-                        <div class="section section__selected">
-                            <span class="material-symbols-outlined"> inbox </span>
-                            <h4>Primary</h4>
                         </div>
-                        {{-- <div class="section">
-                        <span class="material-symbols-outlined"> people </span>
-                        <h4>Social</h4>
-                    </div>
+                        <div class="emailList__list" id="inbox-email-list-{{ auth()->id() }}">
+                            {{-- @include('user.mail.partials.inbox-email-list') --}}
 
-                    <div class="section">
-                        <span class="material-symbols-outlined"> local_offer </span>
-                        <h4>Promotions</h4>
-                    </div> --}}
-
-
-                    </div>
-                    <div class="emailList__list" id="inbox-email-list-{{ auth()->id() }}">
-                        {{-- @include('user.mail.partials.inbox-email-list') --}}
-
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            @include('user.mail.partials.create-mail')
+                @include('user.mail.partials.create-mail')
+
+
+            </div>
 
 
         </div>
-
-
-    </div>
-    </div>
+    <!-- </div> -->
 @endsection
 
 @push('scripts')

@@ -83,7 +83,7 @@
         <div id="loading-content"></div>
     </section>
     <div class="container-fluid">
-        <div class="bg_white_border">
+        <div class="bg_white_border mail-body">
             <div class="row">
                 <div class="col-lg-12">
                     <form action="{{ route('mail.send') }}" method="POST" id="sendMailForm">
