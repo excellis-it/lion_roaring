@@ -247,7 +247,7 @@
                                                                                 *</label>
                                                                             <input type="file" name="slider_images[]"
                                                                                 class="form-control" accept="image/*">
-                                                                            <span class="text-sm ms-2 text-muted">(width:
+                                                                            <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width:
                                                                                 1920px, height: 550px, max 2MB)</span>
                                                                             @if (isset($slide['image']) && $slide['image'])
                                                                                 <div class="mt-2">
@@ -292,7 +292,7 @@
                                                                         <label>Slide 1 Image*</label>
                                                                         <input type="file" name="slider_images[]"
                                                                             class="form-control" accept="image/*">
-                                                                        <span class="text-sm ms-2 text-muted">(width:
+                                                                        <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width:
                                                                             1920px, height: 550px, max 2MB)</span>
                                                                     </div>
                                                                 </div>
@@ -436,14 +436,14 @@
                                                 </div>
 
                                                 {{-- shop_now_image --}}
-                                                <div class="col-md-3 mb-2">
+                                                <div class="col-md-6 mb-2">
                                                     <div class="box_label">
                                                         <label for="shop_now_image"> Shop Now Image*</label>
                                                         <input type="file" name="shop_now_image" id="shop_now_image"
                                                             class="form-control"
                                                             value="{{ isset($cms->shop_now_image) ? $cms->shop_now_image : old('shop_now_image') }}"
                                                             accept="image/*">
-                                                        <span class="text-sm ms-2 text-muted">(width: 1920px, height:
+                                                        <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 1920px, height:
                                                             550px, max 2MB)</span>
                                                         @if ($errors->has('shop_now_image'))
                                                             <span
@@ -729,7 +729,7 @@
                                                         <input type="file" name="about_section_image"
                                                             id="about_section_image" class="form-control"
                                                             accept="image/*">
-                                                        <span class="text-sm ms-2 text-muted">(width: 420px, height:
+                                                        <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 420px, height:
                                                             300px, max 2MB)</span>
                                                         @if ($errors->has('about_section_image'))
                                                             <span
@@ -1141,12 +1141,13 @@
                 if (!existingShopNowImage && !shopNowHasFile) {
                     addClientError($('#shop_now_image'), 'Shop Now image is required (existing or new).');
                     errors.push('#shop_now_image');
-                } else if (shopNowHasFile) {
-                    // validate size/resolution: 1920x550, max 2MB
-                    var ok = await validateImageFile(shopNowInput.files[0], 2 * 1024 * 1024, 1920, 550, $(
-                        '#shop_now_image'), 'Shop Now image');
-                    if (!ok) errors.push('#shop_now_image');
                 }
+                // else if (shopNowHasFile) {
+                //     // validate size/resolution: 1920x550, max 2MB
+                //     var ok = await validateImageFile(shopNowInput.files[0], 2 * 1024 * 1024, 1920, 550, $(
+                //         '#shop_now_image'), 'Shop Now image');
+                //     if (!ok) errors.push('#shop_now_image');
+                // }
 
                 // Header logo required only if no existing
                 var headerInput = $('#header_logo')[0];
@@ -1154,12 +1155,13 @@
                 if (!existingHeaderLogo && !headerHasFile) {
                     addClientError($('#header_logo'), 'Header logo is required (existing or new).');
                     errors.push('#header_logo');
-                } else if (headerHasFile) {
-                    // validate header: 90x90, max 1MB
-                    var okHeader = await validateImageFile(headerInput.files[0], 1 * 1024 * 1024, 90, 90, $(
-                        '#header_logo'), 'Header logo');
-                    if (!okHeader) errors.push('#header_logo');
                 }
+                // else if (headerHasFile) {
+                //     // validate header: 90x90, max 1MB
+                //     var okHeader = await validateImageFile(headerInput.files[0], 1 * 1024 * 1024, 90, 90, $(
+                //         '#header_logo'), 'Header logo');
+                //     if (!okHeader) errors.push('#header_logo');
+                // }
 
                 // About section
                 if ($('#about_section_title').length && !val('#about_section_title')) {
@@ -1191,12 +1193,13 @@
                     addClientError($('#about_section_image'),
                         'About section image is required (existing or new).');
                     errors.push('#about_section_image');
-                } else if (aboutHasFile) {
-                    // validate about image: 420x300, max 2MB
-                    var okAbout = await validateImageFile(aboutInput.files[0], 2 * 1024 * 1024, 420, 300, $(
-                        '#about_section_image'), 'About section image');
-                    if (!okAbout) errors.push('#about_section_image');
                 }
+                // else if (aboutHasFile) {
+                //     // validate about image: 420x300, max 2MB
+                //     var okAbout = await validateImageFile(aboutInput.files[0], 2 * 1024 * 1024, 420, 300, $(
+                //         '#about_section_image'), 'About section image');
+                //     if (!okAbout) errors.push('#about_section_image');
+                // }
 
                 // Top Banner Slider validation:
                 var $slides = $('#slider-container .slider-item');
@@ -1231,16 +1234,17 @@
                             addClientError($fileInput, 'Slide ' + slideIndex +
                                 ' image is required (existing or new).');
                             errors.push($fileInput);
-                        } else if (fileObj) {
-                            // push promise to validate resolution/size: 1920x550, max 2MB
-                            slidePromises.push(
-                                validateImageFile(fileObj, 2 * 1024 * 1024, 1920, 550,
-                                    $fileInput, 'Slide ' + slideIndex + ' image')
-                                .then(function(ok) {
-                                    if (!ok) errors.push($fileInput);
-                                })
-                            );
                         }
+                        // else if (fileObj) {
+                        //     // push promise to validate resolution/size: 1920x550, max 2MB
+                        //     slidePromises.push(
+                        //         validateImageFile(fileObj, 2 * 1024 * 1024, 1920, 550,
+                        //             $fileInput, 'Slide ' + slideIndex + ' image')
+                        //         .then(function(ok) {
+                        //             if (!ok) errors.push($fileInput);
+                        //         })
+                        //     );
+                        // }
                     });
                     // await all slide image validations
                     if (slidePromises.length) {

@@ -133,8 +133,8 @@
                             {{-- Service Range --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
-                                    <label for="service_range">Warehouse Service Range (In kilometers)<span class="text-danger">*</span></label>
-                                    <input type="number" step="0.1" placeholder="Ex: 10.5" name="service_range"
+                                    <label for="service_range">Warehouse Service Range (In Miles)<span class="text-danger">*</span></label>
+                                    <input type="number" step="any" placeholder="Ex: 10.5" name="service_range"
                                         id="service_range" class="form-control @error('service_range') is-invalid @enderror"
                                         value="{{ old('service_range', $wareHouse->service_range) }}">
                                     @error('service_range')
@@ -186,7 +186,7 @@
 
                         {{-- Buttons --}}
                         <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
-                            <button type="submit" class="print_btn me-2">Save</button>
+                            <button type="submit" class="print_btn me-2">Update</button>
                             <a href="{{ route('ware-houses.index') }}" class="print_btn print_btn_vv">Cancel</a>
                         </div>
                     </form>

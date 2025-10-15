@@ -172,6 +172,9 @@ class DashboardController extends Controller
             return redirect()->route('strategy.index');
         } elseif ($type == 'policy') {
             return redirect()->route('policy-guidence.index');
+        } elseif ($type == 'Order') {
+            $order_id = $notification->chat_id;
+            return redirect()->route('user.store-orders.details', $order_id);
         }
 
 

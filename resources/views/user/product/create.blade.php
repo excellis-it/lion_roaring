@@ -47,6 +47,48 @@
             border-radius: 4px;
         }
     </style>
+    <style>
+        .preview-image {
+            position: relative;
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .preview-image img {
+            width: 100px;
+            height: 130px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: red;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .invalid-feedback {
+            display: block;
+            color: red;
+        }
+
+        .text-danger {
+            color: red !important;
+        }
+    </style>
 @endpush
 @section('content')
     <div class="container-fluid">
@@ -59,18 +101,6 @@
                         enctype="multipart/form-data">
                         @csrf
 
-
-
-
-                        {{-- <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="product-details-tab" data-bs-toggle="tab"
-                                    data-bs-target="#product-details" type="button" role="tab"
-                                    aria-controls="product-details" aria-selected="true">Product
-                                    Details</button>
-                            </li>
-
-                        </ul> --}}
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade show active" id="product-details" role="tabpanel"
                                 aria-labelledby="product-details-tab">
@@ -88,7 +118,7 @@
                                         <div class="box_label">
                                             <label for="name"> Product Name*</label>
                                             <input type="text" name="name" id="name" class="form-control"
-                                                value="{{ old('name') }}">
+                                                value="{{ old('name') }}" />
                                             @if ($errors->has('name'))
                                                 <span class="error">{{ $errors->first('name') }}</span>
                                             @endif
@@ -314,19 +344,13 @@
                                             (Drag and
                                             drop
                                             atleast 1
-                                            images)*</label>
+                                            images)</label>
                                         <br><span class="text-sm ms-2 text-muted">(width: 300px, height: 400px, max
                                             2MB)</span>
                                         <input type="file" class="form-control dropzone" id="image-upload"
                                             name="images[]" multiple accept="image/*">
-                                        @if ($errors->has('images.*'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('images.*') }}</div>
-                                        @endif
-                                        @if ($errors->has('images'))
-                                            <div class="error" style="color:red;">
-                                                {{ $errors->first('images') }}</div>
-                                        @endif
+                                        <span class="text-danger" id="images_error"></span>
+
 
                                         <!-- Gallery previews -->
                                         <div id="gallery-previews" class="gallery-previews" style="display:none;"></div>
@@ -488,6 +512,9 @@
                                                         <div class="mb-2">
                                                             <input type="text" name="other_charges[0][charge_name]"
                                                                 class="form-control" placeholder="Ex. Package Charge">
+                                                            {{-- showing error message --}}
+                                                            <span class="text-danger"
+                                                                id="other_charges.0.charge_name_error"></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -501,6 +528,9 @@
                                                                 name="other_charges[0][charge_amount]"
                                                                 class="form-control" placeholder="Charge Amount"
                                                                 min="0.00">
+                                                            {{-- showing error message --}}
+                                                            <span class="text-danger"
+                                                                id="other_charges.0.charge_amount_error"></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -543,6 +573,38 @@
         <!-- Choices.js -->
         <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
+        {{-- <script>
+            $(document).ready(function() {
+                //create a function that gets a string, converts to lowercase and then replace emptyspace with "-"
+                function toSlug(str) {
+                    str = str.toLowerCase().replace(/\W/g, '-').trim().split(" ");
+                    if (str[str.length - 1] == " ") {
+                        str[str.length - 1] = "";
+                    }
+                    str = str.join("-");
+
+                    return str;
+                }
+
+                function clearSlug(slug) {
+                    slug = slug.split("-");
+                    if (slug[slug.length - 1] === " ") {
+                        slug[slug.length - 1] = "";
+                    }
+                    return slug.join("-")
+                }
+                $('#slug').keyup(function() {
+                    var title = $('#slug').val();
+                    console.log(title);
+
+                    $('#slug').val(clearSlug(toSlug(title)));
+                });
+
+            });
+        </script> --}}
+
+
+
         <script type="text/javascript">
             Dropzone.options.imageUpload = {
                 maxFilesize: 1,
@@ -555,12 +617,328 @@
         </script>
         <script>
             $(document).ready(function() {
-                // auto set slug from name
-                $('#name').on('keyup', function() {
-                    var name = $(this).val();
-                    var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-                    $('#slug').val(slug);
+
+                $('#productCreateForm').on('submit', function(e) {
+                    e.preventDefault();
+
+                    let form = $(this);
+                    let url = form.attr('action');
+                    let method = form.attr('method');
+
+                    // Create FormData to support file uploads
+                    let formData = new FormData(this);
+
+                    // Clear previous error states
+                    form.find('.is-invalid').removeClass('is-invalid');
+                    form.find('.invalid-feedback').remove();
+                    $('.error-summary').remove(); // clear any old summary
+
+                    $.ajax({
+                        url: url,
+                        type: method,
+                        data: formData,
+                        processData: false, // important for file uploads
+                        contentType: false, // important for file uploads
+                        beforeSend: function() {
+                            // Optional: disable button to prevent multiple clicks
+                            form.find('button[type=submit]').prop('disabled', true);
+                        },
+                        success: function(response) {
+                            toastr.success('Product created successfully!');
+
+                            // Redirect or reset form if needed
+                            form[0].reset();
+                            window.location.href = "{{ route('products.index') }}"; // optional
+                        },
+                        error: function(xhr) {
+                            form.find('button[type=submit]').prop('disabled', false);
+
+                            // Clear previous states
+                            form.find('.is-invalid').removeClass('is-invalid');
+                            form.find('.invalid-feedback').remove();
+                            // Clear any old "*_error" spans (like other_charges_0_charge_name_error or images_error)
+                            $('[id$="_error"]').text('');
+
+                            if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                                let errors = xhr.responseJSON.errors;
+                                let firstInvalidEl = null;
+
+                                Object.keys(errors).forEach(function(field) {
+                                    let messages = errors[field]; // array
+
+                                    // --- Resolve selector name (map images.* -> images[] etc.)
+                                    let selectorName;
+                                    if (field === 'images' || field.startsWith('images.') ||
+                                        field.startsWith('images[')) {
+                                        selectorName = 'images[]';
+                                    } else if (field.includes('.')) {
+                                        // other_charges.0.charge_name -> other_charges[0][charge_name]
+                                        selectorName = field.replace(/\.(\d+)/g, '[$1]')
+                                            .replace(/\./g, '][');
+                                    } else {
+                                        selectorName = field;
+                                    }
+
+                                    // Build selectors to try
+                                    const selectorsToTry = [
+                                        `[name="${selectorName}"]`,
+                                    ];
+                                    if (!selectorName.includes('[') && field.endsWith(
+                                            's')) {
+                                        selectorsToTry.push(`[name="${selectorName}[]"]`);
+                                    }
+                                    if (selectorName.indexOf('[') !== -1) {
+                                        const prefix = selectorName.split('[').slice(0, 2)
+                                            .join('[') + '[';
+                                        selectorsToTry.push(`[name^="${prefix}"]`);
+                                    } else {
+                                        selectorsToTry.push(`[name^="${selectorName}"]`);
+                                    }
+
+                                    // Try to find input using selectors
+                                    let $input = $();
+                                    for (let sel of selectorsToTry) {
+                                        $input = form.find(sel);
+                                        if ($input.length) break;
+                                    }
+
+                                    // Special explicit error span for images - prefer this if present
+                                    // You used <span id="images_error"></span>
+                                    const explicitImageSpan = (field.startsWith('images')) ?
+                                        $('#images_error') : $();
+                                    if (explicitImageSpan && explicitImageSpan.length) {
+                                        explicitImageSpan.text(messages.join(' '));
+                                        if (!firstInvalidEl) firstInvalidEl =
+                                            explicitImageSpan;
+                                        return; // done with this field
+                                    }
+
+                                    // Also check general "_error" span naming (field + '_error'), escape dots for ID
+                                    const errorSpanId = field + '_error';
+                                    const escapedId = errorSpanId.replace(
+                                        /([:.#[\],/\\$*+?^(){}|-])/g, "\\$1");
+                                    const $errorSpan = $(`#${escapedId}`);
+
+                                    if ($input.length) {
+                                        // Mark invalid
+                                        $input.addClass('is-invalid');
+
+                                        // Decide placement
+                                        const tag = $input.prop('tagName').toLowerCase();
+                                        const type = ($input.attr('type') || '')
+                                            .toLowerCase();
+
+                                        // If input is file/select/textarea -> place message below the visible wrapper
+                                        if (type === 'file' || tag === 'select' || tag ===
+                                            'textarea') {
+                                            const $wrapper = $input.closest('.box_label');
+                                            const messageHtml =
+                                                `<div class="invalid-feedback d-block">${messages.join('<br>')}</div>`;
+
+                                            if ($wrapper.length) {
+                                                // append inside wrapper (after label/input block)
+                                                $wrapper.append(messageHtml);
+                                            } else {
+                                                // IMPORTANT: for file inputs that have no .box_label, use after() (not append)
+                                                $input.after(messageHtml);
+                                            }
+                                        } else {
+                                            // For text/number inputs put the error after the last matched input element
+                                            $input.last().after(
+                                                `<div class="invalid-feedback d-block">${messages.join('<br>')}</div>`
+                                            );
+                                        }
+
+                                        if (!firstInvalidEl) firstInvalidEl = $input
+                                            .first();
+
+                                    } else if ($errorSpan.length) {
+                                        // Put message into explicit span if present
+                                        $errorSpan.text(messages.join(' '));
+                                        if (!firstInvalidEl) firstInvalidEl = $errorSpan;
+                                    } else {
+                                        // final fallback: summary area at top
+                                        if ($('.error-summary').length === 0) {
+                                            form.prepend(
+                                                '<div class="error-summary alert alert-danger mt-2"></div>'
+                                            );
+                                        }
+                                        $('.error-summary').append(
+                                            `<div>${messages.join('<br>')}</div>`);
+                                        if (!firstInvalidEl) firstInvalidEl = $(
+                                            '.error-summary').first();
+                                    }
+                                });
+
+                                // Scroll to first invalid item
+                                if (firstInvalidEl && firstInvalidEl.length) {
+                                    $('html, body').animate({
+                                        scrollTop: firstInvalidEl.offset().top - 100
+                                    }, 250);
+                                    try {
+                                        firstInvalidEl.focus();
+                                    } catch (e) {}
+                                }
+
+                            } else {
+                                toastr.error('Something went wrong. Please try again.');
+                                console.error(xhr.responseText);
+                            }
+                        }
+
+
+
+                    });
                 });
+
+            });
+        </script>
+        {{-- <script>
+            $(function() {
+                const $name = $('#name');
+                const $slug = $('#slug');
+                const $feedback = $('#slug-feedback'); // change if you use a different element
+                let typingTimer = null;
+                const doneTypingInterval = 800; // ms: wait 800ms after last keyup
+                let currentXhr = null;
+
+                // Request slug generation/validation
+                function requestSlugByName(name) {
+                    name = (name || '').trim();
+                    if (!name) {
+                        $slug.val('');
+                        $feedback.text('');
+                        return;
+                    }
+
+                    // abort previous request if still running
+                    if (currentXhr && currentXhr.readyState !== 4) currentXhr.abort();
+
+                    currentXhr = $.ajax({
+                        url: '{{ route('products.slug.check') }}', // your route
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            name: name
+                        },
+                        success: function(response) {
+                            if (response.slug) {
+                                $slug.val(response.slug);
+                                $feedback.text('');
+                            } else if (response.error) {
+                                $feedback.text(response.error);
+                            }
+                        },
+                        error: function(xhr, status) {
+                            if (status === 'abort') return;
+                            $feedback.text('Could not check slug. Try again.');
+                        }
+                    });
+                }
+
+                // Debounced typing handlers for `name`
+                $name.on('keyup', function() {
+                    clearTimeout(typingTimer);
+                    typingTimer = setTimeout(function() {
+                        requestSlugByName($name.val());
+                    }, doneTypingInterval);
+                });
+
+                $name.on('keydown', function() {
+                    clearTimeout(typingTimer); // reset timer while typing
+                });
+
+                // On blur, call immediately (user finished)
+                $name.on('blur', function() {
+                    clearTimeout(typingTimer);
+                    requestSlugByName($name.val());
+                });
+
+                // If user manually edits slug, validate on blur
+                $slug.on('blur', function() {
+                    const value = $slug.val().trim();
+                    if (!value) return;
+
+                    // basic client-side format check
+                    if (!/^[a-z0-9\-]+$/.test(value)) {
+                        $feedback.text('Invalid slug — use lowercase letters, numbers and hyphens only.');
+                        return;
+                    }
+
+                    // abort previous request and validate uniqueness
+                    if (currentXhr && currentXhr.readyState !== 4) currentXhr.abort();
+
+                    currentXhr = $.ajax({
+                        url: '{{ route('products.slug.check') }}',
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            name: value
+                        },
+                        success: function(res) {
+                            if (res.valid) {
+                                $feedback.text('');
+                            } else if (res.suggest) {
+                                $slug.val(res.suggest);
+                                $feedback.text('Slug already exists — suggestion applied.');
+                            } else if (res.error) {
+                                $feedback.text(res.error);
+                            }
+                        },
+                        error: function() {
+                            $feedback.text('Could not validate slug.');
+                        }
+                    });
+                });
+
+            });
+        </script> --}}
+
+        <script>
+            $(document).ready(function() {
+                // auto set slug from name
+                // $('#name').on('keyup', function() {
+                //     var name = $(this).val();
+                //     var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+                //     $('#slug').val(slug);
+                // });
+
+                function debounce(func, wait) {
+                    let timeout;
+                    return function() {
+                        const context = this,
+                            args = arguments;
+                        clearTimeout(timeout);
+                        timeout = setTimeout(() => func.apply(context, args), wait);
+                    };
+                }
+
+                $('#slug, #name').on('keyup change', debounce(function() {
+                    let slug = $(this).val().trim();
+
+                    if (slug.length > 0) {
+                        $.ajax({
+                            url: '{{ route('products.slug.check') }}',
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                name: slug
+                            },
+                            success: function(response) {
+                                if (response.slug) {
+                                    $('#slug').val(response.slug);
+                                    $('#slug-feedback').text('');
+                                } else if (response.error) {
+                                    $('#slug-feedback').text(response.error);
+                                }
+                            }
+                        });
+                    }
+                }, 500)); // wait 500ms after last key press
+
+
+
+
 
                 function togglePriceFields() {
                     const isFree = $('#is_free').is(':checked');
@@ -609,12 +987,14 @@
                         <div class="col-md-4 mb-2">
                             <div class="box_label">
                                 <input type="text" name="other_charges[${otherChargeIndex}][charge_name]" class="form-control" placeholder="Ex. Shipping Charge">
+                                <span class="text-danger" id="other_charges.${otherChargeIndex}.charge_name_error"></span>
                             </div>
                         </div>
                         <div class="col-md-4 mb-2">
                             <div class="box_label">
                                 <input step="any" type="number" name="other_charges[${otherChargeIndex}][charge_amount]" class="form-control" placeholder="Charge Amount" min="0.00">
-                            </div>
+                                <span class="text-danger" id="other_charges.${otherChargeIndex}.charge_amount_error"></span>
+                                </div>
                         </div>
                         <div class="col-md-4 mb-2">
                             <div class="box_label">
@@ -654,7 +1034,7 @@
                 });
             });
         </script>
-        <script>
+        {{-- <script>
             // productCreateForm validate before submit
             (function() {
                 function addClientError($el, message) {
@@ -770,33 +1150,35 @@
                     }
 
                     var featuredInput = $('#image')[0];
-                    if (featuredInput && featuredInput.files && featuredInput.files.length) {
-                        var okFeatured = await validateImageFile(featuredInput.files[0], 2 * 1024 * 1024, 300,
-                            400, $('#image'), 'Featured image');
-                        if (!okFeatured) errors.push('#image');
-                    }
+                    // if (featuredInput && featuredInput.files && featuredInput.files.length) {
+                    //     var okFeatured = await validateImageFile(featuredInput.files[0], 2 * 1024 * 1024, 300,
+                    //         400, $('#image'), 'Featured image');
+                    //     if (!okFeatured) errors.push('#image');
+                    // }
 
                     var backgroundInput = $('#background_image')[0];
-                    if (backgroundInput && backgroundInput.files && backgroundInput.files.length) {
-                        var okBackground = await validateImageFile(backgroundInput.files[0], 2 * 1024 * 1024,
-                            1920, 520, $('#background_image'), 'Banner image');
-                        if (!okBackground) errors.push('#background_image');
-                    }
+                    // if (backgroundInput && backgroundInput.files && backgroundInput.files.length) {
+                    //     var okBackground = await validateImageFile(backgroundInput.files[0], 2 * 1024 * 1024,
+                    //         1920, 520, $('#background_image'), 'Banner image');
+                    //     if (!okBackground) errors.push('#background_image');
+                    // }
 
                     var galleryInput = $('#image-upload')[0];
                     if (!galleryInput || (galleryInput.files && galleryInput.files.length === 0)) {
                         addClientError($('#image-upload'), 'Please upload at least one gallery image.');
                         errors.push('#image-upload');
-                    } else {
-                        for (var i = 0; i < galleryInput.files.length; i++) {
-                            var okGallery = await validateImageFile(galleryInput.files[i], 2 * 1024 * 1024, 300,
-                                400, $('#image-upload'), 'Gallery image');
-                            if (!okGallery) {
-                                errors.push('#image-upload');
-                                break;
-                            }
-                        }
                     }
+
+                    // else {
+                    //     for (var i = 0; i < galleryInput.files.length; i++) {
+                    //         var okGallery = await validateImageFile(galleryInput.files[i], 2 * 1024 * 1024, 300,
+                    //             400, $('#image-upload'), 'Gallery image');
+                    //         if (!okGallery) {
+                    //             errors.push('#image-upload');
+                    //             break;
+                    //         }
+                    //     }
+                    // }
 
                     // Product type specific checks
                     var productType = $('input[name="product_type"]:checked').val() || 'simple';
@@ -872,10 +1254,9 @@
                     $form.submit();
                 });
             })();
-        </script>
+        </script> --}}
 
         <script>
-            // Real-time image previews for featured, banner, and gallery inputs
             (function() {
                 function readSingleImage(input, previewImgEl, containerEl) {
                     if (input.files && input.files[0]) {
@@ -897,28 +1278,55 @@
                     }
                 }
 
-                function readMultipleImages(input, containerEl) {
-                    containerEl.empty();
+                function readMultipleImages(input, containerSelector) {
+                    const $container = $(containerSelector);
+                    $container.empty();
                     const files = input.files || [];
                     if (!files.length) {
-                        containerEl.hide();
+                        $container.hide();
                         return;
                     }
-                    Array.from(files).forEach(function(file) {
-                        if (!file.type.startsWith('image/')) {
-                            return;
-                        }
+
+                    Array.from(files).forEach(function(file, index) {
+                        if (!file.type.startsWith('image/')) return;
+
                         const reader = new FileReader();
                         reader.onload = function(e) {
-                            const img = $('<img />', {
+                            const $imgWrapper = $('<div/>', {
+                                class: 'preview-image',
+                                'data-index': index
+                            });
+
+                            const $img = $('<img/>', {
                                 src: e.target.result,
                                 alt: file.name
                             });
-                            containerEl.append(img);
+
+                            const $removeBtn = $('<span/>', {
+                                class: 'remove-image',
+                                text: '×'
+                            });
+
+                            // Remove image from preview and input
+                            $removeBtn.on('click', function() {
+                                $imgWrapper.remove();
+                                // Update the input.files by creating a new DataTransfer
+                                const dt = new DataTransfer();
+                                Array.from(input.files)
+                                    .filter((f, i) => i !== index)
+                                    .forEach(f => dt.items.add(f));
+                                input.files = dt.files;
+
+                                if (!input.files.length) $container.hide();
+                            });
+
+                            $imgWrapper.append($img).append($removeBtn);
+                            $container.append($imgWrapper);
                         };
                         reader.readAsDataURL(file);
                     });
-                    containerEl.show();
+
+                    $container.show();
                 }
 
                 $(function() {
@@ -933,9 +1341,6 @@
                     const $galleryInput = $('#image-upload');
                     const $galleryContainer = $('#gallery-previews');
 
-                    // initial preview if old files are present is not possible without server URLs,
-                    // so previews only appear on client selection.
-
                     $featuredInput.on('change', function() {
                         readSingleImage(this, $featuredPreview, $featuredContainer);
                     });
@@ -947,8 +1352,6 @@
                     $galleryInput.on('change', function() {
                         readMultipleImages(this, $galleryContainer);
                     });
-
-                    // If validation prevents submit and user re-selects, previews update accordingly.
                 });
             })();
         </script>

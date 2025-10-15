@@ -231,6 +231,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Firebase' => Kreait\Laravel\Firebase\Facades\Firebase::class,
-         'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
+        'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
+        'Image' => Intervention\Image\Image::class,
     ],
 ];

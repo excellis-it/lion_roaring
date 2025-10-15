@@ -287,7 +287,23 @@
                             <span class="hide-menu">E-Store</span>
                         </a>
                         {{-- Collapse content --}}
-                        <div class="collapse {{ Request::is('user/products*') ||Request::is('user/estore-users-list*')   || Request::is('user/store-orders*') || Request::is('user/ware-houses*') || Request::is('user/store-settings*') || Request::is('user/sizes*') || Request::is('user/colors*') || Request::is('user/store-promo-codes*') || Request::is('user/warehouse-admins*') || Request::is('user/store-cms*') || Request::is('user/store-cms-page/home*') || Request::is('user/store-cms-page/footer*') || Request::is('user/categories*') ? 'show' : '' }}"
+                        <div class="collapse {{ Request::is('user/products*') ||
+                        Request::is('user/order-status*') ||
+                        Request::is('user/order-email-templates*') ||
+                        Request::is('user/estore-users-list*') ||
+                        Request::is('user/store-orders*') ||
+                        Request::is('user/ware-houses*') ||
+                        Request::is('user/store-settings*') ||
+                        Request::is('user/sizes*') ||
+                        Request::is('user/colors*') ||
+                        Request::is('user/store-promo-codes*') ||
+                        Request::is('user/warehouse-admins*') ||
+                        Request::is('user/store-cms*') ||
+                        Request::is('user/store-cms-page/home*') ||
+                        Request::is('user/store-cms-page/footer*') ||
+                        Request::is('user/categories*')
+                            ? 'show'
+                            : '' }}"
                             id="collapseExample10">
                             <div class="menu_bb">
                                 {{-- bulletins --}}
@@ -301,7 +317,7 @@
                                     </a>
                                 @endif
 
-                                @if (Gate::check('Manage Estore Users'))
+                                {{-- @if (Gate::check('Manage Estore Users'))
                                     <a href="{{ route('estore-users.list') }}">
                                         <span>
                                             <img src="{{ asset('user_assets/images/ICON/All_Member.svg') }}"
@@ -309,7 +325,7 @@
                                         </span>
                                         <span>E-store Users</span>
                                     </a>
-                                @endif
+                                @endif --}}
 
                                 @if (Gate::check('Manage Estore Category'))
                                     <a href="{{ route('categories.index') }}">
@@ -363,6 +379,26 @@
                                         <span>E-store Settings</span>
                                     </a>
                                 @endif
+                                @if (Gate::check('Manage Order Status'))
+                                    <a href="{{ route('order-status.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Store/o-status.png') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Order Status</span>
+                                    </a>
+                                @endif
+                                @if (Gate::check('Manage Email Template'))
+                                    <a href="{{ route('order-email-templates.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Store/o-e-template.png') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Orders Email Templates</span>
+                                    </a>
+                                @endif
+
+
 
                                 @if (Gate::check('Manage Estore Products'))
                                     <a href="{{ route('products.index') }}">

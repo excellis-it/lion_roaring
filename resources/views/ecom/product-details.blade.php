@@ -52,7 +52,8 @@
                             @if ($product->images->count() > 0)
                                 @foreach ($product->images as $image)
                                     <div class="slid_big_img">
-                                        <img src="{{ Storage::url($image->image) }}" />
+                                        <img src="{{ Storage::url($image->image) }}"
+                                            onerror="this.onerror=null; this.src='{{ asset('ecom_assets/images/no-image.png') }}';" />
                                     </div>
                                 @endforeach
                             @endif
@@ -62,7 +63,8 @@
                                 @foreach ($product->images as $image)
                                     <div class="small_box_img">
                                         <div class="slid_small_img">
-                                            <img src="{{ Storage::url($image->image) }}" />
+                                            <img src="{{ Storage::url($image->image) }}"
+                                                onerror="this.onerror=null; this.src='{{ asset('ecom_assets/images/no-image.png') }}';" />
                                         </div>
                                     </div>
                                 @endforeach
@@ -178,8 +180,9 @@
                                     border: 2px solid #ddd; border-radius: 5px; margin-right: 10px;
                                     opacity: 1;
                                     pointer-events: auto;"
-                                                src="{{ Storage::url($image->image_path ?? '') }}"
-                                                alt="{{ $color->color_name ?? ($color->name ?? '') }}">
+                                                src="{{ $image->image_path ? Storage::url($image->image_path ?? '') : asset('ecom_assets/images/no-image.png') }}"
+                                                alt="{{ $color->color_name ?? ($color->name ?? '') }}"
+                                                onerror="this.onerror=null; this.src='{{ asset('ecom_assets/images/no-image.png') }}';">
                                         @endif
                                     @endforeach
                                 @endif
@@ -210,7 +213,7 @@
                             <div class="me-3" id="qty-div">
                                 <div class="d-flex justify-content-start align-items-center">
                                     <div class="small_number mb-3">
-                                        <div class="d-flex " >
+                                        <div class="d-flex ">
                                             <label for="product-qty" class="form-label me-2">Qty:</label>
                                             {{-- default value 1 and max value from $wareHouseHaveProductVariables->quantity --}}
                                             {{-- if $wareHouseHaveProductVariables->quantity is 0 then hide this div --}}
@@ -231,8 +234,8 @@
                             </div>
 
 
-                            <div class="addtocart cart-btns" data-id="{{ $product->id }}">
-                                <a href="javascript:void(0);" class="red_btn w-100 text-center"><span>Add to
+                            <div class="addtocartdetails cart-btns" data-id="{{ $product->id }}">
+                                <a href="javascript:void(0);" class="red_btn w-100 text-center "><span>Add to
                                         Cart</span></a>
                             </div>
 
@@ -330,7 +333,8 @@
                                         <a href="{{ route('e-store.product-details', $related_product->slug) }}">
                                             @if (isset($related_product->main_image) && $related_product->main_image != null)
                                                 <img src="{{ Storage::url($related_product->main_image) }}"
-                                                    alt="{{ $related_product->main_image }}">
+                                                    alt="{{ $related_product->main_image }}"
+                                                    onerror="this.onerror=null; this.src='{{ asset('ecom_assets/images/no-image.png') }}';">
                                             @endif
                                         </a>
                                     </div>
@@ -374,6 +378,89 @@
 @endsection
 
 @push('scripts')
+    <script>
+        $(document).on("click", ".addtocartdetails", function(e) {
+            e.preventDefault();
+
+            var $button = $(this);
+            var productId = $button.data("id");
+            var buttonText = $button.find("a").text().trim();
+
+            if (buttonText === "View Cart") {
+                window.location.href = window.cartRoutes.viewCart;
+                return;
+            }
+
+            var quantity = 1;
+            var qtyInput = $button.closest(".feature_box").find(".product-qty");
+            if (qtyInput.length === 0) {
+                qtyInput = $(".product-qty");
+            }
+            if (qtyInput.length > 0) {
+                quantity = parseInt(qtyInput.val()) || 1;
+            }
+
+            var originalText = $button.find("a").text();
+            $button.find("a").text("Adding...");
+            $button.addClass("loading");
+
+            var sizeId = $(".product-select-size-input:checked").val();
+            var colorId = $(".product-select-color-input:checked").val();
+            var productType = "{{ $product->product_type ?? 'simple' }}"; // Laravel blade variable
+
+            // 🚨 Validation for non-simple products
+            if (productType !== "simple") {
+                if (!sizeId && $(".product-select-size-input").length > 0) {
+                    toastr.error("Please select a size before adding to cart.");
+                    $button.find("a").text(originalText);
+                    $button.removeClass("loading");
+                    return;
+                }
+                if (!colorId && $(".product-select-color-input").length > 0) {
+                    toastr.error("Please select a color before adding to cart.");
+                    $button.find("a").text(originalText);
+                    $button.removeClass("loading");
+                    return;
+                }
+            }
+
+            // 🛒 Proceed with AJAX call only if validation passed
+            $.ajax({
+                url: window.cartRoutes.addToCart,
+                type: "POST",
+                data: {
+                    warehouse_product_id: $("#warehouse-product-id").val(),
+                    product_id: productId,
+                    product_variation_id: $("#product-variation-id").val(),
+                    size_id: sizeId,
+                    color_id: colorId,
+                    quantity: quantity,
+                    _token: window.csrfToken,
+                },
+                success: function(response) {
+                    if (response.status) {
+                        toastr.success(response.message);
+                        updateCartCount();
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function(xhr) {
+                    var errorMessage = "Something went wrong!";
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    toastr.error(errorMessage);
+                },
+                complete: function() {
+                    if (!$button.find("a").text().includes("View Cart")) {
+                        $button.find("a").text(originalText);
+                    }
+                    $button.removeClass("loading");
+                },
+            });
+        });
+    </script>
     <script>
         function enableZoomOnSlide(slide) {
             const img = slide.querySelector('img');
@@ -531,7 +618,8 @@
 
                         // prefer colorMatchedImages, fallback to images
                         var imagesArray = [];
-                        if (Array.isArray(response.data.colorMatchedImages) && response.data.colorMatchedImages.length) {
+                        if (Array.isArray(response.data.colorMatchedImages) && response.data.colorMatchedImages
+                            .length) {
                             imagesArray = response.data.colorMatchedImages;
                         } else if (Array.isArray(response.data.images) && response.data.images.length) {
                             imagesArray = response.data.images;
@@ -553,27 +641,64 @@
 
                                 sliderFor.append(
                                     $('<div class="slid_big_img"></div>').append(
-                                        $('<img>').attr('src', src).attr('alt', image.id || '')
+                                        $('<img>')
+                                        .attr('src', src)
+                                        .attr('alt', image.id || '')
+                                        .on('error', function() {
+                                            $(this).attr('src',
+                                                "{{ asset('ecom_assets/images/no-image.png') }}"
+                                            );
+                                        })
                                     )
                                 );
 
                                 sliderNav.append(
                                     $('<div class="small_box_img"></div>').append(
                                         $('<div class="slid_small_img"></div>').append(
-                                            $('<img>').attr('src', src).attr('alt', image.id || '')
+                                            $('<img>')
+                                            .attr('src', src)
+                                            .attr('alt', image.id || '')
+                                            .on('error', function() {
+                                                $(this).attr('src',
+                                                    "{{ asset('ecom_assets/images/no-image.png') }}"
+                                                );
+                                            })
                                         )
                                     )
                                 );
+
                             });
                         } else {
                             // fallback: placeholder in both main and nav
-                            var noImage = '{{ asset("ecom_assets/images/no-image.png") }}';
+                            var noImage = '{{ asset('ecom_assets/images/no-image.png') }}';
+
+                            // For sliderFor
                             sliderFor.append(
-                                '<div class="slid_big_img"><img src="' + noImage + '" /></div>'
+                                $('<div class="slid_big_img"></div>').append(
+                                    $('<img>')
+                                    .attr('src', src ||
+                                        noImage) // use real src if exists, otherwise noImage
+                                    .attr('alt', image.id || '')
+                                    .on('error', function() {
+                                        $(this).attr('src', noImage); // fallback if image fails to load
+                                    })
+                                )
                             );
+
+                            // For sliderNav
                             sliderNav.append(
-                                '<div class="small_box_img"><div class="slid_small_img"><img src="' + noImage + '" /></div></div>'
+                                $('<div class="small_box_img"></div>').append(
+                                    $('<div class="slid_small_img"></div>').append(
+                                        $('<img>')
+                                        .attr('src', src || noImage)
+                                        .attr('alt', image.id || '')
+                                        .on('error', function() {
+                                            $(this).attr('src', noImage);
+                                        })
+                                    )
+                                )
                             );
+
                         }
 
                         productImagesSection.empty().append(sliderLeft.append(sliderFor).append(

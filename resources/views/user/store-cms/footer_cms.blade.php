@@ -29,7 +29,7 @@
                                     <label for="image"> Footer Logo*</label>
                                     <input type="file" name="footer_logo" id="image" class="form-control"
                                         value="{{ old('footer_logo') }}">
-                                    <span class="text-sm ms-2 text-muted">(width: 120px, height: 120px, max 1MB)</span>
+                                    <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 120px, height: 120px, max 1MB)</span>
                                     @if ($errors->has('footer_logo'))
                                         <span class="error">{{ $errors->first('footer_logo') }}</span>
                                     @endif
@@ -299,11 +299,13 @@
                     if (!existingFooterLogo && !hasFile) {
                         addClientError($logoInput, 'Footer logo is required (existing or new).');
                         errors.push('#image');
-                    } else if (hasFile) {
-                        var ok = await validateImageFile(logoEl.files[0], 1 * 1024 * 1024, 120, 120, $logoInput,
-                            'Footer logo');
-                        if (!ok) errors.push('#image');
                     }
+
+                    // else if (hasFile) {
+                    //     var ok = await validateImageFile(logoEl.files[0], 1 * 1024 * 1024, 120, 120, $logoInput,
+                    //         'Footer logo');
+                    //     if (!ok) errors.push('#image');
+                    // }
 
                     if (errors.length) {
                         var firstSel = errors[0];

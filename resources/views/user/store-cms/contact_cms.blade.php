@@ -20,7 +20,7 @@
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Banner Image*</label>
                         <input type="file" name="banner_image" class="form-control" />
-                        <span class="text-sm ms-2 text-muted">(width: 1920px, height: 520px, max 2MB)</span><br>
+                        <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 1920px, height: 520px, max 2MB)</span><br>
                         @if (isset($cms->banner_image))
                             <img src="{{ Storage::url($cms->banner_image) }}" alt="banner" class="img-thumbnail mt-2"
                                 style="max-height:120px;">
@@ -203,11 +203,12 @@
                 if (!existingBannerImage && !hasFile) {
                     addClientError($bannerInput, 'Banner image is required (existing or new).');
                     errors.push($bannerInput);
-                } else if (hasFile) {
-                    var ok = await validateImageFile(bannerInputEl.files[0], 2 * 1024 * 1024, 1920, 520,
-                        $bannerInput, 'Banner image');
-                    if (!ok) errors.push($bannerInput);
                 }
+                //  else if (hasFile) {
+                //     var ok = await validateImageFile(bannerInputEl.files[0], 2 * 1024 * 1024, 1920, 520,
+                //         $bannerInput, 'Banner image');
+                //     if (!ok) errors.push($bannerInput);
+                // }
 
                 if (errors.length) {
                     var first = errors[0];

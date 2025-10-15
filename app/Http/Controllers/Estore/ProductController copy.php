@@ -33,8 +33,10 @@ use Stripe\Exception\ApiConnectionException;
 use Stripe\Exception\ApiErrorException;
 use Stripe\PaymentIntent;
 use App\Models\EstoreRefund;
+use App\Models\OrderStatus;
 use App\Models\ProductVariation;
 use App\Models\WarehouseProductVariation;
+use Stripe\Climate\Order;
 
 class ProductController extends Controller
 {
@@ -888,6 +890,8 @@ class ProductController extends Controller
 
             $warehouseId = $carts->first()->warehouse_id ?? null;
             $wareHouse = WareHouse::find($warehouseId);
+
+            $order_status = OrderStatus::where('slug', 'processing')->first();
             // Create order
             $order = EstoreOrder::create([
                 'warehouse_id' => $warehouseId,
@@ -910,7 +914,7 @@ class ProductController extends Controller
                 'credit_card_fee' => $creditCardFee,
                 'payment_type' => $request->payment_type,
                 'payment_status' => 'paid',
-                'status' => 'processing',
+                'status' => $order_status->id ?? null,
                 'warehouse_name' => $wareHouse->name ?? null,
                 'warehouse_address' => $wareHouse->address ?? null,
             ]);

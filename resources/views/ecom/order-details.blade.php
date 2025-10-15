@@ -26,7 +26,7 @@
                                 <div class="col-md-6">
                                     <h4>Order #{{ $order->order_number }}</h4>
                                     <p class="mb-0">Placed on {{ $order->created_at->format('M d, Y \a\t h:i A') }}</p>
-                                      @if ($order->status == 'delivered' && $order->payment_status == 'paid')
+                                    @if ($order->status == 4 && $order->payment_status == 'paid')
                                         <a href="{{ route('user.store-orders.invoice', $order->id) }}" target="_blank"
                                             class="btn btn-sm btn-primary">
                                             <i class="fas fa-download"></i> Download Invoice
@@ -35,8 +35,8 @@
                                 </div>
                                 <div class="col-md-6 text-end">
                                     <span
-                                        class="badge bg-{{ $order->status == 'delivered' ? 'success' : ($order->status == 'cancelled' ? 'danger' : 'primary') }} mb-1">
-                                        {{ ucfirst($order->status) }}
+                                        class="badge bg-{{ $order->status == 4 ? 'success' : ($order->status == 5 ? 'danger' : 'primary') }} mb-1">
+                                        {{ ucfirst($order->orderStatus->name ?? '-') }}
                                     </span><br>
                                     <span class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : 'warning' }}">
                                         Payment {{ ucfirst($order->payment_status) }}
@@ -77,7 +77,29 @@
                         <!-- Order Items -->
                         <div class="order-items">
                             <h5>Items Ordered</h5>
+                            @php
+                                $all_other_charges = [];
+                                $subtotal = 0;
+                            @endphp
                             @foreach ($order->orderItems as $item)
+                                @php
+                                    $charges = $item->other_charges ? json_decode($item->other_charges, true) : [];
+                                    $otherChargesTotal = 0;
+
+                                    if (!empty($charges)) {
+                                        foreach ($charges as $charge) {
+                                            $otherChargesTotal += floatval($charge['charge_amount'] ?? 0);
+                                        }
+                                    }
+
+                                    $all_other_charges[] = [
+                                        'product_name' => $item->product_name,
+                                        'quantity' => $item->quantity,
+                                        'subtotal' => $item->price * $item->quantity,
+                                        'other_charges' => $otherChargesTotal,
+                                    ];
+                                    $subtotal += $item->total;
+                                @endphp
                                 <div class="item-card border rounded p-3 mb-3">
                                     <div class="row align-items-center">
                                         <div class="col-md-2">
@@ -94,6 +116,8 @@
                                                 </div>
                                             @endif
                                         </div>
+
+
                                         <div class="col-md-6">
                                             <h6>{{ $item->product_name }}</h6>
                                             <p class="text-muted mb-0">Quantity: {{ $item->quantity }}</p>
@@ -101,8 +125,12 @@
                                         <div class="col-md-2 text-center">
                                             <p class="mb-0">${{ number_format($item->price, 2) }}</p>
                                         </div>
+                                        @php
+                                            // Calculate total for this item
+                                            $itemTotal = $item->price * $item->quantity;
+                                        @endphp
                                         <div class="col-md-2 text-end">
-                                            <p class="mb-0"><strong>${{ number_format($item->total, 2) }}</strong></p>
+                                            <p class="mb-0"><strong>${{ number_format($itemTotal, 2) }}</strong></p>
                                         </div>
                                     </div>
                                 </div>
@@ -117,25 +145,81 @@
                         <div class="bill_details">
                             <h4>Order Summary</h4>
                             <div class="bill_text">
-                                <ul>
+
+                                {{-- <ul class="list-unstyled mb-2 d-flex justify-content-between">
                                     <li>Subtotal</li>
                                     <li>${{ number_format($order->subtotal, 2) }}</li>
-                                </ul>
-                                {{-- <ul>
-                                    <li>Tax</li>
-                                    <li>${{ number_format($order->tax_amount, 2) }}</li>
-                                </ul>
-                                <ul>
-                                    <li>Shipping</li>
-                                    <li>${{ number_format($order->shipping_amount, 2) }}</li>
                                 </ul> --}}
 
-                                <div class="total_payable">
-                                    <div class="total_payable_l">Total</div>
-                                    <div class="total_payable_r">${{ number_format($order->total_amount, 2) }}</div>
+                                @foreach ($all_other_charges as $item)
+                                    <ul class="list-unstyled mb-1 d-flex justify-content-between">
+                                        <li>{{ $item['product_name'] }} ({{ $item['quantity'] }}x)</li>
+
+                                        <li>${{ number_format($item['subtotal'], 2) }}</li>
+                                    </ul>
+
+                                    @if ($item['other_charges'] > 0)
+                                        <ul class="list-unstyled mb-1 d-flex justify-content-between text-muted small">
+                                            <li style="padding-left: 15px;">• Additional charges</li>
+                                            <li>${{ number_format($item['other_charges'], 2) }}</li>
+                                        </ul>
+                                    @endif
+                                @endforeach
+
+                                <hr />
+
+                                <ul>
+                                    <li>Subtotal</li>
+                                    <li id="subtotal-amount">
+                                        ${{ number_format($subtotal, 2) }}
+                                    </li>
+                                </ul>
+
+                                @if ($order->promo_discount && $order->promo_discount > 0)
+                                    <ul class="list-unstyled mb-2 d-flex justify-content-between">
+                                        <li>
+                                            Promo Discount
+                                            @if ($order->promo_code)
+                                                (Code: {{ $order->promo_code }})
+                                            @endif
+                                        </li>
+                                        <li>- ${{ number_format($order->promo_discount, 2) }}</li>
+                                    </ul>
+                                @endif
+
+                                @if ($order->tax_amount && $order->tax_amount > 0)
+                                    <ul class="list-unstyled mb-2 d-flex justify-content-between">
+                                        <li>Tax</li>
+                                        <li>${{ number_format($order->tax_amount, 2) }}</li>
+                                    </ul>
+                                @endif
+
+                                @if ($order->shipping_amount && $order->shipping_amount > 0)
+                                    <ul class="list-unstyled mb-2 d-flex justify-content-between">
+                                        <li>Shipping</li>
+                                        <li>${{ number_format($order->shipping_amount, 2) }}</li>
+                                    </ul>
+                                @endif
+
+
+                                @if ($order->shipping_amount && $order->credit_card_fee > 0)
+                                    <ul class="list-unstyled mb-2 d-flex justify-content-between">
+                                        <li>Credit Card Fee:</li>
+                                        <li>${{ number_format($order->credit_card_fee, 2) }}</li>
+                                    </ul>
+                                @endif
+
+
+
+
+                                <div class="total_payable mt-3 border-top pt-2 d-flex justify-content-between fw-bold">
+                                    <div>Total</div>
+                                    <div>${{ number_format($order->total_amount, 2) }}</div>
                                 </div>
+
                             </div>
                         </div>
+
 
                         <!-- Payment Information -->
                         @if ($order->payments->count() > 0)
@@ -163,8 +247,8 @@
                         <!-- Actions Order Cancellation button with modal confirm with note area and cancel button -->
                         <div class="order-cancellation mt-4">
                             @if (
-                                $order->status != 'cancelled' &&
-                                    $order->status != 'delivered' &&
+                                $order->status != 5 &&
+                                    $order->status != 4 &&
                                     $order->created_at->diffInDays(now()) <= optional($estoreSettings)->refund_max_days)
                                 <button type="button" class="btn btn-outline-danger w-100" data-bs-toggle="modal"
                                     data-bs-target="#cancelOrderModal">
@@ -212,10 +296,10 @@
                             @endif
                         </div>
 
-                        @if ($order->status == 'cancelled')
+                        @if ($order->status == 5)
                             <div class="alert alert-danger mt-3">
 
-                                @if ($order->refund_status === true)
+                                @if ($payment->status == 'refunded')
                                     Your order has been cancelled and refunded.
                                 @else
                                     Your order has been cancelled. Refund is being processed.
@@ -239,33 +323,19 @@
             </div>
 
             <div class="row mt-3">
-                <div class="col-lg-6">
-                    <div class="delevry-sumry shadow p-3">
-                        @php
-                            // Define the canonical progression
-                            $progression = ['pending', 'processing', 'shipped', 'delivered'];
-                            $labels = [
-                                'pending' => 'Ordered',
-                                'processing' => 'Processing',
-                                'shipped' => 'Shipped',
-                                'delivered' => 'Delivered',
-                                'cancelled' => 'Cancelled',
-                            ];
-                            $currentStatus = $order->status;
-                            if ($currentStatus === 'cancelled') {
-                                $timeline = ['pending', 'cancelled'];
-                            } else {
-                                $timeline = $progression; // full path
-                            }
-                            // Determine index of current status in its timeline
-                            $statusIndex = array_search($currentStatus, $timeline);
-                            // Fallback if status not in timeline (unexpected custom status)
-                            if ($statusIndex === false) {
-                                $timeline[] = $currentStatus;
-                                $statusIndex = array_search($currentStatus, $timeline);
-                            }
-                        @endphp
+                <div class="col-md-8">
+                    @php
+                        $labels = [
+                            // optional overrides for label text; otherwise use $status->name
+                            'pending' => 'Ordered',
+                            'processing' => 'Processing',
+                            'shipped' => 'Shipped',
+                            'delivered' => 'Delivered',
+                            'cancelled' => 'Cancelled',
+                        ];
+                    @endphp
 
+                    <div class="delevry-sumry shadow p-3">
                         <div class="info-del mb-3">
                             <h4 class="mb-1">Order Tracking</h4>
                             <p class="mb-0">Order <strong>#{{ $order->order_number }}</strong></p>
@@ -273,21 +343,23 @@
 
                         <div class="d-position mb-4">
                             <ul class="list-unstyled d-flex flex-wrap gap-3" style="row-gap:1.5rem;">
-                                @foreach ($timeline as $idx => $st)
+                                @foreach ($timelineStatuses as $idx => $status)
                                     @php
                                         $reached = $idx <= $statusIndex;
                                         $isCurrent = $idx === $statusIndex;
-                                        $cancelled = $st === 'cancelled';
+                                        $cancelled = ($status->slug ?? '') === 'cancelled';
                                         $colorClass = $cancelled
                                             ? 'btn-danger'
                                             : ($reached
-                                                ? ($st === 'delivered'
+                                                ? ($status->slug === 'delivered'
                                                     ? 'btn-success'
                                                     : ($isCurrent
                                                         ? 'btn-primary'
                                                         : 'btn-secondary'))
                                                 : 'btn-outline-secondary');
+                                        $label = $labels[$status->slug] ?? ($status->name ?? ucfirst($status->slug));
                                     @endphp
+
                                     <li class="text-center" style="min-width:90px;">
                                         <span
                                             class="btn {{ $colorClass }} rounded-circle d-inline-flex align-items-center justify-content-center"
@@ -300,40 +372,47 @@
                                         </span>
                                         <p
                                             class="mb-0 mt-2 small fw-semibold {{ $isCurrent ? 'text-primary' : 'text-muted' }}">
-                                            {{ $labels[$st] ?? ucfirst($st) }}</p>
+                                            {{ $label }}
+                                        </p>
                                     </li>
                                 @endforeach
                             </ul>
                         </div>
 
                         @php
-                            // Basic detail lines (without a status history table available we only show key data points)
                             $createdAt = $order->created_at;
-                            $deliveredAt = $order->status === 'delivered' ? $order->updated_at : null; // approximation
+                            // if you have a status history table use that; otherwise approximate
+                            $deliveredAt = $order->expected_delivery_date ?? null;
                         @endphp
 
                         <div class="d-details">
+                            @if ($deliveredAt && $order->status != 5 )
+                                <div
+                                    style="margin-top:15px;margin-bottom:5px; padding:10px 15px; border-left:4px solid #0d6efd; background:#f8f9fa; border-radius:5px; display:inline-block;">
+                                    <h6 style="margin:0; font-size:14px; color:#495057;">
+                                        <strong style="color:#0d6efd;">Expected Delivery Date:</strong>
+                                        <span style="font-weight:bold; color:#212529;">
+                                            {{ \Carbon\Carbon::parse($deliveredAt)->format('M d, Y') }}
+                                        </span>
+                                    </h6>
+                                </div>
+                            @endif
+
                             <h5 class="h6 mb-1">Current Status: <span
-                                    class="fw-bold">{{ $labels[$currentStatus] ?? ucfirst($currentStatus) }}</span></h5>
+                                    class="fw-bold">{{ $order->orderStatus->name ?? ucfirst($order->status) }}</span>
+                            </h5>
                             <p class="mb-2 small text-muted">Last updated {{ $order->updated_at->format('M d, Y h:i A') }}
                             </p>
                             <ul class="list-unstyled small mb-0">
                                 <li>Placed: <strong>{{ $createdAt->format('M d, Y h:i A') }}</strong></li>
-                                @if ($deliveredAt)
-                                    <li>Delivered: <strong>{{ $deliveredAt->format('M d, Y h:i A') }}</strong></li>
-                                @endif
-                                @if ($currentStatus === 'cancelled')
+
+                                @if (($order->orderStatus->slug ?? $order->status) === 'cancelled')
                                     <li class="text-danger">Order was cancelled.</li>
                                 @endif
                             </ul>
                         </div>
-                        @if ($currentStatus === 'cancelled' && $order->refund_status !== null)
-                            <div
-                                class="alert mt-3 {{ $order->refund_status ? 'alert-success' : 'alert-warning' }} p-2 mb-0">
-                                {{ $order->refund_status ? 'Refund processed.' : 'Refund pending.' }}
-                            </div>
-                        @endif
                     </div>
+
 
 
                 </div>

@@ -18,10 +18,14 @@ use App\Models\User;
 use App\Models\WarehouseProductImage;
 use App\Models\EcomWishList;
 use App\Models\EstoreCart;
+use App\Models\ProductOtherCharge;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationImage;
+use App\Models\Review;
 use App\Models\WarehouseProductVariation;
-
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 class ProductController extends Controller
 {
     use ImageTrait;
@@ -109,6 +113,46 @@ class ProductController extends Controller
         }
     }
 
+    public function checkSlug(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+    ]);
+
+    $base = Str::slug($request->name);
+
+    // fallback when slug becomes empty (e.g. name had only special chars)
+    if (empty($base)) {
+        $base = Str::random(8);
+    }
+
+    // Get all slugs that start with base (including base itself)
+    $existing = Product::where('slug', 'LIKE', $base . '%')
+                ->pluck('slug') // collection of strings
+                ->toArray();
+
+    // if base doesn't exist, return it immediately
+    if (! in_array($base, $existing)) {
+        return response()->json(['slug' => $base]);
+    }
+
+    // find max numeric suffix
+    $max = 0;
+    $pattern = '/^' . preg_quote($base, '/') . '-(\d+)$/';
+    foreach ($existing as $s) {
+        if (preg_match($pattern, $s, $m)) {
+            $num = (int) $m[1];
+            if ($num > $max) $max = $num;
+        }
+    }
+
+    $newSlug = $base . '-' . ($max + 1);
+
+    return response()->json(['slug' => $newSlug]);
+}
+
+
+
     /**
      * Show the form for creating a new resource.
      *
@@ -144,52 +188,109 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // try {
-        $validatedData = $request->validate([
-            'category_id' => 'required|numeric|exists:categories,id',
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            // 'short_description' => 'required|string',
-            'specification' => 'required|string',
-            // 'price' => 'required|numeric',
-            'feature_product' => 'required',
-            'slug' => 'required|string|unique:products',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
-            'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
-            'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
+        // Base rules
+        $rules = [
+            'category_id'       => 'required|numeric|exists:categories,id',
+            'name'              => 'required|string|max:255',
+            'description'       => 'required|string',
+            'specification'     => 'required|string',
+            'feature_product'   => 'required|in:0,1',
+            'slug'              => 'required|string|unique:products,slug|regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+            'image'             => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            'background_image'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            // gallery: at least 1 image (your form label requires at least 1)
+            'images'            => 'nullable|array|min:1',
+            'images.*'          => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
+            // product type
+            'product_type'      => 'required|in:simple,variable',
+            // toggles
+            'is_free'           => 'nullable|in:0,1',
+            'status'            => 'nullable|in:0,1',
+            // other charges (if present)
+            'other_charges' => 'nullable|array',
+            'other_charges.*.charge_name' => 'nullable|string|max:255',
+            'other_charges.*.charge_amount' => 'nullable|numeric|min:0', // base rule
 
-            // // Warehouse product validation
-            // 'warehouse_products' => 'nullable|array',
-            // 'warehouse_products.*.warehouse_id' => 'required|exists:ware_houses,id',
-            // 'warehouse_products.*.sku' => 'required|string|distinct|unique:warehouse_products,sku',
-            // 'warehouse_products.*.price' => 'required|numeric|min:0',
-            // 'warehouse_products.*.color_id' => 'nullable|exists:colors,id',
-            // 'warehouse_products.*.size_id' => 'nullable|exists:sizes,id',
-            // 'warehouse_products.*.quantity' => 'required|integer|min:0',
-            // 'warehouse_products.*.images' => 'nullable|array',
-            // 'warehouse_products.*.images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
-        ], [
+        ];
+
+
+
+        // Conditional rules for simple product
+        if ($request->input('product_type', 'simple') === 'simple') {
+            // If product is marked free, price may be nullable (we'll set 0 server-side).
+            if ($request->boolean('is_free')) {
+                $rules['price'] = 'nullable|numeric|min:0';
+            } else {
+                $rules['price'] = 'required|numeric|min:0';
+            }
+
+            // SKU and quantity always required for simple product
+            $rules['sku'] = 'required|string|max:255|unique:products,sku';
+            $rules['quantity'] = 'required|integer|min:0';
+        }
+
+        // Conditional rules for variable product
+        if ($request->input('product_type') === 'variable') {
+            // Require at least one size or one color for variations (adjust as your logic)
+            $rules['sizes'] = 'required|array|min:1';
+            $rules['sizes.*'] = 'integer|exists:sizes,id';
+
+            // if you use colors for variable product uncomment/adjust:
+            // $rules['colors'] = 'nullable|array';
+            // $rules['colors.*'] = 'integer|exists:colors,id';
+
+            // For variable products we don't require simple fields
+            // ensure sku/price/quantity are not required here (they belong to variations)
+        }
+
+        // Custom messages
+        $messages = [
             'category_id.required' => 'The category field is required.',
             'category_id.exists' => 'The selected category is invalid.',
             'name.required' => 'The product name field is required.',
             'description.required' => 'The description field is required.',
-            // 'short_description.required' => 'The short description field is required.',
             'specification.required' => 'The specification field is required.',
             'feature_product.required' => 'The feature product field is required.',
             'slug.required' => 'The slug field is required.',
             'slug.unique' => 'The slug has already been taken.',
+            'slug.regex' => 'The slug may only contain lowercase letters, numbers, and hyphens, without spaces.',
             'image.required' => 'The featured image field is required.',
-        ]);
+            'images.required' => 'Please upload at least one gallery image.',
+            'images.min' => 'Please upload at least one gallery image.',
+            'price.required' => 'The price field is required for simple products (unless marked free).',
+            'sku.required' => 'The SKU field is required for simple products.',
+            'sku.unique' => 'The SKU has already been taken.',
+            'quantity.required' => 'The stock quantity is required for simple products.',
+            'sizes.required' => 'Please select at least one size for variable products.',
+            'other_charges.*.charge_name.required_with' => 'Charge name is required when adding other charges.',
+            'other_charges.*.charge_amount.required_with' => 'Charge amount is required when adding other charges.',
+            'other_charges.*.charge_amount.min' => 'Charge amount must be at least 0.',
+            'product_type.required' => 'The product type field is required.',
+            'product_type.in' => 'The selected product type is invalid.',
+        ];
 
-        if ($request->product_type == 'simple') {
+        // Run validator (returns JSON errors for AJAX)
+        $validator = Validator::make($request->all(), $rules, $messages);
 
-            // validate input of price, unique sku and quantity
-            $request->validate([
-                'price' => 'required|numeric|min:0',
-                'sku' => 'required|string|max:255|unique:products,sku',
-                'quantity' => 'required|integer|min:0',
-            ]);
+        $validator->sometimes('other_charges.*.charge_amount', 'required', function ($input, $itemKey) {
+            // $input->other_charges is an array
+            foreach ($input->other_charges as $index => $charge) {
+                if (!empty($charge['charge_name'])) {
+                    // charge_amount is required if charge_name is filled
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        $validator->validate();
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
+
+        // Validation passed - get validated data
+        $validatedData = $validator->validated();
 
         $product = new Product();
         $product->category_id = $request->category_id;
@@ -212,11 +313,6 @@ class ProductController extends Controller
             $product->sale_price = null;
         }
 
-        // if ($request->has('is_new_product')) {
-        //     $product->is_new_product = true;
-        // } else {
-        //     $product->is_new_product = false;
-        // }
 
         // background_image
         if ($request->hasFile('background_image')) {
@@ -269,43 +365,8 @@ class ProductController extends Controller
                 }
             }
         }
-
-        // Save warehouse products
-        // if ($request->filled('warehouse_products')) {
-        //     foreach ($request->warehouse_products as $warehouseProduct) {
-        //         if (!empty($warehouseProduct['warehouse_id'])) {
-        //             $theWarehouseProduct = WarehouseProduct::create([
-        //                 'product_id' => $product->id,
-        //                 'warehouse_id' => $warehouseProduct['warehouse_id'],
-        //                 'sku' => $warehouseProduct['sku'],
-        //                 'price' => $warehouseProduct['price'],
-        //                 'color_id' => $warehouseProduct['color_id'] ?? null,
-        //                 'size_id' => $warehouseProduct['size_id'] ?? null,
-        //                 'quantity' => $warehouseProduct['quantity'],
-        //             ]);
-
-        //             // Save warehouse product images
-        //             if (!empty($warehouseProduct['images'])) {
-        //                 foreach ($warehouseProduct['images'] as $file) {
-        //                     $wpImage = new WarehouseProductImage();
-        //                     $wpImage->warehouse_product_id = $theWarehouseProduct->id;
-        //                     $wpImage->image_path = $this->imageUpload($file, 'warehouse_product');
-        //                     $wpImage->save();
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
         // if product_type is simple then direct create product variation without color and sizes
         if ($product->product_type == 'simple') {
-
-            // // validate input of price, unique sku and quantity
-            // $request->validate([
-            //     'price' => 'required|numeric|min:0',
-            //     'sku' => 'required|string|max:255|unique:products,sku,' . $product->id,
-            //     'quantity' => 'required|integer|min:0',
-            // ]);
 
             $variation = new ProductVariation();
             $variation->product_id = $product->id;
@@ -333,6 +394,7 @@ class ProductController extends Controller
             } else {
                 $warehouses = auth()->user()->warehouses;
             }
+
             foreach ($warehouses as $warehouse) {
                 $wpv = new WarehouseProductVariation();
                 $wpv->product_variation_id = $variation->id;
@@ -371,8 +433,11 @@ class ProductController extends Controller
         // notify users
         $userName = Auth::user()->getFullNameAttribute();
         $noti = NotificationService::notifyAllUsers('New Product created by ' . $userName, 'product');
-
-        return redirect()->route('products.index')->with('message', 'Product created successfully!');
+        session()->flash('message', 'Product created successfully!');
+        return response()->json([
+            'message' => 'Product created successfully!',
+            'product' => $product
+        ], 200);
         // } catch (\Exception $e) {
         //     return redirect()->back()->with('error', 'Failed to create product: ' . $e->getMessage())->withInput();
         // }
@@ -430,41 +495,93 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $product = Product::findOrFail($id);
         // return $request->all();
         if (auth()->user()->can('Edit Estore Products') || auth()->user()->isWarehouseAdmin()) {
-            $request->validate([
-                // 'category_id' => 'required|numeric|exists:categories,id',
-                // 'name' => 'required|string|max:255',
-                // 'description' => 'required|string',
-                // 'short_description' => 'required|string',
-                // 'specification' => 'required|string',
-                // 'price' => 'required|numeric',
-                // 'slug' => 'required|string|unique:products,slug,' . $id,
-                // 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
-                // 'images' => 'nullable|array',
-                // 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
-                // 'feature_product' => 'required',
-                // 'status' => 'required',
+            $rules = [
+                'category_id'      => 'required|numeric|exists:categories,id',
+                'name'             => 'required|string|max:255',
+                'description'      => 'required|string',
+                'specification'    => 'required|string',
+                'feature_product'  => 'required|in:0,1',
+                'slug'             => [
+                    'required',
+                    'string',
+                    Rule::unique('products', 'slug')->ignore($product->id),
+                    'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+                ],
+                'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+                'background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+                'images'           => 'nullable|array|min:1',
+                'images.*'         => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
+                'product_type'     => 'required|in:simple,variable',
+                'is_free'          => 'nullable|in:0,1',
+                'status'           => 'nullable|in:0,1',
+                // other charges (if present)
+                'other_charges'             => 'nullable|array',
+                'other_charges.*.charge_name' => 'nullable|string|max:255',
+                'other_charges.*.charge_amount' => 'nullable|numeric|min:0',
+            ];
 
-                // // Warehouse product validation
-                // 'warehouse_products' => 'nullable|array',
-                // 'warehouse_products.*.id' => 'nullable|exists:warehouse_products,id',
-                // 'warehouse_products.*.warehouse_id' => 'required|exists:ware_houses,id',
-                // 'warehouse_products.*.sku' => 'required|string|distinct',
-                // 'warehouse_products.*.price' => 'required|numeric|min:0',
-                // 'warehouse_products.*.color_id' => 'nullable|exists:colors,id',
-                // 'warehouse_products.*.size_id' => 'nullable|exists:sizes,id',
-                // 'warehouse_products.*.quantity' => 'required|integer|min:0',
-                // 'warehouse_products.*.images' => 'nullable|array',
-                // 'warehouse_products.*.images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
+            // Conditional rules for simple product
+            // if ($product->product_type === 'simple') {
+            //     if ($request->boolean('is_free')) {
+            //         $rules['price'] = 'nullable|numeric|min:0';
+            //     } else {
+            //         $rules['price'] = 'required|numeric|min:0';
+            //     }
+            //     $rules['sku'] = [
+            //         'required',
+            //         'string',
+            //         'max:255',
+            //         Rule::unique('products', 'sku')->ignore($product->id),
+            //     ];
+            //     $rules['quantity'] = 'required|integer|min:0';
+            // }
 
-                // // Other charges validation
-                // 'other_charges' => 'nullable|array',
-                // 'other_charges.*.charge_name' => 'nullable|string|max:255',
-                // 'other_charges.*.charge_amount' => 'nullable|numeric|min:0',
-            ]);
+            // Conditional rules for variable product
+            if ($product->product_type === 'variable') {
+                $rules['sizes'] = 'required|array|min:1';
+                $rules['sizes.*'] = 'integer|exists:sizes,id';
+            }
 
-            $product = Product::findOrFail($id);
+            $messages = [
+                'category_id.required' => 'The category field is required.',
+                'category_id.exists' => 'The selected category is invalid.',
+                'name.required' => 'The product name field is required.',
+                'description.required' => 'The description field is required.',
+                'specification.required' => 'The specification field is required.',
+                'feature_product.required' => 'The feature product field is required.',
+                'slug.required' => 'The slug field is required.',
+                'slug.unique' => 'The slug has already been taken.',
+                'slug.regex' => 'The slug may only contain lowercase letters, numbers, and hyphens, without spaces.',
+                'image.required' => 'The featured image field is required.',
+                'images.min' => 'Please upload at least one gallery image.',
+                'sizes.required' => 'Please select at least one size for variable products.',
+                'other_charges.*.charge_amount.min' => 'Charge amount must be at least 0.',
+                'other_charges.*.charge_amount.required_with' => 'Charge amount is required when adding other charges.',
+                'other_charges.*.charge_name.required_with' => 'Charge name is required when adding other charges.',
+                'product_type.required' => 'The product type field is required.',
+                'product_type.in' => 'The selected product type is invalid.',
+            ];
+
+            $validator = Validator::make($request->all(), $rules, $messages);
+
+            // Make charge_amount required if charge_name is present
+            $validator->sometimes('other_charges.*.charge_amount', 'required', function ($input) {
+                if (!empty($input->other_charges) && is_array($input->other_charges)) {
+                    foreach ($input->other_charges as $charge) {
+                        if (!empty($charge['charge_name'])) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            });
+
+            $validatedData = $validator->validate(); // throws 422 if fails
+
+
             $product->category_id = $request->category_id;
             $product->name = $request->name;
             $product->description = $request->description;
@@ -481,6 +598,16 @@ class ProductController extends Controller
             $product->is_free = $request->has('is_free');
             if ($product->is_free) {
                 $product->price = 0;
+                ProductVariation::where('product_id', $product->id)->update([
+                    'price' => 0,
+                    'sale_price' => null,
+                    'before_sale_price' => null,
+                ]);
+
+                WarehouseProduct::where('product_id', $product->id)->update([
+                    'price' => 0,
+                    'before_sale_price' => null,
+                ]);
             }
 
 
@@ -609,6 +736,10 @@ class ProductController extends Controller
 
             EcomWishList::where('product_id', $product->id)->delete();
             EstoreCart::where('product_id', $product->id)->delete();
+            Review::where('product_id', $product->id)->delete();
+            ProductOtherCharge::where('product_id', $product->id)->delete();
+            ProductVariation::where('product_id', $product->id)->delete();
+            WarehouseProductVariation::where('product_id', $product->id)->delete();
 
             return redirect()->route('products.index')->with('message', 'Product deleted successfully!');
         } else {

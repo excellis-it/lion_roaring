@@ -1,10 +1,11 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
+            <th><input type="checkbox" id="select-all"></th>
             <th>#</th>
             <th>Order Number</th>
             <th>Warehouse</th>
-            <th>Customer</th>
+            <th>Customer </th>
             <th>Contact</th>
             <th>Items</th>
             <th>Total Amount</th>
@@ -17,6 +18,9 @@
     <tbody>
         @forelse($orders as $index => $order)
             <tr>
+                <td>
+                    <input type="checkbox" class="order-checkbox" value="{{ $order->id }}">
+                </td>
                 <td>{{ $index + 1 }}</td>
                 <td>
                     <strong>{{ $order->order_number }}</strong>
@@ -27,7 +31,7 @@
                 <td>
                     <div>
                         <strong>{{ $order->full_name }}</strong><br>
-                        <small class="text-muted">{{ $order->user->user_name ?? 'N/A' }}</small>
+                        <small class="text-muted">{{ $order->user->user_name ?? '-' }}</small>
                     </div>
                 </td>
                 <td>
@@ -44,7 +48,7 @@
                 </td>
                 <td>
                     <span class=" {{ $order->status_badge_class }}">
-                        {{ ucfirst($order->status) }}
+                        {{ ucfirst($order->orderStatus->name ?? '-') }}
                     </span>
                 </td>
                 <td>
@@ -82,7 +86,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="10" class="text-center">
+                <td colspan="12" class="text-center">
                     <div class="py-4">
                         <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                         <h5 class="text-muted">No orders found</h5>

@@ -58,7 +58,7 @@
                                     <label for="image"> Page Banner Image *</label>
                                     <input type="file" name="page_banner_image" id="image" class="form-control"
                                         value="{{ old('page_banner_image') }}">
-                                    <span class="text-sm ms-2 text-muted">(width: 1920px, height: 520px, max 2MB)</span>
+                                    <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 1920px, height: 520px, max 2MB)</span>
                                     @if ($errors->has('page_banner_image'))
                                         <span class="error">{{ $errors->first('page_banner_image') }}</span>
                                     @endif
@@ -245,11 +245,13 @@
                     if (!existingPageBannerImage && !hasFile) {
                         addClientError($bannerInput, 'Banner image is required (existing or new).');
                         errors.push($bannerInput);
-                    } else if (hasFile) {
-                        var ok = await validateImageFile(bannerInputEl.files[0], 2 * 1024 * 1024, 1920, 520,
-                            $bannerInput, 'Banner image');
-                        if (!ok) errors.push($bannerInput);
                     }
+
+                    // else if (hasFile) {
+                    //     var ok = await validateImageFile(bannerInputEl.files[0], 2 * 1024 * 1024, 1920, 520,
+                    //         $bannerInput, 'Banner image');
+                    //     if (!ok) errors.push($bannerInput);
+                    // }
 
                     if (errors.length) {
                         var $first = errors[0];

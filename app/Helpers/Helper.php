@@ -30,6 +30,7 @@ use App\Models\SiteSetting;
 use GuzzleHttp\Client;
 use App\Models\WareHouse;
 use App\Models\EstoreCart;
+use App\Models\GlobalImage;
 use Illuminate\Support\Facades\Route;
 
 class Helper
@@ -195,7 +196,7 @@ class Helper
 
     public static function getRatingCount($product_id)
     {
-        $rating_count = Review::where('product_id', $product_id)->count();
+        $rating_count = Review::where('product_id', $product_id)->where('status', 2)->count();
         return $rating_count;
     }
 
@@ -619,4 +620,11 @@ class Helper
         // Final fallback to static asset
         return asset($defaultAsset);
     }
+
+    public static function getOriginalImage($compressedPath)
+    {
+        $image = GlobalImage::where('compressed_path', $compressedPath)->first();
+        return $image ? $image->original_path : null;
+    }
+
 }

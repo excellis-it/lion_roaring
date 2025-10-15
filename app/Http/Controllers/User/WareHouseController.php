@@ -474,6 +474,14 @@ class WareHouseController extends Controller
     // selectWarehouseVariationStock
     public function selectWarehouseVariationStock(Request $request)
     {
+        if (!$request->auto_load) {
+            $validated = $request->validate([
+                'color_id' => 'required|array|min:1',
+                'color_id.*' => 'exists:colors,id',
+            ]);
+        }
+
+
         // return $request->all();
         $warehouseId = $request->input('warehouseId');
         $productId = $request->input('productId');

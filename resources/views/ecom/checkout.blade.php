@@ -151,7 +151,10 @@
                                     @foreach ($cartItems as $item)
                                         <ul>
                                             <li>{{ $item['product_name'] }} ({{ $item['quantity'] }}x)</li>
-                                            <li>${{ number_format($item['subtotal'], 2) }}</li>
+                                            @php
+                                                $new_subtotal = $item['price'] * $item['quantity'];
+                                            @endphp
+                                            <li>${{ number_format($new_subtotal, 2) }}</li>
                                         </ul>
                                         @if ($item['other_charges'] > 0)
                                             <ul class="text-muted small">

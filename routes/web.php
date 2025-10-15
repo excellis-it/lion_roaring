@@ -85,6 +85,8 @@ use App\Http\Controllers\User\ColorController;
 use App\Http\Controllers\User\SizeController;
 use App\Http\Controllers\User\EstorePromoCodeController;
 use App\Http\Controllers\User\EstoreSettingController;
+use App\Http\Controllers\User\OrderEmailTemplateController;
+use App\Http\Controllers\User\OrderStatusController;
 use App\Http\Controllers\User\WareHouseController;
 use App\Http\Controllers\User\WarehouseAdminController;
 
@@ -470,6 +472,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         'ecclesias' => EcclesiaContorller::class,
         'jobs' => JobpostingController::class,
         'meetings' => MeetingSchedulingController::class,
+        'order-status' => OrderStatusController::class,
+        'order-email-templates' => OrderEmailTemplateController::class,
         // 'meetings' => MeetingSchedulingController::class,
     ]);
 
@@ -495,6 +499,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
     Route::get('/warehouse-product-image-delete', [ProductController::class, 'warehouseImageDelete'])->name('warehouse-product.image.delete');
     Route::get('/products-fetch-data', [ProductController::class, 'fetchData'])->name('products.fetch-data');
+    Route::post('/products-slug-check', [ProductController::class, 'checkSlug'])->name('products.slug.check');
+
+
     Route::get('/categories-fetch-data', [CategoryController::class, 'fetchData'])->name('categories.fetch-data');
     Route::prefix('categories')->group(function () {
         Route::get('/category-delete/{id}', [CategoryController::class, 'delete'])->name('categories.delete');
@@ -521,7 +528,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/store-orders/details/{id}', [EstoreCmsController::class, 'orderDetails'])->name('user.store-orders.details');
     Route::post('/store-orders/update-status', [EstoreCmsController::class, 'updateOrderStatus'])->name('user.store-orders.update-status');
     Route::delete('/store-orders/delete/{id}', [EstoreCmsController::class, 'deleteOrder'])->name('user.store-orders.delete');
-    Route::get('/store-orders/export', [EstoreCmsController::class, 'exportOrders'])->name('user.store-orders.export');
+    Route::post('/store-orders/export', [EstoreCmsController::class, 'exportOrders'])->name('user.store-orders.export');
+    // Route::post('/orders-export', [EstoreCmsController::class, 'export'])->name('user.store-orders.export');
+
     // routes/web.php
     Route::get('/orders/{order}/invoice', [EstoreCmsController::class, 'downloadInvoice'])
         ->name('user.store-orders.invoice');
@@ -597,7 +606,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::put('/warehouse-colors/{id}', [WarehouseAdminController::class, 'updateColor'])->name('warehouse-admin.colors.update');
     Route::get('/warehouse-colors/{id}/delete', [WarehouseAdminController::class, 'deleteColor'])->name('warehouse-admin.colors.delete');
 
-    Route::get('/estore-users-list', [PartnerController::class, 'estoreUsers'])->name('estore-users.list');
+    // Route::get('/estore-users-list', [PartnerController::class, 'estoreUsers'])->name('estore-users.list');
     // estore-users.fetch-data
     Route::get('/estore-users-fetch-data', [PartnerController::class, 'estoreFetchData'])->name('estore-users.fetch-data');
 

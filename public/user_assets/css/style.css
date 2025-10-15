@@ -2315,7 +2315,6 @@ section {
         transform: rotate(360deg);
     }
 }
-
 /* end loader */
 .message-wrap ul {
     padding: 0;
@@ -2329,15 +2328,11 @@ section {
     cursor: pointer;
     padding-left: .5rem;
     padding-right: .5rem;
-
-
 }
 .message-wrap ul li a:hover{
     background-color: #643271;
     color: #fff;
 }
-
-
 .emailRow__title
 {
     display: inline-block;
@@ -2346,31 +2341,24 @@ section {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-
 .text-blue{
     color: #643271;
 }
-
 .table-center-align .table td, .table-center-align .table th{
     vertical-align: middle !important;
 }
-
 .member-table td
 {
     border-bottom: 0px !important;
     border-right: 0px !important;
     border-left: 0px !important;
 }
-
 .member-table th
 {
     border-bottom: 0px !important;
     border-right: 0px !important;
     border-left: 0px !important;
 }
-
-
-
 .chatbot-container {
     position: fixed;
     bottom: 20px;
@@ -2462,7 +2450,6 @@ section {
   .chatbox-footer button:hover {
     background-color: #643271;
   }
-
   .chatbot-message {
     max-width: 70%;
     margin-bottom: 10px;
@@ -2472,18 +2459,15 @@ section {
     align-items: center;
     clear: both;
   }
-
   .chatbot-bot-message {
     background-color: #e0e0e0;
     align-self: flex-start;
     float: left;
     margin-right: 15px;
   }
-
   .chatbot-bot-message p{
     margin-bottom: 0px !important;
   }
-
   .chatbot-bot-message-lable {
     align-self: flex-start;
     float: left;
@@ -2491,7 +2475,6 @@ section {
     color: slategrey;
     font-size: 12px;
   }
-
   .chatbot-user-message {
     background-color: #643271;
     color: white;
@@ -2499,11 +2482,9 @@ section {
     float: right;
     margin-left: 15px;
   }
-
   .chatbot-user-message p{
     margin-bottom: 0px !important;
   }
-
   @keyframes slideIn {
     from {
       transform: translateY(100%);
@@ -2512,25 +2493,36 @@ section {
       transform: translateY(0);
     }
   }
-
-
 .ecclesia-see-button {
     height: 20px;
     font-size: 10px;
     padding: 0px 5px 0px 5px;
 }
-
-
 .required-star {
     color: red;
 }
-
 /* // tooltip color and background color  */
-
 .tooltip-inner {
     background-color: #572b62 !important;
     color: #fff !important;
     font-size: 12px;
     padding: 5px 10px;
     border-radius: 5px;
+}
+
+.swal2-icon-content{
+    font-size: 0.75em !important;
+}
+
+.text-danger{
+    color: red !important;
+}
+.emailRow__options input{
+    display: none;
+}
+.emailRow__options .material-symbols-outlined{
+    margin-left: 5px;
+}
+.emailList__settings input{
+    display: none;
 }
