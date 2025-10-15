@@ -1068,7 +1068,6 @@ p {
 section {
     box-shadow: var(--box-shadow);
     width: 100%;
-
     border-radius: 10px;
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
@@ -1077,8 +1076,7 @@ section {
     display: flex;
     flex-direction: column;
     border: 1px solid #ffffff21;
-
-    overflow: auto;
+    overflow-x: hidden;
 }
 
 .SearchInputHolder {
