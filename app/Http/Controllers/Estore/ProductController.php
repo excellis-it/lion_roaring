@@ -186,7 +186,7 @@ class ProductController extends Controller
         } else {
             $category = null;
         }
-        $products = $products->orderBy('id', 'DESC')->limit(12)->lazy();
+        $products = $products->orderBy('id', 'DESC')->limit(12)->get();
         // dd($products);
 
         $products_count  = $products->count();
@@ -216,6 +216,8 @@ class ProductController extends Controller
             $prices = $request->prices ?? [];
             $latest_filter = $request->latestFilter ?? '';
             $search = $request->search ?? '';
+
+
 
             $nearbyWareHouseId = Warehouse::first()->id;
             $originLat = null;
@@ -301,7 +303,9 @@ class ProductController extends Controller
             }
 
             // Get the total count of filtered products
-            $products_count = $products->count();
+            // $products_count = $products->count();
+            $productsCountQuery = clone $products;
+            $products_count = $productsCountQuery->count();
 
             // Get the paginated products
             $products = $products->skip($offset)
