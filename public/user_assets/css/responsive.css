@@ -176,6 +176,24 @@
     .bg-white{
         margin-top: 5px;
     }
+
+    
+
+
+    .sideNav2{
+        width: 83%;
+        position: absolute;
+        z-index: 1;
+    }
+.sideNav2.hidden {
+  transform: translateX(-100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: .2s;
+}
+.btn.btn-light{
+    display: block !important;
+}
 }
 
 @media (max-width:768px){
@@ -231,6 +249,7 @@
     .groupChatHead{
         display: block;
     }
+
 }
 
 @media (max-width:767px){
@@ -465,9 +484,10 @@ input{
         height: auto !important;
     }
     
-    .sideNav2{
-        width: 100%;
-    }
+
+
+
+
     .sidebar__compose{
         position: fixed;
         z-index: 11;
