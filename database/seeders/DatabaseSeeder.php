@@ -24,8 +24,12 @@ class DatabaseSeeder extends Seeder
             // StatesTableSeeder::class,
             // AddStrategyPermission::class,
             // AdminPanelRolePermissionSeeder::class,
-            OrderStatusAndEmailTemplateSeeder::class,
-            AddOrderStatusTemplatePermission::class,
+            // OrderStatusAndEmailTemplateSeeder::class,
+            // AddOrderStatusTemplatePermission::class,
+            // CompressCategoryImagesSeeder::class,
+            // HomeCmsImageSeeder::class,
+            ProductImageSeeder::class,
+            VariationImageSeeder::class
         ]);
     }
 }

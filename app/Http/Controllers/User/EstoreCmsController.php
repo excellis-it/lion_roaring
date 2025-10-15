@@ -154,7 +154,7 @@ class EstoreCmsController extends Controller
                         ];
                         // Handle image upload
                         if (isset($images[$index])) {
-                            $slideData['image'] = $this->imageUpload($images[$index], 'slider_images');
+                            $slideData['image'] = $this->imageUpload($images[$index], 'slider_images', true);
                         } elseif (isset($existingSliders[$index]['image'])) {
                             // Keep existing image if no new image uploaded
                             $slideData['image'] = $existingSliders[$index]['image'];
@@ -193,7 +193,7 @@ class EstoreCmsController extends Controller
                         ];
                         // Handle image upload
                         if (isset($images[$index])) {
-                            $slideDataSecond['image'] = $this->imageUpload($images[$index], 'slider_images');
+                            $slideDataSecond['image'] = $this->imageUpload($images[$index], 'slider_images', true);
                         } elseif (isset($existingSliders[$index]['image'])) {
                             // Keep existing image if no new image uploaded
                             $slideDataSecond['image'] = $existingSliders[$index]['image'];
@@ -213,11 +213,11 @@ class EstoreCmsController extends Controller
             $cms->shop_now_description = $request->shop_now_description;
             $cms->shop_now_button_text = $request->shop_now_button_text;
             $cms->shop_now_button_link = $request->shop_now_button_link;
-            $cms->shop_now_image = $request->hasFile('shop_now_image') ? $this->imageUpload($request->file('shop_now_image'), 'ecom_cms') : $cms->shop_now_image;
+            $cms->shop_now_image = $request->hasFile('shop_now_image') ? $this->imageUpload($request->file('shop_now_image'), 'ecom_cms', true) : $cms->shop_now_image;
 
             ///////// section 6: About Section Management //////////
             $cms->about_section_title = $request->about_section_title;
-            $cms->about_section_image = $request->hasFile('about_section_image') ? $this->imageUpload($request->file('about_section_image'), 'ecom_cms') : $cms->about_section_image;
+            $cms->about_section_image = $request->hasFile('about_section_image') ? $this->imageUpload($request->file('about_section_image'), 'ecom_cms', true) : $cms->about_section_image;
             $cms->about_section_text_one_title = $request->about_section_text_one_title;
             $cms->about_section_text_one_content = $request->about_section_text_one_content;
             $cms->about_section_text_two_title = $request->about_section_text_two_title;
@@ -236,22 +236,22 @@ class EstoreCmsController extends Controller
 
 
             if ($request->hasFile('banner_image')) {
-                $cms->banner_image = $this->imageUpload($request->file('banner_image'), 'ecom_cms');
+                $cms->banner_image = $this->imageUpload($request->file('banner_image'), 'ecom_cms', true);
             }
             if ($request->hasFile('banner_image_small')) {
-                $cms->banner_image_small = $this->imageUpload($request->file('banner_image_small'), 'ecom_cms');
+                $cms->banner_image_small = $this->imageUpload($request->file('banner_image_small'), 'ecom_cms', true);
             }
             if ($request->hasFile('product_category_image')) {
-                $cms->product_category_image = $this->imageUpload($request->file('product_category_image'), 'ecom_cms');
+                $cms->product_category_image = $this->imageUpload($request->file('product_category_image'), 'ecom_cms', true);
             }
             if ($request->hasFile('featured_product_image')) {
-                $cms->featured_product_image = $this->imageUpload($request->file('featured_product_image'), 'ecom_cms');
+                $cms->featured_product_image = $this->imageUpload($request->file('featured_product_image'), 'ecom_cms', true);
             }
             if ($request->hasFile('new_product_image')) {
-                $cms->new_product_image = $this->imageUpload($request->file('new_product_image'), 'ecom_cms');
+                $cms->new_product_image = $this->imageUpload($request->file('new_product_image'), 'ecom_cms', true);
             }
             if ($request->hasFile('new_arrival_image')) {
-                $cms->new_arrival_image = $this->imageUpload($request->file('new_arrival_image'), 'ecom_cms');
+                $cms->new_arrival_image = $this->imageUpload($request->file('new_arrival_image'), 'ecom_cms', true);
             }
 
             $cms->save();
@@ -340,7 +340,7 @@ class EstoreCmsController extends Controller
             $cms->page_content = $request->page_content;
             $cms->slug = $request->slug;
             if ($request->hasFile('page_banner_image')) {
-                $cms->page_banner_image = $this->imageUpload($request->file('page_banner_image'), 'ecom_cms');
+                $cms->page_banner_image = $this->imageUpload($request->file('page_banner_image'), 'ecom_cms', true);
             }
 
             $cms->save();
@@ -370,7 +370,7 @@ class EstoreCmsController extends Controller
             $cms->page_content = $request->page_content;
             $cms->slug = $request->slug;
             if ($request->hasFile('page_banner_image')) {
-                $cms->page_banner_image = $this->imageUpload($request->file('page_banner_image'), 'ecom_cms');
+                $cms->page_banner_image = $this->imageUpload($request->file('page_banner_image'), 'ecom_cms', true);
             }
 
             $cms->save();
@@ -1268,7 +1268,7 @@ class EstoreCmsController extends Controller
 
         if ($request->hasFile('banner_image')) {
             if (method_exists($this, 'imageUpload')) {
-                $cms->banner_image = $this->imageUpload($request->file('banner_image'), 'ecom_cms');
+                $cms->banner_image = $this->imageUpload($request->file('banner_image'), 'ecom_cms', true);
             } else {
                 $path = $request->file('banner_image')->store('ecom_cms', 'public');
                 $cms->banner_image = $path;

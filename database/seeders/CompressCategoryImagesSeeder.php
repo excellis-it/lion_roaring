@@ -1,19 +1,68 @@
 <?php
 
-namespace App\Traits;
+namespace Database\Seeders;
 
+use Illuminate\Database\Seeder;
+use App\Models\Category;
 use App\Models\GlobalImage;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
 
-trait ImageTrait
+class CompressCategoryImagesSeeder extends Seeder
 {
     /**
-     * @param Request $request
-     * @return $this|false|string
+     * Run the database seeds.
      */
-    public function imageUpload($file, $path, $compress = true)
+    public function run(): void
+    {
+        $categories = Category::whereNotNull('image')->get();
+
+        foreach ($categories as $category) {
+            // Handle main category image
+            if ($category->image && Storage::disk('public')->exists($category->image)) {
+                $this->compressAndUpdateImage($category, 'image');
+            }
+
+            // Handle background image (if any)
+            if ($category->background_image && Storage::disk('public')->exists($category->background_image)) {
+                $this->compressAndUpdateImage($category, 'background_image');
+            }
+        }
+
+        $this->command->info('✅ Category images compressed and GlobalImage records created successfully.');
+    }
+
+    /**
+     * Compresses a given image field and updates the model.
+     */
+    protected function compressAndUpdateImage($category, $field)
+    {
+        $oldPath = $category->$field;
+        $fullPath = Storage::disk('public')->path($oldPath);
+        $file = new \Illuminate\Http\UploadedFile($fullPath, basename($oldPath), null, null, true);
+
+        // Use the same imageUpload logic
+        $compressedPath = $this->imageUpload($file, 'category', true);
+
+        // Update category with compressed path
+        $category->update([
+            $field => $compressedPath,
+        ]);
+
+        // Log in GlobalImage (if not already done in imageUpload)
+        if (!GlobalImage::where('original_path', $oldPath)->exists()) {
+            GlobalImage::create([
+                'original_path'   => $oldPath,
+                'compressed_path' => $compressedPath,
+            ]);
+        }
+
+        $this->command->info("Compressed {$field} for category ID {$category->id}");
+    }
+
+    /**
+     * Same imageUpload logic from your controller.
+     */
+    protected function imageUpload($file, $path, $compress = true)
     {
         if (!$file) return null;
 
@@ -22,48 +71,38 @@ trait ImageTrait
 
         // Store original
         $originalPath = $file->storeAs($path, $filename, 'public');
-
         $compressedPath = null;
 
-        // Basic validation: only try to compress if it's an uploaded file and compression requested
         if ($compress && $file->isValid()) {
-
-            // Determine extension & mime (use client extension + getMimeType as safeguard)
             $ext = strtolower($file->getClientOriginalExtension());
             $clientMime = $file->getMimeType() ?: '';
 
-            // Allowed image extensions / mime prefix
             $allowedExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff'];
             $isImageExt = in_array($ext, $allowedExts, true);
             $isImageMime = stripos($clientMime, 'image/') === 0;
 
-            // If it isn't recognized as an image, skip compression
-            if (! $isImageExt || ! $isImageMime) {
+            if (!$isImageExt || !$isImageMime) {
                 return $originalPath;
             }
 
             try {
-                // Read original with Intervention
                 $img = \Intervention\Image\ImageManagerStatic::make($file->getRealPath());
 
-                // Get original properties
                 $origWidth  = $img->width();
                 $origHeight = $img->height();
-                $origSize   = $file->getSize(); // bytes
+                $origSize   = $file->getSize();
 
-                // --- Decision: skip compression if image is already low-res or small ---
-                $minWidthForCompression  = 700;    // px
-                $minHeightForCompression = 700;    // px
-                $minSizeForCompression   = 150 * 1024; // bytes (150 KB)
+                $minWidthForCompression  = 1000;
+                $minHeightForCompression = 1000;
+                $minSizeForCompression   = 150 * 1024;
 
                 $isLowResolution = ($origWidth <= $minWidthForCompression || $origHeight <= $minHeightForCompression);
-                $isSmallFile     = ($origSize !== null && $origSize <= $minSizeForCompression);
+                $isSmallFile     = ($origSize && $origSize <= $minSizeForCompression);
 
                 if ($isLowResolution || $isSmallFile) {
                     return $originalPath;
                 }
 
-                // --- Resize if too large (but keep aspect ratio and prevent upsize) ---
                 $maxWidth = 2000;
                 $maxHeight = 2000;
                 $img->resize($maxWidth, $maxHeight, function ($constraint) {
@@ -71,7 +110,6 @@ trait ImageTrait
                     $constraint->upsize();
                 });
 
-                // Decide output extension / encoding
                 if ($ext === 'png') {
                     $outputExt = 'png';
                     $quality = 70;
@@ -80,13 +118,11 @@ trait ImageTrait
                     $quality = 60;
                 }
 
-                // Encode compressed image
                 $imgStream = $img->encode($outputExt, $quality);
                 $compressedFilename = 'compressed_' . pathinfo($filename, PATHINFO_FILENAME) . '.' . $outputExt;
                 $disk->put("$path/$compressedFilename", (string) $imgStream);
                 $compressedPath = "$path/$compressedFilename";
 
-                // Optional: produce a WebP; if errors, ignore silently
                 try {
                     $webpQuality = 60;
                     $webpStream = $img->encode('webp', $webpQuality);
@@ -94,15 +130,13 @@ trait ImageTrait
                     $disk->put("$path/$webpFilename", (string) $webpStream);
                     $compressedPath = "$path/$webpFilename";
                 } catch (\Exception $e) {
-                    // ignore webp errors
+                    // ignore
                 }
             } catch (\Exception $e) {
-                // If Intervention fails (corrupt or unsupported), return original path
                 return $originalPath;
             }
         }
 
-        // Store in global table
         GlobalImage::create([
             'original_path'   => $originalPath,
             'compressed_path' => $compressedPath,

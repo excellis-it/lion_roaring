@@ -26,6 +26,7 @@ use App\Models\WarehouseProductVariation;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
+
 class ProductController extends Controller
 {
     use ImageTrait;
@@ -114,42 +115,44 @@ class ProductController extends Controller
     }
 
     public function checkSlug(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
 
-    $base = Str::slug($request->name);
+        $base = Str::slug($request->name);
 
-    // fallback when slug becomes empty (e.g. name had only special chars)
-    if (empty($base)) {
-        $base = Str::random(8);
-    }
-
-    // Get all slugs that start with base (including base itself)
-    $existing = Product::where('slug', 'LIKE', $base . '%')
-                ->pluck('slug') // collection of strings
-                ->toArray();
-
-    // if base doesn't exist, return it immediately
-    if (! in_array($base, $existing)) {
-        return response()->json(['slug' => $base]);
-    }
-
-    // find max numeric suffix
-    $max = 0;
-    $pattern = '/^' . preg_quote($base, '/') . '-(\d+)$/';
-    foreach ($existing as $s) {
-        if (preg_match($pattern, $s, $m)) {
-            $num = (int) $m[1];
-            if ($num > $max) $max = $num;
+        // fallback when slug becomes empty (e.g. name had only special chars)
+        if (empty($base)) {
+            $base = Str::random(8);
         }
+
+        // Get all slugs that start with base (including base itself)
+        $existing = Product::where('slug', 'LIKE', $base . '%')
+            ->pluck('slug') // collection of strings
+            ->toArray();
+
+        // if base doesn't exist, return it immediately
+        if (! in_array($base, $existing)) {
+            return response()->json(['slug' => $base]);
+        }
+
+        // find max numeric suffix
+        $max = 0;
+        $pattern = '/^' . preg_quote($base, '/') . '-(\d+)$/';
+
+        // dd($existing);
+        foreach ($existing as $s) {
+            if (preg_match($pattern, $s, $m)) {
+                $num = (int) $m[1];
+                if ($num > $max) $max = $num;
+            }
+        }
+
+        $newSlug = $base . '-' . ($max + 1);
+
+        return response()->json(['slug' => $newSlug]);
     }
-
-    $newSlug = $base . '-' . ($max + 1);
-
-    return response()->json(['slug' => $newSlug]);
-}
 
 
 
@@ -316,7 +319,7 @@ class ProductController extends Controller
 
         // background_image
         if ($request->hasFile('background_image')) {
-            $product->background_image = $this->imageUpload($request->file('background_image'), 'product');
+            $product->background_image = $this->imageUpload($request->file('background_image'), 'product', true);
         }
 
         $product->save();
@@ -324,7 +327,7 @@ class ProductController extends Controller
         if ($request->hasFile('image')) {
             $image = new ProductImage();
             $image->product_id = $product->id;
-            $image->image = $this->imageUpload($request->file('image'), 'product');
+            $image->image = $this->imageUpload($request->file('image'), 'product', true);
             $image->featured_image = 1;
             $image->save();
         }
@@ -333,7 +336,7 @@ class ProductController extends Controller
             foreach ($request->file('images') as $file) {
                 $image = new ProductImage();
                 $image->product_id = $product->id;
-                $image->image = $this->imageUpload($file, 'product');
+                $image->image = $this->imageUpload($file, 'product', true);
                 $image->featured_image = 0;
                 $image->save();
             }
@@ -622,7 +625,7 @@ class ProductController extends Controller
                 if ($product->background_image && file_exists(storage_path('app/public/' . $product->background_image))) {
                     unlink(storage_path('app/public/' . $product->background_image));
                 }
-                $product->background_image = $this->imageUpload($request->file('background_image'), 'product');
+                $product->background_image = $this->imageUpload($request->file('background_image'), 'product', true);
             }
 
             $product->save();
@@ -634,7 +637,7 @@ class ProductController extends Controller
                 }
                 $image = new ProductImage();
                 $image->product_id = $product->id;
-                $image->image = $this->imageUpload($request->file('image'), 'product');
+                $image->image = $this->imageUpload($request->file('image'), 'product', true);
                 $image->featured_image = 1;
                 $image->save();
             }
@@ -643,7 +646,7 @@ class ProductController extends Controller
                 foreach ($request->file('images') as $file) {
                     $image = new ProductImage();
                     $image->product_id = $product->id;
-                    $image->image = $this->imageUpload($file, 'product');
+                    $image->image = $this->imageUpload($file, 'product', true);
                     $image->featured_image = 0;
                     $image->save();
 
@@ -1021,7 +1024,7 @@ class ProductController extends Controller
                 $warehouseProductsForColor = WarehouseProduct::whereIn('product_variation_id', $variationIdsForColor)->get();
 
                 foreach ($variationData['images'] as $file) {
-                    $path = $this->imageUpload($file, 'product_variation');
+                    $path = $this->imageUpload($file, 'product_variation', true);
 
                     foreach ($variationsWithSameColor as $var) {
                         $pvImage = new ProductVariationImage();
