@@ -56,16 +56,10 @@
                                         <div class="row">
                                             <div class="col-md-3">
                                                 <div class="cart_images">
-                                                    @if (isset($item->warehouseProduct) && $item->warehouseProduct?->images->first())
-                                                        <img src="{{ Storage::url($item->warehouseProduct?->images->first()->image_path) }}"
+
+                                                        <img src="{{ Storage::url($item->product?->getProductFirstImage($item->color_id)) }}"
                                                             alt="{{ $item->product->name ?? '' }}" />
-                                                    @elseif (isset($item->product->warehouseProduct) && $item->product->warehouseProduct)
-                                                        <img src="{{ Storage::url($item->product->main_image) }}"
-                                                            alt="{{ $item->product->name ?? '' }}" />
-                                                    @else
-                                                        <img src="{{ asset('ecom_assets/images/main-bg-pattern.png') }}"
-                                                            alt="Product Image" />
-                                                    @endif
+
                                                 </div>
                                             </div>
                                             <div class="col-md-9">

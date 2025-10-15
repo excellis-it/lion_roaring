@@ -75,6 +75,9 @@
                                                     Is Featured
                                                 </th>
                                                 <th>
+                                                    Is New
+                                                </th>
+                                                <th>
                                                     Created On
                                                 </th>
                                                 <th></th>

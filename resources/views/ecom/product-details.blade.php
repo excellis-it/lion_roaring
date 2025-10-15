@@ -1,4 +1,4 @@
-{{-- {{dd(session()->all())}} --}}
+{{-- {{  $product->variation_unique_color_first_images; }} --}}
 {{-- {{dd(auth()->user())}} --}}
 @extends('ecom.layouts.master')
 @section('meta')
@@ -152,15 +152,16 @@
 
                         <div class="mb-3">
                             @if ($product->product_type != 'simple')
+
                                 @if ($product->variation_unique_color_first_images->count() > 0)
                                     <p class="theme-text subtitle">Selected Color: <span id="selected-color"
                                             class="text-dark ms-2"></span></p>
                                     @foreach ($product->variation_unique_color_first_images as $key => $item)
                                         @php
                                             $color = $item->color;
-                                            $image = $item->image;
+                                            $image_path = $item->image_path;
                                         @endphp
-                                        @if ($color and $image)
+                                        @if ($color and $image_path)
                                             <div class="form-check form-check-inline border rounded" hidden>
                                                 {{-- add class product-select-color-input --}}
                                                 <input class="btn-check product-select-color-input " type="radio"
@@ -180,7 +181,7 @@
                                     border: 2px solid #ddd; border-radius: 5px; margin-right: 10px;
                                     opacity: 1;
                                     pointer-events: auto;"
-                                                src="{{ $image->image_path ? Storage::url($image->image_path ?? '') : asset('ecom_assets/images/no-image.png') }}"
+                                                src="{{ $image_path ? Storage::url($image_path) : asset('ecom_assets/images/no-image.png') }}"
                                                 alt="{{ $color->color_name ?? ($color->name ?? '') }}"
                                                 onerror="this.onerror=null; this.src='{{ asset('ecom_assets/images/no-image.png') }}';">
                                         @endif
@@ -567,33 +568,43 @@
                         // {
                         //     "status": true,
                         //     "data": {
-                        //         "id": 16,
-                        //         "sku": "Consequatur tenetur",
+                        //         "id": 139,
+                        //         "product_variation_id": 110,
+                        //         "sku": "SKU-1-1-68EF5D88A74BC",
                         //         "warehouse_id": 1,
-                        //         "product_id": 174,
-                        //         "color_id": 2,
+                        //         "product_id": 201,
+                        //         "color_id": 1,
                         //         "size_id": 1,
                         //         "tax_rate": "0.00",
-                        //         "quantity": 502,
-                        //         "price": "929.00",
-                        //         "created_at": "2025-09-13T11:38:00.000000Z",
-                        //         "updated_at": "2025-09-13T11:38:00.000000Z",
-                        //         "images": [{
-                        //                 "id": 4,
-                        //                 "warehouse_product_id": 16,
-                        //                 "image_path": "warehouse_product\/briTSojeCBkS745PmiUNgH2BYPrtlwP8tnmuBiUE.webp",
-                        //                 "created_at": "2025-09-13T11:38:00.000000Z",
-                        //                 "updated_at": "2025-09-13T11:38:00.000000Z"
-                        //             },
-                        //             {
-                        //                 "id": 5,
-                        //                 "warehouse_product_id": 16,
-                        //                 "image_path": "warehouse_product\/lbrCSzHIsrVmHln5tGQK3oAQL88yYi5oRMFOl03q.webp",
-                        //                 "created_at": "2025-09-13T12:39:04.000000Z",
-                        //                 "updated_at": "2025-09-13T12:39:04.000000Z"
-                        //             }
-                        //         ]
-                        //     }
+                        //         "quantity": 10,
+                        //         "price": "30.00",
+                        //         "before_sale_price": null,
+                        //         "created_at": "2025-10-15T09:12:04.000000Z",
+                        //         "updated_at": "2025-10-15T09:14:10.000000Z"
+                        //     },
+                        //     "productImages": [
+                        //         {
+                        //             "id": 5,
+                        //             "product_id": 201,
+                        //             "color_id": 1,
+                        //             "image_path": "product_variation\/compressed_20251015083854_68ef5d9e0688f.webp",
+                        //             "color_name": "Red"
+                        //         },
+                        //         {
+                        //             "id": 7,
+                        //             "product_id": 201,
+                        //             "color_id": 1,
+                        //             "image_path": "product_variation\/compressed_20251015083854_68ef5d9e20b08.webp",
+                        //             "color_name": "Red"
+                        //         },
+                        //         {
+                        //             "id": 8,
+                        //             "product_id": 201,
+                        //             "color_id": 1,
+                        //             "image_path": "product_variation\/compressed_20251015083854_68ef5d9e286f2.webp",
+                        //             "color_name": "Red"
+                        //         }
+                        //     ]
                         // }
 
                         $("#product-sku").text(response.data.sku);
@@ -605,49 +616,44 @@
                         $(".product-qty").attr("max", response.data.quantity);
                         $(".product-qty").trigger("change");
 
-                        // products images section update by response.data.images on product-images-section
                         var productImagesSection = $("#product-images-section");
-
-                        // build same HTML structure as original
                         var sliderLeft = $('<div class="slider_left"></div>');
                         var sliderFor = $('<div class="slider-for" id="prodcut-first-image"></div>');
                         var sliderNav = $('<div class="slider-nav" id="product-other-images"></div>');
 
-                        // base storage url from server side
                         var storageBase = "{{ rtrim(Storage::url(''), '/') }}/";
+                        var noImage = "{{ asset('ecom_assets/images/no-image.png') }}";
 
-                        // prefer colorMatchedImages, fallback to images
-                        var imagesArray = [];
-                        if (Array.isArray(response.data.colorMatchedImages) && response.data.colorMatchedImages
+                        var productImages = [];
+                        if (Array.isArray(response.productImages) && response.productImages.length) {
+                            productImages = response.productImages;
+                        } else if (response.data && Array.isArray(response.data.productImages) && response.data
+                            .productImages.length) {
+                            productImages = response.data.productImages;
+                        } else if (response.data && Array.isArray(response.data.images) && response.data.images
                             .length) {
-                            imagesArray = response.data.colorMatchedImages;
-                        } else if (Array.isArray(response.data.images) && response.data.images.length) {
-                            imagesArray = response.data.images;
+                            productImages = response.data.images;
                         }
 
-                        if (imagesArray.length) {
-                            imagesArray.forEach(function(image) {
-                                var path = (image.image_path || '').toString();
-                                var src;
+                        var resolveSrc = function(path) {
+                            if (!path) return noImage;
+                            if (/^https?:\/\//i.test(path)) return path;
+                            path = path.replace(/^\/+/, "").replace(/^storage\//, "");
+                            return storageBase + path;
+                        };
 
-                                // absolute url
-                                if (path.indexOf('http') === 0) {
-                                    src = path;
-                                } else {
-                                    // normalize path: remove leading slashes and optional leading "storage/"
-                                    path = path.replace(/^\/+/, '').replace(/^storage\//, '');
-                                    src = storageBase + path;
-                                }
+                        if (productImages.length) {
+                            productImages.forEach(function(image) {
+                                var src = resolveSrc(image.image_path || image.image);
+                                var altText = image.color_name || image.color || "Product image";
 
                                 sliderFor.append(
                                     $('<div class="slid_big_img"></div>').append(
                                         $('<img>')
                                         .attr('src', src)
-                                        .attr('alt', image.id || '')
+                                        .attr('alt', altText)
                                         .on('error', function() {
-                                            $(this).attr('src',
-                                                "{{ asset('ecom_assets/images/no-image.png') }}"
-                                            );
+                                            $(this).attr('src', noImage);
                                         })
                                     )
                                 );
@@ -657,53 +663,30 @@
                                         $('<div class="slid_small_img"></div>').append(
                                             $('<img>')
                                             .attr('src', src)
-                                            .attr('alt', image.id || '')
+                                            .attr('alt', altText)
                                             .on('error', function() {
-                                                $(this).attr('src',
-                                                    "{{ asset('ecom_assets/images/no-image.png') }}"
-                                                );
+                                                $(this).attr('src', noImage);
                                             })
                                         )
                                     )
                                 );
-
                             });
                         } else {
-                            // fallback: placeholder in both main and nav
-                            var noImage = '{{ asset('ecom_assets/images/no-image.png') }}';
-
-                            // For sliderFor
                             sliderFor.append(
                                 $('<div class="slid_big_img"></div>').append(
-                                    $('<img>')
-                                    .attr('src', src ||
-                                        noImage) // use real src if exists, otherwise noImage
-                                    .attr('alt', image.id || '')
-                                    .on('error', function() {
-                                        $(this).attr('src', noImage); // fallback if image fails to load
-                                    })
+                                    $('<img>').attr('src', noImage).attr('alt', 'No image available')
                                 )
                             );
-
-                            // For sliderNav
                             sliderNav.append(
                                 $('<div class="small_box_img"></div>').append(
                                     $('<div class="slid_small_img"></div>').append(
-                                        $('<img>')
-                                        .attr('src', src || noImage)
-                                        .attr('alt', image.id || '')
-                                        .on('error', function() {
-                                            $(this).attr('src', noImage);
-                                        })
+                                        $('<img>').attr('src', noImage).attr('alt', 'No image available')
                                     )
                                 )
                             );
-
                         }
 
-                        productImagesSection.empty().append(sliderLeft.append(sliderFor).append(
-                            sliderNav));
-
+                        productImagesSection.empty().append(sliderLeft.append(sliderFor).append(sliderNav));
                         // re-init sliders if slick is available
                         if ($.fn.slick) {
                             // destroy existing instances if any

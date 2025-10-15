@@ -74,10 +74,7 @@
                                             @foreach ($order->orderItems->take(2) as $item)
                                                 <div class="single-item-box d-flex align-items-center mb-2">
                                                     <div class="item-image me-3">
-                                                        @if ($item->warehouseProduct?->images->first())
-                                                            <img src="{{ Storage::url($item->warehouseProduct?->images->first()->image_path) }}"
-                                                                alt="{{ $item->product_name }}">
-                                                        @elseif ($item->product_image)
+                                                        @if ($item->product_image)
                                                             <img src="{{ Storage::url($item->product_image) }}"
                                                                 alt="{{ $item->product_name }}">
                                                         @else

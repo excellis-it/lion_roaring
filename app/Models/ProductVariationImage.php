@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Models;
+// namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+// use Illuminate\Database\Eloquent\Factories\HasFactory;
+// use Illuminate\Database\Eloquent\Model;
 
-class ProductVariationImage extends Model
-{
-    use HasFactory;
-    protected $fillable = [
-        'product_variation_id',
-        'image_path',
-    ];
+// class ProductVariationImage extends Model
+// {
+//     use HasFactory;
+//     protected $fillable = [
+//         'product_variation_id',
+//         'image_path',
+//     ];
 
-    public function productVariation()
-    {
-        return $this->belongsTo(ProductVariation::class);
-    }
+//     public function productVariation()
+//     {
+//         return $this->belongsTo(ProductVariation::class);
+//     }
 
-    
-}
+
+// }

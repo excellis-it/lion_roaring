@@ -43,10 +43,11 @@ use App\Models\EstorePromoCode;
 use App\Models\Notification;
 use App\Models\OrderEmailTemplate;
 use App\Models\OrderStatus;
-use App\Models\WarehouseProductImage;
+use App\Models\ProductColorImage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Stripe\Climate\Order;
+use App\Models\ProductImage;
 
 class ProductController extends Controller
 {
@@ -714,6 +715,8 @@ class ProductController extends Controller
             return redirect()->route('e-store.cart')->with('error', 'Your cart is empty');
         }
 
+
+
         // Get estore settings
         $estoreSettings = EstoreSetting::first();
 
@@ -722,6 +725,7 @@ class ProductController extends Controller
         $hasChanges = false;
 
         foreach ($carts as $cart) {
+
             $warehouseProduct = $cart->warehouseProduct;
             $currentWarehousePrice = $warehouseProduct?->price ?? 0;
             $availableQty = $warehouseProduct?->quantity ?? 0;
@@ -754,7 +758,7 @@ class ProductController extends Controller
                 'id' => $cart->id,
                 'product_id' => $cart->product_id,
                 'product_name' => $cart->product->name ?? '',
-                'product_image' => $cart->product->main_image ?? '',
+                'product_image' => $cart->product->getProductFirstImage($cart->color_id) ?? '',
                 'price' => $cart->price ?? 0,
                 'quantity' => $cart->quantity,
                 'other_charges' => $otherCharges,
@@ -990,7 +994,7 @@ class ProductController extends Controller
                     'warehouse_product_id' => $cart->warehouse_product_id ?? null,
                     'warehouse_id' => $cart->warehouse_id,
                     'product_name' => $cart->product->name ?? 'Unknown Product',
-                    'product_image' => $cart->product->main_image ?? null,
+                    'product_image' => $cart->product->getProductFirstImage($cart->color_id) ?? null,
                     'price' => $cart->price ?? ($cart->warehouseProduct->price ?? 0),
                     'quantity' => $cart->quantity,
                     'size_id' => $cart->size_id,
@@ -1371,7 +1375,7 @@ class ProductController extends Controller
                 'color_id' => 'nullable|integer',
             ]);
 
-
+            $productImages = [];
 
             $product = Product::where('id', $request->product_id)->where('is_deleted', 0)->first();
 
@@ -1404,7 +1408,7 @@ class ProductController extends Controller
             // return $nearbyWareHouseId;
 
             if ($product->product_type != 'simple') {
-                $warehouseProduct = WarehouseProduct::with('images')->where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)
+                $warehouseProduct = WarehouseProduct::where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)
                     ->when($request->size_id, function ($query) use ($request) {
                         return $query->where('size_id', $request->size_id);
                     })
@@ -1413,7 +1417,7 @@ class ProductController extends Controller
                     })
                     ->first();
             } else {
-                $warehouseProduct = WarehouseProduct::with('images')->where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)->first();
+                $warehouseProduct = WarehouseProduct::where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)->first();
             }
 
             $wareHouseProductVariations = WarehouseProduct::where('color_id', $request->color_id)
@@ -1421,15 +1425,44 @@ class ProductController extends Controller
 
             $colorMatchedImages = [];
             // get all images with same color matched
-            $colorMatchedImages = WarehouseProductImage::whereIn('warehouse_product_id', $wareHouseProductVariations)->get();
+            //  $colorMatchedImages = WarehouseProductImage::whereIn('warehouse_product_id', $wareHouseProductVariations)->get();
+            $colorMatchedImages = ProductColorImage::where('product_id', $request->product_id)
+                ->where('color_id', $request->color_id)
+                ->get();
 
-            // return $warehouseProduct;
+
+
+            // if found color images the set $productImages with array of image urls with color id, product id, image url, color name
+            if ($colorMatchedImages->isNotEmpty()) {
+                $productImages = $colorMatchedImages->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'product_id' => $item->product_id,
+                        'color_id' => $item->color_id,
+                        'image_path' => $item->image_path,
+                        'color_name' => $item->color->color_name ?? null,
+                    ];
+                })->toArray();
+            } else {
+                // else get from product images
+                $productImages = ProductImage::where('product_id', $request->product_id)
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'id' => $item->id,
+                            'product_id' => $item->product_id,
+                            'image_path' => $item->image,
+                        ];
+                    })->toArray();
+            }
+
+            //  return $productImages;
 
             if (!$warehouseProduct) {
                 return response()->json(['status' => false, 'message' => 'Item Out Of Stock']);
             }
 
-            return response()->json(['status' => true, 'data' => $warehouseProduct, 'colorMatchedImages' => $colorMatchedImages]);
+            return response()->json(['status' => true, 'data' => $warehouseProduct, 'productImages' => $productImages]);
         }
     }
 

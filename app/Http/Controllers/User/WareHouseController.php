@@ -16,7 +16,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProductVariation;
 use App\Models\WarehouseProductVariation;
-use App\Models\WarehouseProductImage;
+
 
 class WareHouseController extends Controller
 {
@@ -506,6 +506,7 @@ class WareHouseController extends Controller
                 })
                 ->with(['colorDetail', 'sizeDetail', 'images'])
                 ->get();
+            // return $colorIds;
 
             if ($colorIds && count($colorIds) > 0) {
                 foreach ($admin_product_variations as $variation) {
@@ -522,6 +523,7 @@ class WareHouseController extends Controller
                         ->where('warehouse_id', $warehouseId)
                         ->where('product_id', $variation->product_id)
                         ->first();
+
                     if (!$warehouseProduct) {
                         // create new warehouse product entry
                         $warehouseProduct = WarehouseProduct::create([
@@ -536,14 +538,6 @@ class WareHouseController extends Controller
                             'before_sale_price' => $variation->sale_price ? $variation->price : null,
                             'tax_rate' => 0,
                         ]);
-
-                        // create WarehouseProductImage entries
-                        foreach ($variation->images as $image) {
-                            WarehouseProductImage::create([
-                                'warehouse_product_id' => $warehouseProduct->id,
-                                'image_path' => $image->image_path,
-                            ]);
-                        }
                     }
                 }
             }
@@ -552,36 +546,40 @@ class WareHouseController extends Controller
                 ->where('product_id', $productId)
                 ->orderBy('id', 'desc')
                 ->pluck('product_variation_id');
+            // return $warehouse_product_variations_ids;
+
+            if ($warehouse_product_variations_ids->isNotEmpty()) {
 
 
-            $available_product_variations = ProductVariation::whereIn('id', $warehouse_product_variations_ids)
-                ->with(['colorDetail', 'sizeDetail', 'images'])
-                //->orderBy('id', 'desc')
-                // order by the same order as in $warehouse_product_variations_ids
-                ->orderByRaw("FIELD(id, " . implode(',', $warehouse_product_variations_ids->toArray()) . ")")
-                ->get();
+                $available_product_variations = ProductVariation::whereIn('id', $warehouse_product_variations_ids)
+                    ->with(['colorDetail', 'sizeDetail', 'images'])
+                    //->orderBy('id', 'desc')
+                    // order by the same order as in $warehouse_product_variations_ids
+                    ->orderByRaw("FIELD(id, " . implode(',', $warehouse_product_variations_ids->toArray()) . ")")
+                    ->get();
 
-            foreach ($available_product_variations as $variation) {
-                $warehouseProductVariation = WarehouseProductVariation::where('warehouse_id', $warehouseId)
-                    ->where('product_variation_id', $variation->id)
-                    ->first();
-                $variation->warehouse_quantity = $warehouseProductVariation ? $warehouseProductVariation->warehouse_quantity : 0;
-                // get admin_available_quantity
-                $variation->admin_available_quantity = $variation->available_quantity;
+                foreach ($available_product_variations as $variation) {
+                    $warehouseProductVariation = WarehouseProductVariation::where('warehouse_id', $warehouseId)
+                        ->where('product_variation_id', $variation->id)
+                        ->first();
+                    $variation->warehouse_quantity = $warehouseProductVariation ? $warehouseProductVariation->warehouse_quantity : 0;
+                    // get admin_available_quantity
+                    $variation->admin_available_quantity = $variation->available_quantity;
 
-                // warehouse price and warehouse before_sale_price
-                $warehouseProduct = WarehouseProduct::where('warehouse_id', $warehouseId)
-                    ->where('product_variation_id', $variation->id)
-                    ->first();
-                if ($warehouseProduct) {
-                    $variation->warehouse_price = $warehouseProduct->price;
-                    $variation->warehouse_before_sale_price = $warehouseProduct->before_sale_price;
-                } else {
-                    $variation->warehouse_price = 0;
-                    $variation->warehouse_before_sale_price = 0;
+                    // warehouse price and warehouse before_sale_price
+                    $warehouseProduct = WarehouseProduct::where('warehouse_id', $warehouseId)
+                        ->where('product_variation_id', $variation->id)
+                        ->first();
+                    if ($warehouseProduct) {
+                        $variation->warehouse_price = $warehouseProduct->price;
+                        $variation->warehouse_before_sale_price = $warehouseProduct->before_sale_price;
+                    } else {
+                        $variation->warehouse_price = 0;
+                        $variation->warehouse_before_sale_price = 0;
+                    }
+
+                    // $variation->warehouse_available_quantity = $variation->warehouse_quantity ?? 0;
                 }
-
-                // $variation->warehouse_available_quantity = $variation->warehouse_quantity ?? 0;
             }
 
 

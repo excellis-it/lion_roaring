@@ -1,4 +1,4 @@
-@if ($available_product_variations->count() > 0)
+@if ($available_product_variations && $available_product_variations->count() > 0)
     @foreach ($available_product_variations as $index => $variation)
         <div class="warehouse-variation-product-entry" data-id="{{ $variation->id }}">
             <input type="hidden" name="variation_products[{{ $index }}][variation_id]"

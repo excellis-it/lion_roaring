@@ -219,7 +219,9 @@
                         data: data,
                         success: function(response) {
                             $('#variation-products-container-data').html(response);
-                            toastr.success('Product variations loaded successfully');
+                            if (autoLoad == false) {
+                                toastr.success('Product variations loaded successfully');
+                            }
                         },
                         error: function(xhr) {
                             if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {

@@ -103,10 +103,7 @@
                                 <div class="item-card border rounded p-3 mb-3">
                                     <div class="row align-items-center">
                                         <div class="col-md-2">
-                                            @if ($item->warehouseProduct?->images->first())
-                                                <img src="{{ Storage::url($item->warehouseProduct?->images->first()->image_path) }}"
-                                                    alt="{{ $item->product->name }}" class="img-fluid rounded" />
-                                            @elseif ($item->product_image)
+                                            @if ($item->product_image)
                                                 <img src="{{ Storage::url($item->product_image) }}"
                                                     alt="{{ $item->product_name }}" class="img-fluid rounded">
                                             @else
@@ -386,7 +383,7 @@
                         @endphp
 
                         <div class="d-details">
-                            @if ($deliveredAt && $order->status != 5 )
+                            @if ($deliveredAt && $order->status != 5)
                                 <div
                                     style="margin-top:15px;margin-bottom:5px; padding:10px 15px; border-left:4px solid #0d6efd; background:#f8f9fa; border-radius:5px; display:inline-block;">
                                     <h6 style="margin:0; font-size:14px; color:#495057;">
