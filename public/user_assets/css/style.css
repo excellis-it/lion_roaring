@@ -2527,3 +2527,6 @@ section {
 .chat-back-button{
     display: none !important;
 }
+.badge.bg-success{
+    background-color: #198754 !important;
+}

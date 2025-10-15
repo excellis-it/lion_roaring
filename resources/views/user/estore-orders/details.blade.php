@@ -18,16 +18,53 @@
         .timeline-item:not(:last-child)::after {
             content: '';
             position: absolute;
-            top: 50%;
-            right: -50%;
+            top: 26%;
+            right: -62%;
             width: 100%;
             height: 4px;
-            background: #dee2e6;
+            background: #7851a9;
             z-index: 0;
         }
 
         .timeline-circle {
-            z-index: 1;
+            position:relative;
+            z-index: 2;
+        }
+
+        @media (max-width:767px){
+            
+            .timeline-circle{
+                width: 30px !important;
+                height: 30px !important;
+            }
+            .timeline-item .small{
+                font-size:12px !important;
+            }
+            .timeline-item:not(:last-child)::after{
+                top: 21%;
+                height: 2px;
+            }
+        }
+        @media (max-width:576px){
+            .timeline{
+                padding-left: 0px !important;
+                flex-direction: column;
+                align-items: self-start !important;
+            }
+            .timeline-item{
+                display:flex;
+                align-items: center;
+                gap:5px;
+            }
+            .timeline-item .small{
+                margin-bottom:0px;
+            }
+                .timeline-item:not(:last-child)::after {
+                top: 21%;
+                height: 74px;
+                width: 2px;
+                left: 14px;
+            }
         }
     </style>
 @endpush
@@ -278,7 +315,7 @@
                                     <div class="timeline-item text-center position-relative flex-fill">
                                         {{-- Circle --}}
                                         <div class="timeline-circle {{ $reached ? 'text-white' : 'text-muted' }} {{ $cancelled ? 'bg-danger' : ($reached ? ($status->slug === 'delivered' ? 'bg-success' : ($isCurrent ? 'bg-primary' : 'bg-secondary')) : 'bg-light') }}"
-                                            style="width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:auto; font-size:1.2rem;">
+                                            style="width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:auto; font-size:1.2rem; background-color:#ccc !important;">
                                             @if ($reached)
                                                 <i class="fa-solid fa-check"></i>
                                             @else
@@ -487,7 +524,7 @@
             padding-left: 30px;
         }
 
-        .timeline::before {
+        /* .timeline::before {
             content: '';
             position: absolute;
             left: 15px;
@@ -495,7 +532,7 @@
             bottom: 0;
             width: 2px;
             background: #e9ecef;
-        }
+        } */
 
         .timeline-item {
             position: relative;

@@ -530,6 +530,12 @@ input{
         font-size: 14px;
         padding: 3px 0;
     }
+    .SideNavhead h2{
+        font-size: 18px;
+    }
+    .messaging_sec .heading_hp h2{
+        font-size: 20px;
+    }
 /* =================mail chat css=================== */
 /* .mail-body{
     position: relative;
@@ -564,9 +570,7 @@ input{
 }
 }
 @media (max-width:480px){
-    .messaging_sec .heading_hp h2{
-        font-size: 24px;
-    }
+    
     .bg_white_border{
         padding: 20px;
     }
