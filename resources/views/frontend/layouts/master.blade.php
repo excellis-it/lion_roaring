@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
-        <meta name="author" content="Swarnadwip Nath">
+        <meta name="author" content="">
         <meta name="generator" content="Hugo 0.84.0">
         {{-- favicon --}}
         <link rel="icon" href="{{ asset('frontend_assets/uploads/2023/04/cropped-logo-1-32x32.png') }}"
@@ -437,7 +437,7 @@
                             <div class="join_member_box">
                                 <div class="ftr_logo_sec text-center">
                                     <a href="https://www.lionroaring.us" class="ftr_logo d-inline-block">
-                                        <img src="uploads/2024/02/Group-2029.png" alt="">
+                                        {{-- <img src="uploads/2024/02/Group-2029.png" alt=""> --}}
                                     </a>
                                 </div>
                                 <h2>Lion Roaring PMA (Private Members Association) Agreement</h2>

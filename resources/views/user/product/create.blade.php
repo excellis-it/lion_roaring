@@ -3,8 +3,6 @@
     Product - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/min/dropzone.min.css" rel="stylesheet">
-
     <!-- Choices.js CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
     <style>
@@ -91,6 +89,9 @@
     </style>
 @endpush
 @section('content')
+    <section id="loading">
+        <div id="loading-content"></div>
+    </section>
     <div class="container-fluid">
         <div class="bg_white_border">
 
@@ -338,23 +339,29 @@
                                         </div>
                                     </div>
                                     {{-- multiple images --}}
-
                                     <div class="col-md-12">
-                                        <label for="inputConfirmPassword2" class="col-sm-3 col-form-label">Image Gallery
-                                            (Drag and
-                                            drop
-                                            atleast 1
-                                            images)</label>
-                                        <br><span class="text-sm ms-2 text-muted">(width: 300px, height: 400px, max
+                                        <label class="col-form-label">Image Gallery (Drag and drop at least 1
+                                            image) </label><br>
+
+                                        <!-- Hidden native file input (keeps form submit working) -->
+                                        <input type="file" class="form-control" id="image-upload" name="images[]"
+                                            multiple accept="image/*" style="display:none;">
+
+                                        <!-- Dropzone area -->
+                                        <div id="dropzone-area" class="dropzone dz-clickable">
+                                            <div class="dz-message-content" style="text-align:center;">
+
+                                            </div>
+                                        </div>
+                                        <span class="text-sm ms-2 text-muted">(width: 300px, height: 400px, max
                                             2MB)</span>
-                                        <input type="file" class="form-control dropzone" id="image-upload"
-                                            name="images[]" multiple accept="image/*">
                                         <span class="text-danger" id="images_error"></span>
 
-
-                                        <!-- Gallery previews -->
+                                        <!-- Previews grid -->
                                         <div id="gallery-previews" class="gallery-previews" style="display:none;"></div>
                                     </div>
+
+
 
 
 
@@ -568,49 +575,173 @@
     @endsection
 
     @push('scripts')
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js"></script>
         <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
         <!-- Choices.js -->
         <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+        <script>
+            Dropzone.autoDiscover = false;
 
-        {{-- <script>
-            $(document).ready(function() {
-                //create a function that gets a string, converts to lowercase and then replace emptyspace with "-"
-                function toSlug(str) {
-                    str = str.toLowerCase().replace(/\W/g, '-').trim().split(" ");
-                    if (str[str.length - 1] == " ") {
-                        str[str.length - 1] = "";
-                    }
-                    str = str.join("-");
+            // PARAMETERS
+            var MAX_FILES = 8;
+            var MAX_FILESIZE_MB = 12; // adjust if you want
 
-                    return str;
+            // Custom preview template
+            var previewTemplate = [
+                '<div class="dz-preview dz-file-preview">',
+                '<div class="dz-image"><img data-dz-thumbnail /></div>',
+                '<div class="dz-details">',
+                '<div class="dz-filename"><span data-dz-name></span></div>',
+                '<div class="dz-size" data-dz-size></div>',
+                '</div>',
+                '<div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>',
+                '<div class="dz-success-mark">✔</div>',
+                '<a class="dz-remove" href="javascript:undefined;" data-dz-remove>Remove</a>',
+                '</div>'
+            ].join('');
+
+
+            var text_button = `
+      <i class="fas fa-upload dz-message-icon" style="font-size:48px; color:#4caf50; margin-bottom:8px;"></i>
+      <div class="dz-message-title" style="font-weight:bold; font-size:16px; color:#333;">Drag & drop images here</div>
+      <div class="dz-message-sub" style="font-size:14px; color:#666;">or click to select</div>
+    `;
+
+            var myDropzone = new Dropzone("#dropzone-area", {
+                url: "#", // we fake upload to get progress UI
+                autoProcessQueue: false, // no real network upload
+                uploadMultiple: false,
+                parallelUploads: 8,
+                maxFilesize: MAX_FILESIZE_MB,
+                maxFiles: MAX_FILES,
+                acceptedFiles: "image/*",
+                addRemoveLinks: false, // we use custom remove element in template
+                previewsContainer: "#gallery-previews", // put previews into the grid below
+                clickable: "#dropzone-area", // drop area is clickable
+                previewTemplate: previewTemplate,
+                dictDefaultMessage: text_button,
+                dictMaxFilesExceeded: "You can only upload up to " + MAX_FILES + " images.",
+                init: function() {
+                    var dz = this;
+
+                    // When a file added: if too many, remove and show error; else start fake upload
+                    dz.on("addedfile", function(file) {
+                        // enforce max files (Dropzone handles but we also sync nicely)
+                        if (dz.files.length > MAX_FILES) {
+                            dz.removeFile(file);
+                            showError('Maximum ' + MAX_FILES + ' images allowed.');
+                            return;
+                        }
+                        clearError();
+                        syncFilesToInput();
+                        // start fake upload so user sees progress + success tick
+                        fakeUpload(file);
+                        // show previews container
+                        document.getElementById('gallery-previews').style.display = dz.files.length ?
+                            'grid' : 'none';
+                    });
+
+                    dz.on("removedfile", function(file) {
+                        syncFilesToInput();
+                        // hide previews if none
+                        document.getElementById('gallery-previews').style.display = dz.files.length ?
+                            'grid' : 'none';
+                    });
+
+                    // When user clicks the dropzone area the native file picker is opened by Dropzone.
+                    // We DO NOT add another click handler (that caused double-picker before).
+
+                    // Native input fallback: if user uses your input (e.g. from other UI), add to Dropzone
+                    var nativeInput = document.getElementById('image-upload');
+                    nativeInput.addEventListener('change', function() {
+                        if (nativeInput.files && nativeInput.files.length) {
+                            Array.from(nativeInput.files).forEach(function(file) {
+                                // make sure we don't add duplicates or exceed limit
+                                var already = dz.files.some(f => f.name === file.name && f.size ===
+                                    file.size);
+                                if (!already) {
+                                    if (dz.files.length >= MAX_FILES) {
+                                        showError('Maximum ' + MAX_FILES + ' images allowed.');
+                                    } else {
+                                        dz.addFile(file);
+                                    }
+                                }
+                            });
+                        }
+                        syncFilesToInput();
+                    });
+
+                    // Hook remove link inside preview (works for our template)
+                    // Dropzone's 'data-dz-remove' handles it automatically
                 }
-
-                function clearSlug(slug) {
-                    slug = slug.split("-");
-                    if (slug[slug.length - 1] === " ") {
-                        slug[slug.length - 1] = "";
-                    }
-                    return slug.join("-")
-                }
-                $('#slug').keyup(function() {
-                    var title = $('#slug').val();
-                    console.log(title);
-
-                    $('#slug').val(clearSlug(toSlug(title)));
-                });
-
             });
-        </script> --}}
+
+            // Helper: sync Dropzone files -> native input using DataTransfer
+            function syncFilesToInput() {
+                var input = document.getElementById('image-upload');
+                var dt = new DataTransfer();
+                myDropzone.files.forEach(function(file) {
+                    try {
+                        dt.items.add(file);
+                    } catch (e) {
+                        // if DataTransfer fails, ignore (very old browsers)
+                    }
+                });
+                input.files = dt.files;
+            }
+
+            // Error / clear
+            function showError(msg) {
+                var el = document.getElementById('images_error');
+                el.textContent = msg;
+            }
+
+            function clearError() {
+                document.getElementById('images_error').textContent = '';
+            }
+
+
+            // --- Fake upload to show progress + success tick ---
+            var minSteps = 6,
+                maxSteps = 60,
+                timeBetweenSteps = 80,
+                bytesPerStep = 100000;
+
+            function fakeUpload(file) {
+                var dz = myDropzone;
+                var totalSteps = Math.round(Math.min(maxSteps, Math.max(minSteps, file.size / bytesPerStep)));
+
+                for (let step = 0; step < totalSteps; step++) {
+                    let duration = timeBetweenSteps * (step + 1);
+                    setTimeout(function() {
+                        // progress (0..100)
+                        var progress = 100 * (step + 1) / totalSteps;
+                        file.upload = {
+                            progress: progress,
+                            total: file.size,
+                            bytesSent: (step + 1) * file.size / totalSteps
+                        };
+                        dz.emit('uploadprogress', file, progress, file.upload.bytesSent);
+
+                        if (progress >= 100) {
+                            file.status = Dropzone.SUCCESS;
+                            dz.emit("success", file, 'success', null);
+                            dz.emit("complete", file);
+                            // ensure sync (in case)
+                            syncFilesToInput();
+                        }
+                    }, duration);
+                }
+            }
+        </script>
 
 
 
-        <script type="text/javascript">
+        {{-- <script type="text/javascript">
             Dropzone.options.imageUpload = {
                 maxFilesize: 1,
                 acceptedFiles: ".jpeg,.jpg,.png,.gif,.webp"
             };
-        </script>
+        </script> --}}
         <script>
             ClassicEditor.create(document.querySelector("#description"));
             ClassicEditor.create(document.querySelector("#specification"));
@@ -632,6 +763,8 @@
                     form.find('.is-invalid').removeClass('is-invalid');
                     form.find('.invalid-feedback').remove();
                     $('.error-summary').remove(); // clear any old summary
+                    $("#loading").addClass("loading");
+                    $("#loading-content").addClass("loading-content");
 
                     $.ajax({
                         url: url,
@@ -644,13 +777,16 @@
                             form.find('button[type=submit]').prop('disabled', true);
                         },
                         success: function(response) {
+                            $("#loading").removeClass("loading");
+                            $("#loading-content").removeClass("loading-content");
                             toastr.success('Product created successfully!');
-
                             // Redirect or reset form if needed
                             form[0].reset();
                             window.location.href = "{{ route('products.index') }}"; // optional
                         },
                         error: function(xhr) {
+                            $("#loading").removeClass("loading");
+                            $("#loading-content").removeClass("loading-content");
                             form.find('button[type=submit]').prop('disabled', false);
 
                             // Clear previous states
@@ -934,229 +1070,8 @@
                 });
             });
         </script>
+
         {{-- <script>
-            // productCreateForm validate before submit
-            (function() {
-                function addClientError($el, message) {
-                    $el.addClass('is-invalid');
-                    // if there's already a client error next to element update it, otherwise append
-                    if ($el.next('.client-error').length) {
-                        $el.next('.client-error').text(message);
-                    } else {
-                        $el.after('<span class="error client-error" style="color:red;display:block;margin-top:4px;">' +
-                            message + '</span>');
-                    }
-                }
-
-                function clearClientErrors($form) {
-                    $form.find('.client-error').remove();
-                    $form.find('.is-invalid').removeClass('is-invalid');
-                }
-
-                async function validateImageFile(file, maxBytes, reqW, reqH, $input, label) {
-                    return new Promise(function(resolve) {
-                        if (!file) {
-                            resolve(false);
-                            return;
-                        }
-                        if (maxBytes && file.size > maxBytes) {
-                            addClientError($input, label + ' must be under ' + (maxBytes / 1024 / 1024).toFixed(
-                                2) + 'MB.');
-                            resolve(false);
-                            return;
-                        }
-                        if (!reqW && !reqH) {
-                            resolve(true);
-                            return;
-                        }
-                        var url = URL.createObjectURL(file);
-                        var img = new Image();
-                        var timedOut = false;
-                        var timer = setTimeout(function() {
-                            timedOut = true;
-                            URL.revokeObjectURL(url);
-                            addClientError($input, label + ' validation timed out.');
-                            resolve(false);
-                        }, 5000);
-
-                        function finish(ok, msg) {
-                            if (timedOut) return;
-                            clearTimeout(timer);
-                            URL.revokeObjectURL(url);
-                            if (!ok && msg) addClientError($input, msg);
-                            resolve(!!ok);
-                        }
-
-                        img.onload = function() {
-                            var w = this.naturalWidth || this.width;
-                            var h = this.naturalHeight || this.height;
-                            if ((reqW && w !== reqW) || (reqH && h !== reqH)) {
-                                finish(false, label + ' must be ' + reqW + 'x' + reqH + '. Uploaded ' + w +
-                                    'x' + h + '.');
-                            } else {
-                                finish(true);
-                            }
-                        };
-
-                        img.onerror = function() {
-                            finish(false, label + ' is not a valid image.');
-                        };
-
-                        img.src = url;
-                    });
-                }
-
-                $('#productCreateForm').on('submit', async function(e) {
-                    e.preventDefault();
-                    var $form = $(this);
-                    clearClientErrors($form);
-
-                    var errors = [];
-
-                    // Helpers
-                    var val = function(selector) {
-                        return $.trim($(selector).val() || '');
-                    };
-
-                    // Basic required fields
-                    if (!val('#name')) {
-                        addClientError($('#name'), 'Product name is required.');
-                        errors.push('#name');
-                    }
-
-                    if (!val('#category_id')) {
-                        addClientError($('#category_id'), 'Category is required.');
-                        errors.push('#category_id');
-                    }
-
-                    if (!val('#slug')) {
-                        addClientError($('#slug'), 'Product slug is required.');
-                        errors.push('#slug');
-                    }
-
-                    if (!$('#image').val()) {
-                        addClientError($('#image'), 'Image is required.');
-                        errors.push('#image');
-                    }
-
-                    if (!val('#description')) {
-                        addClientError($('#description'), 'Description is required.');
-                        errors.push('#description');
-                    }
-
-                    if (!val('#specification')) {
-                        addClientError($('#specification'), 'Specification is required.');
-                        errors.push('#specification');
-                    }
-
-                    var featuredInput = $('#image')[0];
-                    // if (featuredInput && featuredInput.files && featuredInput.files.length) {
-                    //     var okFeatured = await validateImageFile(featuredInput.files[0], 2 * 1024 * 1024, 300,
-                    //         400, $('#image'), 'Featured image');
-                    //     if (!okFeatured) errors.push('#image');
-                    // }
-
-                    var backgroundInput = $('#background_image')[0];
-                    // if (backgroundInput && backgroundInput.files && backgroundInput.files.length) {
-                    //     var okBackground = await validateImageFile(backgroundInput.files[0], 2 * 1024 * 1024,
-                    //         1920, 520, $('#background_image'), 'Banner image');
-                    //     if (!okBackground) errors.push('#background_image');
-                    // }
-
-                    var galleryInput = $('#image-upload')[0];
-                    if (!galleryInput || (galleryInput.files && galleryInput.files.length === 0)) {
-                        addClientError($('#image-upload'), 'Please upload at least one gallery image.');
-                        errors.push('#image-upload');
-                    }
-
-                    // else {
-                    //     for (var i = 0; i < galleryInput.files.length; i++) {
-                    //         var okGallery = await validateImageFile(galleryInput.files[i], 2 * 1024 * 1024, 300,
-                    //             400, $('#image-upload'), 'Gallery image');
-                    //         if (!okGallery) {
-                    //             errors.push('#image-upload');
-                    //             break;
-                    //         }
-                    //     }
-                    // }
-
-                    // Product type specific checks
-                    var productType = $('input[name="product_type"]:checked').val() || 'simple';
-                    if (productType === 'simple') {
-                        if (!val('#sku')) {
-                            addClientError($('#sku'), 'SKU is required for simple products.');
-                            errors.push('#sku');
-                        }
-
-                        // Product SKU field should not accept special characters as first character.
-                        var skuValue = val('#sku');
-                        if (skuValue && !/^[a-zA-Z0-9]/.test(skuValue)) {
-                            addClientError($('#sku'), 'SKU must start with a letter or number.');
-                            errors.push('#sku');
-                        }
-
-                        // price is optional if marked free; otherwise required
-                        var isFree = $('#is_free').is(':checked');
-                        if (!isFree && (val('#price') === '' || isNaN(Number(val('#price'))) || Number(val(
-                                '#price')) < 0)) {
-                            addClientError($('#price'), 'Valid price is required (or mark product as Free).');
-                            errors.push('#price');
-                        }
-
-                        // if set sale_price then should not negetive and not greater than price
-                        var salePriceVal = val('#sale_price');
-                        var priceVal = val('#price');
-                        if (salePriceVal) {
-                            if (isNaN(Number(salePriceVal)) || Number(salePriceVal) < 0) {
-                                addClientError($('#sale_price'), 'Sale Price cannot be negative.');
-                                errors.push('#sale_price');
-                            } else if (priceVal && !isNaN(Number(priceVal)) && Number(salePriceVal) > Number(
-                                    priceVal)) {
-                                addClientError($('#sale_price'), 'Sale Price cannot be greater than Price.');
-                                errors.push('#sale_price');
-                            }
-                        }
-
-
-                        if (val('#quantity') === '' || isNaN(Number(val('#quantity'))) || parseInt(val(
-                                '#quantity')) < 0) {
-                            addClientError($('#quantity'), 'Valid stock quantity is required.');
-                            errors.push('#quantity');
-                        }
-                    } else if (productType === 'variable') {
-                        // sizes select may be enhanced by Choices.js; check underlying select value
-                        var sizesVal = $('#global-size-select').val() || [];
-                        if (!Array.isArray(sizesVal)) {
-                            sizesVal = [sizesVal];
-                        }
-                        if (sizesVal.length === 0 || (sizesVal.length === 1 && sizesVal[0] === '')) {
-                            addClientError($('#global-size-select'),
-                                'Please select at least one size for variable products.');
-                            errors.push('#global-size-select');
-                        }
-                    }
-
-                    // If errors found, prevent submit and focus first invalid field
-                    if (errors.length) {
-                        var firstSel = errors[0];
-                        var $first = $(firstSel);
-                        if ($first.length) {
-                            $('html, body').animate({
-                                scrollTop: $first.offset().top - 100
-                            }, 300, function() {
-                                $first.focus();
-                            });
-                        }
-                        return;
-                    }
-
-                    $('#productCreateForm').off('submit');
-                    $form.submit();
-                });
-            })();
-        </script> --}}
-
-        <script>
             (function() {
                 function readSingleImage(input, previewImgEl, containerEl) {
                     if (input.files && input.files[0]) {
@@ -1254,5 +1169,5 @@
                     });
                 });
             })();
-        </script>
+        </script> --}}
     @endpush

@@ -3,7 +3,6 @@
     Product Edit - {{ env('APP_NAME') }}
 @endsection
 @push('styles')
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/min/dropzone.min.css" rel="stylesheet">
     <!-- Choices.js CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
     <style>
@@ -86,8 +85,8 @@
             @if ($product->product_type != 'simple')
                 <div class="row card card-body">
                     <div class="col-lg-12">
-                        <form id="generate-variations-form" action="{{ route('products.generate.variations') }}"
-                            method="POST" enctype="multipart/form-data">
+                        <form id="generate-variations-form" action="{{ route('products.generate.variations') }}" method="POST"
+                            enctype="multipart/form-data">
                             @method('POST')
                             @csrf
 
@@ -186,38 +185,36 @@
                                         $first = $colorGroup->first();
                                         // $canDelete = $colorGroup->count() > 1;
                                     @endphp
-                                    <div class="color-variation-group mb-4 p-3">
+                                    <div class="color-variation-group mb-4 p-3" data-index="{{ $index }}">
                                         @if ($product->product_type != 'simple')
-                                            <h3 class="h3 mb-3">Color : {{ $first->colorDetail->color_name ?? '' }}</h3>
-                                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <h3>Color: {{ $first->colorDetail->color_name ?? '' }}</h3>
 
-                                                <div class="w-lg-25 w-sm-100">
-                                                    <label class="small fw-semibold mb-1">Images
-                                                        ({{ $first->colorDetail->color_name ?? '' }})
-                                                    </label>
-                                                    <input type="file"
-                                                        name="variation_products[{{ $index }}][images][]"
-                                                        class="form-control" multiple accept="image/*">
-                                                    <small class="text-muted d-block mt-1">Upload images once per
+                                            <label class="small fw-semibold mb-1">Images
+                                                ({{ $first->colorDetail->color_name ?? '' }})
+                                            </label>
+                                            <!-- hidden native input -->
+                                            <input type="file" id="image-upload-{{ $index }}"
+                                                name="variation_products[{{ $index }}][images][]"
+                                                class="form-control image-upload" multiple accept="image/*"
+                                                style="display:none;">
+                                                 <small class="text-muted d-block mt-1">Upload images once per
                                                         color. (width: 300px, height: 400px, max 2MB)</small>
-                                                </div>
+
+                                            <!-- Dropzone visual area -->
+                                            <div id="dropzone-{{ $index }}" class="dropzone dz-clickable"
+                                                style="border:2px dashed #4caf50; padding:40px; text-align:center; cursor:pointer;">
+                                                {{-- <i class="fas fa-upload" style="font-size:48px; color:#4caf50;"></i>
+                                                <div style="font-weight:bold; font-size:16px;">Drag & drop images here</div>
+                                                <div style="font-size:14px; color:#666;">or click to select</div> --}}
                                             </div>
-                                        @else
-                                            {{-- // images without color variation --}}
 
-                                            {{-- <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <span class="text-danger images-error"
+                                                id="images_error_{{ $index }}"></span>
 
-                                                <div class="w-25">
-                                                    <label class="small fw-semibold mb-1">Images
-
-                                                    </label>
-                                                    <input type="file"
-                                                        name="variation_products[{{ $index }}][images][]"
-                                                        class="form-control" multiple accept="image/*">
-                                                    <small class="text-muted d-block mt-1">Upload images (width: 300px,
-                                                        height: 400px, max 2MB)</small>
-                                                </div>
-                                            </div> --}}
+                                            <!-- previews container -->
+                                            <div id="gallery-previews-{{ $index }}" class="gallery-previews mt-2"
+                                                style="display:none; grid-template-columns: repeat(auto-fill, 80px); gap:10px;">
+                                            </div>
                                         @endif
 
                                         @if ($product->product_type != 'simple')
@@ -353,10 +350,138 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js"></script>
     <script src='https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js'></script>
     <!-- Choices.js -->
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+        Dropzone.autoDiscover = false;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const MAX_FILES = 8;
+            const MAX_FILESIZE_MB = 12;
+
+            const groups = document.querySelectorAll('.color-variation-group');
+
+            groups.forEach(group => {
+                const index = group.dataset.index;
+                const dropzoneEl = document.getElementById('dropzone-' + index);
+                const previewsEl = document.getElementById('gallery-previews-' + index);
+                const inputEl = document.getElementById('image-upload-' + index);
+                const errorEl = document.getElementById('images_error_' + index);
+
+                var text_button = `
+      <i class="fas fa-upload dz-message-icon" style="font-size:48px; color:#4caf50; margin-bottom:8px;"></i>
+      <div class="dz-message-title" style="font-weight:bold; font-size:16px; color:#333;">Drag & drop images here</div>
+      <div class="dz-message-sub" style="font-size:14px; color:#666;">or click to select</div>
+    `;
+
+                if (!dropzoneEl) return;
+
+                const dz = new Dropzone(dropzoneEl, {
+                    url: "#",
+                    autoProcessQueue: false,
+                    uploadMultiple: false,
+                    parallelUploads: MAX_FILES,
+                    maxFiles: MAX_FILES,
+                    maxFilesize: MAX_FILESIZE_MB,
+                    acceptedFiles: "image/*", // ONLY allow images
+                    previewsContainer: previewsEl,
+                    clickable: dropzoneEl,
+                    previewTemplate: `
+                <div class="dz-preview dz-file-preview">
+                    <div class="dz-image"><img data-dz-thumbnail /></div>
+                    <div class="dz-details">
+                        <div class="dz-filename"><span data-dz-name></span></div>
+                        <div class="dz-size" data-dz-size></div>
+                    </div>
+                    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                    <div class="dz-success-mark">✔</div>
+                    <a class="dz-remove" href="javascript:undefined;" data-dz-remove>Remove</a>
+                </div>
+            `,
+                    dictDefaultMessage: text_button,
+                });
+
+                dz.on("addedfile", file => {
+                    // Extra validation for image MIME type
+                    if (!file.type.startsWith('image/')) {
+                        dz.removeFile(file);
+                        if (errorEl) errorEl.textContent = 'Only image files are allowed.';
+                        return;
+                    }
+
+                    if (dz.files.length > MAX_FILES) {
+                        dz.removeFile(file);
+                        if (errorEl) errorEl.textContent = 'Maximum ' + MAX_FILES +
+                            ' images allowed.';
+                        return;
+                    }
+
+                    if (errorEl) errorEl.textContent = '';
+
+                    // Fake upload to show progress
+                    const totalSteps = 20;
+                    let step = 0;
+
+                    const interval = setInterval(() => {
+                        step++;
+                        const progress = (step / totalSteps) * 100;
+                        file.upload = {
+                            progress: progress,
+                            total: file.size,
+                            bytesSent: file.size * (step / totalSteps)
+                        };
+                        dz.emit('uploadprogress', file, progress, file.upload.bytesSent);
+
+                        if (step >= totalSteps) {
+                            clearInterval(interval);
+                            file.status = Dropzone.SUCCESS;
+                            dz.emit("success", file);
+                            dz.emit("complete", file);
+                            syncFiles();
+                        }
+                    }, 50);
+
+                    previewsEl.style.display = dz.files.length ? 'grid' : 'none';
+                });
+
+                dz.on('removedfile', () => {
+                    syncFiles();
+                    previewsEl.style.display = dz.files.length ? 'grid' : 'none';
+                });
+
+                function syncFiles() {
+                    if (!inputEl) return;
+                    const dt = new DataTransfer();
+                    dz.files.forEach(f => dt.items.add(f));
+                    inputEl.files = dt.files;
+                }
+
+                // fallback for native input
+                if (inputEl) {
+                    inputEl.addEventListener('change', function() {
+                        Array.from(inputEl.files).forEach(f => {
+                            if (!dz.files.some(existing => existing.name === f.name &&
+                                    existing.size === f.size)) {
+                                if (f.type.startsWith('image/')) dz.addFile(f);
+                            }
+                        });
+                        syncFiles();
+                    });
+                }
+
+                // Remove existing images (optional)
+                // group.querySelectorAll('.remove-image').forEach(btn => {
+                //     btn.addEventListener('click', function() {
+                //         const container = this.closest('.image-area');
+                //         container.remove();
+                //     });
+                // });
+            });
+        });
+    </script>
+
+
     <script type="text/javascript">
         Dropzone.options.imageUpload = {
             maxFilesize: 1,
@@ -372,16 +497,43 @@
             $('.remove-image').click(function() {
                 var id = $(this).data('id');
                 var token = $("meta[name='csrf-token']").attr("content");
-                $.ajax({
-                    url: "{{ route('products.variation.image.delete') }}",
-                    type: 'POST',
-                    data: {
-                        "id": id,
-                        "_token": token,
-                    },
-                    success: function() {
-                        console.log("it Works");
-                        $('#' + id).remove();
+
+                // Show confirmation dialog
+                swal({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "Cancel"
+                }).then(function(result) {
+                    if (result.value) {
+                        // Proceed with AJAX delete
+                        $.ajax({
+                            url: "{{ route('products.variation.image.delete') }}",
+                            type: 'POST',
+                            data: {
+                                "id": id,
+                                "_token": token,
+                            },
+                            success: function() {
+                                $('#' + id).remove();
+                                swal(
+                                    'Deleted!',
+                                    'The image has been deleted.',
+                                    'success'
+                                );
+                            },
+                            error: function() {
+                                swal(
+                                    'Error!',
+                                    'Something went wrong while deleting.',
+                                    'error'
+                                );
+                            }
+                        });
                     }
                 });
             });
