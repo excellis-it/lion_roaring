@@ -301,6 +301,22 @@ class ProfileController extends Controller
             ['menu_name' => 'Strategy', 'permission_name' => 'Manage Strategy'],
             ['menu_name' => 'Help', 'permission_name' => 'Manage Help'],
             ['menu_name' => 'Policy', 'permission_name' => 'Manage Policy'],
+
+            ['menu_name' => 'Estore CMS', 'permission_name' => 'Manage Estore CMS'],
+            ['menu_name' => 'Estore Users', 'permission_name' => 'Manage Estore Users'],
+            ['menu_name' => 'Estore Category', 'permission_name' => 'Manage Estore Category'],
+            ['menu_name' => 'Estore Sizes', 'permission_name' => 'Manage Estore Sizes'],
+            ['menu_name' => 'Estore Colors', 'permission_name' => 'Manage Estore Colors'],
+            ['menu_name' => 'Estore Products', 'permission_name' => 'Manage Estore Products'],
+            ['menu_name' => 'Estore Settings', 'permission_name' => 'Manage Estore Settings'],
+            ['menu_name' => 'Estore Warehouse', 'permission_name' => 'Manage Estore Warehouse'],
+            ['menu_name' => 'Estore Orders', 'permission_name' => 'Manage Estore Orders'],
+            ['menu_name' => 'Order Status', 'permission_name' => 'Manage Order Status'],
+            ['menu_name' => 'Email Template', 'permission_name' => 'Manage Email Template'],
+            ['menu_name' => 'Elearning CMS', 'permission_name' => 'Manage Elearning CMS'],
+
+            ['menu_name' => 'Elearning Category', 'permission_name' => 'Manage Elearning Category'],
+            ['menu_name' => 'Elearning Product', 'permission_name' => 'Manage Elearning Product'],
         ];
 
         try {

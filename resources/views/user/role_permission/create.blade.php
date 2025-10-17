@@ -85,6 +85,8 @@
                                                 'Estore Settings',
                                                 'Estore Warehouse',
                                                 'Estore Orders',
+                                                'Order Status',
+                                                'Email Template'
                                             ];
 
                                         @endphp

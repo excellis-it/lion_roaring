@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\SubscriptionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\ColorController;
 use App\Http\Controllers\Api\TeamChatController;
 use App\Http\Controllers\Api\EmailController;
 use App\Http\Controllers\Api\EstoreProductController;
@@ -31,7 +32,9 @@ use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\PolicyGuidenceController;
 use App\Http\Controllers\Api\RolePermissionController;
 use App\Http\Controllers\Api\EcclesiaController;
+use App\Http\Controllers\Api\EstoreCmsController;
 use App\Http\Controllers\Api\FCMController;
+use App\Http\Controllers\Api\SizeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +61,8 @@ Route::prefix('v3')->group(function () {
         Route::get('/product/{slug}', [ElearningController::class, 'productDetails']);
         Route::get('/products-filter', [ElearningController::class, 'productsFilter']);
     });
+
+
 
 
     Route::prefix('cms')->group(function () {
@@ -128,6 +133,36 @@ Route::prefix('v3')->group(function () {
         Route::post('update-fcm-token', [ProfileController::class, 'updateFcmToken']);
 
         Route::post('logout', [AuthController::class, 'logout']);
+
+        Route::prefix('sizes')->group(function () {
+            Route::get('/', [SizeController::class, 'index']);
+            Route::post('/store', [SizeController::class, 'store']);
+            Route::post('/edit', [SizeController::class, 'edit']);
+            Route::post('/update', [SizeController::class, 'update']);
+            Route::post('/delete', [SizeController::class, 'delete']);
+        });
+
+        Route::prefix('colors')->group(function () {
+            Route::get('/', [ColorController::class, 'index']);
+            Route::post('/store', [ColorController::class, 'store']);
+            Route::post('/edit', [SizeController::class, 'edit']);
+            Route::post('/update', [ColorController::class, 'update']);
+            Route::post('/delete', [ColorController::class, 'delete']);
+        });
+
+
+        Route::prefix('estore-cms')->group(function () {
+            Route::post('/dashboard', [EstoreCmsController::class, 'dashboard']);
+            Route::post('/list', [EstoreCmsController::class, 'list']);
+            Route::post('/store', [EstoreCmsController::class, 'store']);
+            Route::put('/update/{id}', [EstoreCmsController::class, 'update']);
+            Route::post('/delete', [EstoreCmsController::class, 'delete']);
+            Route::post('/store-cms-page', [EstoreCmsController::class, 'cms']);
+            Route::post('/home/update', [EstoreCmsController::class, 'homeCmsUpdate']);
+            Route::post('/footer/update', [EstoreCmsController::class, 'footerUpdate']);
+            Route::get('/contact', [EstoreCmsController::class, 'contactCms']);
+            Route::post('/contact/update', [EstoreCmsController::class, 'contactCmsUpdate']);
+        });
 
 
         Route::prefix('chats')->name('chats.')->group(function () {

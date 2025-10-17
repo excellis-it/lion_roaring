@@ -277,7 +277,7 @@
                         Gate::check('Manage Estore Products') ||
                         Gate::check('Manage Estore Settings') ||
                         Gate::check('Manage Estore Warehouse') ||
-                        Gate::check('Manage Estore Orders'))
+                        Gate::check('Manage Estore Orders') ||   Gate::check('Manage Order Status') ||    Gate::check('Manage Email Template'))
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExample10">

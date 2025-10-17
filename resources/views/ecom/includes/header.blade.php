@@ -150,10 +150,10 @@
                                                 <li><a class="dropdown-item" href="javascript:void(0);"
                                                         data-bs-toggle="modal" data-bs-target="#loginModalEstore"
                                                         href="{{ route('login') }}">Login</a></li>
-                                                <li><a class="dropdown-item" href="javascrip:void(0);"
+                                                {{-- <li><a class="dropdown-item" href="javascrip:void(0);"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#registerModalEstore">Register</a>
-                                                </li>
+                                                </li> --}}
                                             </ul>
                                         @endif
                                     </div>
@@ -278,11 +278,11 @@
                             <input type="hidden" name="redirect_to" value="">
                         </div>
                     </form>
-                    <p class="text-center join_member mt-3">
+                    {{-- <p class="text-center join_member mt-3">
 
                         <a href="javascrip:void(0);" data-bs-toggle="modal" data-bs-target="#registerModalEstore">Not
                             a member? Register now</a>
-                    </p>
+                    </p> --}}
                     <p class="text-center join_member">
 
                         <a href="{{ route('member-privacy-policy') }}" class="login_privacy text-dark">Privacy,
@@ -338,7 +338,7 @@
 <!-- Email OTP Modal End -->
 
 {{-- Register Modal Start --}}
-<div class="modal fade" id="registerModalEstore" tabindex="-1" aria-labelledby="registerModalLabel"
+{{-- <div class="modal fade" id="registerModalEstore" tabindex="-1" aria-labelledby="registerModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -384,7 +384,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 {{-- Register Modal End --}}
 
 
