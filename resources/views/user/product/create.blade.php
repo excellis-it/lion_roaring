@@ -315,7 +315,7 @@
                                             <div class="form-check form-switch mt-3">
                                                 <label class="form-check-label" for="is_free">Mark as Free (Price becomes
                                                     0)</label>
-                                                <input class="form-check-input mt-3" style="width: 60px; height: 30px;"
+                                                <input class="form-check-input mt-3 mb-3" style="width: 60px; height: 30px;"
                                                     type="checkbox" role="switch" id="is_free" name="is_free"
                                                     value="1" {{ old('is_free') ? 'checked' : '' }}>
 

@@ -81,7 +81,6 @@
 @section('content')
     <div class="container-fluid">
         <div class="bg_white_border">
-
             @if ($product->product_type != 'simple')
                 <div class="row card card-body">
                     <div class="col-lg-12">
@@ -144,16 +143,13 @@
                                         </button>
                                     </div>
                                 </div>
-
                             </div>
-
-
                         </form>
                     </div>
                 </div>
             @endif
 
-            <hr>
+            <!-- <hr> -->
 
             <!--  Row 1 -->
             <div class="row card card-body mt-4">
@@ -201,7 +197,7 @@
                                                         color. (width: 300px, height: 400px, max 2MB)</small>
 
                                             <!-- Dropzone visual area -->
-                                            <div id="dropzone-{{ $index }}" class="dropzone dz-clickable"
+                                            <div id="dropzone-{{ $index }}" class="dropzone dz-clickable mb-3"
                                                 style="border:2px dashed #4caf50; padding:40px; text-align:center; cursor:pointer;">
                                                 {{-- <i class="fas fa-upload" style="font-size:48px; color:#4caf50;"></i>
                                                 <div style="font-weight:bold; font-size:16px;">Drag & drop images here</div>

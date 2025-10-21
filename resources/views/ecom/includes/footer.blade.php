@@ -78,7 +78,7 @@
 
                     </ul>
                 </div>
-                <p> {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_copywrite_text : '' !!}</p>
+                <!-- <p> {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_copywrite_text : '' !!}</p> -->
                 <div class="left_ali left_logo">
                     <ul>
                         <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_facebook_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-facebook"></i></a></li>
@@ -89,8 +89,8 @@
                 </div>
             </div>
         </div>
-
+        <!-- <div class="container"> -->
+            <p class="mt-3" style="border-top:1px solid #ccc; padding:20px; 20px 0px 20px"> {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_copywrite_text : '' !!}</p>
+        <!-- </div> -->
     </div>
-
-
 </footer>

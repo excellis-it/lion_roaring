@@ -525,6 +525,7 @@
     }
     .profile_dropdown .dropdown-menu .dropdown-item{
         font-size: 14px;
+        padding: 2px 15px;
     }
     .user-profile-box .user-img {
         width: 150px;
