@@ -397,6 +397,9 @@
     .map-location-details p{
         font-size: 14px;
     }
+    .project{
+        min-height: auto;
+    }
 }
 
 @media (max-width:576px){

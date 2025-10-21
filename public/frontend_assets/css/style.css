@@ -1792,7 +1792,7 @@ li.slick-active button {
 
 .project {
     padding: 20px;
-    min-height: 300px;
+    min-height: 400px;
 }
 
 .contact-us {
@@ -2798,4 +2798,10 @@ li.slick-active button {
 .goog-te-gadget .goog-te-combo{
     padding: 10px 4px;
     border-radius: 20px;
+}
+
+.project p{
+    white-space: normal;
+    word-wrap: break-word;
+    color: #fff;
 }
