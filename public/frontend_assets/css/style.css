@@ -2800,8 +2800,16 @@ li.slick-active button {
     border-radius: 20px;
 }
 
-.project p{
+/* .project p{
     white-space: normal;
     word-wrap: break-word;
     color: #fff;
+} */
+ .project_sec .row .col .project p{
+    color: #fff;
+    white-space: normal;
+    word-wrap: break-word;
+ }
+.project_sec .row .col:nth-child(even) .project p{
+    color: #000;
 }
