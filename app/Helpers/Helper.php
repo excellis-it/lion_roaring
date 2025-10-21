@@ -183,8 +183,8 @@ class Helper
 
     public static function getTotalProductRating($product_id)
     {
-        $total_rating = Review::where('product_id', $product_id)->sum('rating');
-        $total_review = Review::where('product_id', $product_id)->count();
+        $total_rating = Review::where('product_id', $product_id)->whereStatus(2)->sum('rating');
+        $total_review = Review::where('product_id', $product_id)->whereStatus(2)->count();
         if ($total_review > 0) {
             $avg_rating = $total_rating / $total_review;
         } else {

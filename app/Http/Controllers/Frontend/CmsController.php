@@ -97,6 +97,9 @@ class CmsController extends Controller
     public function service($slug)
     {
         $our_organization = OurOrganization::where('slug', $slug)->first();
+         if (!$our_organization) {
+            abort(404);
+        }
         $services  = $our_organization->services;
         return view('frontend.service')->with(compact('our_organization', 'services'));
     }
@@ -104,6 +107,9 @@ class CmsController extends Controller
     public function ourOrganization($slug)
     {
         $our_organization = OurOrganization::where('slug', $slug)->first();
+         if (!$our_organization) {
+            abort(404);
+        }
         $organization_centers = OrganizationCenter::where('our_organization_id', $our_organization->id)->orderBy('id', 'desc')->get();
         return view('frontend.our-organization')->with(compact('our_organization', 'organization_centers'));
     }
@@ -111,12 +117,18 @@ class CmsController extends Controller
     public function features($slug)
     {
         $organization_center = OrganizationCenter::where('slug', $slug)->first();
+         if (!$organization_center) {
+            abort(404);
+        }
         return view('frontend.features')->with('organization_center', $organization_center);
     }
 
     public function ourGovernance($slug)
     {
         $our_governance = OurGovernance::where('slug', $slug)->first();
+        if (!$our_governance) {
+            abort(404);
+        }
         return view('frontend.our-governance')->with('our_governance', $our_governance);
     }
 

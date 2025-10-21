@@ -402,6 +402,7 @@
   #cssmenu ul.open{
     transition: all ease-in 2s;
     opacity: 1;
+    border-radius: 0px;
   }
   #cssmenu ul ul{
     top: 0;
