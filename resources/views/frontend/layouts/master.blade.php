@@ -90,7 +90,7 @@
             {{-- payment --}}
             <div class="modal fade" id="exampleModalToggle2" aria-hidden="true"
                 aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-dialog modal-dialog-centered modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalToggleLabel2">Lion Roaring Donate</h5>
@@ -98,125 +98,144 @@
                                 aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form role="form" action="{{ route('donation') }}" method="post"
-                                class="require-validation" data-cc-on-file="false"
-                                data-stripe-publishable-key="{{ env('STRIPE_KEY') }}" id="payment-form">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-12 mb-3">
-                                        <label for="amount">Enter amount(US$)</label>
-                                        <input class="form-control" id="amount" name="amount" inputmode="decimal"
-                                            value="">
-                                    </div>
-                                    <div class="col-lg-6 mb-3">
-                                        <label for="billing_name">First Name</label>
-                                        <input class="form-control has-icon" type="text" id="billing-fname"
-                                            name="first_name" value="">
-                                    </div>
-                                    <div class="col-lg-6 mb-3">
-                                        <label for="billing_name">Last Name</label>
-                                        <input class="form-control has-icon" type="text" id="billing-lname"
-                                            name="last_name" value="">
-                                    </div>
-                                    <div class="col-lg-6 mb-3">
-                                        <label for="email">Email</label>
-                                        <input class="form-control has-icon" type="text" id="email"
-                                            name="email" value="">
-                                    </div>
-                                    <div class="pure-u-1">
-                                        <legend>Billing info</legend>
-                                    </div>
-                                    <hr />
-                                    <div class="col-lg-6 mb-3">
-                                        <label for="address">Address</label>
-                                        <input class="form-control has-icon" type="text" id="address"
-                                            name="address">
-                                    </div>
-                                    <div class="col-lg-6 mb-3">
-                                        <label for="city">City</label>
-                                        <input class="form-control" type="text" id="city" name="city">
-                                    </div>
-                                    <div class="col-lg-6 mb-3">
-                                        <label for="country">Country</label>
-                                        <select class="form-control" name="country_id" id="country">
-                                            <option value="">—</option>
-                                            @foreach (Helper::getCountries() as $item)
-                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-6 mb-3">
-                                        <label for="state">State</label>
-                                        {{-- <input class="form-control" type="text" id="state" name="state"> --}}
-                                        <select class="form-control" name="state" id="state">
-                                            <option value="">—</option>
-                                        </select>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <form role="form" action="{{ route('donation') }}" method="post"
+                                        class="require-validation" data-cc-on-file="false"
+                                        data-stripe-publishable-key="{{ env('STRIPE_KEY') }}" id="payment-form">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="col-12 mb-3">
+                                                <label for="amount">Enter amount(US$)</label>
+                                                <input class="form-control" id="amount" name="amount"
+                                                    inputmode="decimal" value="">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="billing_name">First Name</label>
+                                                <input class="form-control has-icon" type="text" id="billing-fname"
+                                                    name="first_name" value="">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="billing_name">Last Name</label>
+                                                <input class="form-control has-icon" type="text" id="billing-lname"
+                                                    name="last_name" value="">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="email">Email</label>
+                                                <input class="form-control has-icon" type="text" id="email"
+                                                    name="email" value="">
+                                            </div>
+                                            <div class="pure-u-1">
+                                                <legend>Billing info</legend>
+                                            </div>
+                                            <hr />
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="address">Address</label>
+                                                <input class="form-control has-icon" type="text" id="address"
+                                                    name="address">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="city">City</label>
+                                                <input class="form-control" type="text" id="city"
+                                                    name="city">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="country">Country</label>
+                                                <select class="form-control" name="country_id" id="country">
+                                                    <option value="">—</option>
+                                                    @foreach (Helper::getCountries() as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="state">State</label>
+                                                {{-- <input class="form-control" type="text" id="state" name="state"> --}}
+                                                <select class="form-control" name="state" id="state">
+                                                    <option value="">—</option>
+                                                </select>
 
-                                    </div>
-                                    <div class="col-lg-6 mb-3">
-                                        <label for="postcode">Postcode</label>
-                                        <input class="form-control" type="text" name="postcode" id="postcode">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label for="card-element">Credit or debit card</label>
-                                    </div>
-                                    <hr />
-                                    <div class="col-md-12">
-                                        <label for="card-element">Card Number</label>
-                                        <div style="position: relative;">
-                                            <input class="form-control card-number" aria-hidden="true" aria-label=" "
-                                                name="card_number" id="card-number" autocomplete="off">
-                                            <img id="card-type-image"
-                                                src="{{ asset('frontend_assets/images/unknown.webp') }}"
-                                                alt="Card Type"
-                                                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); max-height: 24px;">
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="postcode">Postcode</label>
+                                                <input class="form-control" type="text" name="postcode"
+                                                    id="postcode">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="card-element">Month</label>
-                                        <select
-                                            class="form-control form-control--sm card-expiry-month valid card-expiry-month"
-                                            name="card_expiry_month" id="card-expiry-month" aria-invalid="false">
-                                            <option selected="" value="1">January</option>
-                                            <option value="2">February</option>
-                                            <option value="3">March</option>
-                                            <option value="4">April</option>
-                                            <option value="5">May</option>
-                                            <option value="6">June</option>
-                                            <option value="7">July</option>
-                                            <option value="8">August</option>
-                                            <option value="9">September</option>
-                                            <option value="10">October</option>
-                                            <option value="11">November</option>
-                                            <option value="12">December</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="card-element">Year</label>
-                                        <input class="form-control" aria-hidden="true" aria-label=" "
-                                            id="card-expiry-year" name="card_expiry_year" autocomplete="false"
-                                            maxlength="5">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="card-element">CVV</label>
-                                        <input class="form-control" aria-hidden="true" aria-label=" "
-                                            name="card_cvc" id="card-cvc" autocomplete="false" maxlength="4">
-                                    </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label for="card-element">Credit or debit card</label>
+                                            </div>
+                                            <hr />
+                                            <div class="col-md-12">
+                                                <label for="card-element">Card Number</label>
+                                                <div style="position: relative;">
+                                                    <input class="form-control card-number" aria-hidden="true"
+                                                        aria-label=" " name="card_number" id="card-number"
+                                                        autocomplete="off">
+                                                    <img id="card-type-image"
+                                                        src="{{ asset('frontend_assets/images/unknown.webp') }}"
+                                                        alt="Card Type"
+                                                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); max-height: 24px;">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="card-element">Month</label>
+                                                <select
+                                                    class="form-control form-control--sm card-expiry-month valid card-expiry-month"
+                                                    name="card_expiry_month" id="card-expiry-month"
+                                                    aria-invalid="false">
+                                                    <option selected="" value="1">January</option>
+                                                    <option value="2">February</option>
+                                                    <option value="3">March</option>
+                                                    <option value="4">April</option>
+                                                    <option value="5">May</option>
+                                                    <option value="6">June</option>
+                                                    <option value="7">July</option>
+                                                    <option value="8">August</option>
+                                                    <option value="9">September</option>
+                                                    <option value="10">October</option>
+                                                    <option value="11">November</option>
+                                                    <option value="12">December</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="card-element">Year</label>
+                                                <input class="form-control" aria-hidden="true" aria-label=" "
+                                                    id="card-expiry-year" name="card_expiry_year"
+                                                    autocomplete="false" maxlength="5">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="card-element">CVV</label>
+                                                <input class="form-control" aria-hidden="true" aria-label=" "
+                                                    name="card_cvc" id="card-cvc" autocomplete="false"
+                                                    maxlength="4">
+                                            </div>
+
+                                        </div>
+
+                                        <div class="mt-4">
+                                            <div class="pure-u-5-5 centered d-flex">
+                                                <button type="submit" id="submit-btn"
+                                                    class="pure-button pure-button-primary">Donate US $0.00</button>
+                                                <p style="margin-left: 5px;"><b>We Accept </b><img
+                                                        src="{{ asset('frontend_assets/images/cards.png') }}"
+                                                        alt="" height="35px"></p>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5>Or,</h5>
+                                    <h5>Bank Transfer Details</h5>
+                                    <p>
+                                        {!! Helper::getSettings()->DONATE_BANK_TRANSFER_DETAILS ?? '' !!}
+                                    </p>
 
                                 </div>
+                            </div>
 
-                                <div class="mt-4">
-                                    <div class="pure-u-5-5 centered d-flex">
-                                        <button type="submit" id="submit-btn"
-                                            class="pure-button pure-button-primary">Donate US $0.00</button>
-                                        <p style="margin-left: 5px;"><b>We Accept </b><img
-                                                src="{{ asset('frontend_assets/images/cards.png') }}" alt=""
-                                                height="35px"></p>
-                                    </div>
-                                </div>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -242,11 +261,11 @@
                                         }
                                         return null;
                                     }
-
+                                    
                                     // Get user's timezone based on IP address
                                     $ip = $_SERVER['REMOTE_ADDR'];
                                     $timezone = getTimezoneFromIp($ip);
-
+                                    
                                     if ($timezone) {
                                         // Set the default timezone
                                         date_default_timezone_set($timezone);
@@ -254,10 +273,10 @@
                                         // Fallback timezone
                                         date_default_timezone_set('UTC');
                                     }
-
+                                    
                                     // Get the current hour in 24-hour format
                                     $time = date('H');
-
+                                    
                                     // Determine greeting based on time
                                     if ($time < '12') {
                                         echo 'Perfect morning';
@@ -315,7 +334,7 @@
                                         data-bs-target="#staticBackdrop">Join
                                         Lion
                                         Roaring Member</a> | --}}
-                                        <a href="{{ route('user.forget.password.show') }}">Forgot
+                                    <a href="{{ route('user.forget.password.show') }}">Forgot
                                         password
                                     </a> | <a href="{{ route('user.forget.username.show') }}">Forgot
                                         username
