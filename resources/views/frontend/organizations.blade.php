@@ -47,9 +47,6 @@
         </div>
     </section>
 
-
-
-
     <section class="project_sec">
         <div class="container">
             <div class="heading_hp text-center">
@@ -58,7 +55,7 @@
                 <p>{!! $organization['project_section_description'] ?? 'description' !!}</p>
             </div>
             <div
-                class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 align-items-center justify-content-center">
+                class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center">
                 @if ($organization->projects->isNotEmpty())
                     @foreach ($organization->projects as $item)
                         <div class="col mb-4 aos-init" data-aos="fade-up" data-aos-duration="500">
@@ -68,10 +65,7 @@
                             </div>
                         </div>
                     @endforeach
-
                 @endif
-
-
             </div>
         </div>
     </section>
