@@ -66,6 +66,14 @@
                         @enderror
                     </div>
 
+                    <div class="mb-3">
+                        <label for="DONATE_BANK_TRANSFER_DETAILS" class="form-label">Donate Bank Transfer Details</label>
+                        <textarea class="form-control description" id="DONATE_BANK_TRANSFER_DETAILS" name="DONATE_BANK_TRANSFER_DETAILS">{{ old('DONATE_BANK_TRANSFER_DETAILS', $settings->DONATE_BANK_TRANSFER_DETAILS) }}</textarea>
+                        @error('DONATE_BANK_TRANSFER_DETAILS')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Update Settings</button>
                 </form>
 
