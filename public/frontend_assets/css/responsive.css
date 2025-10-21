@@ -400,6 +400,9 @@
     .project{
         min-height: auto;
     }
+    .project_sec .row .col .project .text-box{
+        height: auto;
+    }
 }
 
 @media (max-width:576px){
@@ -527,7 +530,7 @@
         .button_container.active span:nth-of-type(3) {
         top: 22px;
     }
-        .button_container.active span {
-            top: 7px;
-        }
+    .button_container.active span {
+        top: 7px;
+    }
 }
