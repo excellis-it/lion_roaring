@@ -2812,4 +2812,6 @@ li.slick-active button {
  }
 .project_sec .row .col:nth-child(even) .project p{
     color: #000;
+    white-space: normal;
+    word-wrap: break-word;
 }
