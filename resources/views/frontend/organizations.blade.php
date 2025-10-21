@@ -61,7 +61,9 @@
                         <div class="col mb-4 aos-init" data-aos="fade-up" data-aos-duration="500">
                             <div class="project">
                                 <h4>{{$item->title}}</h4>
-                                {!! $item->description !!}
+                                <div class="text-box">
+                                    {!! $item->description !!}
+                                </div>
                             </div>
                         </div>
                     @endforeach
