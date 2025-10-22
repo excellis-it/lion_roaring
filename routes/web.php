@@ -495,6 +495,10 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/variations-update', [ProductController::class, 'updateVariations'])->name('products.variations.update');
         // delete a product variation image
         Route::post('/variation-image-delete', [ProductController::class, 'deleteVariationImage'])->name('products.variation.image.delete');
+
+        // NEW: bulk operations on variations
+        Route::post('/variations-bulk-delete', [ProductController::class, 'bulkDeleteVariations'])->name('products.variations.bulk-delete');
+        Route::post('/variations-bulk-update', [ProductController::class, 'bulkUpdateVariations'])->name('products.variations.bulk-update');
     });
     Route::get('/products-image-delete', [ProductController::class, 'imageDelete'])->name('products.image.delete');
     Route::get('/warehouse-product-image-delete', [ProductController::class, 'warehouseImageDelete'])->name('warehouse-product.image.delete');
@@ -506,7 +510,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::prefix('categories')->group(function () {
         Route::get('/category-delete/{id}', [CategoryController::class, 'delete'])->name('categories.delete');
     });
-      Route::post('/categories-slug-check', [CategoryController::class, 'checkSlug'])->name('categories.slug.check');
+    Route::post('/categories-slug-check', [CategoryController::class, 'checkSlug'])->name('categories.slug.check');
     Route::resource('sizes', SizeController::class);
     Route::get('/sizes-delete/{id}', [SizeController::class, 'delete'])->name('sizes.delete');
     Route::resource('colors', ColorController::class);

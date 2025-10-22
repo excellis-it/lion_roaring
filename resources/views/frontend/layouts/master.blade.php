@@ -333,7 +333,7 @@
                                     <a href="javascrip:void(0);" data-bs-toggle="modal"
                                         data-bs-target="#staticBackdrop">Join
                                         Lion
-                                        Roaring Member</a> |
+                                        Roaring PMA</a> |
                                     <a href="{{ route('user.forget.password.show') }}">Forgot
                                         password
                                     </a> | <a href="{{ route('user.forget.username.show') }}">Forgot
