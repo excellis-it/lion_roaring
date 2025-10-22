@@ -13,7 +13,7 @@
         "doctrine/dbal": "^4.3",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
-        "intervention/image": "^2.7",
+        "intervention/image": "^3.11",
         "kreait/laravel-firebase": "^4.2",
         "laravel/framework": "^8.75",
         "laravel/passport": "^10.4",

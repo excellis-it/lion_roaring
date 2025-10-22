@@ -814,6 +814,8 @@ p {
     display: block;
     position: relative;
     margin-bottom: 6px;
+    overflow: hidden;
+    border-radius: 20px 20px 0px 0px;
     /* border: 1px solid #cdcdcd; */
     /* -webkit-clip-path: polygon(0 17%, 100% 0, 100% 100%, 0% 100%);
   clip-path: polygon(0 17%, 100% 0, 100% 100%, 0% 100%); */
@@ -894,6 +896,7 @@ p {
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 1px;
+    border: 1px solid #fff;
 }
 
 .addelarn a img {
@@ -903,7 +906,7 @@ p {
     height: 100%
 }
 
-.feature_text a {
+.feature_text>a {
     font-size: 20px;
     font-weight: 700;
     color: var(--text-color);
@@ -942,6 +945,8 @@ p {
     position: relative;
     border-radius: 0px;
     transition: all ease-in 0.3s;
+    border: 1px solid #ccc;
+    border-radius: 20px;
 }
 
 .star_ul {
@@ -2456,4 +2461,10 @@ input[type="range"]::-moz-range-thumb {
     .cart_right {
         margin-top: 30px;
     }
+}
+
+
+
+.feature_text{
+    padding: 10px 20px 30px 20px;
 }
