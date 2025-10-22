@@ -99,10 +99,10 @@
                                         <p>{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
                                         </p>
 
-                                    </div>
-                                    <div class="addelarn">
-                                        <a href="{{ $product['affiliate_link'] }}">
+                                        <div class="addelarn">
+                                            <a href="{{ $product['affiliate_link'] }}">
                                             {{ $product['button_name'] ? $product['button_name'] : 'go to shop' }}</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -146,11 +146,12 @@
                                         <p>{{ strlen($product->short_description) > 50 ? substr($product->short_description, 0, 50) . '...' : $product->short_description }}
                                         </p>
 
-                                    </div>
-                                    <div class="addelarn">
+                                        <div class="addelarn">
                                         <a
                                             href="{{ $product['affiliate_link'] }}">{{ $product['button_name'] ? $product['button_name'] : 'go to shop' }}</a>
                                     </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
                         @endforeach
