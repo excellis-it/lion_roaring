@@ -362,6 +362,10 @@ class HomeController extends Controller
             $order = EstoreOrder::with(['payments'])
                 ->where('order_number', $request->order_number)
                 ->first();
+            if (! $order) {
+                // e-store.order-tracking redirect back with error
+                return redirect()->route('e-store.order-tracking')->with('error', 'Order not found');
+            }
 
             $order_status = OrderStatus::orderBy('sort_order', 'asc')->get();
 

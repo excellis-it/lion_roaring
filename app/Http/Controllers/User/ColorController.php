@@ -99,7 +99,7 @@ class ColorController extends Controller
         $color = Color::find($id);
 
         // if color associated with any products, prevent deletion
-        if ($color->products()->count() > 0) {
+        if ($color->productVariations()->count() > 0) {
             return response()->json(['success' => false, 'msg' => 'This color is associated with products and cannot be deleted.']);
         }
 

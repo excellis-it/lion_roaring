@@ -90,7 +90,7 @@ class SizeController extends Controller
         $size = Size::find($id);
 
         // if size associated with any products, prevent deletion
-        if ($size->products()->count() > 0) {
+        if ($size->productVariations()->count() > 0) {
             return response()->json(['success' => false, 'msg' => 'This size is associated with products and cannot be deleted.']);
         }
 
