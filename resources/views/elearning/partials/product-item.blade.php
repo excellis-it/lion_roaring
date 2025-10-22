@@ -39,10 +39,12 @@ use App\Helpers\Helper;
                 <p>{{ strlen($product['short_description']) > 50 ? substr($product['short_description'], 0, 50) . '...' : $product['short_description'] }}
                 </p>
                 {{-- <span class="price_text">${{ $product['price'] }}</span> --}}
-            </div>
-            <div class="addelarn">
+
+                <div class="addelarn">
                 <a href="{{ $product['affiliate_link'] }}">{{ $product['button_name'] ? $product['button_name'] : 'go to shop' }}</a>
             </div>
+            </div>
+            
         </div>
     </div>
 @endforeach
