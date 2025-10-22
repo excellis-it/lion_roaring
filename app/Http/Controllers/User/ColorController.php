@@ -70,7 +70,7 @@ class ColorController extends Controller
         // validation
         $request->validate([
             'color_name' => 'required|string|max:255',
-            'color' => 'required|string|max:7', // Assuming color is a hex code
+            // 'color' => 'required|string|max:7', // Assuming color is a hex code
             'status' => 'required|boolean',
         ]);
 
