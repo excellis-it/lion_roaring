@@ -54,14 +54,15 @@
                 <h2>{{$organization['project_section_sub_title'] ?? 'sub title'}}</h2>
                 <p>{!! $organization['project_section_description'] ?? 'description' !!}</p>
             </div>
-            <div
-                class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center">
                 @if ($organization->projects->isNotEmpty())
                     @foreach ($organization->projects as $item)
                         <div class="col mb-4 aos-init" data-aos="fade-up" data-aos-duration="500">
                             <div class="project">
                                 <h4>{{$item->title}}</h4>
-                                {!! $item->description !!}
+                                <div class="text-box">
+                                    {!! $item->description !!}
+                                </div>
                             </div>
                         </div>
                     @endforeach

@@ -2246,7 +2246,11 @@ border: 0px solid #181818;
   padding: 50px 0;
   background: #fff;
 }
-
+.shopping_cart_sec .order-details-card .order-items img{
+    height: 80px;
+    width: 80px;
+    object-fit: contain;
+}
 .wishlist_cart_sec .cart_product {
   width: 100%;
   border: 1px solid #ccc;
