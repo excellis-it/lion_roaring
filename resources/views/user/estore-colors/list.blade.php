@@ -27,7 +27,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>Color</th>
+                            {{-- <th>Color</th> --}}
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -36,9 +36,9 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $color->color_name }}</td>
-                                <td>
+                                {{-- <td>
                                     <div style="width: 60px; height: 25px; background-color: {{ $color->color }};"></div>
-                                </td>
+                                </td> --}}
                                 <td class="d-flex">
                                     @if (auth()->user()->can('Edit Estore Colors'))
                                         <a href="{{ route('colors.edit', $color->id) }}" class="edit_icon me-2"><i

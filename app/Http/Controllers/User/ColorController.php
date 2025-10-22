@@ -38,14 +38,14 @@ class ColorController extends Controller
         // validation
         $request->validate([
             'color_name' => 'required|string|max:255',
-            'color' => 'required|string', // Assuming color is a hex code
+           // 'color' => 'required|string', // Assuming color is a hex code
             'status' => 'required|boolean',
         ]);
 
         // Logic to store new color
         $color = new Color();
         $color->color_name = $request->color_name;
-        $color->color = $request->color;
+        $color->color = $request->color ?? '#FFFFFF';
         $color->status = $request->status;
         $color->save();
 
@@ -77,7 +77,7 @@ class ColorController extends Controller
         // Logic to update color
         $color = Color::findOrFail($id);
         $color->color_name = $request->color_name;
-        $color->color = $request->color;
+        $color->color = $request->color ?? '#FFFFFF';
         $color->status = $request->status;
         $color->save();
 

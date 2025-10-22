@@ -28,7 +28,7 @@
 
 
 
-                            <div class="col-md-4 mb-2">
+                            {{-- <div class="col-md-4 mb-2">
                                 <div class="box_label">
                                     <label for="color">Color</label>
                                     <input type="color" name="color" id="color" class="form-control" style="min-height: 42px">
@@ -38,7 +38,7 @@
 
                                 </div>
 
-                            </div>
+                            </div> --}}
 
                             <div class="col-md-4 mb-2">
                                 <div class="box_label">
