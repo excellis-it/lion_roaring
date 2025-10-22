@@ -123,8 +123,8 @@
                                         <label>Select Sizes*</label>
                                         <div id="sizes-wrapper">
                                             <div class=" mb-2">
-                                                <select multiple name="sizes[]" class="sizeSelect"
-                                                    id="generate-size-select">
+                                                <select name="sizes[]" class="form-control" id="generate-size-select">
+                                                    <option value="">-- Select Size --</option>
                                                     @foreach ($productSizes as $itemSize)
                                                         <option value="{{ $itemSize->size->id }}">
                                                             {{ $itemSize->size->size }}
@@ -136,7 +136,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-4 mb-4">
+                                <div class="col-md-4 mb-4" hidden>
                                     <div class="col-md-12">
                                         <button type="submit" class="btn btn-primary" id="generate-variations-btn">
                                             <i class="fa fa-plus"></i> Generate Variations
@@ -181,9 +181,12 @@
                                         $first = $colorGroup->first();
                                         // $canDelete = $colorGroup->count() > 1;
                                     @endphp
-                                    <div class="color-variation-group mb-4 p-3" data-index="{{ $index }}">
+                                    <div class="color-variation-group mb-4 p-3" data-index="{{ $index }}"
+                                        data-color-id="{{ $colorId }}">
                                         @if ($product->product_type != 'simple')
                                             <h3>Color: {{ $first->colorDetail->color_name ?? '' }}</h3>
+
+
 
                                             <label class="small fw-semibold mb-1">Images
                                                 ({{ $first->colorDetail->color_name ?? '' }})
@@ -193,20 +196,14 @@
                                                 name="variation_products[{{ $index }}][images][]"
                                                 class="form-control image-upload" multiple accept="image/*"
                                                 style="display:none;">
-                                                 <small class="text-muted d-block mt-1">Upload images once per
-                                                        color. (width: 300px, height: 400px, max 2MB)</small>
-
+                                            <small class="text-muted d-block mt-1">Upload images once per
+                                                color. (width: 300px, height: 400px, max 2MB)</small>
                                             <!-- Dropzone visual area -->
                                             <div id="dropzone-{{ $index }}" class="dropzone dz-clickable mb-3"
                                                 style="border:2px dashed #4caf50; padding:40px; text-align:center; cursor:pointer;">
-                                                {{-- <i class="fas fa-upload" style="font-size:48px; color:#4caf50;"></i>
-                                                <div style="font-weight:bold; font-size:16px;">Drag & drop images here</div>
-                                                <div style="font-size:14px; color:#666;">or click to select</div> --}}
                                             </div>
-
                                             <span class="text-danger images-error"
                                                 id="images_error_{{ $index }}"></span>
-
                                             <!-- previews container -->
                                             <div id="gallery-previews-{{ $index }}" class="gallery-previews mt-2"
                                                 style="display:none; grid-template-columns: repeat(auto-fill, 80px); gap:10px;">
@@ -239,6 +236,55 @@
                                             </div>
                                         @endif
 
+                                        @if ($product->product_type != 'simple')
+                                            <!-- Group toolbar: bulk delete and bulk apply -->
+                                            <div class="d-flex flex-wrap align-items-end gap-2 mb-3 justify-content-end">
+
+                                                <div class="bulk-apply-form d-flex flex-wrap align-items-end gap-2">
+
+                                                    <div class="form-group">
+                                                        <label class="small fw-semibold mb-1">Price</label>
+                                                        <input type="number" step="0.01"
+                                                            class="form-control form-control-sm bulk-price"
+                                                            placeholder="0.00"
+                                                            {{ $product->is_free == 1 ? 'readonly' : '' }}>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="small fw-semibold mb-1">Sale Price</label>
+                                                        <input type="number" step="0.01"
+                                                            class="form-control form-control-sm bulk-sale-price"
+                                                            placeholder="0.00"
+                                                            {{ $product->is_free == 1 ? 'readonly' : '' }}>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="small fw-semibold mb-1">Global Stock</label>
+                                                        <input type="number" min="0"
+                                                            class="form-control form-control-sm bulk-stock"
+                                                            placeholder="0">
+                                                    </div>
+                                                    <div class="d-flex gap-2 ">
+                                                        <button type="button" class="print_btn btn-group-apply"
+                                                            data-scope="checked">
+                                                            Apply to Checked
+                                                        </button>
+                                                        <button type="button" class="print_btn btn-group-apply"
+                                                            data-scope="group">
+                                                            Apply to All in Color
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="ms-4">
+
+                                                </div>
+                                                <button type="button" class="print_btn ms-5 btn-group-delete-selected">
+                                                    <i class="fa fa-trash"></i> Delete Selected
+                                                </button>
+                                                <button type="button" class="print_btn btn-group-delete-all">
+                                                    <i class="fa fa-trash-alt"></i> Delete All (Color)
+                                                </button>
+                                            </div>
+                                        @endif
+
                                         @foreach ($colorGroup as $variation)
                                             <div class="variation-product-entry py-2" data-id="{{ $variation->id }}">
                                                 <input type="hidden" name="variation_products[{{ $index }}][id]"
@@ -246,8 +292,16 @@
                                                 <input type="hidden"
                                                     name="variation_products[{{ $index }}][color_id]"
                                                     value="{{ $variation->color_id }}">
-
                                                 <div class="row align-items-end g-2">
+                                                    @if ($product->product_type != 'simple')
+                                                        <div class="col-xxl-1 col-lg-1 col-md-1">
+                                                            <label class="small fw-semibold"></label>
+                                                            <div>
+                                                                <input type="checkbox"
+                                                                    class="form-check-input variation-select">
+                                                            </div>
+                                                        </div>
+                                                    @endif
                                                     <div class="col-xxl-2 col-lg-2 col-md-6">
                                                         <label class="small fw-semibold">SKU <span
                                                                 class="text-danger">*</span></label>
@@ -255,7 +309,6 @@
                                                             name="variation_products[{{ $index }}][sku]"
                                                             class="form-control" value="{{ $variation->sku }}">
                                                     </div>
-
                                                     <div class="col-xxl-2 col-lg-2 col-md-6">
                                                         <label class="small fw-semibold">Price <span
                                                                 class="text-danger">*</span></label>
@@ -264,7 +317,6 @@
                                                             class="form-control" value="{{ $variation->price }}"
                                                             {{ $product->is_free == 1 ? 'readonly' : '' }}>
                                                     </div>
-
                                                     <div class="col-xxl-2 col-lg-2 col-md-6">
                                                         <label class="small fw-semibold">Sale Price (If Any)</label>
                                                         <input type="number" step="0.01"
@@ -272,7 +324,6 @@
                                                             class="form-control" value="{{ $variation->sale_price }}"
                                                             {{ $product->is_free == 1 ? 'readonly' : '' }}>
                                                     </div>
-
                                                     <div class="col-xxl-1 col-lg-1 col-md-6"
                                                         {{ $product->product_type == 'simple' ? 'hidden' : '' }}>
                                                         <label class="small fw-semibold">Color</label>
@@ -280,7 +331,6 @@
                                                             value="{{ $variation->colorDetail->color_name ?? '' }}"
                                                             readonly>
                                                     </div>
-
                                                     <div class="col-xxl-2 col-lg-2 col-md-6"
                                                         {{ $product->product_type == 'simple' ? 'hidden' : '' }}>
                                                         <label class="small fw-semibold">Size</label>
@@ -290,8 +340,7 @@
                                                         <input type="text" class="form-control"
                                                             value="{{ $variation->sizeDetail->size ?? '' }}" readonly>
                                                     </div>
-
-                                                    <div class="col-xxl-2 col-lg-2 col-md-6">
+                                                    <div class="col-xxl-1 col-lg-1 col-md-6">
                                                         <label class="small fw-semibold">Global Stock Qty <span
                                                                 class="text-danger">*</span></label>
                                                         <input type="number" min="0"
@@ -299,8 +348,6 @@
                                                             class="form-control"
                                                             value="{{ $variation->available_quantity }}">
                                                     </div>
-
-                                                    {{-- @if ($product->product_type != 'simple' && $canDelete) --}}
                                                     @if ($product->product_type != 'simple')
                                                         <div class="col-xxl-1 col-lg-1 col-md-6 text-end">
                                                             <button type="button"
@@ -540,12 +587,12 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Initialize Choices.js for global selects
-            const globalSizeSelect = new Choices("#generate-size-select", {
-                removeItemButton: true,
-                searchPlaceholderValue: "Type to search...",
-                closeDropdownOnSelect: 'auto',
-                placeholderValue: "Select size",
-            });
+            // const globalSizeSelect = new Choices("#generate-size-select", {
+            //     removeItemButton: true,
+            //     searchPlaceholderValue: "Type to search...",
+            //     closeDropdownOnSelect: 'auto',
+            //     placeholderValue: "Select size",
+            // });
 
 
 
@@ -587,6 +634,7 @@
             group.remove();
         }
     </script>
+
     <script>
         $(document).ready(function() {
             $('#generate-variations-form').on('submit', function(e) {
@@ -601,6 +649,10 @@
                     e.preventDefault();
                     toastr.error('Please select at least one size.');
                 }
+            });
+
+            $('#generate-size-select').on('change', function() {
+                $('#generate-variations-form').trigger('submit');
             });
         });
     </script>
@@ -767,6 +819,175 @@
 
                 $form.off('submit');
                 $form.trigger('submit');
+            });
+        })();
+    </script>
+
+    <script>
+        // Bulk actions: delete selected, delete all in color, bulk apply values
+        (function() {
+            function getSelectedVariationIds($group) {
+                var ids = [];
+                $group.find('.variation-select:checked').each(function() {
+                    var id = $(this).closest('.variation-product-entry').data('id');
+                    if (id) ids.push(id);
+                });
+                return ids;
+            }
+
+            function gatherBulkFields($group) {
+                const data = {};
+                const sku = $.trim($group.find('.bulk-sku').val());
+                const price = $.trim($group.find('.bulk-price').val());
+                const sale = $.trim($group.find('.bulk-sale-price').val());
+                const stock = $.trim($group.find('.bulk-stock').val());
+
+                if (sku !== '') data.sku = sku;
+                if (price !== '') data.price = price;
+                if (sale !== '') data.sale_price = sale;
+                if (stock !== '') data.stock_quantity = stock;
+
+                return data;
+            }
+
+            $(document).on('click', '.btn-group-delete-selected', function() {
+                const $group = $(this).closest('.color-variation-group');
+                const ids = getSelectedVariationIds($group);
+                if (!ids.length) {
+                    toastr.error('Select at least one variation.');
+                    return;
+                }
+                swal({
+                    title: "Are you sure?",
+                    text: "Selected variations will be deleted.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete",
+                }).then(function(result) {
+                    if (result.value) {
+                        $.ajax({
+                            url: "{{ route('products.variations.bulk-delete') }}",
+                            type: "POST",
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                                product_id: "{{ $product->id }}",
+                                variation_ids: ids
+                            },
+                            success: function() {
+                                // Remove from DOM
+                                ids.forEach(function(id) {
+                                    $group.find(
+                                        '.variation-product-entry[data-id="' +
+                                        id + '"]').remove();
+                                });
+                                if (!$group.find('.variation-product-entry').length) $group
+                                    .remove();
+                                toastr.success('Selected variations deleted.');
+                            },
+                            error: function() {
+                                toastr.error('Failed to delete selected variations.');
+                            }
+                        });
+                    }
+                });
+            });
+
+            $(document).on('click', '.btn-group-delete-all', function() {
+                const $group = $(this).closest('.color-variation-group');
+                const colorId = $group.data('color-id');
+                if (!colorId) {
+                    toastr.error('Invalid color group.');
+                    return;
+                }
+                swal({
+                    title: "Delete all variations for this color?",
+                    text: "This will remove all variations in this color group.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#6c757d",
+                    confirmButtonText: "Delete All",
+                }).then(function(result) {
+                    if (result.value) {
+                        $.ajax({
+                            url: "{{ route('products.variations.bulk-delete') }}",
+                            type: "POST",
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                                product_id: "{{ $product->id }}",
+                                color_id: colorId
+                            },
+                            success: function() {
+                                $group.remove();
+                                toastr.success(
+                                    'All variations for this color were deleted.');
+                            },
+                            error: function() {
+                                toastr.error('Failed to delete color variations.');
+                            }
+                        });
+                    }
+                });
+            });
+
+            $(document).on('click', '.btn-group-apply', function() {
+                const $btn = $(this);
+                const scope = $btn.data('scope'); // 'checked' or 'group'
+                const $group = $btn.closest('.color-variation-group');
+                const colorId = $group.data('color-id');
+                const fields = gatherBulkFields($group);
+
+                if ($.isEmptyObject(fields)) {
+                    toastr.error('Enter at least one field to apply.');
+                    return;
+                }
+
+                if (fields.price !== undefined && fields.sale_price !== undefined) {
+                    const price = parseFloat(fields.price);
+                    const sale = parseFloat(fields.sale_price);
+                    if (!isNaN(price) && !isNaN(sale) && sale > price) {
+                        toastr.error('Sale price cannot exceed price.');
+                        return;
+                    }
+                }
+
+                const payload = {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    product_id: "{{ $product->id }}",
+                    apply_to: scope
+                };
+                Object.assign(payload, fields);
+
+                if (scope === 'checked') {
+                    const ids = getSelectedVariationIds($group);
+                    if (!ids.length) {
+                        toastr.error('Select at least one variation.');
+                        return;
+                    }
+                    payload.variation_ids = ids;
+                } else {
+                    payload.color_id = colorId;
+                }
+
+                $.ajax({
+                    url: "{{ route('products.variations.bulk-update') }}",
+                    type: "POST",
+                    data: payload,
+                    success: function() {
+                        toastr.success('Values applied successfully.');
+                        // simplest: reload to reflect changes
+                        window.location.reload();
+                    },
+                    error: function(xhr) {
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            toastr.error(xhr.responseJSON.message);
+                        } else {
+                            toastr.error('Failed to apply values.');
+                        }
+                    }
+                });
             });
         })();
     </script>

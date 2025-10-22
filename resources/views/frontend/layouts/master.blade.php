@@ -330,10 +330,10 @@
 
                                 </form>
                                 <p class="text-center join_member">
-                                    {{-- <a href="javascrip:void(0);" data-bs-toggle="modal"
+                                    <a href="javascrip:void(0);" data-bs-toggle="modal"
                                         data-bs-target="#staticBackdrop">Join
                                         Lion
-                                        Roaring Member</a> | --}}
+                                        Roaring PMA</a> |
                                     <a href="{{ route('user.forget.password.show') }}">Forgot
                                         password
                                     </a> | <a href="{{ route('user.forget.username.show') }}">Forgot
@@ -676,6 +676,283 @@
 
         <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
         </script>
+
+        {{-- <style>
+            /* HIDE GOOGLE TRANSLATE TOOLBAR */
+
+
+            iframe.skiptranslate {
+                display: none !important;
+            }
+
+            .goog-logo-link,
+            .goog-te-gadget-icon {
+                display: none !important;
+            }
+
+            .goog-te-gadget span {
+                display: none !important;
+            }
+
+            body {
+                top: 0 !important;
+            }
+        </style>
+
+        <script type="text/javascript">
+            // Step 1: Initialize Google Translate widget
+            function googleTranslateElementInit() {
+                new google.translate.TranslateElement({
+                    pageLanguage: 'en',
+                    autoDisplay: false
+                }, 'google_translate_element');
+            }
+
+            // Step 2: Load Google Translate script
+            (function() {
+                var gt = document.createElement('script');
+                gt.type = 'text/javascript';
+                gt.async = true;
+                gt.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(gt, s);
+            })();
+
+            // Step 3: Map countries to preferred languages
+            const countryToLang = {
+                "AF": "fa", // Afghanistan -> Persian
+                "AL": "sq", // Albania -> Albanian
+                "DZ": "ar", // Algeria -> Arabic
+                "AS": "en", // American Samoa -> English
+                "AD": "ca", // Andorra -> Catalan
+                "AO": "pt", // Angola -> Portuguese
+                "AI": "en", // Anguilla -> English
+                "AR": "es", // Argentina -> Spanish
+                "AM": "hy", // Armenia -> Armenian
+                "AU": "en", // Australia -> English
+                "AT": "de", // Austria -> German
+                "AZ": "az", // Azerbaijan -> Azerbaijani
+                "BS": "en", // Bahamas -> English
+                "BH": "ar", // Bahrain -> Arabic
+                "BD": "bn", // Bangladesh -> Bengali
+                "BB": "en", // Barbados -> English
+                "BY": "be", // Belarus -> Belarusian
+                "BE": "nl", // Belgium -> Dutch (could also be French or German)
+                "BZ": "en", // Belize -> English
+                "BJ": "fr", // Benin -> French
+                "BM": "en", // Bermuda -> English
+                "BT": "dz", // Bhutan -> Dzongkha
+                "BO": "es", // Bolivia -> Spanish
+                "BA": "bs", // Bosnia & Herzegovina -> Bosnian
+                "BW": "en", // Botswana -> English
+                "BR": "pt", // Brazil -> Portuguese
+                "BN": "ms", // Brunei -> Malay
+                "BG": "bg", // Bulgaria -> Bulgarian
+                "BF": "fr", // Burkina Faso -> French
+                "BI": "fr", // Burundi -> French
+                "KH": "km", // Cambodia -> Khmer
+                "CM": "fr", // Cameroon -> French
+                "CA": "en", // Canada -> English (could also be French)
+                "CV": "pt", // Cape Verde -> Portuguese
+                "KY": "en", // Cayman Islands -> English
+                "CF": "fr", // Central African Republic -> French
+                "TD": "fr", // Chad -> French
+                "CL": "es", // Chile -> Spanish
+                "CN": "zh-CN", // China -> Chinese (Simplified)
+                "CO": "es", // Colombia -> Spanish
+                "KM": "ar", // Comoros -> Arabic
+                "CD": "fr", // Congo (DRC) -> French
+                "CG": "fr", // Congo (Republic) -> French
+                "CR": "es", // Costa Rica -> Spanish
+                "CI": "fr", // Côte d'Ivoire -> French
+                "HR": "hr", // Croatia -> Croatian
+                "CU": "es", // Cuba -> Spanish
+                "CY": "el", // Cyprus -> Greek
+                "CZ": "cs", // Czech Republic -> Czech
+                "DK": "da", // Denmark -> Danish
+                "DJ": "fr", // Djibouti -> French
+                "DM": "en", // Dominica -> English
+                "DO": "es", // Dominican Republic -> Spanish
+                "EC": "es", // Ecuador -> Spanish
+                "EG": "ar", // Egypt -> Arabic
+                "SV": "es", // El Salvador -> Spanish
+                "GQ": "es", // Equatorial Guinea -> Spanish
+                "ER": "ti", // Eritrea -> Tigrinya
+                "EE": "et", // Estonia -> Estonian
+                "ET": "am", // Ethiopia -> Amharic
+                "FJ": "en", // Fiji -> English
+                "FI": "fi", // Finland -> Finnish
+                "FR": "fr", // France -> French
+                "GA": "fr", // Gabon -> French
+                "GM": "en", // Gambia -> English
+                "GE": "ka", // Georgia -> Georgian
+                "DE": "de", // Germany -> German
+                "GH": "en", // Ghana -> English
+                "GR": "el", // Greece -> Greek
+                "GD": "en", // Grenada -> English
+                "GT": "es", // Guatemala -> Spanish
+                "GN": "fr", // Guinea -> French
+                "GW": "pt", // Guinea-Bissau -> Portuguese
+                "GY": "en", // Guyana -> English
+                "HT": "fr", // Haiti -> French
+                "HN": "es", // Honduras -> Spanish
+                "HK": "zh-CN", // Hong Kong -> Chinese
+                "HU": "hu", // Hungary -> Hungarian
+                "IS": "is", // Iceland -> Icelandic
+                "IN": "hi", // India -> Hindi
+                "ID": "id", // Indonesia -> Indonesian
+                "IR": "fa", // Iran -> Persian
+                "IQ": "ar", // Iraq -> Arabic
+                "IE": "en", // Ireland -> English
+                "IL": "he", // Israel -> Hebrew
+                "IT": "it", // Italy -> Italian
+                "JM": "en", // Jamaica -> English
+                "JP": "ja", // Japan -> Japanese
+                "JO": "ar", // Jordan -> Arabic
+                "KZ": "kk", // Kazakhstan -> Kazakh
+                "KE": "sw", // Kenya -> Swahili
+                "KI": "en", // Kiribati -> English
+                "KR": "ko", // South Korea -> Korean
+                "KW": "ar", // Kuwait -> Arabic
+                "KG": "ky", // Kyrgyzstan -> Kyrgyz
+                "LA": "lo", // Laos -> Lao
+                "LV": "lv", // Latvia -> Latvian
+                "LB": "ar", // Lebanon -> Arabic
+                "LS": "st", // Lesotho -> Sesotho
+                "LR": "en", // Liberia -> English
+                "LY": "ar", // Libya -> Arabic
+                "LI": "de", // Liechtenstein -> German
+                "LT": "lt", // Lithuania -> Lithuanian
+                "LU": "fr", // Luxembourg -> French
+                "MO": "zh-CN", // Macau -> Chinese
+                "MK": "mk", // North Macedonia -> Macedonian
+                "MG": "fr", // Madagascar -> French
+                "MW": "en", // Malawi -> English
+                "MY": "ms", // Malaysia -> Malay
+                "MV": "dv", // Maldives -> Divehi
+                "ML": "fr", // Mali -> French
+                "MT": "mt", // Malta -> Maltese
+                "MH": "en", // Marshall Islands -> English
+                "MR": "ar", // Mauritania -> Arabic
+                "MU": "en", // Mauritius -> English
+                "MX": "es", // Mexico -> Spanish
+                "FM": "en", // Micronesia -> English
+                "MD": "ro", // Moldova -> Romanian
+                "MC": "fr", // Monaco -> French
+                "MN": "mn", // Mongolia -> Mongolian
+                "ME": "sr", // Montenegro -> Serbian
+                "MA": "ar", // Morocco -> Arabic
+                "MZ": "pt", // Mozambique -> Portuguese
+                "MM": "my", // Myanmar -> Burmese
+                "NA": "en", // Namibia -> English
+                "NR": "en", // Nauru -> English
+                "NP": "ne", // Nepal -> Nepali
+                "NL": "nl", // Netherlands -> Dutch
+                "NZ": "en", // New Zealand -> English
+                "NI": "es", // Nicaragua -> Spanish
+                "NE": "fr", // Niger -> French
+                "NG": "en", // Nigeria -> English
+                "NO": "no", // Norway -> Norwegian
+                "OM": "ar", // Oman -> Arabic
+                "PK": "ur", // Pakistan -> Urdu
+                "PW": "en", // Palau -> English
+                "PA": "es", // Panama -> Spanish
+                "PG": "en", // Papua New Guinea -> English
+                "PY": "es", // Paraguay -> Spanish
+                "PE": "es", // Peru -> Spanish
+                "PH": "tl", // Philippines -> Filipino
+                "PL": "pl", // Poland -> Polish
+                "PT": "pt", // Portugal -> Portuguese
+                "QA": "ar", // Qatar -> Arabic
+                "RO": "ro", // Romania -> Romanian
+                "RU": "ru", // Russia -> Russian
+                "RW": "rw", // Rwanda -> Kinyarwanda
+                "KN": "en", // Saint Kitts and Nevis -> English
+                "LC": "en", // Saint Lucia -> English
+                "VC": "en", // Saint Vincent and the Grenadines -> English
+                "WS": "sm", // Samoa -> Samoan
+                "SM": "it", // San Marino -> Italian
+                "ST": "pt", // São Tomé and Príncipe -> Portuguese
+                "SA": "ar", // Saudi Arabia -> Arabic
+                "SN": "fr", // Senegal -> French
+                "RS": "sr", // Serbia -> Serbian
+                "SC": "en", // Seychelles -> English
+                "SL": "en", // Sierra Leone -> English
+                "SG": "zh-CN", // Singapore -> Chinese
+                "SK": "sk", // Slovakia -> Slovak
+                "SI": "sl", // Slovenia -> Slovene
+                "SB": "en", // Solomon Islands -> English
+                "SO": "so", // Somalia -> Somali
+                "ZA": "en", // South Africa -> English
+                "ES": "es", // Spain -> Spanish
+                "LK": "si", // Sri Lanka -> Sinhala
+                "SD": "ar", // Sudan -> Arabic
+                "SR": "nl", // Suriname -> Dutch
+                "SZ": "en", // Swaziland -> English
+                "SE": "sv", // Sweden -> Swedish
+                "CH": "de", // Switzerland -> German (also French, Italian)
+                "SY": "ar", // Syria -> Arabic
+                "TW": "zh-TW", // Taiwan -> Chinese (Traditional)
+                "TJ": "tg", // Tajikistan -> Tajik
+                "TZ": "sw", // Tanzania -> Swahili
+                "TH": "th", // Thailand -> Thai
+                "TL": "pt", // Timor-Leste -> Portuguese
+                "TG": "fr", // Togo -> French
+                "TO": "en", // Tonga -> English
+                "TT": "en", // Trinidad and Tobago -> English
+                "TN": "ar", // Tunisia -> Arabic
+                "TR": "tr", // Turkey -> Turkish
+                "TM": "tk", // Turkmenistan -> Turkmen
+                "TV": "en", // Tuvalu -> English
+                "UG": "en", // Uganda -> English
+                "UA": "uk", // Ukraine -> Ukrainian
+                "AE": "ar", // United Arab Emirates -> Arabic
+                "GB": "en", // UK -> English
+                "US": "en", // USA -> English
+                "UY": "es", // Uruguay -> Spanish
+                "UZ": "uz", // Uzbekistan -> Uzbek
+                "VU": "bi", // Vanuatu -> Bislama
+                "VA": "it", // Vatican City -> Italian
+                "VE": "es", // Venezuela -> Spanish
+                "VN": "vi", // Vietnam -> Vietnamese
+                "YE": "ar", // Yemen -> Arabic
+                "ZM": "en", // Zambia -> English
+                "ZW": "en" // Zimbabwe -> English
+            };
+
+
+            // Step 4: Detect visitor country using free API
+            fetch("https://ipapi.co/json/")
+                .then(res => res.json())
+                .then(data => {
+                    const countryCode = data.country_code;
+                    const targetLang = countryToLang[countryCode] || 'en';
+                    // for test
+                    //  const targetLang = 'ja';
+
+                    // Step 5: Auto-select language after Google widget loads
+                    if (targetLang !== 'en') {
+                        const interval = setInterval(() => {
+                            const select = document.querySelector('.goog-te-combo');
+                            if (select) {
+                                for (let i = 0; i < select.options.length; i++) {
+                                    if (select.options[i].value === targetLang) {
+                                        select.selectedIndex = i;
+                                        select.dispatchEvent(new Event('change'));
+                                        clearInterval(interval);
+                                        // make the translation bar hidden
+                                        //  document.querySelector('.skiptranslate').style.display = 'none';
+                                        break;
+                                    }
+                                }
+                            }
+                        }, 2000);
+                    }
+                })
+                .catch(() => {
+                    console.warn("Geo-IP lookup failed; keeping English.");
+                });
+        </script> --}}
 
         <script>
             @if (Session::has('message'))

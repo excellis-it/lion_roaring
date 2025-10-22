@@ -964,4 +964,191 @@ class ProductController extends Controller
 
         return response()->json(['message' => 'Product variation image deleted successfully!']);
     }
+
+    // NEW: Bulk delete variations (by selected IDs or by color group)
+    public function bulkDeleteVariations(Request $request)
+    {
+        $this->authorizeBulkVariations();
+
+        $data = $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'variation_ids' => 'nullable|array',
+            'variation_ids.*' => 'integer|exists:product_variations,id',
+            'color_id' => 'nullable|integer|exists:colors,id',
+        ]);
+
+        $productId = (int) $data['product_id'];
+
+        // Determine target IDs
+        if (!empty($data['color_id'])) {
+            $colorId = (int) $data['color_id'];
+            $targetIds = ProductVariation::where('product_id', $productId)
+                ->where('color_id', $colorId)
+                ->pluck('id');
+            $affectedColors = collect([$colorId]);
+        } else {
+            $ids = collect($data['variation_ids'] ?? []);
+            if ($ids->isEmpty()) {
+                return response()->json(['message' => 'No variations selected.'], 200);
+            }
+            // Filter to ensure IDs belong to the product
+            $targetIds = ProductVariation::where('product_id', $productId)
+                ->whereIn('id', $ids)
+                ->pluck('id');
+
+            // collect colors before deletion
+            $affectedColors = ProductVariation::whereIn('id', $targetIds)
+                ->pluck('color_id')
+                ->unique()
+                ->filter(function ($c) {
+                    return !is_null($c);
+                });
+        }
+
+        if ($targetIds->isEmpty()) {
+            return response()->json(['message' => 'Nothing to delete.'], 200);
+        }
+
+        // Delete dependent WarehouseProduct rows
+        WarehouseProduct::whereIn('product_variation_id', $targetIds)->delete();
+
+        // Delete variations
+        ProductVariation::whereIn('id', $targetIds)->delete();
+
+        // Clean ProductColorImage if a color has no more variations
+        foreach ($affectedColors as $colorId) {
+            $remaining = ProductVariation::where('product_id', $productId)
+                ->where('color_id', $colorId)
+                ->count();
+            if ($remaining === 0) {
+                ProductColorImage::where('product_id', $productId)
+                    ->where('color_id', $colorId)
+                    ->delete();
+            }
+        }
+
+        return response()->json(['message' => 'Variations deleted successfully.']);
+    }
+
+    // NEW: Bulk update variations (apply provided fields to selected IDs or all in color group)
+    public function bulkUpdateVariations(Request $request)
+    {
+        $this->authorizeBulkVariations();
+
+        $validated = $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'variation_ids' => 'nullable|array',
+            'variation_ids.*' => 'integer|exists:product_variations,id',
+            'color_id' => 'nullable|integer|exists:colors,id',
+            'apply_to' => 'required|in:checked,group',
+
+            'sku' => 'nullable|string|max:255',
+            'price' => 'nullable|numeric|min:0',
+            'sale_price' => 'nullable|numeric|min:0',
+            'stock_quantity' => 'nullable|integer|min:0',
+        ]);
+
+        $product = Product::findOrFail($validated['product_id']);
+
+        // Resolve targets
+        if ($validated['apply_to'] === 'group') {
+            if (empty($validated['color_id'])) {
+                return response()->json(['message' => 'color_id is required for group apply.'], 422);
+            }
+            $targets = ProductVariation::where('product_id', $product->id)
+                ->where('color_id', $validated['color_id'])
+                ->get();
+        } else {
+            $ids = collect($validated['variation_ids'] ?? []);
+            if ($ids->isEmpty()) {
+                return response()->json(['message' => 'Select at least one variation.'], 422);
+            }
+            $targets = ProductVariation::where('product_id', $product->id)
+                ->whereIn('id', $ids)
+                ->get();
+        }
+
+        if ($targets->isEmpty()) {
+            return response()->json(['message' => 'No matching variations found.'], 404);
+        }
+
+        // Validate sale_price <= price where applicable
+        $providedPrice = array_key_exists('price', $validated) ? $validated['price'] : null;
+        $providedSale = array_key_exists('sale_price', $validated) ? $validated['sale_price'] : null;
+        if ($providedSale !== null) {
+            foreach ($targets as $v) {
+                $effectivePrice = $providedPrice !== null ? (float)$providedPrice : (float)$v->price;
+                if ($validated['sale_price'] > $effectivePrice) {
+                    return response()->json(['message' => 'Sale price cannot exceed price.'], 422);
+                }
+            }
+        }
+
+        foreach ($targets as $variation) {
+            // Apply fields only if provided (non-null)
+            if (array_key_exists('sku', $validated) && $validated['sku'] !== null) {
+                $variation->sku = $validated['sku'];
+            }
+
+            if ($product->is_free) {
+                $variation->price = 0;
+                $variation->sale_price = null;
+                $variation->before_sale_price = null;
+            } else {
+                if ($providedPrice !== null) {
+                    $variation->price = $validated['price'];
+                    // maintain before_sale if sale provided later
+                    if ($variation->sale_price !== null) {
+                        $variation->before_sale_price = $variation->price;
+                    }
+                }
+                if ($providedSale !== null) {
+                    $variation->sale_price = $validated['sale_price'];
+                    $variation->before_sale_price = $validated['sale_price'] !== null && $validated['sale_price'] !== '' ? ($providedPrice !== null ? $validated['price'] : $variation->price) : null;
+                    if ($variation->sale_price === null || $variation->sale_price === '') {
+                        $variation->sale_price = null;
+                        $variation->before_sale_price = null;
+                    }
+                }
+            }
+
+            if (array_key_exists('stock_quantity', $validated) && $validated['stock_quantity'] !== null) {
+                $variation->stock_quantity = (int) $validated['stock_quantity'];
+            }
+
+            $variation->save();
+
+            // Update WarehouseProduct mirrors
+            $wpProducts = WarehouseProduct::where('product_variation_id', $variation->id)->get();
+            foreach ($wpProducts as $wp) {
+                if (array_key_exists('sku', $validated) && $validated['sku'] !== null) {
+                    $wp->sku = $variation->sku;
+                }
+
+                if ($product->is_free) {
+                    $wp->price = 0;
+                    $wp->before_sale_price = null;
+                } else {
+                    if ($providedPrice !== null || $providedSale !== null) {
+                        $wp->price = $variation->sale_price !== null ? $variation->sale_price : $variation->price;
+                        $wp->before_sale_price = $variation->before_sale_price ?? null;
+                    }
+                }
+
+                $wp->save();
+            }
+        }
+
+        return response()->json(['message' => 'Variations updated successfully.']);
+    }
+
+    private function authorizeBulkVariations()
+    {
+        if (!(auth()->user()->hasRole('SUPER ADMIN')
+            || auth()->user()->hasRole('ADMINISTRATOR')
+            || auth()->user()->can('Edit Estore Products')
+            || auth()->user()->isWarehouseAdmin())) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
 }

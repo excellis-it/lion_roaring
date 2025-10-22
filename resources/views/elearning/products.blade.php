@@ -36,7 +36,8 @@
                             <h4>Filter</h4>
                         </div>
                         <div class="search_color w-100">
-                            <input type="text" placeholder="Search Collection" class="form-control">
+                            <input type="text" placeholder="Search Collection" class="form-control"
+                                id="serach-product" />
                             <button type="button">
                                 <img src="{{ asset('ecom_assets/images/search.svg') }}" alt="">
                             </button>
@@ -258,6 +259,34 @@
 
             // Search products
             $(document).on('submit', '#product-search-form', function(e) {
+                e.preventDefault();
+                var search = $('#serach-product').val();
+                var prices = [];
+                var category_id = [];
+
+
+                $('input[name="price"]:checked').each(function() {
+                    prices.push($(this).val());
+                });
+
+                var latestFilter = $('#latest_filter').val();
+
+                @if ($category_id != '')
+                    var cat = '{{ $category_id }}';
+                    category_id.push(cat);
+                @else
+                    $('input[name="category_id"]:checked').each(function() {
+                        category_id.push($(this).val());
+                    });
+                @endif
+
+                page = 1;
+                $('#products').html('');
+
+                loadMoreProducts(page, prices, category_id, latestFilter, search);
+            });
+
+            $(document).on('keyup', '#serach-product', function(e) {
                 e.preventDefault();
                 var search = $('#serach-product').val();
                 var prices = [];

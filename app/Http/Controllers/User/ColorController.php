@@ -70,7 +70,7 @@ class ColorController extends Controller
         // validation
         $request->validate([
             'color_name' => 'required|string|max:255',
-            'color' => 'required|string|max:7', // Assuming color is a hex code
+            // 'color' => 'required|string|max:7', // Assuming color is a hex code
             'status' => 'required|boolean',
         ]);
 
@@ -99,7 +99,7 @@ class ColorController extends Controller
         $color = Color::find($id);
 
         // if color associated with any products, prevent deletion
-        if ($color->products()->count() > 0) {
+        if ($color->productVariations()->count() > 0) {
             return response()->json(['success' => false, 'msg' => 'This color is associated with products and cannot be deleted.']);
         }
 
