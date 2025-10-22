@@ -108,7 +108,8 @@
                                     <label for="product_ids">Select Products</label>
                                     @php $selectedProducts = old('product_ids', []); @endphp
                                     <select name="product_ids[]" id="product_ids"
-                                        class="form-control selectpicker @error('product_ids') is-invalid @enderror" multiple>
+                                        class="form-control selectpicker @error('product_ids') is-invalid @enderror"
+                                        multiple>
                                         @foreach ($products as $product)
                                             <option value="{{ $product->id }}"
                                                 {{ in_array($product->id, $selectedProducts) ? 'selected' : '' }}>
@@ -126,12 +127,12 @@
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="is_percentage">Percentage/Flat</label>
+                                    @php $isPercentage = (string) old('is_percentage', '1'); @endphp
                                     <select name="is_percentage" id="is_percentage"
                                         class="form-control @error('is_percentage') is-invalid @enderror">
-                                        <option value="1" {{ old('is_percentage', '1') == 1 ? 'selected' : '' }}>
-                                            Percentage</option>
-                                        <option value="0" {{ old('is_percentage') == 0 ? 'selected' : '' }}>Flat
+                                        <option value="1" {{ $isPercentage === '1' ? 'selected' : '' }}>Percentage
                                         </option>
+                                        <option value="0" {{ $isPercentage === '0' ? 'selected' : '' }}>Flat</option>
                                     </select>
                                     @error('is_percentage')
                                         <span class="text-danger">{{ $message }}</span>

@@ -38,14 +38,14 @@ class ColorController extends Controller
         // validation
         $request->validate([
             'color_name' => 'required|string|max:255',
-            'color' => 'required|string', // Assuming color is a hex code
+            // 'color' => 'required|string', // Assuming color is a hex code
             'status' => 'required|boolean',
         ]);
 
         // Logic to store new color
         $color = new Color();
         $color->color_name = $request->color_name;
-        $color->color = $request->color;
+        $color->color = $request->color ?? '#FFFFFF';
         $color->status = $request->status;
         $color->save();
 
@@ -77,7 +77,7 @@ class ColorController extends Controller
         // Logic to update color
         $color = Color::findOrFail($id);
         $color->color_name = $request->color_name;
-        $color->color = $request->color;
+        $color->color = $request->color ?? '#FFFFFF';
         $color->status = $request->status;
         $color->save();
 
@@ -97,11 +97,17 @@ class ColorController extends Controller
     {
 
         $color = Color::find($id);
+
+        // if color associated with any products, prevent deletion
+        if ($color->products()->count() > 0) {
+            return response()->json(['success' => false, 'msg' => 'This color is associated with products and cannot be deleted.']);
+        }
+
         if ($color) {
             $color->delete();
-            return redirect()->route('colors.index')->with('message', 'Color deleted successfully.');
+            return response()->json(['success' => true, 'msg' => 'Color deleted successfully.']);
         } else {
-            return redirect()->route('colors.index')->with('error', 'File not found.');
+            return response()->json(['success' => false, 'msg' => 'Color not found.']);
         }
     }
 }

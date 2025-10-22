@@ -27,7 +27,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>Color</th>
+                            {{-- <th>Color</th> --}}
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -36,18 +36,18 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $color->color_name }}</td>
-                                <td>
+                                {{-- <td>
                                     <div style="width: 60px; height: 25px; background-color: {{ $color->color }};"></div>
-                                </td>
+                                </td> --}}
                                 <td class="d-flex">
                                     @if (auth()->user()->can('Edit Estore Colors'))
                                         <a href="{{ route('colors.edit', $color->id) }}" class="edit_icon me-2"><i
                                                 class="fa-solid fa-edit"></i></a>
                                     @endif
-                                    {{-- <a href="javascript:void(0)" id="delete"
+                                    <a href="javascript:void(0)" id="delete"
                                         data-route="{{ route('colors.delete', $color->id) }}" class="delete_icon">
                                         <i class="fa-solid fa-trash"></i>
-                                    </a> --}}
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach
@@ -66,20 +66,42 @@
         $(document).on('click', '#delete', function(e) {
             swal({
                     title: "Are you sure?",
-                    text: "To delete this file.",
+                    text: "To delete this.",
                     type: "warning",
                     confirmButtonText: "Yes",
                     showCancelButton: true
                 })
                 .then((result) => {
                     if (result.value) {
-                        window.location = $(this).data('route');
+                        console.log('delete clicked');
+                        var route = $(this).data('route');
+                        $.ajax({
+                            url: route,
+                            type: 'GET',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    swal("Deleted!", response.msg, "success")
+                                        .then(() => {
+                                            location.reload();
+                                        });
+                                } else {
+                                    swal("Info", response.msg, "info");
+                                }
+                            },
+                            error: function(xhr) {
+                                swal("Error!", "An error occurred while deleting the color.",
+                                    "error");
+                            }
+                        });
                     } else if (result.dismiss === 'cancel') {
-                        swal(
-                            'Cancelled',
-                            'Your stay here :)',
-                            'error'
-                        )
+                        // swal(
+                        //     'Cancelled',
+                        //     'Your stay here :)',
+                        //     'error'
+                        // )
                     }
                 })
         });

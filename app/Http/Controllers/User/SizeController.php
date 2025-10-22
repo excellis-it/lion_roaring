@@ -76,7 +76,7 @@ class SizeController extends Controller
 
     public function destroy($id)
     {
-      
+
         // Logic to delete size
         $size = Size::findOrFail($id);
         $size->delete();
@@ -88,11 +88,17 @@ class SizeController extends Controller
     {
 
         $size = Size::find($id);
+
+        // if size associated with any products, prevent deletion
+        if ($size->products()->count() > 0) {
+            return response()->json(['success' => false, 'msg' => 'This size is associated with products and cannot be deleted.']);
+        }
+
         if ($size) {
             $size->delete();
-            return redirect()->route('sizes.index')->with('message', 'Size deleted successfully.');
+            return response()->json(['success' => true, 'msg' => 'Size deleted successfully.']);
         } else {
-            return redirect()->route('sizes.index')->with('error', 'File not found.');
+            return response()->json(['success' => false, 'msg' => 'Size not found.']);
         }
     }
 }
