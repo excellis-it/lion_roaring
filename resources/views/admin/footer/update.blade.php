@@ -15,6 +15,20 @@
                 <form action="{{ route('footer.update') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $footer->id ?? '' }}">
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label for="country_code">Content Country</label>
+                            <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                name="content_country_code" id="content_country_code" class="form-control">
+                                @foreach (\App\Models\Country::all() as $country)
+                                    <option value="{{ $country->code }}"
+                                        {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                        {{ $country->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="sales-report-card-wrap">
                         <div class="form-head">
                             <h4>Footer Section</h4>
@@ -26,8 +40,8 @@
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Footer logo</label>
-                                        <input type="file" class="form-control" id="footer_logo"
-                                            name="footer_logo" value="{{ old('footer_logo') }}" placeholder="Footer Logo">
+                                        <input type="file" class="form-control" id="footer_logo" name="footer_logo"
+                                            value="{{ old('footer_logo') }}" placeholder="Footer Logo">
                                         @if ($errors->has('footer_logo'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('footer_logo') }}</div>
@@ -37,28 +51,28 @@
                             </div>
                             {{-- view footer logo --}}
 
-                                <div class="col-md-6">
-                                    <div class="form-group-div">
-                                        <div class="form-group">
+                            <div class="col-md-6">
+                                <div class="form-group-div">
+                                    <div class="form-group">
                                         @if (isset($footer->footer_logo))
-                                            <img src="{{ Storage::url($footer->footer_logo) }}" id="footer_logo_preview" alt="Footer Logo"
-                                                style="width: 180px; height: 100px;">
+                                            <img src="{{ Storage::url($footer->footer_logo) }}" id="footer_logo_preview"
+                                                alt="Footer Logo" style="width: 180px; height: 100px;">
                                         @else
-                                        <img src="" id="footer_logo_preview" alt="Footer Logo"
+                                            <img src="" id="footer_logo_preview" alt="Footer Logo"
                                                 style="width: 180px; height: 100px; display:none;">
                                         @endif
-                                        </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                  {{-- courses --}}
+                            {{-- courses --}}
                             <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Footer Flag</label>
-                                        <input type="file" class="form-control" id="footer_flag"
-                                            name="footer_flag" value="{{ old('footer_flag') }}" placeholder="Footer Logo">
+                                        <input type="file" class="form-control" id="footer_flag" name="footer_flag"
+                                            value="{{ old('footer_flag') }}" placeholder="Footer Logo">
                                         @if ($errors->has('footer_flag'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('footer_flag') }}</div>
@@ -68,19 +82,19 @@
                             </div>
                             {{-- view footer logo --}}
 
-                                <div class="col-md-6">
-                                    <div class="form-group-div">
-                                        <div class="form-group">
+                            <div class="col-md-6">
+                                <div class="form-group-div">
+                                    <div class="form-group">
                                         @if (isset($footer->footer_flag))
-                                            <img src="{{ Storage::url($footer->footer_flag) }}" id="footer_flag_preview" alt="Footer Logo"
-                                                style="width: 180px; height: 100px;">
+                                            <img src="{{ Storage::url($footer->footer_flag) }}" id="footer_flag_preview"
+                                                alt="Footer Logo" style="width: 180px; height: 100px;">
                                         @else
-                                        <img src="" id="footer_flag_preview" alt="Footer Logo"
+                                            <img src="" id="footer_flag_preview" alt="Footer Logo"
                                                 style="width: 180px; height: 100px; display:none;">
                                         @endif
-                                        </div>
                                     </div>
                                 </div>
+                            </div>
 
                             {{-- our_organization_id --}}
                             <div class="col-md-6">
@@ -116,8 +130,7 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="footer_address">Footer Address*</label>
-                                        <textarea type="text" class="form-control" id="footer_address" name="footer_address"
-                                            placeholder="Footer Address"> {{ isset($footer->footer_address) ? $footer->footer_address : old('footer_address') }}</textarea>
+                                        <textarea type="text" class="form-control" id="footer_address" name="footer_address" placeholder="Footer Address"> {{ isset($footer->footer_address) ? $footer->footer_address : old('footer_address') }}</textarea>
                                         @if ($errors->has('footer_address'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('footer_address') }}</div>
@@ -208,19 +221,20 @@
                             </div>
                             {{-- view footer playstore icon --}}
 
-                                <div class="col-md-2">
-                                    <div class="form-group-div">
-                                        <div class="form-group">
+                            <div class="col-md-2">
+                                <div class="form-group-div">
+                                    <div class="form-group">
                                         @if (isset($footer->footer_playstore_icon))
                                             <img src="{{ Storage::url($footer->footer_playstore_icon) }}"
-                                                alt="Footer Playstore Icon" id="prev_footer_play_icon" style="width: 180px; height: 100px;">
+                                                alt="Footer Playstore Icon" id="prev_footer_play_icon"
+                                                style="width: 180px; height: 100px;">
                                         @else
-                                        <img src=""
-                                                alt="Footer Playstore Icon" id="prev_footer_play_icon" style="width: 180px; height: 100px; display:none;">
+                                            <img src="" alt="Footer Playstore Icon" id="prev_footer_play_icon"
+                                                style="width: 180px; height: 100px; display:none;">
                                         @endif
-                                        </div>
                                     </div>
                                 </div>
+                            </div>
 
                             {{-- footer_playstore_link --}}
                             <div class="col-md-6">
@@ -259,13 +273,14 @@
                             <div class="col-md-2">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                    @if (isset($footer->footer_appstore_icon))
-                                        <img src="{{ Storage::url($footer->footer_appstore_icon) }}"
-                                            alt="Footer Playstore Icon" id="prev_footer_app_icon" style="width: 180px; height: 100px;">
-                                    @else
-                                    <img src=""
-                                            alt="Footer Playstore Icon" id="prev_footer_app_icon" style="width: 180px; height: 100px; display:none;">
-                                    @endif
+                                        @if (isset($footer->footer_appstore_icon))
+                                            <img src="{{ Storage::url($footer->footer_appstore_icon) }}"
+                                                alt="Footer Playstore Icon" id="prev_footer_app_icon"
+                                                style="width: 180px; height: 100px;">
+                                        @else
+                                            <img src="" alt="Footer Playstore Icon" id="prev_footer_app_icon"
+                                                style="width: 180px; height: 100px; display:none;">
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -376,24 +391,24 @@
 @endsection
 
 @push('scripts')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-<script>
-    // ClassicEditor.create(document.querySelector("#footer_address"));
-    // ClassicEditor.create(document.querySelector("#footer_title"));
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script>
+        // ClassicEditor.create(document.querySelector("#footer_address"));
+        // ClassicEditor.create(document.querySelector("#footer_title"));
 
-    $('#footer_title').summernote({
-        placeholder: 'Footer Title*',
-        tabsize: 2,
-        height: 100
-    });
+        $('#footer_title').summernote({
+            placeholder: 'Footer Title*',
+            tabsize: 2,
+            height: 100
+        });
 
-    $('#footer_address').summernote({
-        placeholder: 'Footer Address*',
-        tabsize: 2,
-        height: 100
-    });
-</script>
+        $('#footer_address').summernote({
+            placeholder: 'Footer Address*',
+            tabsize: 2,
+            height: 100
+        });
+    </script>
     <script>
         $(document).on("click", ".add-more", function() {
             var count = $("#add-more .col-xl-5").length;
@@ -476,5 +491,5 @@
                 reader.readAsDataURL(this.files[0]);
             });
         });
-        </script>
+    </script>
 @endpush

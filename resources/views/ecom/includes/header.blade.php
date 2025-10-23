@@ -43,7 +43,7 @@
                     </div>
 
                     <div class="top-bar-text">
-                        <span class="d-block font-bold" onclick="changeLocation()" style="cursor: pointer;">My
+                        <span class="d-block font-bold" onclick="changeLocation()" style="cursor: pointer;">Delivery
                             Location </span>
 
                         @if (Auth::check())
@@ -133,8 +133,9 @@
                                                 <li><a class="dropdown-item"
                                                         href="{{ route('e-store.profile') }}">Profile</a>
                                                 </li>
-                                                @if(Auth::user() && Auth::user()->role !== 'ESTORE_USER')
-                                                    <li><a class="dropdown-item" href="{{ route('user.profile') }}">Go PMA Panel</a></li>
+                                                @if (Auth::user() && Auth::user()->role !== 'ESTORE_USER')
+                                                    <li><a class="dropdown-item"
+                                                            href="{{ route('user.profile') }}">Go PMA Panel</a></li>
                                                 @endif
                                                 <li><a class="dropdown-item"
                                                         href="{{ route('e-store.my-orders') }}">My
