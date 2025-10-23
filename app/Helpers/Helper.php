@@ -627,4 +627,13 @@ class Helper
         return $image ? $image->original_path : null;
     }
 
+    public static function getEstoreProductStartingPrice($productId){
+        $warehouseProducts = \App\Models\WarehouseProduct::where('product_id', $productId)->get();
+        if($warehouseProducts->isEmpty()){
+            return null;
+        }
+        $startingPrice = $warehouseProducts->min('price');
+        return $startingPrice;
+    }
+
 }
