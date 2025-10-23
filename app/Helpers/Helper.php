@@ -32,6 +32,7 @@ use App\Models\WareHouse;
 use App\Models\EstoreCart;
 use App\Models\GlobalImage;
 use Illuminate\Support\Facades\Route;
+use App\Models\CmsContent;
 
 class Helper
 {
@@ -146,7 +147,9 @@ class Helper
 
     public static function getFooter()
     {
-        $footer = Footer::orderBy('id', 'desc')->first();
+        // $footer = Footer::orderBy('id', 'desc')->first();
+        $footer = CmsContent::getContent('footer', \App\Models\Footer::class, null, self::getVisitorCountryCode());
+
         return $footer;
     }
 
@@ -208,7 +211,9 @@ class Helper
 
     public static function getFooterCms()
     {
-        $cms = EcomFooterCms::orderBy('id', 'desc')->first();
+        //  $cms = EcomFooterCms::orderBy('id', 'desc')->first();
+        // getVisitorCountryCode
+        $cms = CmsContent::getContent('ecomfootercms', \App\Models\EcomFooterCms::class, null, self::getVisitorCountryCode());
         return $cms;
     }
 
@@ -627,4 +632,67 @@ class Helper
         return $image ? $image->original_path : null;
     }
 
+    public static function getEstoreProductStartingPrice($productId)
+    {
+        $warehouseProducts = \App\Models\WarehouseProduct::where('product_id', $productId)->get();
+        if ($warehouseProducts->isEmpty()) {
+            return null;
+        }
+        $startingPrice = $warehouseProducts->min('price');
+        return $startingPrice;
+    }
+
+    // get visitor country code by ip using ipinfo.io
+    public static function getVisitorCountryCode()
+    {
+        $ip = request()->ip();
+        $codeSessionKey = 'visitor_country_code_' . $ip;
+        $nameSessionKey = 'visitor_country_name_' . $ip;
+
+        // Check session first
+        if (session()->has($codeSessionKey) && session()->has($nameSessionKey)) {
+            return session($codeSessionKey);
+        }
+
+        try {
+            $client = new Client();
+            $response = $client->get("https://ipinfo.io/{$ip}/json");
+            $data = json_decode($response->getBody(), true);
+            $countryCode = $data['country'] ?? 'US';
+
+            // Lookup country name from Country model
+            $countryName = \App\Models\Country::where('code', $countryCode)->value('name') ?? 'United States';
+
+            // Save both code and name in session
+            session([
+                $codeSessionKey => $countryCode,
+                $nameSessionKey => $countryName,
+            ]);
+
+            return $countryCode;
+        } catch (\Exception $e) {
+            session([
+                $codeSessionKey => 'US',
+                $nameSessionKey => 'United States',
+            ]);
+            return 'US';
+        }
+    }
+
+    // get visitor country name
+    public static function getVisitorCountryName()
+    {
+        $ip = request()->ip();
+        $nameSessionKey = 'visitor_country_name_' . $ip;
+
+        // Check session first
+        if (session()->has($nameSessionKey)) {
+            return session($nameSessionKey);
+        }
+
+        // If not in session, call getVisitorCountryCode to populate both code and name
+        self::getVisitorCountryCode();
+
+        return session($nameSessionKey, 'United States');
+    }
 }

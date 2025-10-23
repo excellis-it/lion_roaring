@@ -225,7 +225,7 @@ class ProductController extends Controller
             }
 
             // SKU and quantity always required for simple product
-            $rules['sku'] = 'required|string|max:255|unique:products,sku';
+            //  $rules['sku'] = 'required|string|max:255|unique:products,sku';
             $rules['quantity'] = 'required|integer|min:0';
         }
 
@@ -251,8 +251,8 @@ class ProductController extends Controller
             'images.required' => 'Please upload at least one gallery image.',
             'images.min' => 'Please upload at least one gallery image.',
             'price.required' => 'The price field is required for simple products (unless marked free).',
-            'sku.required' => 'The SKU field is required for simple products.',
-            'sku.unique' => 'The SKU has already been taken.',
+            // 'sku.required' => 'The SKU field is required for simple products.',
+            // 'sku.unique' => 'The SKU has already been taken.',
             'quantity.required' => 'The stock quantity is required for simple products.',
             'sizes.required' => 'Please select at least one size for variable products.',
             'other_charges.*.charge_name.required_with' => 'Charge name is required when adding other charges.',
@@ -285,6 +285,13 @@ class ProductController extends Controller
         // Validation passed - get validated data
         $validatedData = $validator->validated();
 
+        // generate SKU with easy coded in the first 3-5 characters indicate the category. for example:  Agriculture - AGR+number, Science & Innovation - SCI+number, etc.
+        $categoryName = Category::find($request->category_id)->name ?? 'GEN';
+        $categoryPrefix = substr($categoryName, 0, 3) ?: 'GEN';
+        $lastProduct = Product::where('category_id', $request->category_id)->orderBy('id', 'desc')->first();
+        $number = $lastProduct ? $lastProduct->id + 1 : 1;
+        $generatedSKU = strtoupper(uniqid($categoryPrefix . '-' . $number . '-'));
+
         $product = new Product();
         $product->category_id = $request->category_id;
         $product->user_id = auth()->user()->id;
@@ -293,7 +300,7 @@ class ProductController extends Controller
         $product->short_description = $request->short_description ?? '';
         $product->specification = $request->specification;
         $product->product_type = $request->product_type; // 'simple' or 'variable'
-        $product->sku = $request->sku ?? '';
+        $product->sku = $generatedSKU;
         $product->quantity = $request->quantity ?? 0;
         $product->price = $request->price;
         $product->sale_price = $request->sale_price ?? null;
@@ -363,7 +370,7 @@ class ProductController extends Controller
 
             $variation = new ProductVariation();
             $variation->product_id = $product->id;
-            $variation->sku = $product->sku;
+            $variation->sku = $generatedSKU;
             $variation->price = $product->price;
             $variation->sale_price = $product->sale_price ? $product->sale_price : null;
             $variation->before_sale_price = $product->sale_price ? $product->price : null;

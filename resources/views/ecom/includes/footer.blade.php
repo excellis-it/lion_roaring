@@ -1,6 +1,7 @@
 @php
     use App\Helpers\Helper;
 @endphp
+
 <footer class="footer_sec">
     <div class="container-fluid position-relative z-1">
         <div class="row">
@@ -85,12 +86,18 @@
                         <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_instagram_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-instagram"></i></a></li>
                         <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_twitter_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-twitter"></i></a></li>
                         <li><a href="{!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_youtube_link : 'javascript:void(0);' !!}"><i class="fa-brands fa-youtube"></i></a></li>
+
+                        <li><span class="badge bg-primary ms-3 mt-2"> <i class="fa fa-globe"></i>
+                                {{ Helper::getVisitorCountryName() }}</span></li>
                     </ul>
                 </div>
             </div>
         </div>
-        <!-- <div class="container"> -->
-            <p class="mt-3" style="border-top:1px solid #ccc; padding:20px; 20px 0px 20px"> {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_copywrite_text : '' !!}</p>
-        <!-- </div> -->
+
+        <p class="mt-3" style="border-top:1px solid #ccc; padding:20px; 20px 0px 20px"> {!! Helper::getFooterCms() ? Helper::getFooterCms()->footer_copywrite_text : '' !!}</p>
+
+
+
+
     </div>
 </footer>

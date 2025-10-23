@@ -404,7 +404,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-3 mb-2">
+                                            {{-- <div class="col-md-3 mb-2">
                                                 <div class="box_label">
                                                     <label for="sku"> Product SKU*</label>
                                                     <input type="text" name="sku" id="sku"
@@ -413,7 +413,7 @@
                                                         <span class="error">{{ $errors->first('sku') }}</span>
                                                     @endif
                                                 </div>
-                                            </div>
+                                            </div> --}}
 
                                             <div class="col-md-3 mb-2">
                                                 <div class="box_label">

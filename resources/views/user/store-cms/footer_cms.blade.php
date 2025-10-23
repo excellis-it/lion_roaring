@@ -15,6 +15,22 @@
                         enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="id" value="{{ isset($cms->id) ? $cms->id : '' }}">
+
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label for="country_code">Content Country</label>
+                                <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                    name="content_country_code" id="content_country_code" class="form-control">
+                                    @foreach (\App\Models\Country::all() as $country)
+                                        <option value="{{ $country->code }}"
+                                            {{ (request()->get('content_country_code', 'US') == $country->code) ? 'selected' : '' }}>
+                                            {{ $country->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
@@ -29,7 +45,9 @@
                                     <label for="image"> Footer Logo*</label>
                                     <input type="file" name="footer_logo" id="image" class="form-control"
                                         value="{{ old('footer_logo') }}">
-                                    <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 120px, height: 120px, max 1MB)</span>
+                                    <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 120px,
+                                        height:
+                                        120px, max 1MB)</span>
                                     @if ($errors->has('footer_logo'))
                                         <span class="error">{{ $errors->first('footer_logo') }}</span>
                                     @endif
@@ -183,6 +201,7 @@
                                 </div>
                             </div>
                             <div class="w-100 text-end d-flex align-items-center justify-content-end mt-3">
+
                                 <button type="submit" class="print_btn me-2">Update</button>
                                 <a href="{{ route('user.store-cms.list') }}" class="print_btn print_btn_vv">Cancel</a>
                             </div>

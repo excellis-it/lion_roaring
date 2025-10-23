@@ -15,6 +15,20 @@
                 <form action="{{ route('home-cms.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $home->id ?? '' }}">
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label for="country_code">Content Country</label>
+                            <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                name="content_country_code" id="content_country_code" class="form-control">
+                                @foreach (\App\Models\Country::all() as $country)
+                                    <option value="{{ $country->code }}"
+                                        {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                        {{ $country->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="sales-report-card-wrap">
                         <div class="form-head">
                             <h4>Menu Section</h4>
@@ -27,9 +41,8 @@
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Banner Image</label>
-                                        <input type="file" class="form-control" id="banner_image"
-                                            name="banner_image" value="{{ old('banner_image') }}"
-                                            placeholder="Banner Image">
+                                        <input type="file" class="form-control" id="banner_image" name="banner_image"
+                                            value="{{ old('banner_image') }}" placeholder="Banner Image">
                                         @if ($errors->has('banner_image'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('banner_image') }}</div>
@@ -41,13 +54,13 @@
                             <div class="col-md-2">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                    @if (isset($home->banner_image))
-                                        <img src="{{ Storage::url($home->banner_image) }}" id="banner_image_preview" alt="Footer Logo"
-                                            style="width: 180px; height: 100px;">
-                                    @else
-                                    <img src="" id="banner_image_preview" alt="Footer Logo"
-                                            style="width: 180px; height: 100px; display:none;">
-                                    @endif
+                                        @if (isset($home->banner_image))
+                                            <img src="{{ Storage::url($home->banner_image) }}" id="banner_image_preview"
+                                                alt="Footer Logo" style="width: 180px; height: 100px;">
+                                        @else
+                                            <img src="" id="banner_image_preview" alt="Footer Logo"
+                                                style="width: 180px; height: 100px; display:none;">
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -71,13 +84,13 @@
                             <div class="col-md-2">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                    @if (isset($home->banner_video))
-                                        <video  controls style="width: 200px; height:100px;">
-                                            <source src="{{ Storage::url($home->banner_video) }}" type="video/mp4" >
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    @else
-                                    @endif
+                                        @if (isset($home->banner_video))
+                                            <video controls style="width: 200px; height:100px;">
+                                                <source src="{{ Storage::url($home->banner_video) }}" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        @else
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -156,13 +169,14 @@
                             <div class="col-md-2">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                    @if (isset($home->section_1_video))
-                                        <video  controls style="width: 200px; height:100px;">
-                                            <source src="{{ Storage::url($home->section_1_video) }}" type="video/mp4" >
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    @else
-                                    @endif
+                                        @if (isset($home->section_1_video))
+                                            <video controls style="width: 200px; height:100px;">
+                                                <source src="{{ Storage::url($home->section_1_video) }}"
+                                                    type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        @else
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -173,7 +187,7 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Section 1 Description*</label>
-                                        <textarea name="section_1_description" id="section1_des"  cols="30" rows="10"
+                                        <textarea name="section_1_description" id="section1_des" cols="30" rows="10"
                                             placeholder="Section 1 Description" class="form-control">{{ isset($home->section_1_description) ? $home->section_1_description : old('section_1_description') }}</textarea>
                                         @if ($errors->has('section_1_description'))
                                             <div class="error" style="color:red;">
@@ -224,13 +238,14 @@
                             <div class="col-md-2">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                    @if (isset($home->section_2_left_image))
-                                        <img src="{{ Storage::url($home->section_2_left_image) }}" id="section_2_left_preview" alt="Footer Logo"
-                                            style="width: 180px; height: 100px;">
-                                    @else
-                                    <img src="" id="section_2_left_preview" alt="Footer Logo"
-                                            style="width: 180px; height: 100px; display:none;">
-                                    @endif
+                                        @if (isset($home->section_2_left_image))
+                                            <img src="{{ Storage::url($home->section_2_left_image) }}"
+                                                id="section_2_left_preview" alt="Footer Logo"
+                                                style="width: 180px; height: 100px;">
+                                        @else
+                                            <img src="" id="section_2_left_preview" alt="Footer Logo"
+                                                style="width: 180px; height: 100px; display:none;">
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -240,8 +255,8 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Section 2 Left Description*</label>
-                                        <textarea name="section_2_left_description"  cols="30" rows="10"
-                                            placeholder="Section 2 Left Description" id="section2_left_des" class="form-control">{{ isset($home->section_2_left_description) ? $home->section_2_left_description : old('section_2_left_description') }}</textarea>
+                                        <textarea name="section_2_left_description" cols="30" rows="10" placeholder="Section 2 Left Description"
+                                            id="section2_left_des" class="form-control">{{ isset($home->section_2_left_description) ? $home->section_2_left_description : old('section_2_left_description') }}</textarea>
                                         @if ($errors->has('section_2_left_description'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('section_2_left_description') }}</div>
@@ -284,13 +299,14 @@
                             <div class="col-md-2">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                    @if (isset($home->section_2_right_image))
-                                        <img src="{{ Storage::url($home->section_2_right_image) }}" id="section_2_right_image_preview" alt="Footer Logo"
-                                            style="width: 180px; height: 100px;">
-                                    @else
-                                    <img src="" id="section_2_right_image_preview" alt="Footer Logo"
-                                            style="width: 180px; height: 100px; display:none;">
-                                    @endif
+                                        @if (isset($home->section_2_right_image))
+                                            <img src="{{ Storage::url($home->section_2_right_image) }}"
+                                                id="section_2_right_image_preview" alt="Footer Logo"
+                                                style="width: 180px; height: 100px;">
+                                        @else
+                                            <img src="" id="section_2_right_image_preview" alt="Footer Logo"
+                                                style="width: 180px; height: 100px; display:none;">
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -300,8 +316,8 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Section 2 Right Description*</label>
-                                        <textarea name="section_2_right_description"  cols="30" rows="10"
-                                            placeholder="Section 2 Right Description"  id="section2_right_des" class="form-control">{{ isset($home->section_2_right_description) ? $home->section_2_right_description : old('section_2_right_description') }}</textarea>
+                                        <textarea name="section_2_right_description" cols="30" rows="10" placeholder="Section 2 Right Description"
+                                            id="section2_right_des" class="form-control">{{ isset($home->section_2_right_description) ? $home->section_2_right_description : old('section_2_right_description') }}</textarea>
                                         @if ($errors->has('section_2_right_description'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('section_2_right_description') }}</div>
@@ -338,7 +354,7 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Section 3 Description*</label>
-                                        <textarea name="section_3_description" id="section3_des"  cols="30" rows="10"
+                                        <textarea name="section_3_description" id="section3_des" cols="30" rows="10"
                                             placeholder="Section 3 Description" class="form-control">{{ isset($home->section_3_description) ? $home->section_3_description : old('section_3_description') }}</textarea>
                                         @if ($errors->has('section_3_description'))
                                             <div class="error" style="color:red;">
@@ -376,8 +392,8 @@
                                 <div class="form-group-div">
                                     <div class="form-group">
                                         <label for="floatingInputValue">Section 4 Description*</label>
-                                        <textarea name="section_4_description"  cols="30" rows="10"
-                                            placeholder="Section 4 Description" id="section4_des" class="form-control">{{ isset($home->section_4_description) ? $home->section_4_description : old('section_4_description') }}</textarea>
+                                        <textarea name="section_4_description" cols="30" rows="10" placeholder="Section 4 Description"
+                                            id="section4_des" class="form-control">{{ isset($home->section_4_description) ? $home->section_4_description : old('section_4_description') }}</textarea>
                                         @if ($errors->has('section_4_description'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('section_4_description') }}</div>
@@ -480,51 +496,51 @@
 @endsection
 
 @push('scripts')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-<script>
-    $(document).ready(function() {
-        // ClassicEditor.create(document.querySelector("#section1_des"));
-        // ClassicEditor.create(document.querySelector("#section2_left_des"));
-        // ClassicEditor.create(document.querySelector("#section2_right_des"));
-        // ClassicEditor.create(document.querySelector("#section3_des"));
-        // ClassicEditor.create(document.querySelector("#section4_des"));
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // ClassicEditor.create(document.querySelector("#section1_des"));
+            // ClassicEditor.create(document.querySelector("#section2_left_des"));
+            // ClassicEditor.create(document.querySelector("#section2_right_des"));
+            // ClassicEditor.create(document.querySelector("#section3_des"));
+            // ClassicEditor.create(document.querySelector("#section4_des"));
 
-        $('#section1_des').summernote({
-            placeholder: 'Section 1 Description*',
-            tabsize: 2,
-            height: 400
+            $('#section1_des').summernote({
+                placeholder: 'Section 1 Description*',
+                tabsize: 2,
+                height: 400
+            });
+
+            $('#section2_left_des').summernote({
+                placeholder: 'Section 2 Left Description*',
+                tabsize: 2,
+                height: 400
+            });
+
+            $('#section2_right_des').summernote({
+                placeholder: 'Section 2 Right Description*',
+                tabsize: 2,
+                height: 400
+            });
+
+            $('#section3_des').summernote({
+                placeholder: 'Section 3 Description*',
+                tabsize: 2,
+                height: 400
+            });
+
+            $('#section4_des').summernote({
+                placeholder: 'Section 4 Description*',
+                tabsize: 2,
+                height: 400
+            });
+
         });
+    </script>
 
-        $('#section2_left_des').summernote({
-            placeholder: 'Section 2 Left Description*',
-            tabsize: 2,
-            height: 400
-        });
-
-        $('#section2_right_des').summernote({
-            placeholder: 'Section 2 Right Description*',
-            tabsize: 2,
-            height: 400
-        });
-
-        $('#section3_des').summernote({
-            placeholder: 'Section 3 Description*',
-            tabsize: 2,
-            height: 400
-        });
-
-        $('#section4_des').summernote({
-            placeholder: 'Section 4 Description*',
-            tabsize: 2,
-            height: 400
-        });
-
-    });
-</script>
-
-<script>
-     $(document).ready(function() {
+    <script>
+        $(document).ready(function() {
             $('#banner_image').change(function() {
                 let reader = new FileReader();
                 reader.onload = (e) => {
@@ -536,7 +552,7 @@
         });
     </script>
     <script>
-     $(document).ready(function() {
+        $(document).ready(function() {
             $('#section_2_left').change(function() {
                 let reader = new FileReader();
                 reader.onload = (e) => {
@@ -560,7 +576,7 @@
         });
     </script>
     <script>
-         $(document).ready(function() {
+        $(document).ready(function() {
             $('#section_2_right_image').change(function() {
                 let reader = new FileReader();
                 reader.onload = (e) => {
@@ -570,7 +586,5 @@
                 reader.readAsDataURL(this.files[0]);
             });
         });
-
-        </script>
-
+    </script>
 @endpush

@@ -29,12 +29,16 @@ use App\Models\PrivacyPolicy;
 use App\Models\SiteSetting;
 use App\Models\TermsAndCondition;
 use Illuminate\Support\Facades\Http;
+use App\Models\CmsContent;
+use App\Helpers\Helper;
+
 
 class CmsController extends Controller
 {
     public function index()
     {
-        $home = HomeCms::orderBy('id', 'desc')->first();
+        // $home = HomeCms::orderBy('id', 'desc')->first();
+        $home = CmsContent::getContent('homecms', \App\Models\HomeCms::class, null, Helper::getVisitorCountryCode());
         $galleries = Gallery::orderBy('id', 'desc')->get();
         $testimonials = Testimonial::orderBy('id', 'desc')->get();
         $our_organizations = OurOrganization::orderBy('id', 'desc')->get();
@@ -97,7 +101,7 @@ class CmsController extends Controller
     public function service($slug)
     {
         $our_organization = OurOrganization::where('slug', $slug)->first();
-         if (!$our_organization) {
+        if (!$our_organization) {
             abort(404);
         }
         $services  = $our_organization->services;
@@ -107,7 +111,7 @@ class CmsController extends Controller
     public function ourOrganization($slug)
     {
         $our_organization = OurOrganization::where('slug', $slug)->first();
-         if (!$our_organization) {
+        if (!$our_organization) {
             abort(404);
         }
         $organization_centers = OrganizationCenter::where('our_organization_id', $our_organization->id)->orderBy('id', 'desc')->get();
@@ -117,7 +121,7 @@ class CmsController extends Controller
     public function features($slug)
     {
         $organization_center = OrganizationCenter::where('slug', $slug)->first();
-         if (!$organization_center) {
+        if (!$organization_center) {
             abort(404);
         }
         return view('frontend.features')->with('organization_center', $organization_center);

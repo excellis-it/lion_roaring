@@ -1380,13 +1380,10 @@ class ProductController extends Controller
             ]);
 
             $productImages = [];
-
             $product = Product::where('id', $request->product_id)->where('is_deleted', 0)->first();
-
             if (!$product) {
                 return response()->json(['status' => false, 'message' => 'Product not found']);
             }
-
             $nearbyWareHouseId = Warehouse::first()->id; // first id from warehouses
             $originLat = null;
             $originLng = null;
@@ -1403,14 +1400,6 @@ class ProductController extends Controller
             if (!empty($nearest['warehouse']->id)) {
                 $nearbyWareHouseId = $nearest['warehouse']->id;
             }
-
-            $wareHouseProducts = Product::whereHas('warehouseProducts', function ($q) use ($nearbyWareHouseId) {
-                $q->where('warehouse_id', $nearbyWareHouseId)
-                    ->where('quantity', '>', 0);
-            })->pluck('id')->toArray();
-
-            // return $nearbyWareHouseId;
-
             if ($product->product_type != 'simple') {
                 $warehouseProduct = WarehouseProduct::where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)
                     ->when($request->size_id, function ($query) use ($request) {
@@ -1424,18 +1413,10 @@ class ProductController extends Controller
                 $warehouseProduct = WarehouseProduct::where('warehouse_id', $nearbyWareHouseId)->where('product_id', $request->product_id)->first();
             }
 
-            $wareHouseProductVariations = WarehouseProduct::where('color_id', $request->color_id)
-                ->where('size_id', $request->size_id)->pluck('id')->toArray();
-
             $colorMatchedImages = [];
-            // get all images with same color matched
-            //  $colorMatchedImages = WarehouseProductImage::whereIn('warehouse_product_id', $wareHouseProductVariations)->get();
             $colorMatchedImages = ProductColorImage::where('product_id', $request->product_id)
                 ->where('color_id', $request->color_id)
                 ->get();
-
-
-
             // if found color images the set $productImages with array of image urls with color id, product id, image url, color name
             if ($colorMatchedImages->isNotEmpty()) {
                 $productImages = $colorMatchedImages->map(function ($item) {
@@ -1460,7 +1441,7 @@ class ProductController extends Controller
                     })->toArray();
             }
 
-            //  return $productImages;
+            // return $warehouseProduct;
 
             if (!$warehouseProduct) {
                 return response()->json(['status' => false, 'message' => 'Item Out Of Stock']);
