@@ -10,6 +10,7 @@ class Footer extends Model
     use HasFactory;
 
     protected $fillable = [
+        'country_code',
         'footer_logo',
         'footer_title',
         'footer_playstore_link',

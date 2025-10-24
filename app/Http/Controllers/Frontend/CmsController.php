@@ -36,13 +36,13 @@ class CmsController extends Controller
 {
     public function index()
     {
-         $home = HomeCms::orderBy('id', 'desc')->first();
-      
+       // $home = HomeCms::orderBy('id', 'desc')->first();
         // $galleries = Gallery::orderBy('id', 'desc')->get();
         // $testimonials = Testimonial::orderBy('id', 'desc')->get();
         // $our_organizations = OurOrganization::where('country_code', Helper::getVisitorCountryCode())->orderBy('id', 'desc')->get();
         //  $our_governances = OurGovernance::where('country_code', Helper::getVisitorCountryCode())->orderBy('id', 'desc')->get();
 
+        $home = Helper::getVisitorCmsContent('HomeCms', true, false, 'id', 'desc', null);
         $galleries = Helper::getVisitorCmsContent('Gallery', false, true, 'id', 'desc', null);
         $testimonials = Helper::getVisitorCmsContent('Testimonial', false, true, 'id', 'desc', null);
         $our_organizations = Helper::getVisitorCmsContent('OurOrganization', false, true, 'id', 'desc', null);
@@ -53,7 +53,7 @@ class CmsController extends Controller
 
     public function gallery()
     {
-        $galleries = Gallery::orderBy('id', 'desc')->get();
+        $galleries = Helper::getVisitorCmsContent('Gallery', false, true, 'id', 'desc', null);
         return view('frontend.gallery')->with('galleries', $galleries);
     }
 

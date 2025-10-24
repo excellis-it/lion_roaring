@@ -147,7 +147,8 @@ class Helper
 
     public static function getFooter()
     {
-         $footer = Footer::orderBy('id', 'desc')->first();
+       // $footer = Footer::orderBy('id', 'desc')->first();
+        $footer = self::getVisitorCmsContent('Footer', true, false, 'id', 'desc', null);
 
 
         return $footer;
@@ -211,9 +212,9 @@ class Helper
 
     public static function getFooterCms()
     {
-          $cms = EcomFooterCms::orderBy('id', 'desc')->first();
+        $cms = EcomFooterCms::orderBy('id', 'desc')->first();
 
-       
+
         return $cms;
     }
 
@@ -645,6 +646,7 @@ class Helper
     // get visitor country code by ip using ipinfo.io
     public static function getVisitorCountryCode()
     {
+        return 'US'; // Temporary hardcode for testing
         $ip = request()->ip();
         $codeSessionKey = 'visitor_country_code_' . $ip;
         $nameSessionKey = 'visitor_country_name_' . $ip;

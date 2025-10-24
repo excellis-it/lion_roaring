@@ -16,7 +16,7 @@ class FooterController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Footer')) {
-             $footer = Footer::orderBy('id', 'desc')->first();
+            $footer = Footer::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
 
             $social_links = FooterSocialLink::get();
             return view('admin.footer.update')->with(compact('footer', 'social_links'));
@@ -80,9 +80,15 @@ class FooterController extends Controller
             ]);
             $footer->footer_flag = $this->imageUpload($request->file('footer_flag'), 'footer');
         }
-        $footer->save();
 
-       
+
+
+        //  $footer->save();
+
+        $country = $request->content_country_code ?? 'US';
+        $footer = Footer::updateOrCreate(['country_code' => $country], array_merge($footer->getAttributes(), ['country_code' => $country]));
+
+
 
         if ($request->class) {
             FooterSocialLink::truncate();
