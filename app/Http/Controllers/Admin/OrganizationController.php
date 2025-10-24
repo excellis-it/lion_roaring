@@ -19,11 +19,11 @@ class OrganizationController extends Controller
      */
     use ImageTrait;
 
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->can('Manage Organizations Page')) {
-        $organization = Organization::orderBy('id', 'desc')->first();
-        return view('admin.organization.update')->with(compact('organization'));
+            $organization = Organization::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
+            return view('admin.organization.update')->with(compact('organization'));
         } else {
             return redirect()->route('admin.dashboard')->with('error', 'You do not have permission to access this page.');
         }
@@ -78,7 +78,12 @@ class OrganizationController extends Controller
             }
             $organization->banner_image = $this->imageUpload($request->banner_image, 'organization');
         }
-        $organization->save();
+
+
+        // $organization->save();
+
+        $country = $request->content_country_code ?? 'US';
+        $organization = Organization::updateOrCreate(['country_code' => $country], array_merge($organization->getAttributes(), ['country_code' => $country]));
 
         if ($request->image) {
             foreach ($request->image as $key => $image) {
@@ -91,7 +96,7 @@ class OrganizationController extends Controller
 
         if ($request->card_title) {
             OrganizationProject::where('organization_id', $organization->id)->delete();
-           foreach ($request->card_title as $key => $title) {
+            foreach ($request->card_title as $key => $title) {
                 $organization_project = new OrganizationProject();
                 $organization_project->organization_id = $organization->id;
                 $organization_project->title = $title;

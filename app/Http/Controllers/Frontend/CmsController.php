@@ -36,7 +36,7 @@ class CmsController extends Controller
 {
     public function index()
     {
-       // $home = HomeCms::orderBy('id', 'desc')->first();
+        // $home = HomeCms::orderBy('id', 'desc')->first();
         // $galleries = Gallery::orderBy('id', 'desc')->get();
         // $testimonials = Testimonial::orderBy('id', 'desc')->get();
         // $our_organizations = OurOrganization::where('country_code', Helper::getVisitorCountryCode())->orderBy('id', 'desc')->get();
@@ -91,7 +91,8 @@ class CmsController extends Controller
 
     public function organization()
     {
-        $organization = Organization::orderBy('id', 'desc')->first();
+        //  $organization = Organization::orderBy('id', 'desc')->first();
+        $organization = Helper::getVisitorCmsContent('Organization', true, false, 'id', 'desc', null);
         return view('frontend.organizations')->with('organization', $organization);
     }
 

@@ -9,14 +9,18 @@ class Organization extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'banner_title',
-        'banner_description',
-        'banner_image',
-        'meta_title',
-        'meta_description',
-        'meta_keywords',
-    ];
+    // protected $fillable = [
+    //     'country_code',
+    //     'banner_title',
+    //     'banner_description',
+    //     'banner_image',
+    //     'meta_title',
+    //     'meta_description',
+    //     'meta_keywords',
+    // ];
+
+
+    protected $guarded = [];
 
 
     public function images()
