@@ -18,12 +18,12 @@ class PrincipleAndBusinessController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->can('Manage Principle and Business Page')) {
-        $business = PrincipalAndBusiness::orderBy('id', 'desc')->first();
-        $principle_images = PrincipleBusinessImage::get();
-        return view('admin.principle-and-business.update')->with(compact('business', 'principle_images'));
+            $business = PrincipalAndBusiness::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
+            $principle_images = PrincipleBusinessImage::get();
+            return view('admin.principle-and-business.update')->with(compact('business', 'principle_images'));
         } else {
             return redirect()->route('admin.home')->with('error', 'Unauthorized Access');
         }
@@ -77,7 +77,9 @@ class PrincipleAndBusinessController extends Controller
             ]);
             $business->banner_image = $this->imageUpload($request->file('banner_image'), 'principle-and-business');
         }
-        $business->save();
+        // $business->save();
+        $country = $request->content_country_code ?? 'US';
+        $business = PrincipalAndBusiness::updateOrCreate(['country_code' => $country], array_merge($business->getAttributes(), ['country_code' => $country]));
 
         if ($request->hasFile('image')) {
             foreach ($request->file('image') as $image) {
@@ -85,6 +87,7 @@ class PrincipleAndBusinessController extends Controller
                     'image.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
                 ]);
                 $principle_image = new PrincipleBusinessImage();
+                $principle_image->principle_id = $business->id;
                 $principle_image->image = $this->imageUpload($image, 'principle-and-business');
                 $principle_image->save();
             }

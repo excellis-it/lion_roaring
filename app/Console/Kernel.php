@@ -15,7 +15,8 @@ class Kernel extends ConsoleKernel
      */
     protected  $commands = [
         'App\Console\Commands\DeleteJob',
-        '\App\Console\Commands\UpdateDeletedMailsStatus'
+        '\App\Console\Commands\UpdateDeletedMailsStatus',
+        '\App\Console\Commands\MakeModelMigration',
     ];
 
     protected function schedule(Schedule $schedule)

@@ -15,11 +15,11 @@ class EcclesiaAssociationController extends Controller
      * @return \Illuminate\Http\Response
      */
     use ImageTrait;
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->can('Manage Ecclesia Association Page')) {
-        $ecclesia_association = EcclesiaAssociation::orderBy('id', 'desc')->first();
-        return view('admin.ecclesia-associations.update')->with(compact('ecclesia_association'));
+            $ecclesia_association = EcclesiaAssociation::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
+            return view('admin.ecclesia-associations.update')->with(compact('ecclesia_association'));
         } else {
             return redirect()->route('admin.dashboard')->with('error', 'Unauthorized Access');
         }
@@ -47,7 +47,7 @@ class EcclesiaAssociationController extends Controller
             'banner_title' => 'required',
             'description' => 'required',
             'description1' => 'required',
-        ],[
+        ], [
             'description1.required' => 'The partner page content is required.'
         ]);
 
@@ -66,7 +66,10 @@ class EcclesiaAssociationController extends Controller
         if ($request->hasFile('banner_image')) {
             $ecclesia_association->banner_image = $this->imageUpload($request->file('banner_image'), 'ecclesia-association');
         }
-        $ecclesia_association->save();
+        // $ecclesia_association->save();
+
+        $country = $request->content_country_code ?? 'US';
+        $ecclesia_association = EcclesiaAssociation::updateOrCreate(['country_code' => $country], array_merge($ecclesia_association->getAttributes(), ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'Ecclesia Association updated successfully');
     }

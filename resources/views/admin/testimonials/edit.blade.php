@@ -15,10 +15,35 @@
                     <div class="form-head">
                         <h4>Testimonial Details</h4>
                     </div>
-                    <form action="{{ route('testimonials.update', $testimonial->id) }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ route('testimonials.update', $testimonial->id) }}" method="post"
+                        enctype="multipart/form-data">
                         @method('PUT')
                         @csrf
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        <label for="content_country_code">Content Country*</label>
+                                        <select name="content_country_code" id="content_country_code" class="form-control">
+                                            @foreach (\App\Models\Country::all() as $country)
+                                                <option value="{{ $country->code }}"
+                                                    {{ old('content_country_code', $testimonial->country_code ?? 'US') == $country->code ? 'selected' : '' }}>
+                                                    {{ $country->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('content_country_code'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('content_country_code') }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row justify-content-between">
+
+
 
                             <div class="col-md-6">
                                 <div class="form-group-div">
@@ -68,9 +93,9 @@
                             <div class="col-md-6">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                        @if($testimonial->image)
-                                        <img src="{{ Storage::url($testimonial->image) }}"  id="image_preview"  style="width: 100px; height: 100px;" >
-
+                                        @if ($testimonial->image)
+                                            <img src="{{ Storage::url($testimonial->image) }}" id="image_preview"
+                                                style="width: 100px; height: 100px;">
                                         @endif
                                     </div>
                                 </div>
@@ -105,31 +130,29 @@
 @endsection
 
 @push('scripts')
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('#description').summernote({
-            placeholder: 'Description*',
-            tabsize: 2,
-            height: 400
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#description').summernote({
+                placeholder: 'Description*',
+                tabsize: 2,
+                height: 400
+            });
         });
-    });
-</script>
+    </script>
 
-<script>
-    $(document).ready(function() {
-        $('#image').change(function() {
+    <script>
+        $(document).ready(function() {
+            $('#image').change(function() {
 
-            let reader = new FileReader();
-            reader.onload = (e) => {
-                $('#image_preview').show();
-                $('#image_preview').attr('src', e.target.result);
-            }
-            reader.readAsDataURL(this.files[0]);
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    $('#image_preview').show();
+                    $('#image_preview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            });
         });
-    });
     </script>
 @endpush

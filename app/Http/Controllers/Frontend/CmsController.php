@@ -29,7 +29,6 @@ use App\Models\PrivacyPolicy;
 use App\Models\SiteSetting;
 use App\Models\TermsAndCondition;
 use Illuminate\Support\Facades\Http;
-use App\Models\CmsContent;
 use App\Helpers\Helper;
 
 
@@ -38,25 +37,23 @@ class CmsController extends Controller
     public function index()
     {
         // $home = HomeCms::orderBy('id', 'desc')->first();
-        $home = CmsContent::getContent('homecms', \App\Models\HomeCms::class, null, Helper::getVisitorCountryCode());
-        $galleries = Gallery::orderBy('id', 'desc')->get();
-        $testimonials = Testimonial::orderBy('id', 'desc')->get();
-        $our_organizations = OurOrganization::orderBy('id', 'desc')->get();
-        $our_governances = OurGovernance::orderBy('id', 'desc')->get();
+        // $galleries = Gallery::orderBy('id', 'desc')->get();
+        // $testimonials = Testimonial::orderBy('id', 'desc')->get();
+        // $our_organizations = OurOrganization::where('country_code', Helper::getVisitorCountryCode())->orderBy('id', 'desc')->get();
+        //  $our_governances = OurGovernance::where('country_code', Helper::getVisitorCountryCode())->orderBy('id', 'desc')->get();
 
-        // $userupdate = \App\Models\User::where('id', 107)->first();
-        // if ($userupdate) {
-        //     $userupdate->update([
-        //         'email' => 'appui@yopmail.com',
-        //     ]);
-        // }
+        $home = Helper::getVisitorCmsContent('HomeCms', true, false, 'id', 'desc', null);
+        $galleries = Helper::getVisitorCmsContent('Gallery', false, true, 'id', 'desc', null);
+        $testimonials = Helper::getVisitorCmsContent('Testimonial', false, true, 'id', 'desc', null);
+        $our_organizations = Helper::getVisitorCmsContent('OurOrganization', false, true, 'id', 'desc', null);
+        $our_governances = Helper::getVisitorCmsContent('OurGovernance', false, true, 'id', 'desc', null);
 
         return view('frontend.home')->with(compact('galleries', 'testimonials', 'our_organizations', 'our_governances', 'home'));
     }
 
     public function gallery()
     {
-        $galleries = Gallery::orderBy('id', 'desc')->get();
+        $galleries = Helper::getVisitorCmsContent('Gallery', false, true, 'id', 'desc', null);
         return view('frontend.gallery')->with('galleries', $galleries);
     }
 
@@ -74,27 +71,31 @@ class CmsController extends Controller
 
     public function faq()
     {
-        $faqs = Faq::orderBy('id', 'desc')->get();
+        // $faqs = Faq::orderBy('id', 'desc')->get();
+        $faqs = Helper::getVisitorCmsContent('Faq', false, false, 'id', 'ASC', null);
         return view('frontend.faq')->with('faqs', $faqs);
     }
 
     public function principleAndBusiness()
     {
-        $principleAndBusiness = PrincipalAndBusiness::orderBy('id', 'desc')->first();
-        $principle_images = PrincipleBusinessImage::get();
-        return view('frontend.principle-and-business')->with(compact('principleAndBusiness', 'principle_images'));
+        // $principleAndBusiness = PrincipalAndBusiness::orderBy('id', 'desc')->first();
+        $principleAndBusiness = Helper::getVisitorCmsContent('PrincipalAndBusiness', true, false, 'id', 'desc', null);
+
+        return view('frontend.principle-and-business')->with(compact('principleAndBusiness'));
     }
 
     public function ecclesiaAssociations()
     {
-        $ecclesiaAssociations = EcclesiaAssociation::orderBy('id', 'desc')->first();
+        // $ecclesiaAssociations = EcclesiaAssociation::orderBy('id', 'desc')->first();
+        $ecclesiaAssociations = Helper::getVisitorCmsContent('EcclesiaAssociation', true, false, 'id', 'desc', null);
         return view('frontend.ecclesia-associations')->with('ecclesiaAssociations', $ecclesiaAssociations);
     }
 
 
     public function organization()
     {
-        $organization = Organization::orderBy('id', 'desc')->first();
+        //  $organization = Organization::orderBy('id', 'desc')->first();
+        $organization = Helper::getVisitorCmsContent('Organization', true, false, 'id', 'desc', null);
         return view('frontend.organizations')->with('organization', $organization);
     }
 
@@ -144,7 +145,8 @@ class CmsController extends Controller
 
     public function details()
     {
-        $details = Detail::orderBy('id', 'asc')->get();
+        // $details = Detail::orderBy('id', 'asc')->get();
+        $details = Helper::getVisitorCmsContent('Detail', false, false, 'id', 'desc', null);
         return view('frontend.details')->with('details', $details);
     }
 
@@ -252,14 +254,15 @@ class CmsController extends Controller
 
     public function privacy_policy()
     {
-        $privacy_policy = PrivacyPolicy::orderBy('id', 'desc')->first();
+        // $privacy_policy = PrivacyPolicy::orderBy('id', 'desc')->first();
+        $privacy_policy = Helper::getVisitorCmsContent('PrivacyPolicy', true, false, 'id', 'desc', null);
         return view('frontend.privacy-policy')->with('privacy_policy', $privacy_policy);
     }
 
 
     public function terms()
     {
-        $term = TermsAndCondition::orderBy('id', 'desc')->first();
+        $term = Helper::getVisitorCmsContent('TermsAndCondition', true, false, 'id', 'desc', null);
         return view('frontend.terms-and-condition')->with('term', $term);
     }
 }

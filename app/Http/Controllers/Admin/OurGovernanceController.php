@@ -8,6 +8,8 @@ use App\Traits\CreateSlug;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 
+use App\Helpers\Helper;
+
 class OurGovernanceController extends Controller
 {
     /**
@@ -17,10 +19,13 @@ class OurGovernanceController extends Controller
      */
     use ImageTrait, CreateSlug;
 
-    public function index()
+    public function index(Request $request)
     {
+        //  return $request->get('content_country_code', 'US');
         if (auth()->user()->can('Manage Our Governance')) {
-            $our_governances = OurGovernance::orderBy('id', 'desc')->paginate(10);
+            // $our_governances = OurGovernance::orderBy('id', 'desc')->paginate(10);
+            $our_governances = OurGovernance::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
+            //   return $our_governances;
             return view('admin.our-governances.list')->with(compact('our_governances'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -35,9 +40,12 @@ class OurGovernanceController extends Controller
             $sort_type = $request->get('sorttype');
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            $our_governances = OurGovernance::where('id', 'like', '%' . $query . '%')
-                ->orWhere('name', 'like', '%' . $query . '%')
-                ->orWhere('slug', 'like', '%' . $query . '%')
+            $our_governances = OurGovernance::where('country_code', $request->get('content_country_code', 'US'))
+                ->where(function ($q) use ($query) {
+                    $q->where('id', 'like', '%' . $query . '%')
+                        ->orWhere('name', 'like', '%' . $query . '%')
+                        ->orWhere('slug', 'like', '%' . $query . '%');
+                })
                 ->orderBy($sort_by, $sort_type)
                 ->paginate(10);
 
@@ -94,7 +102,13 @@ class OurGovernanceController extends Controller
         $our_governance->meta_keywords = $request->meta_keywords;
         $our_governance->banner_image = $this->imageUpload($request->file('banner_image'), 'our_governances');
         $our_governance->image = $this->imageUpload($request->file('image'), 'our_governances');
+
+        $our_governance->country_code = $request->content_country_code ?? 'US';
+
         $our_governance->save();
+
+
+
 
         return redirect()->route('our-governances.index')->with('message', 'Our Governance created successfully.');
     }
@@ -170,6 +184,9 @@ class OurGovernanceController extends Controller
             ]);
             $our_governance->image = $this->imageUpload($request->file('image'), 'our_governances');
         }
+
+        $our_governance->country_code = $request->content_country_code ?? 'US';
+
         $our_governance->save();
 
         return redirect()->route('our-governances.index')->with('message', 'Our Governance updated successfully.');

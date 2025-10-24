@@ -10,6 +10,7 @@ class Faq extends Model
     use HasFactory;
 
     protected $fillable = [
+        'country_code',
         'question',
         'answer',
     ];

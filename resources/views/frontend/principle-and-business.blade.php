@@ -31,10 +31,10 @@
 
                 <div class="col-xl-10 col-lg-12 aos-init aos-animate" data-aos="fade-up" data-aos-duration="1000">
                     <div class="lion_aducation">
-                        @if ($principle_images->count() > 0)
+                        @if ($principleAndBusiness->images->count() > 0)
                             <div class="row">
-                                @foreach ($principle_images as $item)
-                                            <img src="{{ isset($item->image) ? Storage::url($item->image) : '' }}" alt="">
+                                @foreach ($principleAndBusiness->images as $item)
+                                    <img src="{{ isset($item->image) ? Storage::url($item->image) : '' }}" alt="">
                                 @endforeach
                             </div>
                         @endif

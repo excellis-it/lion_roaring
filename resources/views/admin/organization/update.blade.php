@@ -64,6 +64,21 @@
                             <h4>Menu Section</h4>
                         </div>
 
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label for="country_code">Content Country</label>
+                                <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                    name="content_country_code" id="content_country_code" class="form-control">
+                                    @foreach (\App\Models\Country::all() as $country)
+                                        <option value="{{ $country->code }}"
+                                            {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                            {{ $country->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="row justify-content-between">
                             {{-- courses --}}
                             <div class="col-md-4">
@@ -386,23 +401,23 @@
             });
         });
     </script>
-  <script>
-    $(document).ready(function() {
-        // Initialize Summernote for existing card descriptions
-        $(".card_description").each(function(index, element) {
-            $('#card_description_' + index).summernote({
-                placeholder: 'Card Description',
-                tabsize: 2,
-                height: 400
+    <script>
+        $(document).ready(function() {
+            // Initialize Summernote for existing card descriptions
+            $(".card_description").each(function(index, element) {
+                $('#card_description_' + index).summernote({
+                    placeholder: 'Card Description',
+                    tabsize: 2,
+                    height: 400
+                });
             });
-        });
 
-        // Add more functionality
-        $(document).on("click", ".add-more", function() {
-            var count = $("#add-more .col-xl-5").length; // Get the current count of card entries
+            // Add more functionality
+            $(document).on("click", ".add-more", function() {
+                var count = $("#add-more .col-xl-5").length; // Get the current count of card entries
 
-            // Create new card entry HTML
-            var html = `
+                // Create new card entry HTML
+                var html = `
                 <div class="col-xl-5 col-md-5 mt-4">
                     <div class="form-group-div">
                         <div class="form-group">
@@ -427,25 +442,25 @@
                     </div>
                 </div>`;
 
-            // Append the new fields
-            $("#add-more").append(html);
+                // Append the new fields
+                $("#add-more").append(html);
 
-            // Initialize Summernote for the newly added card description textarea
-            $('#card_description_' + count).summernote({
-                placeholder: 'Card Description',
-                tabsize: 2,
-                height: 400
+                // Initialize Summernote for the newly added card description textarea
+                $('#card_description_' + count).summernote({
+                    placeholder: 'Card Description',
+                    tabsize: 2,
+                    height: 400
+                });
+            });
+
+            // Remove functionality
+            $(document).on("click", ".remove", function() {
+                $(this).closest('.col-xl-2').prev('.col-md-5').remove(); // Remove description column
+                $(this).closest('.col-xl-2').prev('.col-xl-5').remove(); // Remove title column
+                $(this).closest('.col-xl-2').remove(); // Remove button column
             });
         });
-
-        // Remove functionality
-        $(document).on("click", ".remove", function() {
-            $(this).closest('.col-xl-2').prev('.col-md-5').remove(); // Remove description column
-            $(this).closest('.col-xl-2').prev('.col-xl-5').remove(); // Remove title column
-            $(this).closest('.col-xl-2').remove(); // Remove button column
-        });
-    });
-</script>
+    </script>
 
 
     <script>

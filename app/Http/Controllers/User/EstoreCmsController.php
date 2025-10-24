@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Mail;
 use Stripe\Climate\Order;
 use Stripe\Refund;
 use Stripe\Stripe;
-use App\Models\CmsContent;
+
 
 class EstoreCmsController extends Controller
 {
@@ -83,8 +83,8 @@ class EstoreCmsController extends Controller
                 $cms = EcomHomeCms::orderBy('id', 'desc')->first();
                 return view('user.store-cms.home_cms')->with('cms', $cms);
             } elseif ($page == 'footer') {
-                //   $cms = EcomFooterCms::orderBy('id', 'desc')->first();
-                $cms = CmsContent::getContent('ecomfootercms', \App\Models\EcomFooterCms::class, null, $request->get('content_country_code', 'US'));
+                   $cms = EcomFooterCms::orderBy('id', 'desc')->first();
+
                 // return $cms;
                 return view('user.store-cms.footer_cms')->with('cms', $cms);
             } else {
@@ -310,7 +310,7 @@ class EstoreCmsController extends Controller
 
             $cms->save();
 
-            $cms->syncCmsContent($request->content_country_code ?? 'US');
+           
             return redirect()->back()->with('message', $message);
         } else {
             abort(403, 'You do not have permission to access this page.');

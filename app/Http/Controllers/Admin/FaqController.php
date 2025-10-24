@@ -15,10 +15,10 @@ class FaqController extends Controller
      */
 
 
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->can('Manage Faq')) {
-            $faqs = Faq::orderBy('id', 'ASC')->paginate(15);
+            $faqs = Faq::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'ASC')->paginate(15);
             return view('admin.faq.list', compact('faqs'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -33,9 +33,12 @@ class FaqController extends Controller
             $sort_type = $request->get('sorttype');
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            $faqs = Faq::where('id', 'like', '%' . $query . '%')
-                ->orWhere('question', 'like', '%' . $query . '%')
-                ->orWhere('answer', 'like', '%' . $query . '%')
+            $faqs = Faq::where('country_code', $request->get('content_country_code', 'US'))
+                ->where(function ($q) use ($query) {
+                    $q->where('id', 'like', '%' . $query . '%')
+                        ->orWhere('question', 'like', '%' . $query . '%')
+                        ->orWhere('answer', 'like', '%' . $query . '%');
+                })
                 ->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 
@@ -75,6 +78,7 @@ class FaqController extends Controller
         $faq = new Faq();
         $faq->question = $request->question;
         $faq->answer = $request->answer;
+        $faq->country_code = $request->content_country_code ?? 'US';
         $faq->save();
 
         return redirect()->route('faq.index')->with('message', 'Faq created successfully.');
@@ -124,6 +128,7 @@ class FaqController extends Controller
         $faq = Faq::findOrFail($id);
         $faq->question = $request->question;
         $faq->answer = $request->answer;
+        $faq->country_code = $request->content_country_code ?? 'US';
         $faq->save();
 
         return redirect()->route('faq.index')->with('message', 'Faq updated successfully.');

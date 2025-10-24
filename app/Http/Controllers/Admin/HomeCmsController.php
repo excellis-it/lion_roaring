@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HomeCms;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
-use App\Models\CmsContent;
+
 
 class HomeCmsController extends Controller
 {
@@ -20,8 +20,9 @@ class HomeCmsController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Home Page')) {
-            //$home = HomeCms::orderBy('id', 'desc')->first();
-            $home = CmsContent::getContent('homecms', \App\Models\HomeCms::class, null, $request->get('content_country_code', 'US'));
+           // $home = HomeCms::orderBy('id', 'desc')->first();
+            $home = HomeCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
+
             return view('admin.home.update')->with('home', $home);
         } else {
             return redirect()->route('admin.dashboard')->with('error', 'You do not have the permission to access this page.');
@@ -129,9 +130,11 @@ class HomeCmsController extends Controller
         if ($request->hasFile('section_2_right_image')) {
             $home->section_2_right_image = $this->imageUpload($request->file('section_2_right_image'), 'home');
         }
-        $home->save();
 
-        $home->syncCmsContent($request->content_country_code ?? 'US');
+        $country = $request->content_country_code ?? 'US';
+        $home = HomeCms::updateOrCreate(['country_code' => $country], array_merge($home->getAttributes(), ['country_code' => $country]));
+
+
 
         return redirect()->back()->with('message', 'Home Page Content Updated Successfully');
     }

@@ -18,7 +18,33 @@
                     <form action="{{ route('faq.update', $faq->id) }}" method="post" enctype="multipart/form-data">
                         @method('PUT')
                         @csrf
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        <label for="content_country_code">Content Country*</label>
+                                        <select name="content_country_code" id="content_country_code" class="form-control">
+                                            @foreach (\App\Models\Country::all() as $country)
+                                                <option value="{{ $country->code }}"
+                                                    {{ old('content_country_code', $faq->country_code ?? 'US') == $country->code ? 'selected' : '' }}>
+                                                    {{ $country->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('content_country_code'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('content_country_code') }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="row justify-content-between">
+
+
 
                             <div class="col-md-12">
                                 <div class="form-group-div">
@@ -63,8 +89,8 @@
 @endsection
 
 @push('scripts')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script>
         $('#description').summernote({
             placeholder: 'Description',

@@ -3,7 +3,7 @@
     {{ env('APP_NAME') }} | Update Principle and Business Page
 @endsection
 @push('styles')
-<link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/min/dropzone.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/min/dropzone.min.css" rel="stylesheet">
     <style>
         .image-area {
             position: relative;
@@ -56,13 +56,27 @@
     <div class="main-content">
         <div class="inner_page">
             <div class="card search_bar sales-report-card">
-                <form action="{{ route('principle-and-business.store') }}" method="post"
-                    enctype="multipart/form-data">
+                <form action="{{ route('principle-and-business.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="id" value="{{$business->id ?? ''}}">
+                    <input type="hidden" name="id" value="{{ $business->id ?? '' }}">
                     <div class="sales-report-card-wrap">
                         <div class="form-head">
                             <h4>Menu Section</h4>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label for="country_code">Content Country</label>
+                                <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                    name="content_country_code" id="content_country_code" class="form-control">
+                                    @foreach (\App\Models\Country::all() as $country)
+                                        <option value="{{ $country->code }}"
+                                            {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                            {{ $country->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
                         <div class="row justify-content-between">
@@ -72,9 +86,8 @@
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Banner Image</label>
-                                        <input type="file" class="form-control" id="banner_image"
-                                            name="banner_image" value="{{ old('banner_image') }}"
-                                            placeholder="Banner Image">
+                                        <input type="file" class="form-control" id="banner_image" name="banner_image"
+                                            value="{{ old('banner_image') }}" placeholder="Banner Image">
                                         @if ($errors->has('banner_image'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('banner_image') }}</div>
@@ -85,10 +98,12 @@
                             <div class="col-md-2">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                        @if(isset($business->banner_image))
-                                        <img src="{{ Storage::url($business->banner_image) }}" alt="banner_image" id="preview_banner_image" style="width: 180px; height: 100px;">
+                                        @if (isset($business->banner_image))
+                                            <img src="{{ Storage::url($business->banner_image) }}" alt="banner_image"
+                                                id="preview_banner_image" style="width: 180px; height: 100px;">
                                         @else
-                                        <img src="" alt="banner_image" id="preview_banner_image" style="width: 180px; height: 100px;display:none;">
+                                            <img src="" alt="banner_image" id="preview_banner_image"
+                                                style="width: 180px; height: 100px;display:none;">
                                         @endif
                                     </div>
                                 </div>
@@ -99,7 +114,8 @@
                                     <div class="form-group">
                                         <label for="floatingInputValue">Banner Title*</label>
                                         <input type="text" class="form-control" id="floatingInputValue"
-                                            name="banner_title" value="{{ isset($business->banner_title) ? $business->banner_title : old('banner_title') }}"
+                                            name="banner_title"
+                                            value="{{ isset($business->banner_title) ? $business->banner_title : old('banner_title') }}"
                                             placeholder="Banner Title">
                                         @if ($errors->has('banner_title'))
                                             <div class="error" style="color:red;">
@@ -130,9 +146,9 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (isset($principle_images) && count($principle_images) > 0)
+                            @if (isset($business->images) && count($business->images) > 0)
                                 <div class="row mb-6">
-                                    @foreach ($principle_images as $image)
+                                    @foreach ($business->images as $image)
                                         <div class="image-area m-4" id="{{ $image->id }}">
                                             <img src="{{ Storage::url($image->image) }}" alt="Preview">
                                             <a class="remove-image" href="javascript:void(0);"
@@ -230,7 +246,8 @@
                                     <div class="form-group">
                                         {{-- meta title --}}
                                         <label for="floatingInputValue">Meta Title</label>
-                                        <input type="text" class="form-control" id="floatingInputValue" name="meta_title"
+                                        <input type="text" class="form-control" id="floatingInputValue"
+                                            name="meta_title"
                                             value="{{ isset($business->meta_title) ? $business->meta_title : old('meta_title') }}"
                                             placeholder="Meta Title">
                                         @if ($errors->has('meta_title'))
@@ -286,48 +303,48 @@
 @endsection
 
 @push('scripts')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js"></script>
-<script type="text/javascript">
-    Dropzone.options.imageUpload = {
-        maxFilesize: 1,
-        acceptedFiles: ".jpeg,.jpg,.png,.gif,.webp"
-    };
-</script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js"></script>
+    <script type="text/javascript">
+        Dropzone.options.imageUpload = {
+            maxFilesize: 1,
+            acceptedFiles: ".jpeg,.jpg,.png,.gif,.webp"
+        };
+    </script>
 
-<script>
-    $('#description').summernote({
-        placeholder: 'Description',
-        tabsize: 2,
-        height: 500
-    });
-    $('#description1').summernote({
-        placeholder: 'Description1',
-        tabsize: 2,
-        height: 500
-    });
-    $('#description2').summernote({
-        placeholder: 'Description2',
-        tabsize: 2,
-        height: 500
-    });
-    $('#description3').summernote({
-        placeholder: 'Description3',
-        tabsize: 2,
-        height: 500
-    });
-    $('#description4').summernote({
-        placeholder: 'Description4',
-        tabsize: 2,
-        height: 500
-    });
-</script>
+    <script>
+        $('#description').summernote({
+            placeholder: 'Description',
+            tabsize: 2,
+            height: 500
+        });
+        $('#description1').summernote({
+            placeholder: 'Description1',
+            tabsize: 2,
+            height: 500
+        });
+        $('#description2').summernote({
+            placeholder: 'Description2',
+            tabsize: 2,
+            height: 500
+        });
+        $('#description3').summernote({
+            placeholder: 'Description3',
+            tabsize: 2,
+            height: 500
+        });
+        $('#description4').summernote({
+            placeholder: 'Description4',
+            tabsize: 2,
+            height: 500
+        });
+    </script>
 
 
-<script>
-    $(document).ready(function() {
-        $('#banner_image').change(function() {
+    <script>
+        $(document).ready(function() {
+            $('#banner_image').change(function() {
                 let reader = new FileReader();
                 reader.onload = (e) => {
                     $('#preview_banner_image').show();
@@ -335,46 +352,46 @@
                 }
                 reader.readAsDataURL(this.files[0]);
             });
-    });
+        });
     </script>
 
-<script>
-    $(document).ready(function() {
-        $('#image').change(function() {
+    <script>
+        $(document).ready(function() {
+            $('#image').change(function() {
 
-            let reader = new FileReader();
-            reader.onload = (e) => {
-                $('#preview_image').show();
-                $('#preview_image').attr('src', e.target.result);
-            }
-            reader.readAsDataURL(this.files[0]);
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    $('#preview_image').show();
+                    $('#preview_image').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            });
         });
-    });
     </script>
 
-<script>
-    $(document).ready(function() {
-        $('.remove-image').click(function() {
-            var id = $(this).data('id');
-            var token = $("meta[name='csrf-token']").attr("content");
-            // show confirm alert
-            if (!confirm("Do you really want to delete this image?")) {
-                return false;
-            } else {
-                $.ajax({
-                    url: "{{ route('principle-and-business.image.delete') }}",
-                    type: 'GET',
-                    data: {
-                        "id": id,
-                        "_token": token,
-                    },
-                    success: function() {
-                        toastr.success('Image Deleted Successfully');
-                        $('#' + id).remove();
-                    }
-                });
-            }
+    <script>
+        $(document).ready(function() {
+            $('.remove-image').click(function() {
+                var id = $(this).data('id');
+                var token = $("meta[name='csrf-token']").attr("content");
+                // show confirm alert
+                if (!confirm("Do you really want to delete this image?")) {
+                    return false;
+                } else {
+                    $.ajax({
+                        url: "{{ route('principle-and-business.image.delete') }}",
+                        type: 'GET',
+                        data: {
+                            "id": id,
+                            "_token": token,
+                        },
+                        success: function() {
+                            toastr.success('Image Deleted Successfully');
+                            $('#' + id).remove();
+                        }
+                    });
+                }
+            });
         });
-    });
-</script>
+    </script>
 @endpush

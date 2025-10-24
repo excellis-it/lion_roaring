@@ -14,6 +14,20 @@
             <div class="card search_bar sales-report-card">
                 <form action="{{ route('details.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label for="country_code">Content Country</label>
+                            <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                name="content_country_code" id="content_country_code" class="form-control">
+                                @foreach (\App\Models\Country::all() as $country)
+                                    <option value="{{ $country->code }}"
+                                        {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                        {{ $country->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="sales-report-card-wrap mt-5">
                         <div class="row count-class" id="add-more">
                             @if (isset($details) && count($details) > 0)
@@ -22,8 +36,12 @@
                                         <div class="form-group-div">
                                             <div class="form-group">
                                                 <label for="floatingInputValue">Image</label>
-                                                <input type="file" class="form-control" id="floatingInputValue" accept="image/*" name="image[]" value="{{ $item->image }}" placeholder="Image">
+                                                <input type="file" class="form-control" id="floatingInputValue"
+                                                    accept="image/*" name="image[]" value="{{ $item->image }}"
+                                                    placeholder="Image">
                                                 <input type="hidden" name="image_id[]" value="{{ $item->id }}">
+                                                <img src="{{ Storage::url($item->image) }}" alt="Image"
+                                                    style="width: 100px; height: auto; margin-top:10px;">
                                             </div>
                                         </div>
                                     </div>
@@ -31,8 +49,10 @@
                                         <div class="form-group-div">
                                             <div class="form-group">
                                                 <label for="floatingInputValue">Description*</label>
-                                                <textarea name="description[]" id="content_{{ $key }}" cols="30" rows="10" required placeholder="Description" class="form-control description">{{ $item->description }}</textarea>
-                                                <span class="text-danger" id="job_opportunity_description_{{ $key }}"></span>
+                                                <textarea name="description[]" id="content_{{ $key }}" cols="30" rows="10" required
+                                                    placeholder="Description" class="form-control description">{{ $item->description }}</textarea>
+                                                <span class="text-danger"
+                                                    id="job_opportunity_description_{{ $key }}"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -55,7 +75,8 @@
                                     <div class="form-group-div">
                                         <div class="form-group">
                                             <label for="floatingInputValue">Image*</label>
-                                            <input type="file" class="form-control" id="floatingInputValue" required accept="image/*" name="image[]" value="" placeholder="Title">
+                                            <input type="file" class="form-control" id="floatingInputValue" required
+                                                accept="image/*" name="image[]" value="" placeholder="Title">
                                             <input type="hidden" name="image_id[]" value="">
                                         </div>
                                     </div>
@@ -64,7 +85,8 @@
                                     <div class="form-group-div">
                                         <div class="form-group">
                                             <label for="floatingInputValue">Description*</label>
-                                            <textarea name="description[]" id="card_description_0" cols="30" rows="10" placeholder="Description" required class="form-control description"></textarea>
+                                            <textarea name="description[]" id="card_description_0" cols="30" rows="10" placeholder="Description" required
+                                                class="form-control description"></textarea>
                                             <span class="text-danger" id="job_opportunity_description_0"></span>
                                         </div>
                                     </div>
@@ -90,8 +112,8 @@
 @endsection
 
 @push('scripts')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.remove-image').click(function() {
@@ -117,22 +139,22 @@
             });
         });
     </script>
-   <script>
-    $(document).ready(function() {
-        // Initialize Summernote for existing description fields
-        $(".description").each(function(index, element) {
-            $(element).summernote({
-                placeholder: 'Description*',
-                tabsize: 2,
-                height: 400
+    <script>
+        $(document).ready(function() {
+            // Initialize Summernote for existing description fields
+            $(".description").each(function(index, element) {
+                $(element).summernote({
+                    placeholder: 'Description*',
+                    tabsize: 2,
+                    height: 400
+                });
             });
-        });
 
-        // Function to handle the add-more button click
-        $(document).on("click", ".add-more", function() {
-            var count = $("#add-more .col-xl-5").length;
+            // Function to handle the add-more button click
+            $(document).on("click", ".add-more", function() {
+                var count = $("#add-more .col-xl-5").length;
 
-            var html = `
+                var html = `
                 <div class="col-xl-5 col-md-5 mt-4">
                     <div class="form-group-div">
                         <div class="form-group">
@@ -158,28 +180,23 @@
                     </div>
                 </div>`;
 
-            // Append the new fields
-            $("#add-more").append(html);
+                // Append the new fields
+                $("#add-more").append(html);
 
-            // Initialize Summernote for the newly added description field
-            $("#add-more .description").last().summernote({
-                placeholder: 'Description*',
-                tabsize: 2,
-                height: 400
+                // Initialize Summernote for the newly added description field
+                $("#add-more .description").last().summernote({
+                    placeholder: 'Description*',
+                    tabsize: 2,
+                    height: 400
+                });
+            });
+
+            // Remove functionality
+            $(document).on("click", ".remove", function() {
+                $(this).closest('.col-xl-2').prev('.col-md-5').remove(); // Remove description column
+                $(this).closest('.col-xl-2').prev('.col-xl-5').remove(); // Remove image column
+                $(this).closest('.col-xl-2').remove(); // Remove button column
             });
         });
-
-        // Remove functionality
-        $(document).on("click", ".remove", function() {
-            $(this).closest('.col-xl-2').prev('.col-md-5').remove(); // Remove description column
-            $(this).closest('.col-xl-2').prev('.col-xl-5').remove();  // Remove image column
-            $(this).closest('.col-xl-2').remove();                    // Remove button column
-        });
-    });
-</script>
-
-
-
-
-
+    </script>
 @endpush

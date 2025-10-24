@@ -17,10 +17,10 @@ class OurOrganizationController extends Controller
      */
     use ImageTrait, CreateSlug;
 
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->can('Manage Our Organization')) {
-            $our_organizations = OurOrganization::orderBy('id', 'desc')->paginate(10);
+            $our_organizations = OurOrganization::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
             return view('admin.our-organizations.list')->with(compact('our_organizations'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -35,9 +35,12 @@ class OurOrganizationController extends Controller
             $sort_type = $request->get('sorttype');
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            $our_organizations = OurOrganization::where('id', 'like', '%' . $query . '%')
-                ->orWhere('name', 'like', '%' . $query . '%')
-                ->orWhere('slug', 'like', '%' . $query . '%')
+            $our_organizations = OurOrganization::where('country_code', $request->get('content_country_code', 'US'))
+                ->where(function ($q) use ($query) {
+                    $q->where('id', 'like', '%' . $query . '%')
+                        ->orWhere('name', 'like', '%' . $query . '%')
+                        ->orWhere('slug', 'like', '%' . $query . '%');
+                })
                 ->orderBy($sort_by, $sort_type)
                 ->paginate(10);
 
@@ -86,6 +89,8 @@ class OurOrganizationController extends Controller
         $our_organization->slug = $slug;
         $our_organization->description = $request->description;
         $our_organization->image = $this->imageUpload($request->file('image'), 'our_organizations');
+        $our_organization->country_code = $request->content_country_code ?? 'US';
+
         $our_organization->save();
 
         return redirect()->route('our-organizations.index')->with('message', 'Our Organization created successfully.');
@@ -150,6 +155,7 @@ class OurOrganizationController extends Controller
             ]);
             $our_organization->image = $this->imageUpload($request->file('image'), 'our_organizations');
         }
+        $our_organization->country_code = $request->content_country_code ?? 'US';
         $our_organization->save();
 
         return redirect()->route('our-organizations.index')->with('message', 'Our Organization updated successfully.');

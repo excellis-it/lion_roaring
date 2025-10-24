@@ -15,6 +15,20 @@
                 <form action="{{ route('articles-of-association.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $article->id ?? '' }}">
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label for="country_code">Content Country</label>
+                            <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                name="content_country_code" id="content_country_code" class="form-control">
+                                @foreach (\App\Models\Country::all() as $country)
+                                    <option value="{{ $country->code }}"
+                                        {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                        {{ $country->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="sales-report-card-wrap">
                         <div class="row justify-content-between">
                             {{-- courses --}}

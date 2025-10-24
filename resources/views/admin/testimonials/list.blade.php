@@ -28,6 +28,21 @@
                 <div class="row justify-content-end">
                     <div class="col-md-6">
                         <div class="row g-1 justify-content-end">
+
+                            <div class="col-md-4">
+
+                                <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                    name="content_country_code" id="content_country_code" class="form-control">
+                                    @foreach (\App\Models\Country::all() as $country)
+                                        <option value="{{ $country->code }}"
+                                            {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                            {{ $country->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <label for="country_code">Content Country</label>
+                            </div>
+
                             <div class="col-md-8 pr-0">
                                 <div class="search-field prod-search">
                                     <input type="text" name="search" id="search" placeholder="search..." required
@@ -117,7 +132,8 @@
                         page: page,
                         sortby: sort_by,
                         sorttype: sort_type,
-                        query: query
+                        query: query,
+                        content_country_code: $('#content_country_code').val(),
                     },
                     success: function(data) {
                         $('tbody').html(data.data);

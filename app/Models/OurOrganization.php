@@ -10,6 +10,7 @@ class OurOrganization extends Model
     use HasFactory;
 
     protected $fillable = [
+        'country_code',
         'name',
         'slug',
         'image',

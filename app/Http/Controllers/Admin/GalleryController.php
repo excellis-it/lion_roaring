@@ -18,7 +18,8 @@ class GalleryController extends Controller
     public function index()
     {
         if (auth()->user()->can('Manage Gallery')) {
-            $gallery = Gallery::orderByDesc('id')->paginate(15);
+             $gallery = Gallery::orderByDesc('id')->paginate(15);
+           // $gallery = Gallery::where('country_code', request()->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
             return view('admin.gallery.list', compact('gallery'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -60,6 +61,7 @@ class GalleryController extends Controller
         foreach ($request->image as $key => $value) {
             $gallery = new Gallery();
             $gallery->image = $this->imageUpload($request->file('image')[$key], 'gallery');
+            $gallery->country_code = $request->content_country_code ?? 'US';
             $gallery->save();
         }
         return redirect()->route('gallery.index')->with('message', 'Gallery created successfully.');
@@ -109,6 +111,7 @@ class GalleryController extends Controller
         if ($request->hasFile('image')) {
             $gallery->image = $this->imageUpload($request->file('image'), 'gallery');
         }
+        $gallery->country_code = $request->content_country_code ?? 'US';
         $gallery->save();
 
         return redirect()->route('gallery.index')->with('message', 'Gallery updated successfully.');

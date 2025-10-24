@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\HasCountryCms;
+
 
 class EcomFooterCms extends Model
 {
-    use HasFactory, HasCountryCms;
+    use HasFactory;
 
 
     protected $fillable = [

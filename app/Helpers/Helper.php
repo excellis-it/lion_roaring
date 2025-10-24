@@ -32,7 +32,7 @@ use App\Models\WareHouse;
 use App\Models\EstoreCart;
 use App\Models\GlobalImage;
 use Illuminate\Support\Facades\Route;
-use App\Models\CmsContent;
+
 
 class Helper
 {
@@ -119,7 +119,8 @@ class Helper
 
     public static function getPDFAttribute()
     {
-        $article = Article::orderBy('id', 'desc')->first();
+        // $article = Article::orderBy('id', 'desc')->first();
+        $article = self::getVisitorCmsContent('Article', true, false, 'id', 'desc', null);
         if ($article) {
             return Storage::url($article->pdf);
         } else {
@@ -148,7 +149,8 @@ class Helper
     public static function getFooter()
     {
         // $footer = Footer::orderBy('id', 'desc')->first();
-        $footer = CmsContent::getContent('footer', \App\Models\Footer::class, null, self::getVisitorCountryCode());
+        $footer = self::getVisitorCmsContent('Footer', true, false, 'id', 'desc', null);
+
 
         return $footer;
     }
@@ -211,9 +213,9 @@ class Helper
 
     public static function getFooterCms()
     {
-        //  $cms = EcomFooterCms::orderBy('id', 'desc')->first();
-        // getVisitorCountryCode
-        $cms = CmsContent::getContent('ecomfootercms', \App\Models\EcomFooterCms::class, null, self::getVisitorCountryCode());
+        $cms = EcomFooterCms::orderBy('id', 'desc')->first();
+
+
         return $cms;
     }
 
@@ -645,6 +647,7 @@ class Helper
     // get visitor country code by ip using ipinfo.io
     public static function getVisitorCountryCode()
     {
+        //  return 'GB'; // Temporary hardcode for testing
         $ip = request()->ip();
         $codeSessionKey = 'visitor_country_code_' . $ip;
         $nameSessionKey = 'visitor_country_name_' . $ip;
@@ -694,5 +697,69 @@ class Helper
         self::getVisitorCountryCode();
 
         return session($nameSessionKey, 'United States');
+    }
+
+    // get visitor cms content by model name, single row or multiple, if multiple then pagination true/false, sort by, optional search query
+    public static function getVisitorCmsContent($modelClass, $singleRow = true, $paginate = false, $sortBy = 'id', $sortType = 'desc', $searchQuery = null)
+    {
+        $countryCode = self::getVisitorCountryCode();
+
+        $modelClass = "\App\Models\\" . $modelClass;
+
+
+        if (!class_exists($modelClass)) {
+            return $singleRow ? null : collect();
+        }
+
+        // return $modelClass;
+
+        $applySearch = function ($query) use ($searchQuery) {
+            if ($searchQuery) {
+                $query->where(function ($q) use ($searchQuery) {
+                    $q->where('title', 'like', '%' . $searchQuery . '%')
+                        ->orWhere('description', 'like', '%' . $searchQuery . '%');
+                });
+            }
+        };
+
+        $buildQueryFor = function ($code) use ($modelClass, $applySearch, $sortBy, $sortType) {
+            $q = $modelClass::where('country_code', $code);
+            $applySearch($q);
+            $q->orderBy($sortBy, $sortType);
+            return $q;
+        };
+
+        // Try for visitor country first
+        $query = $buildQueryFor($countryCode);
+
+
+        if ($singleRow) {
+            $result = $query->first();
+
+            // Fallback to US if nothing found and visitor country isn't US
+            if (is_null($result) && $countryCode !== 'US') {
+                $result = $buildQueryFor('US')->first();
+            }
+
+            return $result;
+        }
+
+        if ($paginate) {
+            $results = $query->paginate(10);
+
+            if ($results->isEmpty() && $countryCode !== 'US') {
+                $results = $buildQueryFor('US')->paginate(10);
+            }
+
+            return $results;
+        }
+
+        $results = $query->get();
+
+        if ($results->isEmpty() && $countryCode !== 'US') {
+            $results = $buildQueryFor('US')->get();
+        }
+
+        return $results;
     }
 }

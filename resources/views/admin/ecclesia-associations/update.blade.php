@@ -12,13 +12,27 @@
     <div class="main-content">
         <div class="inner_page">
             <div class="card search_bar sales-report-card">
-                <form action="{{ route('ecclesia-associations.store') }}" method="post"
-                    enctype="multipart/form-data">
+                <form action="{{ route('ecclesia-associations.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="id" value="{{$ecclesia_association->id ?? ''}}">
+                    <input type="hidden" name="id" value="{{ $ecclesia_association->id ?? '' }}">
                     <div class="sales-report-card-wrap">
                         <div class="form-head">
                             <h4>Menu Section</h4>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label for="country_code">Content Country</label>
+                                <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                    name="content_country_code" id="content_country_code" class="form-control">
+                                    @foreach (\App\Models\Country::all() as $country)
+                                        <option value="{{ $country->code }}"
+                                            {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                            {{ $country->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
                         <div class="row justify-content-between">
@@ -28,9 +42,8 @@
                                     <div class="form-group">
                                         {{-- banner_title --}}
                                         <label for="floatingInputValue">Banner Image</label>
-                                        <input type="file" class="form-control" id="banner_image"
-                                            name="banner_image" value="{{ old('banner_image') }}"
-                                            placeholder="Banner Image">
+                                        <input type="file" class="form-control" id="banner_image" name="banner_image"
+                                            value="{{ old('banner_image') }}" placeholder="Banner Image">
                                         @if ($errors->has('banner_image'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('banner_image') }}</div>
@@ -41,10 +54,13 @@
                             <div class="col-md-2">
                                 <div class="form-group-div">
                                     <div class="form-group">
-                                        @if(isset($ecclesia_association->banner_image))
-                                        <img src="{{ Storage::url($ecclesia_association->banner_image) }}" alt="banner_image" id="preview_banner_image" style="width: 180px; height: 100px;">
+                                        @if (isset($ecclesia_association->banner_image))
+                                            <img src="{{ Storage::url($ecclesia_association->banner_image) }}"
+                                                alt="banner_image" id="preview_banner_image"
+                                                style="width: 180px; height: 100px;">
                                         @else
-                                        <img src="" alt="banner_image" id="preview_banner_image" style="width: 180px; height: 100px;display:none;">
+                                            <img src="" alt="banner_image" id="preview_banner_image"
+                                                style="width: 180px; height: 100px;display:none;">
                                         @endif
                                     </div>
                                 </div>
@@ -55,7 +71,8 @@
                                     <div class="form-group">
                                         <label for="floatingInputValue">Banner Title*</label>
                                         <input type="text" class="form-control" id="floatingInputValue"
-                                            name="banner_title" value="{{ isset($ecclesia_association->banner_title) ? $ecclesia_association->banner_title : old('banner_title') }}"
+                                            name="banner_title"
+                                            value="{{ isset($ecclesia_association->banner_title) ? $ecclesia_association->banner_title : old('banner_title') }}"
                                             placeholder="Banner Title">
                                         @if ($errors->has('banner_title'))
                                             <div class="error" style="color:red;">
@@ -169,27 +186,26 @@
 @endsection
 
 @push('scripts')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('#description').summernote({
-            placeholder: 'Description',
-            tabsize: 2,
-            height: 400
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#description').summernote({
+                placeholder: 'Description',
+                tabsize: 2,
+                height: 400
+            });
+            $('#description1').summernote({
+                placeholder: 'Content',
+                tabsize: 2,
+                height: 400
+            });
         });
-        $('#description1').summernote({
-            placeholder: 'Content',
-            tabsize: 2,
-            height: 400
-        });
-    });
+    </script>
 
-</script>
-
-<script>
-    $(document).ready(function() {
-        $('#banner_image').change(function() {
+    <script>
+        $(document).ready(function() {
+            $('#banner_image').change(function() {
                 let reader = new FileReader();
                 reader.onload = (e) => {
                     $('#preview_banner_image').show();
@@ -197,6 +213,6 @@
                 }
                 reader.readAsDataURL(this.files[0]);
             });
-    });
+        });
     </script>
 @endpush

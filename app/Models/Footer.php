@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\HasCountryCms;
 
 class Footer extends Model
 {
-    use HasFactory, HasCountryCms;
+    use HasFactory;
 
     protected $fillable = [
+        'country_code',
         'footer_logo',
         'footer_title',
         'footer_playstore_link',
