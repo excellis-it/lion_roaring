@@ -7,7 +7,7 @@ use App\Models\Footer;
 use App\Models\FooterSocialLink;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
-use App\Models\CmsContent;
+
 
 class FooterController extends Controller
 {
@@ -16,8 +16,8 @@ class FooterController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->can('Manage Footer')) {
-            // $footer = Footer::orderBy('id', 'desc')->first();
-            $footer = CmsContent::getContent('footer', \App\Models\Footer::class, null, $request->get('content_country_code', 'US'));
+             $footer = Footer::orderBy('id', 'desc')->first();
+
             $social_links = FooterSocialLink::get();
             return view('admin.footer.update')->with(compact('footer', 'social_links'));
         } else {
@@ -82,7 +82,7 @@ class FooterController extends Controller
         }
         $footer->save();
 
-        $footer->syncCmsContent($request->content_country_code ?? 'US');
+       
 
         if ($request->class) {
             FooterSocialLink::truncate();

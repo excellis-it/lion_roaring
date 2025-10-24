@@ -36,6 +36,18 @@
                                             class="ph ph-magnifying-glass"></i></a>
                                 </div>
                             </div> --}}
+                            <div class="col-md-4">
+                                {{--
+                                <select name="content_country_code" id="content_country_code" class="form-control">
+                                    @foreach (\App\Models\Country::all() as $country)
+                                        <option value="{{ $country->code }}"
+                                            {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                            {{ $country->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <label for="country_code">Content Country</label> --}}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -48,6 +60,7 @@
                                 </th>
                                 <th>
                                     Image</th>
+                                <th>Content Country</th>
 
                             </tr>
                         </thead>
@@ -55,10 +68,13 @@
                             @if (count($gallery) > 0)
                                 @foreach ($gallery as $key => $item)
                                     <tr>
-                                        <td> {{ ($gallery->currentPage() - 1) * $gallery->perPage() + $loop->index + 1 }}</td>
+                                        <td> {{ ($gallery->currentPage() - 1) * $gallery->perPage() + $loop->index + 1 }}
+                                        </td>
+
                                         <td><a href="{{ Storage::url($item->image) }}" target="_blank"><img
                                                     src="{{ Storage::url($item->image) }}" alt="gallery"
                                                     style="width: 30%; height: 100px; border-radius:50%"></a></td>
+                                        <td>{{ $item->country?->name ?? '' }}</td>
                                         <td>
                                             <div class="edit-1 d-flex align-items-center justify-content-center">
                                                 @if (auth()->user()->can('Edit Gallery'))
@@ -118,6 +134,15 @@
                         )
                     }
                 })
+        });
+
+        $(document).ready(function() {
+            // on change content_country_code should reload the page with the selected country code as query param
+            $('#content_country_code').on('change', function() {
+                var country_code = $(this).val();
+                window.location.href = "{{ route('gallery.index') }}" + "?content_country_code=" +
+                    country_code;
+            });
         });
     </script>
 @endpush

@@ -29,7 +29,6 @@ use App\Models\PrivacyPolicy;
 use App\Models\SiteSetting;
 use App\Models\TermsAndCondition;
 use Illuminate\Support\Facades\Http;
-use App\Models\CmsContent;
 use App\Helpers\Helper;
 
 
@@ -37,19 +36,17 @@ class CmsController extends Controller
 {
     public function index()
     {
-        // $home = HomeCms::orderBy('id', 'desc')->first();
-        $home = CmsContent::getContent('homecms', \App\Models\HomeCms::class, null, Helper::getVisitorCountryCode());
-        $galleries = Gallery::orderBy('id', 'desc')->get();
-        $testimonials = Testimonial::orderBy('id', 'desc')->get();
-        $our_organizations = OurOrganization::orderBy('id', 'desc')->get();
-        $our_governances = OurGovernance::orderBy('id', 'desc')->get();
+         $home = HomeCms::orderBy('id', 'desc')->first();
+      
+        // $galleries = Gallery::orderBy('id', 'desc')->get();
+        // $testimonials = Testimonial::orderBy('id', 'desc')->get();
+        // $our_organizations = OurOrganization::where('country_code', Helper::getVisitorCountryCode())->orderBy('id', 'desc')->get();
+        //  $our_governances = OurGovernance::where('country_code', Helper::getVisitorCountryCode())->orderBy('id', 'desc')->get();
 
-        // $userupdate = \App\Models\User::where('id', 107)->first();
-        // if ($userupdate) {
-        //     $userupdate->update([
-        //         'email' => 'appui@yopmail.com',
-        //     ]);
-        // }
+        $galleries = Helper::getVisitorCmsContent('Gallery', false, true, 'id', 'desc', null);
+        $testimonials = Helper::getVisitorCmsContent('Testimonial', false, true, 'id', 'desc', null);
+        $our_organizations = Helper::getVisitorCmsContent('OurOrganization', false, true, 'id', 'desc', null);
+        $our_governances = Helper::getVisitorCmsContent('OurGovernance', false, true, 'id', 'desc', null);
 
         return view('frontend.home')->with(compact('galleries', 'testimonials', 'our_organizations', 'our_governances', 'home'));
     }

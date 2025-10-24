@@ -18,10 +18,11 @@ class TestimonialController extends Controller
      */
 
 
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->can('Manage Testimonials')) {
-            $testimonials = Testimonial::orderByDesc('id')->paginate(15);
+            // $testimonials = Testimonial::orderByDesc('id')->paginate(15);
+            $testimonials = Testimonial::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->paginate(10);
             return view('admin.testimonials.list', compact('testimonials'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -36,10 +37,13 @@ class TestimonialController extends Controller
             $sort_type = $request->get('sorttype');
             $query = $request->get('query');
             $query = str_replace(" ", "%", $query);
-            $testimonials = Testimonial::where('id', 'like', '%' . $query . '%')
-                ->orWhere('name', 'like', '%' . $query . '%')
-                ->orWhere('description', 'like', '%' . $query . '%')
-                ->orWhere('address', 'like', '%' . $query . '%')
+            $testimonials = Testimonial::where('country_code', $request->get('content_country_code', 'US'))
+                ->where(function ($q) use ($query) {
+                    $q->where('id', 'like', '%' . $query . '%')
+                        ->orWhere('name', 'like', '%' . $query . '%')
+                        ->orWhere('description', 'like', '%' . $query . '%')
+                        ->orWhere('address', 'like', '%' . $query . '%');
+                })
                 ->orderBy($sort_by, $sort_type)
                 ->paginate(15);
 
@@ -83,6 +87,7 @@ class TestimonialController extends Controller
         $testimonials->address = $request->address;
         $testimonials->description = $request->description;
         $testimonials->image = $this->imageUpload($request->file('image'), 'testimonials');
+        $testimonials->country_code = $request->content_country_code ?? 'US';
         $testimonials->save();
 
         return redirect()->route('testimonials.index')->with('message', 'Testimonial created successfully.');
@@ -108,8 +113,8 @@ class TestimonialController extends Controller
     public function edit($id)
     {
         if (auth()->user()->can('Edit Testimonials')) {
-        $testimonial = Testimonial::findOrFail($id);
-        return view('admin.testimonials.edit')->with(compact('testimonial'));
+            $testimonial = Testimonial::findOrFail($id);
+            return view('admin.testimonials.edit')->with(compact('testimonial'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -140,6 +145,7 @@ class TestimonialController extends Controller
             ]);
             $testimonials->image = $this->imageUpload($request->file('image'), 'testimonials');
         }
+        $testimonials->country_code = $request->content_country_code ?? 'US';
         $testimonials->save();
 
         return redirect()->route('testimonials.index')->with('message', 'Testimonial updated successfully.');
@@ -160,9 +166,9 @@ class TestimonialController extends Controller
     public function delete($id)
     {
         if (auth()->user()->can('Delete Testimonials')) {
-        $testimonials = Testimonial::findOrFail($id);
-        $testimonials->delete();
-        return redirect()->route('testimonials.index')->with('error', 'Testimonial has been deleted successfully.');
+            $testimonials = Testimonial::findOrFail($id);
+            $testimonials->delete();
+            return redirect()->route('testimonials.index')->with('error', 'Testimonial has been deleted successfully.');
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
