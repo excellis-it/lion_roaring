@@ -25,18 +25,18 @@
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="">
-                        <div class="accordion" id="accordionExample">
+                        <div class="accordion " id="accordionExample">
                             @if (count($faqs) > 0)
                                 @foreach ($faqs as $faq)
                                     <div class="accordion-item">
-                                        <h2 class="accordion-header" id="headingOne">
+                                        <h2 class="accordion-header" id="{{ 'heading' . $faq->id }}">
                                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#collapseOne" aria-expanded="true"
-                                                aria-controls="collapseOne">
+                                                data-bs-target="#collapse{{ $faq->id }}" aria-expanded="true"
+                                                aria-controls="collapse{{ $faq->id }}">
                                                 {{ $faq->question }} </button>
                                         </h2>
-                                        <div id="collapseOne" class="accordion-collapse collapse show"
-                                            aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                        <div id="collapse{{ $faq->id }}" class="accordion-collapse collapse show"
+                                            aria-labelledby="heading{{ $faq->id }}" data-bs-parent="#accordionExample">
                                             <div class="accordion-body">
                                                 {!! $faq->answer !!}
                                             </div>

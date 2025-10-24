@@ -71,7 +71,8 @@ class CmsController extends Controller
 
     public function faq()
     {
-        $faqs = Faq::orderBy('id', 'desc')->get();
+        // $faqs = Faq::orderBy('id', 'desc')->get();
+        $faqs = Helper::getVisitorCmsContent('Faq', false, false, 'id', 'ASC', null);
         return view('frontend.faq')->with('faqs', $faqs);
     }
 
