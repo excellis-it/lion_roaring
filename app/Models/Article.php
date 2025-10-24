@@ -11,6 +11,7 @@ class Article extends Model
     use HasFactory;
 
     protected $fillable = [
+        'country_code',
         'pdf'
     ];
 
@@ -24,5 +25,5 @@ class Article extends Model
         return date('d-m-Y', strtotime($value));
     }
 
-    
+
 }

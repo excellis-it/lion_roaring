@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 
 class TermsAndConditionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->hasRole('SUPER ADMIN')) {
-            $terms_and_condition = TermsAndCondition::orderBy('id', 'desc')->first();
+            $terms_and_condition = TermsAndCondition::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
             return view('admin.terms.index')->with(compact('terms_and_condition'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -24,7 +24,7 @@ class TermsAndConditionController extends Controller
         $request->validate([
             'text' => 'required',
             'description' => 'required',
-        ],[
+        ], [
             'text.required' => 'Terms and Conditions title is required',
             'description.required' => 'Terms and Conditions description is required',
         ]);
@@ -37,7 +37,10 @@ class TermsAndConditionController extends Controller
 
         $terms_and_condition->text = $request->text;
         $terms_and_condition->description = $request->description;
-        $terms_and_condition->save();
+        // $terms_and_condition->save();
+
+        $country = $request->content_country_code ?? 'US';
+        $terms_and_condition = TermsAndCondition::updateOrCreate(['country_code' => $country], array_merge($terms_and_condition->getAttributes(), ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'Terms and Conditions updated successfully');
     }

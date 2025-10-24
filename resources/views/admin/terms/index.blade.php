@@ -5,17 +5,30 @@
 @push('styles')
 @endpush
 @section('head')
-    Update Terms  Page
+    Update Terms Page
 @endsection
 
 @section('content')
     <div class="main-content">
         <div class="inner_page">
             <div class="card search_bar sales-report-card">
-                <form action="{{ route('terms-and-condition.update') }}" method="post"
-                    enctype="multipart/form-data">
+                <form action="{{ route('terms-and-condition.update') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="id" value="{{$terms_and_condition->id ?? ''}}">
+                    <input type="hidden" name="id" value="{{ $terms_and_condition->id ?? '' }}">
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label for="country_code">Content Country</label>
+                            <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                name="content_country_code" id="content_country_code" class="form-control">
+                                @foreach (\App\Models\Country::all() as $country)
+                                    <option value="{{ $country->code }}"
+                                        {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                        {{ $country->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="sales-report-card-wrap mt-5">
                         <div class="row">
                             <div class="col-xl-12 col-md-12">
@@ -23,8 +36,7 @@
                                     <div class="form-group">
                                         {{-- meta description --}}
                                         <label for="floatingInputValue">Title*</label>
-                                        <textarea name="text" id="text" cols="30" rows="10" placeholder="Title"
-                                            class="form-control">{{ isset($terms_and_condition->text) ? $terms_and_condition->text : old('text') }}</textarea>
+                                        <textarea name="text" id="text" cols="30" rows="10" placeholder="Title" class="form-control">{{ isset($terms_and_condition->text) ? $terms_and_condition->text : old('text') }}</textarea>
                                         @if ($errors->has('text'))
                                             <div class="error" style="color:red;">
                                                 {{ $errors->first('text') }}</div>
@@ -62,14 +74,14 @@
 @endsection
 
 @push('scripts')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-<script>
-    // ClassicEditor.create(document.querySelector("#description"));
-    $('#description').summernote({
-        placeholder: 'Description*',
-        tabsize: 2,
-        height: 600
-    });
-</script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script>
+        // ClassicEditor.create(document.querySelector("#description"));
+        $('#description').summernote({
+            placeholder: 'Description*',
+            tabsize: 2,
+            height: 600
+        });
+    </script>
 @endpush

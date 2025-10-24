@@ -254,14 +254,15 @@ class CmsController extends Controller
 
     public function privacy_policy()
     {
-        $privacy_policy = PrivacyPolicy::orderBy('id', 'desc')->first();
+        // $privacy_policy = PrivacyPolicy::orderBy('id', 'desc')->first();
+        $privacy_policy = Helper::getVisitorCmsContent('PrivacyPolicy', true, false, 'id', 'desc', null);
         return view('frontend.privacy-policy')->with('privacy_policy', $privacy_policy);
     }
 
 
     public function terms()
     {
-        $term = TermsAndCondition::orderBy('id', 'desc')->first();
+        $term = Helper::getVisitorCmsContent('TermsAndCondition', true, false, 'id', 'desc', null);
         return view('frontend.terms-and-condition')->with('term', $term);
     }
 }

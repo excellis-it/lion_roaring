@@ -119,7 +119,8 @@ class Helper
 
     public static function getPDFAttribute()
     {
-        $article = Article::orderBy('id', 'desc')->first();
+        // $article = Article::orderBy('id', 'desc')->first();
+        $article = self::getVisitorCmsContent('Article', true, false, 'id', 'desc', null);
         if ($article) {
             return Storage::url($article->pdf);
         } else {
@@ -646,7 +647,7 @@ class Helper
     // get visitor country code by ip using ipinfo.io
     public static function getVisitorCountryCode()
     {
-      //   return 'GB'; // Temporary hardcode for testing
+        //  return 'GB'; // Temporary hardcode for testing
         $ip = request()->ip();
         $codeSessionKey = 'visitor_country_code_' . $ip;
         $nameSessionKey = 'visitor_country_name_' . $ip;
