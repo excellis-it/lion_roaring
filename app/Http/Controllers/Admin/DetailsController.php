@@ -15,11 +15,11 @@ class DetailsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->can('Manage Details Page')) {
-        $details = Detail::orderBy('id', 'asc')->get();
-        return view('admin.details.update')->with('details', $details);
+            $details = Detail::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'asc')->get();
+            return view('admin.details.update')->with('details', $details);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -44,19 +44,39 @@ class DetailsController extends Controller
     public function store(Request $request)
     {
 
+        $country = $request->content_country_code ?? 'US';
+
+        // Determine submitted IDs (if any) and remove only records for this country that aren't submitted
+        $submittedIds = $request->image_id ?? [];
+
+        if (is_array($submittedIds) && count($submittedIds) > 0) {
+            Detail::where('country_code', $country)->whereNotIn('id', $submittedIds)->delete();
+        } else {
+            // No IDs submitted => remove all details for this country
+            Detail::where('country_code', $country)->delete();
+        }
+
+        // Ensure descriptions is an array before iterating
+        if (!is_array($request->description)) {
+            return redirect()->back()->withErrors('Invalid input for descriptions');
+        }
+
         foreach ($request->description as $key => $value) {
-            if (isset($request->image_id[$key])) {
-                $detail = Detail::find($request->image_id[$key]);
-                // delete old image
-                Detail::whereNotIn('id', $request->image_id)->delete();
+            if (isset($request->image_id[$key]) && $request->image_id[$key]) {
+                $detail = Detail::where('country_code', $country)->where('id', $request->image_id[$key])->first();
+                if (!$detail) {
+                    $detail = new Detail();
+                }
             } else {
                 $detail = new Detail();
             }
 
             $detail->description = $value;
-            if (isset($request->file('image')[$key]) && $request->hasFile('image') && $request->file('image')[$key]) {
+            if ($request->hasFile('image') && isset($request->file('image')[$key]) && $request->file('image')[$key]) {
                 $detail->image = $this->imageUpload($request->file('image')[$key], 'details');
             }
+
+            $detail->country_code = $country;
 
             $detail->save();
         }

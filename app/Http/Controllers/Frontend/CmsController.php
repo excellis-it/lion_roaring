@@ -77,14 +77,16 @@ class CmsController extends Controller
 
     public function principleAndBusiness()
     {
-        $principleAndBusiness = PrincipalAndBusiness::orderBy('id', 'desc')->first();
-        $principle_images = PrincipleBusinessImage::get();
-        return view('frontend.principle-and-business')->with(compact('principleAndBusiness', 'principle_images'));
+        // $principleAndBusiness = PrincipalAndBusiness::orderBy('id', 'desc')->first();
+        $principleAndBusiness = Helper::getVisitorCmsContent('PrincipalAndBusiness', true, false, 'id', 'desc', null);
+
+        return view('frontend.principle-and-business')->with(compact('principleAndBusiness'));
     }
 
     public function ecclesiaAssociations()
     {
-        $ecclesiaAssociations = EcclesiaAssociation::orderBy('id', 'desc')->first();
+        // $ecclesiaAssociations = EcclesiaAssociation::orderBy('id', 'desc')->first();
+        $ecclesiaAssociations = Helper::getVisitorCmsContent('EcclesiaAssociation', true, false, 'id', 'desc', null);
         return view('frontend.ecclesia-associations')->with('ecclesiaAssociations', $ecclesiaAssociations);
     }
 
@@ -142,7 +144,8 @@ class CmsController extends Controller
 
     public function details()
     {
-        $details = Detail::orderBy('id', 'asc')->get();
+        // $details = Detail::orderBy('id', 'asc')->get();
+        $details = Helper::getVisitorCmsContent('Detail', false, false, 'id', 'desc', null);
         return view('frontend.details')->with('details', $details);
     }
 
