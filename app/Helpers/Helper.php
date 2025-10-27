@@ -575,8 +575,7 @@ class Helper
     public static function cartCount()
     {
         if (auth()->check()) {
-            $cartCount = EstoreCart::where('user_id', auth()->user()->id)->count();
-            return $cartCount;
+            return (int) EstoreCart::where('user_id', auth()->user()->id)->sum('quantity');
         } else {
             return 0;
         }

@@ -737,7 +737,8 @@
                         }
                         initZoom();
                     } else {
-                        toastr.error(response.message);
+                        // toastr.error(response.message);
+                        $("#product-sku").text('');
                         $("#qty-div").hide();
                         $("#out-of-stock-message").show();
                         $(".cart-btns").hide();
