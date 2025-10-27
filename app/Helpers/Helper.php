@@ -182,7 +182,8 @@ class Helper
 
     public static function getPmaTerm()
     {
-        $term = PmaTerm::orderBy('id', 'desc')->first();
+        // $term = PmaTerm::orderBy('id', 'desc')->first();
+        $term = self::getVisitorCmsContent('PmaTerm', true, false, 'id', 'desc', null);
         return $term;
     }
 
@@ -233,7 +234,8 @@ class Helper
 
     public static function getAgreements()
     {
-        $agreement = RegisterAgreement::orderBy('id', 'desc')->first();
+        // $agreement = RegisterAgreement::orderBy('id', 'desc')->first();
+        $agreement = self::getVisitorCmsContent('RegisterAgreement', true, false, 'id', 'desc', null);
         return $agreement;
     }
 

@@ -13,10 +13,10 @@ class PmaDisclaimerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->can('Manage PMA Terms Page')) {
-            $term = PmaTerm::orderBy('id', 'desc')->first();
+            $term = PmaTerm::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
             return view('admin.pma-disclaimer.update')->with(compact('term'));
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -54,7 +54,9 @@ class PmaDisclaimerController extends Controller
 
         $terms->title = $request->title;
         $terms->description = $request->description;
-        $terms->save();
+        // $terms->save();
+        $country = $request->content_country_code ?? 'US';
+        $terms = PmaTerm::updateOrCreate(['country_code' => $country], array_merge($terms->getAttributes(), ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'Terms and Conditions updated successfully');
     }
