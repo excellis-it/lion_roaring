@@ -14,11 +14,11 @@ use Illuminate\Http\Request;
 class ElearningCmsController extends Controller
 {
     use ImageTrait;
-    public function memberPrivacyPolicy()
-    {
-        $policy = MemberPrivacyPolicy::orderBy('id', 'desc')->first();
-        return view('user.elearning-cms.member_privacy_policy')->with('policy', $policy);
-    }
+    // public function memberPrivacyPolicy()
+    // {
+    //     $policy = MemberPrivacyPolicy::orderBy('id', 'desc')->first();
+    //     return view('user.elearning-cms.member_privacy_policy')->with('policy', $policy);
+    // }
 
     public function page($name, $permission)
     {
