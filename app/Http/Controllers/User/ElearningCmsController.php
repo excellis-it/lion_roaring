@@ -120,7 +120,7 @@ class ElearningCmsController extends Controller
 
     public function footerUpdate(Request $request)
     {
-        return request()->all();
+       // return request()->all();
         if (auth()->user()->can('Edit Elearning CMS')) {
             $request->validate([
                 'footer_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
