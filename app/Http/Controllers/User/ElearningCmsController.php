@@ -52,15 +52,15 @@ class ElearningCmsController extends Controller
         }
     }
 
-    public function cms($page)
+    public function cms($page, Request $request)
     {
 
         if (auth()->user()->can('View Elearning CMS')) {
             if ($page == 'home') {
-                $cms = ElearningEcomHomeCms::orderBy('id', 'desc')->first();
+                $cms = ElearningEcomHomeCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
                 return view('user.elearning-cms.home_cms')->with('cms', $cms);
             } elseif ($page == 'footer') {
-                $cms = ElearningEcomFooterCms::orderBy('id', 'desc')->first();
+                $cms = ElearningEcomFooterCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
                 return view('user.elearning-cms.footer_cms')->with('cms', $cms);
             } else {
                 $cms = ElearningEcomCmsPage::where('slug', $page)->first();
@@ -106,7 +106,9 @@ class ElearningCmsController extends Controller
                 $cms->banner_image = $this->imageUpload($request->file('banner_image'), 'ecom_cms');
             }
 
-            $cms->save();
+            // $cms->save();
+            $country = $request->content_country_code ?? 'US';
+            $cms = ElearningEcomHomeCms::updateOrCreate(['country_code' => $country], array_merge($cms->getAttributes(), ['country_code' => $country]));
             return redirect()->back()->with('message', $message);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -118,6 +120,7 @@ class ElearningCmsController extends Controller
 
     public function footerUpdate(Request $request)
     {
+        return request()->all();
         if (auth()->user()->can('Edit Elearning CMS')) {
             $request->validate([
                 'footer_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
@@ -157,7 +160,9 @@ class ElearningCmsController extends Controller
                 $cms->footer_logo = $this->imageUpload($request->file('footer_logo'), 'ecom_cms');
             }
 
-            $cms->save();
+            // $cms->save();
+            $country = $request->content_country_code ?? 'US';
+            $cms = ElearningEcomFooterCms::updateOrCreate(['country_code' => $country], array_merge($cms->getAttributes(), ['country_code' => $country]));
             return redirect()->back()->with('message', $message);
         } else {
             abort(403, 'You do not have permission to access this page.');

@@ -8,6 +8,7 @@ use App\Models\ElearningEcomHomeCms;
 use App\Models\ElearningEcomNewsletter;
 use App\Models\ElearningProduct;
 use Illuminate\Http\Request;
+use App\Helpers\Helper;
 
 class ElearningHomeController extends Controller
 {
@@ -25,7 +26,8 @@ class ElearningHomeController extends Controller
         $lockets = ElearningProduct::where('status', 1)->whereHas('category', function ($q) {
             $q->where('slug', 'lockets');
         })->orderBy('id', 'DESC')->limit(10)->get();
-        $content = ElearningEcomHomeCms::orderBy('id', 'desc')->first();
+        // $content = ElearningEcomHomeCms::orderBy('id', 'desc')->first();
+        $content = Helper::getVisitorCmsContent('ElearningEcomHomeCms', true, false, 'id', 'desc', null);
         // return $content;
         return view('elearning.home')->with(compact('categories', 'feature_products', 'new_products', 'books', 'lockets', 'content'));
     }

@@ -348,7 +348,8 @@ class HomeController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return back()->with('success', 'Password updated successfully.');
+        // return back()->with('success', 'Password updated successfully.');
+        return response()->json(['success' => 'Password updated successfully', 'message' => 'Password updated successfully.']);
     }
 
     // orderTracking
