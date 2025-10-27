@@ -89,6 +89,7 @@ use App\Http\Controllers\User\OrderEmailTemplateController;
 use App\Http\Controllers\User\OrderStatusController;
 use App\Http\Controllers\User\WareHouseController;
 use App\Http\Controllers\User\WarehouseAdminController;
+use App\Helpers\Helper;
 
 
 
@@ -630,7 +631,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/elearning-cms/list', [ElearningCmsController::class, 'list'])->name('user.elearning-cms.list');
     Route::get('/elearning-cms/create', [ElearningCmsController::class, 'create'])->name('user.elearning-cms.create');
     Route::post('/elearning-cms/store', [ElearningCmsController::class, 'store'])->name('user.elearning-cms.store');
-    Route::put('/elearning-cms/update/{id}', [ElearningCmsController::class, 'update'])->name('user.elearning-cms.update');
+    Route::put('/elearning-cms/update', [ElearningCmsController::class, 'update'])->name('user.elearning-cms.update');
     Route::get('/elearning-cms-delete/{id}', [ElearningCmsController::class, 'delete'])->name('user.elearning-cms.delete');
     Route::get('/elearning-cms-page/{page}', [ElearningCmsController::class, 'cms'])->name('user.elearning-cms.edit');
     Route::post('/elearning-cms/home/update', [ElearningCmsController::class, 'homeCmsUpdate'])->name('user.elearning-cms.home.update');
@@ -868,7 +869,8 @@ Route::prefix('e-learning')->middleware(['user'])->group(function () {
         }
     }
 
-    $pages = ElearningEcomCmsPage::get();
+   // $pages = ElearningEcomCmsPage::get();
+   $pages = Helper::getVisitorCmsContent('ElearningEcomCmsPage', false, false, 'id', 'asc', null);
     foreach ($pages as $page) {
         if ($page->slug) {
             Route::get($page->slug, [ElearningCmsController::class, 'cmsPage'])
