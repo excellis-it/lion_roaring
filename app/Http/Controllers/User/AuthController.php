@@ -82,7 +82,7 @@ class AuthController extends Controller
 
     public function register()
     {
-        abort(404);
+       // abort(404);
         // $eclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
         $eclessias = Ecclesia::orderBy('id', 'asc')->get();
         $countries = Country::all();
@@ -91,7 +91,7 @@ class AuthController extends Controller
 
     public function registerCheck(Request $request)
     {
-        abort(404);
+      //  abort(404);
         // dd($request->all());
         // $request->validate([
         //     'user_name' => 'required|string|max:255|unique:users',

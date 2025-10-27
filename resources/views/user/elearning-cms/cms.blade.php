@@ -11,10 +11,11 @@
             <!--  Row 1 -->
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('user.elearning-cms.update', $cms->id) }}" method="POST"
+                    <form action="{{ route('user.elearning-cms.update') }}" method="POST"
                         enctype="multipart/form-data">
                         @method('PUT')
                         @csrf
+                        <input type="hidden" name="id" value="{{ isset($cms->id) ? $cms->id : '' }}">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
@@ -22,6 +23,21 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mb-5">
+                            <div class="col-md-4">
+                                <label for="country_code">Content Country</label>
+                                <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                    name="content_country_code" id="content_country_code" class="form-control">
+                                    @foreach (\App\Models\Country::all() as $country)
+                                        <option value="{{ $country->code }}"
+                                            {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                            {{ $country->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -55,7 +71,7 @@
                                 <div class="box_label">
                                     <label for="page_name"> Page Name *</label>
                                     <input type="text" name="page_name" id="page_name" class="form-control"
-                                        value="{{ $cms->page_name ? $cms->page_name : old('page_name') }}" placeholder="">
+                                        value="{{ isset($cms->page_name) ? $cms->page_name : old('page_name') }}" placeholder="" readonly>
                                     @if ($errors->has('page_name'))
                                         <span class="error">{{ $errors->first('page_name') }}</span>
                                     @endif
@@ -66,8 +82,8 @@
                                 <div class="box_label">
                                     <label for="page_title"> Page Title *</label>
                                     <input type="text" name="page_title" id="page_title" class="form-control"
-                                        value="{{ $cms->page_title ? $cms->page_title : old('page_title') }}"
-                                        placeholder="">
+                                        value="{{ isset($cms->page_title) ? $cms->page_title : old('page_title') }}"
+                                        placeholder="" readonly>
                                     @if ($errors->has('page_title'))
                                         <span class="error">{{ $errors->first('page_title') }}</span>
                                     @endif
@@ -78,7 +94,7 @@
                                 <div class="box_label">
                                     <label for="slug"> Page Slug *</label>
                                     <input type="text" name="slug" id="slug" class="form-control"
-                                        value="{{ $cms->slug ? $cms->slug : old('slug') }}" placeholder="">
+                                        value="{{ isset($cms->slug) ? $cms->slug : old('slug') }}" placeholder="" readonly>
                                     @if ($errors->has('slug'))
                                         <span class="error">{{ $errors->first('slug') }}</span>
                                     @endif
@@ -89,7 +105,7 @@
                                 <div class="box_label">
                                     <label for="page_content"> Page Content *</label>
                                     <textarea name="page_content" id="page_content" class="form-control" rows="5" cols="30"
-                                        placeholder="Enter Page Content">{{ $cms->page_content ? $cms->page_content : old('page_content') }}</textarea>
+                                        placeholder="Enter Page Content">{{ isset($cms->page_content) ? $cms->page_content : old('page_content') }}</textarea>
                                     @if ($errors->has('page_content'))
                                         <span class="error">{{ $errors->first('page_content') }}</span>
                                     @endif

@@ -25,7 +25,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <h4>Order #{{ $order->order_number }}</h4>
-                                    <p class="mb-0">Placed on {{ $order->created_at->format('M d, Y \a\t h:i A') }}</p>
+                                    <p class="mb-0">Placed on {{ \Carbon\Carbon::parse($order->created_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}</p>
                                     @if ($order->status == 4 && $order->payment_status == 'paid')
                                         <a href="{{ route('user.store-orders.invoice', $order->id) }}" target="_blank"
                                             class="btn btn-sm btn-primary">
@@ -234,7 +234,7 @@
                                         </p>
                                         @if ($payment->paid_at)
                                             <p class="mb-0"><strong>Paid on:</strong>
-                                                {{ $payment->paid_at->format('M d, Y \a\t h:i A') }}</p>
+                                                {{ \Carbon\Carbon::parse($payment->paid_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}</p>
                                         @endif
                                     </div>
                                 @endforeach
@@ -389,7 +389,7 @@
                                     <h6 style="margin:0; font-size:14px; color:#495057;">
                                         <strong style="color:#0d6efd;">Expected Delivery Date:</strong>
                                         <span style="font-weight:bold; color:#212529;">
-                                            {{ \Carbon\Carbon::parse($deliveredAt)->format('M d, Y') }}
+                                            {{ \Carbon\Carbon::parse($deliveredAt)->timezone(auth()->user()->time_zone)->format('M d, Y') }}
                                         </span>
                                     </h6>
                                 </div>
@@ -398,10 +398,12 @@
                             <h5 class="h6 mb-1">Current Status: <span
                                     class="fw-bold">{{ $order->orderStatus->name ?? ucfirst($order->status) }}</span>
                             </h5>
-                            <p class="mb-2 small text-muted">Last updated {{ $order->updated_at->format('M d, Y h:i A') }}
+                            <p class="mb-2 small text-muted">Last updated {{ \Carbon\Carbon::parse($order->updated_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
                             </p>
                             <ul class="list-unstyled small mb-0">
-                                <li>Placed: <strong>{{ $createdAt->format('M d, Y h:i A') }}</strong></li>
+                                {{-- {{ auth()->user()->time_zone }} <br>
+                                {{ \Carbon\Carbon::parse($createdAt)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }} --}}
+                                <li>Placed: <strong>{{ \Carbon\Carbon::parse($createdAt)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}</strong></li>
 
                                 @if (($order->orderStatus->slug ?? $order->status) === 'cancelled')
                                     <li class="text-danger">Order was cancelled.</li>

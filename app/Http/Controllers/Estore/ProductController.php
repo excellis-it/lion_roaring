@@ -577,7 +577,9 @@ class ProductController extends Controller
         if ($request->ajax()) {
             $isAuth = auth()->check();
             $userSessionId = session()->getId();
-            $cartCount = $isAuth ? EstoreCart::where('user_id', auth()->id())->count() : EstoreCart::where('session_id', $userSessionId)->count();
+            $cartCount = $isAuth
+                ? EstoreCart::where('user_id', auth()->id())->sum('quantity')
+                : EstoreCart::where('session_id', $userSessionId)->sum('quantity');
             return response()->json(['status' => true, 'cartCount' => $cartCount]);
         }
     }
@@ -1478,7 +1480,8 @@ class ProductController extends Controller
     // cancelOrder
     public function cancelOrder(Request $request)
     {
-        // return $request->all();
+
+        //  return $request->all();
         if (!auth()->check()) {
             // return response()->json(['status' => false, 'message' => 'Please login to continue']);
             return redirect()->route('home')->with('error', 'Please login to continue');
@@ -1491,19 +1494,21 @@ class ProductController extends Controller
         $order = EstoreOrder::where('id', $request->order_id)
             ->where('user_id', auth()->id())
             ->where('payment_status', 'paid')
-            ->whereIn('status', ['processing', 'pending'])
+            ->whereIn('status', ['1', '2'])
             ->first();
+
+        //  return $order;
 
         if (!$order) {
             // return response()->json(['status' => false, 'message' => 'Order not found or cannot be cancelled']);
-            return redirect()->back()->with('warning', 'Order not found or cannot be cancelled');
+            return redirect()->back()->with('warning', 'Order cannot be cancelled');
         }
 
         DB::beginTransaction();
 
         try {
             // Update order status
-            $order->update(['status' => 'cancelled', 'notes' => $request->cancellation_reason ?? null]);
+            $order->update(['status' => '5', 'notes' => $request->cancellation_reason ?? null]);
 
             // Refund payment if applicable
             $payment = EstorePayment::where('order_id', $order->id)

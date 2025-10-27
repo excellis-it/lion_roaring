@@ -13,11 +13,11 @@ class RegisterAgreementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->can('Manage Register Page Agreement Page')) {
-        $agreement = RegisterAgreement::orderBy('id', 'desc')->first();
-        return view('admin.register_agreement.update', compact('agreement'));
+            $agreement = RegisterAgreement::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
+            return view('admin.register_agreement.update', compact('agreement'));
         } else {
             return redirect()->route('admin.dashboard')->with('error', 'Unauthorized Access');
         }
@@ -54,7 +54,9 @@ class RegisterAgreementController extends Controller
 
         $agreement->agreement_title = $request->agreement_title;
         $agreement->agreement_description = $request->agreement_description;
-        $agreement->save();
+       // $agreement->save();
+        $country = $request->content_country_code ?? 'US';
+        $agreement = RegisterAgreement::updateOrCreate(['country_code' => $country], array_merge($agreement->getAttributes(), ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'Register agreement updated successfully');
     }

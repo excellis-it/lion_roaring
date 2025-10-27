@@ -50,6 +50,8 @@
                         <li><a href="{!! Helper::getElearningFooterCms()
                             ? Helper::getElearningFooterCms()->footer_youtube_link
                             : 'javascript:void(0);' !!}"><i class="fa-brands fa-youtube"></i></a></li>
+                        <li><span class="badge bg-dark ms-3 mt-2"> <i class="fa fa-globe"></i>
+                                {{ Helper::getVisitorCountryName() }}</span></li>
                     </ul>
                 </div>
             </div>

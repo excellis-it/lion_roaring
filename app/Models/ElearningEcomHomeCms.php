@@ -10,6 +10,7 @@ class ElearningEcomHomeCms extends Model
     use HasFactory;
 
     protected $fillable = [
+        'country_code',
         'banner_image',
         'banner_title',
         'banner_subtitle',

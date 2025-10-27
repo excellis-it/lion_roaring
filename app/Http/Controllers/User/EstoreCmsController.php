@@ -83,7 +83,7 @@ class EstoreCmsController extends Controller
                 $cms = EcomHomeCms::orderBy('id', 'desc')->first();
                 return view('user.store-cms.home_cms')->with('cms', $cms);
             } elseif ($page == 'footer') {
-                   $cms = EcomFooterCms::orderBy('id', 'desc')->first();
+                $cms = EcomFooterCms::orderBy('id', 'desc')->first();
 
                 // return $cms;
                 return view('user.store-cms.footer_cms')->with('cms', $cms);
@@ -310,7 +310,7 @@ class EstoreCmsController extends Controller
 
             $cms->save();
 
-           
+
             return redirect()->back()->with('message', $message);
         } else {
             abort(403, 'You do not have permission to access this page.');

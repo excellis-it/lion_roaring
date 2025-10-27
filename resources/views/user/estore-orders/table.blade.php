@@ -58,8 +58,9 @@
                 </td>
                 <td>
                     <div>
-                        {{ $order->created_at->format('M d, Y') }}<br>
-                        <small class="text-muted">{{ $order->created_at->format('h:i A') }}</small>
+                        {{ \Carbon\Carbon::parse($order->created_at)->timezone(auth()->user()->time_zone)->format('M d, Y') }}<br>
+                        <small
+                            class="text-muted">{{ \Carbon\Carbon::parse($order->created_at)->timezone(auth()->user()->time_zone)->format('h:i A') }}</small>
                     </div>
                 </td>
                 <td>

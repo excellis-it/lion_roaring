@@ -10,15 +10,16 @@ use App\Models\ElearningEcomNewsletter;
 use App\Models\MemberPrivacyPolicy;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
+use App\Helpers\Helper;
 
 class ElearningCmsController extends Controller
 {
     use ImageTrait;
-    public function memberPrivacyPolicy()
-    {
-        $policy = MemberPrivacyPolicy::orderBy('id', 'desc')->first();
-        return view('user.elearning-cms.member_privacy_policy')->with('policy', $policy);
-    }
+    // public function memberPrivacyPolicy()
+    // {
+    //     $policy = MemberPrivacyPolicy::orderBy('id', 'desc')->first();
+    //     return view('user.elearning-cms.member_privacy_policy')->with('policy', $policy);
+    // }
 
     public function page($name, $permission)
     {
@@ -45,25 +46,51 @@ class ElearningCmsController extends Controller
     public function list()
     {
         if (auth()->user()->can('Manage Elearning CMS')) {
-            $pages = ElearningEcomCmsPage::get();
+            // $pages = ElearningEcomCmsPage::get();
+            $pages = Helper::getVisitorCmsContent('ElearningEcomCmsPage', false, false, 'id', 'asc', null);
             return view('user.elearning-cms.list')->with('pages', $pages);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
     }
 
-    public function cms($page)
+    public function cms($page, Request $request)
     {
-
+        //return request()->all();
         if (auth()->user()->can('View Elearning CMS')) {
             if ($page == 'home') {
-                $cms = ElearningEcomHomeCms::orderBy('id', 'desc')->first();
+                $cms = ElearningEcomHomeCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
+                //   return $cms;
                 return view('user.elearning-cms.home_cms')->with('cms', $cms);
             } elseif ($page == 'footer') {
-                $cms = ElearningEcomFooterCms::orderBy('id', 'desc')->first();
+                $cms = ElearningEcomFooterCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
                 return view('user.elearning-cms.footer_cms')->with('cms', $cms);
             } else {
-                $cms = ElearningEcomCmsPage::where('slug', $page)->first();
+                $cms_default = ElearningEcomCmsPage::where('slug', $page)->orderBy('id', 'asc')->first();
+                if (!$cms_default) {
+                    abort(404, 'CMS default page not found.');
+                }
+                $page_name = $cms_default->page_name;
+                $page_title = $cms_default->page_title;
+                $slug = $cms_default->slug;
+
+                $country = $request->get('content_country_code', 'US');
+                $cms = ElearningEcomCmsPage::where('slug', $page)->where('country_code', $country)->orderBy('id', 'desc')->first();
+
+                if (!$cms) {
+                    // create a temporary model instance for the view populated with defaults
+                    $cms = new ElearningEcomCmsPage();
+                    $cms->page_name = $page_name;
+                    $cms->page_title = $page_title;
+                    $cms->slug = $slug;
+                    $cms->country_code = $country;
+                    $cms->page_content = $cms_default->page_content ?? '';
+                } else {
+                    $cms->page_name = $page_name;
+                    $cms->page_title = $page_title;
+                    $cms->slug = $slug;
+                }
+
                 return view('user.elearning-cms.cms')->with('cms', $cms);
             }
         } else {
@@ -106,7 +133,9 @@ class ElearningCmsController extends Controller
                 $cms->banner_image = $this->imageUpload($request->file('banner_image'), 'ecom_cms');
             }
 
-            $cms->save();
+            // $cms->save();
+            $country = $request->content_country_code ?? 'US';
+            $cms = ElearningEcomHomeCms::updateOrCreate(['country_code' => $country], array_merge($cms->getAttributes(), ['country_code' => $country]));
             return redirect()->back()->with('message', $message);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -118,6 +147,7 @@ class ElearningCmsController extends Controller
 
     public function footerUpdate(Request $request)
     {
+        // return request()->all();
         if (auth()->user()->can('Edit Elearning CMS')) {
             $request->validate([
                 'footer_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
@@ -157,7 +187,9 @@ class ElearningCmsController extends Controller
                 $cms->footer_logo = $this->imageUpload($request->file('footer_logo'), 'ecom_cms');
             }
 
-            $cms->save();
+            // $cms->save();
+            $country = $request->content_country_code ?? 'US';
+            $cms = ElearningEcomFooterCms::updateOrCreate(['country_code' => $country], array_merge($cms->getAttributes(), ['country_code' => $country]));
             return redirect()->back()->with('message', $message);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -195,6 +227,8 @@ class ElearningCmsController extends Controller
                 $cms->page_banner_image = $this->imageUpload($request->file('page_banner_image'), 'ecom_cms');
             }
 
+            $cms->country_code = $request->content_country_code ?? 'US';
+
             $cms->save();
             return redirect()->route('user.elearning-cms.list')->with('message', 'CMS page added successfully');
         } else {
@@ -204,19 +238,31 @@ class ElearningCmsController extends Controller
 
 
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
+        // return request()->all();
         // dd($id);
+
         if (auth()->user()->can('Edit Elearning CMS')) {
 
             $request->validate([
                 'page_name' => 'required|string',
                 'page_title' => 'required|string',
                 'page_content' => 'required|string',
-                'slug' => 'required|string|unique:ecom_cms_pages,slug,' . $id,
+                'slug' => 'required|string'
             ]);
 
-            $cms = ElearningEcomCmsPage::find($id);
+            //  $cms = ElearningEcomCmsPage::find($request->id);
+
+            if ($request->id) {
+                $cms = ElearningEcomCmsPage::find($request->id);
+                // return 'found';
+                $message = 'CMS updated successfully';
+            } else {
+                $cms = new ElearningEcomCmsPage();
+                $message = 'CMS added successfully';
+            }
+
             $cms->page_name = $request->page_name;
             $cms->page_title = $request->page_title;
             $cms->page_content = $request->page_content;
@@ -225,6 +271,10 @@ class ElearningCmsController extends Controller
                 $cms->page_banner_image = $this->imageUpload($request->file('page_banner_image'), 'ecom_cms');
             }
 
+            $country = $request->content_country_code ?? 'US';
+          //  return $cms;
+            // $cms = ElearningEcomCmsPage::updateOrCreate(['country_code' => $country], array_merge($cms->getAttributes(), ['country_code' => $country]));
+            $cms->country_code = $country;
             $cms->save();
             return redirect()->route('user.elearning-cms.list')->with('message', 'CMS page updated successfully');
         } else {

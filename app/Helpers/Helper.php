@@ -182,7 +182,8 @@ class Helper
 
     public static function getPmaTerm()
     {
-        $term = PmaTerm::orderBy('id', 'desc')->first();
+        // $term = PmaTerm::orderBy('id', 'desc')->first();
+        $term = self::getVisitorCmsContent('PmaTerm', true, false, 'id', 'desc', null);
         return $term;
     }
 
@@ -221,19 +222,22 @@ class Helper
 
     public static function getElearningCmsPages()
     {
-        $pages = ElearningEcomCmsPage::get();
+       // $pages = ElearningEcomCmsPage::get();
+        $pages = self::getVisitorCmsContent('ElearningEcomCmsPage', false, false, 'id', 'asc', null);
         return $pages;
     }
 
     public static function getElearningFooterCms()
     {
-        $cms = ElearningEcomFooterCms::orderBy('id', 'desc')->first();
+       // $cms = ElearningEcomFooterCms::orderBy('id', 'desc')->first();
+        $cms = self::getVisitorCmsContent('ElearningEcomFooterCms', true, false, 'id', 'desc', null);
         return $cms;
     }
 
     public static function getAgreements()
     {
-        $agreement = RegisterAgreement::orderBy('id', 'desc')->first();
+        // $agreement = RegisterAgreement::orderBy('id', 'desc')->first();
+        $agreement = self::getVisitorCmsContent('RegisterAgreement', true, false, 'id', 'desc', null);
         return $agreement;
     }
 
@@ -573,8 +577,7 @@ class Helper
     public static function cartCount()
     {
         if (auth()->check()) {
-            $cartCount = EstoreCart::where('user_id', auth()->user()->id)->count();
-            return $cartCount;
+            return (int) EstoreCart::where('user_id', auth()->user()->id)->sum('quantity');
         } else {
             return 0;
         }

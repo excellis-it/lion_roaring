@@ -45,7 +45,8 @@
                             </div>
                             <div class="my_profile">
 
-                                <form method="POST" action="{{ route('e-store.password.update') }}">
+                                <form id="change-password-form" method="POST"
+                                    action="{{ route('e-store.password.update') }}">
                                     @csrf
                                     <div class="row">
                                         <div class="col-lg-12 mb-3">
@@ -74,7 +75,9 @@
                                                 style="cursor:pointer;"></span>
                                         </div>
                                         <div class="col-lg-12 mb-3">
-                                            <button type="submit" class="red_btn add-product border-0"><span>Submit</span></button>
+                                            <div id="form-errors" class="alert alert-danger d-none"></div>
+                                            <button type="submit"
+                                                class="red_btn add-product border-0"><span>Submit</span></button>
                                         </div>
                                     </div>
                                 </form>
@@ -97,6 +100,78 @@
                     target.type = target.type === 'password' ? 'text' : 'password';
                     this.classList.toggle('fa-eye-slash');
                 });
+            });
+
+            function validatePassword(password) {
+                const specialChars = /[@$%&]/;
+                return password.length >= 8 && specialChars.test(password);
+            }
+
+            document.getElementById('change-password-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const oldPassword = document.getElementById('password-field').value;
+                const newPassword = document.getElementById('password-field-1').value;
+                const confirmPassword = document.getElementById('password-field-2').value;
+                let errors = [];
+
+                if (!validatePassword(newPassword)) {
+                    errors.push(
+                        'New password must be at least 8 characters and include at least one special character (@, $, %, &).'
+                        );
+                }
+                if (newPassword !== confirmPassword) {
+                    errors.push('New password and confirm password do not match.');
+                }
+                if (!oldPassword) {
+                    errors.push('Old password is required.');
+                }
+
+                const errorDiv = document.getElementById('form-errors');
+                if (errors.length > 0) {
+                    errorDiv.innerHTML = errors.join('<br>');
+                    errorDiv.classList.remove('d-none');
+                    return;
+                } else {
+                    errorDiv.classList.add('d-none');
+                }
+
+                // AJAX submit
+                const form = e.target;
+                const formData = new FormData(form);
+                fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': form.querySelector('[name="_token"]').value,
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            errorDiv.classList.remove('alert-danger');
+                            errorDiv.classList.add('alert-success');
+                            errorDiv.innerHTML = data.success;
+                            errorDiv.classList.remove('d-none');
+                            form.reset();
+                        } else if (data.errors) {
+                            errorDiv.classList.remove('d-none');
+                            errorDiv.classList.remove('alert-success');
+                            errorDiv.classList.add('alert-danger');
+                            errorDiv.innerHTML = Object.values(data.errors).join('<br>');
+                        } else if (data.error) {
+                            errorDiv.classList.remove('d-none');
+                            errorDiv.classList.remove('alert-success');
+                            errorDiv.classList.add('alert-danger');
+                            errorDiv.innerHTML = data.error;
+                        }
+                    })
+                    .catch(() => {
+                        errorDiv.classList.remove('d-none');
+                        errorDiv.classList.remove('alert-success');
+                        errorDiv.classList.add('alert-danger');
+                        errorDiv.innerHTML = 'An error occurred. Please try again.';
+                    });
             });
         </script>
     @endpush
