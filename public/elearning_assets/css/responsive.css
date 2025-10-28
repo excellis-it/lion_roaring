@@ -227,6 +227,39 @@
     .slide .slide__content--headings .title {
         font-size: 24px;
     }
+    .padding_filter{
+        padding: 20px 40px 20px 30px;
+    }
+    .inner_banner_ontent h2{
+        font-size: 30px;
+    }
+    .inner_banner_ontent h2 {
+        font-size: 24px;
+    }
+    .inner_banner_sec {
+        padding: 150px 0 130px 0;
+    }
+    .filter .form-group input:checked+label:after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 6px;
+        height: 11px;
+        border: solid var(--white-color);
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+    .filter .form-group label:before{
+        padding: 8px;
+    }
+    .filter .form-group label{
+        font-size: 14px;
+    }
+    .filter_res_text h4{
+        font-size: 16px;
+    }
     }
 @media (max-width:425.98px){
     .img_servic {
