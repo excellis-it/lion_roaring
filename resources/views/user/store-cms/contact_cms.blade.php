@@ -16,11 +16,28 @@
                         <h3>Contact Page CMS</h3>
                     </div>
                 </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <label for="country_code">Content Country</label>
+                        <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                            name="content_country_code" id="content_country_code" class="form-control">
+                            @foreach (\App\Models\Country::all() as $country)
+                                <option value="{{ $country->code }}"
+                                    {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                    {{ $country->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Banner Image*</label>
                         <input type="file" name="banner_image" class="form-control" />
-                        <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 1920px, height: 520px, max 2MB)</span><br>
+                        <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 1920px, height: 520px, max
+                            2MB)</span><br>
                         @if (isset($cms->banner_image))
                             <img src="{{ Storage::url($cms->banner_image) }}" alt="banner" class="img-thumbnail mt-2"
                                 style="max-height:120px;">

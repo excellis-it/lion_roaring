@@ -521,7 +521,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/store-cms/list', [EstoreCmsController::class, 'list'])->name('user.store-cms.list');
     Route::get('/store-cms/create', [EstoreCmsController::class, 'create'])->name('user.store-cms.create');
     Route::post('/store-cms/store', [EstoreCmsController::class, 'store'])->name('user.store-cms.store');
-    Route::put('/store-cms/update/{id}', [EstoreCmsController::class, 'update'])->name('user.store-cms.update');
+    Route::put('/store-cms/update', [EstoreCmsController::class, 'update'])->name('user.store-cms.update');
     Route::get('/store-cms-delete/{id}', [EstoreCmsController::class, 'delete'])->name('user.store-cms.delete');
     Route::get('/store-cms-page/{page}', [EstoreCmsController::class, 'cms'])->name('user.store-cms.edit');
     Route::post('/store-cms/home/update', [EstoreCmsController::class, 'homeCmsUpdate'])->name('user.store-cms.home.update');
@@ -809,6 +809,7 @@ Route::prefix('e-store')->group(function () {
     // estore.register
     Route::post('/register', [HomeController::class, 'register'])->name('estore.register');
 
+
     $categories = Category::where('status', 1)->get();
     foreach ($categories as $category) {
         if ($category->slug) {
@@ -818,14 +819,19 @@ Route::prefix('e-store')->group(function () {
         }
     }
 
-    $pages = EcomCmsPage::where('id', '<', 3)->get();
-    foreach ($pages as $page) {
-        if ($page->slug) {
-            Route::get($page->slug, [EstoreCmsController::class, 'cmsPage'])
-                ->name($page->slug . '.e-store.cms-page')
-                ->defaults('page_id', $page->id);
-        }
-    }
+    //     $pages = EcomCmsPage::where('id', '<', 3)->get();
+    //  // $pages = Helper::getVisitorCmsContent('EcomCmsPage', false, false, 'id', 'asc', null);
+    //  // $pages = $pages->where('id', '<', 3);
+    //     foreach ($pages as $page) {
+    //         if ($page->slug) {
+    //             Route::get($page->slug, [EstoreCmsController::class, 'cmsPage'])
+    //                 ->name($page->slug . '.e-store.cms-page')
+    //                 ->defaults('page_id', $page->id);
+    //         }
+    //     }
+
+    // e-store.cms-page dynamic routes for cms pages with slug
+    Route::get('/page/{slug}', [EstoreCmsController::class, 'cmsPageContent'])->name('e-store.cms-page');
 });
 
 // Dynamic routes for categories
@@ -869,15 +875,18 @@ Route::prefix('e-learning')->middleware(['user'])->group(function () {
         }
     }
 
-   // $pages = ElearningEcomCmsPage::get();
-   $pages = Helper::getVisitorCmsContent('ElearningEcomCmsPage', false, false, 'id', 'asc', null);
-    foreach ($pages as $page) {
-        if ($page->slug) {
-            Route::get($page->slug, [ElearningCmsController::class, 'cmsPage'])
-                ->name($page->slug . '.e-learning.cms-page')
-                ->defaults('page_id', $page->id);
-        }
-    }
+    // // $pages = ElearningEcomCmsPage::get();
+    // $pages = Helper::getVisitorCmsContent('ElearningEcomCmsPage', false, false, 'id', 'asc', null);
+    // foreach ($pages as $page) {
+    //     if ($page->slug) {
+    //         Route::get($page->slug, [ElearningCmsController::class, 'cmsPage'])
+    //             ->name($page->slug . '.e-learning.cms-page')
+    //             ->defaults('page_id', $page->id);
+    //     }
+    // }
+
+    // e-learning.cms-page dynamic routes for cms pages with slug
+    Route::get('/page/{slug}', [ElearningCmsController::class, 'cmsPageContent'])->name('e-learning.cms-page');
 });
 
 Route::post('/chatbot', [ChatBotController::class, 'FaqChat'])->name('chatbot.message');

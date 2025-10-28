@@ -275,7 +275,8 @@ class HomeController extends Controller
     // contact us page
     public function contactUs()
     {
-        $contactCms = \App\Models\EcomContactCms::orderBy('id', 'desc')->first();
+        // $contactCms = EcomContactCms::orderBy('id', 'desc')->first();
+        $contactCms = Helper::getVisitorCmsContent('EcomContactCms', true, false, 'id', 'desc', null);
         return view('ecom.contact', compact('contactCms'));
     }
 

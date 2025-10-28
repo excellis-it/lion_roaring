@@ -11,10 +11,11 @@
             <!--  Row 1 -->
             <div class="row">
                 <div class="col-lg-12">
-                    <form id="store-cms-update-form" action="{{ route('user.store-cms.update', $cms->id) }}" method="POST"
+                    <form id="store-cms-update-form" action="{{ route('user.store-cms.update') }}" method="POST"
                         enctype="multipart/form-data">
                         @method('PUT')
                         @csrf
+                        <input type="hidden" name="id" value="{{ isset($cms->id) ? $cms->id : '' }}">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="heading_box mb-5">
@@ -52,13 +53,28 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label for="country_code">Content Country</label>
+                                <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                    name="content_country_code" id="content_country_code" class="form-control">
+                                    @foreach (\App\Models\Country::all() as $country)
+                                        <option value="{{ $country->code }}"
+                                            {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                            {{ $country->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label for="image"> Page Banner Image *</label>
                                     <input type="file" name="page_banner_image" id="image" class="form-control"
                                         value="{{ old('page_banner_image') }}">
-                                    <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 1920px, height: 520px, max 2MB)</span>
+                                    <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 1920px, height:
+                                        520px, max 2MB)</span>
                                     @if ($errors->has('page_banner_image'))
                                         <span class="error">{{ $errors->first('page_banner_image') }}</span>
                                     @endif
@@ -101,7 +117,7 @@
                                     <label for="page_title"> Page Title *</label>
                                     <input type="text" name="page_title" id="page_title" class="form-control"
                                         value="{{ $cms->page_title ? $cms->page_title : old('page_title') }}"
-                                        placeholder="">
+                                        placeholder="" readonly>
                                     @if ($errors->has('page_title'))
                                         <span class="error">{{ $errors->first('page_title') }}</span>
                                     @endif
