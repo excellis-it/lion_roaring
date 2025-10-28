@@ -34,9 +34,9 @@
                         <p>
                             {!! Helper::getFooter()['footer_title'] ??
                                 'Our main focus is to restore our various communities, villages, cities, states,
-                                                                                    and
-                                                                                    our nation by restoring the condition of a person in both the spiritual and the
-                                                                                    physical.' !!}
+                                                                                                                and
+                                                                                                                our nation by restoring the condition of a person in both the spiritual and the
+                                                                                                                physical.' !!}
                         </p>
                         <div class="col-lg-12">
                             <div class="d-flex align-items-center">
@@ -138,8 +138,27 @@
                         'Copyright © ' . date('Y') . ' Daud Santosa. All Rights Reserved' !!}</p>
                 </div>
                 <div class="col-md-2">
-                    <span class="badge bg-dark"> <i class="fa fa-globe"></i>
-                        {{ Helper::getVisitorCountryName() }}</span>
+                    {{-- <span class="badge bg-dark"> <i class="fa fa-globe"></i>
+                        {{ Helper::getVisitorCountryName() }}</span> --}}
+
+                    @php
+                        $currentCode = strtoupper(\App\Helpers\Helper::getVisitorCountryCode());
+                        $countries = \App\Helpers\Helper::getCountries();
+                    @endphp
+
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-dark text-white">
+                            <i class="fa fa-globe"></i>
+                        </span>
+                        <select id="countrySwitcher" class="form-select form-select-sm">
+                            @foreach ($countries as $c)
+                                <option value="{{ strtolower($c->code) }}"
+                                    {{ strtoupper($c->code) === $currentCode ? 'selected' : '' }}>
+                                    {{ $c->name }} ({{ strtoupper($c->code) }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
                 </div>
             </div>
@@ -147,3 +166,15 @@
 
     </div>
 </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var sel = document.getElementById('countrySwitcher');
+    if (sel) {
+        sel.addEventListener('change', function () {
+            var cc = this.value;
+            if (cc) window.location.href = '/' + cc; // goes to masked home which sets session + content
+        });
+    }
+});
+</script>

@@ -90,6 +90,8 @@ use App\Http\Controllers\User\OrderStatusController;
 use App\Http\Controllers\User\WareHouseController;
 use App\Http\Controllers\User\WarehouseAdminController;
 use App\Helpers\Helper;
+use App\Models\Country;
+use Illuminate\Support\Str;
 
 
 
@@ -277,7 +279,37 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
 });
 
 /*************************************************************** Frontend ************************************************************************/
-Route::get('/', [CmsController::class, 'index'])->name('home');
+// Route::get('/', [CmsController::class, 'index'])->name('home');
+
+// Country code pattern (e.g., us|in|gb)
+$__countryCodes = Country::pluck('code')
+    ->map(fn($c) => strtolower(trim($c)))
+    ->unique()
+    ->filter()
+    ->values()
+    ->all();
+$__ccPattern = $__countryCodes ? implode('|', array_map(fn($s) => preg_quote($s, '/'), $__countryCodes)) : 'a^';
+
+// Redirect "/" to "/{cc}"
+Route::get('/', function () {
+    $cc = strtolower(Helper::getVisitorCountryCode()); // e.g., "US" -> "us"
+    return $cc ? redirect('/' . $cc, 302) : app(CmsController::class)->index();
+})->name('home');
+
+// Country-code masked home (won't affect other routes due to tight constraint)
+Route::get('/{cc}', function (string $cc) {
+    $row = Country::whereRaw('LOWER(code) = ?', [strtolower($cc)])->first();
+    if ($row) {
+        $ip = request()->ip();
+        session([
+            'visitor_country_code_' . $ip => strtoupper($row->code),
+            'visitor_country_name_' . $ip => $row->name,
+        ]);
+    }
+    return app(CmsController::class)->index();
+})->where('cc', $__ccPattern)->name('home.country');
+
+
 Route::get('/gallery', [CmsController::class, 'gallery'])->name('gallery');
 Route::get('/faq', [CmsController::class, 'faq'])->name('faq');
 Route::get('/contact-us', [CmsController::class, 'contactUs'])->name('contact-us');
