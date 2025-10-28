@@ -13,5 +13,6 @@ class PmaTerm extends Model
         'country_code',
         'title',
         'description',
+        'checkbox_text',
     ];
 }

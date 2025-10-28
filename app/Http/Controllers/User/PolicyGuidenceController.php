@@ -114,7 +114,7 @@ class PolicyGuidenceController extends Controller
             if ($policy) {
                 $filePath = Storage::disk('public')->path($policy->file); // ensure using 'public' disk
                 if (file_exists($filePath)) {
-                    return response()->download($filePath);
+                    return response()->download($filePath, $policy->file_name);
                 } else {
                     return redirect()->route('policy-guidence.index')->with('error', 'Policy not found.');
                 }

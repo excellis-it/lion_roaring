@@ -95,9 +95,9 @@ class LeadershipDevelopmentController extends Controller
                 $file->delete();
                 // delete file from storage
                 Storage::disk('public')->delete($file->file);
-                return redirect()->route('leadership-development.index', ['topic'=>  $new_topic])->with('message', 'File deleted successfully.');
+                return redirect()->route('leadership-development.index', ['topic' =>  $new_topic])->with('message', 'File deleted successfully.');
             } else {
-                return redirect()->route('leadership-development.index', ['topic'=>  $new_topic])->with('error', 'File not found.');
+                return redirect()->route('leadership-development.index', ['topic' =>  $new_topic])->with('error', 'File not found.');
             }
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -110,7 +110,7 @@ class LeadershipDevelopmentController extends Controller
         if ($file) {
             $filePath = Storage::disk('public')->path($file->file); // ensure using 'public' disk
             if (file_exists($filePath)) {
-                return response()->download($filePath);
+                return response()->download($filePath, $file->file_name);
             } else {
                 return redirect()->route('leadership-development.index')->with('error', 'File not found.');
             }

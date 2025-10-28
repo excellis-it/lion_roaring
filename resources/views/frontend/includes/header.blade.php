@@ -65,7 +65,7 @@
                                 @endif
                             @else
                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                    href="{{ route('login') }}"><span><i class="fa-solid fa-user"></i></span> Login</a>
+                                    href="{{ route('login') }}"><span><i class="fa-solid fa-user"></i></span> Sign-In/New Member</a>
                             @endif
                         </div>
                         <div class="login_prf">

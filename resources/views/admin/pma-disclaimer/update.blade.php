@@ -67,6 +67,21 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-xl-12 col-md-12">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        {{-- checkbox_text --}}
+                                        <label for="floatingInputValue"> Checkbox Text*</label>
+                                       <input type="text" name="checkbox_text" id="checkbox_text" value="{{ isset($term->checkbox_text) ? $term->checkbox_text : old('checkbox_text') }}" class="form-control" placeholder="Checkbox Text">
+                                        @if ($errors->has('checkbox_text'))
+                                            <div class="error" style="color:red;">
+                                                {{ $errors->first('checkbox_text') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-xl-12">
                                 <div class="btn-1">
                                     <button type="submit">Update</button>

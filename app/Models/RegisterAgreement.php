@@ -12,7 +12,7 @@ class RegisterAgreement extends Model
     protected $fillable = [
         'country_code',
         'agreement_title',
-        'agreement_description'
+        'agreement_description',
+        'checkbox_text',
     ];
-
 }

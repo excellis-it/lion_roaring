@@ -30,7 +30,7 @@
                                             <p class="card-text"><strong>Meeting End Time:</strong>
                                                 {{ $meeting->end_time ? date('d M, Y', strtotime($meeting->end_time)) : 'N/A' }} </p>
                                             <p class="card-text"><strong>Meeting Link:</strong>
-                                                {{ $meeting->meeting_link ? $meeting->meeting_link : 'N/A' }}</p>
+                                                <a href="{{ $meeting->meeting_link }}" target="_blank">{{ $meeting->meeting_link ? $meeting->meeting_link : 'N/A' }}</a></p>
                                             <hr>
                                         </div>
                                         <div class="col-md-6 text-right">

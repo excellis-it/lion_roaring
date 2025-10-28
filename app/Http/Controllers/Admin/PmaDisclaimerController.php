@@ -44,6 +44,7 @@ class PmaDisclaimerController extends Controller
         $request->validate([
             'title' => 'required',
             'description' => 'required',
+            'checkbox_text' => 'nullable|string',
         ]);
 
         if ($request->id != '') {
@@ -54,6 +55,7 @@ class PmaDisclaimerController extends Controller
 
         $terms->title = $request->title;
         $terms->description = $request->description;
+        $terms->checkbox_text = $request->checkbox_text;
         // $terms->save();
         $country = $request->content_country_code ?? 'US';
         $terms = PmaTerm::updateOrCreate(['country_code' => $country], array_merge($terms->getAttributes(), ['country_code' => $country]));

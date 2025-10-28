@@ -127,9 +127,32 @@
                         $('#modalEnd').text(info.event.end ? moment(info.event.end).format(
                             'DD MMM YYYY h:mm A') : 'N/A');
                         $('#modalDescription').text(info.event.extendedProps.description);
-                        $('#modalLink').text(info.event.extendedProps.meeting_link ? info
-                            .event
-                            .extendedProps.meeting_link : 'N/A');
+                        var link = info.event.extendedProps.meeting_link ? info.event.extendedProps.meeting_link.trim() : '';
+                        if (link) {
+                            var href = link;
+                            // If the link already has a scheme (http:, https:, mailto:, tel:, etc.), use as-is
+                            if (!/^[a-zA-Z][a-zA-Z0-9+\-.]*:/.test(link)) {
+                                // If it starts with '/', treat as absolute path on current origin
+                                if (link.startsWith('/')) {
+                                    href = window.location.origin + link;
+                                } else if (/^[^\s\/]+\.[^\s\/]+/.test(link)) {
+                                    // Looks like a domain (e.g. google.com or www.google.com) -> add https://
+                                    href = 'https://' + link;
+                                } else {
+                                    // Treat as a relative path
+                                    href = window.location.origin + '/' + link;
+                                }
+                            }
+                            var a = $('<a/>', {
+                                href: href,
+                                text: link,
+                                target: '_blank',
+                                rel: 'noopener noreferrer'
+                            });
+                            $('#modalLink').empty().append(a);
+                        } else {
+                            $('#modalLink').text('N/A');
+                        }
                         $('#eventModal').modal('show');
                     },
                     eventTimeFormat: { // format for times in the calendar view
