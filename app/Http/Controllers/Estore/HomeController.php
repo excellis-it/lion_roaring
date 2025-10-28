@@ -70,10 +70,12 @@ class HomeController extends Controller
         $lockets = Product::where('is_deleted', false)->whereIn('id', $wareHouseProducts)->where('status', 1)->whereHas('category', function ($q) {
             $q->where('slug', 'lockets');
         })->orderBy('id', 'DESC')->limit(10)->get();
-        $content = EcomHomeCms::orderBy('id', 'desc')->first();
+        // $content = EcomHomeCms::orderBy('id', 'desc')->first();
+        $content = Helper::getVisitorCmsContent('EcomHomeCms', true, false, 'id', 'desc', null);
         $cartCount = EstoreCart::where('user_id', auth()->id())->count();
 
-        $homeCms = EcomHomeCms::orderBy('id', 'desc')->first();
+        // $homeCms = EcomHomeCms::orderBy('id', 'desc')->first();
+        $homeCms = Helper::getVisitorCmsContent('EcomHomeCms', true, false, 'id', 'desc', null);
         $content = [];
         $sliderData = [];
         $sliderDataSecond = [];
@@ -114,12 +116,12 @@ class HomeController extends Controller
 
             // Decode slider data
             if ($homeCms->slider_data) {
-                $sliderData = json_decode($homeCms->slider_data, true);
+                $sliderData = $homeCms->slider_data;
             }
 
             // Decode second slider data
             if ($homeCms->slider_data_second) {
-                $sliderDataSecond = json_decode($homeCms->slider_data_second, true);
+                $sliderDataSecond = $homeCms->slider_data_second;
             }
         }
 
@@ -275,7 +277,8 @@ class HomeController extends Controller
     // contact us page
     public function contactUs()
     {
-        $contactCms = \App\Models\EcomContactCms::orderBy('id', 'desc')->first();
+        // $contactCms = EcomContactCms::orderBy('id', 'desc')->first();
+        $contactCms = Helper::getVisitorCmsContent('EcomContactCms', true, false, 'id', 'desc', null);
         return view('ecom.contact', compact('contactCms'));
     }
 

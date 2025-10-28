@@ -11,6 +11,7 @@ use App\Models\MemberPrivacyPolicy;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use App\Helpers\Helper;
+use Illuminate\Support\Facades\DB;
 
 class ElearningCmsController extends Controller
 {
@@ -35,7 +36,11 @@ class ElearningCmsController extends Controller
     public function dashboard()
     {
         if (auth()->user()->can('Manage Elearning CMS')) {
-            $count['pages'] = ElearningEcomCmsPage::count() + 2;
+            $pages = ElearningEcomCmsPage::select('elearning_ecom_cms_pages.*')
+                ->join(DB::raw('(SELECT MIN(id) as id FROM elearning_ecom_cms_pages GROUP BY slug) as unique_pages'), 'elearning_ecom_cms_pages.id', '=', 'unique_pages.id')
+                ->orderBy('elearning_ecom_cms_pages.id', 'asc')
+                ->get();
+            $count['pages'] = $pages->count() + 2;
             $count['newsletter'] = ElearningEcomNewsletter::count();
             return view('user.elearning-cms.dashboard')->with('count', $count);
         } else {
@@ -47,7 +52,11 @@ class ElearningCmsController extends Controller
     {
         if (auth()->user()->can('Manage Elearning CMS')) {
             // $pages = ElearningEcomCmsPage::get();
-            $pages = Helper::getVisitorCmsContent('ElearningEcomCmsPage', false, false, 'id', 'asc', null);
+            // $pages = Helper::getVisitorCmsContent('ElearningEcomCmsPage', false, false, 'id', 'asc', null);
+            $pages = ElearningEcomCmsPage::select('elearning_ecom_cms_pages.*')
+                ->join(DB::raw('(SELECT MIN(id) as id FROM elearning_ecom_cms_pages GROUP BY slug) as unique_pages'), 'elearning_ecom_cms_pages.id', '=', 'unique_pages.id')
+                ->orderBy('elearning_ecom_cms_pages.id', 'asc')
+                ->get();
             return view('user.elearning-cms.list')->with('pages', $pages);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -272,7 +281,7 @@ class ElearningCmsController extends Controller
             }
 
             $country = $request->content_country_code ?? 'US';
-          //  return $cms;
+            //  return $cms;
             // $cms = ElearningEcomCmsPage::updateOrCreate(['country_code' => $country], array_merge($cms->getAttributes(), ['country_code' => $country]));
             $cms->country_code = $country;
             $cms->save();
@@ -299,6 +308,20 @@ class ElearningCmsController extends Controller
     {
         $page_id = $page_id ?? 1;
         $cms = ElearningEcomCmsPage::findOrfail($page_id);
+        return view('elearning.cms')->with(compact('cms'));
+    }
+
+    // cmsPageContent
+    public function cmsPageContent($slug)
+    {
+       // return $slug;
+        $cms = ElearningEcomCmsPage::where('slug', $slug)->where('country_code', Helper::getVisitorCountryCode())->first();
+        // if not found then by default US
+        if (!$cms) {
+            $cms = ElearningEcomCmsPage::where('slug', $slug)->where('country_code', 'US')->first();
+        }
+       // return $cms;
+
         return view('elearning.cms')->with(compact('cms'));
     }
 }

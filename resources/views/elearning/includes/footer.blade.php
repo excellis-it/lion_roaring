@@ -153,7 +153,8 @@
                     <li><a href="{{ route('contact-us') }}">Contact us</a></li>
                     @if (Helper::getElearningCmsPages() && count(Helper::getElearningCmsPages()) > 0)
                         @foreach (Helper::getElearningCmsPages() as $page)
-                            <li><a href="{{ route($page->slug . '.e-learning.cms-page') }}">{{ $page->page_name }}</a>
+                            <li><a
+                                    href="{{ route('e-learning.cms-page', ['slug' => $page->slug]) }}">{{ $page->page_name }}</a>
                             </li>
                         @endforeach
                     @endif

@@ -12,6 +12,7 @@ class EcomContactCms extends Model
     protected $table = 'ecom_contact_cms';
 
     protected $fillable = [
+        'country_code',
         'banner_image',
         'banner_title',
         'card_one_title',

@@ -32,6 +32,7 @@ use App\Models\WareHouse;
 use App\Models\EstoreCart;
 use App\Models\GlobalImage;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 
 class Helper
@@ -214,7 +215,8 @@ class Helper
 
     public static function getFooterCms()
     {
-        $cms = EcomFooterCms::orderBy('id', 'desc')->first();
+        //  $cms = EcomFooterCms::orderBy('id', 'desc')->first();
+        $cms = self::getVisitorCmsContent('EcomFooterCms', true, false, 'id', 'desc', null);
 
 
         return $cms;
@@ -222,14 +224,18 @@ class Helper
 
     public static function getElearningCmsPages()
     {
-       // $pages = ElearningEcomCmsPage::get();
-        $pages = self::getVisitorCmsContent('ElearningEcomCmsPage', false, false, 'id', 'asc', null);
+        // $pages = ElearningEcomCmsPage::get();
+        //  $pages = self::getVisitorCmsContent('ElearningEcomCmsPage', false, false, 'id', 'asc', null);
+        $pages = ElearningEcomCmsPage::select('elearning_ecom_cms_pages.*')
+            ->join(DB::raw('(SELECT MIN(id) as id FROM elearning_ecom_cms_pages GROUP BY slug) as unique_pages'), 'elearning_ecom_cms_pages.id', '=', 'unique_pages.id')
+            ->orderBy('elearning_ecom_cms_pages.id', 'asc')
+            ->get();
         return $pages;
     }
 
     public static function getElearningFooterCms()
     {
-       // $cms = ElearningEcomFooterCms::orderBy('id', 'desc')->first();
+        // $cms = ElearningEcomFooterCms::orderBy('id', 'desc')->first();
         $cms = self::getVisitorCmsContent('ElearningEcomFooterCms', true, false, 'id', 'desc', null);
         return $cms;
     }
@@ -622,7 +628,8 @@ class Helper
     // estore header logo
     public static function estoreHeaderLogoUrl(string $defaultAsset = 'ecom_assets/images/estore_logo.png'): string
     {
-        $headerLogo = EcomHomeCms::orderByDesc('id')->value('header_logo');
+        // $headerLogo = EcomHomeCms::orderByDesc('id')->value('header_logo');
+        $headerLogo = self::getVisitorCmsContent('EcomHomeCms', true, false, 'id', 'desc', null)->header_logo ?? null;
         if ($headerLogo) {
             return Storage::url($headerLogo);
         }
@@ -650,7 +657,7 @@ class Helper
     // get visitor country code by ip using ipinfo.io
     public static function getVisitorCountryCode()
     {
-        //  return 'GB'; // Temporary hardcode for testing
+        // return 'GB'; // Temporary hardcode for testing
         $ip = request()->ip();
         $codeSessionKey = 'visitor_country_code_' . $ip;
         $nameSessionKey = 'visitor_country_name_' . $ip;
