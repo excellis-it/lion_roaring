@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class AddCheckboxTextToRegisterAgreementsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('register_agreements', function (Blueprint $table) {
+            //
+            $table->string('checkbox_text')->nullable()->after('agreement_description')->default('I have read and agreed to the Lion Roaring PMA Agreement');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('register_agreements', function (Blueprint $table) {
+            //
+            $table->dropColumn('checkbox_text');
+        });
+    }
+}

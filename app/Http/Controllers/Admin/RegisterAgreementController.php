@@ -43,7 +43,8 @@ class RegisterAgreementController extends Controller
     {
         $request->validate([
             'agreement_title' => 'required',
-            'agreement_description' => 'required'
+            'agreement_description' => 'required',
+            'checkbox_text' => 'required',
         ]);
 
         if ($request->id != '') {
@@ -54,6 +55,7 @@ class RegisterAgreementController extends Controller
 
         $agreement->agreement_title = $request->agreement_title;
         $agreement->agreement_description = $request->agreement_description;
+        $agreement->checkbox_text = $request->checkbox_text;
        // $agreement->save();
         $country = $request->content_country_code ?? 'US';
         $agreement = RegisterAgreement::updateOrCreate(['country_code' => $country], array_merge($agreement->getAttributes(), ['country_code' => $country]));

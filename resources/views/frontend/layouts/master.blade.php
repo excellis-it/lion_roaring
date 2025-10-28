@@ -261,11 +261,11 @@
                                         }
                                         return null;
                                     }
-                                    
+
                                     // Get user's timezone based on IP address
                                     $ip = $_SERVER['REMOTE_ADDR'];
                                     $timezone = getTimezoneFromIp($ip);
-                                    
+
                                     if ($timezone) {
                                         // Set the default timezone
                                         date_default_timezone_set($timezone);
@@ -273,10 +273,10 @@
                                         // Fallback timezone
                                         date_default_timezone_set('UTC');
                                     }
-                                    
+
                                     // Get the current hour in 24-hour format
                                     $time = date('H');
-                                    
+
                                     // Determine greeting based on time
                                     if ($time < '12') {
                                         echo 'Perfect morning';
@@ -583,10 +583,7 @@
                                 <div class="modal_checkbox text-left text-xl-center">
                                     <div class="form-group">
                                         <input type="checkbox" id="pma_check" name="is_checked">
-                                        <label for="pma_check">I have read and agreed to the above requirements to
-                                            access
-                                            Lion
-                                            Roaring PMA website.</label>
+                                        <label for="pma_check">{{ Helper::getPmaTerm() ? Helper::getPmaTerm()->checkbox_text : '' }}</label>
                                     </div>
                                 </div>
                                 <div class="text-center">
@@ -627,8 +624,7 @@
                                     <div class="check-main">
                                         <div class="form-group">
                                             <input type="checkbox" id="pma_check1">
-                                            <label for="pma_check1">I have read and agreed to the Lion Roaring PMA
-                                                Agreement</label>
+                                            <label for="pma_check1">{{ Helper::getAgreements()['checkbox_text'] ?? 'I have read and agreed to the Lion Roaring PMA Agreement' }}</label>
                                         </div>
                                     </div>
                                 </div>
