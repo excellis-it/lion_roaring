@@ -93,7 +93,7 @@ class EstoreCmsController extends Controller
 
         if (auth()->user()->can('Manage Estore CMS')) {
             if ($page == 'home') {
-                $cms = EcomHomeCms::orderBy('id', 'desc')->first();
+                $cms = EcomHomeCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
                 return view('user.store-cms.home_cms')->with('cms', $cms);
             } elseif ($page == 'footer') {
                 $cms = EcomFooterCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
@@ -159,14 +159,14 @@ class EstoreCmsController extends Controller
             //     'slider_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             // ]);
 
-            if ($request->id) {
-                $cms = EcomHomeCms::find($request->id);
-                $message = 'Home CMS updated successfully';
-            } else {
-                $cms = new EcomHomeCms();
-                $message = 'Home CMS added successfully';
-            }
+            $country = $request->input('content_country_code', 'US');
 
+            if ($request->id) {
+                $cms = EcomHomeCms::find($request->id) ?? EcomHomeCms::firstOrNew(['country_code' => $country]);
+            } else {
+                $cms = EcomHomeCms::firstOrNew(['country_code' => $country]);
+            }
+            $message = $cms->exists ? 'Home CMS updated successfully' : 'Home CMS added successfully';
             /// Header Logo
 
             if ($request->hasFile('header_logo')) {
@@ -174,7 +174,6 @@ class EstoreCmsController extends Controller
             }
 
             ///////// section 1: Top Banner Slider Management //////////
-
             if ($request->has('slider_titles') && $request->has('slider_subtitles')) {
                 $sliderData = [];
                 $titles = $request->slider_titles;
@@ -182,7 +181,12 @@ class EstoreCmsController extends Controller
                 $links = $request->slider_links ?? [];
                 $buttons = $request->slider_buttons ?? [];
                 $images = $request->file('slider_images') ?? [];
-                $existingSliders = $cms->slider_data ? json_decode($cms->slider_data, true) : [];
+
+                // Handle both array and JSON string in DB
+                $existingSliders = is_array($cms->slider_data)
+                    ? $cms->slider_data
+                    : (json_decode($cms->slider_data ?? '[]', true) ?: []);
+
                 foreach ($titles as $index => $title) {
                     if (!empty($title)) {
                         $slideData = [
@@ -190,19 +194,18 @@ class EstoreCmsController extends Controller
                             'subtitle' => $subtitles[$index] ?? '',
                             'link' => $links[$index] ?? '',
                             'button' => $buttons[$index] ?? '',
-                            'image' => null
+                            'image' => null,
                         ];
-                        // Handle image upload
                         if (isset($images[$index])) {
                             $slideData['image'] = $this->imageUpload($images[$index], 'slider_images', true);
                         } elseif (isset($existingSliders[$index]['image'])) {
-                            // Keep existing image if no new image uploaded
                             $slideData['image'] = $existingSliders[$index]['image'];
                         }
                         $sliderData[] = $slideData;
                     }
                 }
-                $cms->slider_data = json_encode($sliderData);
+                // Assign as array (no manual json_encode)
+                $cms->slider_data = $sliderData;
             }
 
             ///////// section 2: Featured Product //////////
@@ -213,7 +216,6 @@ class EstoreCmsController extends Controller
 
             ///////// section 3: Second Banner Slider Management //////////
             $cms->slider_data_second_title = $request->slider_data_second_title ?? '';
-
             if ($request->has('slider_titles_second') && $request->has('slider_subtitles_second')) {
                 $sliderDataSecond = [];
                 $titles = $request->slider_titles_second;
@@ -221,7 +223,11 @@ class EstoreCmsController extends Controller
                 $links = $request->slider_links_second ?? [];
                 $buttons = $request->slider_buttons_second ?? [];
                 $images = $request->file('slider_images_second') ?? [];
-                $existingSliders = $cms->slider_data_second ? json_decode($cms->slider_data_second, true) : [];
+
+                $existingSlidersSecond = is_array($cms->slider_data_second)
+                    ? $cms->slider_data_second
+                    : (json_decode($cms->slider_data_second ?? '[]', true) ?: []);
+
                 foreach ($titles as $index => $title) {
                     if (!empty($title)) {
                         $slideDataSecond = [
@@ -229,19 +235,17 @@ class EstoreCmsController extends Controller
                             'subtitle' => $subtitles[$index] ?? '',
                             'link' => $links[$index] ?? '',
                             'button' => $buttons[$index] ?? '',
-                            'image' => null
+                            'image' => null,
                         ];
-                        // Handle image upload
                         if (isset($images[$index])) {
                             $slideDataSecond['image'] = $this->imageUpload($images[$index], 'slider_images', true);
-                        } elseif (isset($existingSliders[$index]['image'])) {
-                            // Keep existing image if no new image uploaded
-                            $slideDataSecond['image'] = $existingSliders[$index]['image'];
+                        } elseif (isset($existingSlidersSecond[$index]['image'])) {
+                            $slideDataSecond['image'] = $existingSlidersSecond[$index]['image'];
                         }
                         $sliderDataSecond[] = $slideDataSecond;
                     }
                 }
-                $cms->slider_data_second = json_encode($sliderDataSecond);
+                $cms->slider_data_second = $sliderDataSecond;
             }
 
             ///////// section 4: New Product //////////
@@ -294,6 +298,8 @@ class EstoreCmsController extends Controller
                 $cms->new_arrival_image = $this->imageUpload($request->file('new_arrival_image'), 'ecom_cms', true);
             }
 
+            //  $cms->save();
+            $cms->country_code = $country;
             $cms->save();
             return redirect()->back()->with('message', $message);
         } else {
