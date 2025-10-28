@@ -15,10 +15,10 @@ class AboutUsController extends Controller
      * @return \Illuminate\Http\Response
      */
     use ImageTrait;
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->can('Manage About Us Page')) {
-            $about_us = AboutUs::orderBy('id', 'desc')->first();
+            $about_us = AboutUs::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
             return view('admin.about-us.update')->with(compact('about_us'));
         } else {
             return redirect()->route('admin.dashboard')->with('error', 'Unauthorized Access');
@@ -62,7 +62,9 @@ class AboutUsController extends Controller
         if ($request->hasFile('banner_image')) {
             $about_us->banner_image = $this->imageUpload($request->file('banner_image'), 'about-us');
         }
-        $about_us->save();
+       // $about_us->save();
+        $country = $request->content_country_code ?? 'US';
+        $about_us = AboutUs::updateOrCreate(['country_code' => $country], array_merge($about_us->getAttributes(), ['country_code' => $country]));
 
         return redirect()->back()->with('message', 'About us updated successfully');
     }

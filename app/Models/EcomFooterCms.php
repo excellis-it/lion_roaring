@@ -12,6 +12,7 @@ class EcomFooterCms extends Model
 
 
     protected $fillable = [
+        'country_code',
         'footer_logo',
         'footer_title',
         'footer_newsletter_title',

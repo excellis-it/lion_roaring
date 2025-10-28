@@ -43,8 +43,7 @@
                     </div>
 
                     <div class="top-bar-text">
-                        <span class="d-block font-bold" onclick="changeLocation()" style="cursor: pointer;">Delivery
-                            Location </span>
+                        <span class="d-block font-bold" onclick="changeLocation()" style="cursor: pointer;">Near My Location</span>
 
                         @if (Auth::check())
                             @if (Auth::user()->location_lat || Auth::user()->location_lng)

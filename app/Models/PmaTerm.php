@@ -10,6 +10,7 @@ class PmaTerm extends Model
     use HasFactory;
 
     protected $fillable = [
+        'country_code',
         'title',
         'description',
     ];

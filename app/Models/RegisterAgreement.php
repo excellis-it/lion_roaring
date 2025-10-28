@@ -10,6 +10,7 @@ class RegisterAgreement extends Model
     use HasFactory;
 
     protected $fillable = [
+        'country_code',
         'agreement_title',
         'agreement_description'
     ];

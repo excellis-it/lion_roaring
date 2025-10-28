@@ -10,6 +10,7 @@ class EcomCmsPage extends Model
     use HasFactory;
 
     protected $fillable = [
+        'country_code',
         'page_name',
         'page_title',
         'page_content',

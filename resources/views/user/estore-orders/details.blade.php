@@ -27,39 +27,45 @@
         }
 
         .timeline-circle {
-            position:relative;
+            position: relative;
             z-index: 2;
         }
 
-        @media (max-width:767px){
-            
-            .timeline-circle{
+        @media (max-width:767px) {
+
+            .timeline-circle {
                 width: 30px !important;
                 height: 30px !important;
             }
-            .timeline-item .small{
-                font-size:12px !important;
+
+            .timeline-item .small {
+                font-size: 12px !important;
             }
-            .timeline-item:not(:last-child)::after{
+
+            .timeline-item:not(:last-child)::after {
                 top: 21%;
                 height: 2px;
             }
         }
-        @media (max-width:576px){
-            .timeline{
+
+        @media (max-width:576px) {
+            .timeline {
                 padding-left: 0px !important;
                 flex-direction: column;
                 align-items: self-start !important;
             }
-            .timeline-item{
-                display:flex;
+
+            .timeline-item {
+                display: flex;
                 align-items: center;
-                gap:5px;
+                gap: 5px;
             }
-            .timeline-item .small{
-                margin-bottom:0px;
+
+            .timeline-item .small {
+                margin-bottom: 0px;
             }
-                .timeline-item:not(:last-child)::after {
+
+            .timeline-item:not(:last-child)::after {
                 top: 21%;
                 height: 74px;
                 width: 2px;
@@ -141,10 +147,14 @@
 
                             <div class="row mt-3">
                                 <div class="col-md-6">
-                                    <p><strong>Order Date:</strong> {{ $order->created_at->format('M d, Y h:i A') }}</p>
+                                    <p><strong>Order Date:</strong>
+                                        {{ \Carbon\Carbon::parse($order->created_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
+                                    </p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><strong>Last Updated:</strong> {{ $order->updated_at->format('M d, Y h:i A') }}</p>
+                                    <p><strong>Last Updated:</strong>
+                                        {{ \Carbon\Carbon::parse($order->updated_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
+                                    </p>
                                 </div>
                             </div>
 
@@ -342,7 +352,7 @@
                                     <span class="badge bg-info text-dark p-2">
                                         <i class="fa-solid fa-calendar-day me-1"></i>
                                         Expected Delivery:
-                                        {{ \Carbon\Carbon::parse($order->expected_delivery_date)->format('M d, Y') }}
+                                        {{ \Carbon\Carbon::parse($order->expected_delivery_date)->timezone(auth()->user()->time_zone)->format('M d, Y') }}
                                     </span>
                                 </div>
                             @endif
@@ -353,7 +363,8 @@
                                         class="fw-bold">{{ $order->orderStatus->name ?? ucfirst($order->status) }}</span>
                                 </h6>
                                 <p class="mb-0 small text-muted">Last updated:
-                                    {{ $order->updated_at->format('M d, Y h:i A') }}</p>
+                                    {{ \Carbon\Carbon::parse($order->updated_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -423,7 +434,8 @@
                                         </p>
                                         <p><strong>Amount:</strong> ${{ number_format($payment->amount, 2) }}</p>
                                         @if ($payment->paid_at)
-                                            <p><strong>Paid At:</strong> {{ $payment->paid_at->format('M d, Y h:i A') }}
+                                            <p><strong>Paid At:</strong>
+                                                {{ \Carbon\Carbon::parse($payment->paid_at)->timezone(auth()->user()->time_zone)->format('M d, Y h:i A') }}
                                             </p>
                                         @endif
                                         @if ($payment->stripe_payment_intent_id)
@@ -525,14 +537,14 @@
         }
 
         /* .timeline::before {
-            content: '';
-            position: absolute;
-            left: 15px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: #e9ecef;
-        } */
+                            content: '';
+                            position: absolute;
+                            left: 15px;
+                            top: 0;
+                            bottom: 0;
+                            width: 2px;
+                            background: #e9ecef;
+                        } */
 
         .timeline-item {
             position: relative;

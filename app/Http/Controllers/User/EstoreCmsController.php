@@ -13,6 +13,7 @@ use App\Models\EstoreOrder;
 use App\Models\EstoreOrderItem;
 use App\Models\Product;
 use App\Models\Review;
+use App\Models\EcomContactCms;
 use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,6 +33,7 @@ use Illuminate\Support\Facades\Mail;
 use Stripe\Climate\Order;
 use Stripe\Refund;
 use Stripe\Stripe;
+use App\Helpers\Helper;
 
 
 class EstoreCmsController extends Controller
@@ -57,7 +59,11 @@ class EstoreCmsController extends Controller
     public function dashboard()
     {
         if (auth()->user()->can('Manage Estore CMS')) {
-            $count['pages'] = EcomCmsPage::count() + 2;
+            $pages = EcomCmsPage::select('ecom_cms_pages.*')
+                ->join(DB::raw('(SELECT MIN(id) as id FROM ecom_cms_pages GROUP BY slug) as unique_pages'), 'ecom_cms_pages.id', '=', 'unique_pages.id')
+                ->orderBy('ecom_cms_pages.id', 'asc')
+                ->get();
+            $count['pages'] = $pages->count() + 3;
             $count['newsletter'] = EcomNewsletter::count();
             return view('user.store-cms.dashboard')->with('count', $count);
         } else {
@@ -68,7 +74,14 @@ class EstoreCmsController extends Controller
     public function list()
     {
         if (auth()->user()->can('Manage Estore CMS')) {
-            $pages = EcomCmsPage::get();
+            // $pages = EcomCmsPage::get();
+            // $pages = Helper::getVisitorCmsContent('EcomCmsPage', false, false, 'id', 'asc', null);
+            // get ecom cms pages with unique slugs only (US entry for each slug)
+            $pages = EcomCmsPage::select('ecom_cms_pages.*')
+                ->join(DB::raw('(SELECT MIN(id) as id FROM ecom_cms_pages GROUP BY slug) as unique_pages'), 'ecom_cms_pages.id', '=', 'unique_pages.id')
+                ->orderBy('ecom_cms_pages.id', 'asc')
+                ->get();
+
             return view('user.store-cms.list')->with('pages', $pages);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -80,15 +93,39 @@ class EstoreCmsController extends Controller
 
         if (auth()->user()->can('Manage Estore CMS')) {
             if ($page == 'home') {
-                $cms = EcomHomeCms::orderBy('id', 'desc')->first();
+                $cms = EcomHomeCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
                 return view('user.store-cms.home_cms')->with('cms', $cms);
             } elseif ($page == 'footer') {
-                   $cms = EcomFooterCms::orderBy('id', 'desc')->first();
+                $cms = EcomFooterCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
 
                 // return $cms;
                 return view('user.store-cms.footer_cms')->with('cms', $cms);
             } else {
-                $cms = EcomCmsPage::where('slug', $page)->first();
+                // $cms = EcomCmsPage::where('slug', $page)->first();
+                $cms_default = EcomCmsPage::where('slug', $page)->orderBy('id', 'asc')->first();
+                if (!$cms_default) {
+                    abort(404, 'CMS default page not found.');
+                }
+                $page_name = $cms_default->page_name;
+                $page_title = $cms_default->page_title;
+                $slug = $cms_default->slug;
+
+                $country = $request->get('content_country_code', 'US');
+                $cms = EcomCmsPage::where('slug', $page)->where('country_code', $country)->orderBy('id', 'desc')->first();
+
+                if (!$cms) {
+                    // create a temporary model instance for the view populated with defaults
+                    $cms = new EcomCmsPage();
+                    $cms->page_name = $page_name;
+                    $cms->page_title = $page_title;
+                    $cms->slug = $slug;
+                    $cms->country_code = $country;
+                    $cms->page_content = $cms_default->page_content ?? '';
+                } else {
+                    $cms->page_name = $page_name;
+                    $cms->page_title = $page_title;
+                    $cms->slug = $slug;
+                }
                 return view('user.store-cms.cms')->with('cms', $cms);
             }
         } else {
@@ -122,14 +159,14 @@ class EstoreCmsController extends Controller
             //     'slider_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             // ]);
 
-            if ($request->id) {
-                $cms = EcomHomeCms::find($request->id);
-                $message = 'Home CMS updated successfully';
-            } else {
-                $cms = new EcomHomeCms();
-                $message = 'Home CMS added successfully';
-            }
+            $country = $request->input('content_country_code', 'US');
 
+            if ($request->id) {
+                $cms = EcomHomeCms::find($request->id) ?? EcomHomeCms::firstOrNew(['country_code' => $country]);
+            } else {
+                $cms = EcomHomeCms::firstOrNew(['country_code' => $country]);
+            }
+            $message = $cms->exists ? 'Home CMS updated successfully' : 'Home CMS added successfully';
             /// Header Logo
 
             if ($request->hasFile('header_logo')) {
@@ -137,7 +174,6 @@ class EstoreCmsController extends Controller
             }
 
             ///////// section 1: Top Banner Slider Management //////////
-
             if ($request->has('slider_titles') && $request->has('slider_subtitles')) {
                 $sliderData = [];
                 $titles = $request->slider_titles;
@@ -145,7 +181,12 @@ class EstoreCmsController extends Controller
                 $links = $request->slider_links ?? [];
                 $buttons = $request->slider_buttons ?? [];
                 $images = $request->file('slider_images') ?? [];
-                $existingSliders = $cms->slider_data ? json_decode($cms->slider_data, true) : [];
+
+                // Handle both array and JSON string in DB
+                $existingSliders = is_array($cms->slider_data)
+                    ? $cms->slider_data
+                    : (json_decode($cms->slider_data ?? '[]', true) ?: []);
+
                 foreach ($titles as $index => $title) {
                     if (!empty($title)) {
                         $slideData = [
@@ -153,19 +194,18 @@ class EstoreCmsController extends Controller
                             'subtitle' => $subtitles[$index] ?? '',
                             'link' => $links[$index] ?? '',
                             'button' => $buttons[$index] ?? '',
-                            'image' => null
+                            'image' => null,
                         ];
-                        // Handle image upload
                         if (isset($images[$index])) {
                             $slideData['image'] = $this->imageUpload($images[$index], 'slider_images', true);
                         } elseif (isset($existingSliders[$index]['image'])) {
-                            // Keep existing image if no new image uploaded
                             $slideData['image'] = $existingSliders[$index]['image'];
                         }
                         $sliderData[] = $slideData;
                     }
                 }
-                $cms->slider_data = json_encode($sliderData);
+                // Assign as array (no manual json_encode)
+                $cms->slider_data = $sliderData;
             }
 
             ///////// section 2: Featured Product //////////
@@ -176,7 +216,6 @@ class EstoreCmsController extends Controller
 
             ///////// section 3: Second Banner Slider Management //////////
             $cms->slider_data_second_title = $request->slider_data_second_title ?? '';
-
             if ($request->has('slider_titles_second') && $request->has('slider_subtitles_second')) {
                 $sliderDataSecond = [];
                 $titles = $request->slider_titles_second;
@@ -184,7 +223,11 @@ class EstoreCmsController extends Controller
                 $links = $request->slider_links_second ?? [];
                 $buttons = $request->slider_buttons_second ?? [];
                 $images = $request->file('slider_images_second') ?? [];
-                $existingSliders = $cms->slider_data_second ? json_decode($cms->slider_data_second, true) : [];
+
+                $existingSlidersSecond = is_array($cms->slider_data_second)
+                    ? $cms->slider_data_second
+                    : (json_decode($cms->slider_data_second ?? '[]', true) ?: []);
+
                 foreach ($titles as $index => $title) {
                     if (!empty($title)) {
                         $slideDataSecond = [
@@ -192,19 +235,17 @@ class EstoreCmsController extends Controller
                             'subtitle' => $subtitles[$index] ?? '',
                             'link' => $links[$index] ?? '',
                             'button' => $buttons[$index] ?? '',
-                            'image' => null
+                            'image' => null,
                         ];
-                        // Handle image upload
                         if (isset($images[$index])) {
                             $slideDataSecond['image'] = $this->imageUpload($images[$index], 'slider_images', true);
-                        } elseif (isset($existingSliders[$index]['image'])) {
-                            // Keep existing image if no new image uploaded
-                            $slideDataSecond['image'] = $existingSliders[$index]['image'];
+                        } elseif (isset($existingSlidersSecond[$index]['image'])) {
+                            $slideDataSecond['image'] = $existingSlidersSecond[$index]['image'];
                         }
                         $sliderDataSecond[] = $slideDataSecond;
                     }
                 }
-                $cms->slider_data_second = json_encode($sliderDataSecond);
+                $cms->slider_data_second = $sliderDataSecond;
             }
 
             ///////// section 4: New Product //////////
@@ -257,6 +298,8 @@ class EstoreCmsController extends Controller
                 $cms->new_arrival_image = $this->imageUpload($request->file('new_arrival_image'), 'ecom_cms', true);
             }
 
+            //  $cms->save();
+            $cms->country_code = $country;
             $cms->save();
             return redirect()->back()->with('message', $message);
         } else {
@@ -308,9 +351,12 @@ class EstoreCmsController extends Controller
                 $cms->footer_logo = $this->imageUpload($request->file('footer_logo'), 'ecom_cms');
             }
 
-            $cms->save();
+            // $cms->save();
 
-           
+            $country = $request->content_country_code ?? 'US';
+            $cms = EcomFooterCms::updateOrCreate(['country_code' => $country], array_merge($cms->getAttributes(), ['country_code' => $country]));
+
+
             return redirect()->back()->with('message', $message);
         } else {
             abort(403, 'You do not have permission to access this page.');
@@ -348,6 +394,8 @@ class EstoreCmsController extends Controller
                 $cms->page_banner_image = $this->imageUpload($request->file('page_banner_image'), 'ecom_cms', true);
             }
 
+            $cms->country_code = $request->content_country_code ?? 'US';
+
             $cms->save();
             return redirect()->route('user.store-cms.list')->with('message', 'CMS page added successfully');
         } else {
@@ -356,28 +404,42 @@ class EstoreCmsController extends Controller
     }
 
 
-
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
+        // return request()->all();
         // dd($id);
+
         if (auth()->user()->can('Edit Estore CMS')) {
 
             $request->validate([
                 'page_name' => 'required|string',
                 'page_title' => 'required|string',
                 'page_content' => 'required|string',
-                'slug' => 'required|string|unique:ecom_cms_pages,slug,' . $id,
+                'slug' => 'required|string'
             ]);
 
-            $cms = EcomCmsPage::find($id);
+
+
+            if ($request->id) {
+                $cms = EcomCmsPage::find($request->id);
+                // return 'found';
+                $message = 'CMS updated successfully';
+            } else {
+                $cms = new EcomCmsPage();
+                $message = 'CMS added successfully';
+            }
+
             $cms->page_name = $request->page_name;
             $cms->page_title = $request->page_title;
             $cms->page_content = $request->page_content;
             $cms->slug = $request->slug;
             if ($request->hasFile('page_banner_image')) {
-                $cms->page_banner_image = $this->imageUpload($request->file('page_banner_image'), 'ecom_cms', true);
+                $cms->page_banner_image = $this->imageUpload($request->file('page_banner_image'), 'ecom_cms');
             }
 
+            $country = $request->content_country_code ?? 'US';
+
+            $cms->country_code = $country;
             $cms->save();
             return redirect()->route('user.store-cms.list')->with('message', 'CMS page updated successfully');
         } else {
@@ -401,6 +463,18 @@ class EstoreCmsController extends Controller
     {
         $page_id = $page_id ?? 1;
         $cms = EcomCmsPage::findOrfail($page_id);
+        return view('ecom.cms')->with(compact('cms'));
+    }
+
+    // cmsPageContent
+    public function cmsPageContent($slug)
+    {
+        $cms = EcomCmsPage::where('slug', $slug)->where('country_code', Helper::getVisitorCountryCode())->first();
+        // if not found then by default US
+        if (!$cms) {
+            $cms = EcomCmsPage::where('slug', $slug)->where('country_code', 'US')->first();
+        }
+
         return view('ecom.cms')->with(compact('cms'));
     }
 
@@ -1225,16 +1299,16 @@ class EstoreCmsController extends Controller
         }
     }
 
-    public function contactCms()
+    public function contactCms(Request $request)
     {
         if (auth()->user()->can('Manage Estore CMS')) {
-            $cms = \App\Models\EcomContactCms::orderBy('id', 'desc')->first();
+            $cms = EcomContactCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
             return view('user.store-cms.contact_cms', compact('cms'));
         }
         abort(403, 'You do not have permission to access this page.');
     }
 
-    public function contactCmsUpdate(\Illuminate\Http\Request $request)
+    public function contactCmsUpdate(Request $request)
     {
         if (!auth()->user()->can('Edit Estore CMS')) {
             abort(403, 'You do not have permission to access this page.');
@@ -1258,10 +1332,10 @@ class EstoreCmsController extends Controller
         ]);
 
         if ($request->id) {
-            $cms = \App\Models\EcomContactCms::find($request->id);
+            $cms = EcomContactCms::find($request->id);
             $message = 'Contact CMS updated successfully';
         } else {
-            $cms = new \App\Models\EcomContactCms();
+            $cms = new EcomContactCms();
             $message = 'Contact CMS added successfully';
         }
 
@@ -1280,7 +1354,9 @@ class EstoreCmsController extends Controller
             }
         }
 
-        $cms->save();
+        // $cms->save();
+        $country = $request->content_country_code ?? 'US';
+        $cms = EcomContactCms::updateOrCreate(['country_code' => $country], array_merge($cms->getAttributes(), ['country_code' => $country]));
         return redirect()->back()->with('message', $message);
     }
 }

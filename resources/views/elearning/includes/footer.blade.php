@@ -50,6 +50,8 @@
                         <li><a href="{!! Helper::getElearningFooterCms()
                             ? Helper::getElearningFooterCms()->footer_youtube_link
                             : 'javascript:void(0);' !!}"><i class="fa-brands fa-youtube"></i></a></li>
+                        <li><span class="badge bg-dark ms-3 mt-2"> <i class="fa fa-globe"></i>
+                                {{ Helper::getVisitorCountryName() }}</span></li>
                     </ul>
                 </div>
             </div>
@@ -151,7 +153,8 @@
                     <li><a href="{{ route('contact-us') }}">Contact us</a></li>
                     @if (Helper::getElearningCmsPages() && count(Helper::getElearningCmsPages()) > 0)
                         @foreach (Helper::getElearningCmsPages() as $page)
-                            <li><a href="{{ route($page->slug . '.e-learning.cms-page') }}">{{ $page->page_name }}</a>
+                            <li><a
+                                    href="{{ route('e-learning.cms-page', ['slug' => $page->slug]) }}">{{ $page->page_name }}</a>
                             </li>
                         @endforeach
                     @endif

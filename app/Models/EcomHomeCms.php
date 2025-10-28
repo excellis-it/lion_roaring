@@ -12,6 +12,7 @@ class EcomHomeCms extends Model
     protected $table = 'ecom_home_cms';
 
     protected $fillable = [
+        'country_code',
         'header_logo',
         'banner_title',
         'banner_subtitle',

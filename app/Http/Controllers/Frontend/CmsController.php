@@ -59,7 +59,8 @@ class CmsController extends Controller
 
     public function contactUs()
     {
-        $contact = ContactUsCms::first();
+       // $contact = ContactUsCms::first();
+        $contact = Helper::getVisitorCmsContent('ContactUsCms', true, false, 'id', 'desc', null);
         return view('frontend.contact-us')->with('contact', $contact);
     }
 
@@ -139,7 +140,8 @@ class CmsController extends Controller
 
     public function aboutUs()
     {
-        $about_us = AboutUs::orderBy('id', 'desc')->first();
+        // $about_us = AboutUs::orderBy('id', 'desc')->first();
+        $about_us = Helper::getVisitorCmsContent('AboutUs', true, false, 'id', 'desc', null);
         return view('frontend.about-us')->with('about_us', $about_us);
     }
 

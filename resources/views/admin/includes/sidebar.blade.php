@@ -356,12 +356,12 @@
                             </li>
                         @endif
 
-                        @if (Gate::check('Manage Member Privacy Policy Page'))
+                        {{-- @if (Gate::check('Manage Member Privacy Policy Page'))
                             <li class="{{ Request::is('admin/pages/members-privacy-policies') ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ route('members-privacy-policies.index') }}"> MEMBERS
                                     PRIVACY POLICIES </a>
                             </li>
-                        @endif
+                        @endif --}}
 
                         @if (Gate::check('Manage PMA Terms Page'))
                             <li class="{{ Request::is('admin/pages/pma-terms') ? 'active' : '' }}">

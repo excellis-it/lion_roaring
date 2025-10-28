@@ -22,6 +22,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label for="country_code">Content Country</label>
+                                <select onchange="window.location.href='?content_country_code='+$(this).val()"
+                                    name="content_country_code" id="content_country_code" class="form-control">
+                                    @foreach (\App\Models\Country::all() as $country)
+                                        <option value="{{ $country->code }}"
+                                            {{ request()->get('content_country_code', 'US') == $country->code ? 'selected' : '' }}>
+                                            {{ $country->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                         <div class="row">
 
                             {{-- banner_title --}}
@@ -144,7 +158,8 @@
                                                 {{-- product_category_title --}}
                                                 <div class="col-md-6 mb-2">
                                                     <div class="box_label">
-                                                        <label for="product_category_title"> Product Category Title*</label>
+                                                        <label for="product_category_title"> Product Category
+                                                            Title*</label>
                                                         <input type="text" name="product_category_title"
                                                             id="product_category_title" class="form-control"
                                                             value="{{ isset($cms->product_category_title) ? $cms->product_category_title : old('product_category_title') }}">
@@ -192,9 +207,14 @@
 
                                                 <div id="slider-container">
                                                     @php
-                                                        $sliderData = isset($cms->slider_data)
-                                                            ? json_decode($cms->slider_data, true)
-                                                            : [];
+                                                        // $sliderData = isset($cms->slider_data)
+                                                        //     ? json_decode($cms->slider_data, true)
+                                                        //     : [];
+                                                        $sliderDataRaw = $cms->slider_data ?? [];
+                                                        $sliderData = is_array($sliderDataRaw)
+                                                            ? $sliderDataRaw
+                                                            : (json_decode($sliderDataRaw ?: '[]', true) ?:
+                                                            []);
                                                     @endphp
 
                                                     @if (count($sliderData) > 0)
@@ -247,7 +267,8 @@
                                                                                 *</label>
                                                                             <input type="file" name="slider_images[]"
                                                                                 class="form-control" accept="image/*">
-                                                                            <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width:
+                                                                            <span class="text-sm ms-2 text-muted"
+                                                                                style="font-size:12px;">(width:
                                                                                 1920px, height: 550px, max 2MB)</span>
                                                                             @if (isset($slide['image']) && $slide['image'])
                                                                                 <div class="mt-2">
@@ -271,7 +292,7 @@
                                                     @else
                                                         <div class="slider-item mb-4 p-0 border rounded">
                                                             <div class="row">
-                                                                <div class="col-md-3">
+                                                                <div class="col-xxl-2 col-lg-3 col-md-6">
                                                                     <div class="box_label">
                                                                         <label>Slide 1 Title*</label>
                                                                         <input type="text" name="slider_titles[]"
@@ -279,7 +300,7 @@
                                                                             placeholder="Enter slide title">
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-5">
+                                                                <div class="col-xxl-3 col-lg-3 col-md-6">
                                                                     <div class="box_label">
                                                                         <label>Slide 1 Subtitle*</label>
                                                                         <input type="text" name="slider_subtitles[]"
@@ -287,17 +308,34 @@
                                                                             placeholder="Enter slide subtitle">
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-3">
+                                                                <div class="col-xxl-2 col-lg-3 col-md-6">
+                                                                    <div class="box_label">
+                                                                        <label>Slide 1 Link*</label>
+                                                                        <input type="text" name="slider_links[]"
+                                                                            class="form-control"
+                                                                            placeholder="Enter slide link">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xxl-2 col-lg-3 col-md-6">
+                                                                    <div class="box_label">
+                                                                        <label>Slide 1 Link Button*</label>
+                                                                        <input type="text" name="slider_buttons[]"
+                                                                            class="form-control"
+                                                                            placeholder="Enter slide button text">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xxl-2 col-lg-3 col-md-6">
                                                                     <div class="box_label">
                                                                         <label>Slide 1 Image*</label>
                                                                         <input type="file" name="slider_images[]"
                                                                             class="form-control" accept="image/*">
-                                                                        <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width:
+                                                                        <span class="text-sm ms-2 text-muted"
+                                                                            style="font-size:12px;">(width:
                                                                             1920px, height: 550px, max 2MB)</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-1">
+                                                            <div class="col-xxl-1 col-lg-1 col-md-1">
                                                                 <button type="button"
                                                                     class="btn btn-danger btn-sm mt-2 remove-slide"><i
                                                                         class="fa-solid fa-trash"></i></button>
@@ -443,7 +481,8 @@
                                                             class="form-control"
                                                             value="{{ isset($cms->shop_now_image) ? $cms->shop_now_image : old('shop_now_image') }}"
                                                             accept="image/*">
-                                                        <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 1920px, height:
+                                                        <span class="text-sm ms-2 text-muted"
+                                                            style="font-size:12px;">(width: 1920px, height:
                                                             550px, max 2MB)</span>
                                                         @if ($errors->has('shop_now_image'))
                                                             <span
@@ -502,9 +541,14 @@
 
                                                 <div id="slider-container-second">
                                                     @php
-                                                        $sliderDataSecond = isset($cms->slider_data_second)
-                                                            ? json_decode($cms->slider_data_second, true)
-                                                            : [];
+                                                        // $sliderDataSecond = isset($cms->slider_data_second)
+                                                        //     ? json_decode($cms->slider_data_second, true)
+                                                        //     : [];
+                                                        $sliderDataSecondRaw = $cms->slider_data_second ?? [];
+                                                        $sliderDataSecond = is_array($sliderDataSecondRaw)
+                                                            ? $sliderDataSecondRaw
+                                                            : (json_decode($sliderDataSecondRaw ?: '[]', true) ?:
+                                                            []);
                                                     @endphp
 
                                                     @if (count($sliderDataSecond) > 0)
@@ -729,7 +773,8 @@
                                                         <input type="file" name="about_section_image"
                                                             id="about_section_image" class="form-control"
                                                             accept="image/*">
-                                                        <span class="text-sm ms-2 text-muted" style="font-size:12px;">(width: 420px, height:
+                                                        <span class="text-sm ms-2 text-muted"
+                                                            style="font-size:12px;">(width: 420px, height:
                                                             300px, max 2MB)</span>
                                                         @if ($errors->has('about_section_image'))
                                                             <span

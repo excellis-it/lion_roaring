@@ -15,10 +15,10 @@ class ContactUsCmsController extends Controller
      * @return \Illuminate\Http\Response
      */
     use ImageTrait;
-    public function index()
+    public function index(Request $request)
     {
         if (auth()->user()->can('Manage Contact Us Page')) {
-            $contact_us = ContactUsCms::orderBy('id', 'desc')->first();
+            $contact_us = ContactUsCms::where('country_code', $request->get('content_country_code', 'US'))->orderBy('id', 'desc')->first();
             return view('admin.contact-us-cms.update')->with(compact('contact_us'));
         } else {
             return redirect()->route('admin.dashboard')->with('error', 'Unauthorized Access');
@@ -67,7 +67,9 @@ class ContactUsCmsController extends Controller
         if ($request->hasFile('banner_image')) {
             $contact_us->banner_image = $this->imageUpload($request->file('banner_image'), 'contact-us-cms');
         }
-        $contact_us->save();
+        // $contact_us->save();
+        $country = $request->content_country_code ?? 'US';
+        $contact_us = ContactUsCms::updateOrCreate(['country_code' => $country], array_merge($contact_us->getAttributes(), ['country_code' => $country]));
 
         return redirect()->route('contact-us-cms.index')->with('message', 'Contact Us created successfully.');
     }
