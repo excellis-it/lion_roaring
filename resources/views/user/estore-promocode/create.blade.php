@@ -160,7 +160,7 @@
                                     <label for="start_date">Start Date</label>
                                     <input type="date" name="start_date" id="start_date"
                                         class="form-control @error('start_date') is-invalid @enderror"
-                                        value="{{ old('start_date') }}" min="{{ date('Y-m-d') }}">
+                                        value="{{ old('start_date') }}">
                                     @error('start_date')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror

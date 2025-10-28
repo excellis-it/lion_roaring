@@ -118,7 +118,7 @@ class BecomingSovereignController extends Controller
         if ($file) {
             $filePath = Storage::disk('public')->path($file->file); // ensure using 'public' disk
             if (file_exists($filePath)) {
-                return response()->download($filePath);
+                return response()->download($filePath, $file->file_name);
             } else {
                 return redirect()->route('becoming-sovereign.index')->with('error', 'File not found.');
             }

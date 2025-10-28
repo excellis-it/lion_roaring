@@ -169,7 +169,7 @@
                                     <input type="date" name="start_date" id="start_date"
                                         class="form-control @error('start_date') is-invalid @enderror"
                                         value="{{ old('start_date', date('Y-m-d', strtotime($promoCode->start_date))) }}"
-                                        min="{{ date('Y-m-d') }}">
+                                        >
                                     @error('start_date')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror

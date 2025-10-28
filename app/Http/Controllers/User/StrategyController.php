@@ -114,7 +114,7 @@ class StrategyController extends Controller
             if ($strategy) {
                 $filePath = Storage::disk('public')->path($strategy->file); // ensure using 'public' disk
                 if (file_exists($filePath)) {
-                    return response()->download($filePath);
+                    return response()->download($filePath, $strategy->file_name);
                 } else {
                     return redirect()->route('strategy.index')->with('error', 'Strategy not found.');
                 }

@@ -89,6 +89,11 @@
                             <label for="modalDescriptionEdit" class="col-form-label">Description:</label>
                             <textarea class="form-control" id="modalDescriptionEdit" name="description"></textarea>
                         </div>
+                        <!-- Links detected (Edit modal) -->
+                        <div class="mb-3">
+                            <label class="col-form-label">Links:</label>
+                            <ul id="modalDescriptionEditLinks" class="list-unstyled small"></ul>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Save changes</button>
@@ -113,6 +118,11 @@
                     <p><strong>Start:</strong> <span id="formmodalStart"></span></p>
                     <p><strong>End:</strong> <span id="formmodalEnd"></span></p>
                     <p><strong>Description:</strong> <span id="formmodalDescription"></span></p>
+                    <!-- Links detected (View-only modal) -->
+                    <div class="mb-3">
+                        <strong>Links:</strong>
+                        <ul id="formmodalDescriptionLinks" class="list-unstyled small"></ul>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="print_btn" data-bs-dismiss="modal">Close</button>
@@ -157,6 +167,11 @@
                                 <label for="modalDescription" class="col-form-label">Description:</label>
                                 <textarea class="form-control" id="modalDescription" name="description"></textarea>
                             </div>
+                            <!-- Links detected (Add modal) -->
+                            <div class="mb-3">
+                                <label class="col-form-label">Links detected:</label>
+                                <ul id="modalDescriptionLinks" class="list-unstyled small"></ul>
+                            </div>
 
                         </div>
                         <div class="modal-footer">
@@ -200,6 +215,44 @@
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
                 },
+            });
+
+            // Utility: extract and render links from description text
+            function extractLinks(text) {
+                if (!text) return [];
+                const regex = /(https?:\/\/[^\s<>"')\]}]+)/gi;
+                const matches = text.match(regex) || [];
+                // Deduplicate while preserving order
+                const seen = new Set();
+                return matches.filter(u => {
+                    if (seen.has(u)) return false;
+                    seen.add(u);
+                    return true;
+                });
+            }
+
+            function renderLinks(urls, $container) {
+                $container.empty();
+                if (!urls.length) {
+                    $container.append('<li class="text-muted">No links found</li>');
+                    return;
+                }
+                urls.forEach(function(url) {
+                    $container.append('<li><a href="' + url +
+                        '" target="_blank" rel="noopener noreferrer">' + url + '</a></li>');
+                });
+            }
+
+            // Live link detection in Add/Edit modals
+            $('#modalDescription').on('input', function() {
+                renderLinks(extractLinks($(this).val()), $('#modalDescriptionLinks'));
+            });
+            $('#modalDescriptionEdit').on('input', function() {
+                renderLinks(extractLinks($(this).val()), $('#modalDescriptionEditLinks'));
+            });
+            // Initialize links list when Add modal opens
+            $('#addEventModal').on('shown.bs.modal', function() {
+                renderLinks(extractLinks($('#modalDescription').val()), $('#modalDescriptionLinks'));
             });
 
             // Define WebSocket connection
@@ -263,6 +316,9 @@
                             $('#modalStartEdit').val(formatDateForInput(event.start));
                             $('#modalEndEdit').val(formatDateForInput(event.end));
                             $('#modalDescriptionEdit').val(event.extendedProps.description);
+                            // Render detected links for Edit modal
+                            renderLinks(extractLinks(event.extendedProps.description), $(
+                                '#modalDescriptionEditLinks'));
                             $('#event-edit').attr('action',
                                 '{{ route('events.update', '') }}/' + event.id);
 
@@ -300,6 +356,9 @@
                             $('#formmodalEnd').text(event.end ? moment(event.end).format(
                                 'MMM D, YYYY h:mm A') : 'N/A');
                             $('#formmodalDescription').text(event.extendedProps.description);
+                            // Render detected links for View-only modal
+                            renderLinks(extractLinks(event.extendedProps.description), $(
+                                '#formmodalDescriptionLinks'));
 
                             $('#deleteEventBtn').hide();
                             $('#eventModalDetails').modal('show'); // Open view-only modal
