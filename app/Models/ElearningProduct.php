@@ -50,4 +50,9 @@ class ElearningProduct extends Model
         return $this->hasMany(ElearningReview::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
 }

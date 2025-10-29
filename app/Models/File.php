@@ -13,4 +13,10 @@ class File extends Model
     {
         return $this->belongsTo(Topic::class);
     }
+
+    // user who uploaded the file
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

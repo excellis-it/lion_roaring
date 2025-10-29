@@ -4,6 +4,7 @@
             <td>{{ $strategies->firstItem() + $key }}</td>
             <td> {{ $strategy->file_name }}</td>
             <td> {{ $strategy->file_extension }}</td>
+            <td> {{ $strategy->user?->full_name ?? '--' }}</td>
             <td>
                 <div class="d-flex">
                     @if (auth()->user()->can('View Strategy'))

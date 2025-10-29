@@ -63,6 +63,7 @@ Becoming a Leader List - {{ env('APP_NAME') }}
                                                 <th>
                                                     Topic
                                                 </th>
+                                                <th>Created By</th>
                                                 <th></th>
                                             </tr>
                                         </thead>

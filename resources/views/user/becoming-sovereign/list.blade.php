@@ -63,6 +63,7 @@
                                                 <th>
                                                     Topic
                                                 </th>
+                                                <th>Created By</th>
                                                 <th></th>
                                             </tr>
                                         </thead>

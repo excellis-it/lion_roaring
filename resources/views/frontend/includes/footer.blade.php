@@ -34,9 +34,9 @@
                         <p>
                             {!! Helper::getFooter()['footer_title'] ??
                                 'Our main focus is to restore our various communities, villages, cities, states,
-                                                                                                                and
-                                                                                                                our nation by restoring the condition of a person in both the spiritual and the
-                                                                                                                physical.' !!}
+                                                                                                                                                                                                                                                                                                                                                                            and
+                                                                                                                                                                                                                                                                                                                                                                            our nation by restoring the condition of a person in both the spiritual and the
+                                                                                                                                                                                                                                                                                                                                                                            physical.' !!}
                         </p>
                         <div class="col-lg-12">
                             <div class="d-flex align-items-center">
@@ -168,13 +168,15 @@
 </footer>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    var sel = document.getElementById('countrySwitcher');
-    if (sel) {
-        sel.addEventListener('change', function () {
-            var cc = this.value;
-            if (cc) window.location.href = '/' + cc; // goes to masked home which sets session + content
-        });
-    }
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        var sel = document.getElementById('countrySwitcher');
+        var switchTo = '{{ route('home') }}/'; // base home URL; append country code
+        if (sel) {
+            sel.addEventListener('change', function() {
+                var cc = this.value;
+                if (cc) window.location.href = switchTo + encodeURIComponent(
+                cc); // goes to masked home which sets session + content
+            });
+        }
+    });
 </script>

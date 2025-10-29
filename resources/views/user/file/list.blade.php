@@ -71,6 +71,7 @@
                                                             class="fa fa-arrow-down"></i></span></th>
                                                 <th>Type of Education</th>
                                                 <th>Topic</th>
+                                                <th>Created By</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
