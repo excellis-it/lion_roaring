@@ -103,13 +103,13 @@ class EstorePromoCodeController extends Controller
     public function update(Request $request, $id)
     {
 
-        
+
         $request->validate([
             'code' => 'required|string|max:255|unique:estore_promo_codes,code,' . $id,
             'is_percentage' => 'required|boolean',
             'discount_amount' => 'required|numeric|min:0',
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date'   => 'required|date|after_or_equal:start_date',
+            'start_date' => 'required|date',
+            'end_date'   => 'required|date',
             'status' => 'required|boolean',
             'scope_type' => 'required|in:all,all_users,selected_users,all_products,selected_products',
             'user_ids' => 'nullable|array|required_if:scope_type,selected_users',

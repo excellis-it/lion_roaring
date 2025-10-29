@@ -4,7 +4,7 @@
     E-Store Promo Code Management
 @endsection
 @push('styles')
-   <link rel="stylesheet"
+    <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/css/bootstrap-select.min.css" />
     <style>
         .text-danger {
@@ -115,7 +115,8 @@
                                 <div class="box_label">
                                     <label for="product_ids">Select Products</label>
                                     <select name="product_ids[]" id="product_ids"
-                                        class="form-control selectpicker @error('product_ids') is-invalid @enderror" multiple>
+                                        class="form-control selectpicker @error('product_ids') is-invalid @enderror"
+                                        multiple>
                                         @foreach ($products as $product)
                                             <option value="{{ $product->id }}"
                                                 {{ in_array($product->id, $selectedProducts, true) ? 'selected' : '' }}>
@@ -168,8 +169,7 @@
                                     <label for="start_date">Start Date</label>
                                     <input type="date" name="start_date" id="start_date"
                                         class="form-control @error('start_date') is-invalid @enderror"
-                                        value="{{ old('start_date', date('Y-m-d', strtotime($promoCode->start_date))) }}"
-                                        >
+                                        value="{{ old('start_date', date('Y-m-d', strtotime($promoCode->start_date))) }}">
                                     @error('start_date')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -182,8 +182,7 @@
                                     <label for="end_date">End Date</label>
                                     <input type="date" name="end_date" id="end_date"
                                         class="form-control @error('end_date') is-invalid @enderror"
-                                        value="{{ old('end_date', date('Y-m-d', strtotime($promoCode->end_date))) }}"
-                                        min="{{ date('Y-m-d') }}">
+                                        value="{{ old('end_date', date('Y-m-d', strtotime($promoCode->end_date))) }}">
                                     @error('end_date')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -226,7 +225,7 @@
 @endsection
 
 @push('scripts')
-   <!-- bootstrap-select (modern) -->
+    <!-- bootstrap-select (modern) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>
     <script>
         $('.selectpicker').selectpicker();
