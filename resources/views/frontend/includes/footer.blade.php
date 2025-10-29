@@ -34,9 +34,9 @@
                         <p>
                             {!! Helper::getFooter()['footer_title'] ??
                                 'Our main focus is to restore our various communities, villages, cities, states,
-                                                                                                                                                                                                                                                                                                                                                                            and
-                                                                                                                                                                                                                                                                                                                                                                            our nation by restoring the condition of a person in both the spiritual and the
-                                                                                                                                                                                                                                                                                                                                                                            physical.' !!}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            and
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            our nation by restoring the condition of a person in both the spiritual and the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            physical.' !!}
                         </p>
                         <div class="col-lg-12">
                             <div class="d-flex align-items-center">
@@ -146,14 +146,19 @@
                         $countries = \App\Helpers\Helper::getCountries();
                     @endphp
 
+                    {{-- {{ collect($countries ?? [])->map(fn($c) => strtoupper($c->code ?? ($c['code'] ?? '')))->filter()->map(fn($code) => '"' . $code . '"')->implode(',') . ',' }} --}}
+
                     <div class="input-group input-group-sm">
-                        <span class="input-group-text bg-dark text-white">
-                            <i class="fa fa-globe"></i>
-                        </span>
-                        <select id="countrySwitcher" class="form-select form-select-sm">
+                        {{-- <span class="input-group-text bg-dark text-white">
+                            <img style="height: 20px;"
+                                src="{{ asset('frontend_assets/images/flags/' . strtolower($currentCode) . '.png') }}"
+                                alt="">
+                        </span> --}}
+                        <select id="countrySwitcher" class="form-select form-select-sm cst-select cst-select-top">
                             @foreach ($countries as $c)
                                 <option value="{{ strtolower($c->code) }}"
-                                    {{ strtoupper($c->code) === $currentCode ? 'selected' : '' }}>
+                                    {{ strtoupper($c->code) === $currentCode ? 'selected' : '' }}
+                                    data-image="{{ asset('frontend_assets/images/flags/' . strtolower($c->code) . '.png') }}">
                                     {{ $c->name }} ({{ strtoupper($c->code) }})
                                 </option>
                             @endforeach
@@ -175,8 +180,10 @@
             sel.addEventListener('change', function() {
                 var cc = this.value;
                 if (cc) window.location.href = switchTo + encodeURIComponent(
-                cc); // goes to masked home which sets session + content
+                    cc); // goes to masked home which sets session + content
             });
         }
     });
 </script>
+
+

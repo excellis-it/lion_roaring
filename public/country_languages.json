@@ -1,0 +1,962 @@
+{
+  "Afghanistan": {
+    "name": "Afghanistan",
+    "languages": ["ps", "fa", "uz"]
+  },
+  "Albania": {
+    "name": "Albania",
+    "languages": ["sq"]
+  },
+  "Algeria": {
+    "name": "Algeria",
+    "languages": ["ar"]
+  },
+  "American Samoa": {
+    "name": "American Samoa",
+    "languages": ["en", "sm"]
+  },
+  "Andorra": {
+    "name": "Andorra",
+    "languages": ["ca"]
+  },
+  "Angola": {
+    "name": "Angola",
+    "languages": ["pt", "kg", "ln"]
+  },
+  "Anguilla": {
+    "name": "Anguilla",
+    "languages": ["en"]
+  },
+  "Antarctica": {
+    "name": "Antarctica",
+    "languages": []
+  },
+  "Antigua and Barbuda": {
+    "name": "Antigua and Barbuda",
+    "languages": ["en"]
+  },
+  "Argentina": {
+    "name": "Argentina",
+    "languages": ["es", "gn"]
+  },
+  "Armenia": {
+    "name": "Armenia",
+    "languages": ["hy"]
+  },
+  "Aruba": {
+    "name": "Aruba",
+    "languages": ["nl", "es", "en"]
+  },
+  "Australia": {
+    "name": "Australia",
+    "languages": ["en"]
+  },
+  "Austria": {
+    "name": "Austria",
+    "languages": ["de"]
+  },
+  "Azerbaijan": {
+    "name": "Azerbaijan",
+    "languages": ["az"]
+  },
+  "Bahamas": {
+    "name": "Bahamas",
+    "languages": ["en"]
+  },
+  "Bahrain": {
+    "name": "Bahrain",
+    "languages": ["ar"]
+  },
+  "Bangladesh": {
+    "name": "Bangladesh",
+    "languages": ["bn"]
+  },
+  "Barbados": {
+    "name": "Barbados",
+    "languages": ["en"]
+  },
+  "Belarus": {
+    "name": "Belarus",
+    "languages": ["be", "ru"]
+  },
+  "Belgium": {
+    "name": "Belgium",
+    "languages": ["nl", "fr", "de"]
+  },
+  "Belize": {
+    "name": "Belize",
+    "languages": ["en", "es"]
+  },
+  "Benin": {
+    "name": "Benin",
+    "languages": ["fr", "yo", "ha"]
+  },
+  "Bermuda": {
+    "name": "Bermuda",
+    "languages": ["en"]
+  },
+  "Bhutan": {
+    "name": "Bhutan",
+    "languages": ["ne"]
+  },
+  "Bolivia": {
+    "name": "Bolivia",
+    "languages": ["es", "qu", "ay"]
+  },
+  "Bosnia and Herzegovina": {
+    "name": "Bosnia and Herzegovina",
+    "languages": ["bs", "hr", "sr"]
+  },
+  "Botswana": {
+    "name": "Botswana",
+    "languages": ["en", "ts"]
+  },
+  "Brazil": {
+    "name": "Brazil",
+    "languages": ["pt"]
+  },
+  "British Indian Ocean Territory": {
+    "name": "British Indian Ocean Territory",
+    "languages": ["en"]
+  },
+  "Brunei Darussalam": {
+    "name": "Brunei Darussalam",
+    "languages": ["ms"]
+  },
+  "Bulgaria": {
+    "name": "Bulgaria",
+    "languages": ["bg"]
+  },
+  "Burkina Faso": {
+    "name": "Burkina Faso",
+    "languages": ["fr", "ha"]
+  },
+  "Burundi": {
+    "name": "Burundi",
+    "languages": ["fr", "rw", "sw"]
+  },
+  "Cambodia": {
+    "name": "Cambodia",
+    "languages": ["km"]
+  },
+  "Cameroon": {
+    "name": "Cameroon",
+    "languages": ["en", "fr", "ha"]
+  },
+  "Canada": {
+    "name": "Canada",
+    "languages": ["en", "fr"]
+  },
+  "Cape Verde": {
+    "name": "Cape Verde",
+    "languages": ["pt"]
+  },
+  "Cayman Islands": {
+    "name": "Cayman Islands",
+    "languages": ["en"]
+  },
+  "Central African Republic": {
+    "name": "Central African Republic",
+    "languages": ["fr", "ln"]
+  },
+  "Chad": {
+    "name": "Chad",
+    "languages": ["fr", "ar", "ha"]
+  },
+  "Chile": {
+    "name": "Chile",
+    "languages": ["es"]
+  },
+  "China": {
+    "name": "China",
+    "languages": ["zh-CN", "zh-TW", "ug", "mn", "bo"]
+  },
+  "Christmas Island": {
+    "name": "Christmas Island",
+    "languages": ["en", "zh-CN", "ms"]
+  },
+  "Cocos (Keeling) Islands": {
+    "name": "Cocos (Keeling) Islands",
+    "languages": ["en", "ms"]
+  },
+  "Colombia": {
+    "name": "Colombia",
+    "languages": ["es"]
+  },
+  "Comoros": {
+    "name": "Comoros",
+    "languages": ["ar", "fr", "sw"]
+  },
+  "Congo": {
+    "name": "Congo",
+    "languages": ["fr", "ln", "kg"]
+  },
+  "Congo, The Democratic Republic of the": {
+    "name": "Congo, The Democratic Republic of the",
+    "languages": ["fr", "ln", "kg", "sw", "lg"]
+  },
+  "Cook Islands": {
+    "name": "Cook Islands",
+    "languages": ["en", "mi"]
+  },
+  "Costa Rica": {
+    "name": "Costa Rica",
+    "languages": ["es"]
+  },
+  "Cote D'Ivoire": {
+    "name": "Cote D'Ivoire",
+    "languages": ["fr", "bm"]
+  },
+  "Croatia": {
+    "name": "Croatia",
+    "languages": ["hr"]
+  },
+  "Cuba": {
+    "name": "Cuba",
+    "languages": ["es", "ht"]
+  },
+  "Cyprus": {
+    "name": "Cyprus",
+    "languages": ["el", "tr"]
+  },
+  "Czech Republic": {
+    "name": "Czech Republic",
+    "languages": ["cs"]
+  },
+  "Denmark": {
+    "name": "Denmark",
+    "languages": ["da"]
+  },
+  "Djibouti": {
+    "name": "Djibouti",
+    "languages": ["fr", "ar", "so"]
+  },
+  "Dominica": {
+    "name": "Dominica",
+    "languages": ["en"]
+  },
+  "Dominican Republic": {
+    "name": "Dominican Republic",
+    "languages": ["es", "ht"]
+  },
+  "Ecuador": {
+    "name": "Ecuador",
+    "languages": ["es", "qu"]
+  },
+  "Egypt": {
+    "name": "Egypt",
+    "languages": ["ar"]
+  },
+  "El Salvador": {
+    "name": "El Salvador",
+    "languages": ["es"]
+  },
+  "Equatorial Guinea": {
+    "name": "Equatorial Guinea",
+    "languages": ["es", "fr", "pt"]
+  },
+  "Eritrea": {
+    "name": "Eritrea",
+    "languages": ["ti", "ar", "en"]
+  },
+  "Estonia": {
+    "name": "Estonia",
+    "languages": ["et"]
+  },
+  "Ethiopia": {
+    "name": "Ethiopia",
+    "languages": ["am", "om", "so", "ti"]
+  },
+  "Falkland Islands (Malvinas)": {
+    "name": "Falkland Islands (Malvinas)",
+    "languages": ["en"]
+  },
+  "Faroe Islands": {
+    "name": "Faroe Islands",
+    "languages": ["da"]
+  },
+  "Fiji": {
+    "name": "Fiji",
+    "languages": ["en", "hi"]
+  },
+  "Finland": {
+    "name": "Finland",
+    "languages": ["fi", "sv"]
+  },
+  "France": {
+    "name": "France",
+    "languages": ["fr"]
+  },
+  "French Guiana": {
+    "name": "French Guiana",
+    "languages": ["fr"]
+  },
+  "French Polynesia": {
+    "name": "French Polynesia",
+    "languages": ["fr"]
+  },
+  "Gabon": {
+    "name": "Gabon",
+    "languages": ["fr"]
+  },
+  "Gambia": {
+    "name": "Gambia",
+    "languages": ["en"]
+  },
+  "Georgia": {
+    "name": "Georgia",
+    "languages": ["ka"]
+  },
+  "Germany": {
+    "name": "Germany",
+    "languages": ["de"]
+  },
+  "Ghana": {
+    "name": "Ghana",
+    "languages": ["en", "ak", "ee", "ha"]
+  },
+  "Gibraltar": {
+    "name": "Gibraltar",
+    "languages": ["en"]
+  },
+  "Greece": {
+    "name": "Greece",
+    "languages": ["el"]
+  },
+  "Greenland": {
+    "name": "Greenland",
+    "languages": ["da"]
+  },
+  "Grenada": {
+    "name": "Grenada",
+    "languages": ["en"]
+  },
+  "Guadeloupe": {
+    "name": "Guadeloupe",
+    "languages": ["fr"]
+  },
+  "Guam": {
+    "name": "Guam",
+    "languages": ["en", "fil"]
+  },
+  "Guatemala": {
+    "name": "Guatemala",
+    "languages": ["es"]
+  },
+  "Guernsey": {
+    "name": "Guernsey",
+    "languages": ["en", "fr"]
+  },
+  "Guinea": {
+    "name": "Guinea",
+    "languages": ["fr", "bm"]
+  },
+  "Guinea-Bissau": {
+    "name": "Guinea-Bissau",
+    "languages": ["pt"]
+  },
+  "Guyana": {
+    "name": "Guyana",
+    "languages": ["en"]
+  },
+  "Haiti": {
+    "name": "Haiti",
+    "languages": ["fr", "ht"]
+  },
+  "Holy See (Vatican City State)": {
+    "name": "Holy See (Vatican City State)",
+    "languages": ["it", "la"]
+  },
+  "Honduras": {
+    "name": "Honduras",
+    "languages": ["es"]
+  },
+  "Hong Kong": {
+    "name": "Hong Kong",
+    "languages": ["zh-TW", "en"]
+  },
+  "Hungary": {
+    "name": "Hungary",
+    "languages": ["hu"]
+  },
+  "Iceland": {
+    "name": "Iceland",
+    "languages": ["is"]
+  },
+  "India": {
+    "name": "India",
+    "languages": ["hi", "en", "as", "bn", "bho", "doi", "gu", "kn", "gom", "mai", "ml", "mni-Mtei", "mr", "ne", "or", "pa", "sa", "sd", "ta", "te", "ur"]
+  },
+  "Indonesia": {
+    "name": "Indonesia",
+    "languages": ["id", "jw", "su"]
+  },
+  "Iran, Islamic Republic Of": {
+    "name": "Iran, Islamic Republic Of",
+    "languages": ["fa", "az", "ku"]
+  },
+  "Iraq": {
+    "name": "Iraq",
+    "languages": ["ar", "ku"]
+  },
+  "Ireland": {
+    "name": "Ireland",
+    "languages": ["en", "ga"]
+  },
+  "Isle of Man": {
+    "name": "Isle of Man",
+    "languages": ["en"]
+  },
+  "Israel": {
+    "name": "Israel",
+    "languages": ["iw", "ar", "yi"]
+  },
+  "Italy": {
+    "name": "Italy",
+    "languages": ["it"]
+  },
+  "Jamaica": {
+    "name": "Jamaica",
+    "languages": ["en"]
+  },
+  "Japan": {
+    "name": "Japan",
+    "languages": ["ja"]
+  },
+  "Jersey": {
+    "name": "Jersey",
+    "languages": ["en", "fr"]
+  },
+  "Jordan": {
+    "name": "Jordan",
+    "languages": ["ar"]
+  },
+  "Kazakhstan": {
+    "name": "Kazakhstan",
+    "languages": ["kk", "ru"]
+  },
+  "Kenya": {
+    "name": "Kenya",
+    "languages": ["en", "sw", "so", "om"]
+  },
+  "Kiribati": {
+    "name": "Kiribati",
+    "languages": ["en"]
+  },
+  "Korea, Democratic People's Republic of": {
+    "name": "Korea, Democratic People's Republic of",
+    "languages": ["ko"]
+  },
+  "Korea, Republic of": {
+    "name": "Korea, Republic of",
+    "languages": ["ko"]
+  },
+  "Kuwait": {
+    "name": "Kuwait",
+    "languages": ["ar"]
+  },
+  "Kyrgyzstan": {
+    "name": "Kyrgyzstan",
+    "languages": ["ky", "ru"]
+  },
+  "Lao People's Democratic Republic": {
+    "name": "Lao People's Democratic Republic",
+    "languages": ["lo"]
+  },
+  "Latvia": {
+    "name": "Latvia",
+    "languages": ["lv"]
+  },
+  "Lebanon": {
+    "name": "Lebanon",
+    "languages": ["ar", "fr"]
+  },
+  "Lesotho": {
+    "name": "Lesotho",
+    "languages": ["en", "st"]
+  },
+  "Liberia": {
+    "name": "Liberia",
+    "languages": ["en"]
+  },
+  "Libyan Arab Jamahiriya": {
+    "name": "Libyan Arab Jamahiriya",
+    "languages": ["ar"]
+  },
+  "Liechtenstein": {
+    "name": "Liechtenstein",
+    "languages": ["de"]
+  },
+  "Lithuania": {
+    "name": "Lithuania",
+    "languages": ["lt"]
+  },
+  "Luxembourg": {
+    "name": "Luxembourg",
+    "languages": ["lb", "fr", "de"]
+  },
+  "Macao": {
+    "name": "Macao",
+    "languages": ["zh-TW", "pt"]
+  },
+  "Macedonia, The Former Yugoslav Republic of": {
+    "name": "Macedonia, The Former Yugoslav Republic of",
+    "languages": ["mk"]
+  },
+  "Madagascar": {
+    "name": "Madagascar",
+    "languages": ["mg", "fr"]
+  },
+  "Malawi": {
+    "name": "Malawi",
+    "languages": ["en", "ny"]
+  },
+  "Malaysia": {
+    "name": "Malaysia",
+    "languages": ["ms", "en", "ta"]
+  },
+  "Maldives": {
+    "name": "Maldives",
+    "languages": ["dv"]
+  },
+  "Mali": {
+    "name": "Mali",
+    "languages": ["fr", "bm"]
+  },
+  "Malta": {
+    "name": "Malta",
+    "languages": ["mt", "en"]
+  },
+  "Marshall Islands": {
+    "name": "Marshall Islands",
+    "languages": ["en"]
+  },
+  "Martinique": {
+    "name": "Martinique",
+    "languages": ["fr"]
+  },
+  "Mauritania": {
+    "name": "Mauritania",
+    "languages": ["ar"]
+  },
+  "Mauritius": {
+    "name": "Mauritius",
+    "languages": ["en", "fr", "bho"]
+  },
+  "Mayotte": {
+    "name": "Mayotte",
+    "languages": ["fr", "sw"]
+  },
+  "Mexico": {
+    "name": "Mexico",
+    "languages": ["es"]
+  },
+  "Micronesia, Federated States of": {
+    "name": "Micronesia, Federated States of",
+    "languages": ["en"]
+  },
+  "Moldova, Republic of": {
+    "name": "Moldova, Republic of",
+    "languages": ["ro", "ru"]
+  },
+  "Monaco": {
+    "name": "Monaco",
+    "languages": ["fr"]
+  },
+  "Mongolia": {
+    "name": "Mongolia",
+    "languages": ["mn"]
+  },
+  "Montenegro": {
+    "name": "Montenegro",
+    "languages": ["sr", "bs", "sq", "hr"]
+  },
+  "Montserrat": {
+    "name": "Montserrat",
+    "languages": ["en"]
+  },
+  "Morocco": {
+    "name": "Morocco",
+    "languages": ["ar"]
+  },
+  "Mozambique": {
+    "name": "Mozambique",
+    "languages": ["pt", "sw", "ts"]
+  },
+  "Myanmar": {
+    "name": "Myanmar",
+    "languages": ["my"]
+  },
+  "Namibia": {
+    "name": "Namibia",
+    "languages": ["en", "af", "de"]
+  },
+  "Nauru": {
+    "name": "Nauru",
+    "languages": ["en"]
+  },
+  "Nepal": {
+    "name": "Nepal",
+    "languages": ["ne", "bho", "mai"]
+  },
+  "Netherlands": {
+    "name": "Netherlands",
+    "languages": ["nl", "fy"]
+  },
+  "Netherlands Antilles": {
+    "name": "Netherlands Antilles",
+    "languages": ["nl", "en", "es"]
+  },
+  "New Caledonia": {
+    "name": "New Caledonia",
+    "languages": ["fr"]
+  },
+  "New Zealand": {
+    "name": "New Zealand",
+    "languages": ["en", "mi"]
+  },
+  "Nicaragua": {
+    "name": "Nicaragua",
+    "languages": ["es"]
+  },
+  "Niger": {
+    "name": "Niger",
+    "languages": ["fr", "ha"]
+  },
+  "Nigeria": {
+    "name": "Nigeria",
+    "languages": ["en", "ha", "ig", "yo"]
+  },
+  "Niue": {
+    "name": "Niue",
+    "languages": ["en"]
+  },
+  "Norfolk Island": {
+    "name": "Norfolk Island",
+    "languages": ["en"]
+  },
+  "Northern Mariana Islands": {
+    "name": "Northern Mariana Islands",
+    "languages": ["en", "fil"]
+  },
+  "Norway": {
+    "name": "Norway",
+    "languages": ["no"]
+  },
+  "Oman": {
+    "name": "Oman",
+    "languages": ["ar"]
+  },
+  "Pakistan": {
+    "name": "Pakistan",
+    "languages": ["ur", "en", "pa", "ps", "sd"]
+  },
+  "Palau": {
+    "name": "Palau",
+    "languages": ["en"]
+  },
+  "Palestinian Territory, Occupied": {
+    "name": "Palestinian Territory, Occupied",
+    "languages": ["ar"]
+  },
+  "Panama": {
+    "name": "Panama",
+    "languages": ["es"]
+  },
+  "Papua New Guinea": {
+    "name": "Papua New Guinea",
+    "languages": ["en"]
+  },
+  "Paraguay": {
+    "name": "Paraguay",
+    "languages": ["es", "gn"]
+  },
+  "Peru": {
+    "name": "Peru",
+    "languages": ["es", "qu", "ay"]
+  },
+  "Philippines": {
+    "name": "Philippines",
+    "languages": ["fil", "en", "ceb", "ilo"]
+  },
+  "Pitcairn": {
+    "name": "Pitcairn",
+    "languages": ["en"]
+  },
+  "Poland": {
+    "name": "Poland",
+    "languages": ["pl"]
+  },
+  "Portugal": {
+    "name": "Portugal",
+    "languages": ["pt"]
+  },
+  "Puerto Rico": {
+    "name": "Puerto Rico",
+    "languages": ["es", "en"]
+  },
+  "Qatar": {
+    "name": "Qatar",
+    "languages": ["ar"]
+  },
+  "Reunion": {
+    "name": "Reunion",
+    "languages": ["fr"]
+  },
+  "Romania": {
+    "name": "Romania",
+    "languages": ["ro"]
+  },
+  "Russian Federation": {
+    "name": "Russian Federation",
+    "languages": ["ru", "tt"]
+  },
+  "Rwanda": {
+    "name": "Rwanda",
+    "languages": ["rw", "en", "fr", "sw"]
+  },
+  "Saint Helena": {
+    "name": "Saint Helena",
+    "languages": ["en"]
+  },
+  "Saint Kitts and Nevis": {
+    "name": "Saint Kitts and Nevis",
+    "languages": ["en"]
+  },
+  "Saint Lucia": {
+    "name": "Saint Lucia",
+    "languages": ["en"]
+  },
+  "Saint Pierre and Miquelon": {
+    "name": "Saint Pierre and Miquelon",
+    "languages": ["fr"]
+  },
+  "Saint Vincent and the Grenadines": {
+    "name": "Saint Vincent and the Grenadines",
+    "languages": ["en"]
+  },
+  "Samoa": {
+    "name": "Samoa",
+    "languages": ["sm", "en"]
+  },
+  "San Marino": {
+    "name": "San Marino",
+    "languages": ["it"]
+  },
+  "Sao Tome and Principe": {
+    "name": "Sao Tome and Principe",
+    "languages": ["pt"]
+  },
+  "Saudi Arabia": {
+    "name": "Saudi Arabia",
+    "languages": ["ar"]
+  },
+  "Senegal": {
+    "name": "Senegal",
+    "languages": ["fr"]
+  },
+  "Serbia": {
+    "name": "Serbia",
+    "languages": ["sr"]
+  },
+  "Seychelles": {
+    "name": "Seychelles",
+    "languages": ["fr", "en"]
+  },
+  "Sierra Leone": {
+    "name": "Sierra Leone",
+    "languages": ["en", "kri"]
+  },
+  "Singapore": {
+    "name": "Singapore",
+    "languages": ["en", "ms", "ta", "zh-CN"]
+  },
+  "Slovakia": {
+    "name": "Slovakia",
+    "languages": ["sk"]
+  },
+  "Slovenia": {
+    "name": "Slovenia",
+    "languages": ["sl"]
+  },
+  "Solomon Islands": {
+    "name": "Solomon Islands",
+    "languages": ["en"]
+  },
+  "Somalia": {
+    "name": "Somalia",
+    "languages": ["so", "ar"]
+  },
+  "South Africa": {
+    "name": "South Africa",
+    "languages": ["af", "en", "nso", "st", "ts", "xh", "zu"]
+  },
+  "South Georgia and the South Sandwich Islands": {
+    "name": "South Georgia and the South Sandwich Islands",
+    "languages": ["en"]
+  },
+  "Spain": {
+    "name": "Spain",
+    "languages": ["es", "ca", "eu", "gl"]
+  },
+  "Sri Lanka": {
+    "name": "Sri Lanka",
+    "languages": ["si", "ta"]
+  },
+  "Sudan": {
+    "name": "Sudan",
+    "languages": ["ar", "en", "ha"]
+  },
+  "Suriname": {
+    "name": "Suriname",
+    "languages": ["nl"]
+  },
+  "Svalbard and Jan Mayen": {
+    "name": "Svalbard and Jan Mayen",
+    "languages": ["no"]
+  },
+  "Swaziland": {
+    "name": "Swaziland",
+    "languages": ["en", "zu"]
+  },
+  "Sweden": {
+    "name": "Sweden",
+    "languages": ["sv"]
+  },
+  "Switzerland": {
+    "name": "Switzerland",
+    "languages": ["de", "fr", "it"]
+  },
+  "Syrian Arab Republic": {
+    "name": "Syrian Arab Republic",
+    "languages": ["ar", "ku"]
+  },
+  "Taiwan, Province of China": {
+    "name": "Taiwan, Province of China",
+    "languages": ["zh-TW"]
+  },
+  "Tajikistan": {
+    "name": "Tajikistan",
+    "languages": ["tg", "ru"]
+  },
+  "Tanzania, United Republic of": {
+    "name": "Tanzania, United Republic of",
+    "languages": ["sw", "en"]
+  },
+  "Thailand": {
+    "name": "Thailand",
+    "languages": ["th"]
+  },
+  "Timor-Leste": {
+    "name": "Timor-Leste",
+    "languages": ["pt", "id"]
+  },
+  "Togo": {
+    "name": "Togo",
+    "languages": ["fr", "ee"]
+  },
+  "Tokelau": {
+    "name": "Tokelau",
+    "languages": ["en"]
+  },
+  "Tonga": {
+    "name": "Tonga",
+    "languages": ["en"]
+  },
+  "Trinidad and Tobago": {
+    "name": "Trinidad and Tobago",
+    "languages": ["en"]
+  },
+  "Tunisia": {
+    "name": "Tunisia",
+    "languages": ["ar"]
+  },
+  "Turkey": {
+    "name": "Turkey",
+    "languages": ["tr", "ku"]
+  },
+  "Turkmenistan": {
+    "name": "Turkmenistan",
+    "languages": ["tk", "ru"]
+  },
+  "Turks and Caicos Islands": {
+    "name": "Turks and Caicos Islands",
+    "languages": ["en"]
+  },
+  "Tuvalu": {
+    "name": "Tuvalu",
+    "languages": ["en"]
+  },
+  "Uganda": {
+    "name": "Uganda",
+    "languages": ["en", "sw", "lg"]
+  },
+  "Ukraine": {
+    "name": "Ukraine",
+    "languages": ["uk", "ru"]
+  },
+  "United Arab Emirates": {
+    "name": "United Arab Emirates",
+    "languages": ["ar"]
+  },
+  "United Kingdom": {
+    "name": "United Kingdom",
+    "languages": ["en", "cy", "gd"]
+  },
+  "United States": {
+    "name": "United States",
+    "languages": ["en", "es", "haw", "zh-CN"]
+  },
+  "United States Minor Outlying Islands": {
+    "name": "United States Minor Outlying Islands",
+    "languages": ["en"]
+  },
+  "Uruguay": {
+    "name": "Uruguay",
+    "languages": ["es"]
+  },
+  "Uzbekistan": {
+    "name": "Uzbekistan",
+    "languages": ["uz", "ru"]
+  },
+  "Vanuatu": {
+    "name": "Vanuatu",
+    "languages": ["en", "fr"]
+  },
+  "Venezuela": {
+    "name": "Venezuela",
+    "languages": ["es"]
+  },
+  "Viet Nam": {
+    "name": "Viet Nam",
+    "languages": ["vi"]
+  },
+  "Virgin Islands, British": {
+    "name": "Virgin Islands, British",
+    "languages": ["en"]
+  },
+  "Virgin Islands, U.S.": {
+    "name": "Virgin Islands, U.S.",
+    "languages": ["en"]
+  },
+  "Wallis and Futuna": {
+    "name": "Wallis and Futuna",
+    "languages": ["fr"]
+  },
+  "Western Sahara": {
+    "name": "Western Sahara",
+    "languages": ["es", "ar"]
+  },
+  "Yemen": {
+    "name": "Yemen",
+    "languages": ["ar"]
+  },
+  "Zambia": {
+    "name": "Zambia",
+    "languages": ["en"]
+  },
+  "Zimbabwe": {
+    "name": "Zimbabwe",
+    "languages": ["en", "sn", "st"]
+  }
+}
