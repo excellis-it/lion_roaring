@@ -261,11 +261,11 @@
                                         }
                                         return null;
                                     }
-
+                                    
                                     // Get user's timezone based on IP address
                                     $ip = $_SERVER['REMOTE_ADDR'];
                                     $timezone = getTimezoneFromIp($ip);
-
+                                    
                                     if ($timezone) {
                                         // Set the default timezone
                                         date_default_timezone_set($timezone);
@@ -273,10 +273,10 @@
                                         // Fallback timezone
                                         date_default_timezone_set('UTC');
                                     }
-
+                                    
                                     // Get the current hour in 24-hour format
                                     $time = date('H');
-
+                                    
                                     // Determine greeting based on time
                                     if ($time < '12') {
                                         echo 'Perfect morning';
@@ -331,7 +331,7 @@
                                 </form>
                                 <p class="text-center join_member">
                                     <a href="javascrip:void(0);" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop">Join
+                                        data-bs-target="#registerModalFirst">Join
                                         Lion
                                         Roaring PMA</a> |
                                     <a href="{{ route('user.forget.password.show') }}">Forgot
@@ -583,7 +583,8 @@
                                 <div class="modal_checkbox text-left text-xl-center">
                                     <div class="form-group">
                                         <input type="checkbox" id="pma_check" name="is_checked">
-                                        <label for="pma_check">{{ Helper::getPmaTerm() ? Helper::getPmaTerm()->checkbox_text : '' }}</label>
+                                        <label
+                                            for="pma_check">{{ Helper::getPmaTerm() ? Helper::getPmaTerm()->checkbox_text : '' }}</label>
                                     </div>
                                 </div>
                                 <div class="text-center">
@@ -597,7 +598,7 @@
 
                 </div>
             </div>
-            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+            <div class="modal fade" id="registerModalFirst" data-bs-backdrop="static" data-bs-keyboard="false"
                 tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -611,6 +612,48 @@
                                 <div class="logo-admin">
                                     <img src="{{ asset('user_assets/images/logo.png') }}" alt="">
                                 </div>
+                                <div>
+                                    <iframe
+                                        src="{{ Helper::getPDFAttribute() ?? 'javascript:void(0);' }}#toolbar=0&navpanes=0&view=FitH"
+                                        style="width:100%; height:60vh; border:1px solid #ccc;" title="PDF Viewer"
+                                        frameborder="0"></iframe>
+
+                                </div>
+                                <div class="check-main">
+                                    <div class="form-group">
+                                        <input type="checkbox" id="pma_register_check1">
+                                        <label for="pma_register_check1">{{ 'Read and Agree' }}</label>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-end">
+                                    <div class="col-lg-4">
+                                        <div class="login-submit mt-lg-4 mt-2 text-end">
+                                            <a href="javascript:void(0);"
+                                                class="button button-primary w-100 register_next_first">Next</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal" id="registerModalSecond" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5> -->
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="agre">
+                                <div class="logo-admin">
+                                    <img src="{{ asset('user_assets/images/logo.png') }}" alt="">
+                                </div>
+
                                 <div class="heading_hp">
                                     <h2 id="greeting">
                                         {{ Helper::getAgreements()['agreement_title'] ?? 'Lion Roaring PMA (Private Members Association) Agreement' }}
@@ -623,15 +666,20 @@
                                     </div>
                                     <div class="check-main">
                                         <div class="form-group">
-                                            <input type="checkbox" id="pma_check1">
-                                            <label for="pma_check1">{{ Helper::getAgreements()['checkbox_text'] ?? 'I have read and agreed to the Lion Roaring PMA Agreement' }}</label>
+                                            <input type="checkbox" id="pma_register_check2">
+                                            <label
+                                                for="pma_register_check2">{{ Helper::getAgreements()['checkbox_text'] ?? 'I have read and agreed to the Lion Roaring PMA Agreement' }}</label>
                                         </div>
                                     </div>
                                 </div>
+
+
+
                                 <div class="row justify-content-end">
                                     <div class="col-lg-4">
                                         <div class="login-submit mt-lg-4 mt-2 text-end">
-                                            <a href="javascript:void(0);" class="button button-primary w-100 regis">
+                                            <a href="javascript:void(0);"
+                                                class="button button-primary w-100 register_next_second">
                                                 Next</a>
                                         </div>
                                     </div>
@@ -643,12 +691,15 @@
             </div>
 
         </main>
+        <script>
+            var register_page_route = "{{ route('register') }}";
+        </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
         <script src="{{ asset('frontend_assets/js/bootstrap.bundle.min.js') }}"></script>
 
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-        <script src="{{ asset('frontend_assets/js/custom.js') }}"></script>
+        <script src="{{ asset('frontend_assets/js/custom.js') . '?v=' . time() }}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox-plus-jquery.js"
             integrity="sha512-0rYcJjaqTGk43zviBim8AEjb8cjUKxwxCqo28py38JFKKBd35yPfNWmwoBLTYORC9j/COqldDc9/d1B7dhRYmg=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -657,6 +708,7 @@
         {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> --}}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
         <script src="{{ asset('frontend_assets/js/cs-select.js') }}"></script>
+
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
