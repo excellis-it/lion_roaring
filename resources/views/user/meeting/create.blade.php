@@ -12,9 +12,9 @@
     </style>
 @endpush
 @section('content')
-<section id="loading">
-    <div id="loading-content"></div>
-</section>
+    <section id="loading">
+        <div id="loading-content"></div>
+    </section>
     <div class="container-fluid">
         <div class="bg_white_border">
 
@@ -41,6 +41,22 @@
                                     <span class="text-danger" style="color:red !important;" id="title_error"></span>
                                 </div>
                             </div>
+
+                            <div class="col-md-6 mb-2">
+                                <div class="box_label">
+                                    <label> Meeting Link Source </label>
+                                    <!-- Replaced radios with select -->
+                                    <select class="form-control" name="link_source" id="link_source">
+                                        <option value="external"
+                                            {{ old('link_source', 'external') == 'external' ? 'selected' : '' }}>External
+                                            link</option>
+                                        <option value="zoom" {{ old('link_source') == 'zoom' ? 'selected' : '' }}>Create
+                                            Zoom meeting</option>
+                                    </select>
+                                    <input type="hidden" name="create_zoom" id="create_zoom" value="0">
+                                </div>
+                            </div>
+
                             {{-- meeting_link --}}
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
@@ -100,6 +116,20 @@
                     },
                 });
 
+                // Toggle Zoom creation vs external link
+                function syncZoomToggle() {
+                    const useZoom = $('#link_source').val() === 'zoom';
+                    $('#create_zoom').val(useZoom ? 1 : 0);
+                    $('#meeting_link').prop('disabled', useZoom)
+                        .attr('placeholder', useZoom ? 'Will be generated automatically' : 'Enter Meeting Link');
+                    if (useZoom) {
+                        $('#meeting_link').val('');
+                    }
+                }
+                // Bind to select instead of radios
+                $('#link_source').on('change', syncZoomToggle);
+                syncZoomToggle();
+
                 // Define WebSocket connection
                 let ip_address = "{{ env('IP_ADDRESS') }}";
                 let socket_port = '3000';
@@ -138,8 +168,7 @@
                             $('#loading').removeClass('loading');
                             $('#loading-content').removeClass('loading-content');
                             $('.text-danger').text('');
-                            // show error message in span
-                            $.each(xhr.responseJSON.errors, function(key, item) {
+                            $.each(xhr.responseJSON.errors || {}, function(key, item) {
                                 $('#' + key + '_error').text(item[0]);
                             });
                         }
