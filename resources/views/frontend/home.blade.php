@@ -11,6 +11,29 @@
 @endpush
 
 @section('content')
+  <!--Flag Popup -->
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup-box">
+      <h4>Select Your Country</h4>
+      <div class="flag-grid">
+        <!-- Flags directly in HTML -->
+        <img src="https://flagcdn.com/w80/in.png" alt="India" title="India" onclick="selectFlag('India')">
+        <img src="https://flagcdn.com/w80/us.png" alt="United States" title="United States" onclick="selectFlag('United States')">
+        <img src="https://flagcdn.com/w80/gb.png" alt="United Kingdom" title="United Kingdom" onclick="selectFlag('United Kingdom')">
+        <img src="https://flagcdn.com/w80/fr.png" alt="France" title="France" onclick="selectFlag('France')">
+        <img src="https://flagcdn.com/w80/de.png" alt="Germany" title="Germany" onclick="selectFlag('Germany')">
+        <img src="https://flagcdn.com/w80/it.png" alt="Italy" title="Italy" onclick="selectFlag('Italy')">
+        <img src="https://flagcdn.com/w80/jp.png" alt="Japan" title="Japan" onclick="selectFlag('Japan')">
+        <img src="https://flagcdn.com/w80/br.png" alt="Brazil" title="Brazil" onclick="selectFlag('Brazil')">
+        <img src="https://flagcdn.com/w80/ca.png" alt="Canada" title="Canada" onclick="selectFlag('Canada')">
+        <img src="https://flagcdn.com/w80/au.png" alt="Australia" title="Australia" onclick="selectFlag('Australia')">
+      </div>
+      <button class="btn btn-danger popup-btn" onclick="closePopup()">Close</button>
+    </div>
+  </div>
+
+
+
     <section class="banner__slider banner_sec">
         <div class="slider">
             <div class="slide">
