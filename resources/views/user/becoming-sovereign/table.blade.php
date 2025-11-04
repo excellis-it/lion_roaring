@@ -5,6 +5,7 @@
             <td> {{ $file->file_name }}</td>
             <td> {{ $file->file_extension }}</td>
             <td> {{ $file->topic->topic_name ?? '--' }}</td>
+            <td> {{ $file->user?->full_name ?? '--' }}</td>
             <td>
                 <div class="d-flex">
                     @if (auth()->user()->can('View Becoming Sovereigns'))
@@ -33,7 +34,7 @@
         </tr>
     @endforeach
     <tr class="toxic">
-        <td colspan="4">
+        <td colspan="6">
             <div class="d-flex justify-content-center">
                 {!! $files->links() !!}
             </div>
@@ -41,6 +42,6 @@
     </tr>
 @else
     <tr>
-        <td colspan="4" class="text-center">No data found</td>
+        <td colspan="6" class="text-center">No data found</td>
     </tr>
 @endif

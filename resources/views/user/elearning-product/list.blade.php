@@ -74,6 +74,7 @@
                                                 <th>
                                                     Is Featured
                                                 </th>
+                                                <th>Created By</th>
                                                 <th>
                                                     Created On
                                                 </th>

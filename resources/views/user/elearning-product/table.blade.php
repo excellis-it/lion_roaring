@@ -33,6 +33,7 @@
                     <span class=" badge-danger">No</span>
                 @endif
             </td>
+            <td>{{ $product->user?->full_name ?? '--' }}</td>
             <td> {{ $product->created_at->format('d M Y') }}</td>
             <td>
                 <div class="d-flex">
