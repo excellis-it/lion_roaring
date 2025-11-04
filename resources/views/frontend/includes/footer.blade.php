@@ -34,9 +34,9 @@
                         <p>
                             {!! Helper::getFooter()['footer_title'] ??
                                 'Our main focus is to restore our various communities, villages, cities, states,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            our nation by restoring the condition of a person in both the spiritual and the
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            physical.' !!}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            and
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            our nation by restoring the condition of a person in both the spiritual and the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            physical.' !!}
                         </p>
                         <div class="col-lg-12">
                             <div class="d-flex align-items-center">
@@ -173,17 +173,89 @@
 </footer>
 
 <script>
+    const popup = document.getElementById("popupOverlay");
+
+    // Show popup short time after load if present and not explicitly hidden
+    window.addEventListener('load', function() {
+        if (!popup) return;
+        if (popup.style.display && popup.style.display === 'none') return;
+        setTimeout(() => {
+            popup.style.display = "flex";
+        }, 1000);
+    });
+
+    // Close popup
+    function closePopup() {
+        if (!popup) return;
+        popup.style.display = "none";
+    }
+
+    // When a flag is clicked - send to server to store in session, then close/refresh
+    function selectFlag(country) {
+        if (!country) return;
+        fetch("{{ route('set-visitor-country') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                country: country
+            })
+        }).then(function(response) {
+            if (response.ok) {
+                // optionally update any UI elements
+                var sel = document.getElementById('countrySwitcher');
+                var switchTo = '{{ route('home') }}/';
+                if (sel) sel.value = country;
+                closePopup();
+                // reload so server-side session check will prevent popup next time
+                //  window.location.reload();
+                if (country) window.location.href = switchTo + encodeURIComponent(
+                    country); // goes to masked home which sets session + content
+            } else {
+                // still close popup on failure to avoid blocking UX
+                closePopup();
+            }
+        }).catch(function() {
+            closePopup();
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         var sel = document.getElementById('countrySwitcher');
-        var switchTo = '{{ route('home') }}/'; // base home URL; append country code
         if (sel) {
             sel.addEventListener('change', function() {
                 var cc = this.value;
-                if (cc) window.location.href = switchTo + encodeURIComponent(
-                    cc); // goes to masked home which sets session + content
+                if (cc) {
+                    // store session then reload via selectFlag
+                    selectFlag(cc);
+                }
             });
         }
+
+        // Close popup overlay helper if present
+        window.closePopup = function() {
+            var overlay = document.getElementById('popupOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        };
     });
+
+
+
+
+    //    document.addEventListener('DOMContentLoaded', function() {
+    //     var sel = document.getElementById('countrySwitcher');
+    //     var switchTo = '{{ route('home') }}/'; // base home URL; append country code
+    //     if (sel) {
+    //         sel.addEventListener('change', function() {
+    //             var cc = this.value;
+    //             if (cc) window.location.href = switchTo + encodeURIComponent(
+    //                 cc); // goes to masked home which sets session + content
+    //         });
+    //     }
+    // });
 </script>
-
-

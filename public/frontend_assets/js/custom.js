@@ -1,35 +1,9 @@
 
-    const popup = document.getElementById("popupOverlay");
-    // Show popup 3 seconds after page load
-    window.onload = function() {
-      setTimeout(() => {
-        popup.style.display = "flex";
-      }, 1000);
-    }
-    // Close popup
-    function closePopup() {
-      popup.style.display = "none";
-    }
-    // When a flag is clicked
-    function selectFlag(country) {
-      document.getElementById("selectedCountryText").textContent = `Selected Country: ${country}`;
-      closePopup();
-    }
 
-
-
-
-
-$('#toggle').click(function() {
-  $(this).toggleClass('active');
-  $('#overlay').toggleClass('open');
- });
-
-
-
-
-
-
+$("#toggle").click(function () {
+    $(this).toggleClass("active");
+    $("#overlay").toggleClass("open");
+});
 
 /*----- slier --------*/
 

@@ -92,6 +92,7 @@ use App\Http\Controllers\User\WarehouseAdminController;
 use App\Helpers\Helper;
 use App\Models\Country;
 use Illuminate\Support\Str;
+use App\Http\Controllers\VisitorController;
 
 
 
@@ -279,7 +280,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
 });
 
 /*************************************************************** Frontend ************************************************************************/
-// Route::get('/', [CmsController::class, 'index'])->name('home');
+ Route::get('/', [CmsController::class, 'index'])->name('home');
 
 // Country code pattern (e.g., us|in|gb)
 $__countryCodes = Country::pluck('code')
@@ -291,10 +292,10 @@ $__countryCodes = Country::pluck('code')
 $__ccPattern = $__countryCodes ? implode('|', array_map(fn($s) => preg_quote($s, '/'), $__countryCodes)) : 'a^';
 
 // Redirect "/" to "/{cc}"
-Route::get('/', function () {
-    $cc = strtolower(Helper::getVisitorCountryCode()); // e.g., "US" -> "us"
-    return $cc ? redirect('/' . $cc, 302) : app(CmsController::class)->index();
-})->name('home');
+// Route::get('/', function () {
+//     $cc = strtolower(Helper::getVisitorCountryCode()); // e.g., "US" -> "us"
+//     return $cc ? redirect('/' . $cc, 302) : app(CmsController::class)->index();
+// })->name('home');
 
 // Country-code masked home (won't affect other routes due to tight constraint)
 Route::get('/{cc}', function (string $cc) {
@@ -778,6 +779,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
 });
 // });
 
+
+Route::post('/set-visitor-country', [VisitorController::class, 'setCountry'])->name('set-visitor-country');
 
 /**************************************************----------------------------ECOM--------------------------****************************************************************/
 

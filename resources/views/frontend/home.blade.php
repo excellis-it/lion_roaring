@@ -1,3 +1,4 @@
+{{-- {{ dd(session()->all()) }} --}}
 @extends('frontend.layouts.master')
 @section('meta_title')
     <meta name="description" content="{{ $home['meta_description'] ?? '' }}">
@@ -11,36 +12,43 @@
 @endpush
 
 @section('content')
-  <!--Flag Popup -->
-  <div class="popup-overlay" id="popupOverlay">
-    <div class="popup-box">
-      <h4>Select Your Country</h4>
-      <div class="flag-grid">
-        <!-- Flags directly in HTML -->
-        <img src="https://flagcdn.com/w80/in.png" alt="India" title="India" onclick="selectFlag('India')">
-        <img src="https://flagcdn.com/w80/us.png" alt="United States" title="United States" onclick="selectFlag('United States')">
-        <img src="https://flagcdn.com/w80/gb.png" alt="United Kingdom" title="United Kingdom" onclick="selectFlag('United Kingdom')">
-        <img src="https://flagcdn.com/w80/fr.png" alt="France" title="France" onclick="selectFlag('France')">
-        <img src="https://flagcdn.com/w80/de.png" alt="Germany" title="Germany" onclick="selectFlag('Germany')">
-        <img src="https://flagcdn.com/w80/it.png" alt="Italy" title="Italy" onclick="selectFlag('Italy')">
-        <img src="https://flagcdn.com/w80/jp.png" alt="Japan" title="Japan" onclick="selectFlag('Japan')">
-        <img src="https://flagcdn.com/w80/br.png" alt="Brazil" title="Brazil" onclick="selectFlag('Brazil')">
-        <img src="https://flagcdn.com/w80/ca.png" alt="Canada" title="Canada" onclick="selectFlag('Canada')">
-        <img src="https://flagcdn.com/w80/au.png" alt="Australia" title="Australia" onclick="selectFlag('Australia')">
-      </div>
-      <button class="btn btn-danger popup-btn" onclick="closePopup()">Close</button>
+
+    @php
+        $currentCode = strtoupper(\App\Helpers\Helper::getVisitorCountryCode());
+        $countries = \App\Helpers\Helper::getCountries();
+        // show popup only if session key not set for this IP
+        $ip = request()->ip();
+        $sessionKey = 'visitor_country_flag_code_' . $ip;
+        $showPopup = !session()->has($sessionKey);
+    @endphp
+
+    <!--Flag Popup -->
+    <div class="popup-overlay" id="popupOverlay" style="{{ $showPopup ? '' : 'display:none;' }}">
+        <div class="popup-box flag-popup-box">
+            <h4>Select Your Country</h4>
+            <div class="flag-grid">
+                <!-- Flags directly in HTML -->
+                @foreach ($countries as $c)
+                    <img src="{{ asset('frontend_assets/images/flags/' . strtolower($c->code) . '.png') }}"
+                        alt="{{ $c->name }}" title="{{ $c->name }}"
+                        onclick="selectFlag('{{ strtolower($c->code) }}')">
+                @endforeach
+
+            </div>
+            <button class="btn btn-danger popup-btn" onclick="closePopup()">Close</button>
+        </div>
     </div>
-  </div>
 
 
 
     <section class="banner__slider banner_sec">
         <div class="slider">
             <div class="slide">
-                <a href="{{route('details')}}" tabindex="0">
+                <a href="{{ route('details') }}" tabindex="0">
                     <div class="slide__img">
                         <video autoplay="" muted="" loop="" class="video_part" playsInline>
-                            <source src="{{ isset($home['banner_video']) ? Storage::url($home['banner_video']) : 'https://via.placeholder.com/150' }}"
+                            <source
+                                src="{{ isset($home['banner_video']) ? Storage::url($home['banner_video']) : 'https://via.placeholder.com/150' }}"
                                 type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
@@ -109,8 +117,8 @@
                                                 <h4 class="flex-fixed">{{ $home['section_2_left_title'] ?? 'title' }}</h4>
                                                 <div class="srl" id="srl_1">
                                                     <p><strong>
-                                                        {!! $home['section_2_left_description'] ?? 'description' !!}
-                                                    </strong></p>
+                                                            {!! $home['section_2_left_description'] ?? 'description' !!}
+                                                        </strong></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -129,11 +137,12 @@
                                         </div>
                                         <div class="col-md-7">
                                             <div class="abt_text_white">
-                                                <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
+                                                <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}
+                                                </h4>
                                                 <div class="srl" id="srl_1">
                                                     <p><strong>
-                                                        {!! $home['section_2_right_description'] ?? 'description' !!}
-                                                    </strong></p>
+                                                            {!! $home['section_2_right_description'] ?? 'description' !!}
+                                                        </strong></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -166,8 +175,8 @@
                     @if (count($our_governances) > 0)
                         @foreach ($our_governances as $key => $our_governance)
                             <div class="padding_k">
-                                <div class="{{($key % 2 == 0 ) ? 'bounce_1' : 'bounce_2' }}">
-                                    <div class="{{($key % 2 == 0 ) ? 'one_cli' : 'one_cli1' }}">
+                                <div class="{{ $key % 2 == 0 ? 'bounce_1' : 'bounce_2' }}">
+                                    <div class="{{ $key % 2 == 0 ? 'one_cli' : 'one_cli1' }}">
                                         <div class="one_cli_nh">
                                             <img src="{{ asset('frontend_assets/images/before_n.png') }}" alt="">
                                         </div>
@@ -205,7 +214,7 @@
                             <h6></h6>
                             <h2>{{ $home['section_4_title'] ?? 'title' }}</h2>
 
-                            <h4>  {!! $home['section_4_description'] ?? 'description' !!}</h4>
+                            <h4> {!! $home['section_4_description'] ?? 'description' !!}</h4>
                         </div>
                     </div>
                 </div>
