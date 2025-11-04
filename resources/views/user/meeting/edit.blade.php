@@ -39,20 +39,21 @@
                             <div class="col-md-6 mb-2">
                                 <div class="box_label">
                                     <label> Meeting Link Source </label>
-                                    <div class="d-flex align-items-center">
-                                        <div class="form-check me-3">
-                                            <input class="form-check-input" type="radio" name="link_source"
-                                                id="link_external" value="external"
-                                                {{ $meeting->meeting_link && !Str::contains($meeting->meeting_link, 'zoom.us/j/') ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="link_external">External link</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="link_source" id="link_zoom"
-                                                value="zoom"
-                                                {{ $meeting->meeting_link && Str::contains($meeting->meeting_link, 'zoom.us/j/') ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="link_zoom">Create Zoom meeting</label>
-                                        </div>
-                                    </div>
+                                    @php
+                                        $defaultSource =
+                                            $meeting->meeting_link &&
+                                            Str::contains($meeting->meeting_link, 'zoom.us/j/')
+                                                ? 'zoom'
+                                                : 'external';
+                                    @endphp
+                                    <select class="form-select" name="link_source" id="link_source">
+                                        <option value="external"
+                                            {{ old('link_source', $defaultSource) == 'external' ? 'selected' : '' }}>
+                                            External link</option>
+                                        <option value="zoom"
+                                            {{ old('link_source', $defaultSource) == 'zoom' ? 'selected' : '' }}>Zoom
+                                            meeting</option>
+                                    </select>
                                     <input type="hidden" name="create_zoom" id="create_zoom" value="0">
                                 </div>
                             </div>
@@ -119,16 +120,18 @@
                     },
                 });
 
+                // Toggle Zoom creation vs external link (updated to use select)
                 function syncZoomToggle() {
-                    const useZoom = $('#link_zoom').is(':checked');
+                    const useZoom = $('#link_source').val() === 'zoom';
                     $('#create_zoom').val(useZoom ? 1 : 0);
-                    $('#meeting_link').prop('disabled', useZoom).attr('placeholder', useZoom ?
-                        'Will be generated automatically' : 'Enter Meeting Link');
+                    $('#meeting_link')
+                        .prop('disabled', useZoom)
+                        .attr('placeholder', useZoom ? 'Will be generated automatically' : 'Enter Meeting Link');
                     if (useZoom) {
                         $('#meeting_link').val('');
                     }
                 }
-                $('#link_external, #link_zoom').on('change', syncZoomToggle);
+                $('#link_source').on('change', syncZoomToggle);
                 syncZoomToggle();
 
                 // Define WebSocket connection
