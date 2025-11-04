@@ -26,11 +26,24 @@
                                         <div class="col-md-6">
                                             <h6 class="card-title">{{ $meeting->title }}</h6>
                                             <p class="card-text"><strong>Meeting Start Time:</strong>
-                                                {{ $meeting->start_time ? date('d M, Y', strtotime($meeting->start_time)) : 'N/A' }} </p>
+                                                {{ $meeting->start_time ? date('d M, Y', strtotime($meeting->start_time)) : 'N/A' }}
+                                            </p>
                                             <p class="card-text"><strong>Meeting End Time:</strong>
-                                                {{ $meeting->end_time ? date('d M, Y', strtotime($meeting->end_time)) : 'N/A' }} </p>
+                                                {{ $meeting->end_time ? date('d M, Y', strtotime($meeting->end_time)) : 'N/A' }}
+                                            </p>
                                             <p class="card-text"><strong>Meeting Link:</strong>
-                                                <a href="{{ $meeting->meeting_link }}" target="_blank">{{ $meeting->meeting_link ? $meeting->meeting_link : 'N/A' }}</a></p>
+                                                <a href="{{ $meeting->meeting_link }}"
+                                                    target="_blank">{{ $meeting->meeting_link ? $meeting->meeting_link : 'N/A' }}</a>
+                                            </p>
+                                            {{-- @if (!empty($isZoom))
+                                                <div id="zoom-join-container">
+                                                    <button id="joinInBrowserBtn" class="btn btn-success red_btn">
+                                                        Join in browser (Zoom)
+                                                    </button>
+                                                    <small class="text-muted d-block mt-1">Requires Zoom SDK credentials
+                                                        configured.</small>
+                                                </div>
+                                            @endif --}}
                                             <hr>
                                         </div>
                                         <div class="col-md-6 text-right">
@@ -51,6 +64,8 @@
                                 </div>
                             </div>
                         </div>
+
+
                     </div>
                 </div>
             </div>

@@ -9,6 +9,8 @@
 </td>
 <td>
     <div class="d-flex">
+
+
         @if (auth()->user()->can('Edit Meeting Schedule') || auth()->user()->hasRole('SUPER ADMIN'))
             <a href="{{ route('meetings.edit', $meeting->id) }}" class="delete_icon">
                 <i class="fa-solid fa-edit"></i>
@@ -19,11 +21,21 @@
                 <i class="fa-solid fa-eye"></i>
             </a> &nbsp; &nbsp;
         @endif
+
         @if (auth()->user()->can('Delete Meeting Schedule'))
             <a href="javascript:void(0)" id="delete" data-route="{{ route('meetings.delete', $meeting->id) }}"
                 class="delete_icon">
                 <i class="fa-solid fa-trash"></i>
-            </a>
+            </a> &nbsp; &nbsp; &nbsp;
+        @endif
+
+        @if (auth()->user()->can('View Meeting Schedule') && $meeting->meeting_link != null)
+            {{-- <a href="{{ route('meetings.join-meeting', $meeting->id) }}" class="edit_icon">
+                <i class="fa-solid fa-video"></i>
+            </a> &nbsp; &nbsp; --}}
+            <a href="{{ $meeting->meeting_link }}" target="_blank" class="edit_icon">
+                <i class="fa-solid fa-video"></i>
+            </a> &nbsp; &nbsp;
         @endif
     </div>
 </td>

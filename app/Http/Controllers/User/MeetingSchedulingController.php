@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Services\NotificationService;
+use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class MeetingSchedulingController extends Controller
 {
@@ -55,6 +58,7 @@ class MeetingSchedulingController extends Controller
                 'start_time' => 'required',
                 'end_time' => 'required|after:start_time',
                 'meeting_link' => 'nullable',
+                // link_source will be 'external' or 'zoom'; create_zoom hidden flag for JS simplicity
             ]);
 
             $meeting = new Meeting();
@@ -64,7 +68,28 @@ class MeetingSchedulingController extends Controller
             $meeting->description = $request->description;
             $meeting->start_time = $request->start_time;
             $meeting->end_time = $request->end_time;
-            $meeting->meeting_link = $request->meeting_link;
+
+            // Create Zoom meeting if requested
+            $createZoom = (bool)$request->input('create_zoom', false);
+            if ($createZoom) {
+                try {
+                    $zoom = $this->createZoomMeeting(
+                        $request->title,
+                        $request->start_time,
+                        $request->end_time,
+                        strip_tags($request->description ?? ''),
+                        auth()->user()->time_zone
+                    );
+                    $meeting->meeting_link = $zoom['join_url'] ?? $request->meeting_link;
+                } catch (\Throwable $e) {
+                    Log::error('Zoom meeting creation failed: ' . $e->getMessage());
+                    // fallback: keep provided link (if any)
+                    $meeting->meeting_link = $request->meeting_link;
+                }
+            } else {
+                $meeting->meeting_link = $request->meeting_link;
+            }
+
             $meeting->save();
 
             // notify users
@@ -89,7 +114,22 @@ class MeetingSchedulingController extends Controller
     {
         if (auth()->user()->can('View Meeting Schedule')) {
             $meeting = Meeting::find($id);
-            return view('user.meeting.show')->with('meeting', $meeting);
+            $isZoom = $this->isZoomLink($meeting->meeting_link ?? '');
+            $zoomMeetingId = $isZoom ? $this->parseZoomMeetingIdFromUrl($meeting->meeting_link) : null;
+            return view('user.meeting.show')->with('meeting', $meeting)->with('isZoom', $isZoom)->with('zoomMeetingId', $zoomMeetingId);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    // joinMeeting
+    public function joinMeeting($id)
+    {
+        if (auth()->user()->can('View Meeting Schedule')) {
+            $meeting = Meeting::find($id);
+            $isZoom = $this->isZoomLink($meeting->meeting_link ?? '');
+            $zoomMeetingId = $isZoom ? $this->parseZoomMeetingIdFromUrl($meeting->meeting_link) : null;
+            return view('user.meeting.zoom_meet')->with('meeting', $meeting)->with('isZoom', $isZoom)->with('zoomMeetingId', $zoomMeetingId);
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
@@ -135,7 +175,27 @@ class MeetingSchedulingController extends Controller
             $meeting->description = $request->description;
             $meeting->start_time = $request->start_time;
             $meeting->end_time = $request->end_time;
-            $meeting->meeting_link = $request->meeting_link;
+
+            // Optionally create a Zoom link on update
+            $createZoom = (bool)$request->input('create_zoom', false);
+            if ($createZoom) {
+                try {
+                    $zoom = $this->createZoomMeeting(
+                        $request->title,
+                        $request->start_time,
+                        $request->end_time,
+                        strip_tags($request->description ?? ''),
+                        auth()->user()->time_zone
+                    );
+                    $meeting->meeting_link = $zoom['join_url'] ?? $request->meeting_link;
+                } catch (\Throwable $e) {
+                    Log::error('Zoom meeting creation (update) failed: ' . $e->getMessage());
+                    $meeting->meeting_link = $request->meeting_link;
+                }
+            } else {
+                $meeting->meeting_link = $request->meeting_link;
+            }
+
             $meeting->save();
 
             session()->flash('message', 'Meeting updated successfully.');
@@ -216,5 +276,164 @@ class MeetingSchedulingController extends Controller
     {
         $meeting = Meeting::find($request->meeting_id);
         return response()->json(['status' => true, 'view' => view('user.meeting.show-single-meeting', compact('meeting'))->render()]);
+    }
+
+    /**
+     * Generate Zoom Web SDK signature and return meeting details for browser join.
+     */
+    public function zoomSignature(Request $request)
+    {
+        if (!auth()->check()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'meeting_id' => 'required|integer|exists:meetings,id',
+        ]);
+
+        $meeting = Meeting::findOrFail($request->meeting_id);
+
+        if (!auth()->user()->can('View Meeting Schedule')) {
+            abort(403, 'You do not have permission to access this page.');
+        }
+
+        $meetingLink = $meeting->meeting_link ?? '';
+        if (!$this->isZoomLink($meetingLink)) {
+            return response()->json(['status' => false, 'message' => 'This meeting is not a Zoom meeting.'], 422);
+        }
+
+        $meetingNumber = $this->parseZoomMeetingIdFromUrl($meetingLink);
+        if (!$meetingNumber) {
+            return response()->json(['status' => false, 'message' => 'Invalid Zoom meeting link.'], 422);
+        }
+
+        // Fetch meeting details from Zoom (to get the passcode)
+        $password = null;
+        $topic = $meeting->title;
+        try {
+            $token = $this->zoomAccessToken();
+            if ($token) {
+                $resp = Http::withToken($token)->get("https://api.zoom.us/v2/meetings/{$meetingNumber}");
+                if ($resp->successful()) { // CHANGED from ok() -> successful()
+                    $password = $resp->json('password');
+                    $topic = $resp->json('topic') ?: $topic;
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Zoom meeting fetch failed: ' . $e->getMessage());
+        }
+
+        $sdkKey = env('ZOOM_SDK_KEY');
+        $sdkSecret = env('ZOOM_SDK_SECRET');
+        if (!$sdkKey || !$sdkSecret) {
+            return response()->json(['status' => false, 'message' => 'Zoom SDK credentials missing.'], 500);
+        }
+
+        // Host if creator or SUPER ADMIN, else attendee
+        $role = (auth()->id() === $meeting->user_id || auth()->user()->hasRole('SUPER ADMIN')) ? 1 : 0;
+
+        // Signature v2 (per Zoom docs)
+        $ts = round(microtime(true) * 1000) - 30000;
+        $msg = base64_encode($sdkKey . $meetingNumber . $ts . $role);
+        $hash = base64_encode(hash_hmac('sha256', $msg, $sdkSecret, true));
+        $signature = base64_encode($sdkKey . '.' . $meetingNumber . '.' . $ts . '.' . $role . '.' . $hash);
+
+        return response()->json([
+            'status' => true,
+            'signature' => $signature,
+            'sdkKey' => $sdkKey,
+            'meetingNumber' => (string)$meetingNumber,
+            'password' => $password, // may be null if not retrievable
+            'topic' => $topic,
+            'role' => $role,
+            'userName' => Auth::user()->full_name ?? (Auth::user()->first_name . ' ' . Auth::user()->last_name),
+            'userEmail' => Auth::user()->email,
+        ]);
+    }
+
+    // -------------------- Zoom helpers --------------------
+
+    protected function isZoomLink(?string $url): bool
+    {
+        if (!$url) return false;
+        return (bool)preg_match('/zoom\.us\/j\/(\d+)/i', $url);
+    }
+
+    protected function parseZoomMeetingIdFromUrl(?string $url): ?string
+    {
+        if (!$url) return null;
+        if (preg_match('/zoom\.us\/j\/(\d+)/i', $url, $m)) {
+            return $m[1];
+        }
+        return null;
+    }
+
+    protected function zoomAccessToken(): ?string
+    {
+        $accountId = env('ZOOM_ACCOUNT_ID');
+        $clientId = env('ZOOM_CLIENT_ID');
+        $clientSecret = env('ZOOM_CLIENT_SECRET');
+
+        if (!$accountId || !$clientId || !$clientSecret) {
+            Log::warning('Zoom OAuth credentials missing.');
+            return null;
+        }
+
+        $url = 'https://zoom.us/oauth/token?grant_type=account_credentials&account_id=' . urlencode($accountId);
+        $resp = Http::withBasicAuth($clientId, $clientSecret)->asForm()->post($url);
+
+        if (!$resp->successful()) { // CHANGED from ok() -> successful()
+            Log::error('Zoom OAuth token failed: ' . $resp->body());
+            return null;
+        }
+
+        return $resp->json('access_token');
+    }
+
+    /**
+     * Create a Zoom meeting and return ['id', 'join_url', 'start_url', 'password']
+     */
+    protected function createZoomMeeting(string $title, string $start_time, string $end_time, string $agenda, ?string $timezone = null): array
+    {
+        $token = $this->zoomAccessToken();
+        if (!$token) {
+            throw new \RuntimeException('Zoom access token not available.');
+        }
+
+        $start = Carbon::parse($start_time);
+        $end = Carbon::parse($end_time);
+        $duration = max(15, $end->diffInMinutes($start)); // ensure at least 15 min
+
+        $payload = [
+            'topic' => $title,
+            'type' => 2, // scheduled
+            'start_time' => $start->toIso8601String(),
+            'duration' => $duration,
+            'timezone' => $timezone ?: 'UTC',
+            'agenda' => Str::limit($agenda ?? '', 200),
+            'settings' => [
+                'host_video' => true,
+                'participant_video' => true,
+                'join_before_host' => true,
+                'mute_upon_entry' => false,
+                'waiting_room' => false,
+                'approval_type' => 0,
+                'audio' => 'voip',
+                'auto_recording' => 'none',
+            ],
+        ];
+
+        $resp = Http::withToken($token)->post('https://api.zoom.us/v2/users/me/meetings', $payload);
+        if (!$resp->successful()) { // CHANGED from ok() -> successful()
+            throw new \RuntimeException('Zoom meeting create failed: ' . $resp->body());
+        }
+        $data = $resp->json();
+
+        return [
+            'id' => (string)($data['id'] ?? ''),
+            'join_url' => $data['join_url'] ?? null,
+            'start_url' => $data['start_url'] ?? null,
+            'password' => $data['password'] ?? null,
+        ];
     }
 }

@@ -280,7 +280,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
 });
 
 /*************************************************************** Frontend ************************************************************************/
- Route::get('/', [CmsController::class, 'index'])->name('home');
+Route::get('/', [CmsController::class, 'index'])->name('home');
 
 // Country code pattern (e.g., us|in|gb)
 $__countryCodes = Country::pluck('code')
@@ -672,6 +672,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
 
     Route::prefix('meetings')->group(function () {
         Route::get('/meeting-delete/{id}', [MeetingSchedulingController::class, 'delete'])->name('meetings.delete');
+
+        // join meeting
+        Route::get('/join-meeting/{id}', [MeetingSchedulingController::class, 'joinMeeting'])->name('meetings.join-meeting');
     });
     // show-single-meeting
     Route::get('/show-single-meeting', [MeetingSchedulingController::class, 'showSingleMeeting'])->name('meetings.show-single-meeting');
@@ -679,6 +682,9 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
     Route::get('/view-calender', [MeetingSchedulingController::class, 'viewCalender'])->name('meetings.view-calender');
     Route::get('/meetings-calender-fetch-data', [MeetingSchedulingController::class, 'fetchCalenderData'])->name('meetings.calender-fetch-data');
     Route::get('/meetings-fetch-data', [MeetingSchedulingController::class, 'fetchData'])->name('meetings.fetch-data');
+
+    // NEW: Zoom signature endpoint for in-browser join
+    Route::post('/meetings/zoom-signature', [MeetingSchedulingController::class, 'zoomSignature'])->name('meetings.zoom-signature');
 
     Route::prefix('jobs')->group(function () {
         Route::get('/job-delete/{id}', [JobpostingController::class, 'delete'])->name('jobs.delete');
