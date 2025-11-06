@@ -242,15 +242,7 @@
                                         <span>Meeting Schedule</span>
                                     </a>
                                 @endif
-                                @if (Gate::check('Manage Private Collaboration'))
-                                    <a href="{{ route('private-collaborations.index') }}">
-                                        <span>
-                                            <img src="{{ asset('user_assets/images/ICON/Bulletin/Meeting_Schedule.svg') }}"
-                                                alt="">
-                                        </span>
-                                        <span>Private Collaboration</span>
-                                    </a>
-                                @endif
+
                                 {{-- <a href="{{ route('user.page', ['name' => 'Communities of interest', 'permission' => 'Manage Bulletin']) }}">
                                 <span>
                                     <img src="{{ asset('user_assets/images/Communities of interest.png') }}" alt="">
@@ -264,6 +256,16 @@
                                                 alt="">
                                         </span>
                                         <span>Live Events</span>
+                                    </a>
+                                @endif
+
+                                @if (Gate::check('Manage Private Collaboration'))
+                                    <a href="{{ route('private-collaborations.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Bulletin/Meeting_Schedule.svg') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Private Collaboration</span>
                                     </a>
                                 @endif
                             </div>
