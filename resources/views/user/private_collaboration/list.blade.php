@@ -82,42 +82,58 @@
                 },
             });
 
-
+            // Define WebSocket connection
+            let ip_address = "{{ env('IP_ADDRESS') }}";
+            let socket_port = '3000';
+            let socket = io(ip_address + ':' + socket_port);
+            var sender_id = "{{ auth()->user()->id }}";
 
 
             // Delete collaboration
             $(document).on('click', '#delete', function(e) {
-                e.preventDefault();
-                var route = $(this).data('route');
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: route,
-                            type: 'GET',
-                            success: function(response) {
-                                if (response.status == true) {
-                                    toastr.success(response.message);
-                                    $('#single-collaboration-' + response.id).remove();
+                swal({
+                        title: "Are you sure?",
+                        text: "To remove this collaboration from the collaboration board",
+                        type: "warning",
+                        confirmButtonText: "Yes",
+                        showCancelButton: true
+                    })
+                    .then((result) => {
+                        if (result.value) {
+                            var route = $(this).data('route');
+                            $.ajax({
+                                url: route,
+                                type: 'GET',
+                                success: function(response) {
+                                    if (response.status == true) {
+                                        $('#single-collaboration-' + response.id).remove();
 
-                                    // Emit WebSocket event
-                                    socket.emit('collaboration_deleted', {
-                                        id: response.id
-                                    });
-                                } else {
-                                    toastr.error(response.message);
+                                        socket.emit('delete_collaboration', {
+                                            id: response.id
+                                        });
+
+                                        swal(
+                                            'Deleted!',
+                                            'Your collaboration has been deleted.',
+                                            'success'
+                                        )
+                                    } else {
+                                        swal(
+                                            'Error!',
+                                            'Your collaboration has not been deleted.',
+                                            'error'
+                                        )
+                                    }
                                 }
-                            }
-                        });
-                    }
-                });
+                            });
+                        } else if (result.dismiss === 'cancel') {
+                            swal(
+                                'Cancelled',
+                                'Your stay here :)',
+                                'error'
+                            )
+                        }
+                    });
             });
 
             // Accept invitation with real-time update
