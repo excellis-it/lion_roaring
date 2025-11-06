@@ -694,6 +694,8 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         Route::post('/accept-invitation/{id}', [PrivateCollaborationController::class, 'acceptInvitation'])->name('private-collaborations.accept-invitation');
     });
     Route::get('/show-single-collaboration', [PrivateCollaborationController::class, 'showSingleCollaboration'])->name('private-collaborations.show-single-collaboration');
+    Route::get('/private-collaborations-view-calender', [PrivateCollaborationController::class, 'viewCalender'])->name('private-collaborations.view-calender');
+    Route::get('/private-collaborations-calender-fetch-data', [PrivateCollaborationController::class, 'fetchCalenderData'])->name('private-collaborations.calender-fetch-data');
     Route::get('/private-collaborations-fetch-data', [PrivateCollaborationController::class, 'fetchData'])->name('private-collaborations.fetch-data');
     Route::post('/private-collaborations/zoom-signature', [PrivateCollaborationController::class, 'zoomSignature'])->name('private-collaborations.zoom-signature');
 

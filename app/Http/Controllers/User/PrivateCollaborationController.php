@@ -294,6 +294,64 @@ class PrivateCollaborationController extends Controller
     }
 
     /**
+     * View calendar
+     */
+    public function viewCalender()
+    {
+        if (auth()->user()->can('Manage Private Collaboration')) {
+            $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
+                ->where(function ($query) {
+                    $query->where('user_id', auth()->id())
+                        ->orWhereHas('invitations', function ($q) {
+                            $q->where('user_id', auth()->id());
+                        });
+                })
+                ->get();
+            return view('user.private_collaboration.calender', compact('collaborations'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    /**
+     * Fetch calendar data (AJAX)
+     */
+    public function fetchCalenderData()
+    {
+        if (auth()->user()->can('Manage Private Collaboration')) {
+            $collaborations = PrivateCollaboration::with(['user', 'invitations.user'])
+                ->where(function ($query) {
+                    $query->where('user_id', auth()->id())
+                        ->orWhereHas('invitations', function ($q) {
+                            $q->where('user_id', auth()->id());
+                        });
+                })
+                ->get()
+                ->map(function ($collaboration) {
+                    $isCreator = $collaboration->user_id == auth()->id();
+                    $invitation = $collaboration->invitations->where('user_id', auth()->id())->first();
+                    $hasAccepted = $invitation && $invitation->status == 'accepted';
+
+                    return [
+                        'id' => $collaboration->id,
+                        'title' => $collaboration->title,
+                        'start' => $collaboration->start_time,
+                        'end' => $collaboration->end_time,
+                        'description' => $collaboration->description,
+                        'meeting_link' => ($isCreator || $hasAccepted) ? $collaboration->meeting_link : null,
+                        'is_creator' => $isCreator,
+                        'has_accepted' => $hasAccepted,
+                        'is_zoom' => $collaboration->is_zoom,
+                        'created_by' => $collaboration->user->full_name ?? 'N/A',
+                    ];
+                });
+            return response()->json($collaborations);
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    /**
      * Send invitations to all users who have "Manage Private Collaboration" permission
      */
     protected function sendInvitationsToEligibleUsers($collaboration)

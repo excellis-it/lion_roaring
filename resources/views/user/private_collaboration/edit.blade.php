@@ -93,6 +93,11 @@
                 },
             });
 
+            // Define WebSocket connection
+            let ip_address = "{{ env('IP_ADDRESS') }}";
+            let socket_port = '3000';
+            let socket = io(ip_address + ':' + socket_port);
+
             $('#updateCollaboration').on('submit', function(e) {
                 e.preventDefault();
                 let form = $(this);
@@ -110,6 +115,12 @@
                             toastr.success(response.message);
                             $('#loading').removeClass('loading');
                             $('#loading-content').removeClass('loading-content');
+
+                            // Emit WebSocket event
+                            socket.emit('collaboration_updated', {
+                                id: response.id
+                            });
+
                             window.location.href =
                             "{{ route('private-collaborations.index') }}";
                         } else {

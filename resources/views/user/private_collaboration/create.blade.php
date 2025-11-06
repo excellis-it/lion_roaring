@@ -106,6 +106,11 @@
                 },
             });
 
+            // Define WebSocket connection
+            let ip_address = "{{ env('IP_ADDRESS') }}";
+            let socket_port = '3000';
+            let socket = io(ip_address + ':' + socket_port);
+
             // Toggle Zoom creation vs external link
             function syncZoomToggle() {
                 const useZoom = $('#link_source').val() === 'zoom';
@@ -137,6 +142,12 @@
                             $('#createCollaboration')[0].reset();
                             $('#loading').removeClass('loading');
                             $('#loading-content').removeClass('loading-content');
+
+                            // Emit WebSocket event
+                            socket.emit('collaboration_created', {
+                                collaboration: response.collaboration
+                            });
+
                             window.location.href =
                             "{{ route('private-collaborations.index') }}";
                         } else {
