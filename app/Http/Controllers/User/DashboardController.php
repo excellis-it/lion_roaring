@@ -175,6 +175,8 @@ class DashboardController extends Controller
         } elseif ($type == 'Order') {
             $order_id = $notification->chat_id;
             return redirect()->route('user.store-orders.details', $order_id);
+        } elseif ($type == 'collaboration') {
+            return redirect()->route('private-collaborations.index');
         }
 
 

@@ -59,6 +59,7 @@ use App\Http\Controllers\User\JobpostingController;
 use App\Http\Controllers\User\LeadershipDevelopmentController;
 use App\Http\Controllers\User\LiveEventController;
 use App\Http\Controllers\User\MeetingSchedulingController;
+use App\Http\Controllers\User\PrivateCollaborationController;
 use App\Http\Controllers\User\NewsletterController as UserNewsletterController;
 use App\Http\Controllers\User\PartnerController;
 use App\Http\Controllers\User\ProductController;
@@ -506,6 +507,7 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         'ecclesias' => EcclesiaContorller::class,
         'jobs' => JobpostingController::class,
         'meetings' => MeetingSchedulingController::class,
+        'private-collaborations' => PrivateCollaborationController::class,
         'order-status' => OrderStatusController::class,
         'order-email-templates' => OrderEmailTemplateController::class,
         // 'meetings' => MeetingSchedulingController::class,
@@ -685,6 +687,15 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
 
     // NEW: Zoom signature endpoint for in-browser join
     Route::post('/meetings/zoom-signature', [MeetingSchedulingController::class, 'zoomSignature'])->name('meetings.zoom-signature');
+
+    // Private Collaboration routes
+    Route::prefix('private-collaborations')->group(function () {
+        Route::get('/collaboration-delete/{id}', [PrivateCollaborationController::class, 'destroy'])->name('private-collaborations.delete');
+        Route::post('/accept-invitation/{id}', [PrivateCollaborationController::class, 'acceptInvitation'])->name('private-collaborations.accept-invitation');
+    });
+    Route::get('/show-single-collaboration', [PrivateCollaborationController::class, 'showSingleCollaboration'])->name('private-collaborations.show-single-collaboration');
+    Route::get('/private-collaborations-fetch-data', [PrivateCollaborationController::class, 'fetchData'])->name('private-collaborations.fetch-data');
+    Route::post('/private-collaborations/zoom-signature', [PrivateCollaborationController::class, 'zoomSignature'])->name('private-collaborations.zoom-signature');
 
     Route::prefix('jobs')->group(function () {
         Route::get('/job-delete/{id}', [JobpostingController::class, 'delete'])->name('jobs.delete');

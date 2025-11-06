@@ -72,6 +72,7 @@
                                                 'Bulletin',
                                                 'Job Postings',
                                                 'Meeting Schedule',
+                                                'Private Collaboration',
                                                 'Event',
                                                 'Partners',
                                                 'Strategy',

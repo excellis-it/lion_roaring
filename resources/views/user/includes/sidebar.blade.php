@@ -190,6 +190,7 @@
                 @endif
                 @if (Gate::check('Manage Job Postings') ||
                         Gate::check('Manage Meeting Schedule') ||
+                        Gate::check('Manage Private Collaboration') ||
                         Gate::check('Manage Event') ||
                         Gate::check('Manage Bulletin'))
                     <li class="sidebar-item">
@@ -201,7 +202,7 @@
                             <span class="hide-menu">Bulletins</span>
                         </a>
                         {{-- Collapse content --}}
-                        <div class="collapse {{ Request::is('user/bulletins*') || Request::is('user/view-calender*') || Request::is('user/jobs*') || Request::is('user/meetings*') || Request::is('user/bulletin-board*') || Request::is('user/events*') ? 'show' : '' }}"
+                        <div class="collapse {{ Request::is('user/bulletins*') || Request::is('user/view-calender*') || Request::is('user/jobs*') || Request::is('user/meetings*') || Request::is('user/private-collaborations*') || Request::is('user/bulletin-board*') || Request::is('user/events*') ? 'show' : '' }}"
                             id="collapseExample4">
                             <div class="menu_bb">
                                 @if (Gate::check('Manage Bulletin'))
@@ -241,6 +242,15 @@
                                         <span>Meeting Schedule</span>
                                     </a>
                                 @endif
+                                @if (Gate::check('Manage Private Collaboration'))
+                                    <a href="{{ route('private-collaborations.index') }}">
+                                        <span>
+                                            <img src="{{ asset('user_assets/images/ICON/Bulletin/Meeting_Schedule.svg') }}"
+                                                alt="">
+                                        </span>
+                                        <span>Private Collaboration</span>
+                                    </a>
+                                @endif
                                 {{-- <a href="{{ route('user.page', ['name' => 'Communities of interest', 'permission' => 'Manage Bulletin']) }}">
                                 <span>
                                     <img src="{{ asset('user_assets/images/Communities of interest.png') }}" alt="">
@@ -277,7 +287,9 @@
                         Gate::check('Manage Estore Products') ||
                         Gate::check('Manage Estore Settings') ||
                         Gate::check('Manage Estore Warehouse') ||
-                        Gate::check('Manage Estore Orders') ||   Gate::check('Manage Order Status') ||    Gate::check('Manage Email Template'))
+                        Gate::check('Manage Estore Orders') ||
+                        Gate::check('Manage Order Status') ||
+                        Gate::check('Manage Email Template'))
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="#" aria-expanded="false" data-bs-toggle="collapse"
                             data-bs-target="#collapseExample10">
