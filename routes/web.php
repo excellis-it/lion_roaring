@@ -120,7 +120,11 @@ Route::get('dbmigrate', function () {
     return "Migration has been successfully";
 });
 
-
+// db seed
+Route::get('dbseed', function () {
+    Artisan::call('db:seed AddPrivateCollaborationPermission');
+    return "Database seeding has been successfully";
+});
 
 Route::get('/admin', [AuthController::class, 'redirectAdminLogin']);
 Route::get('/admin/login', [AuthController::class, 'login'])->name('admin.login');

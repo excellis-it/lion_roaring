@@ -262,7 +262,7 @@
                                 @if (Gate::check('Manage Private Collaboration'))
                                     <a href="{{ route('private-collaborations.index') }}">
                                         <span>
-                                            <img src="{{ asset('user_assets/images/ICON/Bulletin/Meeting_Schedule.svg') }}"
+                                            <img src="{{ asset('user_assets/images/ICON/Bulletin/lecture.svg') }}"
                                                 alt="">
                                         </span>
                                         <span>Private Collaboration</span>
