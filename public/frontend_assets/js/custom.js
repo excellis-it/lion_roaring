@@ -51,7 +51,7 @@ $(".slid_bh").slick({
     autoplay: true,
     infinite: false,
     speed: 300,
-    slidesToShow: 3,
+    slidesToShow: 4,
     slidesToScroll: 1,
     prevArrow:
         '<div class="slick-nav prev-arrow"><i class="fa fa-arrow-left"></i></div>',
@@ -87,13 +87,14 @@ $(".slid_bh").slick({
 });
 
 $(".testimonial_slider").slick({
-    dots: true,
+    dots: false,
     arrows: true,
     autoplay: false,
     infinite: true,
     speed: 500,
-    slidesToShow: 2,
-    slidesToScroll: 2,
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    centerMode: true,
     prevArrow:
         '<div class="slick-nav prev-arrow"><i class="fa fa-arrow-left"></i></div>',
     nextArrow:
