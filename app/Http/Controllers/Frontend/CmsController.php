@@ -46,7 +46,7 @@ class CmsController extends Controller
         $galleries = Helper::getVisitorCmsContent('Gallery', false, true, 'id', 'desc', null);
         $testimonials = Helper::getVisitorCmsContent('Testimonial', false, true, 'id', 'desc', null);
         $our_organizations = Helper::getVisitorCmsContent('OurOrganization', false, true, 'id', 'desc', null);
-        $our_governances = Helper::getVisitorCmsContent('OurGovernance', false, true, 'id', 'desc', null);
+        $our_governances = Helper::getVisitorCmsContent('OurGovernance', false, true, 'id', 'asc', null);
 
         return view('frontend.home')->with(compact('galleries', 'testimonials', 'our_organizations', 'our_governances', 'home'));
     }

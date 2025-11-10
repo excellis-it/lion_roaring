@@ -108,7 +108,7 @@
     </div>
     <div class="copy_1">
         <div class="container-fluid">
-            <div class="row">
+            <div class="row align-items-center">
                 <div class="col-md-4">
                     <div class="quick_links_ul">
                         <ul class="menu" style="white-space: nowrap">
