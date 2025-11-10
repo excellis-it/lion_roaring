@@ -109,7 +109,7 @@
     <div class="copy_1">
         <div class="container-fluid">
             <div class="row align-items-center">
-                <div class="col-md-4">
+                <div class="col-md-12 col-xxl-4">
                     <div class="quick_links_ul">
                         <ul class="menu" style="white-space: nowrap">
                             <li class="active">
@@ -133,11 +133,11 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-12 col-xxl-6">
                     <p>{!! Helper::getFooter()['footer_copywrite_text'] ??
                         'Copyright © ' . date('Y') . ' Daud Santosa. All Rights Reserved' !!}</p>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3 col-xl-2 col-xxl-2">
                     {{-- <span class="badge bg-dark"> <i class="fa fa-globe"></i>
                         {{ Helper::getVisitorCountryName() }}</span> --}}
 

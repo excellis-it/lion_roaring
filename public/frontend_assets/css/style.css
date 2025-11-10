@@ -981,7 +981,8 @@ p {
     padding: 100px 0;
     position: relative;
 }
-.real_solution_sec h4 a{
+
+.real_solution_sec h4 a {
     font-size: 40px;
     color: #000;
 }
@@ -1170,10 +1171,11 @@ p {
     transform: rotate(10deg);
     position: relative;
 } */
-.card-4{
+.card-4 {
     position: sticky;
-    top:100px
+    top: 100px
 }
+
 .card-img-top {
     border-radius: 16px;
     transition: all ease-in 0.3s;
@@ -1311,7 +1313,7 @@ p {
 }
 
 .testimonial_sec {
-    background: #000;
+    background: #643271;
     padding: 100px 0;
     position: relative;
     border-radius: 30px;
@@ -2177,7 +2179,7 @@ li.slick-active button {
     margin-top: 50px;
 }
 
-.about_four_ii{
+.about_four_ii {
     width: 100%;
     border: 1px solid #d7d7d7;
     background: #ffffff;
@@ -3256,122 +3258,146 @@ li.slick-active button {
 
 
 .page {
-  width: 30vw;
-  height: 44vw;
-  background-color: #111111;
-  float: left;
-  margin-bottom: 0.5em;
-  background: left top no-repeat;
-  background-size: cover;
+    width: 30vw;
+    height: 44vw;
+    background-color: #111111;
+    float: left;
+    margin-bottom: 0.5em;
+    background: left top no-repeat;
+    background-size: cover;
 }
+
 .page:nth-child(even) {
-  clear: both;
+    clear: both;
 }
+
 .book {
-  perspective: 250vw;
+    perspective: 250vw;
 }
+
 .book .pages {
-  width: 76vw;
-  height: 44vw;
-  position: relative;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  border-radius: 4px;
-  /*box-shadow: 0 0 0 1px #e3dfd8;*/
+    width: 76vw;
+    height: 44vw;
+    position: relative;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    border-radius: 4px;
+    /*box-shadow: 0 0 0 1px #e3dfd8;*/
 }
-.page_logo{
+
+.page_logo {
     width: 350px;
     margin: 30px auto 50px;
 }
-.book .page.first_page{
+
+.book .page.first_page {
     padding: 20px 40px;
 }
+
 .book .page {
-  float: none;
-  clear: none;
-  margin: 0;
-  position: absolute;
-  top: 0;
-  width: 38vw;
-  height: 44vw;
-  transform-origin: 0 0;
-  transition: transform 1.4s;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-  cursor: pointer;
-  user-select: none;
-  background-color: #f0f0f0;
-  padding: 20px;
-  overflow: hidden;
-}
-.book .page img{
-    max-width: 300px;
-    margin-bottom: 20px;
-}
-.book .page:before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0);
-  transition: background 0.7s;
-  z-index: 2;
-}
-.book .page:nth-child(odd) {
-  pointer-events: all;
-  transform: rotateY(0deg);
-  right: 0;
-  border-radius: 0 4px 4px 0;
-  background-image: linear-gradient(to right, rgb(217 139 28 / 37%) 0%, rgb(100 50 113 / 11%) 10%);
-}
-.book .page:nth-child(odd):hover {
-  transform: rotateY(-15deg);
-}
-.book .page:nth-child(odd):hover:before {
-  background: rgba(0, 0, 0, 0.03);
-}
-.book .page:nth-child(odd):before {
-  background: rgba(0, 0, 0, 0);
-}
-.book .page:nth-child(even) {
-  pointer-events: none;
-  transform: rotateY(180deg);
-  transform-origin: 100% 0;
-  left: 0;
-  border-radius: 4px 0 0 4px;
-  border-color: black;
-  background-image: linear-gradient(to left, rgb(217 139 28 / 37%) 0%, rgb(100 50 113 / 11%) 10%);
-}
-.book .page:nth-child(even):before {
-  background: rgba(0, 0, 0, 0.2);
-}
-.book .page.grabbing {
-  transition: none;
-}
-.book .page.flipped:nth-child(odd) {
-  pointer-events: none;
-  transform: rotateY(-180deg);
-}
-.book .page.flipped:nth-child(odd):before {
-  background: rgba(0, 0, 0, 0.2);
-}
-.book .page.flipped:nth-child(even) {
-  pointer-events: all;
-  transform: rotateY(0deg);
-}
-.book .page.flipped:nth-child(even):hover {
-  transform: rotateY(15deg);
-}
-.book .page.flipped:nth-child(even):hover:before {
-  background: rgba(0, 0, 0, 0.03);
-}
-.book .page.flipped:nth-child(even):before {
-  background: rgba(0, 0, 0, 0);
+    float: none;
+    clear: none;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    width: 38vw;
+    height: 44vw;
+    transform-origin: 0 0;
+    transition: transform 1.4s;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    cursor: pointer;
+    user-select: none;
+    background-color: #f0f0f0;
+    padding: 20px;
+    overflow: hidden;
 }
 
-.design_page{
+.book .page img {
+    max-width: 300px;
+    margin-bottom: 20px;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.book .page:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0);
+    transition: background 0.7s;
+    z-index: 2;
+}
+
+.book .page:nth-child(odd) {
+    pointer-events: all;
+    transform: rotateY(0deg);
+    right: 0;
+    border-radius: 0 4px 4px 0;
+    background-image: linear-gradient(to right, rgb(217 139 28 / 37%) 0%, rgb(100 50 113 / 11%) 10%);
+}
+
+.book .page:nth-child(odd):hover {
+    transform: rotateY(-15deg);
+}
+
+.book .page:nth-child(odd):hover:before {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.book .page:nth-child(odd):before {
+    background: rgba(0, 0, 0, 0);
+}
+
+.book .page:nth-child(even) {
+    pointer-events: none;
+    transform: rotateY(180deg);
+    transform-origin: 100% 0;
+    left: 0;
+    border-radius: 4px 0 0 4px;
+    border-color: black;
+    background-image: linear-gradient(to left, rgb(217 139 28 / 37%) 0%, rgb(100 50 113 / 11%) 10%);
+}
+
+.book .page:nth-child(even):before {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.book .page.grabbing {
+    transition: none;
+}
+
+.book .page.flipped:nth-child(odd) {
+    pointer-events: none;
+    transform: rotateY(-180deg);
+}
+
+.book .page.flipped:nth-child(odd):before {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.book .page.flipped:nth-child(even) {
+    pointer-events: all;
+    transform: rotateY(0deg);
+}
+
+.book .page.flipped:nth-child(even):hover {
+    transform: rotateY(15deg);
+}
+
+.book .page.flipped:nth-child(even):hover:before {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.book .page.flipped:nth-child(even):before {
+    background: rgba(0, 0, 0, 0);
+}
+
+.design_page {
     position: absolute;
     bottom: 0;
     background: #643271;
@@ -3379,7 +3405,8 @@ li.slick-active button {
     height: 20px;
     left: 0;
 }
-.design_page_right{
+
+.design_page_right {
     position: absolute;
     bottom: 0;
     background: #d98b1c;
@@ -3391,3 +3418,123 @@ li.slick-active button {
 
 
 
+.promo-box-container {
+    position: relative;
+    margin: auto;
+    display: block;
+    margin-top: 3%;
+    max-width: 1000px;
+    width: 100%;
+    min-height: 225px;
+    background: linear-gradient(rgb(217 139 28), rgb(217 139 28)), url(https://placeimg.com/940/300/any) no-repeat 100%;
+    z-index: 1;
+    -webkit-box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.2);
+    border-radius: 21px;
+    overflow: hidden;
+}
+
+.promo-box-container .right-triangle {
+    position: absolute;
+    bottom: 0%;
+    right: 0%;
+    height: 100%;
+    width: 50%;
+    background: linear-gradient(rgb(100 50 113), rgb(100 50 113)), url(https://placeimg.com/940/300/any) no-repeat 100%;
+    -webkit-clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+    clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+}
+
+.promo-box-container .linkspanner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.promo-box-container .title {
+    font-family: 'Roboto', sans-serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: #000;
+    line-height: 40px;
+    position: absolute;
+    top: 50%;
+    left: 36%;
+    margin-right: 8%;
+    margin-top: 0;
+    transform: translate(-50%, -50%);
+    z-index: 99;
+}
+
+.promo-box-container .title a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.promo-box-container .title span.lighter {
+    font-weight: 300;
+}
+
+.promo-box-container .cta-button {
+    background: rgba(241, 143, 1, 1);
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    float: right;
+    text-decoration: none;
+    font-weight: 600;
+    z-index: 99;
+    -o-transition: color 0.5s, background-color 0.5s;
+    -ms-transition: color 0.5s, background-color 0.5s;
+    -moz-transition: color 0.5s, background-color 0.5s;
+    -webkit-transition: color 0.5s, background-color 0.5s;
+    transition: color 0.5s, background-color 0.5s;
+}
+
+.promo-box-container .cta-button:hover {
+    color: #000;
+    background-color: #F3A32F;
+}
+
+@media all and (max-width: 600px) {
+    .promo-box-container {
+        position: relative;
+        margin: auto;
+        display: block;
+        margin-top: 1.6rem;
+        margin-bottom: 1.6rem;
+        width: 300px;
+        height: 200px;
+        z-index: 1;
+        color: #000;
+        background: linear-gradient(rgba(241, 143, 1, 0.9), rgba(241, 143, 1, 0.9)),
+            url("https://placeimg.com/300/300/any") no-repeat 90%;
+    }
+
+    .promo-box-container .title {
+        font-size: 24px;
+        line-height: 28px;
+    }
+
+    .promo-box-container .title span.lighter {
+        font-size: 19px;
+        display: block;
+        line-height: 24px;
+        margin-top: 10px;
+    }
+
+    .promo-box-container .cta-button {
+        font-size: 12px;
+        top: auto;
+    }
+
+    .promo-box-container .right-triangle {
+        width: 39%;
+        background: linear-gradient(rgba(128, 0, 128, 0.6), rgba(128, 0, 128, 0.6)),
+            url("https://placeimg.com/300/300/any") no-repeat 90%;
+    }
+}

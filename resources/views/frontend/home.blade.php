@@ -72,7 +72,7 @@
     <section class="about_sec">
         <div class="container">
             <div class="row align-items-center justify-content-center">
-                <div class="col-xl-5 col-lg-6 mb-4" data-aos="fade-up" data-aos-duration="1000">
+                <div class="col-xxl-5 col-lg-6 mb-4" data-aos="fade-up" data-aos-duration="1000">
                     <div class="four_image">
                         <div class="row align-items-center justify-content-center">
                             <div class="col-xl-5 col-lg-6 mb-4" data-aos="fade-right" data-aos-duration="800">
@@ -86,7 +86,7 @@
                         </div>
                     </div>                       
                 </div>
-                <div class="col-xl-5 col-lg-6" data-aos="fade-up" data-aos-duration="1000">
+                <div class="col-xxl-5 col-lg-6" data-aos="fade-up" data-aos-duration="1000">
                     <div class="about_text heading_hp">
                         <h6>{{ $home['section_1_title'] ?? 'title' }}</h6>
                         <h2 class="text-start"> {{ $home['section_1_sub_title'] ?? 'title' }}</h2>
@@ -156,7 +156,11 @@
         </div>
     </section>
    
-
+    <div class="promo-box-container">
+        <p class="title"><a href="#" target="_blank" rel="noopener">Want to create an impact? <span class="lighter">Gift/Seed to help us grow!!!</span></a></p>
+        <p><a class="cta-button red_btn" href="#" target="_blank" rel="noopener"> <span>Gift/Seed</span></a></p>
+        <div class="right-triangle"> </div>
+    </div>
     @if (count($our_organizations) > 0)
         <section class="real_solution_sec">
             <div class="container">
@@ -217,7 +221,6 @@
             <div class="tp-testimonial-area tp-testimonial-bg position-relative">
                 <div class="tp-testimonial-global">
                     <img alt="" class="global-img" style="color:transparent" src="{{ asset('frontend_assets/images/global.png') }}">
-                    <img alt="" class="overlay-img" style="color:transparent" src="{{ asset('frontend_assets/images/overlay.png') }}">
                 </div>
             </div>
             

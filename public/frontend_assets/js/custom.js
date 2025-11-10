@@ -101,6 +101,15 @@ $(".testimonial_slider").slick({
         '<div class="slick-nav next-arrow"><i class="fa fa-arrow-right"></i></div>',
     responsive: [
         {
+            breakpoint: 1440,
+            settings: {
+                slidesToShow: 4,
+                slidesToScroll: 1,
+                infinite: true,
+                dots: false,
+            },
+        },
+        {
             breakpoint: 1025,
             settings: {
                 slidesToShow: 2,
