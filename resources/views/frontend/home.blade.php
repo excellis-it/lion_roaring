@@ -48,14 +48,14 @@
                     <div class="slide__img">
                         <video autoplay="" muted="" loop="" class="video_part" playsInline>
                             <source
-                                src="{{ isset($home['banner_video']) ? Storage::url($home['banner_video']) : 'https://via.placeholder.com/150' }}"
+                                src="{{ isset($home['section_1_video']) ? Storage::url($home['section_1_video']) : 'https://via.placeholder.com/150' }}"
                                 type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                         <!-- <img src="" alt="" class="full-image d-block d-md-none" /> -->
                         <!-- <img src="{{ isset($home['banner_image']) ? Storage::url($home['banner_image']) : 'https://via.placeholder.com/150' }}"
                             class="full-image overlay-image"> -->
-                        <img src="{{asset('frontend_assets/images/banner_img.png')}}" class="full-image overlay-image">
+                        <!-- <img src="{{asset('frontend_assets/images/banner_img.png')}}" class="full-image overlay-image"> -->
                     </div>
                 </a>
                 <div class="slide__content slide__content__left">
@@ -77,7 +77,7 @@
                         <h6>{{ $home['section_1_title'] ?? 'title' }}</h6>
                         <h2 class="text-start"> {{ $home['section_1_sub_title'] ?? 'title' }}</h2>
                         </div>
-                    <div class="img_part">
+                    <!-- <div class="img_part">
                         <div class="img1">
                             <video autoplay muted loop style="width: 100%; height: 100%;">
                                 <source
@@ -85,7 +85,7 @@
                                     type="video/mp4">
                             </video>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="col-xl-5 col-lg-6" data-aos="fade-up" data-aos-duration="1000">
                     <div class="about_text heading_hp text_white">
@@ -99,15 +99,15 @@
             </div>
         </div>
     </section>
-    <!-- <section class="after_about after_about_hm">
+    <section class="after_about after_about_hm">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-xl-8">
+                <div class="col-xl-12">
                     <div class="abt-box-1">
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="after_abt first_abt first_abt_1">
-                                    <div class="row align-items-center justify-content-center flex-column">
+                                    <div class="row align-items-center justify-content-center">
                                         <div class="col-md-4">
                                             <div class="img_abt flex-fixed">
                                                 <img src="{{ isset($home['section_2_left_image']) ? Storage::url($home['section_2_left_image']) : 'https://via.placeholder.com/150' }}"
@@ -130,7 +130,7 @@
 
                             <div class="col-lg-6">
                                 <div class="after_abt">
-                                    <div class="row align-items-center justify-content-center flex-column">
+                                    <div class="row align-items-center justify-content-center">
                                         <div class="col-md-4">
                                             <div class="img_abt flex-fixed">
                                                 <img src="{{ isset($home['section_2_right_image']) ? Storage::url($home['section_2_right_image']) : 'https://via.placeholder.com/150' }}"
@@ -157,15 +157,15 @@
                 </div>
             </div>
         </div>
-    </section> -->
+    </section>
     @if (count($our_governances) > 0)
         <section class="key_feature_sec">
             <div class="container">
                 <div class="row align-items-center justify-content-center mb-5">
-                    <div class="col-lg-12">
+                    <div class="col-lg-7">
                         <div class="about_text heading_hp text-center">
                             <h2>{{ $home['section_3_title'] ?? 'title' }}</h2>
-                            <h6> {!! $home['section_3_description'] ?? 'descripiton' !!} </h6>
+                            <p> {!! $home['section_3_description'] ?? 'descripiton' !!} </p>
                         </div>
                     </div>
                 </div>

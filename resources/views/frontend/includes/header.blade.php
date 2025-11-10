@@ -5,10 +5,17 @@
                 <div class="left_top">
                     <div class="logo">
                         <a href="{{ route('home') }}" class="">
+                            <img src="{{ isset($settings['logo']) ? Storage::url($settings['logo']) : asset('frontend_assets/images/logo.png') }}"
+                                alt="Logo" class="img-fluid">
                         </a>
                     </div>
                 </div>
-                <div class="right_top d-flex align-items-center">
+                <div class="button_container" id="toggle">
+                    <span class="top"></span>
+                    <span class="middle"></span>
+                    <span class="bottom"></span>
+                </div>
+                <div class="right_top d-flex align-items-center justify-content-end">
                     <div class="menu-wrepper d-flex">
                         <div class="right_btm">
                             <div class="overlay" id="overlay">
@@ -68,23 +75,20 @@
                                     href="{{ route('login') }}"><span><i class="fa-solid fa-user"></i></span> Sign-In/New Member</a>
                             @endif
                         </div>
-                        <div class="login_prf">
-                            <a href="javascript:void(0);" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal1"><span><i
-                                        class="fa-solid fa-hand-holding-medical"></i></span> Gift/Seed</a>
-                        </div>
+                        
                         {{-- <div class="login_prf e-store-btn">
                             <a href="{{ route('e-store') }}"><span><i class="fa-solid fa-store"></i></span> E-Store</a>
                         </div> --}}
 
-                        <div class="button_container" id="toggle">
-                            <span class="top"></span>
-                            <span class="middle"></span>
-                            <span class="bottom"></span>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+<div class="login_prf">
+    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModal1">
+        <span><i class="fa-solid fa-hand-holding-medical"></i></span> Gift/Seed
+    </a>
 </div>

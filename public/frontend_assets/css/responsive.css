@@ -5,9 +5,9 @@
     --text-color: #1E1E1E;
     --white-color:#fff;
     --black-color:#000;
-    --main-font: 'EB Garamond', serif;
-  --heading-font: 'EB Garamond', serif;
-  --button-font: 'EB Garamond', serif;
+    --main-font: "Figtree", sans-serif;
+    --heading-font: "Figtree", sans-serif;
+    --button-font: "Figtree", sans-serif;
 }
 
 @media (min-width:1450px){
