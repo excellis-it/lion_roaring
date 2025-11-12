@@ -28,6 +28,7 @@ class UserActivityLogger
                 || $request->is('user/notifications-count')
                 || $request->is('get-states')
                 || $request->is('user/get-user-activity/*')
+                || $request->is('user/roles/*')
             ) {
                 return $response;
             }
