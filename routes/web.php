@@ -94,6 +94,7 @@ use App\Helpers\Helper;
 use App\Models\Country;
 use Illuminate\Support\Str;
 use App\Http\Controllers\VisitorController;
+use App\Http\Controllers\User\UserActivityController;
 
 
 
@@ -114,17 +115,17 @@ Route::get('clear', function () {
     return "Optimize clear has been successfully";
 });
 
-// make migration
-Route::get('dbmigrate', function () {
-    Artisan::call('migrate');
-    return "Migration has been successfully";
-});
+// // make migration
+// Route::get('dbmigrate', function () {
+//     Artisan::call('migrate');
+//     return "Migration has been successfully";
+// });
 
-// db seed
-Route::get('dbseed', function () {
-    Artisan::call('db:seed AddPrivateCollaborationPermission');
-    return "Database seeding has been successfully";
-});
+// // db seed
+// Route::get('dbseed', function () {
+//     Artisan::call('db:seed UserActivityPermissionSeeder');
+//     return "Database seeding has been successfully";
+// });
 
 Route::get('/admin', [AuthController::class, 'redirectAdminLogin']);
 Route::get('/admin/login', [AuthController::class, 'login'])->name('admin.login');
@@ -284,95 +285,97 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     });
 });
 
-/*************************************************************** Frontend ************************************************************************/
-Route::get('/', [CmsController::class, 'index'])->name('home');
+Route::middleware(['userActivity'])->group(function () {
+    /*************************************************************** Frontend ************************************************************************/
+    Route::get('/', [CmsController::class, 'index'])->name('home');
 
-// Country code pattern (e.g., us|in|gb)
-$__countryCodes = Country::pluck('code')
-    ->map(fn($c) => strtolower(trim($c)))
-    ->unique()
-    ->filter()
-    ->values()
-    ->all();
-$__ccPattern = $__countryCodes ? implode('|', array_map(fn($s) => preg_quote($s, '/'), $__countryCodes)) : 'a^';
+    // Country code pattern (e.g., us|in|gb)
+    $__countryCodes = Country::pluck('code')
+        ->map(fn($c) => strtolower(trim($c)))
+        ->unique()
+        ->filter()
+        ->values()
+        ->all();
+    $__ccPattern = $__countryCodes ? implode('|', array_map(fn($s) => preg_quote($s, '/'), $__countryCodes)) : 'a^';
 
-// Redirect "/" to "/{cc}"
-// Route::get('/', function () {
-//     $cc = strtolower(Helper::getVisitorCountryCode()); // e.g., "US" -> "us"
-//     return $cc ? redirect('/' . $cc, 302) : app(CmsController::class)->index();
-// })->name('home');
+    // Redirect "/" to "/{cc}"
+    // Route::get('/', function () {
+    //     $cc = strtolower(Helper::getVisitorCountryCode()); // e.g., "US" -> "us"
+    //     return $cc ? redirect('/' . $cc, 302) : app(CmsController::class)->index();
+    // })->name('home');
 
-// Country-code masked home (won't affect other routes due to tight constraint)
-Route::get('/{cc}', function (string $cc) {
-    $row = Country::whereRaw('LOWER(code) = ?', [strtolower($cc)])->first();
-    if ($row) {
-        $ip = request()->ip();
-        session([
-            'visitor_country_code_' . $ip => strtoupper($row->code),
-            'visitor_country_name_' . $ip => $row->name,
-        ]);
-    }
-    return app(CmsController::class)->index();
-})->where('cc', $__ccPattern)->name('home.country');
+    // Country-code masked home (won't affect other routes due to tight constraint)
+    Route::get('/{cc}', function (string $cc) {
+        $row = Country::whereRaw('LOWER(code) = ?', [strtolower($cc)])->first();
+        if ($row) {
+            $ip = request()->ip();
+            session([
+                'visitor_country_code_' . $ip => strtoupper($row->code),
+                'visitor_country_name_' . $ip => $row->name,
+            ]);
+        }
+        return app(CmsController::class)->index();
+    })->where('cc', $__ccPattern)->name('home.country');
 
 
-Route::get('/gallery', [CmsController::class, 'gallery'])->name('gallery');
-Route::get('/faq', [CmsController::class, 'faq'])->name('faq');
-Route::get('/contact-us', [CmsController::class, 'contactUs'])->name('contact-us');
-Route::get('/account-delete-request', [CmsController::class, 'accountDeleteRequest'])->name('account-delete-request');
-Route::get('/principle-and-business', [CmsController::class, 'principleAndBusiness'])->name('principle-and-business');
-Route::get('/ecclesia-covenant', [CmsController::class, 'ecclesiaAssociations'])->name('ecclesia-associations');
-Route::get('/organization', [CmsController::class, 'organization'])->name('organization');
-Route::get('/service/{slug}', [CmsController::class, 'service'])->name('service');
-Route::get('/our-organization/{slug}', [CmsController::class, 'ourOrganization'])->name('our-organization');
-Route::get('/features/{slug}', [CmsController::class, 'features'])->name('features');
-// our_governance
-Route::get('/our-governance/{slug}', [CmsController::class, 'ourGovernance'])->name('our-governance');
-Route::get('/about-us', [CmsController::class, 'aboutUs'])->name('about-us');
-Route::get('/details', [CmsController::class, 'details'])->name('details');
+    Route::get('/gallery', [CmsController::class, 'gallery'])->name('gallery');
+    Route::get('/faq', [CmsController::class, 'faq'])->name('faq');
+    Route::get('/contact-us', [CmsController::class, 'contactUs'])->name('contact-us');
+    Route::get('/account-delete-request', [CmsController::class, 'accountDeleteRequest'])->name('account-delete-request');
+    Route::get('/principle-and-business', [CmsController::class, 'principleAndBusiness'])->name('principle-and-business');
+    Route::get('/ecclesia-covenant', [CmsController::class, 'ecclesiaAssociations'])->name('ecclesia-associations');
+    Route::get('/organization', [CmsController::class, 'organization'])->name('organization');
+    Route::get('/service/{slug}', [CmsController::class, 'service'])->name('service');
+    Route::get('/our-organization/{slug}', [CmsController::class, 'ourOrganization'])->name('our-organization');
+    Route::get('/features/{slug}', [CmsController::class, 'features'])->name('features');
+    // our_governance
+    Route::get('/our-governance/{slug}', [CmsController::class, 'ourGovernance'])->name('our-governance');
+    Route::get('/about-us', [CmsController::class, 'aboutUs'])->name('about-us');
+    Route::get('/details', [CmsController::class, 'details'])->name('details');
 
-Route::post('/newsletter', [CmsController::class, 'newsletter'])->name('newsletter');
-Route::post('/contact-us', [CmsController::class, 'contactUsForm'])->name('contact-us.form');
-Route::Post('/session', [CmsController::class, 'session'])->name('session.store');
-Route::post('/donation', [DonationController::class, 'donation'])->name('donation');
-Route::get('/thankyou', [DonationController::class, 'thankyou'])->name('thankyou');
+    Route::post('/newsletter', [CmsController::class, 'newsletter'])->name('newsletter');
+    Route::post('/contact-us', [CmsController::class, 'contactUsForm'])->name('contact-us.form');
+    Route::Post('/session', [CmsController::class, 'session'])->name('session.store');
+    Route::post('/donation', [DonationController::class, 'donation'])->name('donation');
+    Route::get('/thankyou', [DonationController::class, 'thankyou'])->name('thankyou');
 
-// terms-and-conditions
-Route::get('/terms-and-conditions', [CmsController::class, 'terms'])->name('terms-and-conditions');
-// privacy-policy
-Route::get('/privacy-policy', [CmsController::class, 'privacy_policy'])->name('privacy-policy');
+    // terms-and-conditions
+    Route::get('/terms-and-conditions', [CmsController::class, 'terms'])->name('terms-and-conditions');
+    // privacy-policy
+    Route::get('/privacy-policy', [CmsController::class, 'privacy_policy'])->name('privacy-policy');
 
-/*********************************************************** USER ********************************************************************************************* */
-// login
-Route::get('/login', [UserAuthController::class, 'login'])->name('login');
-Route::post('/login-check', [UserAuthController::class, 'loginCheck'])->name('login.check');  //login check
+    /*********************************************************** USER ********************************************************************************************* */
+    // login
+    Route::get('/login', [UserAuthController::class, 'login'])->name('login');
+    Route::post('/login-check', [UserAuthController::class, 'loginCheck'])->name('login.check');  //login check
 
-// register
-Route::get('/register', [UserAuthController::class, 'register'])->name('register');
-Route::post('/register-check', [UserAuthController::class, 'registerCheck'])->name('register.check');  //register check
-Route::post('forget-password', [UserForgetPasswordController::class, 'forgetPassword'])->name('user.forget.password');
-Route::post('password-change', [UserForgetPasswordController::class, 'changePassword'])->name('user.password-change');
-Route::get('forget-password/show', [UserForgetPasswordController::class, 'forgetPasswordShow'])->name('user.forget.password.show');
-Route::get('reset-password/{id}/{token}', [UserForgetPasswordController::class, 'resetPassword'])->name('user.reset.password');
-// user.forget.username.show
-Route::get('forget-username/show', [UserForgetPasswordController::class, 'forgetUsernameShow'])->name('user.forget.username.show');
-Route::post('forget-username', [UserForgetPasswordController::class, 'forgetUsername'])->name('user.forget.username');
-// show confirmation email page
-Route::get('/confirmation-email/{id}', [UserForgetPasswordController::class, 'confirmationEmail'])->name('forget-username-confirmation');
-Route::get('reset-username/{id}/{token}', [UserForgetPasswordController::class, 'resetUsername'])->name('user.reset.username');
-// user.username-change
-Route::post('username-change', [UserForgetPasswordController::class, 'changeUsername'])->name('user.username-change');
+    // register
+    Route::get('/register', [UserAuthController::class, 'register'])->name('register');
+    Route::post('/register-check', [UserAuthController::class, 'registerCheck'])->name('register.check');  //register check
+    Route::post('forget-password', [UserForgetPasswordController::class, 'forgetPassword'])->name('user.forget.password');
+    Route::post('password-change', [UserForgetPasswordController::class, 'changePassword'])->name('user.password-change');
+    Route::get('forget-password/show', [UserForgetPasswordController::class, 'forgetPasswordShow'])->name('user.forget.password.show');
+    Route::get('reset-password/{id}/{token}', [UserForgetPasswordController::class, 'resetPassword'])->name('user.reset.password');
+    // user.forget.username.show
+    Route::get('forget-username/show', [UserForgetPasswordController::class, 'forgetUsernameShow'])->name('user.forget.username.show');
+    Route::post('forget-username', [UserForgetPasswordController::class, 'forgetUsername'])->name('user.forget.username');
+    // show confirmation email page
+    Route::get('/confirmation-email/{id}', [UserForgetPasswordController::class, 'confirmationEmail'])->name('forget-username-confirmation');
+    Route::get('reset-username/{id}/{token}', [UserForgetPasswordController::class, 'resetUsername'])->name('user.reset.username');
+    // user.username-change
+    Route::post('username-change', [UserForgetPasswordController::class, 'changeUsername'])->name('user.username-change');
 
-Route::get('/member-privacy-policy', [EstoreCmsController::class, 'memberPrivacyPolicy'])->name('member-privacy-policy');
+    Route::get('/member-privacy-policy', [EstoreCmsController::class, 'memberPrivacyPolicy'])->name('member-privacy-policy');
 
-// get.states
-Route::get('/get-states', [UserAuthController::class, 'getStates'])->name('get.states');
+    // get.states
+    Route::get('/get-states', [UserAuthController::class, 'getStates'])->name('get.states');
 
-Route::post('/send-otp', [EmailVerificationController::class, 'sendOtp'])->name('send.otp');
-Route::post('/verify-otp', [EmailVerificationController::class, 'verifyOtp'])->name('verify.otp');
-Route::post('/resend-otp', [EmailVerificationController::class, 'resendOtp'])->name('resend.otp');
+    Route::post('/send-otp', [EmailVerificationController::class, 'sendOtp'])->name('send.otp');
+    Route::post('/verify-otp', [EmailVerificationController::class, 'verifyOtp'])->name('verify.otp');
+    Route::post('/resend-otp', [EmailVerificationController::class, 'resendOtp'])->name('resend.otp');
+});
 
-Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(function () {
+Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity'])->group(function () {
     Route::get('/subscription', [SubscriptionController::class, 'subscription'])->name('user.subscription');
     Route::get('/subscription-payment/{id}', [SubscriptionController::class, 'payment'])->name('user.subscription.payment');
     Route::get('/stripe-checkout-success', [SubscriptionController::class, 'stripeCheckoutSuccess'])->name('stripe.checkout.success');
@@ -514,8 +517,16 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(functio
         'private-collaborations' => PrivateCollaborationController::class,
         'order-status' => OrderStatusController::class,
         'order-email-templates' => OrderEmailTemplateController::class,
+        'user-activity' => UserActivityController::class,
         // 'meetings' => MeetingSchedulingController::class,
     ]);
+
+    // User Activity AJAX routes
+
+    Route::get('/get-user-activity/get-activities', [UserActivityController::class, 'getActivities'])->name('user-activity-get-activities');
+    Route::get('/get-user-activity/by-country', [UserActivityController::class, 'getActivitiesByCountry'])->name('user-activity-by-country');
+    Route::get('/get-user-activity/by-user', [UserActivityController::class, 'getActivitiesByUser'])->name('user-activity-by-user');
+    Route::get('/get-user-activity/by-type', [UserActivityController::class, 'getActivitiesByType'])->name('user-activity-by-type');
 
     // e-store routes
     Route::prefix('products')->group(function () {

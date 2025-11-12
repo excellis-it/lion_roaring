@@ -51,7 +51,7 @@ use App\Http\Controllers\Api\SizeController;
 //     return $request->user();
 // });
 
-Route::prefix('v3')->group(function () {
+Route::prefix('v3')->middleware(['userActivity'])->group(function () {
     Route::post('contact-us', [ContactUsController::class, 'store']);
 
     Route::prefix('e-store')->group(function () {
