@@ -70,10 +70,12 @@ class UserActivityController extends Controller
      */
     public function getActivities(Request $request)
     {
-        // return 'abc';
         if (!Auth::user()->can('Manage User Activity')) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
+
+        // Debug log to see what filters are received
+        Log::info('User Activity Filters Received:', $request->all());
 
         $query = UserActivity::query();
 
@@ -101,6 +103,9 @@ class UserActivityController extends Controller
         }
 
         $activities = $query->orderBy('id', 'desc')->paginate($request->get('per_page', 10));
+
+        // Debug log to see query results
+        Log::info('Activities Query Result Count:', ['count' => $activities->total()]);
 
         return response()->json($activities);
     }

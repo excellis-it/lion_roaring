@@ -22,20 +22,16 @@ class UserActivityLogger
                 return $response;
             }
 
-            // exclude some routes
+            // exclude some routes - FIXED: use wildcard pattern correctly
             if (
-                $request->is('user/unread-messages-count')
-                || $request->is('user/notifications-count')
-                || $request->is('get-states')
-                || $request->is('user/get-user-activity/*')
-                || $request->is('user/roles/*')
+                $request->is('user/unread-messages-count') ||
+                $request->is('user/notifications-count') ||
+                $request->is('get-states') ||
+                $request->is('user/get-user-activity/*') ||
+                $request->is('user/roles/*')
             ) {
                 return $response;
             }
-
-            // if ($request->ajax() || $request->wantsJson()) {
-            //     return $response;
-            // }
 
             // Skip non-GET requests (e.g. POST forms)
             if (!$request->isMethod('get')) {
