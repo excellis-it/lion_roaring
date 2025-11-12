@@ -49,6 +49,35 @@
             border-radius: 8px;
             margin-bottom: 20px;
         }
+
+        .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px;
+            gap: 10px;
+        }
+
+        .pagination-wrapper .btn {
+            padding: 5px 15px;
+        }
+
+        .stat-table-container {
+            max-height: 450px;
+            overflow-y: auto;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.3em;
+        }
     </style>
 @endpush
 @section('content')
@@ -70,63 +99,59 @@
                                     <div class="col-md-3">
                                         <div class="stats-card bg-white">
                                             <h4>Active Countries</h4>
-                                            <div class="number">{{ $stats['activities_by_country']->count() }}</div>
+                                            <div class="number">{{ $stats['activities_by_country_count'] }}</div>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="stats-card bg-white">
                                             <h4>Active Users</h4>
-                                            <div class="number">{{ $stats['activities_by_user']->count() }}</div>
+                                            <div class="number">{{ $stats['activities_by_user_count'] }}</div>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="stats-card bg-white">
                                             <h4>Activity Types</h4>
-                                            <div class="number">{{ $stats['activities_by_type']->count() }}</div>
+                                            <div class="number">{{ $stats['activities_by_type_count'] }}</div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Detailed Statistics -->
+                                <!-- Detailed Statistics with AJAX Pagination -->
                                 <div class="row mb-4">
                                     <div class="col-md-4">
                                         <div class="stats-card bg-white">
-                                            <h4>Top Countries by Activity</h4>
-                                            <div style="max-height: 250px; overflow-y: auto;">
-                                                @foreach ($stats['activities_by_country']->take(5) as $item)
-                                                    <div class="stat-item d-flex justify-content-between">
-                                                        <span class="label">{{ $item->country_name ?: 'Unknown' }}</span>
-                                                        <span class="count">{{ number_format($item->count) }}</span>
-                                                    </div>
-                                                @endforeach
+                                            <h4>Activities by Country</h4>
+                                            <div class="loading-spinner" id="country-loading">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
                                             </div>
+                                            <div class="stat-table-container" id="country-stats"></div>
+                                            <div class="pagination-wrapper" id="country-pagination"></div>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="stats-card bg-white">
-                                            <h4>Top Users by Activity</h4>
-                                            <div style="max-height: 250px; overflow-y: auto;">
-                                                @foreach ($stats['activities_by_user']->take(5) as $item)
-                                                    <div class="stat-item d-flex justify-content-between">
-                                                        <span class="label">{{ Str::limit($item->user_name, 20) }}</span>
-                                                        <span class="count">{{ number_format($item->count) }}</span>
-                                                    </div>
-                                                @endforeach
+                                            <h4>Activities by User</h4>
+                                            <div class="loading-spinner" id="user-loading">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
                                             </div>
+                                            <div class="stat-table-container" id="user-stats"></div>
+                                            <div class="pagination-wrapper" id="user-pagination"></div>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="stats-card bg-white">
-                                            <h4>Top Activity Types</h4>
-                                            <div style="max-height: 250px; overflow-y: auto;">
-                                                @foreach ($stats['activities_by_type']->take(5) as $item)
-                                                    <div class="stat-item d-flex justify-content-between">
-                                                        <span
-                                                            class="label">{{ Str::limit($item->activity_type, 20) }}</span>
-                                                        <span class="count">{{ number_format($item->count) }}</span>
-                                                    </div>
-                                                @endforeach
+                                            <h4>Activities by Type</h4>
+                                            <div class="loading-spinner" id="type-loading">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
                                             </div>
+                                            <div class="stat-table-container" id="type-stats"></div>
+                                            <div class="pagination-wrapper" id="type-pagination"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -134,7 +159,7 @@
                                 <!-- Filter Section -->
                                 <div class="filter-section">
                                     <h4 class="mb-3">Filter Activities</h4>
-                                    <form method="GET" action="{{ route('user-activity.index') }}">
+                                    <form id="filter-form">
                                         <div class="row">
                                             <div class="col-md-3 mb-2">
                                                 <label class="form-label">User Name</label>
@@ -193,33 +218,34 @@
                                                     value="{{ request('date_to') }}">
                                             </div>
                                             <div class="col-md-3 mb-2 d-flex align-items-end">
-                                                <button type="submit" class="btn btn-primary me-2">
+                                                <button type="button" id="apply-filter" class="btn btn-primary me-2">
                                                     <i class="ti ti-filter"></i> Filter
                                                 </button>
-                                                <a href="{{ route('user-activity.index') }}" class="btn btn-secondary">
+                                                <button type="button" id="reset-filter" class="btn btn-secondary">
                                                     <i class="ti ti-refresh"></i> Reset
-                                                </a>
+                                                </button>
                                             </div>
                                         </div>
                                     </form>
                                 </div>
 
-                                <div class="row mb-3">
-                                    <div class="col-md-10">
-                                    </div>
-                                    <div class="col-md-2 float-right">
-                                    </div>
-                                </div>
                                 <div class="row ">
                                     <div class="col-md-8">
                                         <h3 class="mb-3 float-left">Activity List</h3>
                                     </div>
                                 </div>
-                                <div class="table-responsive">
+
+                                <div class="loading-spinner" id="activity-loading">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive" id="activity-table-container">
                                     <table class="table align-middle bg-white color_body_text">
                                         <thead class="color_head">
                                             <tr>
-                                                <th></th>
+                                                <th>#</th>
                                                 <th>User Name</th>
                                                 <th>Email</th>
                                                 <th>User Role</th>
@@ -227,59 +253,19 @@
                                                 <th>IP</th>
                                                 <th>Country Code</th>
                                                 <th>Country Name</th>
-                                                {{-- <th>Device MAC</th> --}}
                                                 <th>Device Type</th>
                                                 <th>Browser</th>
                                                 <th>URL</th>
-                                                {{-- <th>Permission Access</th> --}}
                                                 <th>Activity Type</th>
-                                                {{-- <th>Activity Description</th> --}}
                                                 <th>Activity Date</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            @if ($activities)
-                                                @foreach ($activities as $key => $act)
-                                                    <tr>
-                                                        {{-- <td>{{ $act->user_id }}</td> --}}
-                                                        <td>{{ $activities->firstItem() + $key }}</td>
-                                                        <td>{{ $act->user_name }}</td>
-                                                        <td>{{ $act->email }}</td>
-                                                        <td>{{ $act->user_roles }}</td>
-                                                        <td>{{ $act->ecclesia_name }}</td>
-                                                        <td>{{ $act->ip }}</td>
-                                                        <td>{{ $act->country_code }}</td>
-                                                        <td>{{ $act->country_name }}</td>
-                                                        {{-- <td>{{ $act->device_mac }}</td> --}}
-                                                        <td>{{ $act->device_type }}</td>
-                                                        <td>{{ $act->browser }}</td>
-                                                        <td>{{ $act->url }}</td>
-                                                        {{-- <td>{{ $act->permission_access }}</td> --}}
-                                                        <td>{{ $act->activity_type }}</td>
-                                                        {{-- <td>{{ $act->activity_description }}</td> --}}
-                                                        <td>{{ $act->activity_date }}</td>
-                                                    </tr>
-                                                @endforeach
-                                                {{-- pagination --}}
-                                                <tr class="toxic">
-                                                    <td colspan="16">
-                                                        <div class="d-flex justify-content-center">
-                                                            {!! $activities->links() !!}
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @else
-                                                <tr class="toxic">
-                                                    <td colspan="16" class="text-center">No Data Found</td>
-                                                </tr>
-                                            @endif
-
-                                        </tbody>
+                                        <tbody id="activity-tbody"></tbody>
                                     </table>
                                 </div>
+                                <div class="pagination-wrapper" id="activity-pagination"></div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </form>
@@ -289,25 +275,195 @@
 
 @push('scripts')
     <script>
-        $(document).on('click', '#delete', function(e) {
-            swal({
-                    title: "Are you sure?",
-                    text: "To delete this activity.",
-                    type: "warning",
-                    confirmButtonText: "Yes",
-                    showCancelButton: true
-                })
-                .then((result) => {
-                    if (result.value) {
-                        window.location = $(this).data('route');
-                    } else if (result.dismiss === 'cancel') {
-                        swal(
-                            'Cancelled',
-                            'Your stay here :)',
-                            'error'
-                        )
+        $(document).ready(function() {
+            let currentPage = 1;
+            let currentFilters = {};
+
+            // Load statistics on page load
+            loadStatistics('country', 1);
+            loadStatistics('user', 1);
+            loadStatistics('type', 1);
+            loadActivities(1);
+
+            // Load statistics with AJAX pagination
+            function loadStatistics(type, page) {
+                const endpoints = {
+                    'country': '{{ route('user-activity-by-country') }}',
+                    'user': '{{ route('user-activity-by-user') }}',
+                    'type': '{{ route('user-activity-by-type') }}'
+                };
+
+                $(`#${type}-loading`).show();
+                $(`#${type}-stats`).hide();
+
+                $.ajax({
+                    url: endpoints[type],
+                    type: 'GET',
+                    data: {
+                        page: page,
+                        per_page: 10
+                    },
+                    success: function(response) {
+                        $(`#${type}-loading`).hide();
+                        $(`#${type}-stats`).show();
+                        renderStatistics(type, response);
+                        renderPagination(type, response);
+                    },
+                    error: function(xhr) {
+                        $(`#${type}-loading`).hide();
+                        $(`#${type}-stats`).show();
+                        console.error('Error loading statistics:', xhr);
                     }
-                })
+                });
+            }
+
+            // Render statistics data
+            function renderStatistics(type, response) {
+                let html = '';
+                response.data.forEach(item => {
+                    let label = type === 'country' ? (item.country_name || 'Unknown') :
+                        type === 'user' ? item.user_name :
+                        item.activity_type;
+
+                    html += `
+                        <div class="stat-item d-flex justify-content-between">
+                            <span class="label">${label.substring(0, 30)}</span>
+                            <span class="count">${parseInt(item.count).toLocaleString()}</span>
+                        </div>
+                    `;
+                });
+                $(`#${type}-stats`).html(html);
+            }
+
+            // Render pagination for statistics
+            function renderPagination(type, response) {
+                let html = '';
+                if (response.prev_page_url) {
+                    html +=
+                        `<button class="btn btn-sm btn-outline-primary stat-pagination-btn" data-type="${type}" data-page="${response.current_page - 1}">Previous</button>`;
+                }
+                html += `<span class="mx-2">Page ${response.current_page} of ${response.last_page}</span>`;
+                if (response.next_page_url) {
+                    html +=
+                        `<button class="btn btn-sm btn-outline-primary stat-pagination-btn" data-type="${type}" data-page="${response.current_page + 1}">Next</button>`;
+                }
+                $(`#${type}-pagination`).html(html);
+            }
+
+            // Handle statistics pagination button clicks
+            $(document).on('click', '.stat-pagination-btn', function(e) {
+                e.preventDefault();
+                const type = $(this).data('type');
+                const page = $(this).data('page');
+                loadStatistics(type, page);
+            });
+
+            // Load activities with AJAX pagination
+            function loadActivities(page) {
+                $('#activity-loading').show();
+                $('#activity-table-container').hide();
+
+                $.ajax({
+                    url: '{{ route('user-activity-get-activities') }}',
+                    type: 'GET',
+                    data: {
+                        ...currentFilters,
+                        page: page,
+                        per_page: 10
+                    },
+                    success: function(response) {
+                        $('#activity-loading').hide();
+                        $('#activity-table-container').show();
+                        renderActivities(response);
+                        renderActivityPagination(response);
+                        currentPage = page;
+                    },
+                    error: function(xhr) {
+                        $('#activity-loading').hide();
+                        $('#activity-table-container').show();
+                        console.error('Error loading activities:', xhr);
+                        alert('Error loading activities. Please try again.');
+                    }
+                });
+            }
+
+            // Render activities table
+            function renderActivities(response) {
+                let html = '';
+                if (response.data.length === 0) {
+                    html = '<tr><td colspan="13" class="text-center">No Data Found</td></tr>';
+                } else {
+                    response.data.forEach((activity, index) => {
+                        const rowNumber = (response.current_page - 1) * response.per_page + index + 1;
+                        html += `
+                            <tr>
+                                <td>${rowNumber}</td>
+                                <td>${activity.user_name || '-'}</td>
+                                <td>${activity.email || '-'}</td>
+                                <td>${activity.user_roles || '-'}</td>
+                                <td>${activity.ecclesia_name || '-'}</td>
+                                <td>${activity.ip || '-'}</td>
+                                <td>${activity.country_code || '-'}</td>
+                                <td>${activity.country_name || '-'}</td>
+                                <td>${activity.device_type || '-'}</td>
+                                <td>${activity.browser || '-'}</td>
+                                <td>${activity.url || '-'}</td>
+                                <td>${activity.activity_type || '-'}</td>
+                                <td>${activity.activity_date || '-'}</td>
+                            </tr>
+                        `;
+                    });
+                }
+                $('#activity-tbody').html(html);
+            }
+
+            // Render activity pagination
+            function renderActivityPagination(response) {
+                let html = '';
+                if (response.prev_page_url) {
+                    html +=
+                        `<button class="btn btn-sm btn-outline-primary activity-pagination-btn" data-page="${response.current_page - 1}">Previous</button>`;
+                }
+                html += `<span class="mx-2">Page ${response.current_page} of ${response.last_page}</span>`;
+                if (response.next_page_url) {
+                    html +=
+                        `<button class="btn btn-sm btn-outline-primary activity-pagination-btn" data-page="${response.current_page + 1}">Next</button>`;
+                }
+                $('#activity-pagination').html(html);
+            }
+
+            // Handle activity pagination button clicks
+            $(document).on('click', '.activity-pagination-btn', function(e) {
+                e.preventDefault();
+                const page = $(this).data('page');
+                loadActivities(page);
+            });
+
+            // Apply filter
+            $('#apply-filter').on('click', function(e) {
+                e.preventDefault();
+                currentFilters = {};
+                $('#filter-form').serializeArray().forEach(function(item) {
+                    if (item.value) {
+                        currentFilters[item.name] = item.value;
+                    }
+                });
+                loadActivities(1);
+            });
+
+            // Reset filter
+            $('#reset-filter').on('click', function(e) {
+                e.preventDefault();
+                $('#filter-form')[0].reset();
+                currentFilters = {};
+                loadActivities(1);
+            });
+
+            // Prevent form submission on enter key
+            $('#filter-form').on('submit', function(e) {
+                e.preventDefault();
+                $('#apply-filter').click();
+            });
         });
     </script>
 @endpush

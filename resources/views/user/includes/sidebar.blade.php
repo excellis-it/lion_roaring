@@ -581,7 +581,7 @@
                         <a class="sidebar-link {{ Request::is('user/user-activity/*') ? 'active' : '' }}"
                             href="{{ route('user-activity.index') }}" aria-expanded="false">
                             <span>
-                                <img src="{{ asset('user_assets/images/ICON/User_Activity.svg') }}" alt="">
+                                <img src="{{ asset('user_assets/images/ICON/activity.png') }}" alt="">
                             </span>
                             <span class="hide-menu">User Activity</span>
                         </a>

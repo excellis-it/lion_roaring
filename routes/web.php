@@ -521,6 +521,13 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
         // 'meetings' => MeetingSchedulingController::class,
     ]);
 
+    // User Activity AJAX routes
+
+    Route::get('/get-user-activity/get-activities', [UserActivityController::class, 'getActivities'])->name('user-activity-get-activities');
+    Route::get('/get-user-activity/by-country', [UserActivityController::class, 'getActivitiesByCountry'])->name('user-activity-by-country');
+    Route::get('/get-user-activity/by-user', [UserActivityController::class, 'getActivitiesByUser'])->name('user-activity-by-user');
+    Route::get('/get-user-activity/by-type', [UserActivityController::class, 'getActivitiesByType'])->name('user-activity-by-type');
+
     // e-store routes
     Route::prefix('products')->group(function () {
         // product variations manage route

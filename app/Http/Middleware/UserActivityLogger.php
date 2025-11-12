@@ -27,6 +27,7 @@ class UserActivityLogger
                 $request->is('user/unread-messages-count')
                 || $request->is('user/notifications-count')
                 || $request->is('get-states')
+                || $request->is('user/get-user-activity/*')
             ) {
                 return $response;
             }
@@ -76,7 +77,8 @@ class UserActivityLogger
             $deviceType = request()->header('User-Agent');
 
             // activityType should extract path or route name with human readable format
-            $activityType =  strtoupper(str_replace('/', '_', trim($request->path(), '/')));
+            $path = trim($request->path(), '/');
+            $activityType = $path ? strtoupper(str_replace('/', '_', $path)) : 'WEBSITE_VISIT';
 
             UserActivity::create([
                 'user_id'            => $user?->id ?? null,
@@ -92,7 +94,7 @@ class UserActivityLogger
                 'browser'            => $this->getBrowserName($ua),
                 'url'                => $url,
                 'permission_access'  => $permissionAccess,
-                'activity_type'      => $activityType,
+                'activity_type'      => $activityType ?? '-',
                 'activity_description' => 'Visited: ' . $url,
                 'activity_date'      => now(),
             ]);
