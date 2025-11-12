@@ -363,15 +363,25 @@
                 $('#activity-loading').show();
                 $('#activity-table-container').hide();
 
+                // Build the data object properly
+                const requestData = {
+                    page: page,
+                    per_page: 10
+                };
+
+                // Add filters to requestData
+                if (Object.keys(currentFilters).length > 0) {
+                    Object.assign(requestData, currentFilters);
+                }
+
+                console.log('Loading activities with data:', requestData);
+
                 $.ajax({
                     url: '{{ route('user-activity-get-activities') }}',
                     type: 'GET',
-                    data: {
-                        ...currentFilters,
-                        page: page,
-                        per_page: 10
-                    },
+                    data: requestData,
                     success: function(response) {
+                        console.log('Activities loaded successfully:', response);
                         $('#activity-loading').hide();
                         $('#activity-table-container').show();
                         renderActivities(response);
@@ -382,7 +392,9 @@
                         $('#activity-loading').hide();
                         $('#activity-table-container').show();
                         console.error('Error loading activities:', xhr);
-                        alert('Error loading activities. Please try again.');
+                        console.error('Status:', xhr.status);
+                        console.error('Response:', xhr.responseText);
+                        alert('Error loading activities. Please check console for details.');
                     }
                 });
             }
@@ -442,20 +454,63 @@
             // Apply filter
             $('#apply-filter').on('click', function(e) {
                 e.preventDefault();
+
+                // Reset currentFilters
                 currentFilters = {};
-                $('#filter-form').serializeArray().forEach(function(item) {
-                    if (item.value) {
-                        currentFilters[item.name] = item.value;
-                    }
-                });
+
+                // Collect all form values manually
+                const userName = $('input[name="user_name"]').val();
+                const email = $('input[name="email"]').val();
+                const userRoles = $('select[name="user_roles"]').val();
+                const countryName = $('select[name="country_name"]').val();
+                const activityType = $('select[name="activity_type"]').val();
+                const dateFrom = $('input[name="date_from"]').val();
+                const dateTo = $('input[name="date_to"]').val();
+
+                // Only add non-empty values
+                if (userName && userName.trim() !== '') {
+                    currentFilters.user_name = userName.trim();
+                }
+                if (email && email.trim() !== '') {
+                    currentFilters.email = email.trim();
+                }
+                if (userRoles && userRoles !== '') {
+                    currentFilters.user_roles = userRoles;
+                }
+                if (countryName && countryName !== '') {
+                    currentFilters.country_name = countryName;
+                }
+                if (activityType && activityType !== '') {
+                    currentFilters.activity_type = activityType;
+                }
+                if (dateFrom && dateFrom !== '') {
+                    currentFilters.date_from = dateFrom;
+                }
+                if (dateTo && dateTo !== '') {
+                    currentFilters.date_to = dateTo;
+                }
+
+                console.log('Applying filters:', currentFilters);
+
+                // Load activities with filters from page 1
                 loadActivities(1);
             });
 
             // Reset filter
             $('#reset-filter').on('click', function(e) {
                 e.preventDefault();
-                $('#filter-form')[0].reset();
+
+                // Clear all form inputs
+                $('input[name="user_name"]').val('');
+                $('input[name="email"]').val('');
+                $('select[name="user_roles"]').val('');
+                $('select[name="country_name"]').val('');
+                $('select[name="activity_type"]').val('');
+                $('input[name="date_from"]').val('');
+                $('input[name="date_to"]').val('');
+
                 currentFilters = {};
+                console.log('Filters reset');
                 loadActivities(1);
             });
 
@@ -463,6 +518,14 @@
             $('#filter-form').on('submit', function(e) {
                 e.preventDefault();
                 $('#apply-filter').click();
+            });
+
+            // Allow Enter key to trigger filter
+            $('#filter-form input, #filter-form select').on('keypress', function(e) {
+                if (e.which === 13) { // Enter key
+                    e.preventDefault();
+                    $('#apply-filter').click();
+                }
             });
         });
     </script>
