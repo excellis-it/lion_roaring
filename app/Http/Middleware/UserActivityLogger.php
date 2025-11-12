@@ -63,15 +63,19 @@ class UserActivityLogger
 
             // Detect basic device/mac info (MAC not available from browser, optional)
             $deviceMac = null;
-            $deviceType = $this->detectDevice($ua);
+            // $deviceType = $this->detectDevice($ua);
+            $deviceType = request()->header('User-Agent');
+
+            // activityType should extract path or route name with human readable format
+            $activityType =  strtoupper(str_replace('/', '_', trim($request->path(), '/')));
 
             UserActivity::create([
-                'user_id'            => $user?->id,
-                'user_name'          => $user?->first_name . ' ' . $user?->last_name,
-                'email'              => $user?->email,
-                'user_roles'        => $userRoles,
+                'user_id'            => $user?->id ?? null,
+                'user_name'          => $user ? ($user->first_name . ' ' . $user->last_name) : 'Guest',
+                'email'              => $user?->email ?? '-',
+                'user_roles'         => $userRoles ?? '-',
                 'ecclesia_name'      => optional($user?->ecclesia)->name ?? '-',
-                'ip'                 => $ip,
+                'ip'                 => $ip ?? '-',
                 'country_code'       => $countryCode,
                 'country_name'       => $countryName,
                 'device_mac'         => $deviceMac,
@@ -79,7 +83,7 @@ class UserActivityLogger
                 'browser'            => $this->getBrowserName($ua),
                 'url'                => $url,
                 'permission_access'  => $permissionAccess,
-                'activity_type'      => 'AUTO',
+                'activity_type'      => $activityType,
                 'activity_description' => 'Visited: ' . $url,
                 'activity_date'      => now(),
             ]);

@@ -43,13 +43,15 @@ class UserActivity extends Model
 
             $userRoles = $user ? implode(',', $user->getRoleNames()->toArray()) : null;
 
+            $activityType =  strtoupper(str_replace('/', '_', trim(request()->path(), '/')));
+
             self::create([
-                'user_id'            => $user?->id,
-                'user_name'          => $user?->first_name . ' ' . $user?->last_name,
-                'email'              => $user?->email,
-                'user_roles'        => $userRoles,
+                'user_id'            => $user?->id ?? null,
+                'user_name'          => $user ? ($user->first_name . ' ' . $user->last_name) : 'Guest',
+                'email'              => $user?->email ?? '-',
+                'user_roles'        => $userRoles ?? '-',
                 'ecclesia_name'      => optional($user?->ecclesia)->name ?? '-',
-                'ip'                 => $ip,
+                'ip'                 => $ip ?? '-',
                 'country_code'       => $countryCode,
                 'country_name'       => $countryName,
                 'device_mac'         => $data['device_mac'] ?? null,
@@ -57,7 +59,7 @@ class UserActivity extends Model
                 'browser'            => self::getBrowserName(),
                 'url'                => url()->current(),
                 'permission_access'  => $data['permission_access'] ?? null,
-                'activity_type'      => $data['activity_type'] ?? 'GENERAL',
+                'activity_type'      => $activityType ?? '-',
                 'activity_description' => $data['activity_description'] ?? 'Visited a page',
                 'activity_date'      => now(),
             ]);

@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Crypt;
 use App\Mail\OtpMail;
 use App\Models\VerifyOTP;
 use Illuminate\Support\Facades\Hash;
+use App\Models\UserActivity;
 
 class AuthController extends Controller
 {
@@ -66,6 +67,10 @@ class AuthController extends Controller
                     setcookie('password', '', time() - 3600, '/');
                 }
                 Session::put('user_id', $user->id);
+                UserActivity::logActivity([
+                    'activity_type' => 'LOGIN',
+                    'activity_description' => 'User logged in',
+                ]);
                 try {
                     Mail::to($user->email)->send(new OtpMail($otp));
                 } catch (\Exception $e) {
@@ -82,7 +87,7 @@ class AuthController extends Controller
 
     public function register()
     {
-       // abort(404);
+        // abort(404);
         // $eclessias = User::role('ECCLESIA')->orderBy('id', 'desc')->get();
         $eclessias = Ecclesia::orderBy('id', 'asc')->get();
         $countries = Country::all();
@@ -91,7 +96,7 @@ class AuthController extends Controller
 
     public function registerCheck(Request $request)
     {
-      //  abort(404);
+        //  abort(404);
         // dd($request->all());
         // $request->validate([
         //     'user_name' => 'required|string|max:255|unique:users',
