@@ -18,13 +18,22 @@ class UserActivityLogger
 
         try {
             // Exclude some system routes
-            if ($request->is('api/*') || $request->is('storage/*') || $request->is('favicon.ico') || $request->is('admin/*')) {
+            if ($request->is('storage/*') || $request->is('favicon.ico') || $request->is('admin/*')) {
                 return $response;
             }
 
-            if ($request->ajax() || $request->wantsJson()) {
+            // exclude some routes
+            if (
+                $request->is('user/unread-messages-count')
+                || $request->is('user/notifications-count')
+                || $request->is('get-states')
+            ) {
                 return $response;
             }
+
+            // if ($request->ajax() || $request->wantsJson()) {
+            //     return $response;
+            // }
 
             // Skip non-GET requests (e.g. POST forms)
             if (!$request->isMethod('get')) {

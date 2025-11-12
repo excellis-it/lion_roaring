@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use App\Services\NotificationService;
 
+
 class UserActivityController extends Controller
 {
     /**
@@ -18,11 +19,81 @@ class UserActivityController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if (Auth::user()->can('Manage User Activity')) {
-            $activities = UserActivity::orderBy('id', 'desc')->paginate(15);
-            return view('user.user-activity.list')->with('activity', $activities);
+            $query = UserActivity::query();
+
+            // Apply filters
+            if ($request->filled('user_name')) {
+                $query->where('user_name', 'like', '%' . $request->user_name . '%');
+            }
+            if ($request->filled('email')) {
+                $query->where('email', 'like', '%' . $request->email . '%');
+            }
+            if ($request->filled('user_roles')) {
+                $query->where('user_roles', 'like', '%' . $request->user_roles . '%');
+            }
+            if ($request->filled('country_name')) {
+                $query->where('country_name', $request->country_name);
+            }
+            if ($request->filled('activity_type')) {
+                $query->where('activity_type', $request->activity_type);
+            }
+            if ($request->filled('date_from')) {
+                $query->whereDate('activity_date', '>=', $request->date_from);
+            }
+            if ($request->filled('date_to')) {
+                $query->whereDate('activity_date', '<=', $request->date_to);
+            }
+
+            $activities = $query->orderBy('id', 'desc')->paginate(10);
+
+            // Calculate statistics
+            $stats = [
+                'total_activities' => UserActivity::count(),
+                'activities_by_country' => UserActivity::selectRaw('country_name, COUNT(*) as count')
+                    ->groupBy('country_name')
+                    ->having('count', '>', 0)
+                    ->orderBy('count', 'desc')
+                    ->get(),
+                'activities_by_user' => UserActivity::selectRaw('user_name, email, COUNT(*) as count')
+                    ->whereNotNull('user_id')
+                    ->groupBy('user_name', 'email')
+                    ->having('count', '>', 0)
+                    ->orderBy('count', 'desc')
+                    ->limit(10)
+                    ->get(),
+                'activities_by_type' => UserActivity::selectRaw('activity_type, COUNT(*) as count')
+                    ->groupBy('activity_type')
+                    ->having('count', '>', 0)
+                    ->orderBy('count', 'desc')
+                    ->limit(10)
+                    ->get(),
+            ];
+
+            // Get unique values for filters
+            $filters = [
+                'countries' => UserActivity::selectRaw('DISTINCT country_name')
+                    ->whereNotNull('country_name')
+                    ->where('country_name', '!=', '')
+                    ->orderBy('country_name')
+                    ->pluck('country_name'),
+                'activity_types' => UserActivity::selectRaw('DISTINCT activity_type')
+                    ->whereNotNull('activity_type')
+                    ->where('activity_type', '!=', '')
+                    ->orderBy('activity_type')
+                    ->pluck('activity_type'),
+                'roles' => UserActivity::selectRaw('DISTINCT user_roles')
+                    ->whereNotNull('user_roles')
+                    ->where('user_roles', '!=', '-')
+                    ->orderBy('user_roles')
+                    ->pluck('user_roles'),
+            ];
+
+             return $stats;
+
+            return view('user.user-activity.list', compact('activities', 'stats', 'filters'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }

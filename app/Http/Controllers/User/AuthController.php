@@ -68,6 +68,7 @@ class AuthController extends Controller
                 }
                 Session::put('user_id', $user->id);
                 UserActivity::logActivity([
+                    'user_id' => $user->id,
                     'activity_type' => 'LOGIN',
                     'activity_description' => 'User logged in',
                 ]);
@@ -189,6 +190,12 @@ class AuthController extends Controller
 
     public function logout()
     {
+        // Log user activity before logout
+        UserActivity::logActivity([
+            'user_id' => auth()->id(),
+            'activity_type' => 'LOGOUT',
+            'activity_description' => 'User logged out',
+        ]);
         auth()->logout();
         return redirect()->route('home')->with('message', 'Logout success');
     }
