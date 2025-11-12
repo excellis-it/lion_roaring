@@ -372,7 +372,7 @@ Route::post('/send-otp', [EmailVerificationController::class, 'sendOtp'])->name(
 Route::post('/verify-otp', [EmailVerificationController::class, 'verifyOtp'])->name('verify.otp');
 Route::post('/resend-otp', [EmailVerificationController::class, 'resendOtp'])->name('resend.otp');
 
-Route::prefix('user')->middleware(['user', 'preventBackHistory'])->group(function () {
+Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity'])->group(function () {
     Route::get('/subscription', [SubscriptionController::class, 'subscription'])->name('user.subscription');
     Route::get('/subscription-payment/{id}', [SubscriptionController::class, 'payment'])->name('user.subscription.payment');
     Route::get('/stripe-checkout-success', [SubscriptionController::class, 'stripeCheckoutSuccess'])->name('stripe.checkout.success');
