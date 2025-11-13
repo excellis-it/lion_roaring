@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Country;
+use App\Models\TranslateLanguage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -18,7 +19,7 @@ class CountryController extends Controller
             abort(403, 'You do not have permission to access this page.');
         }
 
-        $query = Country::query();
+        $query = Country::with('languages');
         // simple search by name or code
         if ($search = $request->get('query')) {
             $query->where(function ($q) use ($search) {
@@ -41,7 +42,7 @@ class CountryController extends Controller
             abort(403, 'You do not have permission to access this page.');
         }
 
-        $query = Country::query();
+        $query = Country::with('languages');
         if ($search = $request->get('query')) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
@@ -62,7 +63,8 @@ class CountryController extends Controller
         if (!Gate::allows('Manage Countries')) {
             abort(403, 'You do not have permission to access this page.');
         }
-        return view('admin.countries.create');
+        $languages = TranslateLanguage::orderBy('name', 'asc')->get();
+        return view('admin.countries.create', compact('languages'));
     }
 
     // Store a new country
@@ -76,6 +78,8 @@ class CountryController extends Controller
             'code' => 'nullable|string|max:10|unique:countries,code',
             'flag_image' => 'nullable|image|mimes:jpeg,png,webp,svg,gif|max:2048',
             'status' => 'nullable|boolean',
+            'languages' => 'nullable|array',
+            'languages.*' => 'exists:translate_languages,id',
         ]);
 
         $data = $request->only(['name', 'code']);
@@ -86,7 +90,12 @@ class CountryController extends Controller
             $data['flag_image'] = $path; // stored relative to storage/app/public
         }
 
-        Country::create($data);
+        $country = Country::create($data);
+
+        // Attach selected languages
+        if ($request->has('languages')) {
+            $country->languages()->sync($request->input('languages'));
+        }
 
         return redirect()->route('admin-countries.index')->with('message', 'Country created successfully.');
     }
@@ -104,6 +113,8 @@ class CountryController extends Controller
             'code' => 'nullable|string|max:10|unique:countries,code,' . $country->id,
             'flag_image' => 'nullable|image|mimes:jpeg,png,webp,svg,gif|max:2048',
             'status' => 'nullable|boolean',
+            'languages' => 'nullable|array',
+            'languages.*' => 'exists:translate_languages,id',
         ]);
 
         $country->name = $request->name;
@@ -121,6 +132,14 @@ class CountryController extends Controller
 
         $country->save();
 
+        // Sync selected languages
+        if ($request->has('languages')) {
+            $country->languages()->sync($request->input('languages'));
+        } else {
+            // If no languages selected, detach all
+            $country->languages()->sync([]);
+        }
+
         return redirect()->route('admin-countries.index')->with('message', 'Country updated successfully.');
     }
 
@@ -131,7 +150,8 @@ class CountryController extends Controller
             abort(403, 'You do not have permission to access this page.');
         }
         $country = Country::findOrFail($id);
-        return view('admin.countries.edit', compact('country'));
+        $languages = TranslateLanguage::orderBy('name', 'asc')->get();
+        return view('admin.countries.edit', compact('country', 'languages'));
     }
 
     // Delete a country

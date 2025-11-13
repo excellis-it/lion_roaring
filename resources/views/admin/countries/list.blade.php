@@ -49,6 +49,7 @@
                                 <th class="sorting" data-sorting_type="asc" data-column_name="code" style="cursor:pointer"
                                     data-tippy-content="Sort by Code">Code<span id="code_icon"></span></th>
                                 <th>Flag</th>
+                                <th>Languages</th>
                                 <th class="sorting" data-sorting_type="asc" data-column_name="status" style="cursor:pointer"
                                     data-tippy-content="Sort by Status">Status<span id="status_icon"></span></th>
                                 <th class="text-right">Actions</th>

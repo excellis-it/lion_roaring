@@ -15,4 +15,12 @@ class Country extends Model
         'flag_image',
         'status',
     ];
+
+    /**
+     * Get the languages associated with the country.
+     */
+    public function languages()
+    {
+        return $this->belongsToMany(TranslateLanguage::class, 'country_translate_language', 'country_id', 'translate_language_id');
+    }
 }

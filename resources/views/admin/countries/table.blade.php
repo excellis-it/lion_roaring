@@ -13,6 +13,15 @@
                 @endif
             </td>
             <td>
+                @if ($country->languages->count() > 0)
+                    @foreach ($country->languages as $language)
+                        <span class="badge bg-info text-white me-1 mb-1">{{ $language->name }}</span>
+                    @endforeach
+                @else
+                    <span class="text-muted">—</span>
+                @endif
+            </td>
+            <td>
                 <span data-id="{{ $country->id }}"
                     class="status-span badge {{ $country->status ? 'bg-success' : 'bg-secondary' }}">{{ $country->status ? 'Active' : 'Inactive' }}</span>
             </td>
@@ -40,7 +49,7 @@
         </tr>
     @endforeach
     <tr style="box-shadow: none;">
-        <td colspan="6">
+        <td colspan="7">
             <div class="d-flex justify-content-center">
                 {!! $countries->links() !!}
             </div>
@@ -48,7 +57,7 @@
     </tr>
 @else
     <tr>
-        <td colspan="6" class="text-center">No Countries Found</td>
+        <td colspan="7" class="text-center">No Countries Found</td>
     </tr>
 @endif
 

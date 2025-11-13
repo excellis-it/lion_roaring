@@ -79,6 +79,7 @@ return new class extends Migration
             ['nl', 'Dutch'],
             ['dyu', 'Dyula'],
             ['dz', 'Dzongkha'],
+            ['en', 'English'],
             ['eo', 'Esperanto'],
             ['et', 'Estonian'],
             ['ee', 'Ewe'],

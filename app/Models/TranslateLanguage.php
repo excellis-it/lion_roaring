@@ -13,4 +13,12 @@ class TranslateLanguage extends Model
         'code',
         'name',
     ];
+
+    /**
+     * Get the countries associated with the language.
+     */
+    public function countries()
+    {
+        return $this->belongsToMany(Country::class, 'country_translate_language', 'translate_language_id', 'country_id');
+    }
 }

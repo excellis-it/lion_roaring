@@ -72,6 +72,28 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group-div">
+                                    <div class="form-group">
+                                        <label>Languages (Optional)</label>
+                                        <select class="form-control select2" name="languages[]" multiple="multiple"
+                                            id="languageSelect">
+                                            @foreach ($languages as $language)
+                                                <option value="{{ $language->id }}">{{ $language->name }}
+                                                    ({{ $language->code }})</option>
+                                            @endforeach
+                                        </select>
+                                        <small class="text-muted">Select one or more languages for this country
+                                            (optional)</small>
+                                        @error('languages')
+                                            <div class="error" style="color:red;">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-xl-12">
                             <div class="btn-1">
                                 <button type="submit">Create Country</button>
@@ -83,3 +105,15 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2 for language selection
+            $('#languageSelect').select2({
+                placeholder: "Select languages (optional)",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
+@endpush
