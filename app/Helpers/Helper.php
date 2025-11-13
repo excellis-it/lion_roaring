@@ -143,7 +143,7 @@ class Helper
 
     public static function getCountries()
     {
-        $countries = Country::orderBy('name', 'asc')->get();
+        $countries = Country::with('languages')->where('status', 1)->orderBy('name', 'asc')->get();
         return $countries;
     }
 

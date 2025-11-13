@@ -73,6 +73,7 @@ use App\Http\Controllers\User\TeamController;
 use App\Http\Controllers\User\TopicController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TermsAndConditionController;
+use App\Http\Controllers\Admin\CountryController;
 use App\Models\Category;
 use App\Models\ElearningCategory;
 use App\Models\EcomCmsPage;
@@ -186,7 +187,15 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         'services' => ServiceContoller::class,
         'donations' => AdminDonationController::class,
         'plans' => PlanController::class,
+        'admin-countries' => CountryController::class,
     ]);
+
+    // toggle country status
+    Route::post('/admin-countries/{country}/toggle-status', [CountryController::class, 'toggleStatus'])->name('admin-countries.toggle-status');
+    // ajax table fetch for countries
+    Route::get('/admin-countries-fetch-data', [CountryController::class, 'fetchData'])->name('admin-countries.fetch-data');
+    // optional GET delete route for countries
+    Route::get('/admin-countries-delete/{id}', [CountryController::class, 'delete'])->name('admin-countries.delete');
 
     Route::name('admin.')->group(function () {
         Route::resource('roles', RolePermissionController::class);
@@ -306,12 +315,13 @@ Route::middleware(['userActivity'])->group(function () {
 
     // Country-code masked home (won't affect other routes due to tight constraint)
     Route::get('/{cc}', function (string $cc) {
-        $row = Country::whereRaw('LOWER(code) = ?', [strtolower($cc)])->first();
+        $row = Country::with('languages')->whereRaw('LOWER(code) = ?', [strtolower($cc)])->first();
         if ($row) {
             $ip = request()->ip();
             session([
                 'visitor_country_code_' . $ip => strtoupper($row->code),
                 'visitor_country_name_' . $ip => $row->name,
+                'visitor_country_languages' => $row->languages,
             ]);
         }
         return app(CmsController::class)->index();
