@@ -661,6 +661,7 @@ class Helper
         $ip = request()->ip();
         $codeSessionKey = 'visitor_country_code_' . $ip;
         $nameSessionKey = 'visitor_country_name_' . $ip;
+        $languageSessionKey = 'visitor_country_languages';
 
         // Check session first
         if (session()->has($codeSessionKey) && session()->has($nameSessionKey)) {
@@ -674,12 +675,15 @@ class Helper
             $countryCode = $data['country'] ?? 'US';
 
             // Lookup country name from Country model
-            $countryName = \App\Models\Country::where('code', $countryCode)->value('name') ?? 'United States';
+            $countryName = \App\Models\Country::with('languages')->where('code', $countryCode)->value('name') ?? 'United States';
+            $countryData = \App\Models\Country::with('languages')->where('code', $countryCode)->first();
 
             // Save both code and name in session
             session([
                 $codeSessionKey => $countryCode,
                 $nameSessionKey => $countryName,
+                $languageSessionKey => $countryData ? $countryData->languages : [],
+
             ]);
 
             return $countryCode;
