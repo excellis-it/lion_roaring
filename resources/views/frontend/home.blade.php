@@ -25,17 +25,48 @@
     <!--Flag Popup -->
     <div class="popup-overlay" id="popupOverlay" style="{{ $showPopup ? '' : 'display:none;' }}">
         <div class="popup-box flag-popup-box">
-            <h4>Select Your Country</h4>
+            <div class="top-box">
+                <div class="popup-logo">
+                    <img src="https://excellis.co.in/lion-roaring-org/public/storage/footer/CEMnI3pjMdaatfmJwSA0cQqNjA6W4c8Fk8rRA08q.png" alt="">
+                </div>
+                        <!--<div class="popup-text-box">-->
+                <!--    <h2>Lion Roaring</h2>-->
+                <!--    <p>A habitation where supernatural and solution intersects</p>-->
+                <!--</div>-->
+
+            <div class="form-box">
+                    <form>
+                        <div class="wrap">
+                           <h4>Select Your Country</h4>
+                           <div class="search">
+                              <input type="text" class="searchTerm" placeholder="What are you looking for?">
+                              <button type="submit" class="searchButton">
+                                <i class="fa fa-search"></i>
+                             </button>
+                           </div>
+                        </div>
+                    </form>
+                </div>
+
+                </div>
+
+            <div class="flag-areas">
             <div class="flag-grid">
                 <!-- Flags directly in HTML -->
                 @foreach ($countries as $c)
+                <div class="flag-box">
+                    <div class="flag-main-box">
                     <img src="{{ asset('frontend_assets/images/flags/' . strtolower($c->code) . '.png') }}"
                         alt="{{ $c->name }}" title="{{ $c->name }}"
                         onclick="selectFlag('{{ strtolower($c->code) }}')">
+                    </div>
+                    <p class="country-name">India</p>
+                    </div>
                 @endforeach
 
             </div>
-            <button class="btn btn-danger popup-btn" onclick="closePopup()">Close</button>
+            </div>
+            <button class="btn red_btn" onclick="closePopup()"><span>Close</span></button>
         </div>
     </div>
 
@@ -75,11 +106,11 @@
                 <div class="col-xxl-5 col-lg-6 mb-4" data-aos="fade-up" data-aos-duration="1000">
                     <div class="four_image">
                         <div class="row align-items-center justify-content-center">
-                            <div class="col-xl-5 col-lg-6 mb-4" data-aos="fade-right" data-aos-duration="800">
+                            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6 mb-4 top-imgs" data-aos="fade-right" data-aos-duration="800">
                                 <img src="{{asset('frontend_assets/images/abt_one.png')}}" class="about_four_ii mb-3">
                                 <img src="{{asset('frontend_assets/images/abt_one1.png')}}" class="about_four_ii mb-3">
                             </div>
-                            <div class="col-xl-5 col-lg-6 mb-4" data-aos="fade-up" data-aos-duration="1600">
+                            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6 mb-4 bottom-img" data-aos="fade-up" data-aos-duration="1600">
                                 <img src="{{asset('frontend_assets/images/abt_one2.png')}}" class="about_four_ii mb-3 mt-5">
                                 <img src="{{asset('frontend_assets/images/abt_one3.jpg')}}" class="about_four_ii mb-3">
                             </div>
@@ -101,7 +132,7 @@
         </div>
     </section>
     <section class="after_about after_about_hm">
-        <div class="container">
+        <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-xl-12">
                     <div class="book">

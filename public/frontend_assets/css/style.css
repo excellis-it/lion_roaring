@@ -134,7 +134,8 @@ p {
     width: 30px;
     height: 30px;
     display: inline-flex;
-    left: -4%;
+    left: -3%;
+    top: -1px;
     position: relative;
     align-items: center;
     justify-content: center;
@@ -3056,25 +3057,34 @@ li.slick-active button {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0);
     display: none;
     justify-content: center;
     align-items: center;
     z-index: 9999;
 }
-
+.flag-areas{
+    width: 100%;
+    height: 500px;
+    overflow: auto;
+    margin: 20px 0px;
+}
 /* Popup box */
 .popup-box {
     background: #fff;
     border-radius: 15px;
     padding: 25px;
     width: 90%;
-    max-width: 600px;
+    max-width: 1300px;
     text-align: center;
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
     animation: popupScale 0.3s ease;
+    height: 750px;
 }
-
+.country-name{
+    font-weight: 600;
+    font-size: 16px;
+}
 /* Animation */
 @keyframes popupScale {
     from {
@@ -3088,43 +3098,108 @@ li.slick-active button {
     }
 }
 
-.popup-btn {
+/* .popup-btn {
     margin-top: 15px;
-}
+    background-color:;
+} */
 
 /* Flag grid */
 .flag-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 10px;
     margin-top: 20px;
 }
 
-.popup-box {
-    height: 400px;
-    overflow: auto;
-}
 
-.flag-grid img {
+.flag-grid .flag-box{
     width: 100%;
-    height: 35px;
+    height: 100px;
+}
+.flag-grid .flag-main-box{
+    width: 100%;
+    height: 80px;
     border-radius: 6px;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     border: 1px solid #ccc;
 }
 
-.flag-grid img:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+.flag-grid .flag-main-box img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
 }
 
+/*======================popup search css==========================*/
+.form-box{
+    width: 80%;
+}
+.popup-logo{
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    /*margin: 0 auto;*/
+}
+.popup-logo img{
+    width:100%;
+    height:100%;
+    object-fit: contain;
+}
+.popup-text-box h2{
+    color: #643271;
+    font-weight: 900;
+    margin-bottom: 0px;
+}
+.top-box{
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
+.search {
+  width: 100%;
+  position: relative;
+  display: flex;
+}
 
+.searchTerm {
+  width: 100%;
+  border: 2px solid #643271;
+  border-right: none;
+  padding: 10px;
+  /*height: 20px;*/
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  color: #643271;
+}
 
+.searchTerm:focus{
+  color: #643271;
+}
 
+.searchButton {
+  width: 50px;
+  /*height: 36px;*/
+  border: 1px solid #643271;
+  background: #643271;
+  text-align: center;
+  color: #fff;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 20px;
+}
 
-
+/*Resize the wrap to see the search bar change!*/
+.wrap{
+  width: 80%;
+  float:right;
+}
+.wrap h4{
+    text-align: left !important;
+    font-size: 18px;
+}
 
 
 
@@ -3283,11 +3358,13 @@ li.slick-active button {
     backface-visibility: hidden;
     border-radius: 4px;
     /*box-shadow: 0 0 0 1px #e3dfd8;*/
+    margin: 0 auto;
 }
 
 .page_logo {
     width: 350px;
     margin: 30px auto 50px;
+    object-fit: contain !important;
 }
 
 .book .page.first_page {
