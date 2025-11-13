@@ -22,7 +22,36 @@
      .after_about_hm .abt_text_white {
         padding: 0px 0;
     }
-
+.login_prf a span{
+    left: -3%;
+    top: 1px;
+}
+.login_prf a{
+    padding: 10px 10px;
+    font-size: 15px;
+}
+.heading_hp h2{
+    font-size: 34px;
+}
+.book .page img{
+    max-width: 250px;
+    height: 150px;
+}
+.book .pages{
+    height: 55vw;
+}
+.book .page{
+    height: 55vw;
+}
+.book .page p{
+    font-size: 14px;
+}
+.about_sec{
+    padding: 60px 0px;
+}
+.real_solution_sec {
+    padding: 60px 0;
+}
 }
 @media (max-width:1440px){
       .after_about_hm .abt_text_white {
@@ -52,10 +81,19 @@
     .page p{
         font-size: 14px;
     }
+    .left_top{
+        width: 40%;
+    }
+    .right_top {
+    width: 40%;
+}
+.slider, .slide {
+    height: 750px;
+}
 }
 @media (max-width:1366px){
     .logo{
-        width: 160px;
+        width: 200px;
         display: flex;
         align-items: center;
     }
@@ -107,13 +145,37 @@
         gap: 10px;
         align-items: center;
     }
+    .slide .slide__content--headings .title {
+        font-size: 46px;
+    }
 }
 
 @media (max-width:1280px){
 .slide__img img.overlay-image{
     bottom: 0px;
 }
-
+.popup-box{
+    height: 550px;
+}
+.flag-areas{
+    height: 325px;
+    margin: 10px 0px;
+}
+.slider, .slide {
+        height: 600px;
+    }
+.slide .slide__content--headings .title {
+        font-size: 40px;
+    }
+    .book .pages{
+        height: 76vw;
+    }
+    .book .page{
+        height: 76vw;
+    }
+    .real_solution_sec h4 a{
+        font-size: 30px;
+    }
 }
 @media (max-width:1200px){
 
@@ -159,7 +221,7 @@
         height: 690px;
     }
     .slide .slide__content--headings .title {
-        font-size: 40px;
+        font-size: 36px;
     }
 
     .testimonial_box .client-text h2{
@@ -171,14 +233,26 @@
     .slide .slide__content{
         z-index: 1;
     }
+    .left_top {
+        width: 45%;
+    }
+    .right_top {
+        width: 45%;
+    }
+    .book .page p {
+        font-size: 12px;
+    }
+    .promo-box-container{
+        max-width: 850px;
+    }
 }
 @media (max-width:991px){
     .our_mis{
         width: 700px;
     }
-    .slider, .slide {
-        height: 100vh;
-      }
+    /*.slider, .slide {*/
+    /*    height: 100vh;*/
+    /*  }*/
       .after_about_hm .abt-box-1 {
           height: auto;
          background-image: none;
@@ -196,7 +270,7 @@
         height: 205px;
     }
     .about_sec{
-        padding: 80px 0px 80px 0;
+        padding: 40px 0px 40px 0;
     }
     .dark-logo{
         width: 90px;
@@ -204,6 +278,27 @@
     .navbar{
     justify-content: flex-end;
 }
+    .right_top {
+        width: 50%;
+    }
+        .left_top {
+        width: 40%;
+    }
+    .slide .slide__content--headings .title {
+        font-size: 34px;
+    }
+        .book .pages {
+        height: 80vw;
+    }
+    .book .page {
+        height: 80vw;
+    }
+    .promo-box-container{
+        min-height: 170px;
+    }
+    .card-img-top{
+        margin-bottom: 20px;
+    }
 }
 
 @media (max-width:768px){
@@ -263,7 +358,45 @@
 /*.slide__img img.overlay-image{*/
 /*    width: 60%;*/
 /*}*/
-
+.heading_hp h2 {
+        font-size: 20px;
+    }
+.book .page.first_page {
+    padding: 20px 20px;
+}
+.heading_hp h4{
+    font-size: 16px;
+}
+    .book .page img {
+        max-width: 150px;
+        height: 90px;
+    }
+    .right_top {
+        width: 60%;
+    }
+        .left_top {
+        width: 30%;
+    }
+    .book .page{
+                height: 100vw;
+    }
+        .book .pages {
+        height: 100vw;
+    }
+        .promo-box-container {
+        max-width: 650px;
+    }
+    .promo-box-container .title{
+        font-size: 24px;
+        line-height: 30px;
+    }
+    .promo-box-container .cta-button{
+        padding: 10px 24px;
+        bottom: 15px;
+    }
+        .promo-box-container {
+        min-height: 140px;
+    }
 }
 
 @media (max-width:767px){
@@ -414,6 +547,9 @@
     .project_sec .row .col .project .text-box{
         height: auto;
     }
+    .bottom-img .mt-5{
+        margin-top: 0rem !important;
+    }
 }
 
 @media (max-width:576px){
@@ -473,7 +609,25 @@
 .login_prf a {
     padding: 3px 6px;
 }
-
+.top-box{
+    flex-direction: column;
+}
+.form-box {
+    width: 100%;
+}
+.wrap {
+    width: 100%;
+}
+.popup-box {
+        height: 600px;
+    }
+ .popup-logo {
+    width: 80px;
+    height: 80px;
+    }
+    .wrap h4{
+        font-size: 14px;
+    }
 }
 
 
