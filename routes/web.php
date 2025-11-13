@@ -73,6 +73,7 @@ use App\Http\Controllers\User\TeamController;
 use App\Http\Controllers\User\TopicController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TermsAndConditionController;
+use App\Http\Controllers\Admin\CountryController;
 use App\Models\Category;
 use App\Models\ElearningCategory;
 use App\Models\EcomCmsPage;
@@ -186,7 +187,15 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         'services' => ServiceContoller::class,
         'donations' => AdminDonationController::class,
         'plans' => PlanController::class,
+        'admin-countries' => CountryController::class,
     ]);
+
+    // toggle country status
+    Route::post('/admin-countries/{country}/toggle-status', [CountryController::class, 'toggleStatus'])->name('admin-countries.toggle-status');
+    // ajax table fetch for countries
+    Route::get('/admin-countries-fetch-data', [CountryController::class, 'fetchData'])->name('admin-countries.fetch-data');
+    // optional GET delete route for countries
+    Route::get('/admin-countries-delete/{id}', [CountryController::class, 'delete'])->name('admin-countries.delete');
 
     Route::name('admin.')->group(function () {
         Route::resource('roles', RolePermissionController::class);

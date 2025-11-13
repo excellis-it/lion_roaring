@@ -383,6 +383,15 @@
             @endif
 
 
+            @if (Gate::check('Manage Countries'))
+                <li class="dropdown {{ Request::is('admin/admin-countries*') ? 'active' : ' ' }}">
+                    <a href="{{ route('admin-countries.index') }}">
+                        <i class="ph ph-flag"></i>
+                        <span>Countries</span>
+                    </a>
+                </li>
+            @endif
+
             @if (Auth::user()->getFirstRoleType() == 1)
                 <li class="dropdown">
                     <a href="javascript:void(0);"
