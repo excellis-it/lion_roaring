@@ -51,7 +51,7 @@ $(".slid_bh").slick({
     autoplay: true,
     infinite: false,
     speed: 300,
-    slidesToShow: 3,
+    slidesToShow: 4,
     slidesToScroll: 1,
     prevArrow:
         '<div class="slick-nav prev-arrow"><i class="fa fa-arrow-left"></i></div>',
@@ -87,18 +87,28 @@ $(".slid_bh").slick({
 });
 
 $(".testimonial_slider").slick({
-    dots: true,
+    dots: false,
     arrows: true,
     autoplay: false,
     infinite: true,
     speed: 500,
-    slidesToShow: 2,
-    slidesToScroll: 2,
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    centerMode: true,
     prevArrow:
         '<div class="slick-nav prev-arrow"><i class="fa fa-arrow-left"></i></div>',
     nextArrow:
         '<div class="slick-nav next-arrow"><i class="fa fa-arrow-right"></i></div>',
     responsive: [
+        {
+            breakpoint: 1440,
+            settings: {
+                slidesToShow: 4,
+                slidesToScroll: 1,
+                infinite: true,
+                dots: false,
+            },
+        },
         {
             breakpoint: 1025,
             settings: {
@@ -208,3 +218,37 @@ $(document).ready(function () {
 });
 
 AOS.init();
+
+
+
+
+  var pages = document.getElementsByClassName('page');
+  for(var i = 0; i < pages.length; i++)
+    {
+      var page = pages[i];
+      if (i % 2 === 0)
+        {
+          page.style.zIndex = (pages.length - i);
+        }
+    }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    for(var i = 0; i < pages.length; i++)
+      {
+        //Or var page = pages[i];
+        pages[i].pageNum = i + 1;
+        pages[i].onclick=function()
+          {
+            if (this.pageNum % 2 === 0)
+              {
+                this.classList.remove('flipped');
+                this.previousElementSibling.classList.remove('flipped');
+              }
+            else
+              {
+                this.classList.add('flipped');
+                this.nextElementSibling.classList.add('flipped');
+              }
+           }
+        }
+  })

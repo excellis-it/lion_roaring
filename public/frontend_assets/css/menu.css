@@ -32,7 +32,7 @@
     cursor: pointer;
     z-index: 100;
     transition: opacity 0.25s ease;
-    background: rgb(0 0 0 / 30%);
+    /* background: rgb(0 0 0 / 30%); */
     padding: 3px;
 }
 
@@ -55,13 +55,14 @@
     transform: translateY(-9px) translateX(0) rotate(-45deg);
     background: #FFF;
 	left:0;
+    width: 100%;
 }
 
 .button_container span {
     background: var(--white-color);
     border: none;
     height: 3px;
-    width: 80%;
+    width: 100%;
     position: absolute;
     top: 9px;
     left: 50%;
@@ -72,35 +73,39 @@
 
 .button_container span:nth-of-type(2) {
     top: 18px;
+    width: 80%;
 }
 
 .button_container span:nth-of-type(3) {
     top: 27px;
+    width: 60%;
 }
 
 .overlay {
     position: fixed;
-    background: #1B1514;
+    background: rgb(27 21 20 / 90%);
     top: 0;
     left: 0;
     width: 100%;
-    height: 0%;
+    height: 100%;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.35s, visibility 0.35s, height 0.35s;
+    clip-path: circle(0% at 50% 0%);
+    transition: clip-path 0.7s ease-in-out;
     overflow: hidden;
     z-index: 9;
 }
 
 .overlay.open {
-    opacity: 0.9;
+    opacity: 1;
     visibility: visible;
-    height: 100%;
+    clip-path: circle(150% at 50% 0%);
+      pointer-events: all;
 }
 
 .overlay.open li {
-    -webkit-animation: fadeInRight 0.5s ease forwards;
-    animation: fadeInRight 0.5s ease forwards;
+    -webkit-animation: fadeInTop 0.5s ease forwards;
+    animation: fadeInTop 0.5s ease forwards;
     -webkit-animation-delay: 0.35s;
     animation-delay: 0.35s;
 }
@@ -122,9 +127,9 @@
 
 .overlay nav {
     position: relative;
-    height: 70%;
-    top: 50%;
-    transform: translateY(-50%);
+    height: 100%;
+    top: 0;
+    transform: translateY(0%);
     font-size: 30px;
     font-family: var(--heading-font);
     font-weight: 400;
@@ -151,7 +156,7 @@
 .overlay ul li a {
     display: block;
     position: relative;
-    color: var(--sec-color);
+    color: #fff;
     text-decoration: none;
     overflow: hidden;
     font-family: var(--heading-font);
@@ -184,26 +189,26 @@
     transition: 0.35s;
 }
 
-@-webkit-keyframes fadeInRight {
+@-webkit-keyframes fadeInTop {
     0% {
         opacity: 0;
-        left: 20%;
+        top: 20%;
     }
 
     100% {
         opacity: 1;
-        left: 0;
+        top: 0;
     }
 }
 
-@keyframes fadeInRight {
+@keyframes fadeInTop {
     0% {
         opacity: 0;
-        left: 20%;
+        top: 20%;
     }
 
     100% {
         opacity: 1;
-        left: 0;
+        top: 0;
     }
 }

@@ -41,50 +41,53 @@
 
 
 
-    <section class="banner__slider banner_sec">
+    <section class="banner__slider banner_sec" style="background-image: url('{{asset('frontend_assets/images/bg-wrap.jpg')}}');">
         <div class="slider">
             <div class="slide">
                 <a href="{{ route('details') }}" tabindex="0">
                     <div class="slide__img">
-                        <video autoplay="" muted="" loop="" class="video_part" playsInline>
+                        <!-- <video autoplay="" muted="" loop="" class="video_part" playsInline>
                             <source
-                                src="{{ isset($home['banner_video']) ? Storage::url($home['banner_video']) : 'https://via.placeholder.com/150' }}"
+                                src="{{ isset($home['section_1_video']) ? Storage::url($home['section_1_video']) : 'https://via.placeholder.com/150' }}"
                                 type="video/mp4">
                             Your browser does not support the video tag.
-                        </video>
+                        </video> -->
                         <!-- <img src="" alt="" class="full-image d-block d-md-none" /> -->
-                        <img src="{{ isset($home['banner_image']) ? Storage::url($home['banner_image']) : 'https://via.placeholder.com/150' }}"
-                            class="full-image overlay-image">
+                        <!-- <img src="{{ isset($home['banner_image']) ? Storage::url($home['banner_image']) : 'https://via.placeholder.com/150' }}"
+                            class="full-image overlay-image"> -->
+                            
+                        <img src="{{asset('frontend_assets/images/banner_img.png')}}" class="full-image overlay-image">
                     </div>
                 </a>
                 <div class="slide__content slide__content__left">
                     <div class="slide__content--headings text-left">
                         <h1 class="title">{{ $home['banner_title'] ?? 'title' }}</h1>
-                        <p class="top-title"></p>
+                        <!-- <p class="top-title"></p> -->
                         <!--<a class="red_btn slidebottomleft" ><span>get started</span></a>-->
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <section class="about_sec"
-        style="background:url({{ asset('frontend_assets/uploads/2023/05/Mask-group-2.jpg') }}); background-repeat: no-repeat; background-size: cover;">
-        <div class="v_text right_v">About Us</div>
+    <section class="about_sec">
         <div class="container">
             <div class="row align-items-center justify-content-center">
-                <div class="col-xl-5 col-lg-6 mb-4" data-aos="fade-up" data-aos-duration="1000">
-                    <div class="img_part">
-                        <div class="img1">
-                            <video controls="" style="width: 100%; height: 100%;">
-                                <source
-                                    src="{{ isset($home['section_1_video']) ? Storage::url($home['section_1_video']) : 'https://via.placeholder.com/150' }}"
-                                    type="video/mp4">
-                            </video>
+                <div class="col-xxl-5 col-lg-6 mb-4" data-aos="fade-up" data-aos-duration="1000">
+                    <div class="four_image">
+                        <div class="row align-items-center justify-content-center">
+                            <div class="col-xl-5 col-lg-6 mb-4" data-aos="fade-right" data-aos-duration="800">
+                                <img src="{{asset('frontend_assets/images/abt_one.png')}}" class="about_four_ii mb-3">
+                                <img src="{{asset('frontend_assets/images/abt_one1.png')}}" class="about_four_ii mb-3">
+                            </div>
+                            <div class="col-xl-5 col-lg-6 mb-4" data-aos="fade-up" data-aos-duration="1600">
+                                <img src="{{asset('frontend_assets/images/abt_one2.png')}}" class="about_four_ii mb-3 mt-5">
+                                <img src="{{asset('frontend_assets/images/abt_one3.jpg')}}" class="about_four_ii mb-3">
+                            </div>
                         </div>
-                    </div>
+                    </div>                       
                 </div>
-                <div class="col-xl-5 col-lg-6" data-aos="fade-up" data-aos-duration="1000">
-                    <div class="about_text heading_hp text_white">
+                <div class="col-xxl-5 col-lg-6" data-aos="fade-up" data-aos-duration="1000">
+                    <div class="about_text heading_hp">
                         <h6>{{ $home['section_1_title'] ?? 'title' }}</h6>
                         <h2 class="text-start"> {{ $home['section_1_sub_title'] ?? 'title' }}</h2>
                         <p style="font-weight: 400;">
@@ -100,117 +103,70 @@
     <section class="after_about after_about_hm">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-xl-8">
-                    <div class="abt-box-1">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="after_abt first_abt first_abt_1">
-                                    <div class="row align-items-center justify-content-center flex-column">
-                                        <div class="col-md-4">
-                                            <div class="img_abt flex-fixed">
-                                                <img src="{{ isset($home['section_2_left_image']) ? Storage::url($home['section_2_left_image']) : 'https://via.placeholder.com/150' }}"
-                                                    alt="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-7">
-                                            <div class="abt_text_white">
-                                                <h4 class="flex-fixed">{{ $home['section_2_left_title'] ?? 'title' }}</h4>
-                                                <div class="srl" id="srl_1">
-                                                    <p><strong>
-                                                            {!! $home['section_2_left_description'] ?? 'description' !!}
-                                                        </strong></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                <div class="col-xl-12">
+                    <div class="book">
+                        <div id="pages" class="pages">
+                            <div class="page first_page text-center">
+                                    <img src="{{asset('frontend_assets/images/banner_img.png')}}" alt="" class="page_logo">
+                                <div class="about_text heading_hp">
+                                    <h2>{{ $home['section_3_title'] ?? 'title' }}</h2>
+                                    <p> {!! $home['section_3_description'] ?? 'descripiton' !!} </p>
                                 </div>
+                                <div class="design_page"></div>
                             </div>
-
-                            <div class="col-lg-6">
-                                <div class="after_abt">
-                                    <div class="row align-items-center justify-content-center flex-column">
-                                        <div class="col-md-4">
-                                            <div class="img_abt flex-fixed">
-                                                <img src="{{ isset($home['section_2_right_image']) ? Storage::url($home['section_2_right_image']) : 'https://via.placeholder.com/150' }}"
-                                                    alt="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-7">
-                                            <div class="abt_text_white">
-                                                <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}
-                                                </h4>
-                                                <div class="srl" id="srl_1">
-                                                    <p><strong>
-                                                            {!! $home['section_2_right_description'] ?? 'description' !!}
-                                                        </strong></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                        @if (count($our_governances) > 0)
+                        @foreach ($our_governances as $key => $our_governance)
+                            <div class="page">
+                                <img src="{{ isset($our_governance->image) ? Storage::url($our_governance->image) : 'https://via.placeholder.com/150' }}"
+                                                alt="">
+                                <h4 class="flex-fixed">{{ $our_governance->name }}</h4>
+                                @php
+                                    $description = $our_governance->description ?? 'description';
+                                    $firstPart = Str::limit(strip_tags($description), 1200, '');
+                                    $restPart = Str::after($description, $firstPart);
+                                @endphp
+                                <p>{!! $firstPart ?? '' !!}</p>
+                                <div class="design_page"></div>
                             </div>
-
+                            <div class="page">
+                                <p>{!! $restPart ?? '' !!}</p>
+                                <div class="design_page_right"></div>
+                            </div>
+                                @endforeach
+                        @endif
+                        <div class="page"></div>
+                            <!-- <div class="page">
+                                <img src="{{ isset($home['section_2_right_image']) ? Storage::url($home['section_2_right_image']) : 'https://via.placeholder.com/150' }}"
+                                                alt="">
+                                <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
+                            </div>
+                            <div class="page">
+                                <h4 class="flex-fixed">{{ $home['section_2_right_title'] ?? 'title' }}</h4>
+                                <p>{!! $home['section_2_right_description'] ?? 'description' !!}</p>
+                            </div>
+                            <div class="page"></div>
+                            <div class="page"></div>
+                            <div class="page"></div>
+                            <div class="page"></div>
+                            <div class="page"></div> -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    @if (count($our_governances) > 0)
-        <section class="key_feature_sec">
-            <div class="v_text right_v feature_v"></div>
-            <div class="key_bg">
-                <img src="{{ asset('frontend_assets/images/line.png') }}" alt="">
-            </div>
-            <div class="container">
-                <div class="row align-items-center justify-content-center mb-5">
-                    <div class="col-lg-8">
-                        <div class="about_text heading_hp text-center">
-                            <h2>{{ $home['section_3_title'] ?? 'title' }}</h2>
-                            <h6> {!! $home['section_3_description'] ?? 'descripiton' !!} </h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="slid_bh">
-                    @if (count($our_governances) > 0)
-                        @foreach ($our_governances as $key => $our_governance)
-                            <div class="padding_k">
-                                <div class="{{ $key % 2 == 0 ? 'bounce_1' : 'bounce_2' }}">
-                                    <div class="{{ $key % 2 == 0 ? 'one_cli' : 'one_cli1' }}">
-                                        <div class="one_cli_nh">
-                                            <img src="{{ asset('frontend_assets/images/before_n.png') }}" alt="">
-                                        </div>
-                                        <div class="clild_box">
-                                            <div class="clild_sec">
-                                                <img src="{{ Storage::url($our_governance->image) ?? 'https://via.placeholder.com/150' }}"
-                                                    alt="">
-                                                <h4>{{ $our_governance->name }}</h4>
-
-                                            </div>
-                                            <a href="{{ route('our-governance', $our_governance->slug) }}"
-                                                class="ellipss_right" tabindex="-1">
-                                                <i class="fa-solid fa-ellipsis"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    @endif
-
-                </div>
-            </div>
-        </section>
-    @endif
-
-
+   
+    <div class="promo-box-container">
+        <p class="title"><a href="#" target="_blank" rel="noopener">Want to create an impact? <span class="lighter">Gift/Seed to help us grow!!!</span></a></p>
+        <p><a class="cta-button red_btn" href="#" target="_blank" rel="noopener"> <span>Gift/Seed</span></a></p>
+        <div class="right-triangle"> </div>
+    </div>
     @if (count($our_organizations) > 0)
         <section class="real_solution_sec">
-            <div class="v_text left_v">Service</div>
             <div class="container">
                 <div class="row align-items-center justify-content-center mb-5">
-                    <div class="col-lg-6">
-                        <div class="about_text heading_hp text-center text_white">
+                    <div class="col-lg-12">
+                        <div class="about_text heading_hp text-center">
                             <h6></h6>
                             <h2>{{ $home['section_4_title'] ?? 'title' }}</h2>
 
@@ -218,33 +174,42 @@
                         </div>
                     </div>
                 </div>
-                <div class="row g-0 align-items-center justify-content-center row-cols-1 row-cols-lg-3 row-cols-md-2">
+                <div class="">
                     @foreach ($our_organizations as $our_organization)
-                        <div class="col" data-aos="fade-up" data-aos-duration="1000">
-                            <div class="tow_box_j">
-                                <div class="row align-items-center justify-content-center">
-                                    <div class="col-lg-12">
-                                        <div class="solution_img">
-                                            <a href="{{ route('service', $our_organization->slug) }}">
-                                                <img src="{{ Storage::url($our_organization->image) }}" alt="">
-                                            </a>
-                                        </div>
+                        
+                            <div class="article card-4 mb-5">
+                                <div class="card-body">
+                                    <div class="card-corner">
+                                        <a href="single-3.html" class="arrow-box">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                <path d="M13.75 6.75L19.25 12L13.75 17.25" stroke="#0E0E0F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                <path d="M19 12H4.75" stroke="#0E0E0F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </svg>
+                                        </a>
+                                        <div class="curve-one"></div>
+                                        <div class="curve-two"></div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="box_solution box_blue">
-                                            <h4><a
-                                                    href="{{ route('service', $our_organization->slug) }}">{{ $our_organization->name }}</a>
-                                            </h4>
-                                            <p class="word-litmit" style="font-weight: 400;">
-                                                <strong>{!! $our_organization->description !!}</strong>
-                                            </p>
-                                            <a href="{{ route('our-organization', $our_organization->slug) }}"
-                                                class="ellipss"><i class="fa-solid fa-ellipsis"></i></a>
+                                    <div class="row align-items-center">
+                                        <div class="col-lg-7">
+                                        <div class="position-relative card-img hover-effect-1" style="position: relative; overflow: hidden; border-radius: 16px; cursor: pointer;">
+                                            <div class="card-img-top">
+                                                <a href="{{ route('service', $our_organization->slug) }}">
+                                                    <img src="{{ Storage::url($our_organization->image) }}" alt="">
+                                                </a>
+                                            </div>
                                         </div>
+                                        </div>
+                                        <div class="col-lg-5">
+                                        <h4>
+                                            <a href="{{ route('service', $our_organization->slug) }}">{{ $our_organization->name }}</a>
+                                        </h4>
+                                        <p class="word-litmit card-text" style="font-weight: 400;">
+                                               {!! $our_organization->description !!}
+                                            </p>
+                                            </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                     @endforeach
                 </div>
             </div>
@@ -253,45 +218,93 @@
 
     @if (count($testimonials) > 0)
         <section class="testimonial_sec">
-            <div class="v_text left_v">TESTIMONIES</div>
+            <div class="tp-testimonial-area tp-testimonial-bg position-relative">
+                <div class="tp-testimonial-global">
+                    <img alt="" class="global-img" style="color:transparent" src="{{ asset('frontend_assets/images/global.png') }}">
+                </div>
+            </div>
+            
+            
             <div class="container">
-                <div class="row align-items-center justify-content-center mb-5">
-                    <div class="col-lg-6">
-                        <div class="about_text heading_hp text-center text_white">
+                <div class="row align-items-center justify-content-center mb-5 mx-0">
+                    <div class="col-lg-6 px-0">
+                        <div class="about_text heading_hp text-center text_white position-relative">
                             <h6></h6>
                             <h2>{{ $home['section_5_title'] ?? 'title' }}</h2>
                         </div>
                     </div>
                 </div>
-                <div class="row align-items-center justify-content-center mb-5">
-                    <div class="col-xl-8 col-lg-10">
-                        <div class="testimonial_slider">
-                            @foreach ($testimonials as $key => $item)
-                                <div class="client">
-                                    <div class="testimonial_box {{ $key % 2 == 0 ? '' : 'testimonial_box_2' }}">
-                                        <div class="client_img">
-                                            <img src="{{ Storage::url($item->image) }}" alt="">
-                                        </div>
-                                        <div class="client-text">
-                                            <h2>{{ $item->name ?? 'N/A' }}<span>{{ $item->address ?? 'N/A' }}</span></h2>
-                                            <div class="srlt" id="">
-                                                {!! $item->description !!}
-                                            </div>
-                                            <div>
-
-                                            </div>
-                                        </div>
-                                    </div>
+            </div>
+            <div class="testimonial_slider">
+                @foreach ($testimonials as $key => $item)
+                    <div class="client">
+                        <div class="testimonial_box testimonial_box_1">
+                            <div class="d-flex">
+                                <div class="client_img">
+                                    <img src="{{ Storage::url($item->image) }}" alt="">
                                 </div>
-                            @endforeach
+                                <h2>{{ $item->name ?? 'N/A' }}<span>{{ $item->address ?? 'N/A' }}</span></h2>
+                            </div>                            
+                            <div class="client-text">                                
+                                <div class="srlt" id="">
+                                    {!! $item->description !!}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <div class="client">
+                        <div class="testimonial_box testimonial_box_2">
+                            <div class="d-flex">
+                                <div class="client_img">
+                                    <img src="{{ Storage::url($item->image) }}" alt="">
+                                </div>
+                                <h2>{{ $item->name ?? 'N/A' }}<span>{{ $item->address ?? 'N/A' }}</span></h2>
+                            </div>                            
+                            <div class="client-text">                                
+                                <div class="srlt" id="">
+                                    {!! $item->description !!}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="client">
+                        <div class="testimonial_box testimonial_box_3">
+                            <div class="d-flex">
+                                <div class="client_img">
+                                    <img src="{{ Storage::url($item->image) }}" alt="">
+                                </div>
+                                <h2>{{ $item->name ?? 'N/A' }}<span>{{ $item->address ?? 'N/A' }}</span></h2>
+                            </div>                            
+                            <div class="client-text">                                
+                                <div class="srlt" id="">
+                                    {!! $item->description !!}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="client">
+                        <div class="testimonial_box testimonial_box_4">
+                            <div class="d-flex">
+                                <div class="client_img">
+                                    <img src="{{ Storage::url($item->image) }}" alt="">
+                                </div>
+                                <h2>{{ $item->name ?? 'N/A' }}<span>{{ $item->address ?? 'N/A' }}</span></h2>
+                            </div>                            
+                            <div class="client-text">                                
+                                <div class="srlt" id="">
+                                    {!! $item->description !!}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                @endforeach
             </div>
+            
         </section>
     @endif
 
-    @if (count($galleries) > 0)
+    <!-- @if (count($galleries) > 0)
         <section class="gallery_sec margin_27">
             <div class="gallery_slider">
                 @foreach ($galleries as $galary)
@@ -301,7 +314,7 @@
                 @endforeach
             </div>
         </section>
-    @endif
+    @endif -->
 @endsection
 
 @push('scripts')
