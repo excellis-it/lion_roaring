@@ -359,7 +359,7 @@
 /*    width: 60%;*/
 /*}*/
 .heading_hp h2 {
-        font-size: 20px;
+        font-size: 30px;
     }
 .book .page.first_page {
     padding: 20px 20px;
@@ -627,6 +627,40 @@
     }
     .wrap h4{
         font-size: 14px;
+    }
+        .promo-box-container {
+        max-width: 400px;
+    }
+        .promo-box-container .title {
+        font-size: 18px;
+        line-height: 24px;
+    }
+    .card-img-top{
+        height: 250px;
+    }
+        .real_solution_sec h4 a {
+        font-size: 24px;
+    }
+    .article.card-4 .card-body{
+            padding: 40px 34px 55px 34px;
+    }
+        .real_solution_sec {
+        padding: 30px 0;
+    }
+    .after_about.after_about_hm {
+    padding: 30px 0px;
+    }
+    .heading_hp h2 {
+        font-size: 14px;
+    }
+        .heading_hp h4 {
+        font-size: 12px;
+    }
+    .flex-fixed{
+        font-size: 14px;
+    }
+        .about_sec {
+        padding: 30px 0;
     }
 }
 

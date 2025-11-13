@@ -106,11 +106,11 @@
                 <div class="col-xxl-5 col-lg-6 mb-4" data-aos="fade-up" data-aos-duration="1000">
                     <div class="four_image">
                         <div class="row align-items-center justify-content-center">
-                            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6 mb-4 top-imgs" data-aos="fade-right" data-aos-duration="800">
+                            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6 mb-4 col-6 top-imgs" data-aos="fade-right" data-aos-duration="800">
                                 <img src="{{asset('frontend_assets/images/abt_one.png')}}" class="about_four_ii mb-3">
                                 <img src="{{asset('frontend_assets/images/abt_one1.png')}}" class="about_four_ii mb-3">
                             </div>
-                            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6 mb-4 bottom-img" data-aos="fade-up" data-aos-duration="1600">
+                            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-6 col-6 mb-4 bottom-img" data-aos="fade-up" data-aos-duration="1600">
                                 <img src="{{asset('frontend_assets/images/abt_one2.png')}}" class="about_four_ii mb-3 mt-5">
                                 <img src="{{asset('frontend_assets/images/abt_one3.jpg')}}" class="about_four_ii mb-3">
                             </div>
