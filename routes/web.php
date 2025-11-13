@@ -315,12 +315,13 @@ Route::middleware(['userActivity'])->group(function () {
 
     // Country-code masked home (won't affect other routes due to tight constraint)
     Route::get('/{cc}', function (string $cc) {
-        $row = Country::whereRaw('LOWER(code) = ?', [strtolower($cc)])->first();
+        $row = Country::with('languages')->whereRaw('LOWER(code) = ?', [strtolower($cc)])->first();
         if ($row) {
             $ip = request()->ip();
             session([
                 'visitor_country_code_' . $ip => strtoupper($row->code),
                 'visitor_country_name_' . $ip => $row->name,
+                'visitor_country_languages' => $row->languages,
             ]);
         }
         return app(CmsController::class)->index();

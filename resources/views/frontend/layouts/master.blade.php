@@ -261,11 +261,11 @@
                                         }
                                         return null;
                                     }
-                                    
+
                                     // Get user's timezone based on IP address
                                     $ip = $_SERVER['REMOTE_ADDR'];
                                     $timezone = getTimezoneFromIp($ip);
-                                    
+
                                     if ($timezone) {
                                         // Set the default timezone
                                         date_default_timezone_set($timezone);
@@ -273,10 +273,10 @@
                                         // Fallback timezone
                                         date_default_timezone_set('UTC');
                                     }
-                                    
+
                                     // Get the current hour in 24-hour format
                                     $time = date('H');
-                                    
+
                                     // Determine greeting based on time
                                     if ($time < '12') {
                                         echo 'Perfect morning';
@@ -693,6 +693,7 @@
         </main>
         <script>
             var register_page_route = "{{ route('register') }}";
+           
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
@@ -715,16 +716,175 @@
                 document.getElementById("time_zone").value = timezone;
             });
         </script>
+
+        {{-- <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+        </script>
+
         <script type="text/javascript">
             function googleTranslateElementInit() {
                 new google.translate.TranslateElement({
                     pageLanguage: 'en'
                 }, 'google_translate_element');
             }
+        </script> --}}
+        <!-- make sure this line sets the session languages (you already have this) -->
+        <script>
+            // example: [{"id":202,"code":"es","name":"Spanish",...}, {"id":249,"code":"en","name":"English",...}]
+            window.sessionLanguages = @json(session('visitor_country_languages') ?? []);
         </script>
 
+        <!-- Google Translate initialization + robust allowed-language logic -->
+        <script type="text/javascript">
+            /**
+             * parseLanguages(data)
+             * - Accepts either:
+             *   1) flat array of language objects: [{code:'es', name:'Spanish'}, ...]
+             *   2) nested weird session shape used earlier
+             * - Returns a Set of language codes (strings), ensures 'en' is present.
+             */
+            function parseLanguages(data) {
+                const codes = new Set();
+
+                if (!data) {
+                    codes.add('en');
+                    return codes;
+                }
+
+                // If it's a flat array of objects like [{code:'es'}, {code:'en'}]
+                if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'object' && data[0] !== null && 'code' in data[
+                        0]) {
+                    data.forEach(lang => {
+                        if (lang && lang.code) codes.add(String(lang.code));
+                    });
+                    codes.add('en');
+                    return codes;
+                }
+
+                // Fallback: attempt to safely traverse nested structure (previous attempts)
+                try {
+                    const arr = Array.isArray(data) ? data : [data];
+                    arr.forEach(item => {
+                        const innerArray = Array.isArray(item) ? item : [item];
+                        innerArray.forEach(inner => {
+                            if (!inner || typeof inner !== 'object') return;
+                            Object.values(inner).forEach(val => {
+                                const list = Array.isArray(val) ? val : [val];
+                                list.forEach(lang => {
+                                    if (lang && typeof lang === 'object' && lang.code) {
+                                        codes.add(String(lang.code));
+                                    }
+                                });
+                            });
+                        });
+                    });
+                } catch (e) {
+                    console.error('parseLanguages fallback error', e);
+                }
+
+                codes.add('en'); // always include English
+                return codes;
+            }
+
+            /**
+             * buildIncludedLanguagesString(sessionData)
+             * - Returns the comma-separated string expected by Google Translate's includedLanguages option.
+             */
+            function buildIncludedLanguagesString(sessionData) {
+                const codes = parseLanguages(sessionData);
+                // convert to comma-separated string (Google expects e.g., 'en,es,fr')
+                return Array.from(codes).join(',');
+            }
+
+            /**
+             * waitForTranslateSelect(callback)
+             * - Uses MutationObserver to wait for the Google Translate select (.goog-te-combo)
+             * - Calls callback(selectElement) when it appears.
+             */
+            function waitForTranslateSelect(callback, timeout = 4000) {
+                // If already exists, call immediately
+                const existing = document.querySelector('.goog-te-combo');
+                if (existing) {
+                    callback(existing);
+                    return;
+                }
+
+                const observer = new MutationObserver((mutations, obs) => {
+                    const el = document.querySelector('.goog-te-combo');
+                    if (el) {
+                        obs.disconnect();
+                        callback(el);
+                    }
+                });
+
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+
+                // safety timeout to disconnect and call callback with null if not found
+                setTimeout(() => {
+                    try {
+                        observer.disconnect();
+                    } catch (e) {}
+                    const el = document.querySelector('.goog-te-combo');
+                    callback(el);
+                }, timeout);
+            }
+
+            /**
+             * forceSelectValue(selectEl, value)
+             * - Safely forces the .goog-te-combo select to a value (language code) if option exists.
+             */
+            function forceSelectValue(selectEl, value) {
+                if (!selectEl) return;
+                // find option with value matching code (some Google builds use full name like 'es' or 'es|es')
+                let found = Array.from(selectEl.options).find(opt => opt.value === value || opt.value.startsWith(value + '|') ||
+                    opt.text.toLowerCase().includes(value.toLowerCase()));
+                if (found) {
+                    selectEl.value = found.value;
+                    // trigger change event so Google Translate applies the language
+                    const evt = document.createEvent('HTMLEvents');
+                    evt.initEvent('change', true, true);
+                    selectEl.dispatchEvent(evt);
+                } else {
+                    // fallback: pick the first option (which usually is 'English' due to pageLanguage)
+                    // but only if it's not already English
+                    // do nothing otherwise
+                }
+            }
+
+            /**
+             * googleTranslateElementInit
+             * - Called by Google's script callback
+             * - Uses includedLanguages built from session languages
+             */
+            function googleTranslateElementInit() {
+                const includedLanguages = buildIncludedLanguagesString(window.sessionLanguages || []);
+                new google.translate.TranslateElement({
+                    pageLanguage: 'en',
+                    includedLanguages: includedLanguages,
+                    //   layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+                }, 'google_translate_element');
+
+                // Wait for the dropdown, then force English (en) as selected
+                waitForTranslateSelect(function(selectEl) {
+                    if (!selectEl) {
+                        console.warn('Google translate select not found.');
+                        return;
+                    }
+                    // Force English code 'en' if available, otherwise try to choose a matching option
+                    forceSelectValue(selectEl, 'en');
+                }, 5000);
+            }
+        </script>
+
+        <!-- Google Translate Library (keeps the callback name googleTranslateElementInit) -->
         <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
         </script>
+
+
+
+
 
         {{-- <style>
             /* HIDE GOOGLE TRANSLATE TOOLBAR */
