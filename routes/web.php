@@ -531,6 +531,11 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
         // 'meetings' => MeetingSchedulingController::class,
     ]);
 
+    // User Activity pages and AJAX routes
+
+    // Separate list page (activities table)
+    Route::get('/get-user-activity/list', [UserActivityController::class, 'listPage'])->name('user-activity-get-list');
+
     // User Activity AJAX routes
 
     Route::get('/get-user-activity/get-activities', [UserActivityController::class, 'getActivities'])->name('user-activity-get-activities');
