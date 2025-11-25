@@ -118,7 +118,7 @@ endpoints:
         name: stripeToken
         description: required.
         required: false
-        example: ab
+        example: ad
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -134,7 +134,7 @@ endpoints:
       postcode: ZP74857
       amount: 150
       country_id: 2
-      stripeToken: ab
+      stripeToken: ad
     fileParameters: []
     responses: []
     responseFields: []

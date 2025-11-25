@@ -1,16 +1,16 @@
-name: Policy
+name: Strategy
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v3/user/policy/load
+    uri: api/v3/user/strategy/load
     metadata:
-      groupName: Policy
+      groupName: Strategy
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Policies List'
+      title: 'Strategies List'
       description: ''
       authenticated: true
       custom: []
@@ -49,7 +49,7 @@ endpoints:
                          "user_id": 37,
                          "file_name": "dummy (1).pdf",
                          "file_extension": "pdf",
-                         "file": "policies/06C4cc8uACENraZzOjILXIY5QIg4QQrDESsT5Kqv.pdf",
+                         "file": "strategies/06C4cc8uACENraZzOjILXIY5QIg4QQrDESsT5Kqv.pdf",
                          "created_at": "2024-11-11T07:02:33.000000Z",
                          "updated_at": "2024-11-11T07:02:33.000000Z"
                      },
@@ -58,7 +58,7 @@ endpoints:
                          "user_id": 1,
                          "file_name": "partner-Photoroom.jpg",
                          "file_extension": "jpg",
-                         "file": "policies/L4u3mwqeGc8BuCuHXR5X9ZYOPbV2SYgQcvqDIiIN.jpg",
+                         "file": "strategies/L4u3mwqeGc8BuCuHXR5X9ZYOPbV2SYgQcvqDIiIN.jpg",
                          "created_at": "2024-08-27T06:34:46.000000Z",
                          "updated_at": "2024-08-27T06:34:46.000000Z"
                      },
@@ -67,15 +67,15 @@ endpoints:
                          "user_id": 1,
                          "file_name": "A2ncCVFTo7T9zg1wjM9BPyX9u1PctUGVsPi8oEXb.jpg",
                          "file_extension": "jpg",
-                         "file": "policies/1sk1WN3iEFUA3ztNYNCApyqR5jKg2RyLSBXHk1oP.jpg",
+                         "file": "strategies/1sk1WN3iEFUA3ztNYNCApyqR5jKg2RyLSBXHk1oP.jpg",
                          "created_at": "2024-08-27T06:34:46.000000Z",
                          "updated_at": "2024-08-27T06:34:46.000000Z"
                      }
                  ],
-                 "first_page_url": "http://127.0.0.1:8000/api/v3/user/policy/load?page=1",
+                 "first_page_url": "http://127.0.0.1:8000/api/v3/user/strategy/load?page=1",
                  "from": 1,
                  "last_page": 1,
-                 "last_page_url": "http://127.0.0.1:8000/api/v3/user/policy/load?page=1",
+                 "last_page_url": "http://127.0.0.1:8000/api/v3/user/strategy/load?page=1",
                  "links": [
                      {
                          "url": null,
@@ -83,7 +83,7 @@ endpoints:
                          "active": false
                      },
                      {
-                         "url": "http://127.0.0.1:8000/api/v3/user/policy/load?page=1",
+                         "url": "http://127.0.0.1:8000/api/v3/user/strategy/load?page=1",
                          "label": "1",
                          "active": true
                      },
@@ -94,7 +94,7 @@ endpoints:
                      }
                  ],
                  "next_page_url": null,
-                 "path": "http://127.0.0.1:8000/api/v3/user/policy/load",
+                 "path": "http://127.0.0.1:8000/api/v3/user/strategy/load",
                  "per_page": 15,
                  "prev_page_url": null,
                  "to": 3,
@@ -106,7 +106,7 @@ endpoints:
         custom: []
       -
         status: 201
-        content: '{"error": "Failed to fetch policies."}'
+        content: '{"error": "Failed to fetch strategies."}'
         headers: []
         description: error
         custom: []
@@ -122,13 +122,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v3/user/policy/store
+    uri: api/v3/user/strategy/store
     metadata:
-      groupName: Policy
+      groupName: Strategy
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create policies'
+      title: 'Create strategies'
       description: ''
       authenticated: true
       custom: []
@@ -157,13 +157,13 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"message": "Policy(s) uploaded successfully."}'
+        content: '{"message": "Strategy(s) uploaded successfully."}'
         headers: []
         description: success
         custom: []
       -
         status: 201
-        content: '{"error": "Validation failed or duplicate policy found."}'
+        content: '{"error": "Validation failed or duplicate strategy found."}'
         headers: []
         description: error
         custom: []
@@ -179,13 +179,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v3/user/policy/delete/{id}'
+    uri: 'api/v3/user/strategy/delete/{id}'
     metadata:
-      groupName: Policy
+      groupName: Strategy
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Delete policy'
+      title: 'Delete strategy'
       description: ''
       authenticated: true
       custom: []
@@ -196,16 +196,16 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the policy to delete.'
+        description: 'The ID of the strategy to delete.'
         required: true
-        example: 18
+        example: 20
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 18
+      id: 20
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -214,13 +214,13 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"message": "Policy deleted successfully."}'
+        content: '{"message": "Strategy deleted successfully."}'
         headers: []
         description: success
         custom: []
       -
         status: 201
-        content: '{"error": "Policy not found or permission denied."}'
+        content: '{"error": "Strategy not found or permission denied."}'
         headers: []
         description: error
         custom: []
@@ -236,13 +236,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v3/user/policy/download/{id}'
+    uri: 'api/v3/user/strategy/download/{id}'
     metadata:
-      groupName: Policy
+      groupName: Strategy
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Download policy file'
+      title: 'Download strategy file'
       description: ''
       authenticated: true
       custom: []
@@ -255,14 +255,14 @@ endpoints:
         name: id
         description: 'The ID of the download.'
         required: true
-        example: quae
+        example: architecto
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: quae
+      id: architecto
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -277,7 +277,7 @@ endpoints:
         custom: []
       -
         status: 201
-        content: '{"error": "Policy not found or permission denied."}'
+        content: '{"error": "Strategy not found or permission denied."}'
         headers: []
         description: error
         custom: []
@@ -293,13 +293,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v3/user/policy/view/{id}'
+    uri: 'api/v3/user/strategy/view/{id}'
     metadata:
-      groupName: Policy
+      groupName: Strategy
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Single Policy details'
+      title: 'Single Strategy details'
       description: ''
       authenticated: true
       custom: []
@@ -310,16 +310,16 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The ID of the policy to view.'
+        description: 'The ID of the strategy to view.'
         required: true
-        example: 3
+        example: 12
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 3
+      id: 12
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -328,13 +328,13 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"data": {"id": 1, "file_name": "strategy1.pdf", "file_extension": "pdf", "user_id": 1, "file": "policies/strategy1.pdf"}}'
+        content: '{"data": {"id": 1, "file_name": "strategy1.pdf", "file_extension": "pdf", "user_id": 1, "file": "strategies/strategy1.pdf"}}'
         headers: []
         description: success
         custom: []
       -
         status: 201
-        content: '{"error": "Policy not found or permission denied."}'
+        content: '{"error": "Strategy not found or permission denied."}'
         headers: []
         description: error
         custom: []

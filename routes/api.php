@@ -36,6 +36,7 @@ use App\Http\Controllers\Api\EstoreCmsController;
 use App\Http\Controllers\Api\FCMController;
 use App\Http\Controllers\Api\SizeController;
 use App\Http\Controllers\Api\PrivateCollaborationController;
+use App\Http\Controllers\Api\UserActivityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -314,6 +315,18 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             // Zoom SDK signature for API clients
             Route::post('/zoom-signature', [MeetingController::class, 'zoomSignature']);
             Route::get('/meetings-calender-fetch-data', [MeetingController::class, 'fetchCalenderData']);
+        });
+
+        // User activity APIs
+        Route::prefix('user-activity')->group(function () {
+            // Log an activity (requires auth)
+            Route::post('/log', [UserActivityController::class, 'log']);
+            // List activities (requires 'Manage User Activity' permission)
+            Route::post('/list', [UserActivityController::class, 'list']);
+            // Summary endpoints
+            Route::post('/by-country', [UserActivityController::class, 'byCountry']);
+            Route::post('/by-user', [UserActivityController::class, 'byUser']);
+            Route::post('/by-type', [UserActivityController::class, 'byType']);
         });
 
         Route::prefix('private-collaborations')->group(function () {
