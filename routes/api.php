@@ -74,6 +74,8 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
         Route::get('/header', [EstoreController::class, 'header']);
         // Footer CMS
         Route::get('/footer', [EstoreController::class, 'footer']);
+        // Category menu (nested categories for e-store nav)
+        Route::get('/categories/menu', [EstoreController::class, 'menuCategories']);
         // Newsletter subscribe (public)
         Route::post('/newsletter', [EstoreController::class, 'newsletterStore']);
     });

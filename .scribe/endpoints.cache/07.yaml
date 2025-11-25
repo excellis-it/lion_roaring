@@ -576,14 +576,14 @@ endpoints:
         name: id
         description: 'The ID of the update.'
         required: true
-        example: ab
+        example: numquam
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: ab
+      id: numquam
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -591,7 +591,7 @@ endpoints:
         name: role
         description: "'role' => 'required',."
         required: true
-        example: eos
+        example: sunt
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -748,7 +748,7 @@ endpoints:
         nullable: false
         custom: []
     cleanBodyParameters:
-      role: eos
+      role: sunt
       first_name: John
       last_name: Doe
       middle_name: Smith
@@ -816,14 +816,14 @@ endpoints:
         name: id
         description: 'The ID of the partner to delete.'
         required: true
-        example: 10
+        example: 17
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 10
+      id: 17
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []

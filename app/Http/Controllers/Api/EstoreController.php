@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @group E-Store Public APIs
@@ -73,6 +74,52 @@ class EstoreController extends Controller
                 ],
                 'status' => true
             ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Something went wrong. Please try again later.', 'status' => false], 201);
+        }
+    }
+
+    /**
+     * Category Menu (nested)
+     *
+     * Returns categories in nested tree format for the e-store menu.
+     *
+     * @response 200 {
+     *  "data": [
+     *    {
+     *      "id": 1,
+     *      "name": "Books",
+     *      "slug": "books",
+     *      "children": [
+     *         { "id": 2, "name": "Bibles", "slug": "bibles", children: [] }
+     *      ]
+     *    }
+     *  ],
+     *  "status": true
+     * }
+     */
+    public function menuCategories(Request $request)
+    {
+        try {
+            // Load parent categories with nested children up to 3 levels to prevent N+1
+            $parents = Category::whereNull('parent_id')->where('status', 1)
+                ->with(['children.children.children'])
+                ->orderBy('name', 'asc')
+                ->get();
+
+            $buildNode = function ($cat) use (&$buildNode) {
+                return [
+                    'id' => $cat->id,
+                    'name' => $cat->name,
+                    'slug' => $cat->slug,
+                    'image' => $cat->image ? Storage::url($cat->image) : null,
+                    'children' => $cat->children->map(fn($c) => $buildNode($c))->values()->all(),
+                ];
+            };
+
+            $tree = $parents->map(fn($c) => $buildNode($c))->values()->all();
+
+            return response()->json(['data' => $tree, 'status' => true], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong. Please try again later.', 'status' => false], 201);
         }

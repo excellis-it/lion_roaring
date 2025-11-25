@@ -78,21 +78,21 @@ endpoints:
         name: country_code
         description: "optional Two-letter country code to localize content. Default is 'US'."
         required: false
-        example: nesciunt
+        example: rerum
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanQueryParameters:
-      country_code: nesciunt
+      country_code: rerum
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
-        status: 201
-        content: '{"message":"Something went wrong. Please try again later.","status":false}'
+        status: 200
+        content: '{"data":{"header_logo":null,"categories":[{"id":33,"parent_id":null,"name":"Healthcare and Medicine Products and Services","slug":"healthcare-and-medicine","image":"category\/compressed_20251015033708_68ef4f249133c.webp","background_image":null,"meta_title":null,"meta_description":null,"status":1,"main":0,"created_at":"2025-09-30T02:43:56.000000Z","updated_at":"2025-10-15T09:07:09.000000Z"},{"id":32,"parent_id":null,"name":"Science and Technology Product and Services","slug":"science-and-technology-product-and-services","image":"category\/compressed_20251015033707_68ef4f23b14c1.webp","background_image":null,"meta_title":null,"meta_description":null,"status":1,"main":0,"created_at":"2025-09-30T02:37:47.000000Z","updated_at":"2025-10-15T09:07:08.000000Z"},{"id":26,"parent_id":null,"name":"Education Products and Services","slug":"Education-center","image":"category\/compressed_20251015033706_68ef4f2290208.webp","background_image":null,"meta_title":"Innovation Center","meta_description":"This is the innovation parent category","status":1,"main":0,"created_at":"2025-09-11T13:32:12.000000Z","updated_at":"2025-10-15T09:07:07.000000Z"},{"id":23,"parent_id":null,"name":"Agriculture Products and Services","slug":"agriculture","image":"category\/compressed_20251015033705_68ef4f21a5a18.webp","background_image":null,"meta_title":"Agriculture","meta_description":"This is the Parent Category of Agriculture","status":1,"main":0,"created_at":"2025-09-11T13:16:31.000000Z","updated_at":"2025-10-15T09:07:06.000000Z"}],"pages":[]},"status":true}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
@@ -130,14 +130,14 @@ endpoints:
         name: country_code
         description: "optional Two-letter country code to localize content. Default is 'US'."
         required: false
-        example: ipsa
+        example: odio
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanQueryParameters:
-      country_code: ipsa
+      country_code: odio
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -152,6 +152,55 @@ endpoints:
           x-ratelimit-remaining: '57'
           access-control-allow-origin: '*'
         description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v3/e-store/categories/menu
+    metadata:
+      groupName: 'E-Store Public APIs'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Category Menu (nested)'
+      description: 'Returns categories in nested tree format for the e-store menu.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "data": [
+             {
+               "id": 1,
+               "name": "Books",
+               "slug": "books",
+               "children": [
+                  { "id": 2, "name": "Bibles", "slug": "bibles", children: [] }
+               ]
+             }
+           ],
+           "status": true
+          }
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []
@@ -184,7 +233,7 @@ endpoints:
         name: newsletter_name
         description: 'Must not be greater than 255 characters.'
         required: false
-        example: mdakheuaw
+        example: mpqbjstazvqd
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -194,7 +243,7 @@ endpoints:
         name: newsletter_email
         description: 'Must be a valid email address.'
         required: true
-        example: marvin.ava@example.com
+        example: margret.ohara@example.org
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -204,16 +253,16 @@ endpoints:
         name: newsletter_message
         description: 'Must not be greater than 1000 characters.'
         required: false
-        example: blwgmbtxfwcusozmts
+        example: eazzkeosew
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: true
         custom: []
     cleanBodyParameters:
-      newsletter_name: mdakheuaw
-      newsletter_email: marvin.ava@example.com
-      newsletter_message: blwgmbtxfwcusozmts
+      newsletter_name: mpqbjstazvqd
+      newsletter_email: margret.ohara@example.org
+      newsletter_message: eazzkeosew
     fileParameters: []
     responses: []
     responseFields: []
