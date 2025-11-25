@@ -43,7 +43,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '60'
-          x-ratelimit-remaining: '59'
+          x-ratelimit-remaining: '57'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -76,26 +76,26 @@ endpoints:
         name: country_code
         description: "optional Two-letter country code to localize content. Default is 'US'."
         required: false
-        example: rerum
+        example: ea
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanQueryParameters:
-      country_code: rerum
+      country_code: ea
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"data":{"header_logo":null,"categories":[{"id":33,"parent_id":null,"name":"Healthcare and Medicine Products and Services","slug":"healthcare-and-medicine","image":"category\/compressed_20251015033708_68ef4f249133c.webp","background_image":null,"meta_title":null,"meta_description":null,"status":1,"main":0,"created_at":"2025-09-30T02:43:56.000000Z","updated_at":"2025-10-15T09:07:09.000000Z"},{"id":32,"parent_id":null,"name":"Science and Technology Product and Services","slug":"science-and-technology-product-and-services","image":"category\/compressed_20251015033707_68ef4f23b14c1.webp","background_image":null,"meta_title":null,"meta_description":null,"status":1,"main":0,"created_at":"2025-09-30T02:37:47.000000Z","updated_at":"2025-10-15T09:07:08.000000Z"},{"id":26,"parent_id":null,"name":"Education Products and Services","slug":"Education-center","image":"category\/compressed_20251015033706_68ef4f2290208.webp","background_image":null,"meta_title":"Innovation Center","meta_description":"This is the innovation parent category","status":1,"main":0,"created_at":"2025-09-11T13:32:12.000000Z","updated_at":"2025-10-15T09:07:07.000000Z"},{"id":23,"parent_id":null,"name":"Agriculture Products and Services","slug":"agriculture","image":"category\/compressed_20251015033705_68ef4f21a5a18.webp","background_image":null,"meta_title":"Agriculture","meta_description":"This is the Parent Category of Agriculture","status":1,"main":0,"created_at":"2025-09-11T13:16:31.000000Z","updated_at":"2025-10-15T09:07:06.000000Z"}],"pages":[]},"status":true}'
+        content: '{"data":{"header_logo":null,"categories":[{"id":42,"parent_id":32,"name":"test 2","slug":"test2","image":"category\/compressed_20251015033707_68ef4f23b14c1.webp","background_image":null,"meta_title":null,"meta_description":null,"status":1,"main":0,"created_at":"2025-09-30T02:37:47.000000Z","updated_at":"2025-10-15T09:07:08.000000Z"},{"id":33,"parent_id":null,"name":"Healthcare and Medicine Products and Services","slug":"healthcare-and-medicine","image":"category\/compressed_20251015033708_68ef4f249133c.webp","background_image":null,"meta_title":null,"meta_description":null,"status":1,"main":0,"created_at":"2025-09-30T02:43:56.000000Z","updated_at":"2025-10-15T09:07:09.000000Z"},{"id":32,"parent_id":null,"name":"Science and Technology Product and Services","slug":"science-and-technology-product-and-services","image":"category\/compressed_20251015033707_68ef4f23b14c1.webp","background_image":null,"meta_title":null,"meta_description":null,"status":1,"main":0,"created_at":"2025-09-30T02:37:47.000000Z","updated_at":"2025-10-15T09:07:08.000000Z"},{"id":26,"parent_id":null,"name":"Education Products and Services","slug":"Education-center","image":"category\/compressed_20251015033706_68ef4f2290208.webp","background_image":null,"meta_title":"Innovation Center","meta_description":"This is the innovation parent category","status":1,"main":0,"created_at":"2025-09-11T13:32:12.000000Z","updated_at":"2025-10-15T09:07:07.000000Z"},{"id":23,"parent_id":null,"name":"Agriculture Products and Services","slug":"agriculture","image":"category\/compressed_20251015033705_68ef4f21a5a18.webp","background_image":null,"meta_title":"Agriculture","meta_description":"This is the Parent Category of Agriculture","status":1,"main":0,"created_at":"2025-09-11T13:16:31.000000Z","updated_at":"2025-10-15T09:07:06.000000Z"}],"pages":[]},"status":true}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '60'
-          x-ratelimit-remaining: '58'
+          x-ratelimit-remaining: '56'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -128,14 +128,14 @@ endpoints:
         name: country_code
         description: "optional Two-letter country code to localize content. Default is 'US'."
         required: false
-        example: odio
+        example: ex
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanQueryParameters:
-      country_code: odio
+      country_code: ex
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -147,7 +147,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '60'
-          x-ratelimit-remaining: '57'
+          x-ratelimit-remaining: '55'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -231,7 +231,7 @@ endpoints:
         name: newsletter_name
         description: 'Must not be greater than 255 characters.'
         required: false
-        example: mpqbjstazvqd
+        example: bvtfepqh
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -241,7 +241,7 @@ endpoints:
         name: newsletter_email
         description: 'Must be a valid email address.'
         required: true
-        example: margret.ohara@example.org
+        example: ugaylord@example.net
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -251,20 +251,87 @@ endpoints:
         name: newsletter_message
         description: 'Must not be greater than 1000 characters.'
         required: false
-        example: eazzkeosew
+        example: xefgzuapjjgnlfzdxph
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: true
         custom: []
     cleanBodyParameters:
-      newsletter_name: mpqbjstazvqd
-      newsletter_email: margret.ohara@example.org
-      newsletter_message: eazzkeosew
+      newsletter_name: bvtfepqh
+      newsletter_email: ugaylord@example.net
+      newsletter_message: xefgzuapjjgnlfzdxph
     fileParameters: []
     responses: []
     responseFields: []
     auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v3/user/e-store/update-location
+    metadata:
+      groupName: 'E-Store Public APIs'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update user location by latitude & longitude (authenticated)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      latitude:
+        name: latitude
+        description: 'The latitude coordinate.'
+        required: true
+        example: '38.8951'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      longitude:
+        name: longitude
+        description: 'The longitude coordinate.'
+        required: true
+        example: '-77.0364'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      latitude: '38.8951'
+      longitude: '-77.0364'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "success": true,
+           "message": "Location updated",
+           "location": {"latitude": "38.8951","longitude": "-77.0364","address":"..."}
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzkzNjcyNzVkMDdlMGY5ZTc5N2Y3NzdiMzFkZGFjZmFiMDAzOWI1Y2E1ZGJjZTQ3ZWY3MjIxMjQ3YTNlMTVlOTQ0YjJlNGY2Nzk2Yjc5MDQiLCJpYXQiOjE3NjQwNzcyMjguMDQyOTgyLCJuYmYiOjE3NjQwNzcyMjguMDQyOTgzLCJleHAiOjE3OTU2MTMyMjguMDM1OTI0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.d3N3fp6pTh1JxrRcDMwG0gLBsS0qyH4TWMsTpjbf_piH3rdfBj-04fL3inKHvOEGcZeFIFUr23DnEKVxNiHsiRYHpJz55K9Y0v-CRi4x8QxW9TIx9L63A0RaHGK044HKEq01mKy3_0ho-n2y2-s12umW92piu9A40h77UxhBMqfqHcIwwr3g77_lGtE530jLEFTSavVPHNiL2UtPIzjllRhXJO9LqALirv4txTkGiNs-3QfU4Q_suzKeU1esVJS6cOQ_lojFTeB26zq0ulDlVPYwx_ruWGyvqc4HbTwhUtCddXK-4IbXCyCWhqNqtPTRmBgtMyEy8atM6hbVFjYHDjlefUP0i6ejKmVaiEiIjTbgL2HotoGsRob1awoP5p9uYsixd0-G1OEGlPPL_wv9tlXwFBiU0M4iJnqaYZt6Cdf_MP79bd3ZcDrOaqF0ALTj6sopGau6Ml2zWr6PqChHl7G9ApnDPY_sVqSjovoDeKUhMVgNwogQCqdnbP508CYoKQtrHItBewCDmjMfekZllaMeWpU_3bnsPhfRQaL6R53uAFz5P2I_CtPcdY9W_HCBHHvTNnyrrPQhjBD_WEeT6-pm681nPKckz2qJCuHelQvb_T55SEIpq2QXw-hkMXGrXLF7imLsodNlURRKgIQLpXqdHv9EU2V5A7alUTbdDRQ'
     controller: null
     method: null
     route: null

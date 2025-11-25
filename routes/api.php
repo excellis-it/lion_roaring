@@ -151,6 +151,8 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
 
         Route::post('logout', [AuthController::class, 'logout']);
 
+
+
         Route::prefix('sizes')->group(function () {
             Route::get('/', [SizeController::class, 'index']);
             Route::post('/store', [SizeController::class, 'store']);
@@ -434,5 +436,15 @@ Route::prefix('v3')->middleware(['userActivity'])->group(function () {
             Route::post('remove-token', [FCMController::class, 'removeToken']);
             Route::post('test-notification', [FCMController::class, 'sendTestNotification']);
         });
+
+
+        // Estore Ecom user routes
+        // Update authenticated user's location by lat & lng (e-store)
+        Route::post('e-store/update-location', [EstoreController::class, 'updateLocation']);
+
+
+
+
+        //
     });
 });

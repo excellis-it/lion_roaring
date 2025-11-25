@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -168,6 +169,85 @@ class EstoreController extends Controller
             return response()->json(['message' => 'Thank you for subscribing to our newsletter', 'status' => true], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong. Please try again later.', 'status' => false], 201);
+        }
+    }
+
+    /**
+     * Update user location by latitude & longitude (authenticated)
+     *
+     * @authenticated
+     * @bodyParam latitude numeric required The latitude coordinate. Example: 38.8951
+     * @bodyParam longitude numeric required The longitude coordinate. Example: -77.0364
+     * @response 200 {
+     *  "success": true,
+     *  "message": "Location updated",
+     *  "location": {"latitude": "38.8951","longitude": "-77.0364","address":"..."}
+     * }
+     */
+    public function updateLocation(Request $request)
+    {
+        $request->validate([
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+        ]);
+
+        $lat = $request->latitude;
+        $lng = $request->longitude;
+
+        try {
+            // Call Google Geocoding API
+            $apiKey = env('GOOGLE_MAPS_API_KEY') ?? 'AIzaSyAL6T_r8Jr6opHuz__8c8iUvmTU30Kdomo';
+            $client = new Client();
+            $url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={$lat},{$lng}&key={$apiKey}";
+            $response = $client->get($url);
+            $data = json_decode($response->getBody(), true);
+
+            if (!empty($data['results'][0]) && ($data['status'] === 'OK')) {
+                $address = $data['results'][0]['formatted_address'] ?? null;
+                $zip = null;
+                $country = null;
+                $state = null;
+                foreach ($data['results'][0]['address_components'] as $component) {
+                    if (in_array('postal_code', $component['types'])) {
+                        $zip = $component['long_name'];
+                    }
+                    if (in_array('country', $component['types'])) {
+                        $country = $component['long_name'];
+                    }
+                    if (in_array('administrative_area_level_1', $component['types'])) {
+                        $state = $component['long_name'];
+                    }
+                }
+            } else {
+                $address = null;
+                $zip = null;
+                $country = null;
+                $state = null;
+            }
+
+            $user = auth()->user();
+            if (!$user) {
+                return response()->json(['status' => false, 'message' => 'Unauthenticated'], 201);
+            }
+
+            $user->location_lat = $lat;
+            $user->location_lng = $lng;
+            $user->location_address = $address;
+            $user->location_zip = $zip;
+            $user->location_country = $country;
+            $user->location_state = $state;
+            $user->save();
+
+            return response()->json(['status' => true, 'message' => 'Location updated', 'location' => [
+                'latitude' => $lat,
+                'longitude' => $lng,
+                'address' => $address,
+                'zip' => $zip,
+                'country' => $country,
+                'state' => $state,
+            ]], 200);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 201);
         }
     }
 }
