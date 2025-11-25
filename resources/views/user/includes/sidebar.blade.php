@@ -578,13 +578,35 @@
                 @endif
                 @if (Gate::check('Manage User Activity'))
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ Request::is('user/user-activity/*') ? 'active' : '' }}"
-                            href="{{ route('user-activity.index') }}" aria-expanded="false">
+                        <a class="sidebar-link {{ Request::is('user/user-activity*') ? 'active' : '' }}"
+                            href="javascript:void(0);" aria-expanded="false" data-bs-toggle="collapse"
+                            data-bs-target="#collapseUserActivity">
+
                             <span>
                                 <img src="{{ asset('user_assets/images/ICON/activity.png') }}" alt="">
                             </span>
                             <span class="hide-menu">User Activity</span>
                         </a>
+
+                        <div class="collapse {{ Request::is('user/user-activity*') ? 'show' : '' }}"
+                            id="collapseUserActivity">
+                            <div class="menu_bb">
+                                <a href="{{ route('user-activity.index') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/visual-data.png') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Activity Dashboard</span>
+                                </a>
+                                <a href="{{ route('user-activity-get-list') }}">
+                                    <span>
+                                        <img src="{{ asset('user_assets/images/ICON/completed-task.png') }}"
+                                            alt="">
+                                    </span>
+                                    <span>Activity List</span>
+                                </a>
+                            </div>
+                        </div>
                     </li>
                 @endif
                 {{-- @if (Auth::user()->hasRole('SUPER ADMIN'))

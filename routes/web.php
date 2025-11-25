@@ -116,17 +116,17 @@ Route::get('clear', function () {
     return "Optimize clear has been successfully";
 });
 
-// // make migration
-// Route::get('dbmigrate', function () {
-//     Artisan::call('migrate');
-//     return "Migration has been successfully";
-// });
+// make migration
+Route::get('dbmigrate', function () {
+    Artisan::call('migrate');
+    return "Migration has been successfully";
+});
 
-// // db seed
-// Route::get('dbseed', function () {
-//     Artisan::call('db:seed UserActivityPermissionSeeder');
-//     return "Database seeding has been successfully";
-// });
+// db seed
+Route::get('dbseed', function () {
+    Artisan::call('db:seed CountryPermissionSeeder');
+    return "Database seeding has been successfully";
+});
 
 Route::get('/admin', [AuthController::class, 'redirectAdminLogin']);
 Route::get('/admin/login', [AuthController::class, 'login'])->name('admin.login');
@@ -530,6 +530,11 @@ Route::prefix('user')->middleware(['user', 'preventBackHistory', 'userActivity']
         'user-activity' => UserActivityController::class,
         // 'meetings' => MeetingSchedulingController::class,
     ]);
+
+    // User Activity pages and AJAX routes
+
+    // Separate list page (activities table)
+    Route::get('/get-user-activity/list', [UserActivityController::class, 'listPage'])->name('user-activity-get-list');
 
     // User Activity AJAX routes
 

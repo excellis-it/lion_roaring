@@ -22,7 +22,7 @@ class UserActivityController extends Controller
     public function index(Request $request)
     {
         if (Auth::user()->can('Manage User Activity')) {
-            // Calculate statistics
+            // Calculate statistics for dashboard
             $stats = [
                 'total_activities' => UserActivity::count(),
                 'activities_by_country_count' => UserActivity::selectRaw('country_name, COUNT(*) as count')
@@ -40,7 +40,7 @@ class UserActivityController extends Controller
                     ->count(),
             ];
 
-            // Get unique values for filters
+            // Get unique values for filters (dashboard may show filter counts, but filters are used by list page)
             $filters = [
                 'countries' => UserActivity::selectRaw('DISTINCT country_name')
                     ->whereNotNull('country_name')
@@ -59,7 +59,38 @@ class UserActivityController extends Controller
                     ->pluck('user_roles'),
             ];
 
-            return view('user.user-activity.list', compact('stats', 'filters'));
+            return view('user.user-activity.dashboard', compact('stats', 'filters'));
+        } else {
+            abort(403, 'You do not have permission to access this page.');
+        }
+    }
+
+    /**
+     * Display the activity list page (separate from dashboard).
+     */
+    public function listPage(Request $request)
+    {
+        if (Auth::user()->can('Manage User Activity')) {
+            // Provide filters for the list page dropdowns
+            $filters = [
+                'countries' => UserActivity::selectRaw('DISTINCT country_name')
+                    ->whereNotNull('country_name')
+                    ->where('country_name', '!=', '')
+                    ->orderBy('country_name')
+                    ->pluck('country_name'),
+                'activity_types' => UserActivity::selectRaw('DISTINCT activity_type')
+                    ->whereNotNull('activity_type')
+                    ->where('activity_type', '!=', '')
+                    ->orderBy('activity_type')
+                    ->pluck('activity_type'),
+                'roles' => UserActivity::selectRaw('DISTINCT user_roles')
+                    ->whereNotNull('user_roles')
+                    ->where('user_roles', '!=', '-')
+                    ->orderBy('user_roles')
+                    ->pluck('user_roles'),
+            ];
+
+            return view('user.user-activity.list', compact('filters'));
         } else {
             abort(403, 'You do not have permission to access this page.');
         }
