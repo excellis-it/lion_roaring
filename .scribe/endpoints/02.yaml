@@ -19,8 +19,19 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      country_code:
+        name: country_code
+        description: "optional Two-letter country code to localize content. Default is 'US'."
+        required: false
+        example: US
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      country_code: US
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -60,8 +71,19 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      country_code:
+        name: country_code
+        description: "optional Two-letter country code to localize content. Default is 'US'."
+        required: false
+        example: nesciunt
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      country_code: nesciunt
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -101,15 +123,26 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      country_code:
+        name: country_code
+        description: "optional Two-letter country code to localize content. Default is 'US'."
+        required: false
+        example: ipsa
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      country_code: ipsa
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
-        status: 200
-        content: '{"data":{"id":1,"country_code":"US","footer_logo":"ecom_cms\/sMt06jwhCirg36ZzvwaB3hyRb0zC7XieXBvvEEAC.png","footer_title":"A Habitation Where Supernatural And Solution Intersects","footer_newsletter_title":"Don\u2019t miss our future updates! Get in touch today!","footer_address_title":"Lion Roaring","footer_address":"1070 20906 Frederick Rd STE A Germantown, MD 20876","footer_phone_number":"1 (240)-982-0054","footer_email":"info@lionroaring.com","footer_copywrite_text":"Copyright Lion Roaring PMA \u00a9 2023. All rights reserved. designed & developed by Excellis IT.","footer_facebook_link":"http:\/\/facebook.com","footer_twitter_link":null,"footer_instagram_link":null,"footer_youtube_link":null,"created_at":"2024-08-07T06:38:42.000000Z","updated_at":"2025-09-30T02:26:18.000000Z"},"status":true}'
+        status: 201
+        content: '{"message":"Footer not found","status":false}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
@@ -149,7 +182,7 @@ endpoints:
         name: newsletter_name
         description: 'Must not be greater than 255 characters.'
         required: false
-        example: wkkcgjiexvmdvyxv
+        example: mdakheuaw
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -159,7 +192,7 @@ endpoints:
         name: newsletter_email
         description: 'Must be a valid email address.'
         required: true
-        example: kiehn.hortense@example.org
+        example: marvin.ava@example.com
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -169,16 +202,16 @@ endpoints:
         name: newsletter_message
         description: 'Must not be greater than 1000 characters.'
         required: false
-        example: rlwoukdsrks
+        example: blwgmbtxfwcusozmts
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: true
         custom: []
     cleanBodyParameters:
-      newsletter_name: wkkcgjiexvmdvyxv
-      newsletter_email: kiehn.hortense@example.org
-      newsletter_message: rlwoukdsrks
+      newsletter_name: mdakheuaw
+      newsletter_email: marvin.ava@example.com
+      newsletter_message: blwgmbtxfwcusozmts
     fileParameters: []
     responses: []
     responseFields: []

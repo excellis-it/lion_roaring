@@ -139,14 +139,14 @@ endpoints:
         name: slug
         description: 'The slug of the product.'
         required: true
-        example: harum
+        example: suscipit
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      slug: harum
+      slug: suscipit
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -198,7 +198,7 @@ endpoints:
         description: 'Optional. Array of category IDs.'
         required: false
         example:
-          - laboriosam
+          - neque
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -208,7 +208,7 @@ endpoints:
         name: latestFilter
         description: 'Optional. Filter by latest, A-Z, Z-A.'
         required: false
-        example: consequuntur
+        example: rerum
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -218,7 +218,7 @@ endpoints:
         name: search
         description: 'Optional. Search by product name.'
         required: false
-        example: quisquam
+        example: tempora
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -228,7 +228,7 @@ endpoints:
         name: page
         description: 'Optional. Page number.'
         required: false
-        example: 13
+        example: 12
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -236,10 +236,10 @@ endpoints:
         custom: []
     cleanQueryParameters:
       'category_id[]':
-        - laboriosam
-      latestFilter: consequuntur
-      search: quisquam
-      page: 13
+        - neque
+      latestFilter: rerum
+      search: tempora
+      page: 12
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []

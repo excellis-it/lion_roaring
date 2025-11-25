@@ -18,6 +18,7 @@ applyTo: "**"
 -   Also check for blade files in resources/views/ for any API-related code.
 -   Also check views if any extra things are needed for API-related code.
 -   Always check routes/api.php for route definitions.
+-   Which db table have 'country_code' column, should ask for country code optionally in the API, otherwise filter by default country code 'US', add in scribe annotation with example: 'US'.
 -   For every new or updated API method, you MUST add or update proper Scribe annotations above functions:
     -- @group (for main module name)
     -- \* Feature Name (for every feature inside the module)

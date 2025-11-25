@@ -304,7 +304,7 @@ endpoints:
         name: id
         description: 'The <code>id</code> of an existing record in the colors table.'
         required: true
-        example: ratione
+        example: quasi
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -341,7 +341,7 @@ endpoints:
         nullable: false
         custom: []
     cleanBodyParameters:
-      id: ratione
+      id: quasi
       color: '"Medium"'
       color_name: '"Medium"'
       status: true
@@ -445,14 +445,14 @@ endpoints:
         name: id
         description: 'The <code>id</code> of an existing record in the colors table.'
         required: true
-        example: est
+        example: doloremque
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      id: est
+      id: doloremque
     fileParameters: []
     responses:
       -

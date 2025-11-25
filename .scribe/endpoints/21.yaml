@@ -304,7 +304,7 @@ endpoints:
         name: title
         description: ''
         required: true
-        example: et
+        example: a
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -314,7 +314,7 @@ endpoints:
         name: description
         description: ''
         required: false
-        example: 'Laboriosam adipisci eos voluptas consequatur nobis voluptatem cumque.'
+        example: 'Reprehenderit eum quasi non et nobis tenetur aspernatur.'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -324,7 +324,7 @@ endpoints:
         name: start_time
         description: ''
         required: true
-        example: enim
+        example: eius
         type: datetime
         enumValues: []
         exampleWasSpecified: false
@@ -334,7 +334,7 @@ endpoints:
         name: end_time
         description: ''
         required: true
-        example: nam
+        example: aut
         type: datetime
         enumValues: []
         exampleWasSpecified: false
@@ -344,7 +344,7 @@ endpoints:
         name: meeting_link
         description: ''
         required: false
-        example: voluptate
+        example: quo
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -361,11 +361,11 @@ endpoints:
         nullable: true
         custom: []
     cleanBodyParameters:
-      title: et
-      description: 'Laboriosam adipisci eos voluptas consequatur nobis voluptatem cumque.'
-      start_time: enim
-      end_time: nam
-      meeting_link: voluptate
+      title: a
+      description: 'Reprehenderit eum quasi non et nobis tenetur aspernatur.'
+      start_time: eius
+      end_time: aut
+      meeting_link: quo
       create_zoom: false
     fileParameters: []
     responses:
@@ -414,14 +414,14 @@ endpoints:
         name: id
         description: 'The ID of the collaboration.'
         required: true
-        example: 3
+        example: 18
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 3
+      id: 18
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -473,14 +473,14 @@ endpoints:
         name: id
         description: 'The ID of the collaboration to accept.'
         required: true
-        example: 18
+        example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 18
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []

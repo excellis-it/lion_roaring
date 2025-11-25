@@ -20,15 +20,18 @@ class EstoreController extends Controller
 {
     /**
      * Public Store Home
+     *
+     * @queryParam country_code string optional Two-letter country code to localize content. Default is 'US'. Example: US
      */
     public function storeHome(Request $request)
     {
         try {
+            $countryCode = strtoupper($request->input('country_code') ?? 'US');
             $topParentCategories = Category::where('status', 1)->whereNull('parent_id')->orderBy('id', 'DESC')->get();
             $feature_products = Product::where('is_deleted', false)->where('status', 1)->where('feature_product', 1)->orderBy('id', 'DESC')->get();
             $new_products = Product::where('is_deleted', false)->where('is_new_product', 1)->where('status', 1)->orderBy('id', 'DESC')->limit(10)->get();
 
-            $homeCms = EcomHomeCms::orderBy('id', 'desc')->first();
+            $homeCms = EcomHomeCms::where('country_code', $countryCode)->orderBy('id', 'desc')->first();
             $content = $homeCms ? $homeCms : [];
 
             return response()->json([
@@ -50,15 +53,17 @@ class EstoreController extends Controller
 
     /**
      * Public Header — logo, pages and categories
+     *
+     * @queryParam country_code string optional Two-letter country code to localize content. Default is 'US'.
      */
     public function header(Request $request)
     {
         try {
-            $homeCms = EcomHomeCms::orderBy('id', 'desc')->first();
-            // return $homeCms;
+            $countryCode = strtoupper($request->input('country_code') ?? 'US');
+            $homeCms = EcomHomeCms::where('country_code', $countryCode)->orderBy('id', 'desc')->first();
             $header_logo = $homeCms ? $homeCms->header_logo : null;
             $categories = Category::where('status', 1)->orderBy('id', 'DESC')->get();
-            $pages = EcomCmsPage::where('slug', '!=', '')->orderBy('id', 'asc')->get();
+            $pages = EcomCmsPage::where('status', 1)->where('country_code', $countryCode)->orderBy('id', 'asc')->get();
 
             return response()->json([
                 'data' => [
@@ -75,11 +80,14 @@ class EstoreController extends Controller
 
     /**
      * Public Footer
+     *
+     * @queryParam country_code string optional Two-letter country code to localize content. Default is 'US'.
      */
     public function footer(Request $request)
     {
         try {
-            $footer = EcomFooterCms::orderBy('id', 'desc')->first();
+            $countryCode = strtoupper($request->input('country_code') ?? 'US');
+            $footer = EcomFooterCms::where('country_code', $countryCode)->orderBy('id', 'desc')->first();
             if (! $footer) {
                 return response()->json(['message' => 'Footer not found', 'status' => false], 201);
             }

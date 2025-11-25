@@ -27,14 +27,14 @@ endpoints:
         name: message
         description: ''
         required: false
-        example: similique
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      message: similique
+      message: et
     fileParameters: []
     responses:
       -
