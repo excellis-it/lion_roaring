@@ -56,7 +56,7 @@ use App\Http\Controllers\Api\UserActivityController;
 Route::prefix('v3')->middleware(['userActivity'])->group(function () {
     Route::post('contact-us', [ContactUsController::class, 'store']);
 
-    Route::prefix('e-store')->group(function () {
+    Route::prefix('e-learning')->group(function () {
         // Route::get('/all-products', [EstoreProductController::class, 'products']);
         Route::get('/store-home', [ElearningController::class, 'storeHome']);
         Route::get('/category-products/{slug}', [ElearningController::class, 'productsByCategorySlug']);

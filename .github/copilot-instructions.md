@@ -15,6 +15,9 @@ applyTo: "**"
 -   Add proper Scribe annotations for every method.
 -   Only generate API controllers and routes.
 -   Every API method MUST return JSON responses and must have 'status' = true/false.
+-   Also check for blade files in resources/views/ for any API-related code.
+-   Also check views if any extra things are needed for API-related code.
+-   Always check routes/api.php for route definitions.
 -   For every new or updated API method, you MUST add or update proper Scribe annotations above functions:
     -- @group (for main module name)
     -- \* Feature Name (for every feature inside the module)
