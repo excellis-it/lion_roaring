@@ -25,6 +25,7 @@
     <!--Flag Popup -->
     <div class="popup-overlay" id="popupOverlay" style="{{ $showPopup ? '' : 'display:none;' }}">
         <div class="popup-box flag-popup-box">
+            <button onclick="closePopup()" class="xmark_btn"><i class="fa-solid fa-xmark"></i></button>
             <div class="top-box">
                 <div class="popup-logo">
                     <img src="https://excellis.co.in/lion-roaring-org/public/storage/footer/CEMnI3pjMdaatfmJwSA0cQqNjA6W4c8Fk8rRA08q.png"
@@ -35,41 +36,39 @@
                 <!--    <p>A habitation where supernatural and solution intersects</p>-->
                 <!--</div>-->
 
-                <div class="form-box">
-                    <form>
-                        <div class="wrap">
-                            <h4>Select Your Country</h4>
-                            <div class="search">
-                                <input type="text" class="searchTerm searchCountryNameInput"
-                                    placeholder="What are you looking for?">
-                                <button type="button" class="searchButton">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                <!--<div class="form-box">-->
+                <!--    <form>-->
+                <!--        <div class="wrap">-->
+                <!--            <h4>Select Your Country</h4>-->
+                <!--            <div class="search">-->
+                <!--                <input type="text" class="searchTerm searchCountryNameInput"-->
+                <!--                    placeholder="What are you looking for?">-->
+                <!--                <button type="button" class="searchButton">-->
+                <!--                    <i class="fa fa-search"></i>-->
+                <!--                </button>-->
+                <!--            </div>-->
+                <!--        </div>-->
+                <!--    </form>-->
+                <!--</div>-->
 
             </div>
 
-            <div class="flag-areas">
-                <div class="flag-grid">
-                    <!-- Flags directly in HTML -->
-                    @foreach ($countries as $c)
-                        <div class="flag-box countryModalList" data-country-code="{{ strtoupper($c->code) }}"
-                            data-country-name="{{ $c->name }}">
-                            <div class="flag-main-box">
-                                <img src="{{ asset('frontend_assets/images/flags/' . strtolower($c->code) . '.png') }}"
-                                    alt="{{ $c->name }}" title="{{ $c->name }}"
-                                    onclick="selectFlag('{{ strtolower($c->code) }}')">
-                            </div>
-                            <p class="country-name">{{ $c->name }}</p>
-                        </div>
-                    @endforeach
+             @php
+                        $currentCode = strtoupper(\App\Helpers\Helper::getVisitorCountryCode());
+                        $countries = \App\Helpers\Helper::getCountries();
+                    @endphp
 
-                </div>
-            </div>
-            <button class="btn red_btn" onclick="closePopup()"><span>Close</span></button>
+                    <div class="popup_countrySwitcher">
+                        <select id="countrySwitcher" class="form-select form-select-sm cst-select cst-select-bottom">
+                            @foreach ($countries as $c)
+                                <option value="{{ strtolower($c->code) }}"
+                                    {{ strtoupper($c->code) === $currentCode ? 'selected' : '' }}
+                                    data-image="{{ asset('frontend_assets/images/flags/' . strtolower($c->code) . '.png') }}">
+                                    {{ $c->name }} ({{ strtoupper($c->code) }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
         </div>
     </div>
 
